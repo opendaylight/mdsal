@@ -9,6 +9,10 @@ package org.opendaylight.yangtools.yang.binding.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -21,10 +25,10 @@ import java.util.concurrent.locks.Lock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Supplier;
-
+/**
+ * @deprecated Use {@link org.opendaylight.yangtools.util.ClassLoaderUtils} instead.
+ */
+@Deprecated
 public final class ClassLoaderUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ClassLoaderUtils.class);
 
@@ -58,17 +62,17 @@ public final class ClassLoaderUtils {
     }
 
     /**
-    *
-    * Runs {@link Callable} with provided {@link ClassLoader}.
-    *
-    * Invokes supplies function and makes sure that original {@link ClassLoader}
-    * is context {@link ClassLoader} after execution.
-    *
-    * @param cls {@link ClassLoader} to be used.
-    * @param function Function to be executed.
-    * @return Result of callable invocation.
-    *
-    */
+     *
+     * Runs {@link Callable} with provided {@link ClassLoader}.
+     *
+     * Invokes supplies function and makes sure that original {@link ClassLoader}
+     * is context {@link ClassLoader} after execution.
+     *
+     * @param cls {@link ClassLoader} to be used.
+     * @param function Function to be executed.
+     * @return Result of callable invocation.
+     *
+     */
     public static <V> V withClassLoader(final ClassLoader cls, final Callable<V> function) throws Exception {
         checkNotNull(cls, "Classloader should not be null");
         checkNotNull(function, "Function should not be null");
@@ -82,20 +86,20 @@ public final class ClassLoaderUtils {
         }
     }
 
-   /**
-    *
-    * Runs {@link Callable} with provided {@link ClassLoader} and Lock.
-    *
-    * Invokes supplies function after acquiring lock
-    * and makes sure that original {@link ClassLoader}
-    * is context {@link ClassLoader} and lock is unlocked
-    * after execution.
-    *
-    * @param cls {@link ClassLoader} to be used.
-    * @param function Function to be executed.
-    * @return Result of Callable invocation.
-    *
-    */
+    /**
+     *
+     * Runs {@link Callable} with provided {@link ClassLoader} and Lock.
+     *
+     * Invokes supplies function after acquiring lock
+     * and makes sure that original {@link ClassLoader}
+     * is context {@link ClassLoader} and lock is unlocked
+     * after execution.
+     *
+     * @param cls {@link ClassLoader} to be used.
+     * @param function Function to be executed.
+     * @return Result of Callable invocation.
+     *
+     */
     public static <V> V withClassLoaderAndLock(final ClassLoader cls, final Lock lock, final Supplier<V> function) {
         checkNotNull(lock, "Lock should not be null");
 
@@ -138,9 +142,9 @@ public final class ClassLoaderUtils {
             String potentialOuter;
             int length = components.length;
             if (length > 2 && (potentialOuter = components[length - 2]) != null && Character.isUpperCase(potentialOuter.charAt(0))) {
-                    String outerName = Joiner.on(".").join(Arrays.asList(components).subList(0, length - 1));
-                    String innerName = outerName + "$" + components[length-1];
-                    return cls.loadClass(innerName);
+                String outerName = Joiner.on(".").join(Arrays.asList(components).subList(0, length - 1));
+                String innerName = outerName + "$" + components[length-1];
+                return cls.loadClass(innerName);
             } else {
                 throw e;
             }
