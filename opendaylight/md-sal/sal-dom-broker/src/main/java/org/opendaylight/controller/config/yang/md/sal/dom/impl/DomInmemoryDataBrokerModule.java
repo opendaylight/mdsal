@@ -7,6 +7,7 @@
  */
 package org.opendaylight.controller.config.yang.md.sal.dom.impl;
 
+import com.google.common.collect.Lists;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +16,6 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitDeadlockException;
 import org.opendaylight.controller.md.sal.common.util.jmx.AbstractMXBean;
 import org.opendaylight.controller.md.sal.common.util.jmx.ThreadExecutorStatsMXBeanImpl;
-import org.opendaylight.controller.md.sal.dom.broker.impl.ConcurrentDOMDataBroker;
-import org.opendaylight.controller.md.sal.dom.broker.impl.AbstractDOMDataBroker;
 import org.opendaylight.controller.md.sal.dom.broker.impl.SerializedDOMDataBroker;
 import org.opendaylight.controller.md.sal.dom.broker.impl.jmx.CommitStatsMXBeanImpl;
 import org.opendaylight.controller.md.sal.dom.store.impl.InMemoryDOMDataStoreFactory;
@@ -24,7 +23,6 @@ import org.opendaylight.controller.sal.core.spi.data.DOMStore;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
-import com.google.common.collect.Lists;
 
 /**
 *
@@ -83,39 +81,30 @@ public final class DomInmemoryDataBrokerModule extends
                 "CommitFutures");
 
         final List<AbstractMXBean> mBeans = Lists.newArrayList();
-
         final DurationStatisticsTracker commitStatsTracker;
-        final AbstractDOMDataBroker broker;
 
-        if (getAllowConcurrentCommits()) {
-            final ConcurrentDOMDataBroker cdb = new ConcurrentDOMDataBroker(datastores, listenableFutureExecutor);
-            commitStatsTracker = cdb.getCommitStatsTracker();
-            broker = cdb;
-        } else {
-            /*
-             * We use a single-threaded executor for commits with a bounded queue capacity. If the
-             * queue capacity is reached, subsequent commit tasks will be rejected and the commits will
-             * fail. This is done to relieve back pressure. This should be an extreme scenario - either
-             * there's deadlock(s) somewhere and the controller is unstable or some rogue component is
-             * continuously hammering commits too fast or the controller is just over-capacity for the
-             * system it's running on.
-             */
-            ExecutorService commitExecutor = SpecialExecutors.newBoundedSingleThreadExecutor(
-                    getMaxDataBrokerCommitQueueSize(), "WriteTxCommit");
+        /*
+         * We use a single-threaded executor for commits with a bounded queue capacity. If the
+         * queue capacity is reached, subsequent commit tasks will be rejected and the commits will
+         * fail. This is done to relieve back pressure. This should be an extreme scenario - either
+         * there's deadlock(s) somewhere and the controller is unstable or some rogue component is
+         * continuously hammering commits too fast or the controller is just over-capacity for the
+         * system it's running on.
+         */
+        ExecutorService commitExecutor = SpecialExecutors.newBoundedSingleThreadExecutor(
+            getMaxDataBrokerCommitQueueSize(), "WriteTxCommit");
 
-            SerializedDOMDataBroker sdb = new SerializedDOMDataBroker(datastores,
-                    new DeadlockDetectingListeningExecutorService(commitExecutor,
-                            TransactionCommitDeadlockException.DEADLOCK_EXCEPTION_SUPPLIER,
-                            listenableFutureExecutor));
-            commitStatsTracker = sdb.getCommitStatsTracker();
-            broker = sdb;
+        SerializedDOMDataBroker sdb = new SerializedDOMDataBroker(datastores,
+            new DeadlockDetectingListeningExecutorService(commitExecutor,
+                TransactionCommitDeadlockException.DEADLOCK_EXCEPTION_SUPPLIER,
+                listenableFutureExecutor));
+        commitStatsTracker = sdb.getCommitStatsTracker();
 
-            final AbstractMXBean commitExecutorStatsMXBean =
-                    ThreadExecutorStatsMXBeanImpl.create(commitExecutor, "CommitExecutorStats",
-                            JMX_BEAN_TYPE, null);
-            if(commitExecutorStatsMXBean != null) {
-                mBeans.add(commitExecutorStatsMXBean);
-            }
+        final AbstractMXBean commitExecutorStatsMXBean =
+                ThreadExecutorStatsMXBeanImpl.create(commitExecutor, "CommitExecutorStats",
+                    JMX_BEAN_TYPE, null);
+        if(commitExecutorStatsMXBean != null) {
+            mBeans.add(commitExecutorStatsMXBean);
         }
 
         if(commitStatsTracker != null) {
@@ -132,7 +121,7 @@ public final class DomInmemoryDataBrokerModule extends
             mBeans.add(commitFutureStatsMXBean);
         }
 
-        broker.setCloseable(new AutoCloseable() {
+        sdb.setCloseable(new AutoCloseable() {
             @Override
             public void close() {
                 for(AbstractMXBean mBean: mBeans) {
@@ -141,6 +130,6 @@ public final class DomInmemoryDataBrokerModule extends
             }
         });
 
-        return broker;
+        return sdb;
     }
 }
