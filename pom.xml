@@ -31,6 +31,8 @@
 
     <modules>
       <module>common/parent</module>
+      <module>common/artifacts</module>
+      <module>binding</module>
     </modules>
 
     <build>
