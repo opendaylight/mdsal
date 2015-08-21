@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- vi: set et smarttab sw=4 tabstop=4: -->
+7<!-- vi: set et smarttab sw=4 tabstop=4: -->
 <!--
  Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
 
@@ -33,6 +33,7 @@
       <module>common/parent</module>
       <module>common/artifacts</module>
       <module>binding</module>
+      <module>model</module>
     </modules>
 
     <build>

@@ -12,7 +12,7 @@
 
     <parent>
         <artifactId>model-ietf</artifactId>
-        <groupId>org.opendaylight.yangtools.model</groupId>
+        <groupId>org.opendaylight.mdsal.model</groupId>
         <version>0.8.0-SNAPSHOT</version>
     </parent>
 
@@ -33,7 +33,7 @@
             <groupId>org.opendaylight.yangtools.model</groupId>
             <artifactId>ietf-yang-types-20130715</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
