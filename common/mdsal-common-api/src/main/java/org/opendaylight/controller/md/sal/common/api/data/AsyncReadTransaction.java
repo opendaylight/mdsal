@@ -56,8 +56,6 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <D>
  *            Type of data (payload), which represents data payload
  *
- * @see org.opendaylight.controller.md.sal.binding.api.ReadTransaction
- * @see org.opendaylight.controller.md.sal.dom.api.DOMDataReadTransaction
  */
 public interface AsyncReadTransaction<P extends Path<P>, D> extends AsyncTransaction<P, D> {
 

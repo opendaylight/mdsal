@@ -21,12 +21,14 @@ import org.opendaylight.yangtools.concepts.Path;
  * the asynchronous nature of transaction submission this can lead to surprising
  * results. If a thread executes the following sequence sufficiently quickly:
  *
+ * <pre><code>
  * AsyncWriteTransaction t1 = broker.newWriteOnlyTransaction();
  * t1.put(id, data);
  * t1.submit();
  *
  * AsyncReadTransaction t2 = broker.newReadOnlyTransaction();
- * Optional<?> maybeData = t2.read(id).get();
+ * Optional&lt;?&gt; maybeData = t2.read(id).get();
+ * </code></pre>
  *
  * it may happen, that it sees maybeData.isPresent() == false, simply because
  * t1 has not completed the processes of being applied and t2 is actually

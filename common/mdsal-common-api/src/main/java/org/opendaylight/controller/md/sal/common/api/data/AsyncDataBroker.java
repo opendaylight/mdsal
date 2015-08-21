@@ -67,9 +67,8 @@ public interface AsyncDataBroker<P extends Path<P>, D, L extends AsyncDataChange
      *
      * <h2>Examples</h2>
      *
-     * Following is an example model with comments describing what notifications
-     * you would receive based on the scope you specify, when you are
-     * registering for changes on container a.
+     * Following is an example model with comments describing what notifications you would receive
+     * based on the scope you specify, when you are registering for changes on container a.
      *
      * <pre>
      * container a              // scope BASE, ONE, SUBTREE
@@ -83,10 +82,9 @@ public interface AsyncDataBroker<P extends Path<P>, D, L extends AsyncDataChange
      *        id "b"            // scope SUBTREE
      * </pre>
      *
-     * Following is an example model with comments describing what notifications
-     * you would receive based on the scope you specify, when you are
-     * registering for changes on list list (without specifying concrete item in
-     * the list).
+     * Following is an example model with comments describing what notifications you would receive
+     * based on the scope you specify, when you are registering for changes on list list (without
+     * specifying concrete item in the list).
      *
      * <pre>
      *  list list               // scope BASE, ONE, SUBTREE
@@ -97,8 +95,9 @@ public interface AsyncDataBroker<P extends Path<P>, D, L extends AsyncDataChange
      * </pre>
      *
      *
-     * @see http://www.idevelopment.info/data/LDAP/LDAP_Resources/
-     *      SEARCH_Setting_the_SCOPE_Parameter.shtml
+     * See <a href=
+     * "http://www.idevelopment.info/data/LDAP/LDAP_Resources/SEARCH_Setting_the_SCOPE_Parameter.shtml"
+     * >LDAP Scope</a> for scope reference.
      */
     public enum DataChangeScope {
 
