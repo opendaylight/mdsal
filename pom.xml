@@ -33,6 +33,7 @@
       <module>common/parent</module>
       <module>common/artifacts</module>
       <module>binding</module>
+      <module>model</module>
     </modules>
 
     <build>
