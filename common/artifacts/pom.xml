@@ -17,6 +17,36 @@
 
     <dependencyManagement>
         <dependencies>
+
+          <!-- Common APIs for Binding and DOM -->
+          <dependency>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>mdsal-common-api</artifactId>
+              <version>${project.version}</version>
+          </dependency>
+
+          <dependency>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>mdsal-dom-api</artifactId>
+              <version>${project.version}</version>
+          </dependency>
+          <dependency>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>mdsal-dom-spi</artifactId>
+              <version>${project.version}</version>
+          </dependency>
+          <dependency>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>mdsal-dom-broker</artifactId>
+              <version>${project.version}</version>
+          </dependency>
+          <dependency>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>mdsal-dom-inmemory-datastore</artifactId>
+              <version>${project.version}</version>
+          </dependency>
+
+            <!-- Binding MD-SAL & Java Binding -->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>maven-sal-api-gen-plugin</artifactId>
@@ -67,6 +97,23 @@
                 <artifactId>mdsal-binding-dom-codec</artifactId>
                 <version>0.8.0-SNAPSHOT</version>
             </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mdsal-binding-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mdsal-binding-dom-adapter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mdsal-binding-util</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-test-model</artifactId>
