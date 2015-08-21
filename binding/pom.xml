@@ -28,10 +28,15 @@
         <module>mdsal-binding-generator-impl</module>
         <module>mdsal-binding-java-api-generator</module>
         <module>maven-sal-api-gen-plugin</module>
-        <module>mdsal-binding-test-model</module>
-        <module>mdsal-binding-dom-codec</module>
         <!-- FIXME: should be probably renamed to mdsal-model-binding-parent -->
         <module>binding-parent</module>
         <module>yang-binding</module>
+
+        <module>mdsal-binding-test-model</module>
+        <module>mdsal-binding-dom-codec</module>
+
+        <module>mdsal-binding-api</module>
+        <module>mdsal-binding-util</module>
+        <module>mdsal-binding-dom-adapter</module>
     </modules>
 </project>
