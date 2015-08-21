@@ -30,8 +30,7 @@
     </scm>
 
     <modules>
-      <module>common/parent</module>
-      <module>common/artifacts</module>
+      <module>common</module>
       <module>binding</module>
       <module>model</module>
     </modules>
