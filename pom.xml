@@ -31,6 +31,7 @@
 
     <modules>
       <module>common</module>
+      <module>dom</module>
       <module>binding</module>
       <module>model</module>
     </modules>
