@@ -7,14 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
 import org.opendaylight.mdsal.common.api.AsyncReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
-
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
 
 /**
  * A transaction that provides read access to a logical data store.
@@ -49,7 +48,6 @@ public interface DOMDataTreeReadTransaction extends AsyncReadTransaction<YangIns
             LogicalDatastoreType store, YangInstanceIdentifier path);
 
     /**
-     /**
      * Checks if data is available in the logical data store located at provided path.
      * <p>
      *
