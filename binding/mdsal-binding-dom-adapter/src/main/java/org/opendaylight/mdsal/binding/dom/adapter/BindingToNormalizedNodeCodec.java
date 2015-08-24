@@ -25,6 +25,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTree;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeNode;
@@ -371,6 +373,21 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
             }
         }
         throw new IllegalArgumentException("Path does not point to list schema node");
+    }
+
+    protected Collection<DOMDataTreeIdentifier> toDOMDataTreeIdentifiers(
+            final Collection<DataTreeIdentifier<?>> subtrees) {
+        final Set<DOMDataTreeIdentifier> ret = new HashSet<>();
+
+        for (final DataTreeIdentifier<?> subtree : subtrees) {
+            ret.add(toDOMDataTreeIdentifier(subtree));
+        }
+        return ret;
+    }
+
+    protected DOMDataTreeIdentifier toDOMDataTreeIdentifier(final DataTreeIdentifier<?> path) {
+        final YangInstanceIdentifier domPath = toYangInstanceIdentifierBlocking(path.getRootIdentifier());
+        return new DOMDataTreeIdentifier(path.getDatastoreType(), domPath);
     }
 
 }
