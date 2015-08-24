@@ -8,6 +8,13 @@
 package org.opendaylight.controller.md.sal.dom.api;
 
 import static org.junit.Assert.assertNotNull;
+
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
+import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+
 import com.google.common.util.concurrent.CheckedFuture;
 import java.net.URI;
 import java.util.Collections;

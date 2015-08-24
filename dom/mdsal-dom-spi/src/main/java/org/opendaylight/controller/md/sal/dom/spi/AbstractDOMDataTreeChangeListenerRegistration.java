@@ -7,7 +7,8 @@
  */
 package org.opendaylight.controller.md.sal.dom.spi;
 
-import org.opendaylight.controller.md.sal.dom.api.DOMDataTreeChangeListener;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
+
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 
 /**

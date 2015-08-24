@@ -7,12 +7,12 @@
  */
 package org.opendaylight.controller.sal.dom.broker.osgi;
 
-import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+
 import org.opendaylight.controller.sal.core.api.BrokerService;
 import org.opendaylight.controller.sal.core.api.model.SchemaService;
 import org.osgi.framework.ServiceReference;
-
 import java.util.Arrays;
 
 @SuppressWarnings("unchecked")

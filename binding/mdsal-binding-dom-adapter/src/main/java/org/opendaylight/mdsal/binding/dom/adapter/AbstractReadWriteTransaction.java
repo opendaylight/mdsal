@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.controller.md.sal.dom.api.DOMDataReadWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

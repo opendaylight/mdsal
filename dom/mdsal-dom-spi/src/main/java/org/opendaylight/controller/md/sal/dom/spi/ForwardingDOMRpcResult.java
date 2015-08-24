@@ -7,10 +7,11 @@
  */
 package org.opendaylight.controller.md.sal.dom.spi;
 
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+
 import com.google.common.collect.ForwardingObject;
 import java.util.Collection;
 import javax.annotation.Nonnull;
-import org.opendaylight.controller.md.sal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 

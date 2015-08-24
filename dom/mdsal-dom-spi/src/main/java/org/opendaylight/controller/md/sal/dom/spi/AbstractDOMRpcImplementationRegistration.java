@@ -7,8 +7,9 @@
  */
 package org.opendaylight.controller.md.sal.dom.spi;
 
-import org.opendaylight.controller.md.sal.dom.api.DOMRpcImplementation;
-import org.opendaylight.controller.md.sal.dom.api.DOMRpcImplementationRegistration;
+import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
+import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
+
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 
 /**

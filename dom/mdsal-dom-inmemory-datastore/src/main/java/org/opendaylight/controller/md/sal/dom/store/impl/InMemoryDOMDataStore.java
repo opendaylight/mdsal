@@ -7,6 +7,8 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl;
 
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.concurrent.ExecutorService;
@@ -14,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeListener;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.dom.store.impl.tree.ListenerTree;
 import org.opendaylight.controller.sal.core.spi.data.DOMStore;
 import org.opendaylight.controller.sal.core.spi.data.DOMStoreReadTransaction;
