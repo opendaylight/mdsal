@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.controller.md.sal.binding.api;
+package org.opendaylight.mdsal.binding.api;
 
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataTransactionFactory;
 import org.opendaylight.yangtools.yang.binding.DataObject;

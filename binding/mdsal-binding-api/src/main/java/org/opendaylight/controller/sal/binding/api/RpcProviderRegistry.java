@@ -7,6 +7,8 @@
  */
 package org.opendaylight.controller.sal.binding.api;
 
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RoutedRpcRegistration;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RpcRegistration;
 import org.opendaylight.yangtools.yang.binding.RpcService;
