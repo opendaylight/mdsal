@@ -18,8 +18,10 @@ import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUti
 import static org.opendaylight.mdsal.binding.dom.adapter.test.AssertCollections.assertContains;
 import static org.opendaylight.mdsal.binding.dom.adapter.test.AssertCollections.assertEmpty;
 import static org.opendaylight.mdsal.binding.dom.adapter.test.AssertCollections.assertNotContains;
+
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+
 import org.junit.Test;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;

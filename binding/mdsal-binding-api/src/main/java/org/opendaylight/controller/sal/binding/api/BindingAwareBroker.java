@@ -9,6 +9,8 @@ package org.opendaylight.controller.sal.binding.api;
 
 
 
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;

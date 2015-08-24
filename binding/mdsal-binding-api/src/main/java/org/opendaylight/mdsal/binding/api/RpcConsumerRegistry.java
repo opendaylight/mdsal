@@ -5,9 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.sal.binding.api;
+package org.opendaylight.mdsal.binding.api;
 
-import org.opendaylight.controller.md.sal.binding.api.BindingService;
+import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
 /**
@@ -17,7 +18,7 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
  * RPC implementations are registered using the {@link RpcProviderRegistry}.
  *
  */
-public interface RpcConsumerRegistry extends BindingAwareService, BindingService {
+public interface RpcConsumerRegistry extends BindingService {
     /**
      * Returns an implementation of a requested RPC service.
      *
@@ -52,11 +53,11 @@ public interface RpcConsumerRegistry extends BindingAwareService, BindingService
      * <pre>
      *   final Future&lt;RpcResult&lt;SomeRpcOutput&gt;&gt; future = someRpcService.someRpc( ... );
      *   Futures.addCallback(JdkFutureAdapters.listenInThreadPool(future), new FutureCallback&lt;RpcResult&lt;SomeRpcOutput&gt;&gt;() {
-     * 
+     *
      *       public void onSuccess(RpcResult&lt;SomeRpcOutput&gt; result) {
      *          // process result ...
      *       }
-     * 
+     *
      *       public void onFailure(Throwable t) {
      *          // RPC failed
      *       }

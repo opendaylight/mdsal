@@ -7,7 +7,7 @@
  */
 
 
-package org.opendaylight.controller.md.sal.binding.api;
+package org.opendaylight.mdsal.binding.api;
 
 /**
  * <p>

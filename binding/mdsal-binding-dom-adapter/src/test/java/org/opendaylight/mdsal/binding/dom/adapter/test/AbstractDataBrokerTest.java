@@ -7,14 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
+import org.opendaylight.mdsal.binding.api.DataBroker;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-
 import com.google.common.util.concurrent.ListenableFuture;
 
 public class AbstractDataBrokerTest extends AbstractSchemaAwareTest {
