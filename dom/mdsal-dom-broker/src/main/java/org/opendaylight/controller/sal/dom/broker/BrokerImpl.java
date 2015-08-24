@@ -7,6 +7,8 @@
  */
 package org.opendaylight.controller.sal.dom.broker;
 
+import org.opendaylight.mdsal.dom.broker.DOMRpcRouter;
+
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -15,7 +17,6 @@ import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
@@ -26,7 +27,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter;
 import org.opendaylight.controller.sal.core.api.Broker;
 import org.opendaylight.controller.sal.core.api.BrokerService;
 import org.opendaylight.controller.sal.core.api.Consumer;

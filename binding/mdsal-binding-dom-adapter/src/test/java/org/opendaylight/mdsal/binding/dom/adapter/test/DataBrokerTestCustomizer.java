@@ -7,8 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
-import org.opendaylight.mdsal.dom.api.DOMDataBroker;
+import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
+import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
@@ -22,8 +24,6 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import javassist.ClassPool;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.dom.broker.impl.DOMNotificationRouter;
-import org.opendaylight.controller.md.sal.dom.broker.impl.SerializedDOMDataBroker;
 import org.opendaylight.controller.md.sal.dom.store.impl.InMemoryDOMDataStore;
 import org.opendaylight.controller.sal.core.api.model.SchemaService;
 import org.opendaylight.controller.sal.core.spi.data.DOMStore;
