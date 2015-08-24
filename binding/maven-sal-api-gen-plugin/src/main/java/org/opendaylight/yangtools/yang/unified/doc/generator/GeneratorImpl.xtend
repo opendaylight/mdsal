@@ -740,7 +740,7 @@ class GeneratorImpl {
 
     def CharSequence schemaPathToId(SchemaPath path) {
         if(path !== null) {
-            return '''«FOR qName : path.path SEPARATOR "/"»«qName.localName»«ENDFOR»'''
+            return '''«FOR qName : path.pathFromRoot SEPARATOR "/"»«qName.localName»«ENDFOR»'''
         }
     }
 
