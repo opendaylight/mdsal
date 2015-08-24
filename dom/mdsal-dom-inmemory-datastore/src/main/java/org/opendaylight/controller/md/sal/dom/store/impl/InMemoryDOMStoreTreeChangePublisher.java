@@ -7,12 +7,13 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl;
 
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
+
 import com.google.common.base.Optional;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.controller.sal.core.spi.data.AbstractDOMStoreTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;

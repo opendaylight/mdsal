@@ -7,12 +7,13 @@
  */
 package org.opendaylight.controller.md.sal.dom.spi;
 
+import org.opendaylight.mdsal.dom.api.DOMDataReadOnlyTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+
 import com.google.common.collect.ForwardingObject;
 import javax.annotation.Nonnull;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataReadWriteTransaction;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataWriteTransaction;
-import org.opendaylight.controller.md.sal.dom.api.DOMTransactionChain;
 
 /**
  * Utility {@link DOMTransactionChain} implementation which forwards all interface

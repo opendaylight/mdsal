@@ -7,11 +7,12 @@
  */
 package org.opendaylight.controller.sal.core.spi.data;
 
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
+
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.controller.md.sal.dom.spi.AbstractRegistrationTree;
 import org.opendaylight.controller.md.sal.dom.spi.RegistrationTreeNode;

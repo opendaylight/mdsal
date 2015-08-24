@@ -7,9 +7,10 @@
  */
 package org.opendaylight.controller.md.sal.dom.broker.impl;
 
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
+
 import com.google.common.base.Preconditions;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataTreeShard;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 
 final class ShardRegistration<T extends DOMDataTreeShard> extends AbstractListenerRegistration<T> {

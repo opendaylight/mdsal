@@ -7,10 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 
+import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import com.google.common.base.Optional;
-import org.opendaylight.controller.md.sal.dom.api.DOMMountPointService;
 import org.opendaylight.controller.sal.core.api.mount.MountProvisionListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;

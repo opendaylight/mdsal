@@ -7,10 +7,11 @@
  */
 package org.opendaylight.controller.md.sal.dom.spi;
 
+import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
+import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+
 import com.google.common.collect.ForwardingObject;
 import java.util.Collection;
-import org.opendaylight.controller.md.sal.dom.api.DOMNotificationListener;
-import org.opendaylight.controller.md.sal.dom.api.DOMNotificationService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
