@@ -9,13 +9,17 @@ package org.opendaylight.mdsal.binding.dom.adapter.test.util;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
+
+import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
+import org.opendaylight.mdsal.dom.broker.DOMRpcRouter;
+import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -38,10 +42,6 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import javassist.ClassPool;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.dom.broker.impl.DOMNotificationRouter;
-import org.opendaylight.controller.md.sal.dom.broker.impl.DOMRpcRouter;
-import org.opendaylight.controller.md.sal.dom.broker.impl.SerializedDOMDataBroker;
-import org.opendaylight.controller.md.sal.dom.broker.impl.mount.DOMMountPointServiceImpl;
 import org.opendaylight.controller.md.sal.dom.store.impl.InMemoryDOMDataStore;
 import org.opendaylight.controller.sal.binding.api.BindingAwareService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;

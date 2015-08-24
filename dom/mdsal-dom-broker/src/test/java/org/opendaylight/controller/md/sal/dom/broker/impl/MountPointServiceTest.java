@@ -11,14 +11,14 @@ package org.opendaylight.controller.md.sal.dom.broker.impl;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
+
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService.DOMMountPointBuilder;
-
 import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.controller.md.sal.dom.broker.impl.mount.DOMMountPointServiceImpl;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 

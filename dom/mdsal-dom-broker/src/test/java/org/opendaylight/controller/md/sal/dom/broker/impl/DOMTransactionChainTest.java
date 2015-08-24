@@ -13,10 +13,12 @@ import static org.junit.Assert.fail;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
 
+import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
+import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
+
 import org.opendaylight.mdsal.dom.api.DOMDataReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
