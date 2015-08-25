@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+
 
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
@@ -15,7 +15,7 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
  * Provides access to registered Remote Procedure Call (RPC) service implementations. The RPCs are
  * defined in YANG models.
  * <p>
- * RPC implementations are registered using the {@link RpcProviderRegistry}.
+ * RPC implementations are registered using the {@link RpcProviderService}.
  *
  */
 public interface RpcConsumerRegistry extends BindingService {

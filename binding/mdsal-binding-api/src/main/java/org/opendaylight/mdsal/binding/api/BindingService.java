@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import org.opendaylight.controller.sal.binding.api.BindingAwareService;
 
 /**
  *
@@ -18,13 +17,7 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareService;
  * delegator patterns in order to introduce additional semantics / checks
  * to the system.
  *
- * This interface extends {@link BindingAwareService}, order to be make
- * new services available via
- * {@link org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext}
- * and via
- * {@link org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ConsumerContext}
- *
  */
-public interface BindingService extends BindingAwareService {
+public interface BindingService {
 
 }
