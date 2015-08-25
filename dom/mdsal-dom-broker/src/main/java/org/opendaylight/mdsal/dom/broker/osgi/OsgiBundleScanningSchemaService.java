@@ -5,9 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.sal.dom.broker;
+package org.opendaylight.mdsal.dom.broker.osgi;
 
 import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -18,11 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import org.opendaylight.controller.sal.core.api.model.SchemaService;
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
-import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
@@ -38,8 +38,8 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GlobalBundleScanningSchemaServiceImpl implements SchemaContextProvider, SchemaService, ServiceTrackerCustomizer<SchemaContextListener, SchemaContextListener>, AutoCloseable {
-    private static final Logger LOG = LoggerFactory.getLogger(GlobalBundleScanningSchemaServiceImpl.class);
+public class OsgiBundleScanningSchemaService implements SchemaContextProvider, DOMSchemaService, ServiceTrackerCustomizer<SchemaContextListener, SchemaContextListener>, AutoCloseable {
+    private static final Logger LOG = LoggerFactory.getLogger(OsgiBundleScanningSchemaService.class);
 
     private final ListenerRegistry<SchemaContextListener> listeners = new ListenerRegistry<>();
     private final URLSchemaContextResolver contextResolver = URLSchemaContextResolver.create("global-bundle");
@@ -49,20 +49,20 @@ public class GlobalBundleScanningSchemaServiceImpl implements SchemaContextProvi
     private ServiceTracker<SchemaContextListener, SchemaContextListener> listenerTracker;
     private BundleTracker<Iterable<Registration>> bundleTracker;
     private boolean starting = true;
-    private static GlobalBundleScanningSchemaServiceImpl instance;
+    private static OsgiBundleScanningSchemaService instance;
 
-    private GlobalBundleScanningSchemaServiceImpl(final BundleContext context) {
+    private OsgiBundleScanningSchemaService(final BundleContext context) {
         this.context = Preconditions.checkNotNull(context);
     }
 
-    public synchronized static GlobalBundleScanningSchemaServiceImpl createInstance(final BundleContext ctx) {
+    public synchronized static OsgiBundleScanningSchemaService createInstance(final BundleContext ctx) {
         Preconditions.checkState(instance == null);
-        instance = new GlobalBundleScanningSchemaServiceImpl(ctx);
+        instance = new OsgiBundleScanningSchemaService(ctx);
         instance.start();
         return instance;
     }
 
-    public synchronized static GlobalBundleScanningSchemaServiceImpl getInstance() {
+    public synchronized static OsgiBundleScanningSchemaService getInstance() {
         Preconditions.checkState(instance != null, "Global Instance was not instantiated");
         return instance;
     }
@@ -84,7 +84,7 @@ public class GlobalBundleScanningSchemaServiceImpl implements SchemaContextProvi
         checkState(context != null);
         LOG.debug("start() starting");
 
-        listenerTracker = new ServiceTracker<>(context, SchemaContextListener.class, GlobalBundleScanningSchemaServiceImpl.this);
+        listenerTracker = new ServiceTracker<>(context, SchemaContextListener.class, OsgiBundleScanningSchemaService.this);
         bundleTracker = new BundleTracker<>(context, Bundle.RESOLVED | Bundle.STARTING |
                 Bundle.STOPPING | Bundle.ACTIVE, scanner);
         bundleTracker.open();
@@ -109,23 +109,13 @@ public class GlobalBundleScanningSchemaServiceImpl implements SchemaContextProvi
     }
 
     @Override
-    public void addModule(final Module module) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public SchemaContext getSessionContext() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void removeModule(final Module module) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public synchronized ListenerRegistration<SchemaContextListener> registerSchemaContextListener(final SchemaContextListener listener) {
-        Optional<SchemaContext> potentialCtx = contextResolver.getSchemaContext();
+        final Optional<SchemaContext> potentialCtx = contextResolver.getSchemaContext();
         if(potentialCtx.isPresent()) {
             listener.onGlobalContextUpdated(potentialCtx.get());
         }
@@ -141,26 +131,26 @@ public class GlobalBundleScanningSchemaServiceImpl implements SchemaContextProvi
             listenerTracker.close();
         }
 
-        for (ListenerRegistration<SchemaContextListener> l : listeners.getListeners()) {
+        for (final ListenerRegistration<SchemaContextListener> l : listeners.getListeners()) {
             l.close();
         }
     }
 
     private synchronized void updateContext(final SchemaContext snapshot) {
-        Object[] services = listenerTracker.getServices();
-        for (ListenerRegistration<SchemaContextListener> listener : listeners) {
+        final Object[] services = listenerTracker.getServices();
+        for (final ListenerRegistration<SchemaContextListener> listener : listeners) {
             try {
                 listener.getInstance().onGlobalContextUpdated(snapshot);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LOG.error("Exception occured during invoking listener", e);
             }
         }
         if (services != null) {
-            for (Object rawListener : services) {
+            for (final Object rawListener : services) {
                 final SchemaContextListener listener = (SchemaContextListener) rawListener;
                 try {
                     listener.onGlobalContextUpdated(snapshot);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.error("Exception occured during invoking listener {}", listener, e);
                 }
             }
@@ -186,7 +176,7 @@ public class GlobalBundleScanningSchemaServiceImpl implements SchemaContextProvi
                 try {
                     urls.add(contextResolver.registerSource(u));
                     LOG.debug("Registered {}", u);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.warn("Failed to register {}, ignoring it", e);
                 }
             }
@@ -212,15 +202,15 @@ public class GlobalBundleScanningSchemaServiceImpl implements SchemaContextProvi
 
         @Override
         public synchronized void removedBundle(final Bundle bundle, final BundleEvent event, final Iterable<Registration> urls) {
-            for (Registration url : urls) {
+            for (final Registration url : urls) {
                 try {
                     url.close();
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     LOG.warn("Failed do unregister URL {}, proceeding", url, e);
                 }
             }
 
-            int numUrls = Iterables.size(urls);
+            final int numUrls = Iterables.size(urls);
             if(numUrls > 0 ) {
                 if(LOG.isDebugEnabled()) {
                     LOG.debug("removedBundle: {}, state: {}, # urls: {}", bundle.getSymbolicName(), bundle.getState(), numUrls);
@@ -234,8 +224,8 @@ public class GlobalBundleScanningSchemaServiceImpl implements SchemaContextProvi
     @Override
     public synchronized SchemaContextListener addingService(final ServiceReference<SchemaContextListener> reference) {
 
-        SchemaContextListener listener = context.getService(reference);
-        SchemaContext _ctxContext = getGlobalContext();
+        final SchemaContextListener listener = context.getService(reference);
+        final SchemaContext _ctxContext = getGlobalContext();
         if (getContext() != null && _ctxContext != null) {
             listener.onGlobalContextUpdated(_ctxContext);
         }
@@ -246,7 +236,7 @@ public class GlobalBundleScanningSchemaServiceImpl implements SchemaContextProvi
         if (starting) {
             return;
         }
-        Optional<SchemaContext> schema = contextResolver.getSchemaContext();
+        final Optional<SchemaContext> schema = contextResolver.getSchemaContext();
         if(schema.isPresent()) {
             if(LOG.isDebugEnabled()) {
                 LOG.debug("Got new SchemaContext: # of modules {}", schema.get().getAllModuleIdentifiers().size());

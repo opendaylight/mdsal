@@ -7,14 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
-
 import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -24,6 +16,13 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,9 +93,14 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
              * this registration.
              */
             final ShardingTableEntry parent = lookupShard(prefix);
-            parentReg = parent.getRegistration();
-            if (parentReg != null && prefix.equals(parentReg.getPrefix())) {
-                throw new DOMDataTreeShardingConflictException(String.format("Prefix %s is already occupied by shard %s", prefix, parentReg.getInstance()));
+            if (parent != null) {
+                parentReg = parent.getRegistration();
+                if (parentReg != null && prefix.equals(parentReg.getPrefix())) {
+                    throw new DOMDataTreeShardingConflictException(String.format(
+                            "Prefix %s is already occupied by shard %s", prefix, parentReg.getInstance()));
+                }
+            } else {
+                parentReg = null;
             }
 
             // FIXME: wrap the shard in a proper adaptor based on implemented interface
@@ -140,7 +144,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     private DOMDataTreeProducer createProducer(final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         // Record the producer's attachment points
         final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, shardMap);
-        for (DOMDataTreeIdentifier s : shardMap.keySet()) {
+        for (final DOMDataTreeIdentifier s : shardMap.keySet()) {
             idToProducer.put(s, ret);
         }
 

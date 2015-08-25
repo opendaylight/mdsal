@@ -8,23 +8,20 @@
 
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.controller.sal.core.api.BrokerService;
-import org.opendaylight.controller.sal.core.api.mount.MountProvisionListener;
+import com.google.common.base.Optional;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
-import com.google.common.base.Optional;
 
-
-public interface DOMMountPointService extends BrokerService {
+public interface DOMMountPointService extends DOMService {
 
     Optional<DOMMountPoint> getMountPoint(YangInstanceIdentifier path);
 
     DOMMountPointBuilder createMountPoint(YangInstanceIdentifier path);
 
-    ListenerRegistration<MountProvisionListener> registerProvisionListener(MountProvisionListener listener);
+    ListenerRegistration<DOMMountPointListener> registerProvisionListener(DOMMountPointListener listener);
 
     public interface DOMMountPointBuilder {
 
