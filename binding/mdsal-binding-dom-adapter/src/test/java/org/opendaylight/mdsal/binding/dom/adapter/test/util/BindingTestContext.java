@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter.test.util;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.annotations.Beta;
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -18,9 +17,6 @@ import com.google.common.util.concurrent.MoreExecutors;
 import javassist.ClassPool;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.dom.store.impl.InMemoryDOMDataStore;
-import org.opendaylight.controller.sal.binding.api.BindingAwareService;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
-import org.opendaylight.controller.sal.binding.impl.RootBindingAwareBroker;
 import org.opendaylight.controller.sal.core.spi.data.DOMStore;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -59,8 +55,6 @@ public class BindingTestContext implements AutoCloseable {
 
 
     private BindingToNormalizedNodeCodec codec;
-
-    private RootBindingAwareBroker baBrokerImpl;
 
     private final ListeningExecutorService executor;
     private final ClassPool classPool;
@@ -140,12 +134,6 @@ public class BindingTestContext implements AutoCloseable {
         baConsumerRpc = new BindingDOMRpcServiceAdapter(getDomRpcInvoker(), codec);
         baProviderRpc = new BindingDOMRpcProviderServiceAdapter(getDomRpcRegistry(), codec);
         final MountPointService mountService = new BindingDOMMountPointServiceAdapter(biMountImpl, codec);
-
-        final ImmutableClassToInstanceMap<BindingAwareService> consumerServices =
-                ImmutableClassToInstanceMap.<BindingAwareService>builder().build();
-        final ImmutableClassToInstanceMap<BindingAwareService> providerServices =
-                ImmutableClassToInstanceMap.<BindingAwareService>builder().build();;
-        baBrokerImpl = new RootBindingAwareBroker("test", consumerServices, providerServices);
     }
 
     public void startForwarding() {
@@ -211,12 +199,6 @@ public class BindingTestContext implements AutoCloseable {
     public void loadYangSchemaFromClasspath() {
         final ImmutableSet<YangModuleInfo> moduleInfos = BindingReflections.loadModuleInfos();
         updateYangSchema(moduleInfos);
-    }
-
-
-
-    public RpcProviderRegistry getBindingRpcRegistry() {
-        return baBrokerImpl.getRpcProviderRegistry();
     }
 
     public DOMRpcProviderService getDomRpcRegistry() {

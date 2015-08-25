@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import org.opendaylight.controller.sal.binding.api.BindingAwareService;
 
 /**
  *
@@ -25,6 +24,6 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareService;
  * {@link org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ConsumerContext}
  *
  */
-public interface BindingService extends BindingAwareService {
+public interface BindingService {
 
 }
