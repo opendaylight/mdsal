@@ -6,12 +6,12 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.controller.sal.core.api.mount;
+package org.opendaylight.mdsal.dom.api;
 
 import java.util.EventListener;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
-public interface MountProvisionListener extends EventListener {
+public interface DOMMountListener extends EventListener {
 
     void onMountPointCreated(YangInstanceIdentifier path);
 

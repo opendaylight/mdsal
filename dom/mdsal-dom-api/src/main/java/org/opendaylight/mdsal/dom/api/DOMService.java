@@ -8,12 +8,11 @@
 
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.controller.sal.core.api.BrokerService;
 
 /**
  * Marker interface for services which can be obtained from a {@link DOMMountPoint}
  * instance. No further semantics are implied.
  */
-public interface DOMService extends BrokerService {
+public interface DOMService {
 
 }

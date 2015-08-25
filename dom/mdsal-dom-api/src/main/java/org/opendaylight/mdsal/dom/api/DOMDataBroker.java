@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.dom.api;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionChainFactory;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionChainListener;
-import org.opendaylight.controller.sal.core.api.BrokerService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -25,7 +24,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  */
 public interface DOMDataBroker extends
         AsyncDataBroker<YangInstanceIdentifier, NormalizedNode<?, ?>, DOMDataChangeListener>,
-        TransactionChainFactory<YangInstanceIdentifier, NormalizedNode<?, ?>>, BrokerService, DOMExtensibleService<DOMDataBroker, DOMDataBrokerExtension> {
+        TransactionChainFactory<YangInstanceIdentifier, NormalizedNode<?, ?>>,
+        DOMExtensibleService<DOMDataBroker, DOMDataBrokerExtension> {
 
     /**
      * {@inheritDoc}

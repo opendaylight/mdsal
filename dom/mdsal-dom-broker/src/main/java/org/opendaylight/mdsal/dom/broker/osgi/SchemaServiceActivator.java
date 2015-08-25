@@ -5,11 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.sal.dom.broker.osgi;
+package org.opendaylight.mdsal.dom.broker.osgi;
 
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import java.util.Hashtable;
-import org.opendaylight.controller.sal.core.api.model.SchemaService;
-import org.opendaylight.controller.sal.dom.broker.GlobalBundleScanningSchemaServiceImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -17,13 +16,13 @@ import org.osgi.framework.ServiceRegistration;
 public class SchemaServiceActivator implements BundleActivator {
 
 
-    private ServiceRegistration<SchemaService> schemaServiceReg;
-    private GlobalBundleScanningSchemaServiceImpl schemaService;
+    private ServiceRegistration<DOMSchemaService> schemaServiceReg;
+    private OsgiBundleScanningSchemaService schemaService;
 
     @Override
     public void start(final BundleContext context) {
-        schemaService = GlobalBundleScanningSchemaServiceImpl.createInstance(context);
-        schemaServiceReg = context.registerService(SchemaService.class, schemaService, new Hashtable<String,String>());
+        schemaService = OsgiBundleScanningSchemaService.createInstance(context);
+        schemaServiceReg = context.registerService(DOMSchemaService.class, schemaService, new Hashtable<String,String>());
     }
 
     @Override
