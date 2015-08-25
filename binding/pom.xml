@@ -36,6 +36,7 @@
         <module>mdsal-binding-dom-codec</module>
 
         <module>mdsal-binding-api</module>
+        <module>mdsal-binding-spi</module>
         <module>mdsal-binding-util</module>
         <module>mdsal-binding-dom-adapter</module>
     </modules>
