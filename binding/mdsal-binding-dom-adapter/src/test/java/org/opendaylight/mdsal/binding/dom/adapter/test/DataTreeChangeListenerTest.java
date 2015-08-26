@@ -11,16 +11,14 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.TOP_BAR_KEY;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.USES_ONE_KEY;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.complexUsesAugment;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.path;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.top;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.topLevelList;
-
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_BAR_KEY;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.USES_ONE_KEY;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.complexUsesAugment;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.path;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.top;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
