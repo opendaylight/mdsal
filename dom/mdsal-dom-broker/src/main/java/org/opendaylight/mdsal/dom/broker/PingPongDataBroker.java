@@ -7,15 +7,15 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
+import org.opendaylight.mdsal.dom.spi.ForwardingDOMDataBroker;
 
+import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
-import org.opendaylight.controller.md.sal.dom.spi.ForwardingDOMDataBroker;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**

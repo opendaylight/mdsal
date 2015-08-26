@@ -7,10 +7,11 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl.tree;
 
+import org.opendaylight.mdsal.dom.spi.RegistrationTreeNode;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
-import org.opendaylight.controller.md.sal.dom.spi.RegistrationTreeNode;
 import org.opendaylight.controller.md.sal.dom.store.impl.DataChangeListenerRegistration;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;

@@ -8,12 +8,12 @@
 
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.common.api.AsyncTransaction;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
 
+import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.Map;
-import org.opendaylight.controller.sal.core.spi.data.DOMStoreTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 

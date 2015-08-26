@@ -8,14 +8,14 @@
 
 package org.opendaylight.mdsal.dom.broker;
 
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
+
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
-
 import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import java.util.Map;
-import org.opendaylight.controller.sal.core.spi.data.DOMStoreReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -33,7 +33,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * </ul>
  * {@link #commit()} will result in invocation of
  * {@link DOMDataCommitImplementation#submit(org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction, Iterable)}
- * invocation with all {@link org.opendaylight.controller.sal.core.spi.data.DOMStoreThreePhaseCommitCohort} for underlying
+ * invocation with all {@link org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort} for underlying
  * transactions.
  *
  */
