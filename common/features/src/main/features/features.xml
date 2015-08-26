@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi: set et smarttab sw=4 tabstop=4: -->
+<!--
+ Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+-->
+<features name="odl-yangtools-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
+
+    <repository>mvn:org.opendaylight.yangtools/features-yangtools/{{VERSION}}/xml/features</repository>
+
+    <feature name='odl-mdsal-binding' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding'>
+        <feature version='${project.version}'>odl-mdsal-binding-dom-adapter</feature>
+        <feature version='${project.version}'>odl-mdsal-dom</feature>
+    </feature>
+
+    <feature name='odl-mdsal-dom' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM'>
+        <feature version='${project.version}'>odl-mdsal-dom-broker</feature>
+    </feature>
+
+    <feature name='odl-mdsal-common' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
+        <feature version='${yangtools.version}'>odl-yangtools-common</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-common-api/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-dom-api' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM API &amp; SPI'>
+        <feature version='${project.version}'>odl-mdsal-common</feature>
+        <feature version='${yangtools.version}'>odl-yangtools-yang-data</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{VERSION}}</bundle>
+    </feature>
+    
+    <feature name='odl-mdsal-dom-broker' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
+        <feature version='${yangtools.version}'>odl-yangtools-yang-parser</feature>
+        <feature version='${project.version}'>odl-mdsal-dom-api</feature>
+        <bundle>mvn:com.lmax/disruptor/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-broker/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-inmemory-datastore/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-binding-base' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Base Concepts'>
+        <feature version='${yangtools.version}'>odl-yangtools-common</feature>
+        <bundle>mvn:org.opendaylight.mdsal/yang-binding/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/yang-ext/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-binding-runtime' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Generator'>
+        <feature version='${project.version}'>odl-mdsal-binding-base</feature>
+        <feature version='${yangtools.version}'>odl-yangtools-yang-data</feature>
+        <bundle>mvn:org.javassist/javassist/{{VERSION}}</bundle>
+        <bundle>mvn:org.apache.commons/commons-lang3/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-impl/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-util/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-dom-codec/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-binding-api' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Base Concepts'>
+        <feature version='${project.version}'>odl-mdsal-common</feature>
+        <feature version='${project.version}'>odl-mdsal-binding-base</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-util/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-binding-dom-adapter' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Generator'>
+        <feature version='${project.version}'>odl-mdsal-binding-runtime</feature>
+        <feature version='${project.version}'>odl-mdsal-binding-api</feature>
+        <feature version='${project.version}'>odl-mdsal-dom-api</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-dom-adapter/{{VERSION}}</bundle>
+    </feature>
+
+</features>
