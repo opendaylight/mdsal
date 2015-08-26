@@ -8,7 +8,8 @@
 
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.controller.md.sal.common.api.data.AsyncReadOnlyTransaction;
+import org.opendaylight.mdsal.common.api.AsyncReadOnlyTransaction;
+
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 

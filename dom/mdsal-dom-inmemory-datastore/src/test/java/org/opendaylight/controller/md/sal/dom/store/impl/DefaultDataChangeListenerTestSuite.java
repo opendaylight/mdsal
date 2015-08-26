@@ -7,11 +7,11 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl;
 
-import java.util.concurrent.ExecutionException;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 
+import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.opendaylight.controller.md.sal.dom.store.impl.DatastoreTestTask.WriteTransactionCustomizer;
-import org.opendaylight.controller.sal.core.spi.data.DOMStoreReadWriteTransaction;
 
 /**
  * Base template for a test suite for testing DataChangeListener functionality.

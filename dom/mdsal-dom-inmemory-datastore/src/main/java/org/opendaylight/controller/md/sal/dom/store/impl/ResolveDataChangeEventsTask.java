@@ -7,6 +7,9 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl;
 
+import org.opendaylight.mdsal.dom.spi.RegistrationTreeSnapshot;
+
+import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -14,8 +17,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Map.Entry;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
-import org.opendaylight.controller.md.sal.dom.spi.RegistrationTreeSnapshot;
 import org.opendaylight.controller.md.sal.dom.store.impl.DOMImmutableDataChangeEvent.Builder;
 import org.opendaylight.controller.md.sal.dom.store.impl.DOMImmutableDataChangeEvent.SimpleEventFactory;
 import org.opendaylight.controller.md.sal.dom.store.impl.tree.ListenerTree;

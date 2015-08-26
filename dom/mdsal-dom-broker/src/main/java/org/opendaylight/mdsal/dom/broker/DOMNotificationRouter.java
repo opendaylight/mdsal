@@ -7,11 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
+import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
+
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -34,8 +36,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListener;
-import org.opendaylight.controller.md.sal.dom.spi.DOMNotificationSubscriptionListenerRegistry;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;

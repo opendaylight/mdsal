@@ -10,12 +10,14 @@ package org.opendaylight.controller.md.sal.dom.broker.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
+import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
+import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
+import org.opendaylight.mdsal.dom.spi.store.DOMStore;
+
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
-
 import org.opendaylight.mdsal.dom.api.DOMDataReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
 import com.google.common.base.Optional;
@@ -30,10 +32,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.dom.store.impl.InMemoryDOMDataStore;
 import org.opendaylight.controller.md.sal.dom.store.impl.TestModel;
-import org.opendaylight.controller.sal.core.spi.data.DOMStore;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;

@@ -7,9 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+
 import com.google.common.util.concurrent.AbstractCheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 
 /**
  * A {@link java.util.concurrent.Future} used to report the status of an future

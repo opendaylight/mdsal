@@ -7,10 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.api.DOMDataReadOnlyTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
-
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import java.util.Collection;
@@ -18,13 +14,16 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.controller.sal.core.spi.data.DOMStoreReadTransaction;
-import org.opendaylight.controller.sal.core.spi.data.DOMStoreReadWriteTransaction;
-import org.opendaylight.controller.sal.core.spi.data.DOMStoreThreePhaseCommitCohort;
-import org.opendaylight.controller.sal.core.spi.data.DOMStoreTransactionFactory;
-import org.opendaylight.controller.sal.core.spi.data.DOMStoreWriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.mdsal.dom.api.DOMDataReadOnlyTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionFactory;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 
 /**
  *
@@ -62,21 +61,17 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     protected abstract Object newTransactionIdentifier();
 
     /**
-     * User-supplied implementation of {@link DOMDataWriteTransaction#submit()}
-     * for transaction.
+     * User-supplied implementation of {@link DOMDataWriteTransaction#submit()} for transaction.
      *
-     * Callback invoked when {@link DOMDataWriteTransaction#submit()} is invoked
-     * on transaction created by this factory.
+     * Callback invoked when {@link DOMDataWriteTransaction#submit()} is invoked on transaction
+     * created by this factory.
      *
-     * @param transaction
-     *            Transaction on which {@link DOMDataWriteTransaction#commit()}
-     *            was invoked.
-     * @param cohorts
-     *            Iteratable of cohorts for subtransactions associated with
-     *            the transaction being committed.
-     * @return a CheckedFuture. if commit coordination on cohorts finished successfully,
-     *         nothing is returned from the Future, On failure,
-     *         the Future fails with a {@link TransactionCommitFailedException}.
+     * @param transaction Transaction on which {@link DOMDataWriteTransaction#submit()} was invoked.
+     * @param cohorts Iteratable of cohorts for subtransactions associated with the transaction
+     *        being committed.
+     * @return a CheckedFuture. if commit coordination on cohorts finished successfully, nothing is
+     *         returned from the Future, On failure, the Future fails with a
+     *         {@link TransactionCommitFailedException}.
      */
     protected abstract CheckedFuture<Void,TransactionCommitFailedException> submit(final DOMDataWriteTransaction transaction,
             final Collection<DOMStoreThreePhaseCommitCohort> cohorts);
@@ -132,7 +127,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      * - backing subtransaction is selected by {@link LogicalDatastoreType},
      * {@link DOMStoreWriteTransaction#delete(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
      * is invoked on selected subtransaction.
-     * <li> {@link DOMDataWriteTransaction#commit()} - results in invoking
+     * <li> {@link DOMDataWriteTransaction#submit()} - results in invoking
      * {@link DOMStoreWriteTransaction#ready()}, gathering all resulting cohorts and then invoking
      * finalized implementation callback {@link #submit(DOMDataWriteTransaction, Collection)} with
      * transaction which was commited and gathered results.</li>
@@ -177,7 +172,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      * - backing subtransaction is selected by {@link LogicalDatastoreType},
      * {@link DOMStoreWriteTransaction#delete(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
      * is invoked on selected subtransaction.</li>
-     * <li> {@link DOMDataWriteTransaction#commit()} - results in invoking
+     * <li> {@link DOMDataWriteTransaction#submit()} - results in invoking
      * {@link DOMStoreWriteTransaction#ready()}, gathering all resulting cohorts and then invoking
      * finalized implementation callback {@link #submit(DOMDataWriteTransaction, Collection)} with
      * transaction which was commited and gathered results.</li>

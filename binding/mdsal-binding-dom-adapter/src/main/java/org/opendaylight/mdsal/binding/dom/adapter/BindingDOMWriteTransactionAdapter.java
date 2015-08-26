@@ -7,17 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.ListenableFuture;
-import org.opendaylight.controller.md.sal.common.api.TransactionStatus;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 
 class BindingDOMWriteTransactionAdapter<T extends DOMDataWriteTransaction> extends
         AbstractWriteTransaction<T> implements WriteTransaction {
@@ -42,12 +39,6 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataWriteTransaction> exten
     @Override
     public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
         doDelete( store, path);
-    }
-
-    @Deprecated
-    @Override
-    public ListenableFuture<RpcResult<TransactionStatus>> commit() {
-        throw new UnsupportedOperationException();
     }
 
     @Override

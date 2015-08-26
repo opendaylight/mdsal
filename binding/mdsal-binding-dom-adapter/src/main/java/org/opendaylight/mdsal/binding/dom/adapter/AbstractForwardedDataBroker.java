@@ -7,10 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import org.opendaylight.mdsal.common.api.AsyncDataChangeEvent;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
+
 import org.opendaylight.mdsal.dom.api.ClusteredDOMDataChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataChangeListener;
-
 import org.opendaylight.mdsal.binding.api.ClusteredDataChangeListener;
 import org.opendaylight.mdsal.binding.api.DataChangeListener;
 import com.google.common.base.MoreObjects;
@@ -21,9 +24,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;

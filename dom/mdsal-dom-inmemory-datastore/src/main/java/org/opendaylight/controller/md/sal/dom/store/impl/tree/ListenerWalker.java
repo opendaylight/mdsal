@@ -7,8 +7,9 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl.tree;
 
+import org.opendaylight.mdsal.dom.spi.RegistrationTreeSnapshot;
+
 import com.google.common.base.Preconditions;
-import org.opendaylight.controller.md.sal.dom.spi.RegistrationTreeSnapshot;
 import org.opendaylight.controller.md.sal.dom.store.impl.DataChangeListenerRegistration;
 
 /**

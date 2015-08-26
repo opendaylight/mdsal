@@ -8,12 +8,13 @@
 
 package org.opendaylight.mdsal.dom.api;
 
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.util.Iterator;
 import javax.annotation.Nonnull;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;

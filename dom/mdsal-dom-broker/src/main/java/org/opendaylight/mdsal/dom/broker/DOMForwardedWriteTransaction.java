@@ -7,23 +7,20 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
-import org.opendaylight.controller.md.sal.common.api.TransactionStatus;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.controller.sal.core.spi.data.DOMStoreThreePhaseCommitCohort;
-import org.opendaylight.controller.sal.core.spi.data.DOMStoreWriteTransaction;
-import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
@@ -40,13 +37,13 @@ import org.slf4j.LoggerFactory;
  * <li>{@link #merge(LogicalDatastoreType, YangInstanceIdentifier, NormalizedNode)}
  * </ul>
  * <p>
- * {@link #commit()} will result in invocation of
+ * {@link #submit()} will result in invocation of
  * {@link DOMDataCommitImplementation#submit(org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction, Iterable)}
- * invocation with all {@link org.opendaylight.controller.sal.core.spi.data.DOMStoreThreePhaseCommitCohort} for underlying
- * transactions.
+ * invocation with all
+ * {@link org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort} for
+ * underlying transactions.
  *
- * @param <T> Subtype of {@link DOMStoreWriteTransaction} which is used as
- *            subtransaction.
+ * @param <T> Subtype of {@link DOMStoreWriteTransaction} which is used as subtransaction.
  */
 class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction> extends
         AbstractDOMForwardedCompositeTransaction<LogicalDatastoreType, T> implements DOMDataWriteTransaction {
@@ -120,12 +117,6 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction> extends
         } while (future == null);
 
         return future.cancel(false);
-    }
-
-    @Deprecated
-    @Override
-    public ListenableFuture<RpcResult<TransactionStatus>> commit() {
-        return CommitCompatibility.convertToLegacyCommitFuture(submit());
     }
 
     @Override

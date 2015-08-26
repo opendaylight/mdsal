@@ -7,12 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.controller.md.sal.common.api.data.AsyncReadTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.common.api.AsyncReadTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 
