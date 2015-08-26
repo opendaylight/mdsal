@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.controller.md.sal.dom.store.impl;
+package org.opendaylight.mdsal.dom.store.inmemory;
 
 /**
  * Holds configuration properties when creating an {@link InMemoryDOMDataStore} instance via the

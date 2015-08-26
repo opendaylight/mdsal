@@ -9,8 +9,9 @@ package org.opendaylight.controller.md.sal.dom.store.impl;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;

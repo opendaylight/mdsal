@@ -7,6 +7,8 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl;
 
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+
 import java.util.Collection;
 import java.util.Map;
 import org.junit.After;
