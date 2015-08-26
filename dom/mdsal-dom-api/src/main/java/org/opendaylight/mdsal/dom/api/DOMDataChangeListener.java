@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeListener;
+import org.opendaylight.mdsal.common.api.AsyncDataChangeListener;
+
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 

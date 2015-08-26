@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.controller.md.sal.common.api.data;
+package org.opendaylight.mdsal.common.api;
 
 import com.google.common.base.Supplier;
 import org.opendaylight.yangtools.yang.common.RpcError;

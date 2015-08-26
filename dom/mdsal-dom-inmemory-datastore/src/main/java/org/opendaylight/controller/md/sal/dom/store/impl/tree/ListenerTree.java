@@ -7,8 +7,9 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl.tree;
 
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeListener;
+import org.opendaylight.mdsal.common.api.AsyncDataChangeListener;
+import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
+
 import org.opendaylight.controller.md.sal.dom.spi.AbstractRegistrationTree;
 import org.opendaylight.controller.md.sal.dom.spi.RegistrationTreeNode;
 import org.opendaylight.controller.md.sal.dom.store.impl.DataChangeListenerRegistration;

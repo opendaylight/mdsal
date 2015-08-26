@@ -5,13 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.md.sal.common.api.data;
+package org.opendaylight.mdsal.common.api;
 
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
-import org.opendaylight.controller.md.sal.common.api.TransactionStatus;
 import org.opendaylight.yangtools.concepts.Path;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 
 /**
  * Write transaction provides mutation capabilities for a data tree.
@@ -481,11 +479,5 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * @throws IllegalStateException if the transaction is not {@link TransactionStatus#NEW}
      */
     CheckedFuture<Void,TransactionCommitFailedException> submit();
-
-    /**
-     * @deprecated Use {@link #submit()} instead.
-     */
-    @Deprecated
-    ListenableFuture<RpcResult<TransactionStatus>> commit();
 
 }

@@ -7,7 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.controller.md.sal.common.api.data.TransactionChain;
+import org.opendaylight.mdsal.common.api.TransactionChain;
+
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 

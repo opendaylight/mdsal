@@ -7,10 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import javax.annotation.Nonnull;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.yang.binding.DataObject;

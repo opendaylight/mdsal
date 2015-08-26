@@ -8,9 +8,10 @@
 
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionChainFactory;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionChainListener;
+import org.opendaylight.mdsal.common.api.AsyncDataBroker;
+import org.opendaylight.mdsal.common.api.TransactionChainFactory;
+import org.opendaylight.mdsal.common.api.TransactionChainListener;
+
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 

@@ -7,8 +7,9 @@
  */
 package org.opendaylight.controller.sal.core.spi.data;
 
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeListener;
+import org.opendaylight.mdsal.common.api.AsyncDataChangeListener;
+import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
+
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -23,7 +24,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * Read and write access to stored data is provided only via transactions
  * created using {@link #newReadOnlyTransaction()},
  * {@link #newWriteOnlyTransaction()} and {@link #newReadWriteTransaction()}, or
- * by creating {@link org.opendaylight.controller.md.sal.common.api.data.TransactionChain}.
+ * by creating {@link org.opendaylight.mdsal.common.api.TransactionChain}.
  *
  */
 public interface DOMStore extends DOMStoreTransactionFactory {
@@ -33,7 +34,7 @@ public interface DOMStore extends DOMStoreTransactionFactory {
      * on the change of provided subpath. What constitutes a change depends on the @scope parameter.
      *
      * Listener upon registration receives an initial callback
-     * {@link AsyncDataChangeListener#onDataChanged(org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent)}
+     * {@link AsyncDataChangeListener#onDataChanged(org.opendaylight.mdsal.common.api.AsyncDataChangeEvent)}
      * which contains stable view of data tree at the time of registration.
      *
      *  @param path Path (subtree identifier) on which client listener will be invoked.

@@ -7,7 +7,8 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl.tree;
 
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeListener;
+import org.opendaylight.mdsal.common.api.AsyncDataChangeListener;
+
 import org.opendaylight.controller.md.sal.dom.store.impl.DataChangeListenerRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
