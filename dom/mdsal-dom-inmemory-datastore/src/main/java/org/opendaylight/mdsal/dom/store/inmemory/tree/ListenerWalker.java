@@ -5,12 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.md.sal.dom.store.impl.tree;
+package org.opendaylight.mdsal.dom.store.inmemory.tree;
+
+import org.opendaylight.mdsal.dom.store.inmemory.DataChangeListenerRegistration;
 
 import org.opendaylight.mdsal.dom.spi.RegistrationTreeSnapshot;
-
 import com.google.common.base.Preconditions;
-import org.opendaylight.controller.md.sal.dom.store.impl.DataChangeListenerRegistration;
 
 /**
  * A walking context, pretty much equivalent to an iterator, but it

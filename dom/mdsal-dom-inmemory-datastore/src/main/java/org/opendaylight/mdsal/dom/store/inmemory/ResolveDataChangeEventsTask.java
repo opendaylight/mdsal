@@ -5,10 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.md.sal.dom.store.impl;
+package org.opendaylight.mdsal.dom.store.inmemory;
 
+import org.opendaylight.mdsal.dom.store.inmemory.tree.ListenerTree;
+
+import org.opendaylight.mdsal.dom.store.inmemory.DOMImmutableDataChangeEvent.Builder;
+import org.opendaylight.mdsal.dom.store.inmemory.DOMImmutableDataChangeEvent.SimpleEventFactory;
 import org.opendaylight.mdsal.dom.spi.RegistrationTreeSnapshot;
-
 import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
@@ -17,9 +20,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Map.Entry;
-import org.opendaylight.controller.md.sal.dom.store.impl.DOMImmutableDataChangeEvent.Builder;
-import org.opendaylight.controller.md.sal.dom.store.impl.DOMImmutableDataChangeEvent.SimpleEventFactory;
-import org.opendaylight.controller.md.sal.dom.store.impl.tree.ListenerTree;
 import org.opendaylight.yangtools.util.concurrent.NotificationManager;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;

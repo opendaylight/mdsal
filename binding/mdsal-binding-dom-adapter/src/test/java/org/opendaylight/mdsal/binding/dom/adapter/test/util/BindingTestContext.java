@@ -9,8 +9,9 @@ package org.opendaylight.mdsal.binding.dom.adapter.test.util;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import org.opendaylight.mdsal.dom.spi.store.DOMStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 
+import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
@@ -18,7 +19,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import javassist.ClassPool;
-import org.opendaylight.controller.md.sal.dom.store.impl.InMemoryDOMDataStore;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;

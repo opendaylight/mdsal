@@ -5,10 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.md.sal.dom.store.impl;
+package org.opendaylight.mdsal.dom.store.inmemory;
+
+import org.opendaylight.mdsal.dom.store.inmemory.DOMImmutableDataChangeEvent.Builder;
 
 import org.opendaylight.mdsal.dom.spi.RegistrationTreeNode;
-
 import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
@@ -20,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.opendaylight.controller.md.sal.dom.store.impl.DOMImmutableDataChangeEvent.Builder;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
