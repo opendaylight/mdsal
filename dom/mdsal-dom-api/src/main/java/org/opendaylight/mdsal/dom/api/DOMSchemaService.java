@@ -5,29 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.sal.core.api.model;
+package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.controller.sal.core.api.BrokerService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 
-public interface SchemaService extends BrokerService {
-
-    /**
-     * Registers a YANG module to session and global context
-     *
-     * @param module
-     */
-    void addModule(Module module);
-
-    /**
-     * Unregisters a YANG module from session context
-     *
-     * @param module
-     */
-    void removeModule(Module module);
+public interface DOMSchemaService extends DOMService {
 
     /**
      * Returns session specific YANG schema context

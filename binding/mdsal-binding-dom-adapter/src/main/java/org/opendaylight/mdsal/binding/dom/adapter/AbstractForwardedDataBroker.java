@@ -24,7 +24,6 @@ import java.util.Set;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.sal.core.api.model.SchemaService;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -43,12 +42,6 @@ public abstract class AbstractForwardedDataBroker implements Delegator<DOMDataBr
     private final DOMDataBroker domDataBroker;
 
     private final BindingToNormalizedNodeCodec codec;
-
-    protected AbstractForwardedDataBroker(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec,
-            final SchemaService schemaService) {
-        this.domDataBroker = domDataBroker;
-        this.codec = codec;
-    }
 
     protected AbstractForwardedDataBroker(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
         this.domDataBroker = domDataBroker;

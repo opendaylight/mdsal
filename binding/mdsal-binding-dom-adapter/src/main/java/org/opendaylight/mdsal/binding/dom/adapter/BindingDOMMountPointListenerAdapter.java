@@ -7,21 +7,20 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.dom.api.DOMMountPointService;
-
-import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
 import com.google.common.base.Optional;
-import org.opendaylight.controller.sal.core.api.mount.MountProvisionListener;
+import org.opendaylight.mdsal.binding.api.MountPointService.MountPointListener;
+import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 
-final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> implements ListenerRegistration<T>, MountProvisionListener {
+final class BindingDOMMountPointListenerAdapter<T extends MountPointListener> implements ListenerRegistration<T>, DOMMountPointListener {
 
     private final T listener;
-    private final ListenerRegistration<MountProvisionListener> registration;
+    private final ListenerRegistration<DOMMountPointListener> registration;
     private final BindingToNormalizedNodeCodec codec;
 
     public BindingDOMMountPointListenerAdapter(final T listener, final BindingToNormalizedNodeCodec codec, final DOMMountPointService mountService) {

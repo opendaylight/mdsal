@@ -7,9 +7,10 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl;
 
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nullable;
-import org.opendaylight.controller.sal.core.api.model.SchemaService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 
 /**
@@ -23,7 +24,7 @@ public final class InMemoryDOMDataStoreFactory {
     }
 
     public static InMemoryDOMDataStore create(final String name,
-            @Nullable final SchemaService schemaService) {
+            @Nullable final DOMSchemaService schemaService) {
         return create(name, schemaService, null);
     }
 
@@ -37,7 +38,7 @@ public final class InMemoryDOMDataStoreFactory {
      * @return an InMemoryDOMDataStore instance
      */
     public static InMemoryDOMDataStore create(final String name,
-            @Nullable final SchemaService schemaService,
+            @Nullable final DOMSchemaService schemaService,
             @Nullable final InMemoryDOMDataStoreConfigProperties properties) {
         return create(name, schemaService, false, properties);
     }
@@ -53,7 +54,7 @@ public final class InMemoryDOMDataStoreFactory {
      * @return an InMemoryDOMDataStore instance
      */
     public static InMemoryDOMDataStore create(final String name,
-            @Nullable final SchemaService schemaService, final boolean debugTransactions,
+            @Nullable final DOMSchemaService schemaService, final boolean debugTransactions,
             @Nullable final InMemoryDOMDataStoreConfigProperties properties) {
 
         InMemoryDOMDataStoreConfigProperties actualProperties = properties;
