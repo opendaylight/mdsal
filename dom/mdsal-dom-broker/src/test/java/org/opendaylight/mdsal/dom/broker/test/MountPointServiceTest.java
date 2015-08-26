@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.controller.md.sal.dom.broker.impl;
+package org.opendaylight.mdsal.dom.broker.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

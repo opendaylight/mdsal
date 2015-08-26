@@ -7,18 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 import static org.junit.Assert.assertFalse;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.TOP_BAR_KEY;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.top;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.topLevelList;
 import static org.opendaylight.mdsal.binding.dom.adapter.test.AssertCollections.assertContains;
 import static org.opendaylight.mdsal.binding.dom.adapter.test.AssertCollections.assertEmpty;
 import static org.opendaylight.mdsal.binding.dom.adapter.test.AssertCollections.assertNotContains;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_BAR_KEY;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.top;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
-
 import org.opendaylight.mdsal.common.api.AsyncDataChangeEvent;
 import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
-
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;

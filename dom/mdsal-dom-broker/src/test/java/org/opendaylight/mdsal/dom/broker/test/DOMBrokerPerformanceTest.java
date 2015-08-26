@@ -6,15 +6,16 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.controller.md.sal.dom.broker.impl;
+package org.opendaylight.mdsal.dom.broker.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
+import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
 
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
@@ -33,7 +34,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.controller.md.sal.dom.store.impl.TestModel;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;

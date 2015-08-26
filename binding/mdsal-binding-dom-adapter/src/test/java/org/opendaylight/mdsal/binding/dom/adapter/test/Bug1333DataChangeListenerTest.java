@@ -7,22 +7,20 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.USES_ONE_KEY;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.USES_TWO_KEY;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.complexUsesAugment;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.path;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.top;
-import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.topLevelList;
 import static org.opendaylight.mdsal.binding.dom.adapter.test.AssertCollections.assertContains;
 import static org.opendaylight.mdsal.binding.dom.adapter.test.AssertCollections.assertEmpty;
 import static org.opendaylight.mdsal.binding.dom.adapter.test.AssertCollections.assertNotContains;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.USES_ONE_KEY;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.USES_TWO_KEY;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.complexUsesAugment;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.path;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.top;
+import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
-
 import org.opendaylight.mdsal.common.api.AsyncDataChangeEvent;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
-
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
