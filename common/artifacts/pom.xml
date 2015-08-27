@@ -20,28 +20,28 @@
 
           <!-- Common APIs for Binding and DOM -->
           <dependency>
-              <groupId>${project.groupId}</groupId>
+              <groupId>org.opendaylight.mdsal</groupId>
               <artifactId>mdsal-common-api</artifactId>
               <version>${project.version}</version>
           </dependency>
 
           <dependency>
-              <groupId>${project.groupId}</groupId>
+              <groupId>org.opendaylight.mdsal</groupId>
               <artifactId>mdsal-dom-api</artifactId>
               <version>${project.version}</version>
           </dependency>
           <dependency>
-              <groupId>${project.groupId}</groupId>
+              <groupId>org.opendaylight.mdsal</groupId>
               <artifactId>mdsal-dom-spi</artifactId>
               <version>${project.version}</version>
           </dependency>
           <dependency>
-              <groupId>${project.groupId}</groupId>
+              <groupId>org.opendaylight.mdsal</groupId>
               <artifactId>mdsal-dom-broker</artifactId>
               <version>${project.version}</version>
           </dependency>
           <dependency>
-              <groupId>${project.groupId}</groupId>
+              <groupId>org.opendaylight.mdsal</groupId>
               <artifactId>mdsal-dom-inmemory-datastore</artifactId>
               <version>${project.version}</version>
           </dependency>
@@ -84,23 +84,23 @@
             </dependency>
 
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-dom-adapter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding-util</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>${project.groupId}.model</groupId>
+                <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>yang-ext</artifactId>
                 <version>2013.09.07.8-SNAPSHOT</version>
             </dependency>
