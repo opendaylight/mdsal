@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.opendaylight.yangtools.concepts.Identifiable;
@@ -19,7 +19,8 @@ import org.slf4j.LoggerFactory;
 
 final class ShardingTableEntry implements Identifiable<PathArgument> {
     private static final Logger LOG = LoggerFactory.getLogger(ShardingTableEntry.class);
-    private final Map<PathArgument, ShardingTableEntry> children = Collections.emptyMap();
+    // FIXME: We do probably want to adapt map
+    private final Map<PathArgument, ShardingTableEntry> children = new HashMap<>();
     private final PathArgument identifier;
     private ShardRegistration<?> registration;
 
@@ -69,6 +70,8 @@ final class ShardingTableEntry implements Identifiable<PathArgument> {
                 child = new ShardingTableEntry(a);
                 entry.children.put(a, child);
             }
+            // TODO: Is this correct? We want to enter child
+            entry = child;
         }
 
         Preconditions.checkState(entry.registration == null);
@@ -86,8 +89,14 @@ final class ShardingTableEntry implements Identifiable<PathArgument> {
             } else {
                 LOG.warn("Cannot remove non-existent child {}", arg);
             }
+        } else {
+            /*
+             * Iterator is empty, this effectivelly means is table entry to remove registration.
+             * FIXME: We probably want to compare registration object to make sure we are removing
+             * correct shard.
+             */
+            registration = null;
         }
-
         return registration == null && children.isEmpty();
     }
 
