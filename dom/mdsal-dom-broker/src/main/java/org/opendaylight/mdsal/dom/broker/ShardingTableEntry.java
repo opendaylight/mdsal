@@ -17,12 +17,12 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class ShardingTableEntry implements Identifiable<PathArgument> {
+final class ShardingTableEntry<V> implements Identifiable<PathArgument> {
     private static final Logger LOG = LoggerFactory.getLogger(ShardingTableEntry.class);
     // FIXME: We do probably want to adapt map
-    private final Map<PathArgument, ShardingTableEntry> children = new HashMap<>();
+    private final Map<PathArgument, ShardingTableEntry<V>> children = new HashMap<>();
     private final PathArgument identifier;
-    private ShardRegistration<?> registration;
+    private V value;
 
     ShardingTableEntry() {
         identifier = null;
@@ -37,17 +37,17 @@ final class ShardingTableEntry implements Identifiable<PathArgument> {
         return identifier;
     }
 
-    public ShardRegistration<?> getRegistration() {
-        return registration;
+    public V getValue() {
+        return value;
     }
 
-    ShardingTableEntry lookup(final YangInstanceIdentifier id) {
+    ShardingTableEntry<V> lookup(final YangInstanceIdentifier id) {
         final Iterator<PathArgument> it = id.getPathArguments().iterator();
-        ShardingTableEntry entry = this;
+        ShardingTableEntry<V> entry = this;
 
         while (it.hasNext()) {
             final PathArgument a = it.next();
-            final ShardingTableEntry child = entry.children.get(a);
+            final ShardingTableEntry<V> child = entry.children.get(a);
             if (child == null) {
                 LOG.debug("Lookup of {} stopped at {}", id, a);
                 break;
@@ -59,29 +59,29 @@ final class ShardingTableEntry implements Identifiable<PathArgument> {
         return entry;
     }
 
-    void store(final YangInstanceIdentifier id, final ShardRegistration<?> reg) {
+    void store(final YangInstanceIdentifier id, final V reg) {
         final Iterator<PathArgument> it = id.getPathArguments().iterator();
-        ShardingTableEntry entry = this;
+        ShardingTableEntry<V> entry = this;
 
         while (it.hasNext()) {
             final PathArgument a = it.next();
-            ShardingTableEntry child = entry.children.get(a);
+            ShardingTableEntry<V> child = entry.children.get(a);
             if (child == null) {
-                child = new ShardingTableEntry(a);
+                child = new ShardingTableEntry<>(a);
                 entry.children.put(a, child);
             }
             // TODO: Is this correct? We want to enter child
             entry = child;
         }
 
-        Preconditions.checkState(entry.registration == null);
-        entry.registration = reg;
+        Preconditions.checkState(entry.value == null);
+        entry.value = reg;
     }
 
     private boolean remove(final Iterator<PathArgument> it) {
         if (it.hasNext()) {
             final PathArgument arg = it.next();
-            final ShardingTableEntry child = children.get(arg);
+            final ShardingTableEntry<V> child = children.get(arg);
             if (child != null) {
                 if (child.remove(it)) {
                     children.remove(arg);
@@ -91,13 +91,12 @@ final class ShardingTableEntry implements Identifiable<PathArgument> {
             }
         } else {
             /*
-             * Iterator is empty, this effectivelly means is table entry to remove registration.
-             * FIXME: We probably want to compare registration object to make sure we are removing
-             * correct shard.
+             * Iterator is empty, this effectively means is table entry to remove registration.
+             * FIXME: We probably want to compare value to make sure we are removing correct value.
              */
-            registration = null;
+            value = null;
         }
-        return registration == null && children.isEmpty();
+        return value == null && children.isEmpty();
     }
 
     void remove(final YangInstanceIdentifier id) {
