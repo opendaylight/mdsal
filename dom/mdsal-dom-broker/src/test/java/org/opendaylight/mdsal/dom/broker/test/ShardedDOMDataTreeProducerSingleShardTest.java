@@ -11,8 +11,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.Collections;
 import org.junit.Before;
@@ -31,7 +29,6 @@ import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
 import org.opendaylight.mdsal.dom.broker.ShardedDOMDataTree;
 import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -49,33 +46,9 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     private static final Collection<DOMDataTreeIdentifier> SUBTREES_ROOT = Collections.singleton(ROOT_ID);
     private static final Collection<DOMDataTreeIdentifier> SUBTREES_TEST = Collections.singleton(TEST_ID);
 
-    private static final DOMStoreThreePhaseCommitCohort ALLWAYS_SUCCESS = new DOMStoreThreePhaseCommitCohort() {
-
-        @Override
-        public ListenableFuture<Void> preCommit() {
-            return Futures.immediateFuture(null);
-        }
-
-        @Override
-        public ListenableFuture<Void> commit() {
-            return Futures.immediateFuture(null);
-        }
-
-        @Override
-        public ListenableFuture<Boolean> canCommit() {
-            return Futures.immediateFuture(Boolean.TRUE);
-        }
-
-        @Override
-        public ListenableFuture<Void> abort() {
-            return Futures.immediateFuture(null);
-        }
-    };
-
     interface MockTestShard extends DOMDataTreeShard, DOMStore {
 
     }
-
 
     @Mock(name = "rootShard")
     private MockTestShard rootShard;
@@ -87,14 +60,9 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     @Mock(name = "storeTxChain")
     private DOMStoreTransactionChain txChainMock;
 
-
-
     private DOMDataTreeService treeService;
     private ListenerRegistration<MockTestShard> shardReg;
     private DOMDataTreeProducer producer;
-
-
-
 
     @Before
     public void setUp() throws DOMDataTreeShardingConflictException {
@@ -106,7 +74,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
         doReturn("rootShard").when(rootShard).toString();
         doReturn(txChainMock).when(rootShard).createTransactionChain();
         doReturn(writeTxMock).when(txChainMock).newWriteOnlyTransaction();
-        doReturn(ALLWAYS_SUCCESS).when(writeTxMock).ready();
+        doReturn(TestCommitCohort.ALLWAYS_SUCCESS).when(writeTxMock).ready();
 
         producer = treeService.createProducer(SUBTREES_ROOT);
     }

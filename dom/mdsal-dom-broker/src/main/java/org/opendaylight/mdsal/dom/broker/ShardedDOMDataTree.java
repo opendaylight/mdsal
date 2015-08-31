@@ -13,11 +13,13 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeLoopException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
@@ -180,13 +182,23 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     }
 
     @Override
-    public synchronized <T extends DOMDataTreeListener> ListenerRegistration<T> registerListener(final T listener, final Collection<DOMDataTreeIdentifier> subtrees, final boolean allowRxMerges, final Collection<DOMDataTreeProducer> producers) {
+    public synchronized <T extends DOMDataTreeListener> ListenerRegistration<T> registerListener(final T listener,
+            final Collection<DOMDataTreeIdentifier> subtrees, final boolean allowRxMerges,
+            final Collection<DOMDataTreeProducer> producers) throws DOMDataTreeLoopException {
         Preconditions.checkNotNull(listener, "listener");
         Preconditions.checkArgument(!subtrees.isEmpty(), "Subtrees must not be empty.");
         final ShardedDOMDataTreeListenerContext<T> listenerContext =
                 ShardedDOMDataTreeListenerContext.create(listener, subtrees, allowRxMerges);
         try {
             // FIXME: Add attachment of producers
+            for (DOMDataTreeProducer producer : producers) {
+                Preconditions.checkArgument(producer instanceof ShardedDOMDataTreeProducer);
+                ShardedDOMDataTreeProducer castedProducer = ((ShardedDOMDataTreeProducer) producer);
+                simpleLoopCheck(subtrees, castedProducer.getSubtrees());
+                // FIXME: We should also unbound listeners
+                castedProducer.boundToListener(listenerContext);
+            }
+
             for (DOMDataTreeIdentifier subtree : subtrees) {
                 DOMDataTreeShard shard = lookupShard(subtree).getRegistration().getInstance();
                 // FIXME: What should we do if listener is wildcard? And shards are on per
@@ -206,6 +218,23 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
                 ShardedDOMDataTree.this.removeListener(listenerContext);
             }
         };
+    }
+
+    private static void simpleLoopCheck(Collection<DOMDataTreeIdentifier> listen, Set<DOMDataTreeIdentifier> writes)
+            throws DOMDataTreeLoopException {
+        for(DOMDataTreeIdentifier listenPath : listen) {
+            for (DOMDataTreeIdentifier writePath : writes) {
+                if (listenPath.contains(writePath)) {
+                    throw new DOMDataTreeLoopException(String.format(
+                            "Listener must not listen on parent (%s), and also writes child (%s)", listenPath,
+                            writePath));
+                } else if (writePath.contains(listenPath)) {
+                    throw new DOMDataTreeLoopException(
+                            String.format("Listener must not write parent (%s), and also listen on child (%s)",
+                                    writePath, listenPath));
+                }
+            }
+        }
     }
 
     void removeListener(ShardedDOMDataTreeListenerContext<?> listener) {
