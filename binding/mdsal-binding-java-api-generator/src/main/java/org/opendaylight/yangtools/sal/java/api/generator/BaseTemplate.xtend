@@ -9,6 +9,7 @@ package org.opendaylight.yangtools.sal.java.api.generator
 
 import com.google.common.base.CharMatcher
 import com.google.common.base.Splitter
+import com.google.common.html.HtmlEscapers
 import java.util.Arrays
 import java.util.Collection
 import java.util.HashMap
@@ -219,12 +220,8 @@ abstract class BaseTemplate {
             return description;
         }
 
-        var ret = description.replace("*/", "&#42;&#47;")
+        var ret = description.replace("/*", "&#47;&#42;")
 
-        // FIXME: Use Guava's HtmlEscapers once we have it available
-        ret = AMP_MATCHER.replaceFrom(ret, "&amp;");
-        ret = GT_MATCHER.replaceFrom(ret, "&gt;");
-        ret = LT_MATCHER.replaceFrom(ret, "&lt;");
         return ret;
     }
 
@@ -277,7 +274,7 @@ abstract class BaseTemplate {
         var StringBuilder lineBuilder = new StringBuilder();
         var boolean isFirstElementOnNewLineEmptyChar = false;
 
-        formattedText = formattedText.encodeJavadocSymbols
+        formattedText = encodeJavadocSymbols(formattedText)
         formattedText = NL_MATCHER.removeFrom(formattedText)
         formattedText = TAB_MATCHER.removeFrom(formattedText)
         formattedText = SPACES_PATTERN.matcher(formattedText).replaceAll(" ")
