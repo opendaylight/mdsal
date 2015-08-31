@@ -38,7 +38,10 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
 import org.opendaylight.mdsal.dom.broker.ShardedDOMDataTree;
 import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.spi.store.DOMStore;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -47,7 +50,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidates;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
-public class ShardedDOMDataTreeListenerTest {
+public class ShardedDOMDataTreeListenerWithProducerTest {
 
 
     private static final DOMDataTreeIdentifier ROOT_ID = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
@@ -55,11 +58,16 @@ public class ShardedDOMDataTreeListenerTest {
     private static final DOMDataTreeIdentifier TEST_ID = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
             TestModel.TEST_PATH);
 
+    private static final DOMDataTreeIdentifier TEST2_ID = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+            TestModel.TEST2_PATH);
+
+
     private static final Collection<DOMDataTreeIdentifier> SUBTREES_ROOT = Collections.singleton(ROOT_ID);
     private static final Collection<DOMDataTreeIdentifier> SUBTREES_TEST = Collections.singleton(TEST_ID);
+    private static final Collection<DOMDataTreeIdentifier> SUBTREES_TEST2 = Collections.singleton(TEST2_ID);
     private static final ContainerNode TEST_CONTAINER = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
 
-    private interface ListenableShard extends DOMDataTreeShard, DOMStoreTreeChangePublisher {
+    private interface ListenableShard extends DOMDataTreeShard, DOMStoreTreeChangePublisher, DOMStore {
 
 
     }
@@ -70,13 +78,17 @@ public class ShardedDOMDataTreeListenerTest {
     @Mock(name = "childShard")
     private ListenableShard childShard;
 
-    @Mock(name = "listener")
-    private DOMDataTreeListener listener;
-
     @Mock
     private ListenerRegistration<?> storeListenerReg;
 
+    @Mock(name = "storeWriteTx")
+    private DOMStoreWriteTransaction writeTxMock;
+
+    @Mock(name = "storeTxChain")
+    private DOMStoreTransactionChain txChainMock;
+
     private DOMDataTreeService treeService;
+
     private ListenerRegistration<ListenableShard> shardReg;
 
     @Before
@@ -88,42 +100,56 @@ public class ShardedDOMDataTreeListenerTest {
         doReturn("rootShard").when(rootShard).toString();
         doReturn("childShard").when(childShard).toString();
 
+        doReturn(txChainMock).when(rootShard).createTransactionChain();
+        doReturn(writeTxMock).when(txChainMock).newWriteOnlyTransaction();
+        doReturn(TestCommitCohort.ALLWAYS_SUCCESS).when(writeTxMock).ready();
+
         doReturn(storeListenerReg).when(rootShard).registerTreeChangeListener(any(YangInstanceIdentifier.class),
                 any(DOMDataTreeChangeListener.class));
         doNothing().when(storeListenerReg).close();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void registerListenerWithEmptySubtrees() throws DOMDataTreeLoopException {
-        treeService.registerListener(listener, Collections.<DOMDataTreeIdentifier>emptyList(), true,
-                Collections.<DOMDataTreeProducer>emptyList());
+    @Test
+    public void registerListenerWithOneProducer() throws DOMDataTreeLoopException {
+        DOMDataTreeListener listener = Mockito.mock(DOMDataTreeListener.class);
+        DOMDataTreeProducer producer = treeService.createProducer(SUBTREES_TEST2);
+        treeService.registerListener(listener, SUBTREES_TEST, true, Collections.singleton(producer));
     }
 
-    @Test
-    public void registerRootListener() throws DOMDataTreeLoopException {
-        treeService.registerListener(listener, SUBTREES_ROOT, true, Collections.<DOMDataTreeProducer>emptyList());
-        verify(rootShard, times(1)).registerTreeChangeListener(eq(ROOT_ID.getRootIdentifier()),
-                any(DOMDataTreeChangeListener.class));
+    @Test(expected = IllegalStateException.class)
+    public void registerListenerWithAlreadyBoundProducer() throws DOMDataTreeLoopException {
+        DOMDataTreeListener listener1 = MockingUtilities.mock(DOMDataTreeListener.class, "listener1");
+        DOMDataTreeProducer producer = treeService.createProducer(SUBTREES_TEST2);
+        treeService.registerListener(listener1, SUBTREES_TEST, true, Collections.singleton(producer));
+
+        DOMDataTreeListener listener2 = MockingUtilities.mock(DOMDataTreeListener.class, "listener2");
+        treeService.registerListener(listener2, SUBTREES_TEST, true, Collections.singleton(producer));
     }
 
-    @Test
-    public void registerTreeListener() throws DOMDataTreeLoopException {
-        treeService.registerListener(listener, SUBTREES_TEST, true, Collections.<DOMDataTreeProducer>emptyList());
-        verify(rootShard, times(1)).registerTreeChangeListener(eq(TEST_ID.getRootIdentifier()),
-                any(DOMDataTreeChangeListener.class));
+    @Test(expected = DOMDataTreeLoopException.class)
+    public void loopSameSubtree() throws DOMDataTreeLoopException {
+        DOMDataTreeListener listener = Mockito.mock(DOMDataTreeListener.class);
+        DOMDataTreeProducer producer = treeService.createProducer(SUBTREES_TEST);
+        treeService.registerListener(listener, SUBTREES_TEST, true, Collections.singleton(producer));
     }
 
-    @Test
-    public void registerAndCloseListener() throws DOMDataTreeLoopException {
-        ListenerRegistration<DOMDataTreeListener> reg =
-                treeService.registerListener(listener, SUBTREES_TEST, true,
-                        Collections.<DOMDataTreeProducer>emptyList());
-        reg.close();
-        verify(storeListenerReg, times(1)).close();
+    @Test(expected = DOMDataTreeLoopException.class)
+    public void loopListenParentWritesChild() throws DOMDataTreeLoopException {
+        DOMDataTreeListener listener = Mockito.mock(DOMDataTreeListener.class);
+        DOMDataTreeProducer producer = treeService.createProducer(SUBTREES_TEST);
+        treeService.registerListener(listener, SUBTREES_ROOT, true, Collections.singleton(producer));
+    }
+
+    @Test(expected = DOMDataTreeLoopException.class)
+    public void loopListenChildWritesParent() throws DOMDataTreeLoopException {
+        DOMDataTreeListener listener = Mockito.mock(DOMDataTreeListener.class);
+        DOMDataTreeProducer producer = treeService.createProducer(SUBTREES_ROOT);
+        treeService.registerListener(listener, SUBTREES_ROOT, true, Collections.singleton(producer));
     }
 
     @Test
     public void receiveChangeEvent() throws DOMDataTreeLoopException {
+        DOMDataTreeListener listener = Mockito.mock(DOMDataTreeListener.class);
         ArgumentCaptor<DOMDataTreeChangeListener> storeListener =
                 ArgumentCaptor.forClass(DOMDataTreeChangeListener.class);
         treeService.registerListener(listener, SUBTREES_TEST, true, Collections.<DOMDataTreeProducer>emptyList());
