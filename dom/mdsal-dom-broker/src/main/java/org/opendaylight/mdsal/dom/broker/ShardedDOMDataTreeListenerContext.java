@@ -55,7 +55,6 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
         Collection<DataTreeCandidate> changesToNotify = unreported;
         unreported = new ArrayList<>();
         listener.onDataTreeChanged(changesToNotify, currentData);
-
     }
 
     void register(DOMDataTreeIdentifier subtree, DOMStoreTreeChangePublisher shard) {
@@ -111,5 +110,9 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
         for (ListenerRegistration<?> reg : registrations) {
             reg.close();
         }
+    }
+
+    DOMDataTreeListener getListener() {
+        return listener;
     }
 }
