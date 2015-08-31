@@ -47,6 +47,9 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     @GuardedBy("this")
     private boolean closed;
 
+    @GuardedBy("this")
+    private ShardedDOMDataTreeListenerContext<?> attachedListener;
+
     ShardedDOMDataTreeProducer(final ShardedDOMDataTree dataTree, final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap, final Set<DOMDataTreeShard> shards) {
         this.dataTree = Preconditions.checkNotNull(dataTree);
 
@@ -218,5 +221,13 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     synchronized void transactionSubmitted(ShardedDOMDataWriteTransaction transaction) {
         Preconditions.checkState(openTx.equals(transaction));
         openTx = null;
+    }
+
+    synchronized void boundToListener(ShardedDOMDataTreeListenerContext<?> listener) {
+        // FIXME: Add option to dettach
+        Preconditions.checkState(this.attachedListener == null,
+                "Producer %s is already attached to other listener.",
+                listener.getListener());
+        this.attachedListener = listener;
     }
 }
