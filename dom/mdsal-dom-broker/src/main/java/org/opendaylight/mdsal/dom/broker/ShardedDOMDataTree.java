@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-
 import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -17,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
@@ -24,6 +23,8 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
+import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,10 +71,9 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
             parentReg = lookupShard(prefix).getRegistration();
 
             /*
-             * FIXME: adjust all producers. This is tricky, as we need different locking strategy,
-             *        simply because we risk AB/BA deadlock with a producer being split off from
-             *        a producer.
-             *
+             * FIXME: adjust all producers and listeners. This is tricky, as we need different
+             * locking strategy, simply because we risk AB/BA deadlock with a producer being split
+             * off from a producer.
              */
         }
 
@@ -181,7 +181,35 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
     @Override
     public synchronized <T extends DOMDataTreeListener> ListenerRegistration<T> registerListener(final T listener, final Collection<DOMDataTreeIdentifier> subtrees, final boolean allowRxMerges, final Collection<DOMDataTreeProducer> producers) {
-        // FIXME Implement this.
-        throw new UnsupportedOperationException("Not implemented yet.");
+        Preconditions.checkNotNull(listener, "listener");
+        Preconditions.checkArgument(!subtrees.isEmpty(), "Subtrees must not be empty.");
+        final ShardedDOMDataTreeListenerContext<T> listenerContext =
+                ShardedDOMDataTreeListenerContext.create(listener, subtrees, allowRxMerges);
+        try {
+            // FIXME: Add attachment of producers
+            for (DOMDataTreeIdentifier subtree : subtrees) {
+                DOMDataTreeShard shard = lookupShard(subtree).getRegistration().getInstance();
+                // FIXME: What should we do if listener is wildcard? And shards are on per
+                // node basis?
+                Preconditions.checkArgument(shard instanceof DOMStoreTreeChangePublisher,
+                        "Subtree %s does not point to listenable subtree.", subtree);
+
+                listenerContext.register(subtree, (DOMStoreTreeChangePublisher) shard);
+            }
+        } catch (Exception e) {
+            listenerContext.close();
+            throw e;
+        }
+        return new AbstractListenerRegistration<T>(listener) {
+            @Override
+            protected void removeRegistration() {
+                ShardedDOMDataTree.this.removeListener(listenerContext);
+            }
+        };
+    }
+
+    void removeListener(ShardedDOMDataTreeListenerContext<?> listener) {
+        // FIXME: detach producers
+        listener.close();
     }
 }
