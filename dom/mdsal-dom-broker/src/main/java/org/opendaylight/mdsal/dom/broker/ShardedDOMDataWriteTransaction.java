@@ -7,11 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
-
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.CheckedFuture;
@@ -24,8 +19,12 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.NotThreadSafe;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
@@ -54,10 +53,12 @@ final class ShardedDOMDataWriteTransaction implements DOMDataWriteTransaction {
 
         for (final Entry<DOMDataTreeIdentifier, DOMStoreWriteTransaction> e : idToTransaction.entrySet()) {
             if (e.getKey().contains(id)) {
+                Preconditions.checkArgument(!producer.isDelegatedToChild(id),
+                        "Path %s is delegated to child producer.",
+                        id);
                 return e.getValue();
             }
         }
-
         throw new IllegalArgumentException(String.format("Path %s is not acessible from transaction %s", id, this));
     }
 
@@ -91,7 +92,7 @@ final class ShardedDOMDataWriteTransaction implements DOMDataWriteTransaction {
         for (final DOMStoreWriteTransaction tx : txns) {
             cohorts.add(tx.ready());
         }
-
+        producer.transactionSubmitted(this);
         try {
             return Futures.immediateCheckedFuture(new CommitCoordinationTask(this, cohorts, null).call());
         } catch (final TransactionCommitFailedException e) {

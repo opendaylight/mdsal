@@ -7,16 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.spi.store.DOMStore;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
-
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -32,6 +22,15 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
+import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.spi.store.DOMStore;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,10 +142,7 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
 
         for (final DOMDataTreeIdentifier s : subtrees) {
             // Check if the subtree was visible at any time
-            if (!haveSubtree(s)) {
-                throw new IllegalArgumentException(String.format("Subtree %s was never available in producer %s", s, this));
-            }
-
+            Preconditions.checkArgument(haveSubtree(s), "Subtree %s was never available in producer %s", s, this);
             // Check if the subtree has not been delegated to a child
             final DOMDataTreeProducer child = lookupChild(s);
             Preconditions.checkArgument(child == null, "Subtree %s is delegated to child producer %s", s, child);
@@ -169,6 +165,16 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         children = cb.build();
         return ret;
     }
+
+    boolean isDelegatedToChild(DOMDataTreeIdentifier path) {
+        for (final DOMDataTreeIdentifier c : children.keySet()) {
+            if (c.contains(path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public synchronized void close() throws DOMDataTreeProducerException {
@@ -206,6 +212,11 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         }
 
         LOG.debug("Transaction {} cancelled", transaction);
+        openTx = null;
+    }
+
+    synchronized void transactionSubmitted(ShardedDOMDataWriteTransaction transaction) {
+        Preconditions.checkState(openTx.equals(transaction));
         openTx = null;
     }
 }
