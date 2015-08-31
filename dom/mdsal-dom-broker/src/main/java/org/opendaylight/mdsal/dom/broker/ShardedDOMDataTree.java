@@ -11,9 +11,7 @@ import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
@@ -35,7 +33,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     @GuardedBy("this")
     private final ShardingTable<ShardRegistration<?>> shards = ShardingTable.create();
     @GuardedBy("this")
-    private final Map<DOMDataTreeIdentifier, DOMDataTreeProducer> idToProducer = new TreeMap<>();
+    private final ShardingTable<DOMDataTreeProducer> producers = ShardingTable.create();
 
 
     void removeShard(final ShardRegistration<?> reg) {
@@ -99,21 +97,17 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
     @GuardedBy("this")
     private DOMDataTreeProducer findProducer(final DOMDataTreeIdentifier subtree) {
-        for (final Entry<DOMDataTreeIdentifier, DOMDataTreeProducer> e : idToProducer.entrySet()) {
-            if (e.getKey().contains(subtree)) {
-                return e.getValue();
-            }
-        }
 
+        ShardingTableEntry<DOMDataTreeProducer> producerEntry = producers.lookup(subtree);
+        if (producerEntry != null) {
+            return producerEntry.getValue();
+        }
         return null;
     }
 
     synchronized void destroyProducer(final ShardedDOMDataTreeProducer producer) {
         for (final DOMDataTreeIdentifier s : producer.getSubtrees()) {
-            final DOMDataTreeProducer r = idToProducer.remove(s);
-            if (!producer.equals(r)) {
-                LOG.error("Removed producer {} on subtree {} while removing {}", r, s, producer);
-            }
+            producers.remove(s);
         }
     }
 
@@ -122,7 +116,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         // Record the producer's attachment points
         final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, shardMap);
         for (final DOMDataTreeIdentifier s : shardMap.keySet()) {
-            idToProducer.put(s, ret);
+            producers.store(s, ret);
         }
 
         return ret;
