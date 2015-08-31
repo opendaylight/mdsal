@@ -9,14 +9,12 @@ package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import javax.annotation.concurrent.GuardedBy;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeLoopException;
@@ -33,44 +31,20 @@ import org.slf4j.LoggerFactory;
 
 public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTreeShardingService {
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTree.class);
-    private final Map<LogicalDatastoreType, ShardingTableEntry> shardingTables = new EnumMap<>(LogicalDatastoreType.class);
+
+    @GuardedBy("this")
+    private final ShardingTable<ShardRegistration<?>> shards = ShardingTable.create();
     @GuardedBy("this")
     private final Map<DOMDataTreeIdentifier, DOMDataTreeProducer> idToProducer = new TreeMap<>();
 
-    @GuardedBy("this")
-    private ShardingTableEntry lookupShard(final DOMDataTreeIdentifier prefix) {
-        final ShardingTableEntry t = shardingTables.get(prefix.getDatastoreType());
-        if (t == null) {
-            return null;
-        }
-
-        return t.lookup(prefix.getRootIdentifier());
-    }
-
-    @GuardedBy("this")
-    private void storeShard(final DOMDataTreeIdentifier prefix, final ShardRegistration<?> reg) {
-        ShardingTableEntry t = shardingTables.get(prefix.getDatastoreType());
-        if (t == null) {
-            t = new ShardingTableEntry();
-            shardingTables.put(prefix.getDatastoreType(), t);
-        }
-
-        t.store(prefix.getRootIdentifier(), reg);
-    }
 
     void removeShard(final ShardRegistration<?> reg) {
         final DOMDataTreeIdentifier prefix = reg.getPrefix();
         final ShardRegistration<?> parentReg;
 
         synchronized (this) {
-            final ShardingTableEntry t = shardingTables.get(prefix.getDatastoreType());
-            if (t == null) {
-                LOG.warn("Shard registration {} points to non-existent table", reg);
-                return;
-            }
-
-            t.remove(prefix.getRootIdentifier());
-            parentReg = lookupShard(prefix).getRegistration();
+            shards.remove(prefix);
+            parentReg = shards.lookup(prefix).getValue();
 
             /*
              * FIXME: adjust all producers and listeners. This is tricky, as we need different
@@ -95,9 +69,9 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
              * and if it exists, check if its registration prefix does not collide with
              * this registration.
              */
-            final ShardingTableEntry parent = lookupShard(prefix);
+            final ShardingTableEntry<ShardRegistration<?>> parent = shards.lookup(prefix);
             if (parent != null) {
-                parentReg = parent.getRegistration();
+                parentReg = parent.getValue();
                 if (parentReg != null && prefix.equals(parentReg.getPrefix())) {
                     throw new DOMDataTreeShardingConflictException(String.format(
                             "Prefix %s is already occupied by shard %s", prefix, parentReg.getInstance()));
@@ -110,7 +84,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
             reg = new ShardRegistration<T>(this, prefix, shard);
 
-            storeShard(prefix, reg);
+            shards.store(prefix, reg);
 
             // FIXME: update any producers/registrations
         }
@@ -164,7 +138,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
             final DOMDataTreeProducer producer = findProducer(s);
             Preconditions.checkArgument(producer == null, "Subtree %s is attached to producer %s", s, producer);
 
-            shardMap.put(s, lookupShard(s).getRegistration().getInstance());
+            shardMap.put(s, shards.lookup(s).getValue().getInstance());
         }
 
         return createProducer(shardMap);
@@ -175,7 +149,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
         final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap = new HashMap<>();
         for (final DOMDataTreeIdentifier s : subtrees) {
-            shardMap.put(s, lookupShard(s).getRegistration().getInstance());
+            shardMap.put(s, shards.lookup(s).getValue().getInstance());
         }
 
         return createProducer(shardMap);
@@ -200,7 +174,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
             }
 
             for (DOMDataTreeIdentifier subtree : subtrees) {
-                DOMDataTreeShard shard = lookupShard(subtree).getRegistration().getInstance();
+                DOMDataTreeShard shard = shards.lookup(subtree).getValue().getInstance();
                 // FIXME: What should we do if listener is wildcard? And shards are on per
                 // node basis?
                 Preconditions.checkArgument(shard instanceof DOMStoreTreeChangePublisher,
