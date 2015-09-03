@@ -24,7 +24,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.opendaylight.yangtools.model</groupId>
+            <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-interfaces</artifactId>
         </dependency>
     </dependencies>
