@@ -47,7 +47,7 @@
 
                 <dependencies>
                     <dependency>
-                        <groupId>org.opendaylight.yangtools</groupId>
+                        <groupId>org.opendaylight.mdsal</groupId>
                         <artifactId>maven-sal-api-gen-plugin</artifactId>
                         <type>jar</type>
                     </dependency>
