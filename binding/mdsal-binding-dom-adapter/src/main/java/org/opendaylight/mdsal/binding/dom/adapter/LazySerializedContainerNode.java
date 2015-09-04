@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
  *
- * FIXME: Should be this moved to binding-data-codec?
+ * FIXME: Should this be moved to binding-data-codec?
  *
  */
 class LazySerializedContainerNode implements ContainerNode {
@@ -37,7 +37,7 @@ class LazySerializedContainerNode implements ContainerNode {
 
     private LazySerializedContainerNode(final QName identifier, final DataObject binding,
             final BindingNormalizedNodeCodecRegistry registry) {
-        this.identifier = new NodeIdentifier(identifier);
+        this.identifier = NodeIdentifier.create(identifier);
         this.bindingData = binding;
         this.registry = registry;
         this.domData = null;
