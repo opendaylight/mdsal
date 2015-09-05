@@ -201,8 +201,7 @@ public class BindingGeneratorUtilTest {
      */
     @Test
     public void testPackageNameForGeneratedTypeNullBasePackageName() {
-        expectedEx.expect(IllegalArgumentException.class);
-        expectedEx.expectMessage("Base Package Name cannot be NULL!");
+        expectedEx.expect(NullPointerException.class);
         BindingGeneratorUtil.packageNameForGeneratedType(null, null);
     }
 
@@ -215,8 +214,7 @@ public class BindingGeneratorUtilTest {
      */
     @Test
     public void testPackageNameForGeneratedTypeNullSchemaPath() {
-        expectedEx.expect(IllegalArgumentException.class);
-        expectedEx.expectMessage("Schema Path cannot be NULL!");
+        expectedEx.expect(NullPointerException.class);
         BindingGeneratorUtil.packageNameForGeneratedType("test.package", null);
     }
 

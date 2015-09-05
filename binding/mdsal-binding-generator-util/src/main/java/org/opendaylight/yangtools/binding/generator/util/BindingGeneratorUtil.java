@@ -140,8 +140,68 @@ public final class BindingGeneratorUtil {
         return BindingMapping.getRootPackageName(module.getQNameModule());
     }
 
+    /**
+     * Creates package name from specified <code>basePackageName</code> (package
+     * name for module) and <code>schemaPath</code>.
+     *
+     * Resulting package name is concatenation of <code>basePackageName</code>
+     * and all local names of YANG nodes which are parents of some node for
+     * which <code>schemaPath</code> is specified.
+     *
+     * @param basePackageName
+     *            string with package name of the module, MUST be normalized,
+     *            otherwise this method may return an invalid string.
+     * @param schemaPath
+     *            list of names of YANG nodes which are parents of some node +
+     *            name of this node
+     * @return string with valid JAVA package name
+     * @throws NullPointerException if any of the arguments are null
+     */
     public static String packageNameForGeneratedType(final String basePackageName, final SchemaPath schemaPath) {
-        return packageNameForGeneratedType(basePackageName, schemaPath, false);
+        final int size = Iterables.size(schemaPath.getPathTowardsRoot()) - 1;
+        if (size <= 0) {
+            return basePackageName;
+        }
+
+        return generateNormalizedPackageName(basePackageName, schemaPath.getPathFromRoot(), size);
+    }
+
+    /**
+     * Creates package name from specified <code>basePackageName</code> (package
+     * name for module) and <code>schemaPath</code> which crosses an augmentation.
+     *
+     * Resulting package name is concatenation of <code>basePackageName</code>
+     * and all local names of YANG nodes which are parents of some node for
+     * which <code>schemaPath</code> is specified.
+     *
+     * @param basePackageName
+     *            string with package name of the module, MUST be normalized,
+     *            otherwise this method may return an invalid string.
+     * @param schemaPath
+     *            list of names of YANG nodes which are parents of some node +
+     *            name of this node
+     * @return string with valid JAVA package name
+     * @throws NullPointerException if any of the arguments are null
+     */
+    public static String packageNameForAugmentedGeneratedType(final String basePackageName, final SchemaPath schemaPath) {
+        final int size = Iterables.size(schemaPath.getPathTowardsRoot());
+        if (size == 0) {
+            return basePackageName;
+        }
+
+        return generateNormalizedPackageName(basePackageName, schemaPath.getPathFromRoot(), size);
+    }
+
+    private static String generateNormalizedPackageName(final String base, final Iterable<QName> path, final int size) {
+        final StringBuilder builder = new StringBuilder(base);
+        final Iterator<QName> iterator = path.iterator();
+        for (int i = 0; i < size; ++i) {
+            builder.append('.');
+            String nodeLocalName = iterator.next().getLocalName();
+            // FIXME: Collon ":" is invalid in node local name as per RFC6020, identifier statement.
+            builder.append(DASH_COLON_MATCHER.replaceFrom(nodeLocalName, '.'));
+        }
+        return BindingMapping.normalizePackageName(builder.toString());
     }
 
     /**
@@ -158,7 +218,11 @@ public final class BindingGeneratorUtil {
      *            list of names of YANG nodes which are parents of some node +
      *            name of this node
      * @return string with valid JAVA package name
+     *
+     * @deprecated Use {@link #packageNameForGeneratedType(String, SchemaPath)} or
+     *             {@link #packageNameForAugmentedGeneratedType(String, SchemaPath)} instead.
      */
+    @Deprecated
     public static String packageNameForGeneratedType(final String basePackageName, final SchemaPath schemaPath,
             final boolean isUsesAugment) {
         if (basePackageName == null) {
@@ -168,24 +232,20 @@ public final class BindingGeneratorUtil {
             throw new IllegalArgumentException("Schema Path cannot be NULL!");
         }
 
-        final StringBuilder builder = new StringBuilder();
-        builder.append(basePackageName);
         final Iterable<QName> iterable = schemaPath.getPathFromRoot();
-        final Iterator<QName> iterator = iterable.iterator();
-        int size = Iterables.size(iterable);
+        final int size = Iterables.size(iterable);
         final int traversalSteps;
         if (isUsesAugment) {
             traversalSteps = size;
         } else {
             traversalSteps = size - 1;
         }
-        for (int i = 0; i < traversalSteps; ++i) {
-            builder.append('.');
-            String nodeLocalName = iterator.next().getLocalName();
-            // FIXME: Collon ":" is invalid in node local name as per RFC6020, identifier statement.
-            builder.append(DASH_COLON_MATCHER.replaceFrom(nodeLocalName, '.'));
+
+        if (traversalSteps == 0) {
+            return BindingMapping.normalizePackageName(basePackageName);
         }
-        return BindingMapping.normalizePackageName(builder.toString());
+
+        return generateNormalizedPackageName(basePackageName, iterable, traversalSteps);
     }
 
     /**
@@ -266,7 +326,6 @@ public final class BindingGeneratorUtil {
      *             <li>if <code>token</code> equals null</li>
      *             </ul>
      */
-
     private static String parseToCamelCase(final String token, final boolean uppercase) {
         if (token == null) {
             throw new IllegalArgumentException("Name can not be null");
