@@ -168,8 +168,6 @@ public final class BindingGeneratorUtil {
             throw new IllegalArgumentException("Schema Path cannot be NULL!");
         }
 
-        final StringBuilder builder = new StringBuilder();
-        builder.append(basePackageName);
         final Iterable<QName> iterable = schemaPath.getPathFromRoot();
         final Iterator<QName> iterator = iterable.iterator();
         int size = Iterables.size(iterable);
@@ -179,6 +177,12 @@ public final class BindingGeneratorUtil {
         } else {
             traversalSteps = size - 1;
         }
+
+        if (traversalSteps == 0) {
+            return BindingMapping.normalizePackageName(basePackageName);
+        }
+
+        final StringBuilder builder = new StringBuilder(basePackageName);
         for (int i = 0; i < traversalSteps; ++i) {
             builder.append('.');
             String nodeLocalName = iterator.next().getLocalName();
