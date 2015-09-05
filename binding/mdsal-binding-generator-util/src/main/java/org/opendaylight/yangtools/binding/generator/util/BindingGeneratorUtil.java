@@ -262,7 +262,13 @@ public final class BindingGeneratorUtil {
      *             <li>if <code>basePackageName</code> equals <code>null</code></li>
      *             <li>if <code>typeDefinition</code> equals <code>null</code></li>
      *             </ul>
+     * @deprecated This method ignores typeDefinition argument and its result is only
+     *             <code>indingMapping.normalizePackageName(basePackageName)</code>.
+     *             Aside from tests, there is not a single user in OpenDaylight codebase,
+     *             hence it can be considered buggy and defunct. It is scheduled for removal
+     *             in Boron release.
      */
+    @Deprecated
     public static String packageNameForTypeDefinition(final String basePackageName,
             final TypeDefinition<?> typeDefinition) {
         if (basePackageName == null) {
@@ -272,9 +278,7 @@ public final class BindingGeneratorUtil {
             throw new IllegalArgumentException("Type Definition reference cannot be NULL!");
         }
 
-        final StringBuilder builder = new StringBuilder();
-        builder.append(basePackageName);
-        return BindingMapping.normalizePackageName(builder.toString());
+        return BindingMapping.normalizePackageName(basePackageName);
     }
 
     /**
