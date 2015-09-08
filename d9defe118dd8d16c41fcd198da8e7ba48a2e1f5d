@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a79b1b5_c849adb8",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMDataTreeListenerAdapter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-09-08T12:42:51Z",
+      "side": 1,
+      "message": "null checks?",
+      "revId": "d9defe118dd8d16c41fcd198da8e7ba48a2e1f5d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a79b1b5_88cbb51d",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMDataTreeListenerAdapter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-09-08T12:42:51Z",
+      "side": 1,
+      "message": "Maps.hashMapWithExpected...",
+      "revId": "d9defe118dd8d16c41fcd198da8e7ba48a2e1f5d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a79b1b5_48d59db7",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMDataTreeServiceAdapter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-09-08T12:42:51Z",
+      "side": 1,
+      "message": "null delegate?",
+      "revId": "d9defe118dd8d16c41fcd198da8e7ba48a2e1f5d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a79b1b5_e8db49eb",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingToNormalizedNodeCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-09-08T12:42:51Z",
+      "side": 1,
+      "message": "sizing hint ...",
+      "revId": "d9defe118dd8d16c41fcd198da8e7ba48a2e1f5d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
