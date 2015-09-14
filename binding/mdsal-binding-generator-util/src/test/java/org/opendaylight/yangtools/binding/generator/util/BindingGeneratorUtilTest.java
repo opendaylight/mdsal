@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
 import com.google.common.base.Optional;
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +59,7 @@ public class BindingGeneratorUtilTest {
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
-    private static List<File> loadTestResources(String testFile) {
+    private static List<File> loadTestResources(final String testFile) {
         final List<File> testModels = new ArrayList<File>();
         File listModelFile;
         try {
@@ -172,6 +171,7 @@ public class BindingGeneratorUtilTest {
      * </ul>
      */
     @Test
+    @Deprecated
     public void testPackageNameForTypeDefinitionNullBasePackageName() {
         expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("Base Package Name cannot be NULL!");
@@ -186,6 +186,7 @@ public class BindingGeneratorUtilTest {
      * </ul>
      */
     @Test
+    @Deprecated
     public void testPackageNameForTypeDefinitionNullTypeDefinition() {
         expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("Type Definition reference cannot be NULL!");
@@ -201,8 +202,7 @@ public class BindingGeneratorUtilTest {
      */
     @Test
     public void testPackageNameForGeneratedTypeNullBasePackageName() {
-        expectedEx.expect(IllegalArgumentException.class);
-        expectedEx.expectMessage("Base Package Name cannot be NULL!");
+        expectedEx.expect(NullPointerException.class);
         BindingGeneratorUtil.packageNameForGeneratedType(null, null);
     }
 
@@ -215,8 +215,7 @@ public class BindingGeneratorUtilTest {
      */
     @Test
     public void testPackageNameForGeneratedTypeNullSchemaPath() {
-        expectedEx.expect(IllegalArgumentException.class);
-        expectedEx.expectMessage("Schema Path cannot be NULL!");
+        expectedEx.expect(NullPointerException.class);
         BindingGeneratorUtil.packageNameForGeneratedType("test.package", null);
     }
 
