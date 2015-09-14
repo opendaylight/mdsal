@@ -78,7 +78,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
 
             });
 
-    private BindingRuntimeContext runtimeContext;
+    private volatile BindingRuntimeContext runtimeContext;
 
     public BindingToNormalizedNodeCodec(final GeneratedClassLoadingStrategy classLoadingStrategy,
             final BindingNormalizedNodeCodecRegistry codecRegistry) {
@@ -280,9 +280,13 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
         final QNameModule moduleName = BindingReflections.getQNameModule(modeledClass);
         final URI namespace = moduleName.getNamespace();
         final Date revision = moduleName.getRevision();
-        Module module = runtimeContext.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision);
+        BindingRuntimeContext localRuntimeContext = runtimeContext;
+        Module module = localRuntimeContext == null ? null :
+            localRuntimeContext.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision);
         if(module == null && futureSchema != null && futureSchema.waitForSchema(namespace,revision)) {
-            module = runtimeContext.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision);
+            localRuntimeContext = runtimeContext;
+            Preconditions.checkState(localRuntimeContext != null, "BindingRuntimeContext is not available.");
+            module = localRuntimeContext.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision);
         }
         Preconditions.checkState(module != null, "Schema for %s is not available.", modeledClass);
         return module;
