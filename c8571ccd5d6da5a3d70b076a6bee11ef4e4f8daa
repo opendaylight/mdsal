@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a79b1b5_4acca035",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/test/ShardedDOMDataTreeProducerSingleShardTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-09-14T11:42:36Z",
+      "side": 1,
+      "message": "typo: throws",
+      "revId": "c8571ccd5d6da5a3d70b076a6bee11ef4e4f8daa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
