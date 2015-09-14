@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a79b1b5_2a2e0444",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/DataTreeListeningException.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-09-14T10:34:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a79b1b5_68617938",
+      "revId": "26216a5634a419f43c44472c50e5dfa138d7a819",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a79b1b5_c8720d11",
         "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/DataTreeListeningException.java",
         "patchSetId": 5
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "3a79b1b5_4a3100a1",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/DataTreeListeningException.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-09-14T10:34:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a79b1b5_c8720d11",
+      "revId": "26216a5634a419f43c44472c50e5dfa138d7a819",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a79b1b5_e854a955",
         "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/DataTreeProducerBusyException.java",
         "patchSetId": 5
@@ -47,6 +83,24 @@
       "writtenOn": "2015-09-08T12:40:11Z",
       "side": 1,
       "message": "useless comment",
+      "revId": "26216a5634a419f43c44472c50e5dfa138d7a819",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a79b1b5_ea27ac62",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/DataTreeProducerBusyException.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-09-14T10:34:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a79b1b5_e854a955",
       "revId": "26216a5634a419f43c44472c50e5dfa138d7a819",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
