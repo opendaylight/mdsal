@@ -13,6 +13,8 @@ target
 .idea
 bin
 xtend-gen
+yang-gen-config
+yang-gen-sal
 target
 .DS_Store
 META-INF
