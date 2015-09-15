@@ -7,15 +7,17 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl;
 
+import com.google.common.io.ByteSource;
+import com.google.common.io.Resources;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
-
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.Set;
 
 public class TestModel {
 
@@ -34,18 +36,12 @@ public class TestModel {
     public static final QName TWO_QNAME = QName.create(TEST_QNAME, "two");
     public static final QName THREE_QNAME = QName.create(TEST_QNAME, "three");
 
-
-    public static final InputStream getDatastoreTestInputStream() {
-        return getInputStream(DATASTORE_TEST_YANG);
+    private static ByteSource getInputStream() {
+        return Resources.asByteSource(TestModel.class.getResource(DATASTORE_TEST_YANG));
     }
 
-    private static InputStream getInputStream(final String resourceName) {
-        return TestModel.class.getResourceAsStream(DATASTORE_TEST_YANG);
-    }
-
-    public static SchemaContext createTestContext() {
+    public static SchemaContext createTestContext() throws IOException, YangSyntaxErrorException {
         YangParserImpl parser = new YangParserImpl();
-        Set<Module> modules = parser.parseYangModelsFromStreams(Collections.singletonList(getDatastoreTestInputStream()));
-        return parser.resolveSchemaContext(modules);
+        return parser.parseSources(Collections.singletonList(getInputStream()));
     }
 }
