@@ -25,6 +25,7 @@ import org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil;
 import org.opendaylight.yangtools.binding.generator.util.ReferencedTypeImpl;
 import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
+import org.opendaylight.yangtools.sal.binding.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
 import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
@@ -224,10 +225,6 @@ public class TypeProviderTest {
         return result;
     }
 
-    /**
-     * FIXME: Remove @Ignore annotation once the bug https://bugs.opendaylight.org/show_bug.cgi?id=1862 is fixed
-     */
-    @Ignore
     @Test
     public void bug1862RestrictedTypedefTransformationTest() {
         final TypeProvider provider = new TypeProviderImpl(schemaContext);
@@ -237,8 +234,7 @@ public class TypeProviderTest {
         final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(leafType);
         final Type result = provider.javaTypeForSchemaDefinitionType(leafType, leaf, restrictions);
         assertNotNull(result);
-        assertTrue(result instanceof GeneratedTransferObject);
-        //TODO: complete test after bug 1862 is fixed
+        assertTrue(result instanceof BaseTypeWithRestrictions);
     }
 
     @Test
