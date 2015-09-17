@@ -7,13 +7,10 @@
  */
 package org.opendaylight.yangtools.sal.binding.yang.types;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import org.opendaylight.yangtools.binding.generator.util.Types;
 import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
@@ -24,10 +21,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
-import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
-import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
-import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 
 public final class BaseYangTypes {
     /**
@@ -226,28 +219,7 @@ public final class BaseYangTypes {
     };
 
     private static <T extends Number> Restrictions singleRangeRestrictions(final T min, final T max) {
-        return new Restrictions() {
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-
-            @Override
-            public List<RangeConstraint> getRangeConstraints() {
-                return Collections.singletonList(BaseConstraints.newRangeConstraint(min, max,
-                        Optional.<String> absent(), Optional.<String> absent()));
-            }
-
-            @Override
-            public List<PatternConstraint> getPatternConstraints() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public List<LengthConstraint> getLengthConstraints() {
-                return Collections.emptyList();
-            }
-        };
+        return new Types.DefaultRestrictions(min, max);
     }
 
     public static final class UnionType implements Type {
