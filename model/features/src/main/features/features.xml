@@ -15,6 +15,7 @@
 
     <feature name='odl-mdsal-models' version='${project.version}' description='OpenDaylight :: MD-SAL :: Models'>
         <feature version='${mdsal.version}'>odl-mdsal-binding-base</feature>
+        <bundle>mvn:org.opendaylight.mdsal.model/iana-afn-safi/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/iana-if-type-2014-05-08/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-inet-types/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-interfaces/{{VERSION}}</bundle>
