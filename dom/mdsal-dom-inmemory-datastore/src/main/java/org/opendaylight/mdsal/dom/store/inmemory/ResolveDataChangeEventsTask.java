@@ -7,12 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import org.opendaylight.mdsal.dom.store.inmemory.tree.ListenerTree;
-
-import org.opendaylight.mdsal.dom.store.inmemory.DOMImmutableDataChangeEvent.Builder;
-import org.opendaylight.mdsal.dom.store.inmemory.DOMImmutableDataChangeEvent.SimpleEventFactory;
-import org.opendaylight.mdsal.dom.spi.RegistrationTreeSnapshot;
-import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -20,6 +14,11 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Map.Entry;
+import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
+import org.opendaylight.mdsal.dom.spi.RegistrationTreeSnapshot;
+import org.opendaylight.mdsal.dom.store.inmemory.DOMImmutableDataChangeEvent.Builder;
+import org.opendaylight.mdsal.dom.store.inmemory.DOMImmutableDataChangeEvent.SimpleEventFactory;
+import org.opendaylight.mdsal.dom.store.inmemory.tree.ListenerTree;
 import org.opendaylight.yangtools.util.concurrent.NotificationManager;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -119,7 +118,6 @@ public final class ResolveDataChangeEventsTask {
         switch (type) {
         case SUBTREE_MODIFIED:
             return resolveSubtreeChangeEvent(state, node);
-        case MERGE:
         case WRITE:
             Preconditions.checkArgument(maybeAfter.isPresent(),
                     "Modification at {} has type {} but no after-data", state.getPath(), type);
@@ -280,7 +278,6 @@ public final class ResolveDataChangeEventsTask {
 
             switch (childMod.getModificationType()) {
             case WRITE:
-            case MERGE:
             case DELETE:
                 if (resolveAnyChangeEvent(childState, childMod)) {
                     scope = DataChangeScope.ONE;
