@@ -224,10 +224,6 @@ public class TypeProviderTest {
         return result;
     }
 
-    /**
-     * FIXME: Remove @Ignore annotation once the bug https://bugs.opendaylight.org/show_bug.cgi?id=1862 is fixed
-     */
-    @Ignore
     @Test
     public void bug1862RestrictedTypedefTransformationTest() {
         final TypeProvider provider = new TypeProviderImpl(schemaContext);
@@ -238,7 +234,8 @@ public class TypeProviderTest {
         final Type result = provider.javaTypeForSchemaDefinitionType(leafType, leaf, restrictions);
         assertNotNull(result);
         assertTrue(result instanceof GeneratedTransferObject);
-        //TODO: complete test after bug 1862 is fixed
+
+	// FIXME: BUG-1862: complete the test case
     }
 
     @Test
