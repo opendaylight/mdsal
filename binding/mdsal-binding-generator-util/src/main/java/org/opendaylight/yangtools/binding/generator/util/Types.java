@@ -8,16 +8,20 @@
 package org.opendaylight.yangtools.binding.generator.util;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Iterables;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 import javax.annotation.Nullable;
+import org.opendaylight.yangtools.sal.binding.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
 import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
@@ -25,6 +29,10 @@ import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.binding.model.api.WildcardType;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
+import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
+import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
+import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 
 public final class Types {
     private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
@@ -96,7 +104,11 @@ public final class Types {
 
     public static ConcreteType typeForClass(final Class<?> cls, final Restrictions restrictions) {
         if (restrictions != null) {
-            return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+            if (restrictions instanceof DefaultRestrictions) {
+                return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+            } else {
+                return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+            }
         } else {
             return typeForClass(cls);
         }
@@ -248,6 +260,34 @@ public final class Types {
 
     /**
      *
+     * Represents concrete JAVA type with changed restriction values.
+     *
+     */
+    private static final class BaseTypeWithRestrictionsImpl extends AbstractBaseType implements BaseTypeWithRestrictions {
+        private final Restrictions restrictions;
+
+        /**
+         * Creates instance of this class with package <code>pkName</code> and
+         * with the type name <code>name</code>.
+         *
+         * @param pkName
+         *            string with package name
+         * @param name
+         *            string with the name of the type
+         */
+        private BaseTypeWithRestrictionsImpl(final String pkName, final String name, final Restrictions restrictions) {
+            super(pkName, name);
+            this.restrictions = restrictions;
+        }
+
+        @Override
+        public Restrictions getRestrictions() {
+            return restrictions;
+        }
+    }
+
+    /**
+     *
      * Represents parametrized JAVA type.
      *
      */
@@ -309,4 +349,34 @@ public final class Types {
         }
     }
 
+    public static final class DefaultRestrictions<T extends Number> implements Restrictions {
+        private final T min;
+        private final T max;
+
+        public DefaultRestrictions(final T min, final T max) {
+            this.min = Preconditions.checkNotNull(min);
+            this.max = Preconditions.checkNotNull(max);
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public List<RangeConstraint> getRangeConstraints() {
+            return Collections.singletonList(BaseConstraints.newRangeConstraint(min, max,
+                    Optional.<String>absent(), Optional.<String>absent()));
+        }
+
+        @Override
+        public List<PatternConstraint> getPatternConstraints() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<LengthConstraint> getLengthConstraints() {
+            return Collections.emptyList();
+        }
+    }
 }
