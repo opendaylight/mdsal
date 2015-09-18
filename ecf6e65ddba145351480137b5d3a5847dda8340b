@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a79b1b5_0831bea1",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/PingPongDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 3576
+      },
+      "writtenOn": "2015-09-18T17:22:13Z",
+      "side": 1,
+      "message": "Do you need this method?  If not, delete it.",
+      "revId": "ecf6e65ddba145351480137b5d3a5847dda8340b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
