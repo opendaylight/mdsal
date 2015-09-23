@@ -25,7 +25,6 @@ import org.opendaylight.yangtools.concepts.Path;
  * <ul>
  * <li>Read-Only - allocated using {@link #newReadOnlyTransaction()}
  * <li>Write-Only - allocated using {@link #newWriteOnlyTransaction()}
- * <li>Read-Write - allocated using {@link #newReadWriteTransaction()}
  * </ul>
  *
  * <p>
@@ -34,8 +33,8 @@ import org.opendaylight.yangtools.concepts.Path;
  *
  * <p>
  * For a detailed explanation of how transaction are isolated and how transaction-local changes are
- * committed to global data tree, see {@link AsyncReadTransaction}, {@link AsyncWriteTransaction},
- * {@link AsyncReadWriteTransaction} and {@link AsyncWriteTransaction#submit()}.
+ * committed to global data tree, see {@link AsyncReadTransaction}, {@link AsyncWriteTransaction}
+ * and {@link AsyncWriteTransaction#submit()}.
  *
  * <p>
  * It is strongly recommended to use the type of transaction, which provides only the minimal
@@ -65,19 +64,6 @@ public interface AsyncDataTransactionFactory<P extends Path<P>, D> {
      * @return new read-only transaction
      */
     AsyncReadOnlyTransaction<P, D> newReadOnlyTransaction();
-
-    /**
-     * Allocates new read-write transaction which provides a mutable view of the data tree.
-     *
-     * <p>
-     * Preconditions for mutation of data tree are captured from the snapshot of data tree state,
-     * when the transaction is allocated. If data was changed during transaction in an incompatible
-     * way then the commit of this transaction will fail. See {@link AsyncWriteTransaction#submit()}
-     * for more details about conflicting and not-conflicting changes and failure scenarios.
-     *
-     * @return new read-write transaction
-     */
-    AsyncReadWriteTransaction<P, D> newReadWriteTransaction();
 
     /**
      * Allocates new write-only transaction based on latest state of data tree.

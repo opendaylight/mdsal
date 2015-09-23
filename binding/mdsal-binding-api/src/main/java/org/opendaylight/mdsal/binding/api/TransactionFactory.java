@@ -19,9 +19,6 @@ public interface TransactionFactory extends AsyncDataTransactionFactory<Instance
     ReadOnlyTransaction newReadOnlyTransaction();
 
     @Override
-    ReadWriteTransaction newReadWriteTransaction();
-
-    @Override
     WriteTransaction newWriteOnlyTransaction();
 
 }

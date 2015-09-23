@@ -18,10 +18,11 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.p
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.top;
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
+
 import org.opendaylight.mdsal.common.api.AsyncDataChangeEvent;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
-import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
@@ -46,14 +47,14 @@ public class Bug1333DataChangeListenerTest extends AbstractDataChangeListenerTes
             TreeComplexUsesAugment.class);
 
     public void writeTopWithListItem(final LogicalDatastoreType store) {
-        final ReadWriteTransaction tx = getDataBroker().newReadWriteTransaction();
+        final WriteTransaction tx = getDataBroker().newWriteOnlyTransaction();
         final Top topItem = top(topLevelList(TOP_FOO_KEY, complexUsesAugment(USES_ONE_KEY, USES_TWO_KEY)));
         tx.put(store, TOP_PATH, topItem);
         assertCommit(tx.submit());
     }
 
     public void deleteItem(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
-        final ReadWriteTransaction tx = getDataBroker().newReadWriteTransaction();
+        final WriteTransaction tx = getDataBroker().newWriteOnlyTransaction();
         tx.delete(store, path);
         assertCommit(tx.submit());
     }

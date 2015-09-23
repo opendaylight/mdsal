@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataReadOnlyTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
@@ -145,51 +144,6 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
             txns.put(store.getKey(), store.getValue().newWriteOnlyTransaction());
         }
         return new DOMForwardedWriteTransaction<DOMStoreWriteTransaction>(newTransactionIdentifier(), txns, this);
-    }
-
-    /**
-     * Creates a new composite write-only transaction
-     *
-     * <p>
-     * Creates a new composite write-only transaction backed by one write-only transaction per
-     * factory in {@link #getTxFactories()}.
-     * <p>
-     * Implementation of composite Write-only transaction is following:
-     *
-     * <ul>
-     * <li>
-     * {@link DOMDataWriteTransaction#put(LogicalDatastoreType, org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
-     * - backing subtransaction is selected by {@link LogicalDatastoreType},
-     * {@link DOMStoreWriteTransaction#write(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
-     * is invoked on selected subtransaction.</li>
-     * <li>
-     * {@link DOMDataWriteTransaction#merge(LogicalDatastoreType, org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
-     * - backing subtransaction is selected by {@link LogicalDatastoreType},
-     * {@link DOMStoreWriteTransaction#merge(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
-     * is invoked on selected subtransaction.</li>
-     * <li>
-     * {@link DOMDataWriteTransaction#delete(LogicalDatastoreType, org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
-     * - backing subtransaction is selected by {@link LogicalDatastoreType},
-     * {@link DOMStoreWriteTransaction#delete(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
-     * is invoked on selected subtransaction.</li>
-     * <li> {@link DOMDataWriteTransaction#submit()} - results in invoking
-     * {@link DOMStoreWriteTransaction#ready()}, gathering all resulting cohorts and then invoking
-     * finalized implementation callback {@link #submit(DOMDataWriteTransaction, Collection)} with
-     * transaction which was commited and gathered results.</li>
-     * </ul>
-     *
-     * Id of returned transaction is generated via {@link #newTransactionIdentifier()}.
-     *
-     * @return New composite read-write transaction associated with this factory.
-     */
-    public final DOMDataReadWriteTransaction newReadWriteTransaction() {
-        checkNotClosed();
-
-        final Map<LogicalDatastoreType, DOMStoreReadWriteTransaction> txns = new EnumMap<>(LogicalDatastoreType.class);
-        for (final Entry<LogicalDatastoreType, T> store : storeTxFactories.entrySet()) {
-            txns.put(store.getKey(), store.getValue().newReadWriteTransaction());
-        }
-        return new DOMForwardedReadWriteTransaction(newTransactionIdentifier(), txns, this);
     }
 
     /**

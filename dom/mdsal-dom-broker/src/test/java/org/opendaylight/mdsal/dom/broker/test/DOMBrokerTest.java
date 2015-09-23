@@ -28,7 +28,6 @@ import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataReadTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
@@ -108,7 +107,7 @@ public class DOMBrokerTest {
         DOMDataReadTransaction readTx = domBroker.newReadOnlyTransaction();
         assertNotNull(readTx);
 
-        DOMDataReadWriteTransaction writeTx = domBroker.newReadWriteTransaction();
+        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
         /**
          *
@@ -117,14 +116,6 @@ public class DOMBrokerTest {
          */
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
 
-        /**
-         *
-         * Reads /test from writeTx Read should return container.
-         *
-         */
-        ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = writeTx.read(OPERATIONAL,
-                TestModel.TEST_PATH);
-        assertTrue(writeTxContainer.get().isPresent());
 
         /**
          *
@@ -139,7 +130,7 @@ public class DOMBrokerTest {
     @Test(timeout=10000)
     public void testTransactionCommit() throws InterruptedException, ExecutionException {
 
-        DOMDataReadWriteTransaction writeTx = domBroker.newReadWriteTransaction();
+        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
         /**
          *
@@ -147,15 +138,6 @@ public class DOMBrokerTest {
          *
          */
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
-
-        /**
-         *
-         * Reads /test from writeTx Read should return container.
-         *
-         */
-        ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = writeTx.read(OPERATIONAL,
-                TestModel.TEST_PATH);
-        assertTrue(writeTxContainer.get().isPresent());
 
         writeTx.submit().get();
 
@@ -176,7 +158,7 @@ public class DOMBrokerTest {
         Mockito.doReturn( true ).when( commitExecutor.delegate )
             .awaitTermination( Mockito.anyLong(), Mockito.any( TimeUnit.class ) );
 
-        DOMDataReadWriteTransaction writeTx = domBroker.newReadWriteTransaction();
+        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put( OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME) );
 
         writeTx.submit().checkedGet( 5, TimeUnit.SECONDS );

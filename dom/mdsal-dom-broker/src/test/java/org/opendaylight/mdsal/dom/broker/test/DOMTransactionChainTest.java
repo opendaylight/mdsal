@@ -14,24 +14,26 @@ import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATI
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
 import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
-
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataReadTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -72,7 +74,7 @@ public class DOMTransactionChainTest {
          *
          *
          */
-        DOMDataReadWriteTransaction firstTx = allocateAndWrite(txChain);
+        DOMDataWriteTransaction firstTx = allocateAndWrite(txChain);
 
         /**
          * First transaction is marked as ready, we are able to allocate chained
@@ -100,7 +102,7 @@ public class DOMTransactionChainTest {
          * is read-write.
          *
          */
-        DOMDataReadWriteTransaction thirdDeleteTx = allocateAndDelete(txChain);
+        DOMDataWriteTransaction thirdDeleteTx = allocateAndDelete(txChain);
 
         /**
          * We commit first transaction
@@ -161,17 +163,9 @@ public class DOMTransactionChainTest {
         }
     }
 
-    private static DOMDataReadWriteTransaction allocateAndDelete(final DOMTransactionChain txChain)
+    private static DOMDataWriteTransaction allocateAndDelete(final DOMTransactionChain txChain)
             throws InterruptedException, ExecutionException {
-        DOMDataReadWriteTransaction tx = txChain.newReadWriteTransaction();
-
-        /**
-         * We test existence of /test in third transaction container should
-         * still be visible from first one (which is still uncommmited).
-         *
-         */
-        assertTestContainerExists(tx);
-
+        DOMDataWriteTransaction tx = txChain.newWriteOnlyTransaction();
         /**
          * We delete node in third transaction
          */
@@ -179,10 +173,10 @@ public class DOMTransactionChainTest {
         return tx;
     }
 
-    private static DOMDataReadWriteTransaction allocateAndWrite(final DOMTransactionChain txChain)
+    private static DOMDataWriteTransaction allocateAndWrite(final DOMTransactionChain txChain)
             throws InterruptedException, ExecutionException {
-        DOMDataReadWriteTransaction tx = txChain.newReadWriteTransaction();
-        assertTestContainerWrite(tx);
+        DOMDataWriteTransaction tx = txChain.newWriteOnlyTransaction();
+        writeTestContainer(tx);
         return tx;
     }
 
@@ -198,9 +192,8 @@ public class DOMTransactionChainTest {
         assertTrue(readedData.isPresent());
     }
 
-    private static void assertTestContainerWrite(final DOMDataReadWriteTransaction tx) throws InterruptedException,
+    private static void writeTestContainer(final DOMDataWriteTransaction tx) throws InterruptedException,
             ExecutionException {
         tx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
-        assertTestContainerExists(tx);
     }
 }

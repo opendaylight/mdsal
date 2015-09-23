@@ -37,12 +37,6 @@ public interface DataBroker extends  AsyncDataBroker<InstanceIdentifier<?>, Data
      * {@inheritDoc}
      */
     @Override
-    ReadWriteTransaction newReadWriteTransaction();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     WriteTransaction newWriteOnlyTransaction();
 
     /**
