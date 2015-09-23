@@ -14,9 +14,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 
 /**
  * Interface implemented by classes interested in receiving notifications about
- * data tree changes. This interface differs from {@link DOMDataChangeListener}
- * in that it provides a cursor-based view of the change, which has potentially
- * lower overhead.
+ * data tree changes. It provides a cursor-based view of the change.
  */
 public interface DOMDataTreeChangeListener extends EventListener {
     /**

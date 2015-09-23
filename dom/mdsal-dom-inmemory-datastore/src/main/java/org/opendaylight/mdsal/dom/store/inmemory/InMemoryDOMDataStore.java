@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import org.opendaylight.mdsal.dom.store.inmemory.tree.ListenerTree;
-
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
@@ -19,22 +17,15 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
-import org.opendaylight.mdsal.common.api.AsyncDataChangeListener;
-import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ExecutorServiceUtil;
-import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
-import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager.Invoker;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
@@ -51,30 +42,16 @@ import org.slf4j.LoggerFactory;
  *
  * Implementation of {@link DOMStore} which uses {@link DataTree} and other
  * classes such as {@link SnapshotBackedWriteTransaction}.
- * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} and {@link ResolveDataChangeEventsTask}
- * to implement {@link DOMStore} contract.
+ * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} to implement {@link DOMStore}
+ * contract.
  *
  */
 public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> implements DOMStore, Identifiable<String>, SchemaContextListener, AutoCloseable, DOMStoreTreeChangePublisher {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataStore.class);
 
-    private static final Invoker<DataChangeListenerRegistration<?>, DOMImmutableDataChangeEvent> DCL_NOTIFICATION_MGR_INVOKER =
-            new Invoker<DataChangeListenerRegistration<?>, DOMImmutableDataChangeEvent>() {
-                @Override
-                public void invokeListener(final DataChangeListenerRegistration<?> listener,
-                                           final DOMImmutableDataChangeEvent notification ) {
-                    final AsyncDataChangeListener<YangInstanceIdentifier, NormalizedNode<?, ?>> inst = listener.getInstance();
-                    if (inst != null) {
-                        inst.onDataChanged(notification);
-                    }
-                }
-            };
-
     private final DataTree dataTree = InMemoryDataTreeFactory.getInstance().create();
-    private final ListenerTree listenerTree = ListenerTree.create();
     private final AtomicLong txCounter = new AtomicLong(0);
 
-    private final QueuedNotificationManager<DataChangeListenerRegistration<?>, DOMImmutableDataChangeEvent> dataChangeListenerNotificationManager;
     private final InMemoryDOMStoreTreeChangePublisher changePublisher;
     private final ExecutorService dataChangeListenerExecutor;
     private final boolean debugTransactions;
@@ -91,20 +68,11 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
         this.name = Preconditions.checkNotNull(name);
         this.dataChangeListenerExecutor = Preconditions.checkNotNull(dataChangeListenerExecutor);
         this.debugTransactions = debugTransactions;
-
-        dataChangeListenerNotificationManager =
-                new QueuedNotificationManager<>(this.dataChangeListenerExecutor,
-                        DCL_NOTIFICATION_MGR_INVOKER, maxDataChangeListenerQueueSize,
-                        "DataChangeListenerQueueMgr");
         changePublisher = new InMemoryDOMStoreTreeChangePublisher(this.dataChangeListenerExecutor, maxDataChangeListenerQueueSize);
     }
 
     public void setCloseable(final AutoCloseable closeable) {
         this.closeable = closeable;
-    }
-
-    public QueuedNotificationManager<?, ?> getDataChangeListenerNotificationManager() {
-        return dataChangeListenerNotificationManager;
     }
 
     @Override
@@ -159,46 +127,6 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     }
 
     @Override
-    public <L extends AsyncDataChangeListener<YangInstanceIdentifier, NormalizedNode<?, ?>>> ListenerRegistration<L> registerChangeListener(
-            final YangInstanceIdentifier path, final L listener, final DataChangeScope scope) {
-
-        /*
-         * Make sure commit is not occurring right now. Listener has to be
-         * registered and its state capture enqueued at a consistent point.
-         *
-         * FIXME: improve this to read-write lock, such that multiple listener
-         * registrations can occur simultaneously
-         */
-        final DataChangeListenerRegistration<L> reg;
-        synchronized (this) {
-            LOG.debug("{}: Registering data change listener {} for {}", name, listener, path);
-
-            reg = listenerTree.registerDataChangeListener(path, listener, scope);
-
-            Optional<NormalizedNode<?, ?>> currentState = dataTree.takeSnapshot().readNode(path);
-            if (currentState.isPresent()) {
-                final NormalizedNode<?, ?> data = currentState.get();
-
-                final DOMImmutableDataChangeEvent event = DOMImmutableDataChangeEvent.builder(DataChangeScope.BASE) //
-                        .setAfter(data) //
-                        .addCreated(path, data) //
-                        .build();
-
-                dataChangeListenerNotificationManager.submitNotification(reg, event);
-            }
-        }
-
-        return new AbstractListenerRegistration<L>(listener) {
-            @Override
-            protected void removeRegistration() {
-                synchronized (InMemoryDOMDataStore.this) {
-                    reg.close();
-                }
-            }
-        };
-    }
-
-    @Override
     public synchronized <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(final YangInstanceIdentifier treeId, final L listener) {
         /*
          * Make sure commit is not occurring right now. Listener has to be
@@ -233,6 +161,5 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     synchronized void commit(final DataTreeCandidate candidate) {
         dataTree.commit(candidate);
         changePublisher.publishChange(candidate);
-        ResolveDataChangeEventsTask.create(candidate, listenerTree).resolve(dataChangeListenerNotificationManager);
     }
 }

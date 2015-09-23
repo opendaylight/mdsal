@@ -7,11 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import org.opendaylight.mdsal.common.api.AsyncDataChangeListener;
-import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
-
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
@@ -28,25 +23,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  *
  */
 public interface DOMStore extends DOMStoreTransactionFactory {
-
-    /**
-     * Registers {@link AsyncDataChangeListener} for Data Change callbacks which will be triggered
-     * on the change of provided subpath. What constitutes a change depends on the @scope parameter.
-     *
-     * Listener upon registration receives an initial callback
-     * {@link AsyncDataChangeListener#onDataChanged(org.opendaylight.mdsal.common.api.AsyncDataChangeEvent)}
-     * which contains stable view of data tree at the time of registration.
-     *
-     *  @param path Path (subtree identifier) on which client listener will be invoked.
-     *
-     * @param listener Instance of listener which should be invoked on
-     * @param scope Scope of change which triggers callback.
-     * @return Listener Registration object, which client may use to close registration / interest
-     *         on receiving data changes.
-     *
-     */
-    <L extends AsyncDataChangeListener<YangInstanceIdentifier, NormalizedNode<?, ?>>> ListenerRegistration<L> registerChangeListener(
-            YangInstanceIdentifier path, L listener, DataChangeScope scope);
 
     /**
      *
