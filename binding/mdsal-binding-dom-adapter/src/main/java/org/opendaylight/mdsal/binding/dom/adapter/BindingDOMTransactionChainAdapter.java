@@ -13,11 +13,11 @@ import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataReadOnlyTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.binding.api.BindingTransactionChain;
-import org.opendaylight.mdsal.binding.api.ReadOnlyTransaction;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
@@ -51,15 +51,15 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
     }
 
     @Override
-    public ReadOnlyTransaction newReadOnlyTransaction() {
-        final DOMDataReadOnlyTransaction delegateTx = delegate.newReadOnlyTransaction();
+    public ReadTransaction newReadOnlyTransaction() {
+        final DOMDataTreeReadTransaction delegateTx = delegate.newReadOnlyTransaction();
         return new BindingDOMReadTransactionAdapter(delegateTx, codec);
     }
 
     @Override
     public WriteTransaction newWriteOnlyTransaction() {
-        final DOMDataWriteTransaction delegateTx = delegate.newWriteOnlyTransaction();
-        return new BindingDOMWriteTransactionAdapter<DOMDataWriteTransaction>(delegateTx, codec) {
+        final DOMDataTreeWriteTransaction delegateTx = delegate.newWriteOnlyTransaction();
+        return new BindingDOMWriteTransactionAdapter<DOMDataTreeWriteTransaction>(delegateTx, codec) {
 
             @Override
             public CheckedFuture<Void,TransactionCommitFailedException> submit() {

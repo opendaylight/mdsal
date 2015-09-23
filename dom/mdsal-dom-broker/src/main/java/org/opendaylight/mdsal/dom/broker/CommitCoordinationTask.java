@@ -11,7 +11,7 @@ package org.opendaylight.mdsal.dom.broker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.Futures;
@@ -37,9 +37,9 @@ final class CommitCoordinationTask implements Callable<Void> {
     private static final Logger LOG = LoggerFactory.getLogger(CommitCoordinationTask.class);
     private final Collection<DOMStoreThreePhaseCommitCohort> cohorts;
     private final DurationStatisticsTracker commitStatTracker;
-    private final DOMDataWriteTransaction tx;
+    private final DOMDataTreeWriteTransaction tx;
 
-    public CommitCoordinationTask(final DOMDataWriteTransaction transaction,
+    public CommitCoordinationTask(final DOMDataTreeWriteTransaction transaction,
             final Collection<DOMStoreThreePhaseCommitCohort> cohorts,
             final DurationStatisticsTracker commitStatTracker) {
         this.tx = Preconditions.checkNotNull(transaction, "transaction must not be null");

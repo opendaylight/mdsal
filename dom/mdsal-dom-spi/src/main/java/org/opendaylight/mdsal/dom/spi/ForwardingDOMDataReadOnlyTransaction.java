@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.spi;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 
-import org.opendaylight.mdsal.dom.api.DOMDataReadOnlyTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import com.google.common.base.Optional;
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.CheckedFuture;
@@ -22,9 +22,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * Utility {@link DOMDataReadOnlyTransaction} implementation which forwards all interface
  * method invocation to a delegate instance.
  */
-public abstract class ForwardingDOMDataReadOnlyTransaction extends ForwardingObject implements DOMDataReadOnlyTransaction {
+public abstract class ForwardingDOMDataReadOnlyTransaction extends ForwardingObject implements DOMDataTreeReadTransaction {
     @Override
-    protected abstract @Nonnull DOMDataReadOnlyTransaction delegate();
+    protected abstract @Nonnull DOMDataTreeReadTransaction delegate();
 
     @Override
     public CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> read(final LogicalDatastoreType store, final YangInstanceIdentifier path) {

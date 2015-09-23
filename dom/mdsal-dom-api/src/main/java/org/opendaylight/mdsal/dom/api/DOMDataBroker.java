@@ -32,13 +32,13 @@ public interface DOMDataBroker extends
      * {@inheritDoc}
      */
     @Override
-    DOMDataReadOnlyTransaction newReadOnlyTransaction();
+    DOMDataTreeReadTransaction newReadOnlyTransaction();
 
     /**
      * {@inheritDoc}
      */
     @Override
-    DOMDataWriteTransaction newWriteOnlyTransaction();
+    DOMDataTreeWriteTransaction newWriteOnlyTransaction();
 
     /**
      * {@inheritDoc}

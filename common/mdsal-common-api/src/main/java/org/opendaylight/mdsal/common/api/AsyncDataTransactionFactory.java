@@ -64,7 +64,7 @@ public interface AsyncDataTransactionFactory<P extends Path<P>, D> {
      *
      * @return new read-only transaction
      */
-    AsyncReadOnlyTransaction<P, D> newReadOnlyTransaction();
+    AsyncReadTransaction<P, D> newReadOnlyTransaction();
 
     /**
      * Allocates new write-only transaction based on latest state of data tree.

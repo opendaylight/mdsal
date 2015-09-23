@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import org.opendaylight.mdsal.common.api.AsyncReadOnlyTransaction;
+import org.opendaylight.mdsal.common.api.AsyncReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -22,7 +22,7 @@ import com.google.common.util.concurrent.CheckedFuture;
  * For more information on usage and examples, please see the documentation in
  *  {@link org.opendaylight.mdsal.common.api.AsyncReadTransaction}.
  */
-public interface ReadOnlyTransaction extends AsyncReadOnlyTransaction<InstanceIdentifier<?>, DataObject> {
+public interface ReadTransaction extends AsyncReadTransaction<InstanceIdentifier<?>, DataObject> {
 
     /**
      * Reads data from the provided logical data store located at the provided path.

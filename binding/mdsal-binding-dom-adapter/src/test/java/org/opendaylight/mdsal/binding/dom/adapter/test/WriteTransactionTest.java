@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
-import org.opendaylight.mdsal.binding.api.ReadOnlyTransaction;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import com.google.common.base.Optional;
 import java.util.concurrent.ExecutionException;
@@ -46,7 +46,7 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
         writeTx.put(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
         writeTx.submit().checkedGet();
 
-        final ReadOnlyTransaction readTx = getDataBroker().newReadOnlyTransaction();
+        final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<Top> topNode = readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();
         assertTrue("Top node must exists after commit",topNode.isPresent());
         final Optional<TopLevelList> listNode = readTx.read(LogicalDatastoreType.OPERATIONAL, NODE_PATH).get();
@@ -60,7 +60,7 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
         writeTx.merge(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
         writeTx.submit().checkedGet();
 
-        final ReadOnlyTransaction readTx = getDataBroker().newReadOnlyTransaction();
+        final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<Top> topNode = readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();
         assertTrue("Top node must exists after commit",topNode.isPresent());
         final Optional<TopLevelList> listNode = readTx.read(LogicalDatastoreType.OPERATIONAL, NODE_PATH).get();

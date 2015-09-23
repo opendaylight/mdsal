@@ -26,7 +26,7 @@ public interface BindingTransactionChain extends TransactionFactory, Transaction
      * {@inheritDoc}
      */
     @Override
-    ReadOnlyTransaction newReadOnlyTransaction();
+    ReadTransaction newReadOnlyTransaction();
 
     /**
      * {@inheritDoc}
