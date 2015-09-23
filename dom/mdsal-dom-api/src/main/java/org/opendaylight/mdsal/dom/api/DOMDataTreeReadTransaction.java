@@ -21,7 +21,7 @@ import com.google.common.util.concurrent.CheckedFuture;
  * <p>
  * For more information on usage and examples, please see the documentation in {@link AsyncReadTransaction}.
  */
-public interface DOMDataReadTransaction extends AsyncReadTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>> {
+public interface DOMDataTreeReadTransaction extends AsyncReadTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>> {
 
     /**
      * Reads data from provided logical data store located at the provided path.

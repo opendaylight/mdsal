@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import com.google.common.util.concurrent.CheckedFuture;
 import java.net.URI;
 import java.util.Collections;
@@ -61,7 +61,7 @@ public abstract class AbstractDOMDataTreeServiceTestSuite {
         try (final DOMDataTreeProducer prod = service().createProducer(Collections.singleton(UNORDERED_CONTAINER_TREE))) {
             assertNotNull(prod);
 
-            final DOMDataWriteTransaction tx = prod.createTransaction(true);
+            final DOMDataTreeWriteTransaction tx = prod.createTransaction(true);
             assertNotNull(tx);
 
             tx.put(LogicalDatastoreType.OPERATIONAL, UNORDERED_CONTAINER_IID, ImmutableContainerNodeBuilder.create().build());

@@ -12,11 +12,11 @@ import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
 import com.google.common.util.concurrent.CheckedFuture;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-class BindingDOMWriteTransactionAdapter<T extends DOMDataWriteTransaction> extends
+class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> extends
         AbstractWriteTransaction<T> implements WriteTransaction {
 
     protected BindingDOMWriteTransactionAdapter(final T delegateTx, final BindingToNormalizedNodeCodec codec) {

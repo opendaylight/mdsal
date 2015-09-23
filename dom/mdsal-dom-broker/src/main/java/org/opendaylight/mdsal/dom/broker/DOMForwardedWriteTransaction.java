@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * <p>
  * {@link #submit()} will result in invocation of
- * {@link DOMDataCommitImplementation#submit(org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction, Iterable)}
+ * {@link DOMDataCommitImplementation#submit(org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction, Iterable)}
  * invocation with all
  * {@link org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort} for
  * underlying transactions.
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @param <T> Subtype of {@link DOMStoreWriteTransaction} which is used as subtransaction.
  */
 class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction> extends
-        AbstractDOMForwardedCompositeTransaction<LogicalDatastoreType, T> implements DOMDataWriteTransaction {
+        AbstractDOMForwardedCompositeTransaction<LogicalDatastoreType, T> implements DOMDataTreeWriteTransaction {
     @SuppressWarnings("rawtypes")
     private static final AtomicReferenceFieldUpdater<DOMForwardedWriteTransaction, AbstractDOMForwardedTransactionFactory> IMPL_UPDATER =
             AtomicReferenceFieldUpdater.newUpdater(DOMForwardedWriteTransaction.class, AbstractDOMForwardedTransactionFactory.class, "commitImpl");

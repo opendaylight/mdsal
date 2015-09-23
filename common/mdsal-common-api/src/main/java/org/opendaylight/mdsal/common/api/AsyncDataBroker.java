@@ -122,7 +122,7 @@ public interface AsyncDataBroker<P extends Path<P>, D, L extends AsyncDataChange
      * {@inheritDoc}
      */
     @Override
-    AsyncReadOnlyTransaction<P, D> newReadOnlyTransaction();
+    AsyncReadTransaction<P, D> newReadOnlyTransaction();
 
 
     /**

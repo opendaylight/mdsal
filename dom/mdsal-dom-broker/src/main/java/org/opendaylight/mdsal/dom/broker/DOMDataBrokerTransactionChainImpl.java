@@ -14,7 +14,7 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
@@ -91,7 +91,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
 
     @Override
     public CheckedFuture<Void, TransactionCommitFailedException> submit(
-            final DOMDataWriteTransaction transaction, final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
+            final DOMDataTreeWriteTransaction transaction, final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
         checkNotFailed();
         checkNotClosed();
 
@@ -142,7 +142,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
         }
     }
 
-    private void transactionFailed(final DOMDataWriteTransaction tx, final Throwable cause) {
+    private void transactionFailed(final DOMDataTreeWriteTransaction tx, final Throwable cause) {
         state = State.FAILED;
         LOG.debug("Transaction chain {} failed.", this, cause);
         listener.onTransactionChainFailed(this, tx, cause);

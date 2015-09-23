@@ -27,8 +27,8 @@ import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataChangeListener;
-import org.opendaylight.mdsal.dom.api.DOMDataReadTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ForwardingExecutorService;
@@ -104,10 +104,10 @@ public class DOMBrokerTest {
 
         assertNotNull(domBroker);
 
-        DOMDataReadTransaction readTx = domBroker.newReadOnlyTransaction();
+        DOMDataTreeReadTransaction readTx = domBroker.newReadOnlyTransaction();
         assertNotNull(readTx);
 
-        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
         /**
          *
@@ -130,7 +130,7 @@ public class DOMBrokerTest {
     @Test(timeout=10000)
     public void testTransactionCommit() throws InterruptedException, ExecutionException {
 
-        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
         /**
          *
@@ -158,7 +158,7 @@ public class DOMBrokerTest {
         Mockito.doReturn( true ).when( commitExecutor.delegate )
             .awaitTermination( Mockito.anyLong(), Mockito.any( TimeUnit.class ) );
 
-        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put( OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME) );
 
         writeTx.submit().checkedGet( 5, TimeUnit.SECONDS );
@@ -177,7 +177,7 @@ public class DOMBrokerTest {
         domBroker.registerDataChangeListener( OPERATIONAL, TestModel.TEST_PATH,
                                               dcListener, DataChangeScope.BASE );
 
-        final DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull( writeTx );
 
         writeTx.put( OPERATIONAL, TestModel.TEST_PATH, testNode );
@@ -208,7 +208,7 @@ public class DOMBrokerTest {
             @Override
             public void onDataChanged( final AsyncDataChangeEvent<YangInstanceIdentifier, NormalizedNode<?, ?>> change ) {
 
-                DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+                DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
                 writeTx.put( OPERATIONAL, TestModel.TEST2_PATH,
                              ImmutableNodes.containerNode( TestModel.TEST2_QNAME ) );
                 Futures.addCallback( writeTx.submit(), new FutureCallback<Void>() {
@@ -231,7 +231,7 @@ public class DOMBrokerTest {
         domBroker.registerDataChangeListener( OPERATIONAL, TestModel.TEST_PATH,
                                               dcListener, DataChangeScope.BASE );
 
-        final DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull( writeTx );
 
         writeTx.put( OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode( TestModel.TEST_QNAME ) );
@@ -263,7 +263,7 @@ public class DOMBrokerTest {
         TestDOMDataChangeListener dcListener = new TestDOMDataChangeListener() {
             @Override
             public void onDataChanged( final AsyncDataChangeEvent<YangInstanceIdentifier, NormalizedNode<?, ?>> change ) {
-                DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+                DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
                 writeTx.put( OPERATIONAL, TestModel.TEST2_PATH,
                              ImmutableNodes.containerNode( TestModel.TEST2_QNAME ) );
                 try {
@@ -282,7 +282,7 @@ public class DOMBrokerTest {
         domBroker.registerDataChangeListener( OPERATIONAL, TestModel.TEST_PATH,
                                               dcListener, DataChangeScope.BASE );
 
-        final DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull( writeTx );
 
         writeTx.put( OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode( TestModel.TEST_QNAME ) );
@@ -300,7 +300,7 @@ public class DOMBrokerTest {
         }
     }
 
-    AtomicReference<Throwable> submitTxAsync( final DOMDataWriteTransaction writeTx ) {
+    AtomicReference<Throwable> submitTxAsync( final DOMDataTreeWriteTransaction writeTx ) {
         final AtomicReference<Throwable> caughtEx = new AtomicReference<>();
         new Thread() {
             @Override

@@ -16,7 +16,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public interface TransactionFactory extends AsyncDataTransactionFactory<InstanceIdentifier<?>, DataObject>{
 
     @Override
-    ReadOnlyTransaction newReadOnlyTransaction();
+    ReadTransaction newReadOnlyTransaction();
 
     @Override
     WriteTransaction newWriteOnlyTransaction();

@@ -19,8 +19,8 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataReadTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 
 import com.google.common.base.Optional;
@@ -74,7 +74,7 @@ public class DOMTransactionChainTest {
          *
          *
          */
-        DOMDataWriteTransaction firstTx = allocateAndWrite(txChain);
+        DOMDataTreeWriteTransaction firstTx = allocateAndWrite(txChain);
 
         /**
          * First transaction is marked as ready, we are able to allocate chained
@@ -85,7 +85,7 @@ public class DOMTransactionChainTest {
         /**
          * We alocate chained transaction - read transaction.
          */
-        DOMDataReadTransaction secondReadTx = txChain.newReadOnlyTransaction();
+        DOMDataTreeReadTransaction secondReadTx = txChain.newReadOnlyTransaction();
 
         /**
          *
@@ -102,7 +102,7 @@ public class DOMTransactionChainTest {
          * is read-write.
          *
          */
-        DOMDataWriteTransaction thirdDeleteTx = allocateAndDelete(txChain);
+        DOMDataTreeWriteTransaction thirdDeleteTx = allocateAndDelete(txChain);
 
         /**
          * We commit first transaction
@@ -115,7 +115,7 @@ public class DOMTransactionChainTest {
          * Allocates transaction from data store.
          *
          */
-        DOMDataReadTransaction storeReadTx = domBroker.newReadOnlyTransaction();
+        DOMDataTreeReadTransaction storeReadTx = domBroker.newReadOnlyTransaction();
 
         /**
          * We verify transaction is commited to store, container should exists
@@ -163,9 +163,9 @@ public class DOMTransactionChainTest {
         }
     }
 
-    private static DOMDataWriteTransaction allocateAndDelete(final DOMTransactionChain txChain)
+    private static DOMDataTreeWriteTransaction allocateAndDelete(final DOMTransactionChain txChain)
             throws InterruptedException, ExecutionException {
-        DOMDataWriteTransaction tx = txChain.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction tx = txChain.newWriteOnlyTransaction();
         /**
          * We delete node in third transaction
          */
@@ -173,9 +173,9 @@ public class DOMTransactionChainTest {
         return tx;
     }
 
-    private static DOMDataWriteTransaction allocateAndWrite(final DOMTransactionChain txChain)
+    private static DOMDataTreeWriteTransaction allocateAndWrite(final DOMTransactionChain txChain)
             throws InterruptedException, ExecutionException {
-        DOMDataWriteTransaction tx = txChain.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction tx = txChain.newWriteOnlyTransaction();
         writeTestContainer(tx);
         return tx;
     }
@@ -185,14 +185,14 @@ public class DOMTransactionChainTest {
         future.get();
     }
 
-    private static void assertTestContainerExists(final DOMDataReadTransaction readTx) throws InterruptedException,
+    private static void assertTestContainerExists(final DOMDataTreeReadTransaction readTx) throws InterruptedException,
             ExecutionException {
         ListenableFuture<Optional<NormalizedNode<?, ?>>> readFuture = readTx.read(OPERATIONAL, TestModel.TEST_PATH);
         Optional<NormalizedNode<?, ?>> readedData = readFuture.get();
         assertTrue(readedData.isPresent());
     }
 
-    private static void writeTestContainer(final DOMDataWriteTransaction tx) throws InterruptedException,
+    private static void writeTestContainer(final DOMDataTreeWriteTransaction tx) throws InterruptedException,
             ExecutionException {
         tx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
     }
