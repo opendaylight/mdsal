@@ -67,19 +67,6 @@ public interface AsyncDataTransactionFactory<P extends Path<P>, D> {
     AsyncReadOnlyTransaction<P, D> newReadOnlyTransaction();
 
     /**
-     * Allocates new read-write transaction which provides a mutable view of the data tree.
-     *
-     * <p>
-     * Preconditions for mutation of data tree are captured from the snapshot of data tree state,
-     * when the transaction is allocated. If data was changed during transaction in an incompatible
-     * way then the commit of this transaction will fail. See {@link AsyncWriteTransaction#submit()}
-     * for more details about conflicting and not-conflicting changes and failure scenarios.
-     *
-     * @return new read-write transaction
-     */
-    AsyncReadWriteTransaction<P, D> newReadWriteTransaction();
-
-    /**
      * Allocates new write-only transaction based on latest state of data tree.
      *
      * <p>

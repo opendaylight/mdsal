@@ -14,12 +14,10 @@ import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataReadOnlyTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.mdsal.binding.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
@@ -56,19 +54,6 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
     public ReadOnlyTransaction newReadOnlyTransaction() {
         final DOMDataReadOnlyTransaction delegateTx = delegate.newReadOnlyTransaction();
         return new BindingDOMReadTransactionAdapter(delegateTx, codec);
-    }
-
-    @Override
-    public ReadWriteTransaction newReadWriteTransaction() {
-        final DOMDataReadWriteTransaction delegateTx = delegate.newReadWriteTransaction();
-        return new BindingDOMReadWriteTransactionAdapter(delegateTx, codec) {
-
-            @Override
-            public CheckedFuture<Void, TransactionCommitFailedException> submit() {
-                return listenForFailure(this,super.submit());
-            }
-
-        };
     }
 
     @Override

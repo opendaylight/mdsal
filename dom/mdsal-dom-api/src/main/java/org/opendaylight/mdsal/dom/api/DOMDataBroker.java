@@ -38,12 +38,6 @@ public interface DOMDataBroker extends
      * {@inheritDoc}
      */
     @Override
-    DOMDataReadWriteTransaction newReadWriteTransaction();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     DOMDataWriteTransaction newWriteOnlyTransaction();
 
     /**

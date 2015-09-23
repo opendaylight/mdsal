@@ -18,7 +18,7 @@ import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATI
 import org.opendaylight.mdsal.common.api.AsyncDataChangeEvent;
 import org.opendaylight.mdsal.common.api.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
@@ -56,7 +56,7 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataChangeListe
         final TestListener fooListener = createListener(CONFIGURATION, TOP_FOO, DataChangeScope.SUBTREE);
         final TestListener barListener = createListener(CONFIGURATION, TOP_BAR, DataChangeScope.SUBTREE);
 
-        final ReadWriteTransaction writeTx = getDataBroker().newReadWriteTransaction();
+        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP, top(topLevelList(TOP_BAR_KEY)));
         assertCommit(writeTx.submit());
         final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> top = topListener.event();
@@ -111,7 +111,7 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataChangeListe
         final TestListener fooListener = createListener(CONFIGURATION, TOP_FOO, DataChangeScope.SUBTREE);
         final TestListener barListener = createListener(CONFIGURATION, TOP_BAR, DataChangeScope.SUBTREE);
 
-        final ReadWriteTransaction writeTx = getDataBroker().newReadWriteTransaction();
+        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.merge(CONFIGURATION, TOP, top(topLevelList(TOP_BAR_KEY)));
         assertCommit(writeTx.submit());
 
@@ -125,7 +125,7 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataChangeListe
         final TestListener fooListener = createListener(CONFIGURATION, TOP_FOO, DataChangeScope.SUBTREE);
         final TestListener barListener = createListener(CONFIGURATION, TOP_BAR, DataChangeScope.SUBTREE);
 
-        final ReadWriteTransaction writeTx = getDataBroker().newReadWriteTransaction();
+        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, TOP_BAR, topLevelList(TOP_BAR_KEY));
         assertCommit(writeTx.submit());
 
@@ -139,7 +139,7 @@ public class ListInsertionDataChangeListenerTest extends AbstractDataChangeListe
         final TestListener fooListener = createListener(CONFIGURATION, TOP_FOO, DataChangeScope.SUBTREE);
         final TestListener barListener = createListener(CONFIGURATION, TOP_BAR, DataChangeScope.SUBTREE);
 
-        final ReadWriteTransaction writeTx = getDataBroker().newReadWriteTransaction();
+        final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.merge(CONFIGURATION, TOP_BAR, topLevelList(TOP_BAR_KEY));
         assertCommit(writeTx.submit());
 
