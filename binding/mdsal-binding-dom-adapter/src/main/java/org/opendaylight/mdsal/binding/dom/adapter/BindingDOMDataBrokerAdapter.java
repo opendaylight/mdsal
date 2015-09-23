@@ -19,7 +19,6 @@ import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import com.google.common.collect.ClassToInstanceMap;
@@ -62,14 +61,8 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
     }
 
     @Override
-
     public ReadOnlyTransaction newReadOnlyTransaction() {
         return new BindingDOMReadTransactionAdapter(getDelegate().newReadOnlyTransaction(),getCodec());
-    }
-
-    @Override
-    public ReadWriteTransaction newReadWriteTransaction() {
-        return new BindingDOMReadWriteTransactionAdapter(getDelegate().newReadWriteTransaction(),getCodec());
     }
 
     @Override
