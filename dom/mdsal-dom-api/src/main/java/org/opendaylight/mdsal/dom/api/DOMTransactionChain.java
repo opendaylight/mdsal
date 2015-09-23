@@ -28,9 +28,6 @@ public interface DOMTransactionChain extends TransactionChain<YangInstanceIdenti
     DOMDataReadOnlyTransaction newReadOnlyTransaction();
 
     @Override
-    DOMDataReadWriteTransaction newReadWriteTransaction();
-
-    @Override
     DOMDataWriteTransaction newWriteOnlyTransaction();
 
 }

@@ -19,7 +19,6 @@ import org.opendaylight.yangtools.concepts.Path;
  * <ul>
  * <li>{@link AsyncReadTransaction} - Read capabilities, user is able to read data from data tree</li>
  * <li>{@link AsyncWriteTransaction} - Write capabilities, user is able to propose changes to data tree</li>
- * <li>{@link AsyncReadWriteTransaction} - Read and Write capabilities, user is able to read state and to propose changes of state.</li>
  * </ul>
  *
  * <b>Implementation Note:</b> This interface is not intended to be implemented
@@ -28,11 +27,10 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <P> Type of path (subtree identifier), which represents location in tree
  * @param <D> Type of data (payload), which represents data payload
  */
-public interface AsyncTransaction<P extends Path<P>,D> extends //
-    Identifiable<Object> {
+public interface AsyncTransaction<P extends Path<P>,D> extends Identifiable<Object> {
 
     @Override
-    public Object getIdentifier();
+    Object getIdentifier();
 
 
 }

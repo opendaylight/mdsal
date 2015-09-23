@@ -20,7 +20,6 @@ import org.opendaylight.yangtools.concepts.Path;
  * <ul>
  * <li>Read-Only - allocated using {@link #newReadOnlyTransaction()}
  * <li>Write-Only - allocated using {@link #newWriteOnlyTransaction()}
- * <li>Read-Write - allocated using {@link #newReadWriteTransaction()}
  * </ul>
  *
  * <p>
@@ -29,8 +28,8 @@ import org.opendaylight.yangtools.concepts.Path;
  *
  * <p>
  * For a detailed explanation of how transaction are isolated and how transaction-local changes are
- * committed to global data tree, see {@link AsyncReadTransaction}, {@link AsyncWriteTransaction},
- * {@link AsyncReadWriteTransaction} and {@link AsyncWriteTransaction#submit()}.
+ * committed to global data tree, see {@link AsyncReadTransaction}, {@link AsyncWriteTransaction}
+ * and {@link AsyncWriteTransaction#submit()}.
  *
  *
  * <p>
@@ -47,7 +46,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <P> Type of path (subtree identifier), which represents location in tree
  * @param <D> Type of data (payload), which represents data payload
  */
-public interface AsyncDataBroker<P extends Path<P>, D, L extends AsyncDataChangeListener<P, D>> extends //
+public interface AsyncDataBroker<P extends Path<P>, D, L extends AsyncDataChangeListener<P, D>> extends
         AsyncDataTransactionFactory<P, D> {
 
     /**
@@ -123,19 +122,14 @@ public interface AsyncDataBroker<P extends Path<P>, D, L extends AsyncDataChange
      * {@inheritDoc}
      */
     @Override
-    public AsyncReadOnlyTransaction<P, D> newReadOnlyTransaction();
+    AsyncReadOnlyTransaction<P, D> newReadOnlyTransaction();
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public AsyncReadWriteTransaction<P, D> newReadWriteTransaction();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public AsyncWriteTransaction<P, D> newWriteOnlyTransaction();
+    AsyncWriteTransaction<P, D> newWriteOnlyTransaction();
 
     /**
      * Registers a {@link AsyncDataChangeListener} to receive
