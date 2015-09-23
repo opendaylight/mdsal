@@ -34,7 +34,7 @@ class LazyDataTreeModification<T extends DataObject> implements DataTreeModifica
     private final DataObjectModification<T> rootNode;
 
     LazyDataTreeModification(final LogicalDatastoreType datastoreType, final InstanceIdentifier<T> path, final BindingCodecTreeNode<T> codec, final DataTreeCandidate domChange) {
-        this.path = new DataTreeIdentifier<>(datastoreType, path);
+        this.path = DataTreeIdentifier.create(datastoreType, path);
         this.rootNode = LazyDataObjectModification.create(codec, domChange.getRootNode());
     }
 

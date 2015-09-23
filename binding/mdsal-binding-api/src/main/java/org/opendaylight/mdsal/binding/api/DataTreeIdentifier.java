@@ -7,11 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import javax.annotation.Nonnull;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -26,9 +25,14 @@ public final class DataTreeIdentifier<T extends DataObject> implements Immutable
     private final InstanceIdentifier<T> rootIdentifier;
     private final LogicalDatastoreType datastoreType;
 
-    public DataTreeIdentifier(final LogicalDatastoreType datastoreType, final InstanceIdentifier<T> rootIdentifier) {
+    private DataTreeIdentifier(final LogicalDatastoreType datastoreType, final InstanceIdentifier<T> rootIdentifier) {
         this.datastoreType = Preconditions.checkNotNull(datastoreType);
         this.rootIdentifier = Preconditions.checkNotNull(rootIdentifier);
+    }
+
+    public static <T extends DataObject> DataTreeIdentifier<T> create(final LogicalDatastoreType datastoreType,
+            final InstanceIdentifier<T> rootIdentifier) {
+        return new DataTreeIdentifier<>(datastoreType, rootIdentifier);
     }
 
     /**

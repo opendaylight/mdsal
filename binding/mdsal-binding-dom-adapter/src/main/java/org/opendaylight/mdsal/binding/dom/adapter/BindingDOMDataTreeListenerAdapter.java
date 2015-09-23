@@ -58,7 +58,7 @@ public class BindingDOMDataTreeListenerAdapter implements DOMDataTreeListener {
         for (final Entry<DOMDataTreeIdentifier, NormalizedNode<?, ?>> domEntry : domSubtrees.entrySet()) {
             final Entry<InstanceIdentifier<?>, DataObject> bindingEntry =
                     codec.fromNormalizedNode(domEntry.getKey().getRootIdentifier(), domEntry.getValue());
-            ret.put(new DataTreeIdentifier<>(store, bindingEntry.getKey()), bindingEntry.getValue());
+            ret.put(DataTreeIdentifier.create(store, bindingEntry.getKey()), bindingEntry.getValue());
         }
         return ret;
     }

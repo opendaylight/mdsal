@@ -53,7 +53,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     private static final InstanceIdentifier<TopLevelList> BAR_PATH = path(TOP_BAR_KEY);
     private static final PathArgument BAR_ARGUMENT = Iterables.getLast(BAR_PATH.getPathArguments());
     private static final TopLevelList BAR_DATA = topLevelList(TOP_BAR_KEY);
-private static final DataTreeIdentifier<Top> TOP_IDENTIFIER = new DataTreeIdentifier<Top>(LogicalDatastoreType.OPERATIONAL,
+    private static final DataTreeIdentifier<Top> TOP_IDENTIFIER = DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
             TOP_PATH);
 
     private static final Top TOP_INITIAL_DATA = top(FOO_DATA);
@@ -115,7 +115,7 @@ private static final DataTreeIdentifier<Top> TOP_IDENTIFIER = new DataTreeIdenti
     @Test
     public void testWildcardedListListener() throws Exception {
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
-        final DataTreeIdentifier<TopLevelList> wildcard = new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
+        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
         dataBrokerImpl.registerDataTreeChangeListener(wildcard, listener);
 
         putTx(TOP_PATH, TOP_INITIAL_DATA).submit().checkedGet();
