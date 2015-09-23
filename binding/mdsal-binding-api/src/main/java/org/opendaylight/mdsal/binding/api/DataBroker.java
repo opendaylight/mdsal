@@ -25,7 +25,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @see AsyncDataBroker
  * @see TransactionChainFactory
  */
-public interface DataBroker extends  AsyncDataBroker<InstanceIdentifier<?>, DataObject, DataChangeListener>,
+public interface DataBroker extends  AsyncDataBroker<InstanceIdentifier<?>, DataObject>,
     TransactionChainFactory<InstanceIdentifier<?>, DataObject>, TransactionFactory, BindingService, DataTreeChangeService {
     /**
      * {@inheritDoc}
@@ -38,13 +38,6 @@ public interface DataBroker extends  AsyncDataBroker<InstanceIdentifier<?>, Data
      */
     @Override
     WriteTransaction newWriteOnlyTransaction();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    ListenerRegistration<DataChangeListener> registerDataChangeListener(LogicalDatastoreType store,
-            InstanceIdentifier<?> path, DataChangeListener listener, DataChangeScope triggeringScope);
 
     /**
      * {@inheritDoc}
