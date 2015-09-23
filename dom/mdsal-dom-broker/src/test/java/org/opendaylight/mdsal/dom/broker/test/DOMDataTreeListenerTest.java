@@ -27,7 +27,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ForwardingExecutorService;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -136,7 +136,7 @@ public class DOMDataTreeListenerTest {
         final ListenerRegistration<TestDataTreeListener> listenerReg =
                 dataTreeChangeService.registerDataTreeChangeListener(ROOT_DATA_TREE_ID, listener);
 
-        final DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.submit();
 
@@ -161,7 +161,7 @@ public class DOMDataTreeListenerTest {
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
-        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.submit().checkedGet();
 
@@ -201,7 +201,7 @@ public class DOMDataTreeListenerTest {
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
-        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.submit().checkedGet();
 
@@ -242,7 +242,7 @@ public class DOMDataTreeListenerTest {
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
-        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.submit().checkedGet();
 
@@ -287,7 +287,7 @@ public class DOMDataTreeListenerTest {
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
-        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.submit().checkedGet();
 
@@ -328,7 +328,7 @@ public class DOMDataTreeListenerTest {
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
-        DOMDataWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
         writeTx.submit().checkedGet();
 

@@ -13,17 +13,17 @@ import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.CheckedFuture;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
- * Utility {@link DOMDataWriteTransaction} implementation which forwards all interface
+ * Utility {@link DOMDataTreeWriteTransaction} implementation which forwards all interface
  * method invocation to a delegate instance.
  */
-public abstract class ForwardingDOMDataWriteTransaction extends ForwardingObject implements DOMDataWriteTransaction {
+public abstract class ForwardingDOMDataWriteTransaction extends ForwardingObject implements DOMDataTreeWriteTransaction {
     @Override
-    protected abstract @Nonnull DOMDataWriteTransaction delegate();
+    protected abstract @Nonnull DOMDataTreeWriteTransaction delegate();
 
     @Override
     public Object getIdentifier() {
