@@ -21,11 +21,17 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 /**
  * Modified Data Object.
  *
- * Represents modification of Data Object.
+ * Represents modification of Data Object
+ * .
+ * @param <T> Type of modified object
  *
  */
 public interface DataObjectModification<T extends DataObject> extends org.opendaylight.yangtools.concepts.Identifiable<PathArgument> {
 
+    /**
+     * Represents type of modification which has occured.
+     *
+     */
     enum ModificationType {
         /**
          *
@@ -88,6 +94,17 @@ public interface DataObjectModification<T extends DataObject> extends org.openda
      * @return unmodifiable collection of modified direct children.
      */
     @Nonnull Collection<DataObjectModification<? extends DataObject>> getModifiedChildren();
+    
+    
+    /**
+     * Returns child list item modification if {@code child} was modified by this modification.
+     *
+     * @param childType Type of list item - must be list item with key
+     * @return Modification of {@code child} if {@code child} was modified, null otherwise.
+     * @throws IllegalArgumentException If supplied {@code childType} class is not valid child according
+     *         to generated model.
+     */
+    <C extends ChildOf<? super T>> Collection<DataObjectModification<C>> getModifiedChildren(@Nonnull Class<C> childType);
 
     /**
      * Returns container child modification if {@code child} was modified by this
