@@ -133,8 +133,8 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * Whether or not the commit is successful is determined by versioning of the data tree and
      * validation of registered commit participants if the transaction changes the data tree.
      * <p>
-     * The effects of a successful commit of data depends on data change listeners (
-     * {@link AsyncDataChangeListener}) and commit participants that are registered with the data
+     * The effects of a successful commit of data depends on listeners 
+     * and commit participants that are registered with the data
      * broker.
      * <p>
      * <h3>Example usage:</h3>
