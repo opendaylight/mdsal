@@ -13,8 +13,8 @@ import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataChangeListener;
-import org.opendaylight.mdsal.dom.api.DOMDataReadOnlyTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import com.google.common.collect.ForwardingObject;
 import java.util.Map;
@@ -38,12 +38,12 @@ public abstract class ForwardingDOMDataBroker extends ForwardingObject implement
     }
 
     @Override
-    public DOMDataReadOnlyTransaction newReadOnlyTransaction() {
+    public DOMDataTreeReadTransaction newReadOnlyTransaction() {
         return delegate().newReadOnlyTransaction();
     }
 
     @Override
-    public DOMDataWriteTransaction newWriteOnlyTransaction() {
+    public DOMDataTreeWriteTransaction newWriteOnlyTransaction() {
         return delegate().newWriteOnlyTransaction();
     }
 

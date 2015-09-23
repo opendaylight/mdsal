@@ -11,7 +11,7 @@ import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 
-import org.opendaylight.mdsal.dom.api.DOMDataReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
@@ -57,7 +57,7 @@ abstract class AbstractForwardedTransaction<T extends AsyncTransaction<YangInsta
     }
 
     protected final <D extends DataObject> CheckedFuture<Optional<D>,ReadFailedException> doRead(
-            final DOMDataReadTransaction readTx, final LogicalDatastoreType store,
+            final DOMDataTreeReadTransaction readTx, final LogicalDatastoreType store,
             final InstanceIdentifier<D> path) {
         Preconditions.checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 

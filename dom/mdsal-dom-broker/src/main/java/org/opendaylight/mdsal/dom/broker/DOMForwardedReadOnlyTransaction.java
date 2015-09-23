@@ -11,7 +11,7 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
 
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
-import org.opendaylight.mdsal.dom.api.DOMDataReadOnlyTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import java.util.Map;
@@ -26,7 +26,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  */
 class DOMForwardedReadOnlyTransaction extends
         AbstractDOMForwardedCompositeTransaction<LogicalDatastoreType, DOMStoreReadTransaction> implements
-        DOMDataReadOnlyTransaction {
+        DOMDataTreeReadTransaction {
 
     protected DOMForwardedReadOnlyTransaction(final Object identifier,
             final Map<LogicalDatastoreType, DOMStoreReadTransaction> backingTxs) {

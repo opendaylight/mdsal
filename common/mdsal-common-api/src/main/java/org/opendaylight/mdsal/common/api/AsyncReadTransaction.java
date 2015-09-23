@@ -54,6 +54,12 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <D> Type of data (payload), which represents data payload
  *
  */
-public interface AsyncReadTransaction<P extends Path<P>, D> extends AsyncTransaction<P, D> {
+public interface AsyncReadTransaction<P extends Path<P>, D> extends AsyncTransaction<P, D>, AutoCloseable {
 
+    /**
+     * Closes this transaction and releases all resources associated with it.
+     *
+     */
+    @Override
+    public void close();
 }

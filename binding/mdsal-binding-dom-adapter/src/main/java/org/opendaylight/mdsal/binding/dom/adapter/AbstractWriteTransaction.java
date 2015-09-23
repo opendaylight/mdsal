@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
@@ -24,9 +24,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 /**
  *
  * Abstract Base Transaction for transactions which are backed by
- * {@link DOMDataWriteTransaction}
+ * {@link DOMDataTreeWriteTransaction}
  */
-public abstract class AbstractWriteTransaction<T extends DOMDataWriteTransaction> extends
+public abstract class AbstractWriteTransaction<T extends DOMDataTreeWriteTransaction> extends
         AbstractForwardedTransaction<T> {
 
     protected AbstractWriteTransaction(final T delegate, final BindingToNormalizedNodeCodec codec) {

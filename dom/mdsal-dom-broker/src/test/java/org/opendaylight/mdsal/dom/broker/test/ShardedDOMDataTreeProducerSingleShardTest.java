@@ -25,7 +25,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.broker.ShardedDOMDataTree;
 import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
@@ -92,7 +92,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
 
     @Test
     public void closeWithTxSubmitted() throws DOMDataTreeProducerException {
-        DOMDataWriteTransaction tx = producer.createTransaction(false);
+        DOMDataTreeWriteTransaction tx = producer.createTransaction(false);
         tx.submit();
         producer.close();
     }
@@ -121,7 +121,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     public void writeChildProducerDataToParentTx() {
         DOMDataTreeProducer childProducer = producer.createProducer(SUBTREES_TEST);
         assertNotNull(childProducer);
-        DOMDataWriteTransaction parentTx = producer.createTransaction(true);
+        DOMDataTreeWriteTransaction parentTx = producer.createTransaction(true);
         parentTx.put(TEST_ID.getDatastoreType(), TEST_ID.getRootIdentifier(),
                 ImmutableNodes.containerNode(TestModel.TEST_QNAME));
     }

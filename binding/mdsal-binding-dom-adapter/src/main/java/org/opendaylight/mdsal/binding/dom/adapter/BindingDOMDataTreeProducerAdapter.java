@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 
 class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
 
@@ -33,8 +33,8 @@ class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
 
     @Override
     public WriteTransaction createTransaction(final boolean isolated) {
-        final DOMDataWriteTransaction domTx = delegate.createTransaction(isolated);
-        return new BindingDOMWriteTransactionAdapter<DOMDataWriteTransaction>(domTx, codec);
+        final DOMDataTreeWriteTransaction domTx = delegate.createTransaction(isolated);
+        return new BindingDOMWriteTransactionAdapter<DOMDataTreeWriteTransaction>(domTx, codec);
     }
 
     static DataTreeProducer create(final DOMDataTreeProducer domProducer,

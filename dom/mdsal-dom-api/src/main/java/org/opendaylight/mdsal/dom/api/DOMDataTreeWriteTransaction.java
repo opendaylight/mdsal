@@ -18,7 +18,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * <p>
  * For more information on usage and examples, please see the documentation in {@link AsyncWriteTransaction}.
  */
-public interface DOMDataWriteTransaction extends AsyncWriteTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>> {
+public interface DOMDataTreeWriteTransaction extends AsyncWriteTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>> {
 
     /**
      * Stores a piece of data at the specified path. This acts as an add / replace

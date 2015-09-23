@@ -22,7 +22,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @NotThreadSafe
-final class ShardedDOMDataWriteTransaction implements DOMDataWriteTransaction {
+final class ShardedDOMDataWriteTransaction implements DOMDataTreeWriteTransaction {
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataWriteTransaction.class);
     private static final AtomicLong COUNTER = new AtomicLong();
     private final Map<DOMDataTreeIdentifier, DOMStoreWriteTransaction> idToTransaction;

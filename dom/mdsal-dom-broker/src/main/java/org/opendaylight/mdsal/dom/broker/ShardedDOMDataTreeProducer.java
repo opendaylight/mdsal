@@ -27,7 +27,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
-import org.opendaylight.mdsal.dom.api.DOMDataWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
@@ -43,7 +43,7 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     @GuardedBy("this")
     private Map<DOMDataTreeIdentifier, DOMDataTreeProducer> children = Collections.emptyMap();
     @GuardedBy("this")
-    private DOMDataWriteTransaction openTx;
+    private DOMDataTreeWriteTransaction openTx;
     @GuardedBy("this")
     private boolean closed;
 
@@ -95,7 +95,7 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     }
 
     @Override
-    public synchronized DOMDataWriteTransaction createTransaction(final boolean isolated) {
+    public synchronized DOMDataTreeWriteTransaction createTransaction(final boolean isolated) {
         Preconditions.checkState(!closed, "Producer is already closed");
         Preconditions.checkState(openTx == null, "Transaction %s is still open", openTx);
 
