@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_887219e4",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/DataObjectModification.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-09-25T08:07:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_c1a9d125",
+      "revId": "d50add4ec7360398561f3d21b3725a802760a2a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_e1a64d53",
         "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/LazyDataObjectModification.java",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_287745d6",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/LazyDataObjectModification.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-09-25T08:07:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_e1a64d53",
+      "revId": "d50add4ec7360398561f3d21b3725a802760a2a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_8163d919",
         "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/LazyDataObjectModification.java",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2015-09-24T17:46:04Z",
       "side": 1,
       "message": "spaces",
+      "revId": "d50add4ec7360398561f3d21b3725a802760a2a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_487401cf",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/LazyDataObjectModification.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-09-25T08:07:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_8163d919",
       "revId": "d50add4ec7360398561f3d21b3725a802760a2a7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
