@@ -8,11 +8,10 @@
 package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
 
 import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Objects;
 import org.opendaylight.yangtools.binding.generator.util.AbstractBaseType;
 import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
 import org.opendaylight.yangtools.sal.binding.model.api.type.builder.AnnotationTypeBuilder;
@@ -79,9 +78,8 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result
-                + ((packageName == null) ? 0 : packageName.hashCode());
+        result = prime * result + Objects.hashCode(name);
+        result = prime * result + Objects.hashCode(packageName);
         return result;
     }
 
@@ -211,9 +209,8 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((name == null) ? 0 : name.hashCode());
-            result = prime * result
-                    + ((packageName == null) ? 0 : packageName.hashCode());
+            result = prime * result + Objects.hashCode(name);
+            result = prime * result + Objects.hashCode(packageName);
             return result;
         }
 
@@ -301,7 +298,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + Objects.hashCode(name);
             return result;
         }
 

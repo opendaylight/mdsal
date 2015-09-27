@@ -9,7 +9,7 @@ package org.opendaylight.yangtools.binding.generator.util.generated.type.builder
 
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Objects;
 import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
@@ -55,9 +55,9 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-        result = prime * result + ((getReturnType() == null) ? 0 : getReturnType().hashCode());
+        result = prime * result + Objects.hashCode(getName());
+        result = prime * result + Objects.hashCode(parameters);
+        result = prime * result + Objects.hashCode(getReturnType());
         return result;
     }
 

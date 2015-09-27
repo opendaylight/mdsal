@@ -9,11 +9,10 @@ package org.opendaylight.yangtools.binding.generator.util.generated.type.builder
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Objects;
 import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
 import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
@@ -126,9 +125,8 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result
-                + ((getReturnType() == null) ? 0 : getReturnType().hashCode());
+        result = prime * result + Objects.hashCode(getName());
+        result = prime * result + Objects.hashCode(getReturnType());
         return result;
     }
 

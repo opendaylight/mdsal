@@ -7,6 +7,7 @@
  */
 package org.opendaylight.yangtools.binding.generator.util;
 
+import java.util.Objects;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 
 /**
@@ -69,8 +70,8 @@ public class AbstractBaseType implements Type {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((packageName == null) ? 0 : packageName.hashCode());
+        result = prime * result + Objects.hashCode(name);
+        result = prime * result + Objects.hashCode(packageName);
         return result;
     }
 
