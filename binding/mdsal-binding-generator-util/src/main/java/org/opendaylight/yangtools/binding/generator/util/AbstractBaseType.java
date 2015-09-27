@@ -55,7 +55,7 @@ public class AbstractBaseType implements Type {
      * @param name
      *            string with the name for this <code>Type</code>
      */
-    protected AbstractBaseType(String pkName, String name) {
+    protected AbstractBaseType(final String pkName, final String name) {
         if (pkName == null) {
             throw new IllegalArgumentException("Package Name for Generated Type cannot be null!");
         }
@@ -76,7 +76,7 @@ public class AbstractBaseType implements Type {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -87,21 +87,7 @@ public class AbstractBaseType implements Type {
             return false;
         }
         Type other = (Type) obj;
-        if (name == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!name.equals(other.getName())) {
-            return false;
-        }
-        if (packageName == null) {
-            if (other.getPackageName() != null) {
-                return false;
-            }
-        } else if (!packageName.equals(other.getPackageName())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(name, other.getName()) && Objects.equals(packageName, other.getPackageName());
     }
 
     @Override

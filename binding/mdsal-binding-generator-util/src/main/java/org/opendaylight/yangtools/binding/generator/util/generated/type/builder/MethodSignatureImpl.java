@@ -61,25 +61,13 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
             return false;
         }
         MethodSignatureImpl other = (MethodSignatureImpl) obj;
-        if (getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!getName().equals(other.getName())) {
+        if (!Objects.equals(getName(), other.getName())) {
             return false;
         }
-        if (params == null) {
-            if (other.params != null) {
-                return false;
-            }
-        } else if (!params.equals(other.params)) {
+        if (!Objects.equals(params, other.params)) {
             return false;
         }
-        if (getReturnType() == null) {
-            if (other.getReturnType() != null) {
-                return false;
-            }
-        } else if (!getReturnType().equals(other.getReturnType())) {
+        if (!Objects.equals(getReturnType(), other.getReturnType())) {
             return false;
         }
         return true;

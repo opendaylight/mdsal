@@ -142,21 +142,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
             return false;
         }
         AbstractTypeMemberBuilder<?> other = (AbstractTypeMemberBuilder<?>) obj;
-        if (getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!getName().equals(other.getName())) {
-            return false;
-        }
-        if (getReturnType() == null) {
-            if (other.getReturnType() != null) {
-                return false;
-            }
-        } else if (!getReturnType().equals(other.getReturnType())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(getName(), other.getName()) && Objects.equals(getReturnType(), other.getReturnType());
     }
 
     @Override

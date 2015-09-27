@@ -73,25 +73,13 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
             return false;
         }
         MethodSignatureBuilderImpl other = (MethodSignatureBuilderImpl) obj;
-        if (getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!getName().equals(other.getName())) {
+        if (!Objects.equals(getName(), other.getName())) {
             return false;
         }
-        if (parameters == null) {
-            if (other.parameters != null) {
-                return false;
-            }
-        } else if (!parameters.equals(other.parameters)) {
+        if (!Objects.equals(parameters, other.parameters)) {
             return false;
         }
-        if (getReturnType() == null) {
-            if (other.getReturnType() != null) {
-                return false;
-            }
-        } else if (!getReturnType().equals(other.getReturnType())) {
+        if (!Objects.equals(getReturnType(), other.getReturnType())) {
             return false;
         }
         return true;

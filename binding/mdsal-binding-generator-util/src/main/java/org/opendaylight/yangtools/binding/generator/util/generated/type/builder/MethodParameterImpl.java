@@ -8,8 +8,8 @@
 package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
 
 import java.util.Objects;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature.Parameter;
+import org.opendaylight.yangtools.sal.binding.model.api.Type;
 
 final class MethodParameterImpl implements Parameter {
 
@@ -34,7 +34,7 @@ final class MethodParameterImpl implements Parameter {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -48,11 +48,11 @@ final class MethodParameterImpl implements Parameter {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -63,26 +63,12 @@ final class MethodParameterImpl implements Parameter {
             return false;
         }
         MethodParameterImpl other = (MethodParameterImpl) obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(name, other.name) && Objects.equals(type, other.type);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override

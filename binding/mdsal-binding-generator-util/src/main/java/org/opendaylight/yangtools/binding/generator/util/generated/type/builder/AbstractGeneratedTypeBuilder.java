@@ -227,21 +227,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
             return false;
         }
         AbstractGeneratedTypeBuilder<?> other = (AbstractGeneratedTypeBuilder<?>) obj;
-        if (getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!getName().equals(other.getName())) {
-            return false;
-        }
-        if (getPackageName() == null) {
-            if (other.getPackageName() != null) {
-                return false;
-            }
-        } else if (!getPackageName().equals(other.getPackageName())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(getName(), other.getName()) && Objects.equals(getPackageName(), other.getPackageName());
     }
 
     public Type getParent() {

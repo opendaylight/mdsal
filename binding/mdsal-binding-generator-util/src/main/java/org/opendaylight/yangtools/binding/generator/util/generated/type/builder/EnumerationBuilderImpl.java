@@ -60,7 +60,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
     }
 
     @Override
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
 
     }
@@ -187,21 +187,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
                 return false;
             }
             EnumPairImpl other = (EnumPairImpl) obj;
-            if (name == null) {
-                if (other.name != null) {
-                    return false;
-                }
-            } else if (!name.equals(other.name)) {
-                return false;
-            }
-            if (value == null) {
-                if (other.value != null) {
-                    return false;
-                }
-            } else if (!value.equals(other.value)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(name, other.name) && Objects.equals(value, other.value);
         }
 
         /*

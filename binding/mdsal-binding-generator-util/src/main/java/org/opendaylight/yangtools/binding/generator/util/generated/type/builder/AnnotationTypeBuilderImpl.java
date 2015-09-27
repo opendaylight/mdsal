@@ -95,21 +95,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
             return false;
         }
         AnnotationTypeBuilderImpl other = (AnnotationTypeBuilderImpl) obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (packageName == null) {
-            if (other.packageName != null) {
-                return false;
-            }
-        } else if (!packageName.equals(other.packageName)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(name, other.name) && Objects.equals(packageName, other.packageName);
     }
 
     @Override
@@ -226,21 +212,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
                 return false;
             }
             AnnotationTypeImpl other = (AnnotationTypeImpl) obj;
-            if (name == null) {
-                if (other.name != null) {
-                    return false;
-                }
-            } else if (!name.equals(other.name)) {
-                return false;
-            }
-            if (packageName == null) {
-                if (other.packageName != null) {
-                    return false;
-                }
-            } else if (!packageName.equals(other.packageName)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(name, other.name) && Objects.equals(packageName, other.packageName);
         }
 
         @Override
@@ -314,14 +286,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
                 return false;
             }
             ParameterImpl other = (ParameterImpl) obj;
-            if (name == null) {
-                if (other.name != null) {
-                    return false;
-                }
-            } else if (!name.equals(other.name)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(name, other.name);
         }
 
         @Override
