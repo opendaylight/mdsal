@@ -7,6 +7,7 @@
  */
 package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
 
+import java.util.Objects;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature.Parameter;
 
@@ -40,8 +41,8 @@ final class MethodParameterImpl implements Parameter {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + Objects.hashCode(name);
+        result = prime * result + Objects.hashCode(type);
         return result;
     }
 

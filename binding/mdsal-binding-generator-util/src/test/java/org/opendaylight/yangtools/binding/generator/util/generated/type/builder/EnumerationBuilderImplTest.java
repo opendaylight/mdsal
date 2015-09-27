@@ -17,14 +17,15 @@ import com.google.common.base.Optional;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
-import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.util.EnumerationType;
 
 public class EnumerationBuilderImplTest {
@@ -220,11 +221,11 @@ public class EnumerationBuilderImplTest {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((qname == null) ? 0 : qname.hashCode());
-            result = prime * result + ((path == null) ? 0 : path.hashCode());
-            result = prime * result + ((unknownNodes == null) ? 0 : unknownNodes.hashCode());
-            result = prime * result + ((name == null) ? 0 : name.hashCode());
-            result = prime * result + ((value == null) ? 0 : value.hashCode());
+            result = prime * result + Objects.hashCode(qname);
+            result = prime * result + Objects.hashCode(path);
+            result = prime * result + Objects.hashCode(unknownNodes);
+            result = prime * result + Objects.hashCode(name);
+            result = prime * result + Objects.hashCode(value);
             return result;
         }
 

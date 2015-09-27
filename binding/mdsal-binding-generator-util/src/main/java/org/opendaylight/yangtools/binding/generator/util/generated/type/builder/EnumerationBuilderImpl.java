@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.opendaylight.yangtools.binding.generator.util.AbstractBaseType;
 import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
 import org.opendaylight.yangtools.sal.binding.model.api.Constant;
@@ -164,8 +165,8 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((name == null) ? 0 : name.hashCode());
-            result = prime * result + ((value == null) ? 0 : value.hashCode());
+            result = prime * result + Objects.hashCode(name);
+            result = prime * result + Objects.hashCode(value);
             return result;
         }
 
