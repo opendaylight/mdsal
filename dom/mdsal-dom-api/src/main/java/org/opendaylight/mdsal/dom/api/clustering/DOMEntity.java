@@ -8,8 +8,10 @@
 package org.opendaylight.mdsal.dom.api.clustering;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.clustering.GenericEntity;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 /**
@@ -21,10 +23,9 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 public class DOMEntity extends GenericEntity<YangInstanceIdentifier> {
     private static final long serialVersionUID = 1L;
 
-    // FIXME: needs update once the model is in
-//    private static final QName ENTITY_QNAME =
-//            org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.core.general.entity.rev150820.Entity.QNAME;
-//    private static final QName ENTITY_NAME = QName.create(ENTITY_QNAME, "name");
+    static final QName ENTITY = QName.create(
+            "urn:opendaylight:params:xml:ns:yang:mdsal:core:general-entity", "2015-09-30", "entity").intern();
+    static final QName ENTITY_NAME = QName.create(ENTITY, "name").intern();
 
 
     /** Constructs an instance.
@@ -43,9 +44,8 @@ public class DOMEntity extends GenericEntity<YangInstanceIdentifier> {
      * @param type the type of the entity
      * @param entityName the name of the entity used to construct a general-entity YangInstanceIdentifier
      */
-    // FIXME: needs update once the model is in
-//    public DOMEntity(@Nonnull String type, @Nonnull String entityName) {
-//        super(type, YangInstanceIdentifier.builder().node(ENTITY_QNAME).nodeWithKey(ENTITY_QNAME, ENTITY_NAME,
-//                Preconditions.checkNotNull(entityName, "entityName should not be null")).build());
-//    }
+    public DOMEntity(@Nonnull String type, @Nonnull String entityName) {
+        super(type, YangInstanceIdentifier.builder().node(ENTITY).nodeWithKey(ENTITY, ENTITY_NAME,
+                Preconditions.checkNotNull(entityName, "entityName should not be null")).build());
+    }
 }

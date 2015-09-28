@@ -64,6 +64,7 @@
     <feature name='odl-mdsal-binding-api' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Base Concepts'>
         <feature version='${project.version}'>odl-mdsal-common</feature>
         <feature version='${project.version}'>odl-mdsal-binding-base</feature>
+        <bundle>mvn:org.opendaylight.mdsal.model/general-entity/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-util/{{VERSION}}</bundle>
     </feature>
