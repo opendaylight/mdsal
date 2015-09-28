@@ -27,6 +27,7 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType
 import org.opendaylight.yangtools.sal.binding.model.api.Restrictions
 import org.opendaylight.yangtools.sal.binding.model.api.Type
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition
+import org.opendaylight.yangtools.yang.common.QName
 
 /**
  * Template for generating JAVA class.
@@ -438,7 +439,13 @@ class ClassTemplate extends BaseTemplate {
                         «generateStaticInicializationBlock»
                     «ENDIF»
                 «ELSE»
-                    public static final «c.type.importedName» «c.name» = «c.value»;
+                    «IF c.value instanceof QName»
+                        «val qname = c.value as QName»
+                        public static final «c.type.importedName» «c.name» = «QName.name».cachedReference(
+                            «QName.name».create(«qname.namespace.toString», «qname.formattedRevision», «qname.localName»));
+                    «ELSE»
+                        public static final «c.type.importedName» «c.name» = «c.value»;
+                    «ENDIF»
                 «ENDIF»
             «ENDFOR»
         «ENDIF»
