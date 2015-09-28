@@ -8,8 +8,10 @@
 package org.opendaylight.mdsal.binding.api.clustering;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.clustering.GenericEntity;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.EntityKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
@@ -37,10 +39,9 @@ public class Entity extends GenericEntity<InstanceIdentifier<?>> {
      * @param type the type of the entity
      * @param entityName the name of the entity used to construct a general-entity InstanceIdentifier
      */
-    // FIXME: needs to be enabled in a follow-up
-//    public Entity(@Nonnull String type, @Nonnull String entityName) {
-//        super(type, InstanceIdentifier.builder(org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.
-//                ns.yang.controller.md.sal.core.general.entity.rev150820.Entity.class,
-//                    new EntityKey(Preconditions.checkNotNull(entityName, "entityName should not be null"))).build());
-//    }
+    public Entity(@Nonnull String type, @Nonnull String entityName) {
+        super(type, InstanceIdentifier.builder(org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.
+                mdsal.core.general.entity.rev150930.Entity.class,
+                    new EntityKey(Preconditions.checkNotNull(entityName, "entityName should not be null"))).build());
+    }
 }
