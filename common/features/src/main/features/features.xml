@@ -23,7 +23,7 @@
     </feature>
 
     <feature name='odl-mdsal-common' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
-        <feature version='${yangtools.version}'>odl-yangtools-common</feature>
+        <feature version='${project.version}'>odl-mdsal-binding-base</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-common-api/{{VERSION}}</bundle>
     </feature>
 
@@ -63,7 +63,6 @@
 
     <feature name='odl-mdsal-binding-api' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Base Concepts'>
         <feature version='${project.version}'>odl-mdsal-common</feature>
-        <feature version='${project.version}'>odl-mdsal-binding-base</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-util/{{VERSION}}</bundle>
     </feature>
