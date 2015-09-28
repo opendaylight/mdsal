@@ -2192,7 +2192,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
     @VisibleForTesting
     static String replaceAllIllegalChars(final StringBuilder stringBuilder){
-        return UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
+        final String ret = UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
+        return ret.isEmpty() ? "" : ret;
     }
-
 }
