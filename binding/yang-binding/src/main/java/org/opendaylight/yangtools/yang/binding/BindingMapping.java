@@ -10,6 +10,9 @@ package org.opendaylight.yangtools.yang.binding;
 import static com.google.common.base.Preconditions.checkArgument;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 import java.text.SimpleDateFormat;
 import java.util.Set;
@@ -61,6 +64,44 @@ public final class BindingMapping {
         }
     };
 
+    private static final LoadingCache<QNameModule, String> PACKAGE_NAME_CACHE =
+            CacheBuilder.newBuilder().weakValues().build(new CacheLoader<QNameModule, String> () {
+                @Override
+                public String load(final QNameModule key) {
+                    final StringBuilder packageNameBuilder = new StringBuilder();
+
+                    packageNameBuilder.append(BindingMapping.PACKAGE_PREFIX);
+                    packageNameBuilder.append('.');
+
+                    String namespace = key.getNamespace().toString();
+                    namespace = COLON_SLASH_SLASH.matcher(namespace).replaceAll(QUOTED_DOT);
+
+                    final char[] chars = namespace.toCharArray();
+                    for (int i = 0; i < chars.length; ++i) {
+                        switch (chars[i]) {
+                        case '/':
+                        case ':':
+                        case '-':
+                        case '@':
+                        case '$':
+                        case '#':
+                        case '\'':
+                        case '*':
+                        case '+':
+                        case ',':
+                        case ';':
+                        case '=':
+                            chars[i] = '.';
+                        }
+                    }
+
+                    packageNameBuilder.append(chars);
+                    packageNameBuilder.append(".rev");
+                    packageNameBuilder.append(PACKAGE_DATE_FORMAT.get().format(key.getRevision()));
+                    return normalizePackageName(packageNameBuilder.toString());
+                }
+            });
+
     private BindingMapping() {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
     }
@@ -73,38 +114,7 @@ public final class BindingMapping {
         checkArgument(module != null, "Module must not be null");
         checkArgument(module.getRevision() != null, "Revision must not be null");
         checkArgument(module.getNamespace() != null, "Namespace must not be null");
-        final StringBuilder packageNameBuilder = new StringBuilder();
-
-        packageNameBuilder.append(BindingMapping.PACKAGE_PREFIX);
-        packageNameBuilder.append('.');
-
-        String namespace = module.getNamespace().toString();
-        namespace = COLON_SLASH_SLASH.matcher(namespace).replaceAll(QUOTED_DOT);
-
-        final char[] chars = namespace.toCharArray();
-        for (int i = 0; i < chars.length; ++i) {
-            switch (chars[i]) {
-            case '/':
-            case ':':
-            case '-':
-            case '@':
-            case '$':
-            case '#':
-            case '\'':
-            case '*':
-            case '+':
-            case ',':
-            case ';':
-            case '=':
-                chars[i] = '.';
-            }
-        }
-
-        packageNameBuilder.append(chars);
-        packageNameBuilder.append(".rev");
-        packageNameBuilder.append(PACKAGE_DATE_FORMAT.get().format(module.getRevision()));
-        return normalizePackageName(packageNameBuilder.toString());
-
+        return PACKAGE_NAME_CACHE.getUnchecked(module);
     }
 
     public static String normalizePackageName(final String packageName) {
