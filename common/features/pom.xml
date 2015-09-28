@@ -121,5 +121,9 @@
                 <groupId>${project.groupId}.model</groupId>
                 <artifactId>yang-ext</artifactId>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}.model</groupId>
+                <artifactId>general-entity</artifactId>
+            </dependency>
     </dependencies>
 </project>
