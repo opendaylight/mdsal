@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil.computeDefaultSUID;
+import static org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil.packageNameForAugmentedGeneratedType;
 import static org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.yangtools.binding.generator.util.BindingTypes.DATA_OBJECT;
 import static org.opendaylight.yangtools.binding.generator.util.BindingTypes.DATA_ROOT;
@@ -25,10 +26,8 @@ import static org.opendaylight.yangtools.binding.generator.util.Types.typeForCla
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
-
-import com.google.common.base.Optional;
-
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -115,7 +114,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final Splitter BSDOT_SPLITTER = Splitter.on("\\.");
     private static final char NEW_LINE = '\n';
-    private static final String QNAME_FQCN = QName.class.getName();
 
     /**
      * Constant with the concrete name of identifier.
@@ -663,19 +661,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
     private static Constant qnameConstant(final GeneratedTypeBuilderBase<?> toBuilder, final String constantName,
             final QName name) {
-        final StringBuilder sb = new StringBuilder(QNAME_FQCN);
-        sb.append(".cachedReference(");
-        sb.append(QNAME_FQCN);
-        sb.append(".create(");
-        sb.append('"');
-        sb.append(name.getNamespace());
-        sb.append("\",\"");
-        sb.append(name.getFormattedRevision());
-        sb.append("\",\"");
-        sb.append(name.getLocalName());
-        sb.append("\"))");
-
-        return toBuilder.addConstant(typeForClass(QName.class), constantName, sb.toString());
+        return toBuilder.addConstant(typeForClass(QName.class), constantName, name);
     }
 
     /**
@@ -878,8 +864,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             String packageName = augmentPackageName;
             if (usesNodeParent instanceof SchemaNode) {
-                packageName = packageNameForGeneratedType(augmentPackageName, ((SchemaNode) usesNodeParent).getPath(),
-                        true);
+                packageName = packageNameForAugmentedGeneratedType(augmentPackageName, ((SchemaNode) usesNodeParent).getPath());
             }
             addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName, targetTypeBuilder.toInstance(),
                     augSchema);
@@ -1480,7 +1465,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private boolean resolveLeafSchemaNodeAsProperty(final GeneratedTOBuilder toBuilder, final LeafSchemaNode leaf,
             final boolean isReadOnly, final Module module) {
         if ((leaf != null) && (toBuilder != null)) {
-            final String leafName = leaf.getQName().getLocalName();
             String leafDesc = leaf.getDescription();
             if (leafDesc == null) {
                 leafDesc = "";
@@ -1991,7 +1975,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             genTOBuilders.add((((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
                     packageName, typeDef, classNameFromLeaf, parentModule.getName()));
         }
-        if (genTOBuilders != null && !genTOBuilders.isEmpty()) {
+        if (!genTOBuilders.isEmpty()) {
             for (final GeneratedTOBuilder genTOBuilder : genTOBuilders) {
                 typeBuilder.addEnclosingTransferObject(genTOBuilder);
             }
