@@ -25,6 +25,7 @@
 
     <properties>
         <yangtools.version>0.8.0-SNAPSHOT</yangtools.version>
+        <salGeneratorPath>src/main/yang-gen-sal</salGeneratorPath>
 
         <!-- FIXME: these will be upstreamed -->
         <maven.depends.version>1.2</maven.depends.version>
@@ -268,16 +269,16 @@
                                             org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl
                                         </codeGeneratorClass>
                                         <outputBaseDir>
-                                            target/generated-sources/sal
+                                            ${salGeneratorPath}
                                         </outputBaseDir>
                                     </generator>
                                     <generator>
                                         <codeGeneratorClass>org.opendaylight.yangtools.yang.unified.doc.generator.maven.DocumentationGeneratorImpl</codeGeneratorClass>
-                                        <outputBaseDir>target/site/restconf</outputBaseDir>
+                                        <outputBaseDir>target/site/models</outputBaseDir>
                                     </generator>
                                     <generator>
                                         <codeGeneratorClass>org.opendaylight.yangtools.yang.wadl.generator.maven.WadlGenerator</codeGeneratorClass>
-                                        <outputBaseDir>target/site/restconf</outputBaseDir>
+                                        <outputBaseDir>target/site/models</outputBaseDir>
                                     </generator>
                                 </codeGenerators>
                                 <inspectDependencies>true</inspectDependencies>
@@ -341,7 +342,7 @@
                             <configuration>
                                 <sources>
                                     <source>target/generated-sources/parser</source>
-                                    <source>target/generated-sources/sal</source>
+                                    <source>${salGeneratorPath}</source>
                                     <source>${basedir}/src/main/xtend-gen</source>
                                 </sources>
                             </configuration>
@@ -424,6 +425,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>build-helper-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
