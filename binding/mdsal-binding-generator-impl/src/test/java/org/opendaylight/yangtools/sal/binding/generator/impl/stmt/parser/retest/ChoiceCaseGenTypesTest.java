@@ -10,21 +10,19 @@ package org.opendaylight.yangtools.sal.binding.generator.impl.stmt.parser.retest
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.opendaylight.yangtools.sal.binding.generator.impl.stmt.parser.retest.SupportTestUtil.containsMethods;
 import static org.opendaylight.yangtools.sal.binding.generator.impl.stmt.parser.retest.SupportTestUtil.containsInterface;
-
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-
-import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
+import static org.opendaylight.yangtools.sal.binding.generator.impl.stmt.parser.retest.SupportTestUtil.containsMethods;
 import java.io.IOException;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
+import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
 
@@ -32,7 +30,8 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
         super(ChoiceCaseGenTypesTest.class.getResource("/choice-case-type-test-models"));
     }
 
-    private GeneratedType checkGeneratedType(final List<Type> genTypes, final String genTypeName, final String packageName, final int occurences) {
+    private static GeneratedType checkGeneratedType(final List<Type> genTypes, final String genTypeName,
+            final String packageName, final int occurences) {
         GeneratedType searchedGenType = null;
         int searchedGenTypeCounter = 0;
         for (Type type : genTypes) {
@@ -51,7 +50,8 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
 
     }
 
-    private GeneratedType checkGeneratedType(final List<Type> genTypes, final String genTypeName, final String packageName) {
+    private static GeneratedType checkGeneratedType(final List<Type> genTypes, final String genTypeName,
+            final String packageName) {
         return checkGeneratedType(genTypes, genTypeName, packageName, 1);
     }
 
