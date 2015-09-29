@@ -155,16 +155,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private SchemaContext schemaContext;
 
     /**
-     * Create a new binding generator with verboe comments.
-     *
-     * @deprecated Use {@link #BindingGeneratorImpl(boolean)} instead.
-     */
-    @Deprecated
-    public BindingGeneratorImpl() {
-        this(true);
-    }
-
-    /**
      * Create a new binding generator.
      *
      * @param verboseClassComments generate verbose comments
