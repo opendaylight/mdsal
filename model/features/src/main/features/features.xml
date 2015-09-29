@@ -29,6 +29,7 @@
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-topology-isis/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-topology-ospf/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-topology-l3-unicast-igp/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-network-2015-06-08/{{VERSION}}</bundle>
     </feature>
 
 </features>
