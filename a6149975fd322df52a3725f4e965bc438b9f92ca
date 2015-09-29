@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_bda148ab",
+        "filename": "model/ietf/ietf-network/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-09-29T17:33:14Z",
+      "side": 1,
+      "message": "I think what we want to do for versioning is to specify the revision in artifactId and use semver for version.",
+      "revId": "a6149975fd322df52a3725f4e965bc438b9f92ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
