@@ -11,9 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
-
 import com.google.common.io.ByteSource;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
@@ -49,7 +46,7 @@ public class GeneratedTypesLeafrefTest {
         return ctx.getModules();
     }
 
-    private SchemaContext resolveSchemaContextFromFiles(final URI... yangFiles) throws IOException {
+    private static SchemaContext resolveSchemaContextFromFiles(final URI... yangFiles) throws IOException {
         final YangContextParser parser = new YangParserImpl();
 
         final List<File> inputFiles = new ArrayList<File>();
