@@ -312,24 +312,7 @@ class YangTemplate {
     }
 
     def static writeUnknownSchemaNode(UnknownSchemaNode unknownSchemaNode) {
-        if (unknownSchemaNode == null)
-            return ''
-
-        '''
-            anyxml «unknownSchemaNode.QName.localName» {
-                «IF !unknownSchemaNode.description.nullOrEmpty»
-                description
-                    "«unknownSchemaNode.description»";
-                «ENDIF»
-                «IF !unknownSchemaNode.reference.nullOrEmpty»
-                reference
-                    "«unknownSchemaNode.reference»";
-                «ENDIF»
-                «IF unknownSchemaNode.status != null»
-                status «unknownSchemaNode.status»;
-                «ENDIF»
-            }
-        '''
+        return ''
     }
 
     def static writeUsesNodes(Set<UsesNode> usesNodes) {
