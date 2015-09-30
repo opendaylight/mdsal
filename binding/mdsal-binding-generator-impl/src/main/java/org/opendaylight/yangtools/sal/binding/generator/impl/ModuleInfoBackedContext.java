@@ -11,14 +11,14 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteSource;
-
+import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.sal.binding.generator.api.ClassLoadingStrategy;
@@ -28,7 +28,10 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
+import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
@@ -37,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
-        implements ModuleInfoRegistry, SchemaContextProvider {
+        implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
 
     private ModuleInfoBackedContext(final ClassLoadingStrategy loadingStrategy) {
         this.backingLoadingStrategy = loadingStrategy;
@@ -77,6 +80,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
                 recreateSchemaContext();
             }
         }
+
         return cls;
     }
 
@@ -162,6 +166,24 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         resolveModuleInfo(yangModuleInfo);
 
         return registration;
+    }
+
+    @Override public CheckedFuture<? extends YangTextSchemaSource, SchemaSourceException> getSource(
+        final SourceIdentifier sourceIdentifier) {
+        final YangModuleInfo yangModuleInfo = sourceIdentifierToModuleInfo.get(sourceIdentifier);
+
+        if (yangModuleInfo == null) {
+            LOG.debug("Unknown schema source requested: {}, available sources: {}", sourceIdentifier, sourceIdentifierToModuleInfo.keySet());
+            return Futures
+                .immediateFailedCheckedFuture(new SchemaSourceException("Unknown schema source: " + sourceIdentifier));
+        }
+
+        return Futures
+            .immediateCheckedFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier, new ByteSource() {
+                @Override public InputStream openStream() throws IOException {
+                    return yangModuleInfo.getModuleSourceStream();
+                }
+            }));
     }
 
     private static class YangModuleInfoRegistration extends AbstractObjectRegistration<YangModuleInfo> {
