@@ -129,7 +129,12 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     @Override
     public <T extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> toNormalizedNode(
             final InstanceIdentifier<T> path, final T data) {
-        return codecRegistry.toNormalizedNode(path, data);
+        try {
+            return codecRegistry.toNormalizedNode(path, data);
+        } catch (final MissingSchemaException e) {
+            waitForSchema(decompose(path), e);
+            return codecRegistry.toNormalizedNode(path, data);
+        }
     }
 
     /**
