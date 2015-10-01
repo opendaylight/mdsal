@@ -11,14 +11,12 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteSource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.sal.binding.generator.api.ClassLoadingStrategy;
@@ -28,11 +26,9 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
+import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,11 +80,10 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     private synchronized Optional<SchemaContext> recreateSchemaContext() {
         try {
             Collection<ByteSource> streams = getAvailableStreams();
-            CrossSourceStatementReactor.BuildAction reactor = YangInferencePipeline.RFC6020_REACTOR
-                    .newBuild();
-            SchemaContext schemaContext = reactor.buildEffective(streams);
+            YangParserImpl parser = new YangParserImpl();
+            SchemaContext schemaContext = parser.parseSources(streams);
             return Optional.of(schemaContext);
-        } catch (IOException | SourceException | ReactorException e) {
+        } catch (IOException | YangSyntaxErrorException e) {
             LOG.error("Schema was not recreated.", e);
         }
         return Optional.absent();
@@ -194,3 +189,4 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         throw new IllegalStateException("Unable to recreate SchemaContext, error while parsing");
     }
 }
+
