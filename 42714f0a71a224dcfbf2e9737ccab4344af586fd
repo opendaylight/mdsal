@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_2376713f",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/ModuleInfoBackedContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-10-02T11:18:35Z",
+      "side": 1,
+      "message": "Invoke *getModuleSourceStream* here, do not capture allready opened input stream. API Contract of *ByteSource#openStream()* is it allways returns a new instance.\n\nIf shared instance is opened, it may happened that stream is already consumed and read will result in reading 0 bytes.\n\nso code should be more like\n\n\nmoduleInfo \u003d sourceIdentifierToModuleInfo.get(sourceIdentifier)\n\n\n@Override public InputStream openStream() throws IOException {\n    return moduleInfo.getModuleSourceStream()\n}",
+      "range": {
+        "startLine": 177,
+        "startChar": 34,
+        "endLine": 177,
+        "endChar": 54
+      },
+      "revId": "42714f0a71a224dcfbf2e9737ccab4344af586fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
