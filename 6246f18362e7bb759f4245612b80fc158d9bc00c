@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_765bc554",
+        "filename": "model/ietf/ietf-inet-types-2013-07-15/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-10-02T17:20:06Z",
+      "side": 1,
+      "message": "Please use version 1.0.0-SNAPSHOT, since revision is already captured in artifactId 2013-07-15",
+      "range": {
+        "startLine": 13,
+        "startChar": 13,
+        "endLine": 13,
+        "endChar": 34
+      },
+      "revId": "6246f18362e7bb759f4245612b80fc158d9bc00c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
