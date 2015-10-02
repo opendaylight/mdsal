@@ -69,6 +69,14 @@
             <groupId>org.eclipse.xtend</groupId>
             <artifactId>org.eclipse.xtend.lib</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.xtend</groupId>
+            <artifactId>org.eclipse.xtend.lib.macro</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.xtext</groupId>
+            <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -84,12 +92,12 @@
                             {local-packages},
                             org.opendaylight.yangtools.sal.binding.generator.impl,
                         </Export-Package>
+                        <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Dependency>
                             org.eclipse.xtend.lib;inline=true,
                             org.eclipse.xtend.lib.macro;inline=true,
                             org.eclipse.xtext.xbase.lib;inline=true,
                         </Embed-Dependency>
-                        <Embed-Transitive>true</Embed-Transitive>
                     </instructions>
                 </configuration>
             </plugin>
