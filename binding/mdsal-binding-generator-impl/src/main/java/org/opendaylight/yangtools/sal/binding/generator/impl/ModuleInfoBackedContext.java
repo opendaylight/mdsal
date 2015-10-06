@@ -7,16 +7,14 @@
  */
 package org.opendaylight.yangtools.sal.binding.generator.impl;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteSource;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
@@ -32,15 +30,14 @@ import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.model.repo.spi.SchemaSourceProvider;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
+import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
+
+    private final YangTextSchemaContextResolver ctxResolver = YangTextSchemaContextResolver.create("binding-context");
 
     private ModuleInfoBackedContext(final ClassLoadingStrategy loadingStrategy) {
         this.backingLoadingStrategy = loadingStrategy;
@@ -75,52 +72,18 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         }
         Class<?> cls = backingLoadingStrategy.loadClass(fullyQualifiedName);
         if (BindingReflections.isBindingClass(cls)) {
-            boolean newModule = resolveModuleInfo(cls);
-            if (newModule) {
-                recreateSchemaContext();
-            }
+            resolveModuleInfo(cls);
         }
 
         return cls;
-    }
-
-
-    private synchronized Optional<SchemaContext> recreateSchemaContext() {
-        try {
-            Collection<ByteSource> streams = getAvailableStreams();
-            CrossSourceStatementReactor.BuildAction reactor = YangInferencePipeline.RFC6020_REACTOR
-                    .newBuild();
-            SchemaContext schemaContext = reactor.buildEffective(streams);
-            return Optional.of(schemaContext);
-        } catch (IOException | SourceException | ReactorException e) {
-            LOG.error("Schema was not recreated.", e);
-        }
-        return Optional.absent();
     }
 
     // TODO finish schema parsing and expose as SchemaService
     // Unite with current SchemaService
     // Implement remove ModuleInfo to update SchemaContext
 
-    public synchronized Optional<SchemaContext> tryToCreateSchemaContext() {
-        return recreateSchemaContext();
-    }
-
-    private Collection<ByteSource> getAvailableStreams() throws IOException {
-        ImmutableSet<YangModuleInfo> moduleInfos = ImmutableSet.copyOf(sourceIdentifierToModuleInfo.values());
-
-        ImmutableList.Builder<ByteSource> sourceStreams = ImmutableList.<ByteSource> builder();
-        for (final YangModuleInfo moduleInfo : moduleInfos) {
-            sourceStreams.add(new ByteSource() {
-
-                @Override
-                public InputStream openStream() throws IOException {
-                    return moduleInfo.getModuleSourceStream();
-                }
-            });
-            ;
-        }
-        return sourceStreams.build();
+    public Optional<SchemaContext> tryToCreateSchemaContext() {
+        return ctxResolver.getSchemaContext();
     }
 
     private boolean resolveModuleInfo(final Class<?> cls) {
@@ -136,17 +99,37 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         SourceIdentifier identifier = sourceIdentifierFrom(moduleInfo);
         YangModuleInfo previous = sourceIdentifierToModuleInfo.putIfAbsent(identifier, moduleInfo);
         ClassLoader moduleClassLoader = moduleInfo.getClass().getClassLoader();
-        if (previous == null) {
-            String modulePackageName = moduleInfo.getClass().getPackage().getName();
-            packageNameToClassLoader.putIfAbsent(modulePackageName, new WeakReference<ClassLoader>(moduleClassLoader));
-
-            for (YangModuleInfo importedInfo : moduleInfo.getImportedModules()) {
-                resolveModuleInfo(importedInfo);
+        try {
+            if (previous == null) {
+                String modulePackageName = moduleInfo.getClass().getPackage().getName();
+                packageNameToClassLoader.putIfAbsent(modulePackageName,
+                        new WeakReference<ClassLoader>(moduleClassLoader));
+                ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo));
+                for (YangModuleInfo importedInfo : moduleInfo.getImportedModules()) {
+                    resolveModuleInfo(importedInfo);
+                }
+            } else {
+                return false;
             }
-        } else {
-            return false;
+        } catch (Exception e) {
+            LOG.error("Not including {} in YANG sources because of error.", moduleInfo, e);
         }
         return true;
+    }
+
+    private YangTextSchemaSource toYangTextSource(SourceIdentifier identifier, final YangModuleInfo moduleInfo) {
+        return new YangTextSchemaSource(identifier) {
+
+            @Override
+            public InputStream openStream() throws IOException {
+                return moduleInfo.getModuleSourceStream();
+            }
+
+            @Override
+            protected ToStringHelper addToStringAttributes(ToStringHelper toStringHelper) {
+                return toStringHelper;
+            }
+        };
     }
 
     private static SourceIdentifier sourceIdentifierFrom(final YangModuleInfo moduleInfo) {
@@ -162,9 +145,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     @Override
     public ObjectRegistration<YangModuleInfo> registerModuleInfo(final YangModuleInfo yangModuleInfo) {
         YangModuleInfoRegistration registration = new YangModuleInfoRegistration(yangModuleInfo, this);
-
         resolveModuleInfo(yangModuleInfo);
-
         return registration;
     }
 
