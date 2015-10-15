@@ -91,6 +91,30 @@
       "revId": "4b575a2c739d22671d15b1f0386a98cd79256a7e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fad0f9df_38b011f4",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntityOwnershipListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2015-10-15T14:48:19Z",
+      "side": 1,
+      "message": "No - we only allow one candidate per process. This made it easier, plus we didn\u0027t see a use case for multiple candidates, especially since candidates are scoped to entity type and path. So entity type itself differentiates, e.g., OF entities/candidates vs netconf entities/candidates. Multiple candidates per entity type and path would mean, e.g., 2 OF components vying for ownership - this didn\u0027t seem to make sense.",
+      "parentUuid": "fad0f9df_15b076dc",
+      "range": {
+        "startLine": 31,
+        "startChar": 97,
+        "endLine": 32,
+        "endChar": 42
+      },
+      "revId": "4b575a2c739d22671d15b1f0386a98cd79256a7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
