@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "fad0f9df_bbb5db32",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntityOwnershipChange.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-10-15T17:46:08Z",
+      "side": 1,
+      "message": "PUblished typos.",
+      "parentUuid": "fad0f9df_b8ff21aa",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 90
+      },
+      "revId": "4b575a2c739d22671d15b1f0386a98cd79256a7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fad0f9df_18266d69",
         "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntityOwnershipChange.java",
         "patchSetId": 6
