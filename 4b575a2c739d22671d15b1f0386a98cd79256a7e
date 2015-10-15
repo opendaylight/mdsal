@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fad0f9df_98025db3",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/EntityOwnershipState.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-10-15T14:28:39Z",
+      "side": 1,
+      "message": "Could we change this to enum? which will still provides following fields,\nbut to capture all correct states?\n\nIS_OWNER(true,true)\nHAS_OWNER(false,true)\nNO_OWNER(false,false)\n\nThis would allow people to use switch statement instead of series of if else if",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 35
+      },
+      "revId": "4b575a2c739d22671d15b1f0386a98cd79256a7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fad0f9df_b8ff21aa",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntityOwnershipChange.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-10-15T14:28:39Z",
+      "side": 1,
+      "message": "Ha",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 90
+      },
+      "revId": "4b575a2c739d22671d15b1f0386a98cd79256a7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fad0f9df_18266d69",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntityOwnershipChange.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-10-15T14:28:39Z",
+      "side": 1,
+      "message": "Could  we decompose this into entity and ENUM describing changes\n\nOWNERSHIP_LOST_NEW_OWNER(wasOwner\u003dtrue;isOwner\u003dfalse,hasOwner\u003dtrue)\nOWNERSHIP_LOST_NO_OWNER(wasOwner\u003dtrue,isOwner\u003dfalse,hasOwner\u003dfalse)\nOWNERSHIP_GRANTED(wasOwner\u003dfalse;isOwner\u003dtrue,hasOwner\u003dtrue)\n\nThis would allow for using switch instead of if else series",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 34,
+        "endChar": 5
+      },
+      "revId": "4b575a2c739d22671d15b1f0386a98cd79256a7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fad0f9df_15b076dc",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntityOwnershipListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-10-15T14:28:39Z",
+      "side": 1,
+      "message": "Why this is bound to process? Could not be there more candidates in single JVM for same entity?",
+      "range": {
+        "startLine": 31,
+        "startChar": 97,
+        "endLine": 32,
+        "endChar": 42
+      },
+      "revId": "4b575a2c739d22671d15b1f0386a98cd79256a7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
