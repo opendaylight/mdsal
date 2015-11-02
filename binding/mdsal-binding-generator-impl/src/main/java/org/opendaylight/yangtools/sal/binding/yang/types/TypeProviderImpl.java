@@ -11,7 +11,6 @@ import static org.opendaylight.yangtools.binding.generator.util.BindingGenerator
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
@@ -78,7 +77,6 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.EnumerationType;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.Int16;
@@ -696,8 +694,7 @@ public final class TypeProviderImpl implements TypeProvider {
             }
             final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
 
-            final DataNodeIterator it = new DataNodeIterator(module);
-            final List<TypeDefinition<?>> typeDefinitions = it.allTypedefs();
+            final List<TypeDefinition<?>> typeDefinitions = TypedefResolver.getAllTypedefs(module);
             final List<TypeDefinition<?>> listTypeDefinitions = sortTypeDefinitionAccordingDepth(typeDefinitions);
 
             if ((listTypeDefinitions != null) && (basePackageName != null)) {
