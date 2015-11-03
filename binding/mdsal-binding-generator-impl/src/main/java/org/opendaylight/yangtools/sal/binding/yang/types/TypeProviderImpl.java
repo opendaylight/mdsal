@@ -689,17 +689,16 @@ public final class TypeProviderImpl implements TypeProvider {
         }
 
         for (final Module module : modulesSortedByDependency) {
-            if (module == null) {
-                continue;
-            }
-            final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
-
-            final List<TypeDefinition<?>> typeDefinitions = TypedefResolver.getAllTypedefs(module);
-            final List<TypeDefinition<?>> listTypeDefinitions = sortTypeDefinitionAccordingDepth(typeDefinitions);
-
-            if ((listTypeDefinitions != null) && (basePackageName != null)) {
-                for (final TypeDefinition<?> typedef : listTypeDefinitions) {
-                    typedefToGeneratedType(basePackageName, module, typedef);
+            if (module != null) {
+                final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
+                if (basePackageName != null) {
+                    final List<TypeDefinition<?>> typeDefinitions = TypedefResolver.getAllTypedefs(module);
+                    final List<TypeDefinition<?>> listTypeDefinitions = sortTypeDefinitionAccordingDepth(typeDefinitions);
+                    if (listTypeDefinitions != null) {
+                        for (final TypeDefinition<?> typedef : listTypeDefinitions) {
+                            typedefToGeneratedType(basePackageName, module, typedef);
+                        }
+                    }
                 }
             }
         }
@@ -1326,7 +1325,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *         dependencies (type definitions which are depend on other type
      *         definitions are in list behind them).
      */
-    private List<TypeDefinition<?>> sortTypeDefinitionAccordingDepth(
+    private static List<TypeDefinition<?>> sortTypeDefinitionAccordingDepth(
             final Collection<TypeDefinition<?>> unsortedTypeDefinitions) {
         List<TypeDefinition<?>> sortedTypeDefinition = new ArrayList<>();
 
@@ -1358,7 +1357,7 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return number of immersions which are necessary to get from the type
      *         definition to the base type
      */
-    private int getTypeDefinitionDepth(final TypeDefinition<?> typeDefinition) {
+    private static int getTypeDefinitionDepth(final TypeDefinition<?> typeDefinition) {
         if (typeDefinition == null) {
             return 1;
         }
@@ -1401,7 +1400,7 @@ public final class TypeProviderImpl implements TypeProvider {
         }
     }
 
-    public void addUnitsToGenTO(final GeneratedTOBuilder to, final String units) {
+    public static void addUnitsToGenTO(final GeneratedTOBuilder to, final String units) {
         if (units != null && !units.isEmpty()) {
             to.addConstant(Types.STRING, "_UNITS", "\"" + units + "\"");
             GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("UNITS");
