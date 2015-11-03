@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bada0100_bfe38332",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/LeafNodeCodecContext.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-11-03T09:18:24Z",
+      "side": 1,
+      "message": "Could we use interface from model.api instead of implementation class?",
+      "range": {
+        "startLine": 74,
+        "startChar": 48,
+        "endLine": 74,
+        "endChar": 78
+      },
+      "revId": "d20ba87646131554f25138b3abd854dffe85c72d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bada0100_9fe6bf43",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/LeafNodeCodecContext.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-11-03T09:18:24Z",
+      "side": 1,
+      "message": "Rename to domValueFromString",
+      "range": {
+        "startLine": 89,
+        "startChar": 26,
+        "endLine": 89,
+        "endChar": 43
+      },
+      "revId": "d20ba87646131554f25138b3abd854dffe85c72d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bada0100_1ff3af0b",
+        "filename": "binding/mdsal-binding-test-model/src/main/yang/opendaylight-default-value-test.yang",
+        "patchSetId": 8
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-11-03T09:18:24Z",
+      "side": 1,
+      "message": "Replace tabs with whitespaces (4 space indentation).",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 1
+      },
+      "revId": "d20ba87646131554f25138b3abd854dffe85c72d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
