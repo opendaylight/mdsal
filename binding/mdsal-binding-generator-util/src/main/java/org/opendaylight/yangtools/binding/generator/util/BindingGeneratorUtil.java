@@ -401,11 +401,20 @@ public final class BindingGeneratorUtil {
         }
     }
 
-    public static long computeDefaultSUID(final GeneratedTypeBuilderBase<?> to) {
-        try {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            DataOutputStream dout = new DataOutputStream(bout);
+    private static final ThreadLocal<MessageDigest> SHA1_MD = new ThreadLocal<MessageDigest>() {
+        @Override
+        protected MessageDigest initialValue() {
+            try {
+                return MessageDigest.getInstance("SHA");
+            } catch (NoSuchAlgorithmException e) {
+                throw new IllegalStateException("Failed to get a SHA digest provider", e);
+            }
+        }
+    };
 
+    public static long computeDefaultSUID(final GeneratedTypeBuilderBase<?> to) {
+        final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try (final DataOutputStream dout = new DataOutputStream(bout)) {
             dout.writeUTF(to.getName());
             dout.writeInt(to.isAbstract() ? 3 : 7);
 
@@ -425,21 +434,16 @@ public final class BindingGeneratorUtil {
             }
 
             dout.flush();
-
-            try {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                byte[] hashBytes = md.digest(bout.toByteArray());
-                long hash = 0;
-                for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
-                    hash = (hash << 8) | (hashBytes[i] & 0xFF);
-                }
-                return hash;
-            } catch (NoSuchAlgorithmException ex) {
-                throw new SecurityException(ex.getMessage());
-            }
-        } catch (IOException ex) {
-            throw new InternalError();
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to hash object " + to, e);
         }
+
+        final byte[] hashBytes = SHA1_MD.get().digest(bout.toByteArray());
+        long hash = 0;
+        for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
+            hash = (hash << 8) | (hashBytes[i] & 0xFF);
+        }
+        return hash;
     }
 
     public static Restrictions getRestrictions(final TypeDefinition<?> type) {
