@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "bada0100_8dbf76d0",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/EntityOwnershipChangeState.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2015-11-04T13:54:45Z",
+      "side": 1,
+      "message": "Will do.",
+      "parentUuid": "bada0100_3ad1decd",
+      "range": {
+        "startLine": 46,
+        "startChar": 4,
+        "endLine": 51,
+        "endChar": 5
+      },
+      "revId": "4d7eb50bb732a8e1708308b9a7af54dc992163ce",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bada0100_dae1b29b",
         "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntityOwnershipService.java",
         "patchSetId": 9
@@ -36,6 +60,30 @@
       "writtenOn": "2015-11-04T10:16:35Z",
       "side": 1,
       "message": "Is common pattern to register candidate and listener at same time?\n\nOr registering candidates and listeners are different?\n\nI could imagine that candidate needs to implement interface which will serve to receive callbacks about state change.\n\nThat may simplify bit this interface contract to have just two methods:\n\n\n\nregisterCandidate(E entity, EntityCandidate candidate)\n\nwhere EntityCandidate will have one method onOwnershipChanged(...) and maybe error callback (e.g. node disconnected from cluster).",
+      "range": {
+        "startLine": 45,
+        "startChar": 4,
+        "endLine": 46,
+        "endChar": 55
+      },
+      "revId": "4d7eb50bb732a8e1708308b9a7af54dc992163ce",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bada0100_8d945638",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntityOwnershipService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2015-11-04T13:54:45Z",
+      "side": 1,
+      "message": "This is something we went and back and forth on. Originally we had it similar to what you outlined. But on unregister candidate, the listener was also unregistered, which made sense, but this caused an inconvenience with OF where they still needed the notification that they lost ownership. So they had to register a static listener via registerListener to handle that case. Also apps will want notifications on all entities and they most likely would pass a static listener to registerCandidate so it seemed more natural to register the single listener once instead of per candidate. So we decided to remove the listener from registerCandidate.\n\nregisterListener is still needed either way for other components, other than the ones that register candidates, to get notifications.",
+      "parentUuid": "bada0100_dae1b29b",
       "range": {
         "startLine": 45,
         "startChar": 4,
