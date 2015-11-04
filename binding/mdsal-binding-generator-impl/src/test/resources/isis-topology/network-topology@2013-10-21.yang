@@ -10,7 +10,7 @@ module network-topology {
 
     extension opendaylight;
 
-    opendaylight;
+    nt:opendaylight;
 
     container network-topology {
         list topology {
