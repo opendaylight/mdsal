@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bada0100_3ad1decd",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/EntityOwnershipChangeState.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-11-04T10:16:35Z",
+      "side": 1,
+      "message": "Consider using Guava ImmutableMap instead of HashMap",
+      "range": {
+        "startLine": 46,
+        "startChar": 4,
+        "endLine": 51,
+        "endChar": 5
+      },
+      "revId": "4d7eb50bb732a8e1708308b9a7af54dc992163ce",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bada0100_dae1b29b",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntityOwnershipService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-11-04T10:16:35Z",
+      "side": 1,
+      "message": "Is common pattern to register candidate and listener at same time?\n\nOr registering candidates and listeners are different?\n\nI could imagine that candidate needs to implement interface which will serve to receive callbacks about state change.\n\nThat may simplify bit this interface contract to have just two methods:\n\n\n\nregisterCandidate(E entity, EntityCandidate candidate)\n\nwhere EntityCandidate will have one method onOwnershipChanged(...) and maybe error callback (e.g. node disconnected from cluster).",
+      "range": {
+        "startLine": 45,
+        "startChar": 4,
+        "endLine": 46,
+        "endChar": 55
+      },
+      "revId": "4d7eb50bb732a8e1708308b9a7af54dc992163ce",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
