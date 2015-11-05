@@ -103,6 +103,11 @@
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>notif-publish-20131105</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
