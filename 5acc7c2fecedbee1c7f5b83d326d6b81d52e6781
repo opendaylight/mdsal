@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ab8dda7_ea47071c",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CandidateAlreadyRegisteredException.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-10T18:38:15Z",
+      "side": 1,
+      "message": "Don\u0027t we want to push T to be a class argument? That would eliminate the need for unchecked cast below...",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_8a544bcb",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/EntityOwnershipChangeState.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-10T18:38:15Z",
+      "side": 1,
+      "message": "Preconditions.checkArgument(state !\u003d null, ...)",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_aa510fda",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/EntityOwnershipChangeState.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-10T18:38:15Z",
+      "side": 1,
+      "message": "final",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_4a5e53eb",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/EntityOwnershipChangeState.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-10T18:38:15Z",
+      "side": 1,
+      "message": "java.util.Objects.hash()/Objects.hashCode()",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_6a6317b2",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/EntityOwnershipChangeState.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-10T18:38:15Z",
+      "side": 1,
+      "message": "check for type, check for identity",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_8a9e8b62",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/EntityOwnershipState.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-10T18:38:15Z",
+      "side": 1,
+      "message": "These seem to be stable states. Are there transition states (like BECOMING_OWNER) which we\u0027d like to expose?",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_ea914753",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-10T18:38:15Z",
+      "side": 1,
+      "message": "This seems to imply there is a hierarchy of entities. Is that so? Does this hierarchy affect ownership transitions?",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_2ab0bff3",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-10T18:38:15Z",
+      "side": 1,
+      "message": "implements Identifiable\u003cT\u003e",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_ca948346",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-10T18:38:15Z",
+      "side": 1,
+      "message": "Do we want to introduce an EntityType class to track at least classes of entities?",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
