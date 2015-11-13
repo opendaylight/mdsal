@@ -425,6 +425,24 @@
     },
     {
       "key": {
+        "uuid": "7aade967_80bf4ad0",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-13T17:46:58Z",
+      "side": 1,
+      "message": "Okay, but some guidance is for users so that they do not end up doing something like:\n\nGenericEntity foreign; // Acquired from somewhere\nGenericEntity izL33t \u003d new GenericEntity(foreign.getType(), foreign.getId()) { ... }; // Ouch ...",
+      "parentUuid": "7aade967_207c5672",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7aade967_c05ea212",
         "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
         "patchSetId": 10
