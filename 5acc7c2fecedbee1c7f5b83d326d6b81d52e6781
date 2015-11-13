@@ -247,6 +247,24 @@
     },
     {
       "key": {
+        "uuid": "7aade967_a06126d5",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-13T16:49:34Z",
+      "side": 1,
+      "message": "Yes, please :)",
+      "parentUuid": "9ab8dda7_8d8f8575",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab8dda7_2ab0bff3",
         "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
         "patchSetId": 10
@@ -282,6 +300,24 @@
     },
     {
       "key": {
+        "uuid": "7aade967_407392b1",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-13T16:49:34Z",
+      "side": 1,
+      "message": "Right. I think it is easier to perform the conversion as users are migrated than to evolve the API once there are users...",
+      "parentUuid": "9ab8dda7_4de98d19",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab8dda7_ca948346",
         "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
         "patchSetId": 10
@@ -311,6 +347,41 @@
       "side": 1,
       "message": "We thought about that originally but String is about the most generic type and it seemed like overkill to wrap a String with a class.",
       "parentUuid": "9ab8dda7_ca948346",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7aade967_80798a95",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-13T16:49:34Z",
+      "side": 1,
+      "message": "Right, but a simple String has no semantics and means that these will end up hard-coded in code to various unstructured things -- just look at current call sites of DatastoreContext.Builder.datastoreType() to see how that can go wrong :-(",
+      "parentUuid": "9ab8dda7_2df8d9e4",
+      "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7aade967_c05ea212",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/GenericEntity.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-11-13T16:49:34Z",
+      "side": 1,
+      "message": "this assumes getId() will not be overridden... either use the getter, or make it final -- same for type.",
       "revId": "5acc7c2fecedbee1c7f5b83d326d6b81d52e6781",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
