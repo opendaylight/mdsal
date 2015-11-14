@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7aade967_b0765505",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/yangtools/binding/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2015-11-14T14:16:19Z",
+      "side": 0,
+      "message": "yikes - one should never throw any java.lang.Error (except AssertionError) but especially not InternalError.",
+      "revId": "19eed2cff791948ceb0a45009ef3878b10438320",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
