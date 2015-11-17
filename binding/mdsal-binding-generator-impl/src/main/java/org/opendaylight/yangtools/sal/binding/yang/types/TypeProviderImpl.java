@@ -426,7 +426,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
     /**
      * Gets base type definition for <code>extendTypeDef</code>. The method is
-     * recursivelly called until non <code>ExtendedType</code> type is found.
+     * recursively called until non <code>ExtendedType</code> type is found.
      *
      * @param extendTypeDef
      *            type definition for which is the base type definition sought
@@ -434,17 +434,15 @@ public final class TypeProviderImpl implements TypeProvider {
      * @throws IllegalArgumentException
      *             if <code>extendTypeDef</code> equal null
      */
-    private TypeDefinition<?> baseTypeDefForExtendedType(final TypeDefinition<?> extendTypeDef) {
+    private static TypeDefinition<?> baseTypeDefForExtendedType(final TypeDefinition<?> extendTypeDef) {
         Preconditions.checkArgument(extendTypeDef != null, "Type Definition reference cannot be NULL!");
-        final TypeDefinition<?> baseTypeDef = extendTypeDef.getBaseType();
-        if (baseTypeDef == null) {
-            return extendTypeDef;
-        } else if (baseTypeDef instanceof ExtendedType) {
-            return baseTypeDefForExtendedType(baseTypeDef);
-        } else {
-            return baseTypeDef;
+
+        TypeDefinition<?> ret = extendTypeDef;
+        while (ret.getBaseType() != null) {
+            ret = ret.getBaseType();
         }
 
+        return ret;
     }
 
     /**
