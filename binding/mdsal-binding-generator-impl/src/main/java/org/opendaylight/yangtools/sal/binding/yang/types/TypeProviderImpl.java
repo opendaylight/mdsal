@@ -704,6 +704,25 @@ public final class TypeProviderImpl implements TypeProvider {
         }
     }
 
+    private static final TypeDefinition<?> getRealBaseType(final TypeDefinition<?> type) {
+        final TypeDefinition<?> base = type.getBaseType();
+        if (base == null) {
+            return null;
+        }
+
+        final TypeDefinition<?> baseBase = base.getBaseType();
+        if (baseBase == null) {
+            return base;
+        }
+
+        // Base type may be pointing to the 'type' statement of a typedef.
+        if (base.getPath().getParent().equals(type.getPath())) {
+            return baseBase;
+        }
+
+        return base;
+    }
+
     /**
      *
      * @param basePackageName
@@ -725,7 +744,8 @@ public final class TypeProviderImpl implements TypeProvider {
         final Date moduleRevision = module.getRevision();
         if ((basePackageName != null) && (moduleName != null) && (typedef != null) && (typedef.getQName() != null)) {
             final String typedefName = typedef.getQName().getLocalName();
-            final TypeDefinition<?> innerTypeDefinition = typedef.getBaseType();
+
+            final TypeDefinition<?> innerTypeDefinition = getRealBaseType(typedef);
             if (!(innerTypeDefinition instanceof LeafrefTypeDefinition)
                     && !(innerTypeDefinition instanceof IdentityrefTypeDefinition)) {
                 Type returnType = null;
