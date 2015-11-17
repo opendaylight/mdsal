@@ -1442,7 +1442,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 parentName = BindingMapping.getClassName(parent.getName());
                 className = packageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
             }
-            result = bitsToDef((BitsTypeDefinition) base, className, defaultValue, type instanceof ExtendedType);
+            result = bitsToDef((BitsTypeDefinition) base, className, defaultValue, type.getBaseType() != null);
         } else if (base instanceof BooleanTypeDefinition) {
             result = typeToDef(Boolean.class, defaultValue);
         } else if (base instanceof DecimalTypeDefinition) {
