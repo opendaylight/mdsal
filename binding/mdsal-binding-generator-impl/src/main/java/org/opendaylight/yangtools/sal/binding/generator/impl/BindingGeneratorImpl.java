@@ -1589,7 +1589,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         genTOBuilder.setTypedef(true);
         genTOBuilder.setIsUnion(true);
-        ((TypeProviderImpl) typeProvider).addUnitsToGenTO(genTOBuilder, typeDef.getUnits());
+        TypeProviderImpl.addUnitsToGenTO(genTOBuilder, typeDef.getUnits());
 
 
 
