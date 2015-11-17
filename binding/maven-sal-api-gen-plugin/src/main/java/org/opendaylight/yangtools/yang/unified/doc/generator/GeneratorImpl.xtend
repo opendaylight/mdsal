@@ -1410,11 +1410,11 @@ class GeneratorImpl {
             return null
         }
 
-        val path = node.path.path
+        val path = node.path.pathFromRoot
         val absolute = node.path.absolute;
         var StringBuilder result = new StringBuilder
         if (absolute) {
-            result.append("/")
+            result.append('/')
         }
         if (path !== null && !path.empty) {
             val List<QName> actual = new ArrayList()
@@ -1425,7 +1425,7 @@ class GeneratorImpl {
                 if (!(nodeByPath instanceof ChoiceSchemaNode) && !(nodeByPath instanceof ChoiceCaseNode)) {
                     result.append(pathElement.localName)
                     if (i != path.size - 1) {
-                        result.append("/")
+                        result.append('/')
                     }
                 }
                 i = i + 1
