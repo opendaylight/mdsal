@@ -349,13 +349,13 @@ public final class TypeProviderImpl implements TypeProvider {
      * <br />
      *
      * <i>Example:<br />
-     * If identy which is referenced via <code>idref</code> has name <b>Idn</b>
+     * If identity which is referenced via <code>idref</code> has name <b>Idn</b>
      * then returning type is <b>{@code Class<? extends Idn>}</b></i>
      *
      * @param idref
      *            identityref type definition for which JAVA <code>Type</code>
      *            is sought
-     * @return JAVA <code>Type</code> of the identity which is refrenced through
+     * @return JAVA <code>Type</code> of the identity which is referenced through
      *         <code>idref</code>
      */
     private Type provideTypeForIdentityref(final IdentityrefTypeDefinition idref) {
@@ -406,7 +406,8 @@ public final class TypeProviderImpl implements TypeProvider {
                 "Type Definitions Local Name cannot be NULL!");
 
         final String typedefName = typeDefinition.getQName().getLocalName();
-        if (typeDefinition instanceof ExtendedType) {
+        // FIXME: we should rely on typeDefinition implementing the proper TypeDefinition-subinterface
+        if (typeDefinition.getBaseType() != null) {
             final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
 
             if (!(baseTypeDef instanceof LeafrefTypeDefinition) && !(baseTypeDef instanceof IdentityrefTypeDefinition)) {
@@ -710,7 +711,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *            string with the name of the module for to which the
      *            <code>typedef</code> belongs
      * @param typedef
-     *            type definition of the node for which should be creted JAVA
+     *            type definition of the node for which should be created JAVA
      *            <code>Type</code> (usually generated TO)
      * @return JAVA <code>Type</code> representation of <code>typedef</code> or
      *         <code>null</code> value if <code>basePackageName</code> or
