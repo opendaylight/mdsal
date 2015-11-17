@@ -11,6 +11,7 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findD
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
 import java.io.Serializable;
@@ -1356,6 +1357,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *         definition to the base type
      */
     private static int getTypeDefinitionDepth(final TypeDefinition<?> typeDefinition) {
+        // FIXME: rewrite this in a non-recursive manner, without ExtendedType and UnionType
         if (typeDefinition == null) {
             return 1;
         }
@@ -1399,7 +1401,7 @@ public final class TypeProviderImpl implements TypeProvider {
     }
 
     public static void addUnitsToGenTO(final GeneratedTOBuilder to, final String units) {
-        if (units != null && !units.isEmpty()) {
+        if (!Strings.isNullOrEmpty(units)) {
             to.addConstant(Types.STRING, "_UNITS", "\"" + units + "\"");
             GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("UNITS");
             prop.setReturnType(Types.STRING);
