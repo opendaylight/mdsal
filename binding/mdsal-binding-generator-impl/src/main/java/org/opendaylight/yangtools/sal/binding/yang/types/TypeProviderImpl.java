@@ -1530,15 +1530,17 @@ public final class TypeProviderImpl implements TypeProvider {
         return sb.toString();
     }
 
+    private static final Comparator<Bit> BIT_NAME_COMPARATOR = new Comparator<Bit>() {
+        @Override
+        public int compare(final Bit o1, final Bit o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
+
     private static String bitsToDef(final BitsTypeDefinition type, final String className, final String defaultValue,
             final boolean isExt) {
         List<Bit> bits = new ArrayList<>(type.getBits());
-        Collections.sort(bits, new Comparator<Bit>() {
-            @Override
-            public int compare(final Bit o1, final Bit o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        Collections.sort(bits, BIT_NAME_COMPARATOR);
         StringBuilder sb = new StringBuilder();
         if (!isExt) {
             sb.append("new ");
