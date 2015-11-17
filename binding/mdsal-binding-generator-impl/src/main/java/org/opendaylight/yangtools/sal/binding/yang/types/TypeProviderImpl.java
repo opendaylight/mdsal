@@ -77,7 +77,6 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.EnumerationType;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.Int16;
 import org.opendaylight.yangtools.yang.model.util.Int32;
@@ -85,12 +84,11 @@ import org.opendaylight.yangtools.yang.model.util.Int64;
 import org.opendaylight.yangtools.yang.model.util.Int8;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.opendaylight.yangtools.yang.model.util.StringType;
 import org.opendaylight.yangtools.yang.model.util.Uint16;
 import org.opendaylight.yangtools.yang.model.util.Uint32;
 import org.opendaylight.yangtools.yang.model.util.Uint64;
 import org.opendaylight.yangtools.yang.model.util.Uint8;
-import org.opendaylight.yangtools.yang.model.util.UnionType;
+import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 
 public final class TypeProviderImpl implements TypeProvider {
@@ -909,8 +907,8 @@ public final class TypeProviderImpl implements TypeProvider {
         final List<String> regularExpressions = new ArrayList<String>();
         for (final TypeDefinition<?> unionType : unionTypes) {
             final String unionTypeName = unionType.getQName().getLocalName();
-            if (unionType instanceof UnionType) {
-                generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionType) unionType,
+            if (unionType instanceof UnionTypeDefinition) {
+                generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionTypeDefinition) unionType,
                         basePackageName, parentNode));
             } else if (unionType instanceof ExtendedType) {
                 resolveExtendedSubtypeAsUnion(unionGenTOBuilder, (ExtendedType) unionType, regularExpressions,
@@ -936,7 +934,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
     /**
      * Wraps code which handle case when union subtype is also of the type
-     * <code>UnionType</code>.
+     * <code>UnionTypeDefinition</code>.
      *
      * In this case the new generated TO is created for union subtype (recursive
      * call of method
@@ -1006,7 +1004,7 @@ public final class TypeProviderImpl implements TypeProvider {
                     updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, unionTypeName);
                 }
             }
-            if (baseType instanceof StringType) {
+            if (baseType instanceof StringTypeDefinition) {
                 regularExpressions.addAll(resolveRegExpressionsFromTypedef(unionSubtype));
             }
         }
@@ -1046,7 +1044,7 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     private void storeGenTO(final TypeDefinition<?> newTypeDef, final GeneratedTOBuilder genTOBuilder,
             final SchemaNode parentNode) {
-        if (!(newTypeDef instanceof UnionType)) {
+        if (!(newTypeDef instanceof UnionTypeDefinition)) {
 
             final Module parentModule = findParentModule(schemaContext, parentNode);
             if (parentModule != null && parentModule.getName() != null) {
@@ -1184,7 +1182,7 @@ public final class TypeProviderImpl implements TypeProvider {
         final List<String> regExps = new ArrayList<String>();
         Preconditions.checkArgument(typedef != null, "typedef can't be null");
         final TypeDefinition<?> strTypeDef = baseTypeDefForExtendedType(typedef);
-        if (strTypeDef instanceof StringType) {
+        if (strTypeDef instanceof StringTypeDefinition) {
             final List<PatternConstraint> patternConstraints = typedef.getPatternConstraints();
             if (!patternConstraints.isEmpty()) {
                 String regEx;
@@ -1366,8 +1364,8 @@ public final class TypeProviderImpl implements TypeProvider {
 
         if (baseType instanceof ExtendedType) {
             depth = depth + getTypeDefinitionDepth(typeDefinition.getBaseType());
-        } else if (baseType instanceof UnionType) {
-            List<TypeDefinition<?>> childTypeDefinitions = ((UnionType) baseType).getTypes();
+        } else if (baseType instanceof UnionTypeDefinition) {
+            List<TypeDefinition<?>> childTypeDefinitions = ((UnionTypeDefinition) baseType).getTypes();
             int maxChildDepth = 0;
             int childDepth = 1;
             for (TypeDefinition<?> childTypeDefinition : childTypeDefinitions) {
@@ -1471,25 +1469,25 @@ public final class TypeProviderImpl implements TypeProvider {
             throw new UnsupportedOperationException("Cannot get default construction for identityref type");
         } else if (base instanceof InstanceIdentifierTypeDefinition) {
             throw new UnsupportedOperationException("Cannot get default construction for instance-identifier type");
-        } else if (base instanceof Int8) {
+        } else if (base instanceof Int8 || BaseTypes.int8Type().equals(base)) {
             result = typeToDef(Byte.class, defaultValue);
-        } else if (base instanceof Int16) {
+        } else if (base instanceof Int16 || BaseTypes.int16Type().equals(base)) {
             result = typeToDef(Short.class, defaultValue);
-        } else if (base instanceof Int32) {
+        } else if (base instanceof Int32 || BaseTypes.int32Type().equals(base)) {
             result = typeToDef(Integer.class, defaultValue);
-        } else if (base instanceof Int64) {
+        } else if (base instanceof Int64 || BaseTypes.int64Type().equals(base)) {
             result = typeToDef(Long.class, defaultValue);
         } else if (base instanceof LeafrefTypeDefinition) {
             result = leafrefToDef(node, (LeafrefTypeDefinition) base, defaultValue);
         } else if (base instanceof StringTypeDefinition) {
             result = "\"" + defaultValue + "\"";
-        } else if (base instanceof Uint8) {
+        } else if (base instanceof Uint8 || BaseTypes.uint8Type().equals(base)) {
             result = typeToDef(Short.class, defaultValue);
-        } else if (base instanceof Uint16) {
+        } else if (base instanceof Uint16 || BaseTypes.int16Type().equals(base)) {
             result = typeToDef(Integer.class, defaultValue);
-        } else if (base instanceof Uint32) {
+        } else if (base instanceof Uint32 || BaseTypes.uint32Type().equals(base)) {
             result = typeToDef(Long.class, defaultValue);
-        } else if (base instanceof Uint64) {
+        } else if (base instanceof Uint64 || BaseTypes.uint64Type().equals(base)) {
             result = typeToDef(BigInteger.class, defaultValue);
         } else if (base instanceof UnionTypeDefinition) {
             result = unionToDef(node);
@@ -1499,7 +1497,7 @@ public final class TypeProviderImpl implements TypeProvider {
         sb.append(result);
 
         if (type instanceof ExtendedType && !(base instanceof LeafrefTypeDefinition)
-                && !(base instanceof EnumerationType) && !(base instanceof UnionTypeDefinition)) {
+                && !(base instanceof EnumTypeDefinition) && !(base instanceof UnionTypeDefinition)) {
             Module m = getParentModule(type);
             String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
             String packageName = packageNameForGeneratedType(basePackageName, type.getPath());

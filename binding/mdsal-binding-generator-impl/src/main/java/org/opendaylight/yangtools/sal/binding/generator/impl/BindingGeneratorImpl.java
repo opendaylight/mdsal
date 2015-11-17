@@ -103,7 +103,6 @@ import org.opendaylight.yangtools.yang.model.util.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
-import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.parser.builder.util.Comparators;
 import org.opendaylight.yangtools.yang.parser.util.ModuleDependencySort;
 import org.slf4j.Logger;
@@ -1369,7 +1368,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                         returnType = enumBuilder.toInstance(typeBuilder);
                     }
                     ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
-                } else if (typeDef instanceof UnionType) {
+                } else if (typeDef instanceof UnionTypeDefinition) {
                     genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
                     if (genTOBuilder != null) {
                         returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
@@ -1556,7 +1555,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                             typeBuilder,module);
                     returnType = new ReferencedTypeImpl(enumBuilder.getPackageName(), enumBuilder.getName());
                     ((TypeProviderImpl) typeProvider).putReferencedType(node.getPath(), returnType);
-                } else if (typeDef instanceof UnionType) {
+                } else if (typeDef instanceof UnionTypeDefinition) {
                     final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule);
                     if (genTOBuilder != null) {
                         returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
@@ -1589,7 +1588,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         genTOBuilder.setTypedef(true);
         genTOBuilder.setIsUnion(true);
-        ((TypeProviderImpl) typeProvider).addUnitsToGenTO(genTOBuilder, typeDef.getUnits());
+        TypeProviderImpl.addUnitsToGenTO(genTOBuilder, typeDef.getUnits());
 
 
 

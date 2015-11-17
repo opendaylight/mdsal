@@ -54,7 +54,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.EffectiveAugmentationSchema;
-import org.opendaylight.yangtools.yang.model.util.EnumerationType;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.slf4j.Logger;
@@ -333,12 +332,12 @@ public class BindingRuntimeContext implements Immutable {
     private static BiMap<String, String> getEnumMapping(final Entry<GeneratedType, Object> typeWithSchema) {
         final TypeDefinition<?> typeDef = (TypeDefinition<?>) typeWithSchema.getValue();
 
-        final EnumerationType enumType;
+        final EnumTypeDefinition enumType;
         if(typeDef instanceof ExtendedType) {
-            enumType = (EnumerationType) ((ExtendedType) typeDef).getBaseType();
+            enumType = (EnumTypeDefinition) ((ExtendedType) typeDef).getBaseType();
         } else {
-            Preconditions.checkArgument(typeDef instanceof EnumerationType);
-            enumType = (EnumerationType) typeDef;
+            Preconditions.checkArgument(typeDef instanceof EnumTypeDefinition);
+            enumType = (EnumTypeDefinition) typeDef;
         }
 
         final HashBiMap<String, String> mappedEnums = HashBiMap.create();
