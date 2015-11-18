@@ -189,7 +189,7 @@ public final class TypeProviderImpl implements TypeProvider {
         String typedefName = typeDefinition.getQName().getLocalName();
         Preconditions.checkArgument(typedefName != null, "Type Definitions Local Name cannot be NULL!");
 
-        if (typeDefinition instanceof ExtendedType) {
+        if (typeDefinition.getBaseType() != null) {
             returnType = javaTypeForExtendedType(typeDefinition);
             if (r != null && returnType instanceof GeneratedTransferObject) {
                 GeneratedTransferObject gto = (GeneratedTransferObject) returnType;
@@ -902,8 +902,8 @@ public final class TypeProviderImpl implements TypeProvider {
             if (unionType instanceof UnionTypeDefinition) {
                 generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionTypeDefinition) unionType,
                         basePackageName, parentNode));
-            } else if (unionType instanceof ExtendedType) {
-                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, (ExtendedType) unionType, regularExpressions,
+            } else if (unionType.getBaseType() != null) {
+                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, regularExpressions,
                         parentNode);
             } else if (unionType instanceof EnumTypeDefinition) {
                 final Enumeration enumeration = addInnerEnumerationToTypeBuilder((EnumTypeDefinition) unionType,
@@ -982,7 +982,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *
      */
     private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
-            final ExtendedType unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode) {
+            final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode) {
         final String unionTypeName = unionSubtype.getQName().getLocalName();
         final Type genTO = findGenTO(unionTypeName, unionSubtype);
         if (genTO != null) {
@@ -1355,14 +1355,14 @@ public final class TypeProviderImpl implements TypeProvider {
      *         definition to the base type
      */
     private static int getTypeDefinitionDepth(final TypeDefinition<?> typeDefinition) {
-        // FIXME: rewrite this in a non-recursive manner, without ExtendedType and UnionType
+        // FIXME: rewrite this in a non-recursive manner
         if (typeDefinition == null) {
             return 1;
         }
         int depth = 1;
         TypeDefinition<?> baseType = typeDefinition.getBaseType();
 
-        if (baseType instanceof ExtendedType) {
+        if (baseType.getBaseType() != null) {
             depth = depth + getTypeDefinitionDepth(typeDefinition.getBaseType());
         } else if (baseType instanceof UnionTypeDefinition) {
             List<TypeDefinition<?>> childTypeDefinitions = ((UnionTypeDefinition) baseType).getTypes();
@@ -1453,7 +1453,7 @@ public final class TypeProviderImpl implements TypeProvider {
             defValArray[0] = first;
             String newDefVal = new String(defValArray);
             String className;
-            if (type instanceof ExtendedType) {
+            if (type.getBaseType() != null) {
                 Module m = getParentModule(type);
                 String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
                 String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, type.getPath());
@@ -1496,7 +1496,7 @@ public final class TypeProviderImpl implements TypeProvider {
         }
         sb.append(result);
 
-        if (type instanceof ExtendedType && !(base instanceof LeafrefTypeDefinition)
+        if (type.getBaseType() != null && !(base instanceof LeafrefTypeDefinition)
                 && !(base instanceof EnumTypeDefinition) && !(base instanceof UnionTypeDefinition)) {
             Module m = getParentModule(type);
             String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
@@ -1601,9 +1601,8 @@ public final class TypeProviderImpl implements TypeProvider {
         String parentName;
         String className;
 
-        if (node.getType() instanceof ExtendedType) {
-            ExtendedType type = (ExtendedType) node.getType();
-            QName typeQName = type.getQName();
+        if (node.getType().getBaseType() != null) {
+            QName typeQName = node.getType().getBaseType().getQName();
             Module module = null;
             Set<Module> modules = schemaContext.findModuleByNamespace(typeQName.getNamespace());
             if (modules.size() > 1) {
