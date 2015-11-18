@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Optional;
@@ -308,7 +309,7 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
         assertEquals("unknown", stringCont.getStringLeaf3().getValue());
         assertEquals("unspecified string", stringCont.getStringLeaf4().getValue());
         assertEquals("whatever", stringCont.getStringLeaf5());
-        assertEquals("", stringCont.getStringLeaf6());
+        assertNull(stringCont.getStringLeaf6());
     }
 
     @Test
@@ -364,6 +365,7 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
         assertFalse(bitsCont.getBitsLeaf().isBitZero());
         assertTrue(bitsCont.getBitsLeaf().isBitOne());
         assertFalse(bitsCont.getBitsLeaf().isBitTwo());
+        assertNull(bitsCont.getBitsLeaf2());
     }
 
     @Test
