@@ -8,7 +8,6 @@
 package org.opendaylight.yangtools.sal.binding.yang.types;
 
 import static org.junit.Assert.assertNotNull;
-
 import com.google.common.base.Optional;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +38,7 @@ public class UnionDependencySortTest {
         typeDefs.add(stringType);
         typeDefs.add(extendedType);
 
-        final List<ExtendedType> sortedExtendedTypes = unionDependencySort.sort(typeDefs);
+        final List<TypeDefinition<?>> sortedExtendedTypes = unionDependencySort.sort(typeDefs);
         assertNotNull(sortedExtendedTypes);
 
         expException.expect(IllegalArgumentException.class);
