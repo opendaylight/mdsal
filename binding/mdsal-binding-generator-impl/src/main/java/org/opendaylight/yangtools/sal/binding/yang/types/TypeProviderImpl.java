@@ -397,7 +397,6 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition,
             final SchemaNode parentNode) {
-        Type returnType = null;
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         if (typeDefinition.getQName() == null) {
             throw new IllegalArgumentException(
@@ -406,23 +405,19 @@ public final class TypeProviderImpl implements TypeProvider {
         Preconditions.checkArgument(typeDefinition.getQName().getLocalName() != null,
                 "Type Definitions Local Name cannot be NULL!");
 
-        final String typedefName = typeDefinition.getQName().getLocalName();
-        if (typeDefinition instanceof ExtendedType) {
-            final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
+        final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
+        if (!(baseTypeDef instanceof LeafrefTypeDefinition) && !(baseTypeDef instanceof IdentityrefTypeDefinition)) {
+            final Module module = findParentModule(schemaContext, parentNode);
 
-            if (!(baseTypeDef instanceof LeafrefTypeDefinition) && !(baseTypeDef instanceof IdentityrefTypeDefinition)) {
-                final Module module = findParentModule(schemaContext, parentNode);
-
-                if (module != null) {
-                    final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
-                    final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
-                    if (genTOs != null) {
-                        returnType = genTOs.get(typedefName);
-                    }
+            if (module != null) {
+                final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
+                final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
+                if (genTOs != null) {
+                    return genTOs.get(typeDefinition.getQName().getLocalName());
                 }
             }
         }
-        return returnType;
+        return null;
     }
 
     /**
