@@ -81,7 +81,6 @@ import org.opendaylight.yangtools.yang.model.util.EnumerationType;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.opendaylight.yangtools.yang.model.util.StringType;
 import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
@@ -998,7 +997,7 @@ public final class TypeProviderImpl implements TypeProvider {
                     updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, unionTypeName);
                 }
             }
-            if (baseType instanceof StringType) {
+            if (baseType instanceof StringTypeDefinition) {
                 regularExpressions.addAll(resolveRegExpressionsFromTypedef(unionSubtype));
             }
         }
@@ -1172,11 +1171,11 @@ public final class TypeProviderImpl implements TypeProvider {
      *             if <code>typedef</code> equals null
      *
      */
-    private List<String> resolveRegExpressionsFromTypedef(final ExtendedType typedef) {
+    private static List<String> resolveRegExpressionsFromTypedef(final ExtendedType typedef) {
         final List<String> regExps = new ArrayList<String>();
         Preconditions.checkArgument(typedef != null, "typedef can't be null");
         final TypeDefinition<?> strTypeDef = baseTypeDefForExtendedType(typedef);
-        if (strTypeDef instanceof StringType) {
+        if (strTypeDef instanceof StringTypeDefinition) {
             final List<PatternConstraint> patternConstraints = typedef.getPatternConstraints();
             if (!patternConstraints.isEmpty()) {
                 String regEx;
