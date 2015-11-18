@@ -12,6 +12,7 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findD
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.base.Verify;
 import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
 import java.io.Serializable;
@@ -804,8 +805,8 @@ public final class TypeProviderImpl implements TypeProvider {
         genTOBuilder.addEqualsIdentity(genPropBuilder);
         genTOBuilder.addHashIdentity(genPropBuilder);
         genTOBuilder.addToStringProperty(genPropBuilder);
-        if (javaType instanceof ConcreteType && "String".equals(javaType.getName()) && typedef instanceof ExtendedType) {
-            final List<String> regExps = resolveRegExpressionsFromTypedef((ExtendedType) typedef);
+        if (javaType instanceof ConcreteType && "String".equals(javaType.getName()) && typedef.getBaseType() != null) {
+            final List<String> regExps = resolveRegExpressionsFromTypedef(typedef);
             addStringRegExAsConstant(genTOBuilder, regExps);
         }
         addUnitsToGenTO(genTOBuilder, typedef.getUnits());
@@ -1169,12 +1170,19 @@ public final class TypeProviderImpl implements TypeProvider {
      *             if <code>typedef</code> equals null
      *
      */
-    private static List<String> resolveRegExpressionsFromTypedef(final ExtendedType typedef) {
+    private static List<String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
         final List<String> regExps = new ArrayList<String>();
         Preconditions.checkArgument(typedef != null, "typedef can't be null");
         final TypeDefinition<?> strTypeDef = baseTypeDefForExtendedType(typedef);
         if (strTypeDef instanceof StringTypeDefinition) {
-            final List<PatternConstraint> patternConstraints = typedef.getPatternConstraints();
+            final List<PatternConstraint> patternConstraints;
+            if (typedef instanceof ExtendedType) {
+                patternConstraints = ((ExtendedType)typedef).getPatternConstraints();
+            } else {
+                Verify.verify(typedef instanceof StringTypeDefinition);
+                patternConstraints = ((StringTypeDefinition)typedef).getPatternConstraints();
+            }
+
             if (!patternConstraints.isEmpty()) {
                 String regEx;
                 String modifiedRegEx;
