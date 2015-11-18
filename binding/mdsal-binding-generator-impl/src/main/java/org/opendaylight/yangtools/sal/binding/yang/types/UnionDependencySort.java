@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.parser.util.TopologicalSort;
 import org.opendaylight.yangtools.yang.parser.util.TopologicalSort.Node;
 import org.slf4j.Logger;
@@ -38,21 +37,21 @@ public class UnionDependencySort {
      * @throws IllegalArgumentException
      *             if <code>typeDefinitions</code> equals <code>null</code>
      */
-    public List<ExtendedType> sort(final Set<TypeDefinition<?>> typeDefinitions) {
+    public List<TypeDefinition<?>> sort(final Set<TypeDefinition<?>> typeDefinitions) {
         if (typeDefinitions == null) {
             LOGGER.error("Set of Type Definitions cannot be NULL!");
             throw new IllegalArgumentException("Set of Type Definitions " + "cannot be NULL!");
         }
 
-        final Set<ExtendedType> extUnionTypes = unionsFromTypeDefinitions(typeDefinitions);
+        final Set<TypeDefinition<?>> extUnionTypes = unionsFromTypeDefinitions(typeDefinitions);
 
         final Set<Node> unsorted = unionTypesToNodes(extUnionTypes);
 
         final List<Node> sortedNodes = TopologicalSort.sort(unsorted);
-        return Lists.transform(sortedNodes, new Function<Node, ExtendedType>() {
+        return Lists.transform(sortedNodes, new Function<Node, TypeDefinition<?>>() {
             @Override
-            public ExtendedType apply(final Node input) {
-                return (ExtendedType) (((NodeWrappedType) input).getWrappedType());
+            public TypeDefinition<?> apply(final Node input) {
+                return (TypeDefinition<?>) (((NodeWrappedType) input).getWrappedType());
             }
         });
     }
@@ -64,13 +63,13 @@ public class UnionDependencySort {
      *            set of all type definitions
      * @return set of extended type which are union type definition
      */
-    private static Set<ExtendedType> unionsFromTypeDefinitions(final Set<TypeDefinition<?>> typeDefinitions) {
-        final Set<ExtendedType> unions = Sets.newHashSet();
+    private static Set<TypeDefinition<?>> unionsFromTypeDefinitions(final Set<TypeDefinition<?>> typeDefinitions) {
+        final Set<TypeDefinition<?>> unions = Sets.newHashSet();
 
         for (final TypeDefinition<?> typedef : typeDefinitions) {
-            if ((typedef != null) && (typedef.getBaseType() != null) && (typedef instanceof ExtendedType)
+            if ((typedef != null) && (typedef.getBaseType() != null) && TypeProviderImpl.isExtendedType(typedef)
                     && (typedef.getBaseType() instanceof UnionTypeDefinition)) {
-                unions.add((ExtendedType) typedef);
+                unions.add(typedef);
             }
         }
         return unions;
@@ -94,11 +93,11 @@ public class UnionDependencySort {
      * @return set of nodes which contains wrapped union types set of node where
      *         each one contains wrapped one union type
      */
-    private static Set<Node> unionTypesToNodes(final Set<ExtendedType> extUnionTypes) {
-        final Map<ExtendedType, Node> nodeMap = Maps.newHashMap();
+    private static Set<Node> unionTypesToNodes(final Set<TypeDefinition<?>> extUnionTypes) {
+        final Map<TypeDefinition<?>, Node> nodeMap = Maps.newHashMap();
         final Set<Node> resultNodes = Sets.newHashSet();
 
-        for (final ExtendedType unionType : extUnionTypes) {
+        for (final TypeDefinition<?> unionType : extUnionTypes) {
             final Node node = new NodeWrappedType(unionType);
             nodeMap.put(unionType, node);
             resultNodes.add(node);
@@ -106,7 +105,7 @@ public class UnionDependencySort {
 
         for (final Node node : resultNodes) {
             final NodeWrappedType nodeFrom = (NodeWrappedType) node;
-            final ExtendedType extUnionType = (ExtendedType) nodeFrom.getWrappedType();
+            final TypeDefinition<?> extUnionType = (TypeDefinition<?>) nodeFrom.getWrappedType();
 
             final UnionTypeDefinition unionType = (UnionTypeDefinition) extUnionType.getBaseType();
 

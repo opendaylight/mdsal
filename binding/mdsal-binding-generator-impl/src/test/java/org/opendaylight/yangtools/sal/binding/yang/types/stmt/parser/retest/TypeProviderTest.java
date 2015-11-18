@@ -10,11 +10,6 @@ package org.opendaylight.yangtools.sal.binding.yang.types.stmt.parser.retest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import org.opendaylight.yangtools.sal.binding.yang.types.TypeProviderImpl;
-
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
@@ -29,12 +24,28 @@ import org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil;
 import org.opendaylight.yangtools.binding.generator.util.ReferencedTypeImpl;
 import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
-import org.opendaylight.yangtools.sal.binding.model.api.*;
+import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
+import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
+import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
+import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
+import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTOBuilder;
-import org.opendaylight.yangtools.yang.model.api.*;
+import org.opendaylight.yangtools.sal.binding.yang.types.TypeProviderImpl;
+import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
+import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 /**
  * Test suite for testing public methods in TypeProviderImpl class
@@ -176,7 +187,7 @@ public class TypeProviderTest {
         final GeneratedTransferObject genTO = (GeneratedTransferObject) result;
         assertEquals("org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914", genTO.getPackageName());
         assertEquals("YangInt8Restricted", genTO.getName());
-        assertTrue(genTO.getProperties().size() == 1);
+        assertEquals(1, genTO.getProperties().size());
         final List<RangeConstraint> rangeConstraints = genTO.getRestrictions().getRangeConstraints();
 
         assertTrue(!rangeConstraints.isEmpty());
@@ -307,7 +318,7 @@ public class TypeProviderTest {
         assertTrue(leafrefResolvedType2 instanceof ParameterizedType);
     }
 
-    private void setReferencedTypeForTypeProvider(TypeProvider provider) {
+    private void setReferencedTypeForTypeProvider(final TypeProvider provider) {
         final LeafSchemaNode enumLeafNode = provideLeafNodeFromTopLevelContainer(testTypeProviderModule, "foo",
             "resolve-direct-use-of-enum");
         final TypeDefinition<?> enumLeafTypedef = enumLeafNode.getType();
@@ -634,7 +645,7 @@ public class TypeProviderTest {
     @Test(expected = IllegalArgumentException.class)
     public void provideGeneratedTOBuilderForBitsTypeDefinitionWithNullTypedefTest() {
         final TypeProviderImpl provider = new TypeProviderImpl(schemaContext);
-        provider.provideGeneratedTOBuilderForBitsTypeDefinition("", null, "", "");
+        TypeProviderImpl.provideGeneratedTOBuilderForBitsTypeDefinition("", null, "", "");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -642,7 +653,7 @@ public class TypeProviderTest {
         final TypeProviderImpl provider = new TypeProviderImpl(schemaContext);
         final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(testTypeProviderModule, "foo", "yang-int8-type");
         final TypeDefinition<?> leafType = leaf.getType();
-        provider.provideGeneratedTOBuilderForBitsTypeDefinition(null, leafType, "", "");
+        TypeProviderImpl.provideGeneratedTOBuilderForBitsTypeDefinition(null, leafType, "", "");
     }
 
     @Test
@@ -651,7 +662,7 @@ public class TypeProviderTest {
 
         final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(testTypeProviderModule, "foo", "yang-int8-type");
         final TypeDefinition<?> leafType = leaf.getType();
-        Type type = provider.provideGeneratedTOBuilderForBitsTypeDefinition("", leafType, "", "");
+        Type type = TypeProviderImpl.provideGeneratedTOBuilderForBitsTypeDefinition("", leafType, "", "");
 
         assertEquals(null, type);
     }
@@ -687,15 +698,15 @@ public class TypeProviderTest {
 
         GeneratedTOBuilder builder = new GeneratedTOBuilderImpl("test.package", "TestBuilder");
 
-        provider.addUnitsToGenTO(builder, null);
+        TypeProviderImpl.addUnitsToGenTO(builder, null);
         GeneratedTransferObject genTO = builder.toInstance();
         assertTrue(genTO.getConstantDefinitions().isEmpty());
 
-        provider.addUnitsToGenTO(builder, "");
+        TypeProviderImpl.addUnitsToGenTO(builder, "");
         genTO = builder.toInstance();
         assertTrue(genTO.getConstantDefinitions().isEmpty());
 
-        provider.addUnitsToGenTO(builder, "125");
+        TypeProviderImpl.addUnitsToGenTO(builder, "125");
         genTO = builder.toInstance();
         assertTrue(!genTO.getConstantDefinitions().isEmpty());
         assertEquals(1, genTO.getConstantDefinitions().size());
