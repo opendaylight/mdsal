@@ -22,6 +22,30 @@
       "revId": "9b18b800f6157e9c0f2b1b7ecf3e670afaf87c3e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7aade967_63d6cac7",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/LeafNodeCodecContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 4561
+      },
+      "writtenOn": "2015-11-18T12:21:50Z",
+      "side": 1,
+      "message": "When we have a leaf of type binary with undefined default value,  the default value is set to a Collections.emptyList() as it is defined in the class BinaryType. This is the case where List is used. When we have a leaf of type bits with undefined default value, the default value is set to an ImmutableList as it is defined in the class BitsType.",
+      "parentUuid": "7aade967_a3d84254",
+      "range": {
+        "startLine": 79,
+        "startChar": 19,
+        "endLine": 81,
+        "endChar": 21
+      },
+      "revId": "9b18b800f6157e9c0f2b1b7ecf3e670afaf87c3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
