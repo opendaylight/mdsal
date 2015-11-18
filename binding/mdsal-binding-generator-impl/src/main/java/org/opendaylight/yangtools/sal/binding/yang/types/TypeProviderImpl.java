@@ -792,7 +792,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *            JAVA <code>Type</code> to which is <code>typedef</code> mapped
      * @return generated transfer object which represent<code>javaType</code>
      */
-    private GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
+    private static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
             final Type javaType, final String moduleName) {
         Preconditions.checkNotNull(javaType, "javaType cannot be null");
         final String propertyName = "value";
