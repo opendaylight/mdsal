@@ -86,9 +86,12 @@ import org.opendaylight.yangtools.yang.model.util.StringType;
 import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class TypeProviderImpl implements TypeProvider {
     private static final Pattern NUMBERS_PATTERN = Pattern.compile("[0-9]+\\z");
+    private static final Logger LOG = LoggerFactory.getLogger(TypeProviderImpl.class);
 
     /**
      * Contains the schema data red from YANG files.
@@ -400,7 +403,6 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition,
             final SchemaNode parentNode) {
-        Type returnType = null;
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         if (typeDefinition.getQName() == null) {
             throw new IllegalArgumentException(
@@ -409,23 +411,25 @@ public final class TypeProviderImpl implements TypeProvider {
         Preconditions.checkArgument(typeDefinition.getQName().getLocalName() != null,
                 "Type Definitions Local Name cannot be NULL!");
 
-        final String typedefName = typeDefinition.getQName().getLocalName();
-        if (typeDefinition instanceof ExtendedType) {
-            final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
+        // FIXME: BUG-4638: is this check necessary?
+//        if (!(typeDefinition instanceof ExtendedType)) {
+//            LOG.info("Type {} is not an ExtendedType, skipping generation", typeDefinition);
+//            return null;
+//        }
 
-            if (!(baseTypeDef instanceof LeafrefTypeDefinition) && !(baseTypeDef instanceof IdentityrefTypeDefinition)) {
-                final Module module = findParentModule(schemaContext, parentNode);
+        final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
+        if (!(baseTypeDef instanceof LeafrefTypeDefinition) && !(baseTypeDef instanceof IdentityrefTypeDefinition)) {
+            final Module module = findParentModule(schemaContext, parentNode);
 
-                if (module != null) {
-                    final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
-                    final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
-                    if (genTOs != null) {
-                        returnType = genTOs.get(typedefName);
-                    }
+            if (module != null) {
+                final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
+                final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
+                if (genTOs != null) {
+                    return genTOs.get(typeDefinition.getQName().getLocalName());
                 }
             }
         }
-        return returnType;
+        return null;
     }
 
     /**
