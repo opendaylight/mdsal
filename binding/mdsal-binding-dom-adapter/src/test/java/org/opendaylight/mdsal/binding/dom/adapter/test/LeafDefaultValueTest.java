@@ -364,6 +364,9 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
         assertFalse(bitsCont.getBitsLeaf().isBitZero());
         assertTrue(bitsCont.getBitsLeaf().isBitOne());
         assertFalse(bitsCont.getBitsLeaf().isBitTwo());
+        assertFalse(bitsCont.getBitsLeaf2().isDisableNagle());
+        assertFalse(bitsCont.getBitsLeaf2().isAutoSenseSpeed());
+        assertFalse(bitsCont.getBitsLeaf2().is_10MbOnly());
     }
 
     @Test
