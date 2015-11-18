@@ -77,7 +77,6 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.EnumerationType;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
@@ -1491,7 +1490,7 @@ public final class TypeProviderImpl implements TypeProvider {
         sb.append(result);
 
         if (type instanceof ExtendedType && !(base instanceof LeafrefTypeDefinition)
-                && !(base instanceof EnumerationType) && !(base instanceof UnionTypeDefinition)) {
+                && !(base instanceof EnumTypeDefinition) && !(base instanceof UnionTypeDefinition)) {
             Module m = getParentModule(type);
             String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
             String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, type.getPath());
