@@ -802,7 +802,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *            JAVA <code>Type</code> to which is <code>typedef</code> mapped
      * @return generated transfer object which represent<code>javaType</code>
      */
-    private GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
+    private static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
             final Type javaType, final String moduleName) {
         Preconditions.checkNotNull(javaType, "javaType cannot be null");
         final String propertyName = "value";
@@ -1179,7 +1179,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *             if <code>typedef</code> equals null
      *
      */
-    private List<String> resolveRegExpressionsFromTypedef(final ExtendedType typedef) {
+    private static List<String> resolveRegExpressionsFromTypedef(final ExtendedType typedef) {
         final List<String> regExps = new ArrayList<String>();
         Preconditions.checkArgument(typedef != null, "typedef can't be null");
         final TypeDefinition<?> strTypeDef = baseTypeDefForExtendedType(typedef);
