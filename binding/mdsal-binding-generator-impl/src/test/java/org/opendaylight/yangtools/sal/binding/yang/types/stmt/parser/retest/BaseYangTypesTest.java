@@ -33,7 +33,6 @@ import org.opendaylight.yangtools.yang.model.api.type.IntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
@@ -77,9 +76,10 @@ public class BaseYangTypesTest {
 
         for (final TypeDefinition<?> typedef : typedefs) {
             assertNotNull(typedef);
-            assertTrue(typedef instanceof ExtendedType);
 
             final TypeDefinition<?> baseType = typedef.getBaseType();
+            assertNotNull(baseType);
+
             if (baseType instanceof BinaryTypeDefinition) {
                 binary = (BinaryTypeDefinition) baseType;
             } else if (baseType instanceof DecimalTypeDefinition) {
