@@ -192,32 +192,41 @@ public final class TypeProviderImpl implements TypeProvider {
     @Override
     public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode,
             final Restrictions r) {
-        Type returnType;
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         Preconditions.checkArgument(typeDefinition.getQName() != null,
                 "Type Definition cannot have non specified QName (QName cannot be NULL!)");
         String typedefName = typeDefinition.getQName().getLocalName();
         Preconditions.checkArgument(typedefName != null, "Type Definitions Local Name cannot be NULL!");
 
-        if (typeDefinition instanceof ExtendedType) {
-            returnType = javaTypeForExtendedType(typeDefinition);
-            if (r != null && returnType instanceof GeneratedTransferObject) {
-                GeneratedTransferObject gto = (GeneratedTransferObject) returnType;
-                Module module = findParentModule(schemaContext, parentNode);
-                String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
-                String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                    typeDefinition.getPath());
-                String genTOName = BindingMapping.getClassName(typedefName);
-                String name = packageName + "." + genTOName;
-                if (!(returnType.getFullyQualifiedName().equals(name))) {
-                    returnType = shadedTOWithRestrictions(gto, r);
-                }
-            }
-        } else {
-            returnType = javaTypeForLeafrefOrIdentityRef(typeDefinition, parentNode);
+        // Deal with leafrefs/identityrefs first
+        Type returnType = javaTypeForLeafrefOrIdentityRef(typeDefinition, parentNode);
+        if (returnType != null) {
+            return returnType;
+        }
+
+        if (typeDefinition.getBaseType() == null) {
+            // Now deal with base types
+            returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForYangType(typeDefinition.getQName()
+                .getLocalName());
             if (returnType == null) {
-                returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForYangType(typeDefinition.getQName()
-                        .getLocalName());
+                LOG.debug("Failed to resolve Java type for {}", typeDefinition);
+            }
+
+            // FIXME: what about base types with restrictions?
+            return returnType;
+        }
+
+        returnType = javaTypeForExtendedType(typeDefinition);
+        if (r != null && returnType instanceof GeneratedTransferObject) {
+            GeneratedTransferObject gto = (GeneratedTransferObject) returnType;
+            Module module = findParentModule(schemaContext, parentNode);
+            String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
+            String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
+                typeDefinition.getPath());
+            String genTOName = BindingMapping.getClassName(typedefName);
+            String name = packageName + "." + genTOName;
+            if (!(returnType.getFullyQualifiedName().equals(name))) {
+                returnType = shadedTOWithRestrictions(gto, r);
             }
         }
         return returnType;
