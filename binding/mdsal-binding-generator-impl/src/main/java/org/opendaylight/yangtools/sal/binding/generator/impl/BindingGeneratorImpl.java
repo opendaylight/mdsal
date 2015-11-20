@@ -101,9 +101,11 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
+import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.opendaylight.yangtools.yang.model.util.UnionType;
+import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
 import org.opendaylight.yangtools.yang.parser.builder.util.Comparators;
 import org.opendaylight.yangtools.yang.parser.util.ModuleDependencySort;
 import org.slf4j.Logger;
@@ -1326,6 +1328,30 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
     }
 
+    private static boolean isInnerType(final LeafSchemaNode leaf, final TypeDefinition<?> type) {
+        // Deal with old parser, clearing out references to typedefs
+        if (type instanceof ExtendedType) {
+            return false;
+        }
+
+        // New parser with encapsulated type
+        if (leaf.getPath().equals(type.getPath())) {
+            return true;
+        }
+
+        // Embedded type definition with new parser. Also takes care of the old parser with bits
+        if (leaf.getPath().equals(type.getPath().getParent())) {
+            return true;
+        }
+
+        // Old parser uses broken Union type, which does not change its schema path
+        if (type instanceof UnionType) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Converts <code>leaf</code> to the getter method which is added to
      * <code>typeBuilder</code>.
@@ -1355,34 +1381,34 @@ public class BindingGeneratorImpl implements BindingGenerator {
             return null;
         }
 
-        Type returnType = null;
         final Module parentModule = findParentModule(schemaContext, leaf);
+        Type returnType = null;
 
-        // FIXME: cascade assumes that ExtendedType does not resolve into any of the TypeDefinitions and
-        //        will pass on to the default case. That default case will be also taken for base types.
-        //        There is another twist here, which is the fact that the new parser will wrap the type
-        //        if we have redefined the default value -- which is not something that was done before.
+        final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
+        if (isInnerType(leaf, typeDef)) {
+            if (typeDef instanceof EnumTypeDefinition) {
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
+                final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
+                final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(),
+                    typeBuilder, module);
 
-        final TypeDefinition<?> typeDef = leaf.getType();
-        if (typeDef instanceof EnumTypeDefinition) {
-            returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
-            final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
-            final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(),
-                typeBuilder, module);
-
-            if (enumBuilder != null) {
-                returnType = enumBuilder.toInstance(typeBuilder);
-            }
-            ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
-        } else if (typeDef instanceof UnionTypeDefinition) {
-            GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
-            if (genTOBuilder != null) {
-                returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
-            }
-        } else if (typeDef instanceof BitsTypeDefinition) {
-            GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
-            if (genTOBuilder != null) {
-                returnType = genTOBuilder.toInstance();
+                if (enumBuilder != null) {
+                    returnType = enumBuilder.toInstance(typeBuilder);
+                }
+                ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
+            } else if (typeDef instanceof UnionTypeDefinition) {
+                GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
+                if (genTOBuilder != null) {
+                    returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
+                }
+            } else if (typeDef instanceof BitsTypeDefinition) {
+                GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
+                if (genTOBuilder != null) {
+                    returnType = genTOBuilder.toInstance();
+                }
+            } else {
+                final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
             }
         } else {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
