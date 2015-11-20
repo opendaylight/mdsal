@@ -11,11 +11,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
 import java.io.File;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
+import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
@@ -94,7 +94,7 @@ public class ExtendedTypedefTest {
         // extended-typedef-union
         assertNotNull("ExtendedTypedefUnion object not found", extendedTypedefUnion);
         properties = extendedTypedefUnion.getProperties();
-        assertTrue("ExtendedTypedefUnion shouldn't have any property", properties.isEmpty());
+        assertEquals("ExtendedTypedefUnion shouldn't have any property", 0, properties.size());
 
         extendTO = extendedTypedefUnion.getSuperType();
         assertEquals("Incorrect extension fo ExtendedTypedefUnion.", "UnionTypedef", extendTO.getName());
