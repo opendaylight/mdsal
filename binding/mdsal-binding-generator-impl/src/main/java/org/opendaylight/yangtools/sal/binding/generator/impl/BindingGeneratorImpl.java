@@ -1593,7 +1593,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                             typeBuilder,module);
                     returnType = new ReferencedTypeImpl(enumBuilder.getPackageName(), enumBuilder.getName());
                     ((TypeProviderImpl) typeProvider).putReferencedType(node.getPath(), returnType);
-                } else if (typeDef instanceof UnionType) {
+                } else if (typeDef instanceof UnionTypeDefinition) {
                     final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule);
                     if (genTOBuilder != null) {
                         returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);

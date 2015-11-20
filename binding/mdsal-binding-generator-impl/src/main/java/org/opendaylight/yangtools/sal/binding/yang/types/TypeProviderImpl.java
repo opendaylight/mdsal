@@ -738,7 +738,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 Type returnType = null;
                 if (innerTypeDefinition.getBaseType() != null) {
                     returnType = provideGeneratedTOFromExtendedType(typedef, innerTypeDefinition, basePackageName,
-                            module.getName());
+                        module.getName());
                 } else if (innerTypeDefinition instanceof UnionTypeDefinition) {
                     final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForUnionTypeDef(basePackageName,
                             (UnionTypeDefinition) innerTypeDefinition, typedefName, typedef);
@@ -915,12 +915,12 @@ public final class TypeProviderImpl implements TypeProvider {
         final List<String> regularExpressions = new ArrayList<String>();
         for (final TypeDefinition<?> unionType : unionTypes) {
             final String unionTypeName = unionType.getQName().getLocalName();
-            if (unionType instanceof UnionType) {
-                generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionType) unionType,
-                        basePackageName, parentNode));
-            } else if (unionType instanceof ExtendedType) {
-                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, (ExtendedType) unionType, regularExpressions,
+            if (unionType.getBaseType() != null) {
+                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, regularExpressions,
                         parentNode);
+            } else if (unionType instanceof UnionTypeDefinition) {
+                generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionTypeDefinition) unionType,
+                    basePackageName, parentNode));
             } else if (unionType instanceof EnumTypeDefinition) {
                 final Enumeration enumeration = addInnerEnumerationToTypeBuilder((EnumTypeDefinition) unionType,
                         unionTypeName, unionGenTOBuilder);
@@ -998,7 +998,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *
      */
     private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
-            final ExtendedType unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode) {
+            final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode) {
         final String unionTypeName = unionSubtype.getQName().getLocalName();
         final Type genTO = findGenTO(unionTypeName, unionSubtype);
         if (genTO != null) {
@@ -1052,8 +1052,7 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     private void storeGenTO(final TypeDefinition<?> newTypeDef, final GeneratedTOBuilder genTOBuilder,
             final SchemaNode parentNode) {
-        if (!(newTypeDef instanceof UnionType)) {
-
+        if (!(newTypeDef instanceof UnionTypeDefinition)) {
             final Module parentModule = findParentModule(schemaContext, parentNode);
             if (parentModule != null && parentModule.getName() != null) {
                 Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(parentModule.getName());
