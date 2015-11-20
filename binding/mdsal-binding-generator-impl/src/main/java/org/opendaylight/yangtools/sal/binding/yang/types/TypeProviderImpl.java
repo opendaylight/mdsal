@@ -1058,6 +1058,7 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     private void storeGenTO(final TypeDefinition<?> newTypeDef, final GeneratedTOBuilder genTOBuilder,
             final SchemaNode parentNode) {
+        // FIXME: this check needs to be relaxed
         if (!(newTypeDef instanceof UnionType)) {
 
             final Module parentModule = findParentModule(schemaContext, parentNode);
