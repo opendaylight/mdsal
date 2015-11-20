@@ -80,18 +80,11 @@ import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.EnumerationType;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
-import org.opendaylight.yangtools.yang.model.util.Int16;
-import org.opendaylight.yangtools.yang.model.util.Int32;
-import org.opendaylight.yangtools.yang.model.util.Int64;
-import org.opendaylight.yangtools.yang.model.util.Int8;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.StringType;
-import org.opendaylight.yangtools.yang.model.util.Uint16;
-import org.opendaylight.yangtools.yang.model.util.Uint32;
-import org.opendaylight.yangtools.yang.model.util.Uint64;
-import org.opendaylight.yangtools.yang.model.util.Uint8;
 import org.opendaylight.yangtools.yang.model.util.UnionType;
+import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1486,25 +1479,25 @@ public final class TypeProviderImpl implements TypeProvider {
             throw new UnsupportedOperationException("Cannot get default construction for identityref type");
         } else if (base instanceof InstanceIdentifierTypeDefinition) {
             throw new UnsupportedOperationException("Cannot get default construction for instance-identifier type");
-        } else if (base instanceof Int8) {
+        } else if (BaseTypes.isInt8(base)) {
             result = typeToDef(Byte.class, defaultValue);
-        } else if (base instanceof Int16) {
+        } else if (BaseTypes.isInt16(base)) {
             result = typeToDef(Short.class, defaultValue);
-        } else if (base instanceof Int32) {
+        } else if (BaseTypes.isInt32(base)) {
             result = typeToDef(Integer.class, defaultValue);
-        } else if (base instanceof Int64) {
+        } else if (BaseTypes.isInt64(base)) {
             result = typeToDef(Long.class, defaultValue);
         } else if (base instanceof LeafrefTypeDefinition) {
             result = leafrefToDef(node, (LeafrefTypeDefinition) base, defaultValue);
         } else if (base instanceof StringTypeDefinition) {
             result = "\"" + defaultValue + "\"";
-        } else if (base instanceof Uint8) {
+        } else if (BaseTypes.isUint8(base)) {
             result = typeToDef(Short.class, defaultValue);
-        } else if (base instanceof Uint16) {
+        } else if (BaseTypes.isUint16(base)) {
             result = typeToDef(Integer.class, defaultValue);
-        } else if (base instanceof Uint32) {
+        } else if (BaseTypes.isUint32(base)) {
             result = typeToDef(Long.class, defaultValue);
-        } else if (base instanceof Uint64) {
+        } else if (BaseTypes.isUint64(base)) {
             result = typeToDef(BigInteger.class, defaultValue);
         } else if (base instanceof UnionTypeDefinition) {
             result = unionToDef(node);
