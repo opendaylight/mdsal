@@ -1346,49 +1346,60 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *         </ul>
      */
     private Type resolveLeafSchemaNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf, final Module module) {
-        Type returnType = null;
-        if ((leaf != null) && (typeBuilder != null)) {
-            final String leafName = leaf.getQName().getLocalName();
-            String leafDesc = leaf.getDescription();
-            if (leafDesc == null) {
-                leafDesc = "";
-            }
-
-            final Module parentModule = findParentModule(schemaContext, leaf);
-            if (leafName != null && !leaf.isAddedByUses()) {
-                final TypeDefinition<?> typeDef = leaf.getType();
-
-                GeneratedTOBuilder genTOBuilder;
-                if (typeDef instanceof EnumTypeDefinition) {
-                    returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
-                    final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
-                    final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(),
-                            typeBuilder,module);
-
-                    if (enumBuilder != null) {
-                        returnType = enumBuilder.toInstance(typeBuilder);
-                    }
-                    ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
-                } else if (typeDef instanceof UnionType) {
-                    genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
-                    if (genTOBuilder != null) {
-                        returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
-                    }
-                } else if (typeDef instanceof BitsTypeDefinition) {
-                    genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
-                    if (genTOBuilder != null) {
-                        returnType = genTOBuilder.toInstance();
-                    }
-                } else {
-                    final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
-                    returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
-                }
-                if (returnType != null) {
-                    final MethodSignatureBuilder getter = constructGetter(typeBuilder, leafName, leafDesc, returnType);
-                    processContextRefExtension(leaf, getter, parentModule);
-                }
-            }
+        if (leaf == null || typeBuilder == null || leaf.isAddedByUses()) {
+            return null;
         }
+
+        final String leafName = leaf.getQName().getLocalName();
+        if (leafName == null) {
+            return null;
+        }
+
+        Type returnType = null;
+        final Module parentModule = findParentModule(schemaContext, leaf);
+
+        // FIXME: cascade assumes that ExtendedType does not resolve into any of the TypeDefinitions and
+        //        will pass on to the default case. That default case will be also taken for base types.
+        //        There is another twist here, which is the fact that the new parser will wrap the type
+        //        if we have redefined the default value -- which is not something that was done before.
+
+        final TypeDefinition<?> typeDef = leaf.getType();
+        if (typeDef instanceof EnumTypeDefinition) {
+            returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
+            final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
+            final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(),
+                typeBuilder, module);
+
+            if (enumBuilder != null) {
+                returnType = enumBuilder.toInstance(typeBuilder);
+            }
+            ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
+        } else if (typeDef instanceof UnionTypeDefinition) {
+            GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
+            if (genTOBuilder != null) {
+                returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
+            }
+        } else if (typeDef instanceof BitsTypeDefinition) {
+            GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
+            if (genTOBuilder != null) {
+                returnType = genTOBuilder.toInstance();
+            }
+        } else {
+            final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
+            returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
+        }
+
+        if (returnType == null) {
+            return null;
+        }
+
+        String leafDesc = leaf.getDescription();
+        if (leafDesc == null) {
+            leafDesc = "";
+        }
+
+        final MethodSignatureBuilder getter = constructGetter(typeBuilder, leafName, leafDesc, returnType);
+        processContextRefExtension(leaf, getter, parentModule);
         return returnType;
     }
 
