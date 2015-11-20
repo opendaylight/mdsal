@@ -11,14 +11,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import java.io.File;
-
-import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
 import java.net.URI;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
+import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
@@ -111,17 +109,17 @@ public class GeneratedTypesBitsTest {
 
         assertTrue(byteTypeFound);
 
-        assertEquals(classPropertiesNumb,8);
+        assertEquals(8, classPropertiesNumb);
 
-        assertEquals(toStringPropertiesNum,8);
-        assertEquals(equalPropertiesNum,8);
-        assertEquals(hashPropertiesNum,8);
+        assertEquals(8, toStringPropertiesNum);
+        assertEquals(8, equalPropertiesNum);
+        assertEquals(8, hashPropertiesNum);
         assertTrue(leafParentFound);
 
         assertNotNull(methodSignaturesList);
 
         assertTrue(getByteLeafMethodFound);
-        assertEquals(nameReturnParamType,"ByteType");
+        assertEquals("ByteType", nameReturnParamType);
 
         assertFalse(setByteLeafMethodFound);
         assertEquals(0, setByteLeafMethodParamNum);
