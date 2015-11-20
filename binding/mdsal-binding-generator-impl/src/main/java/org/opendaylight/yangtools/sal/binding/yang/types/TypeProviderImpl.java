@@ -736,9 +736,8 @@ public final class TypeProviderImpl implements TypeProvider {
             if (!(innerTypeDefinition instanceof LeafrefTypeDefinition)
                     && !(innerTypeDefinition instanceof IdentityrefTypeDefinition)) {
                 Type returnType = null;
-                if (innerTypeDefinition instanceof ExtendedType) {
-                    ExtendedType innerExtendedType = (ExtendedType) innerTypeDefinition;
-                    returnType = provideGeneratedTOFromExtendedType(typedef, innerExtendedType, basePackageName,
+                if (innerTypeDefinition.getBaseType() != null) {
+                    returnType = provideGeneratedTOFromExtendedType(typedef, innerTypeDefinition, basePackageName,
                             module.getName());
                 } else if (innerTypeDefinition instanceof UnionTypeDefinition) {
                     final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForUnionTypeDef(basePackageName,
@@ -1272,7 +1271,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *             </ul>
      */
     private GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef,
-            final ExtendedType innerExtendedType, final String basePackageName, final String moduleName) {
+            final TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName) {
         Preconditions.checkArgument(innerExtendedType != null, "Extended type cannot be NULL!");
         Preconditions.checkArgument(basePackageName != null, "String with base package name cannot be NULL!");
 
