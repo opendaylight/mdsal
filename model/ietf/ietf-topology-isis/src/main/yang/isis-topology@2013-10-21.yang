@@ -80,7 +80,7 @@ module isis-topology {
                     type iso-system-id;
                 }
                 leaf iso-pseudonode-id {
-                    default "0";
+                    default "00";
                     type iso-pseudonode-id;
                 }
             }
