@@ -12,6 +12,7 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findD
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
 import java.io.Serializable;
@@ -809,8 +810,8 @@ public final class TypeProviderImpl implements TypeProvider {
         genTOBuilder.addEqualsIdentity(genPropBuilder);
         genTOBuilder.addHashIdentity(genPropBuilder);
         genTOBuilder.addToStringProperty(genPropBuilder);
-        if (javaType instanceof ConcreteType && "String".equals(javaType.getName()) && typedef instanceof ExtendedType) {
-            final List<String> regExps = resolveRegExpressionsFromTypedef((ExtendedType) typedef);
+        if (javaType instanceof ConcreteType && "String".equals(javaType.getName()) && typedef.getBaseType() != null) {
+            final List<String> regExps = resolveRegExpressionsFromTypedef(typedef);
             addStringRegExAsConstant(genTOBuilder, regExps);
         }
         addUnitsToGenTO(genTOBuilder, typedef.getUnits());
@@ -1174,22 +1175,31 @@ public final class TypeProviderImpl implements TypeProvider {
      *             if <code>typedef</code> equals null
      *
      */
-    private static List<String> resolveRegExpressionsFromTypedef(final ExtendedType typedef) {
-        final List<String> regExps = new ArrayList<String>();
+    private static List<String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
         Preconditions.checkArgument(typedef != null, "typedef can't be null");
-        final TypeDefinition<?> strTypeDef = baseTypeDefForExtendedType(typedef);
-        if (strTypeDef instanceof StringType) {
-            final List<PatternConstraint> patternConstraints = typedef.getPatternConstraints();
-            if (!patternConstraints.isEmpty()) {
-                String regEx;
-                String modifiedRegEx;
-                for (PatternConstraint patternConstraint : patternConstraints) {
-                    regEx = patternConstraint.getRegularExpression();
-                    modifiedRegEx = StringEscapeUtils.escapeJava(regEx);
-                    regExps.add(modifiedRegEx);
-                }
+
+        final List<PatternConstraint> patternConstraints;
+        if (typedef instanceof ExtendedType) {
+            final TypeDefinition<?> strTypeDef = baseTypeDefForExtendedType(typedef);
+            if (strTypeDef instanceof StringType) {
+                patternConstraints = ((ExtendedType)typedef).getPatternConstraints();
+            } else {
+                patternConstraints = ImmutableList.of();
             }
+        } else if (typedef instanceof StringTypeDefinition) {
+            // FIXME: run diff against base
+            patternConstraints = ((StringTypeDefinition) typedef).getPatternConstraints();
+        } else {
+            patternConstraints = ImmutableList.of();
         }
+
+        final List<String> regExps = new ArrayList<>(patternConstraints.size());
+        for (PatternConstraint patternConstraint : patternConstraints) {
+            final String regEx = patternConstraint.getRegularExpression();
+            final String modifiedRegEx = StringEscapeUtils.escapeJava(regEx);
+            regExps.add(modifiedRegEx);
+        }
+
         return regExps;
     }
 

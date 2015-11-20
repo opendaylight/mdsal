@@ -8,6 +8,7 @@
 package org.opendaylight.yangtools.binding.generator.util;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -33,11 +34,13 @@ import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
+import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 
@@ -447,35 +450,74 @@ public final class BindingGeneratorUtil {
     }
 
     public static Restrictions getRestrictions(final TypeDefinition<?> type) {
-        // Base types have no constraints, so get over it quickly
-        if (!(type instanceof ExtendedType)) {
+        // Old parser generated types which actually contained based restrictions, but our code deals with that when
+        // binding to core Java types. Hence we'll emit empty restrictions for base types.
+        if (type == null || type.getBaseType() == null) {
             return EMPTY_RESTRICTIONS;
         }
 
-        // Take care of the extended types ...
-        final ExtendedType ext = (ExtendedType)type;
-        final List<LengthConstraint> length = ext.getLengthConstraints();
-        final List<PatternConstraint> pattern = ext.getPatternConstraints();
+        final List<LengthConstraint> length;
+        final List<PatternConstraint> pattern;
+        final List<RangeConstraint> range;
 
-        List<RangeConstraint> tmp = ext.getRangeConstraints();
-        if (tmp.isEmpty()) {
-            final TypeDefinition<?> base = ext.getBaseType();
-            if (base instanceof IntegerTypeDefinition) {
-                tmp = ((IntegerTypeDefinition)base).getRangeConstraints();
-            } else if (base instanceof UnsignedIntegerTypeDefinition) {
-                tmp = ((UnsignedIntegerTypeDefinition)base).getRangeConstraints();
-            } else if (base instanceof DecimalTypeDefinition) {
-                tmp = ((DecimalTypeDefinition)base).getRangeConstraints();
+        // Take care of extended types..
+        if (type instanceof ExtendedType) {
+            final ExtendedType ext = (ExtendedType)type;
+            length = ext.getLengthConstraints();
+            pattern = ext.getPatternConstraints();
+
+            // Interesting special-case...
+            List<RangeConstraint> tmp = ext.getRangeConstraints();
+            if (tmp.isEmpty()) {
+                final TypeDefinition<?> base = ext.getBaseType();
+                if (base instanceof IntegerTypeDefinition) {
+                    tmp = ((IntegerTypeDefinition)base).getRangeConstraints();
+                } else if (base instanceof UnsignedIntegerTypeDefinition) {
+                    tmp = ((UnsignedIntegerTypeDefinition)base).getRangeConstraints();
+                } else if (base instanceof DecimalTypeDefinition) {
+                    tmp = ((DecimalTypeDefinition)base).getRangeConstraints();
+                }
             }
+
+            range = tmp;
+        } else if (type instanceof BinaryTypeDefinition) {
+            // FIXME: run a diff on base type
+            length = ((BinaryTypeDefinition)type).getLengthConstraints();
+            pattern = ImmutableList.of();
+            range = ImmutableList.of();
+        } else if (type instanceof DecimalTypeDefinition) {
+            length = ImmutableList.of();
+            pattern = ImmutableList.of();
+            // FIXME: run a diff on base type
+            range = ((DecimalTypeDefinition)type).getRangeConstraints();
+        } else if (type instanceof IntegerTypeDefinition) {
+            length = ImmutableList.of();
+            pattern = ImmutableList.of();
+            // FIXME: run a diff on base type
+            range = ((IntegerTypeDefinition)type).getRangeConstraints();
+        } else if (type instanceof StringTypeDefinition) {
+            // FIXME: run a diff on base type
+            length = ((StringTypeDefinition)type).getLengthConstraints();
+            // FIXME: run a diff on base type
+            pattern = ((StringTypeDefinition)type).getPatternConstraints();
+            range = ImmutableList.of();
+        } else if (type instanceof UnsignedIntegerTypeDefinition) {
+            length = ImmutableList.of();
+            pattern = ImmutableList.of();
+            // FIXME: run a diff on base type
+            range = ((UnsignedIntegerTypeDefinition)type).getRangeConstraints();
+        } else {
+            length = ImmutableList.of();
+            pattern = ImmutableList.of();
+            range = ImmutableList.of();
         }
 
         // Now, this may have ended up being empty, too...
-        if (length.isEmpty() && pattern.isEmpty() && tmp.isEmpty()) {
+        if (length.isEmpty() && pattern.isEmpty() && range.isEmpty()) {
             return EMPTY_RESTRICTIONS;
         }
 
         // Nope, not empty allocate a holder
-        final List<RangeConstraint> range = tmp;
         return new Restrictions() {
             @Override
             public List<RangeConstraint> getRangeConstraints() {
@@ -495,5 +537,4 @@ public final class BindingGeneratorUtil {
             }
         };
     }
-
 }
