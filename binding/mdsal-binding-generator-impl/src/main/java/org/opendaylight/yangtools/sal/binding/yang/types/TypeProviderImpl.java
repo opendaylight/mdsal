@@ -78,6 +78,7 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
+import org.opendaylight.yangtools.yang.model.util.Decimal64;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
@@ -200,10 +201,22 @@ public final class TypeProviderImpl implements TypeProvider {
             return returnType;
         }
 
+        // Now deal with base types
         if (typeDefinition.getBaseType() == null) {
-            // Now deal with base types
-            returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForYangType(typeDefinition.getQName()
-                .getLocalName());
+            // We have to deal with differing handling of decimal64. The old parser used a fixed Decimal64 type
+            // and generated an enclosing ExtendedType to hold any range constraints. The new parser instantiates
+            // a base type which holds these constraints -- and the class is not a Decimal64.
+            if (typeDefinition instanceof DecimalTypeDefinition && !(typeDefinition instanceof Decimal64)) {
+                returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(typeDefinition,
+                    parentNode, r);
+            }
+
+            if (returnType == null) {
+                // FIXME: it looks as though we could be using the same codepath as above...
+                returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForYangType(typeDefinition.getQName()
+                    .getLocalName());
+            }
+
             if (returnType == null) {
                 LOG.debug("Failed to resolve Java type for {}", typeDefinition);
             }
