@@ -83,8 +83,6 @@ import org.opendaylight.yangtools.yang.model.util.Decimal64;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.opendaylight.yangtools.yang.model.util.StringType;
-import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 import org.slf4j.Logger;
@@ -1018,7 +1016,7 @@ public final class TypeProviderImpl implements TypeProvider {
                     updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, unionTypeName);
                 }
             }
-            if (baseType instanceof StringType) {
+            if (baseType instanceof StringTypeDefinition) {
                 regularExpressions.addAll(resolveRegExpressionsFromTypedef(unionSubtype));
             }
         }
@@ -1197,7 +1195,7 @@ public final class TypeProviderImpl implements TypeProvider {
         final List<PatternConstraint> patternConstraints;
         if (typedef instanceof ExtendedType) {
             final TypeDefinition<?> strTypeDef = baseTypeDefForExtendedType(typedef);
-            if (strTypeDef instanceof StringType) {
+            if (strTypeDef instanceof StringTypeDefinition) {
                 patternConstraints = ((ExtendedType)typedef).getPatternConstraints();
             } else {
                 patternConstraints = ImmutableList.of();
@@ -1382,13 +1380,16 @@ public final class TypeProviderImpl implements TypeProvider {
         if (typeDefinition == null) {
             return 1;
         }
-        int depth = 1;
         TypeDefinition<?> baseType = typeDefinition.getBaseType();
+        if (baseType == null) {
+            return 1;
+        }
 
-        if (baseType instanceof ExtendedType) {
-            depth = depth + getTypeDefinitionDepth(typeDefinition.getBaseType());
-        } else if (baseType instanceof UnionType) {
-            List<TypeDefinition<?>> childTypeDefinitions = ((UnionType) baseType).getTypes();
+        int depth = 1;
+        if (baseType.getBaseType() != null) {
+            depth = depth + getTypeDefinitionDepth(baseType);
+        } else if (baseType instanceof UnionTypeDefinition) {
+            List<TypeDefinition<?>> childTypeDefinitions = ((UnionTypeDefinition) baseType).getTypes();
             int maxChildDepth = 0;
             int childDepth = 1;
             for (TypeDefinition<?> childTypeDefinition : childTypeDefinitions) {
