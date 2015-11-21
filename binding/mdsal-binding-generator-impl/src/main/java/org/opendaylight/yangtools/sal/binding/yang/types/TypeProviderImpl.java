@@ -78,13 +78,13 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.EnumerationType;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.StringType;
 import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1428,7 +1428,7 @@ public final class TypeProviderImpl implements TypeProvider {
     }
 
     public String getTypeDefaultConstruction(final LeafSchemaNode node, final String defaultValue) {
-        TypeDefinition<?> type = node.getType();
+        TypeDefinition<?> type = CompatUtils.compatLeafType(node);
         QName typeQName = type.getQName();
         TypeDefinition<?> base = baseTypeDefForExtendedType(type);
         Preconditions.checkNotNull(type, "Cannot provide default construction for null type of %s", node);
@@ -1455,7 +1455,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 parentName = BindingMapping.getClassName(parent.getName());
                 className = packageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
             }
-            result = bitsToDef((BitsTypeDefinition) base, className, defaultValue, type instanceof ExtendedType);
+            result = bitsToDef((BitsTypeDefinition) base, className, defaultValue, type.getBaseType() != null);
         } else if (base instanceof BooleanTypeDefinition) {
             result = typeToDef(Boolean.class, defaultValue);
         } else if (base instanceof DecimalTypeDefinition) {
@@ -1468,7 +1468,7 @@ public final class TypeProviderImpl implements TypeProvider {
             defValArray[0] = first;
             String newDefVal = new String(defValArray);
             String className;
-            if (type instanceof ExtendedType) {
+            if (type.getBaseType() != null) {
                 Module m = getParentModule(type);
                 String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
                 String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, type.getPath());
@@ -1511,8 +1511,8 @@ public final class TypeProviderImpl implements TypeProvider {
         }
         sb.append(result);
 
-        if (type instanceof ExtendedType && !(base instanceof LeafrefTypeDefinition)
-                && !(base instanceof EnumerationType) && !(base instanceof UnionTypeDefinition)) {
+        if (type.getBaseType() != null && !(base instanceof LeafrefTypeDefinition)
+                && !(base instanceof EnumTypeDefinition) && !(base instanceof UnionTypeDefinition)) {
             Module m = getParentModule(type);
             String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
             String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, type.getPath());
@@ -1613,11 +1613,11 @@ public final class TypeProviderImpl implements TypeProvider {
     }
 
     private String unionToDef(final LeafSchemaNode node) {
+        final TypeDefinition<?> type = CompatUtils.compatLeafType(node);
         String parentName;
         String className;
 
-        if (node.getType() instanceof ExtendedType) {
-            ExtendedType type = (ExtendedType) node.getType();
+        if (type.getBaseType() != null) {
             QName typeQName = type.getQName();
             Module module = null;
             Set<Module> modules = schemaContext.findModuleByNamespace(typeQName.getNamespace());
