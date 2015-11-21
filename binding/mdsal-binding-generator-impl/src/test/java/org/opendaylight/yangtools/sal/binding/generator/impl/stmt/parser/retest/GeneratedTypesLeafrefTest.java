@@ -11,9 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -21,12 +18,15 @@ import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
+import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class GeneratedTypesLeafrefTest {
 
@@ -229,7 +229,7 @@ public class GeneratedTypesLeafrefTest {
             bindingGen.generateTypes(context);
             fail("Expected IllegalArgumentException caused by invalid leafref path");
         } catch (IllegalArgumentException e) {
-            String expected = "Failed to find leafref target: ../id";
+            String expected = "Failed to find leafref target node: ../id";
             assertEquals(expected, e.getMessage());
         }
     }

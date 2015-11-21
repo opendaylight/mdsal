@@ -256,7 +256,7 @@ public class GeneratedTypesLeafrefTest {
             bindingGen.generateTypes(context);
             fail("Expected IllegalArgumentException caused by invalid leafref path");
         } catch (IllegalArgumentException e) {
-            String expected = "Failed to find leafref target: ../id";
+            String expected = "Failed to find leafref target node: ../id";
             assertEquals(expected, e.getMessage());
         }
     }
