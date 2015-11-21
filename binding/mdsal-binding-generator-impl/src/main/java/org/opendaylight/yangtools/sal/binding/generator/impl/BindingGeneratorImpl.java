@@ -1406,9 +1406,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @param leaf Leaf for which we are acquiring the type
      * @return Potentially base type of the leaf type.
      */
-    private static TypeDefinition<?> stripDefaultType(final LeafSchemaNode leaf) {
+    public static TypeDefinition<?> stripDefaultType(final LeafSchemaNode leaf) {
         final TypeDefinition<?> leafType = leaf.getType();
-        Preconditions.checkArgument(leafType != null, "Leaf %s has no type", leaf);
+        Preconditions.checkNotNull(leafType);
 
         if (leafType instanceof ExtendedType) {
             // Old parser referring to a typedef
