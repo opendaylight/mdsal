@@ -42,7 +42,10 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
+import org.opendaylight.yangtools.yang.model.util.Decimal64;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
+import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.util.type.DecimalTypeBuilder;
 
 /**
  * Contains the methods for converting strings to valid JAVA language strings
@@ -453,6 +456,44 @@ public final class BindingGeneratorUtil {
         // Old parser generated types which actually contained based restrictions, but our code deals with that when
         // binding to core Java types. Hence we'll emit empty restrictions for base types.
         if (type == null || type.getBaseType() == null) {
+            // Handling of decimal64 has changed in the new parser. It contains range restrictions applied to the type
+            // directly, without an extended type. We need to capture such constraints. In order to retain behavior we
+            // need to analyze the new semantics and see if the constraints have been overridden. To do that we
+            // instantiate a temporary unconstrained type and compare them.
+            //
+            // FIXME: looking at the generated code it looks as though we need to pass the restrictions without
+            //        comparison and also even in the case of the old parser
+            if (type instanceof DecimalTypeDefinition && !(type instanceof Decimal64)) {
+                final DecimalTypeDefinition decimal = (DecimalTypeDefinition) type;
+                final DecimalTypeBuilder tmpBuilder = BaseTypes.decimalTypeBuilder(decimal.getPath());
+                tmpBuilder.setFractionDigits(decimal.getFractionDigits());
+                final DecimalTypeDefinition tmp = tmpBuilder.build();
+
+                if (!tmp.getRangeConstraints().equals(decimal.getRangeConstraints())) {
+                    return new Restrictions() {
+                        @Override
+                        public boolean isEmpty() {
+                            return false;
+                        }
+
+                        @Override
+                        public List<RangeConstraint> getRangeConstraints() {
+                            return decimal.getRangeConstraints();
+                        }
+
+                        @Override
+                        public List<PatternConstraint> getPatternConstraints() {
+                            return ImmutableList.of();
+                        }
+
+                        @Override
+                        public List<LengthConstraint> getLengthConstraints() {
+                            return ImmutableList.of();
+                        }
+                    };
+                }
+            }
+
             return EMPTY_RESTRICTIONS;
         }
 
