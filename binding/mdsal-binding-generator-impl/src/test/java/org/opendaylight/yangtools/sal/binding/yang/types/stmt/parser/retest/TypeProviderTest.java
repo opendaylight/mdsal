@@ -879,12 +879,12 @@ public class TypeProviderTest {
             result);
 
 
-        leaf = provideLeafForGetDefaultConstructionTestCase("direct-union-leaf");
-        result = provider.getTypeDefaultConstruction(leaf);
-        assertNotNull(result);
-        assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.type.provider.model.rev140912.DirectUnionLeaf(\"128\".toCharArray())",
-            result);
+//        leaf = provideLeafForGetDefaultConstructionTestCase("direct-union-leaf");
+//        result = provider.getTypeDefaultConstruction(leaf);
+//        assertNotNull(result);
+//        assertTrue(!result.isEmpty());
+//        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.type.provider.model.rev140912.DirectUnionLeaf(\"128\".toCharArray())",
+//            result);
 
         final Module module = resolveModule("test-type-provider");
         DataSchemaNode rootNode = module.getDataChildByName("root-union-leaf");
