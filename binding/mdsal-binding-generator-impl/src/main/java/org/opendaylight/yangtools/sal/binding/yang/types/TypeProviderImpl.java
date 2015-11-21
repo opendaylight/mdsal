@@ -83,8 +83,6 @@ import org.opendaylight.yangtools.yang.model.util.Decimal64;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.opendaylight.yangtools.yang.model.util.StringType;
-import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 import org.slf4j.Logger;
@@ -195,37 +193,35 @@ public final class TypeProviderImpl implements TypeProvider {
         String typedefName = typeDefinition.getQName().getLocalName();
         Preconditions.checkArgument(typedefName != null, "Type Definitions Local Name cannot be NULL!");
 
-        // Deal with leafrefs/identityrefs first
-        Type returnType = javaTypeForLeafrefOrIdentityRef(typeDefinition, parentNode);
-        if (returnType != null) {
-            return returnType;
-        }
-
-        // Now deal with base types
+        // Deal with base types
         if (typeDefinition.getBaseType() == null) {
             // We have to deal with differing handling of decimal64. The old parser used a fixed Decimal64 type
             // and generated an enclosing ExtendedType to hold any range constraints. The new parser instantiates
             // a base type which holds these constraints -- and the class is not a Decimal64.
             if (typeDefinition instanceof DecimalTypeDefinition && !(typeDefinition instanceof Decimal64)) {
-                returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(typeDefinition,
+                final Type ret = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(typeDefinition,
                     parentNode, r);
+                if (ret != null) {
+                    return ret;
+                }
             }
 
-            if (returnType == null) {
-                // FIXME: it looks as though we could be using the same codepath as above...
-                returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForYangType(typeDefinition.getQName()
-                    .getLocalName());
+            // Deal with leafrefs/identityrefs
+            Type ret = javaTypeForLeafrefOrIdentityRef(typeDefinition, parentNode);
+            if (ret != null) {
+                return ret;
             }
 
-            if (returnType == null) {
+            // FIXME: it looks as though we could be using the same codepath as above...
+            ret = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForYangType(typeDefinition.getQName().getLocalName());
+            if (ret == null) {
                 LOG.debug("Failed to resolve Java type for {}", typeDefinition);
             }
 
-            // FIXME: what about base types with restrictions?
-            return returnType;
+            return ret;
         }
 
-        returnType = javaTypeForExtendedType(typeDefinition);
+        Type returnType = javaTypeForExtendedType(typeDefinition);
         if (r != null && returnType instanceof GeneratedTransferObject) {
             GeneratedTransferObject gto = (GeneratedTransferObject) returnType;
             Module module = findParentModule(schemaContext, parentNode);
@@ -490,29 +486,28 @@ public final class TypeProviderImpl implements TypeProvider {
         if (strXPath != null) {
             if (strXPath.indexOf('[') == -1) {
                 final Module module = findParentModule(schemaContext, parentNode);
-                if (module != null) {
-                    final SchemaNode dataNode;
-                    if (xpath.isAbsolute()) {
-                        dataNode = findDataSchemaNode(schemaContext, module, xpath);
-                    } else {
-                        dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
-                    }
+                Preconditions.checkArgument(module != null, "Failed to find module for parent %s", parentNode);
 
-                    if (leafContainsEnumDefinition(dataNode)) {
-                        returnType = referencedTypes.get(dataNode.getPath());
-                    } else if (leafListContainsEnumDefinition(dataNode)) {
-                        returnType = Types.listTypeFor(referencedTypes.get(dataNode.getPath()));
-                    } else {
-                        returnType = resolveTypeFromDataSchemaNode(dataNode);
-                    }
+                final SchemaNode dataNode;
+                if (xpath.isAbsolute()) {
+                    dataNode = findDataSchemaNode(schemaContext, module, xpath);
+                } else {
+                    dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
+                }
+                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target node: %s", xpath);
+
+                if (leafContainsEnumDefinition(dataNode)) {
+                    returnType = referencedTypes.get(dataNode.getPath());
+                } else if (leafListContainsEnumDefinition(dataNode)) {
+                    returnType = Types.listTypeFor(referencedTypes.get(dataNode.getPath()));
+                } else {
+                    returnType = resolveTypeFromDataSchemaNode(dataNode);
                 }
             } else {
                 returnType = Types.typeForClass(Object.class);
             }
         }
-        if (returnType == null) {
-            throw new IllegalArgumentException("Failed to find leafref target: " + strXPath);
-        }
+        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s", strXPath);
         return returnType;
     }
 
@@ -532,7 +527,7 @@ public final class TypeProviderImpl implements TypeProvider {
     private static boolean leafContainsEnumDefinition(final SchemaNode dataNode) {
         if (dataNode instanceof LeafSchemaNode) {
             final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-            if (leaf.getType() instanceof EnumTypeDefinition) {
+            if (BindingGeneratorImpl.stripDefaultType(leaf) instanceof EnumTypeDefinition) {
                 return true;
             }
         }
@@ -658,7 +653,8 @@ public final class TypeProviderImpl implements TypeProvider {
         if (dataNode != null) {
             if (dataNode instanceof LeafSchemaNode) {
                 final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-                returnType = javaTypeForSchemaDefinitionType(leaf.getType(), leaf);
+                final TypeDefinition<?> type = BindingGeneratorImpl.stripDefaultType(leaf);
+                returnType = javaTypeForSchemaDefinitionType(type, leaf);
             } else if (dataNode instanceof LeafListSchemaNode) {
                 final LeafListSchemaNode leafList = (LeafListSchemaNode) dataNode;
                 returnType = javaTypeForSchemaDefinitionType(leafList.getType(), leafList);
@@ -1018,7 +1014,7 @@ public final class TypeProviderImpl implements TypeProvider {
                     updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, unionTypeName);
                 }
             }
-            if (baseType instanceof StringType) {
+            if (baseType instanceof StringTypeDefinition) {
                 regularExpressions.addAll(resolveRegExpressionsFromTypedef(unionSubtype));
             }
         }
@@ -1197,7 +1193,7 @@ public final class TypeProviderImpl implements TypeProvider {
         final List<PatternConstraint> patternConstraints;
         if (typedef instanceof ExtendedType) {
             final TypeDefinition<?> strTypeDef = baseTypeDefForExtendedType(typedef);
-            if (strTypeDef instanceof StringType) {
+            if (strTypeDef instanceof StringTypeDefinition) {
                 patternConstraints = ((ExtendedType)typedef).getPatternConstraints();
             } else {
                 patternConstraints = ImmutableList.of();
@@ -1382,13 +1378,16 @@ public final class TypeProviderImpl implements TypeProvider {
         if (typeDefinition == null) {
             return 1;
         }
-        int depth = 1;
         TypeDefinition<?> baseType = typeDefinition.getBaseType();
+        if (baseType == null) {
+            return 1;
+        }
 
-        if (baseType instanceof ExtendedType) {
-            depth = depth + getTypeDefinitionDepth(typeDefinition.getBaseType());
-        } else if (baseType instanceof UnionType) {
-            List<TypeDefinition<?>> childTypeDefinitions = ((UnionType) baseType).getTypes();
+        int depth = 1;
+        if (baseType.getBaseType() != null) {
+            depth = depth + getTypeDefinitionDepth(baseType);
+        } else if (baseType instanceof UnionTypeDefinition) {
+            List<TypeDefinition<?>> childTypeDefinitions = ((UnionTypeDefinition) baseType).getTypes();
             int maxChildDepth = 0;
             int childDepth = 1;
             for (TypeDefinition<?> childTypeDefinition : childTypeDefinitions) {
