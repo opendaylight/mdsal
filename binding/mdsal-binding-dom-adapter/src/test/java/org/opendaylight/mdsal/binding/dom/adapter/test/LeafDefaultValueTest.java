@@ -327,7 +327,7 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         BooleanContainer boolCont = booleanContainerNode.get();
         assertTrue(boolCont.isBooleanLeaf());
-        assertFalse(boolCont.isBooleanLeaf2());
+        assertNull(boolCont.isBooleanLeaf2());
     }
 
     @Test
