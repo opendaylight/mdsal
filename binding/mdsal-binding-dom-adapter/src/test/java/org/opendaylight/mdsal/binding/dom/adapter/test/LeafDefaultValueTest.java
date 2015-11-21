@@ -327,7 +327,7 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         BooleanContainer boolCont = booleanContainerNode.get();
         assertTrue(boolCont.isBooleanLeaf());
-        assertFalse(boolCont.isBooleanLeaf2());
+        assertNull(boolCont.isBooleanLeaf2());
     }
 
     @Test
@@ -402,6 +402,6 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
         assertTrue(identityrefContainerNode.isPresent());
 
         IdentityrefContainer idrefCont = identityrefContainerNode.get();
-        assertEquals("MyIdentity", idrefCont.getIdentityrefLeaf().getSimpleName());
+        assertNull(idrefCont.getIdentityrefLeaf());
     }
 }
