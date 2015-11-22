@@ -1578,40 +1578,47 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *         </ul>
      */
     private boolean resolveLeafListSchemaNode(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode node, final Module module) {
-        if ((node != null) && (typeBuilder != null)) {
-            final QName nodeName = node.getQName();
-
-            if (nodeName != null && !node.isAddedByUses()) {
-                final TypeDefinition<?> typeDef = node.getType();
-                final Module parentModule = findParentModule(schemaContext, node);
-
-                Type returnType = null;
-                if (typeDef instanceof EnumTypeDefinition) {
-                    returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node);
-                    final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
-                    final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, nodeName,
-                            typeBuilder,module);
-                    returnType = new ReferencedTypeImpl(enumBuilder.getPackageName(), enumBuilder.getName());
-                    ((TypeProviderImpl) typeProvider).putReferencedType(node.getPath(), returnType);
-                } else if (typeDef instanceof UnionTypeDefinition) {
-                    final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule);
-                    if (genTOBuilder != null) {
-                        returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
-                    }
-                } else if (typeDef instanceof BitsTypeDefinition) {
-                    final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule);
-                    returnType = genTOBuilder.toInstance();
-                } else {
-                    final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
-                    returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions);
-                }
-
-                final ParameterizedType listType = Types.listTypeFor(returnType);
-                constructGetter(typeBuilder, nodeName.getLocalName(), node.getDescription(), listType);
-                return true;
-            }
+        if (node == null || typeBuilder == null || node.isAddedByUses()) {
+            return false;
         }
-        return false;
+
+        final QName nodeName = node.getQName();
+        if (nodeName == null) {
+            return false;
+        }
+
+        final TypeDefinition<?> typeDef = node.getType();
+        final Module parentModule = findParentModule(schemaContext, node);
+
+        Type returnType = null;
+        if (typeDef.getBaseType() == null) {
+            if (typeDef instanceof EnumTypeDefinition) {
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node);
+                final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
+                final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, nodeName,
+                    typeBuilder,module);
+                returnType = new ReferencedTypeImpl(enumBuilder.getPackageName(), enumBuilder.getName());
+                ((TypeProviderImpl) typeProvider).putReferencedType(node.getPath(), returnType);
+            } else if (typeDef instanceof UnionTypeDefinition) {
+                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule);
+                if (genTOBuilder != null) {
+                    returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
+                }
+            } else if (typeDef instanceof BitsTypeDefinition) {
+                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule);
+                returnType = genTOBuilder.toInstance();
+            } else {
+                final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions);
+            }
+        } else {
+            final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
+            returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions);
+        }
+
+        final ParameterizedType listType = Types.listTypeFor(returnType);
+        constructGetter(typeBuilder, nodeName.getLocalName(), node.getDescription(), listType);
+        return true;
     }
 
     private Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final TypeDefinition<?> typeDef,
