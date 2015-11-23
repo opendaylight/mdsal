@@ -532,7 +532,7 @@ public final class TypeProviderImpl implements TypeProvider {
     private static boolean leafContainsEnumDefinition(final SchemaNode dataNode) {
         if (dataNode instanceof LeafSchemaNode) {
             final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-            if (leaf.getType() instanceof EnumTypeDefinition) {
+            if (CompatUtils.compatLeafType(leaf) instanceof EnumTypeDefinition) {
                 return true;
             }
         }
@@ -658,7 +658,7 @@ public final class TypeProviderImpl implements TypeProvider {
         if (dataNode != null) {
             if (dataNode instanceof LeafSchemaNode) {
                 final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-                returnType = javaTypeForSchemaDefinitionType(leaf.getType(), leaf);
+                returnType = javaTypeForSchemaDefinitionType(CompatUtils.compatLeafType(leaf), leaf);
             } else if (dataNode instanceof LeafListSchemaNode) {
                 final LeafListSchemaNode leafList = (LeafListSchemaNode) dataNode;
                 returnType = javaTypeForSchemaDefinitionType(leafList.getType(), leafList);
