@@ -39,7 +39,6 @@ import org.opendaylight.yangtools.binding.generator.util.Types;
 import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.EnumerationBuilderImpl;
 import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
-import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
 import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
 import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
@@ -86,6 +85,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.StringType;
 import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -532,7 +532,7 @@ public final class TypeProviderImpl implements TypeProvider {
     private static boolean leafContainsEnumDefinition(final SchemaNode dataNode) {
         if (dataNode instanceof LeafSchemaNode) {
             final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-            if (leaf.getType() instanceof EnumTypeDefinition) {
+            if (CompatUtils.compatLeafType(leaf) instanceof EnumTypeDefinition) {
                 return true;
             }
         }
@@ -658,7 +658,7 @@ public final class TypeProviderImpl implements TypeProvider {
         if (dataNode != null) {
             if (dataNode instanceof LeafSchemaNode) {
                 final LeafSchemaNode leaf = (LeafSchemaNode) dataNode;
-                returnType = javaTypeForSchemaDefinitionType(leaf.getType(), leaf);
+                returnType = javaTypeForSchemaDefinitionType(CompatUtils.compatLeafType(leaf), leaf);
             } else if (dataNode instanceof LeafListSchemaNode) {
                 final LeafListSchemaNode leafList = (LeafListSchemaNode) dataNode;
                 returnType = javaTypeForSchemaDefinitionType(leafList.getType(), leafList);
@@ -1436,7 +1436,7 @@ public final class TypeProviderImpl implements TypeProvider {
     }
 
     public String getTypeDefaultConstruction(final LeafSchemaNode node, final String defaultValue) {
-        TypeDefinition<?> type = BindingGeneratorImpl.stripDefaultType(node);
+        TypeDefinition<?> type = CompatUtils.compatLeafType(node);
         QName typeQName = type.getQName();
         TypeDefinition<?> base = baseTypeDefForExtendedType(type);
         Preconditions.checkNotNull(type, "Cannot provide default construction for null type of %s", node);
@@ -1621,7 +1621,7 @@ public final class TypeProviderImpl implements TypeProvider {
     }
 
     private String unionToDef(final LeafSchemaNode node) {
-        final TypeDefinition<?> type = BindingGeneratorImpl.stripDefaultType(node);
+        final TypeDefinition<?> type = CompatUtils.compatLeafType(node);
         String parentName;
         String className;
 

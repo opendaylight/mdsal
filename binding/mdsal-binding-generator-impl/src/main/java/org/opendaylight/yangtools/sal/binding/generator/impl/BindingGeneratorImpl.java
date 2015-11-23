@@ -96,23 +96,16 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
-import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.InstanceIdentifierTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.IntegerTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
-import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
-import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.opendaylight.yangtools.yang.model.util.UnionType;
+import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
 import org.opendaylight.yangtools.yang.parser.builder.util.Comparators;
 import org.opendaylight.yangtools.yang.parser.util.ModuleDependencySort;
 import org.slf4j.Logger;
@@ -1335,166 +1328,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
     }
 
-    /**
-     * New parser generates a type which encapsulates the default value and units. We deal with the default value
-     * separately during instantiation, so we want to strip that type if it does not introduce further restrictions
-     * against the base type. The inner type specification is NOT returned by getBaseType().
-     *
-     * Here are the possible scenarios:
-     *
-     * <pre>
-     * leaf foo {
-     *     type uint8 {
-     *         range 1..2;
-     *     }
-     * }
-     * </pre>
-     * The leaf type's schema path does not match the schema path of the leaf. We do NOT want to strip it, as
-     * we need to generate an inner class to hold the restrictions.
-     *
-     * <pre>
-     * leaf foo {
-     *     type uint8 {
-     *         range 1..2;
-     *     }
-     *     default 1;
-     * }
-     * </pre>
-     * The leaf type's schema path will match the schema path of the leaf. We do NOT want to strip it, as we need
-     * to generate an inner class to hold the restrictions.
-     *
-     * <pre>
-     * leaf foo {
-     *     type uint8;
-     *     default 1;
-     * }
-     * </pre>
-     * The leaf type's schema path will match the schema path of the leaf. We DO want to strip it, as we will deal
-     * with the default value ourselves.
-     *
-     * <pre>
-     * leaf foo {
-     *     type uint8;
-     * }
-     * </pre>
-     * The leaf type's schema path will not match the schema path of the leaf. We do NOT want to strip it.
-     *
-     * The situation is different for types which do not have a default instantiation in YANG: leafref, enumeration,
-     * identityref, decimal64, bits and union. If these types are defined within this leaf's statement, a base type
-     * will be instantiated. If the leaf defines a default statement, this base type will be visible via getBaseType().
-     *
-     * <pre>
-     * leaf foo {
-     *     type decimal64 {
-     *         fraction-digits 2;
-     *     }
-     * }
-     * </pre>
-     * The leaf type's schema path will not match the schema path of the leaf, and we do not want to strip it, as it
-     * needs to be generated.
-     *
-     * <pre>
-     * leaf foo {
-     *     type decimal64 {
-     *         fraction-digits 2;
-     *     }
-     *     default 1;
-     * }
-     * </pre>
-     * The leaf type's schema path will match the schema path of the leaf, and we DO want to strip it.
-     *
-     * @param leaf Leaf for which we are acquiring the type
-     * @return Potentially base type of the leaf type.
-     */
-    public static TypeDefinition<?> stripDefaultType(final LeafSchemaNode leaf) {
-        final TypeDefinition<?> leafType = leaf.getType();
-        Preconditions.checkNotNull(leafType);
-
-        if (leafType instanceof ExtendedType) {
-            // Old parser referring to a typedef
-            return leafType;
-        }
-
-        if (!leaf.getPath().equals(leafType.getPath())) {
-            // Old parser semantics, or no new default/units defined for this leaf
-            return leafType;
-        }
-
-        // We are dealing with a type generated for the leaf itself
-        final TypeDefinition<?> baseType = leafType.getBaseType();
-        Preconditions.checkArgument(baseType != null, "Leaf %s has type for leaf, but no base type", leaf);
-
-        if (leaf.getPath().equals(baseType.getPath().getParent())) {
-            // Internal instantiation of a base YANG type (decimal64 and similar)
-            return baseType;
-        }
-
-        // At this point we have dealt with the easy cases. Now we need to perform per-type checking if there are no
-        // new constraints introduced by this type. If there were not, we will return the base type.
-        if (leafType instanceof BinaryTypeDefinition) {
-            return baseTypeIfNotConstrained((BinaryTypeDefinition) leafType);
-        } else if (leafType instanceof DecimalTypeDefinition) {
-            return baseTypeIfNotConstrained((DecimalTypeDefinition) leafType);
-        } else if (leafType instanceof InstanceIdentifierTypeDefinition) {
-            return baseTypeIfNotConstrained((InstanceIdentifierTypeDefinition) leafType);
-        } else if (leafType instanceof IntegerTypeDefinition) {
-            return baseTypeIfNotConstrained((IntegerTypeDefinition) leafType);
-        } else if (leafType instanceof StringTypeDefinition) {
-            return baseTypeIfNotConstrained((StringTypeDefinition) leafType);
-        } else if (leafType instanceof UnsignedIntegerTypeDefinition) {
-            return baseTypeIfNotConstrained((UnsignedIntegerTypeDefinition) leafType);
-        } else {
-            // Other types cannot be constrained, return the base type
-            return baseType;
-        }
-    }
-
-    private static TypeDefinition<?> baseTypeIfNotConstrained(final BinaryTypeDefinition type) {
-        final BinaryTypeDefinition base = type.getBaseType();
-        return baseTypeIfNotConstrained(type, type.getLengthConstraints(), base, base.getLengthConstraints());
-    }
-
-    private static TypeDefinition<?> baseTypeIfNotConstrained(final DecimalTypeDefinition type) {
-        final DecimalTypeDefinition base = type.getBaseType();
-        return baseTypeIfNotConstrained(type, type.getRangeConstraints(), base, base.getRangeConstraints());
-    }
-
-    private static TypeDefinition<?> baseTypeIfNotConstrained(final InstanceIdentifierTypeDefinition type) {
-        final InstanceIdentifierTypeDefinition base = type.getBaseType();
-        return type.requireInstance() == base.requireInstance() ? base : type;
-    }
-
-    private static TypeDefinition<?> baseTypeIfNotConstrained(final IntegerTypeDefinition type) {
-        final IntegerTypeDefinition base = type.getBaseType();
-        return baseTypeIfNotConstrained(type, type.getRangeConstraints(), base, base.getRangeConstraints());
-    }
-
-    private static TypeDefinition<?> baseTypeIfNotConstrained(final StringTypeDefinition type) {
-        final StringTypeDefinition base = type.getBaseType();
-        final List<PatternConstraint> patterns = type.getPatternConstraints();
-        final List<LengthConstraint> lengths = type.getLengthConstraints();
-
-        if ((patterns.isEmpty() || patterns.equals(base.getPatternConstraints())) &&
-                (lengths.isEmpty() || lengths.equals(base.getLengthConstraints()))) {
-            return base;
-        }
-
-        return type;
-    }
-
-    private static TypeDefinition<?> baseTypeIfNotConstrained(final UnsignedIntegerTypeDefinition type) {
-        final UnsignedIntegerTypeDefinition base = type.getBaseType();
-        return baseTypeIfNotConstrained(type, type.getRangeConstraints(), base, base.getRangeConstraints());
-    }
-
-    private static TypeDefinition<?> baseTypeIfNotConstrained(final TypeDefinition<?> type,
-            final List<?> typeConstraints, final TypeDefinition<?> base, final List<?> baseConstraints) {
-        if (typeConstraints.isEmpty() || typeConstraints.equals(baseConstraints)) {
-            return base;
-        }
-        return type;
-    }
-
     private static boolean isInnerType(final LeafSchemaNode leaf, final TypeDefinition<?> type) {
         // Deal with old parser, clearing out references to typedefs
         if (type instanceof ExtendedType) {
@@ -1551,7 +1384,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final Module parentModule = findParentModule(schemaContext, leaf);
         Type returnType = null;
 
-        final TypeDefinition<?> typeDef = stripDefaultType(leaf);
+        final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
         if (isInnerType(leaf, typeDef)) {
             if (typeDef instanceof EnumTypeDefinition) {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
