@@ -43,4 +43,10 @@ public interface DOMEntityOwnershipService extends
      */
     @Override
     Optional<EntityOwnershipState> getOwnershipState(@Nonnull DOMEntity forEntity);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    boolean isCandidateRegistered(@Nonnull DOMEntity forEntity);
 }
