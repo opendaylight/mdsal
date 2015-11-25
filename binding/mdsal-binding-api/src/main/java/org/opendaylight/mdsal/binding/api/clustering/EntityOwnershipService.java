@@ -43,4 +43,10 @@ public interface EntityOwnershipService extends
      */
     @Override
     Optional<EntityOwnershipState> getOwnershipState(@Nonnull Entity forEntity);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    boolean isCandidateRegistered(@Nonnull Entity forEntity);
 }
