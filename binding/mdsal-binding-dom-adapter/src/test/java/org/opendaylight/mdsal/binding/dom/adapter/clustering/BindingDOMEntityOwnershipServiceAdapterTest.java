@@ -122,4 +122,10 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
 
         assertSame("getOwnershipState", expectedState, actualState);
     }
+
+    @Test
+    public void testIsCandidateRegistered() {
+        doReturn(true).when(mockDOMService).isCandidateRegistered(DOM_ENTITY);
+        assertEquals("isCandidateRegistered", true, adapter.isCandidateRegistered(BINDING_ENTITY));
+    }
 }

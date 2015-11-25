@@ -57,6 +57,11 @@ public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipS
         return domService.getOwnershipState(toDOMEntity(forEntity));
     }
 
+    @Override
+    public boolean isCandidateRegistered(Entity forEntity) {
+        return domService.isCandidateRegistered(toDOMEntity(forEntity));
+    }
+
     private DOMEntity toDOMEntity(Entity entity) {
         return new DOMEntity(entity.getType(), conversionCodec.toNormalized(entity.getIdentifier()));
     }
