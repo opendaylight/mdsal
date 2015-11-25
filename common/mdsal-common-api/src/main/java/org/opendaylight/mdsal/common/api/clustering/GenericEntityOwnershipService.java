@@ -64,4 +64,12 @@ public interface GenericEntityOwnershipService<P extends Path<P>, E extends Gene
      * @return an Optional EntityOwnershipState whose instance is present if the entity is found
      */
     Optional<EntityOwnershipState> getOwnershipState(@Nonnull E forEntity);
+
+    /**
+     * Checks if a local candidate is registered for the given entity.
+     *
+     * @param forEntity the entity to query.
+     * @return true if a candidate is registered locally, false otherwise
+     */
+    boolean isCandidateRegistered(@Nonnull E forEntity);
 }
