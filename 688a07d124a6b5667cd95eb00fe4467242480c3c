@@ -16,6 +16,24 @@
       "revId": "688a07d124a6b5667cd95eb00fe4467242480c3c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_f167f3e8",
+        "filename": "common/mdsal-common-api/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2015-11-30T13:05:08Z",
+      "side": 1,
+      "message": "Not sure I follow. This is needed for yang code generation - it\u0027s not related to mdsal dom/binding APIs. It makes sense for the general-entities yang model to be here since it\u0027s common to both dom and binding APIs. We had previously added a general-entities yang model to sal-common-api in the controller project which is equivalent to this bundle.\n\nSo what exactly is illegal here and what would you suggest? I suppose we could put the general-entities yang model in the mdsal-binding-api bundle but it really is common to both.",
+      "parentUuid": "5aaae553_8e2e9fa4",
+      "revId": "688a07d124a6b5667cd95eb00fe4467242480c3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
