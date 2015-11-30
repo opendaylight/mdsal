@@ -52,6 +52,24 @@
       "revId": "688a07d124a6b5667cd95eb00fe4467242480c3c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_24354746",
+        "filename": "common/mdsal-common-api/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2015-11-30T17:04:24Z",
+      "side": 1,
+      "message": "Ok - should I just move the yang file to mdsal-binding-api? It\u0027s really the binding Entity class that needs access to the generated classes. The DOMEntity can hardcode the QName so it need not reference a generated class. Another option is not to provide the convenience constructors in the dom/binding Entity classes however I\u0027d rather keep them. Either way the generated classes need to somewhere public.",
+      "parentUuid": "5aaae553_44872310",
+      "revId": "688a07d124a6b5667cd95eb00fe4467242480c3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
