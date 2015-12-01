@@ -26,6 +26,7 @@ import static org.opendaylight.yangtools.binding.generator.util.Types.typeForCla
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -1497,7 +1498,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 leafDesc = "";
             }
             Type returnType = null;
-            final TypeDefinition<?> typeDef = leaf.getType();
+            final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
             if (typeDef instanceof UnionTypeDefinition) {
                 // GeneratedType for this type definition should be already
                 // created
