@@ -1408,8 +1408,13 @@ public class BindingGeneratorImpl implements BindingGenerator {
                     returnType = genTOBuilder.toInstance();
                 }
             } else {
+                // It is constrained version of already declared type (inner declared type exists,
+                // onlyfor special cases (Enum, Union, Bits), which were already checked.
+                // In order to get proper class we need to look up closest derived type
+                // and apply restrictions from leaf type
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
-                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(getBaseOrDeclaredType(typeDef), leaf,
+                        restrictions);
             }
         } else {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
@@ -1428,6 +1433,16 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final MethodSignatureBuilder getter = constructGetter(typeBuilder, leafName, leafDesc, returnType);
         processContextRefExtension(leaf, getter, parentModule);
         return returnType;
+    }
+
+    private static TypeDefinition<?> getBaseOrDeclaredType(TypeDefinition<?> typeDef) {
+        if (typeDef instanceof ExtendedType) {
+            // Legacy behaviour returning ExtendedType is enough
+            return typeDef;
+        }
+        // Returns DerivedType in case of new parser.
+        final TypeDefinition<?> baseType = typeDef.getBaseType();
+        return (baseType != null && baseType.getBaseType() != null) ? baseType : typeDef;
     }
 
     private void processContextRefExtension(final LeafSchemaNode leaf, final MethodSignatureBuilder getter,
