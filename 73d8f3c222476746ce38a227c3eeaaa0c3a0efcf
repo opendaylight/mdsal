@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5aaae553_e847f549",
+        "filename": "model/general-entity/src/main/yang/general-entity.yang",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-12-03T09:27:35Z",
+      "side": 1,
+      "message": "Tony: Could we name / prefix it with odl-mdsal-? In order to not conflict with thirdparties, in RFC6020 it is suggested to prefix model with vendor.\n\nFollow-up development: I think this could be part of larger model, which will actually model entity-ownership-service itself\n\nsuch as \ncontainer entity-ownerships {\n   list entity {\n      key \"type identifier\";\n      leaf type { type identityref {...}};\n      leaf identifier {type instance-identifier}\n   }\n}",
+      "range": {
+        "startLine": 1,
+        "startChar": 7,
+        "endLine": 1,
+        "endChar": 21
+      },
+      "revId": "73d8f3c222476746ce38a227c3eeaaa0c3a0efcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
