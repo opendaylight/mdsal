@@ -22,6 +22,30 @@
       "revId": "73d8f3c222476746ce38a227c3eeaaa0c3a0efcf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_2823cd06",
+        "filename": "model/general-entity/src/main/yang/general-entity.yang",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2015-12-03T11:47:04Z",
+      "side": 1,
+      "message": "The vendor is represented in the namespace. Do we need to also do that in the module name?\n\nWe do have such a model, entity-owners, for reporting. It is in sal-distributed-datastore.",
+      "parentUuid": "5aaae553_e847f549",
+      "range": {
+        "startLine": 1,
+        "startChar": 7,
+        "endLine": 1,
+        "endChar": 21
+      },
+      "revId": "73d8f3c222476746ce38a227c3eeaaa0c3a0efcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
