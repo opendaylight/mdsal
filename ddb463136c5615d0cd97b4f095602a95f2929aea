@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5aaae553_4b239e05",
+        "filename": "common/parent/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2015-12-04T09:34:49Z",
+      "side": 1,
+      "message": "Generating to src/main was workaround in Helium for misbehaving / missing configuration of build-helper-plugin,\n\nI would prefer stick to standard maven way - which is target/generated-sources/...",
+      "parentUuid": "5aaae553_6b7c5a73",
+      "revId": "ddb463136c5615d0cd97b4f095602a95f2929aea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5aaae553_cb878e60",
         "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/clustering/DOMEntity.java",
         "patchSetId": 7
