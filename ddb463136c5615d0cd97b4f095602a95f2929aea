@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "5aaae553_bd0ff3e0",
+        "filename": "common/parent/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2015-12-05T14:06:43Z",
+      "side": 1,
+      "message": "Changed it back to target/generated-sources/sal",
+      "parentUuid": "5aaae553_4b239e05",
+      "revId": "ddb463136c5615d0cd97b4f095602a95f2929aea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5aaae553_cb878e60",
         "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/clustering/DOMEntity.java",
         "patchSetId": 7
@@ -48,6 +66,24 @@
       "writtenOn": "2015-12-04T07:14:08Z",
       "side": 1,
       "message": "add QName#intern() to share instances",
+      "revId": "ddb463136c5615d0cd97b4f095602a95f2929aea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_dd142ff7",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/clustering/DOMEntity.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2015-12-05T14:06:43Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "5aaae553_cb878e60",
       "revId": "ddb463136c5615d0cd97b4f095602a95f2929aea",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
