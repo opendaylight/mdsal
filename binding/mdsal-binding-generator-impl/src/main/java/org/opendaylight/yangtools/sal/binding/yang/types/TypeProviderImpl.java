@@ -508,7 +508,9 @@ public final class TypeProviderImpl implements TypeProvider {
                 returnType = Types.typeForClass(Object.class);
             }
         }
-        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s", strXPath);
+        System.out.println("test");
+//        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s(%s) at %s",
+//                strXPath, );
         return returnType;
     }
 
