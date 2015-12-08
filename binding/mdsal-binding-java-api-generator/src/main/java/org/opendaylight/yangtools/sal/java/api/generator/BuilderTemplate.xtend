@@ -414,10 +414,6 @@ class BuilderTemplate extends BaseTemplate {
         «IF properties !== null»
             «FOR f : properties»
                 private«IF _final» final«ENDIF» «f.returnType.importedName» «f.fieldName»;
-                «val restrictions = f.returnType.restrictions»
-                «IF !_final && restrictions != null && !(restrictions.lengthConstraints.empty)»
-                    «LengthGenerator.generateLengthChecker(f.fieldName.toString, f.returnType, restrictions.lengthConstraints)»
-                «ENDIF»
             «ENDFOR»
         «ENDIF»
     '''
@@ -442,8 +438,12 @@ class BuilderTemplate extends BaseTemplate {
                     «rangeGenerator.generateRangeChecker(field.name.toFirstUpper, restrictions.rangeConstraints)»
 
                 «ENDIF»
+                «IF !restrictions.lengthConstraints.nullOrEmpty»
+                    «LengthGenerator.generateLengthChecker(field.fieldName.toString, field.returnType, restrictions.lengthConstraints)»
+
+                «ENDIF»
             «ENDIF»
-            public «type.name»«BUILDER» set«field.name.toFirstUpper»(«field.returnType.importedName» value) {
+            public «type.name»«BUILDER» set«field.name.toFirstUpper»(final «field.returnType.importedName» value) {
                 «IF restrictions != null»
                 if (value != null) {
                     «IF !restrictions.rangeConstraints.nullOrEmpty»
