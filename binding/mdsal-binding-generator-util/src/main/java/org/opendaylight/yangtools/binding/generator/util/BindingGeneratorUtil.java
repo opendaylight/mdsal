@@ -9,6 +9,7 @@ package org.opendaylight.yangtools.binding.generator.util;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Iterables;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -452,6 +453,39 @@ public final class BindingGeneratorUtil {
         return hash;
     }
 
+    private static <T> List<T> currentOrEmpty(final List<T> current, final List<T> base) {
+        return current.equals(base) ? ImmutableList.<T>of() : current;
+    }
+
+    private static boolean containsConstraint(final StringTypeDefinition type, final PatternConstraint constraint) {
+        for (StringTypeDefinition wlk = type; wlk != null; wlk = wlk.getBaseType()) {
+            if (wlk.getPatternConstraints().contains(constraint)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static List<PatternConstraint> uniquePatterns(final StringTypeDefinition type) {
+        final List<PatternConstraint> constraints = type.getPatternConstraints();
+        if (constraints.isEmpty()) {
+            return constraints;
+        }
+
+        final Builder<PatternConstraint> builder = ImmutableList.builder();
+        boolean filtered = false;
+        for (PatternConstraint c : constraints) {
+            if (containsConstraint(type.getBaseType(), c)) {
+                filtered = true;
+            } else {
+                builder.add(c);
+            }
+        }
+
+        return filtered ? builder.build() : constraints;
+    }
+
     public static Restrictions getRestrictions(final TypeDefinition<?> type) {
         // Old parser generated types which actually contained based restrictions, but our code deals with that when
         // binding to core Java types. Hence we'll emit empty restrictions for base types.
@@ -522,31 +556,60 @@ public final class BindingGeneratorUtil {
 
             range = tmp;
         } else if (type instanceof BinaryTypeDefinition) {
-            // FIXME: run a diff on base type
-            length = ((BinaryTypeDefinition)type).getLengthConstraints();
+            final BinaryTypeDefinition binary = (BinaryTypeDefinition)type;
+            final BinaryTypeDefinition base = binary.getBaseType();
+            if (base != null && base.getBaseType() != null) {
+                length = currentOrEmpty(binary.getLengthConstraints(), base.getLengthConstraints());
+            } else {
+                length = binary.getLengthConstraints();
+            }
+
             pattern = ImmutableList.of();
             range = ImmutableList.of();
         } else if (type instanceof DecimalTypeDefinition) {
             length = ImmutableList.of();
             pattern = ImmutableList.of();
-            // FIXME: run a diff on base type
-            range = ((DecimalTypeDefinition)type).getRangeConstraints();
+
+            final DecimalTypeDefinition decimal = (DecimalTypeDefinition)type;
+            final DecimalTypeDefinition base = decimal.getBaseType();
+            if (base != null && base.getBaseType() != null) {
+                range = currentOrEmpty(decimal.getRangeConstraints(), base.getRangeConstraints());
+            } else {
+                range = decimal.getRangeConstraints();
+            }
         } else if (type instanceof IntegerTypeDefinition) {
             length = ImmutableList.of();
             pattern = ImmutableList.of();
-            // FIXME: run a diff on base type
-            range = ((IntegerTypeDefinition)type).getRangeConstraints();
+
+            final IntegerTypeDefinition integer = (IntegerTypeDefinition)type;
+            final IntegerTypeDefinition base = integer.getBaseType();
+            if (base != null && base.getBaseType() != null) {
+                range = currentOrEmpty(integer.getRangeConstraints(), base.getRangeConstraints());
+            } else {
+                range = integer.getRangeConstraints();
+            }
         } else if (type instanceof StringTypeDefinition) {
-            // FIXME: run a diff on base type
-            length = ((StringTypeDefinition)type).getLengthConstraints();
-            // FIXME: run a diff on base type
-            pattern = ((StringTypeDefinition)type).getPatternConstraints();
+            final StringTypeDefinition string = (StringTypeDefinition)type;
+            final StringTypeDefinition base = string.getBaseType();
+            if (base != null && base.getBaseType() != null) {
+                length = currentOrEmpty(string.getLengthConstraints(), base.getLengthConstraints());
+            } else {
+                length = string.getLengthConstraints();
+            }
+
+            pattern = uniquePatterns(string);
             range = ImmutableList.of();
         } else if (type instanceof UnsignedIntegerTypeDefinition) {
             length = ImmutableList.of();
             pattern = ImmutableList.of();
-            // FIXME: run a diff on base type
-            range = ((UnsignedIntegerTypeDefinition)type).getRangeConstraints();
+
+            final UnsignedIntegerTypeDefinition unsigned = (UnsignedIntegerTypeDefinition)type;
+            final UnsignedIntegerTypeDefinition base = unsigned.getBaseType();
+            if (base != null && base.getBaseType() != null) {
+                range = currentOrEmpty(unsigned.getRangeConstraints(), base.getRangeConstraints());
+            } else {
+                range = unsigned.getRangeConstraints();
+            }
         } else {
             length = ImmutableList.of();
             pattern = ImmutableList.of();
