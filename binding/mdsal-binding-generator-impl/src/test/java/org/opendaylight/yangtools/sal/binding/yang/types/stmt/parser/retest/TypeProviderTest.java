@@ -10,6 +10,7 @@ package org.opendaylight.yangtools.sal.binding.yang.types.stmt.parser.retest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Set;
 import org.junit.Before;
@@ -144,7 +145,7 @@ public class TypeProviderTest {
 
     private static LeafListSchemaNode provideLeafListNodeFromTopLevelContainer(final Module module, final String containerName, final String leafListNodeName) {
         final DataSchemaNode rootNode = module.getDataChildByName(containerName);
-        assertNotNull("Container foo is not present in root of module "+ module.getName(), rootNode);
+        assertNotNull("Container foo is not present in root of module " + module.getName(), rootNode);
         assertTrue(rootNode instanceof DataNodeContainer);
 
         final DataNodeContainer rootContainer = (DataNodeContainer) rootNode;
@@ -327,7 +328,7 @@ public class TypeProviderTest {
         ((TypeProviderImpl) provider).putReferencedType(enumLeafNode.getPath(), refType);
 
         final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(testTypeProviderModule, "foo",
-            "list-of-enums");
+                "list-of-enums");
         final TypeDefinition<?> enumLeafListTypedef = enumListNode.getType();
         enumType = provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode);
 
@@ -379,14 +380,6 @@ public class TypeProviderTest {
         final TypeProviderImpl provider = new TypeProviderImpl(schemaContext);
 
         final LeafrefTypeWithNullXpath leafrePath = new LeafrefTypeWithNullXpath();
-        provider.provideTypeForLeafref(leafrePath, schemaNode);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void provideTypeForLeafrefWithNullRewisionAwareXPathTest() {
-        final TypeProviderImpl provider = new TypeProviderImpl(schemaContext);
-
-        final LeafrefTypeWithNullToStringInXpath leafrePath = new LeafrefTypeWithNullToStringInXpath();
         provider.provideTypeForLeafref(leafrePath, schemaNode);
     }
 
