@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_e5672de9",
+        "filename": "model/artifacts/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2015-12-09T17:50:00Z",
+      "side": 1,
+      "message": "What kind of bump is this? I expected 9.",
+      "range": {
+        "startLine": 28,
+        "startChar": 42,
+        "endLine": 28,
+        "endChar": 43
+      },
+      "revId": "ff344a9f0c4ccf760dba79c4c45fbfdc8dff3546",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
