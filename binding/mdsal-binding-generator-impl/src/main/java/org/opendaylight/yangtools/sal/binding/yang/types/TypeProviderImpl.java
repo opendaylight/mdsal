@@ -495,7 +495,9 @@ public final class TypeProviderImpl implements TypeProvider {
                 } else {
                     dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
                 }
-                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target node: %s", xpath);
+                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s) at %s",
+                        strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule(), this
+                                .getParentModule(parentNode).getModuleSourcePath());
 
                 if (leafContainsEnumDefinition(dataNode)) {
                     returnType = referencedTypes.get(dataNode.getPath());
@@ -508,9 +510,9 @@ public final class TypeProviderImpl implements TypeProvider {
                 returnType = Types.typeForClass(Object.class);
             }
         }
-        System.out.println("test");
-//        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s(%s) at %s",
-//                strXPath, );
+        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s (%s) at %s",
+                strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule(), this
+                        .getParentModule(parentNode).getModuleSourcePath());
         return returnType;
     }
 

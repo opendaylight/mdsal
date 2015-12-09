@@ -382,14 +382,6 @@ public class TypeProviderTest {
         provider.provideTypeForLeafref(leafrePath, schemaNode);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void provideTypeForLeafrefWithNullRewisionAwareXPathTest() {
-        final TypeProviderImpl provider = new TypeProviderImpl(schemaContext);
-
-        final LeafrefTypeWithNullToStringInXpath leafrePath = new LeafrefTypeWithNullToStringInXpath();
-        provider.provideTypeForLeafref(leafrePath, schemaNode);
-    }
-
     @Test(expected = IllegalStateException.class)
     public void provideTypeForLeafrefWithNullParentModuleTest() {
         final TypeProviderImpl provider = new TypeProviderImpl(schemaContext);
