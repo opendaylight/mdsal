@@ -25,9 +25,22 @@ import org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil;
 import org.opendaylight.yangtools.binding.generator.util.ReferencedTypeImpl;
 import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
-import org.opendaylight.yangtools.sal.binding.model.api.*;
+import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
+import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
+import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
+import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
+import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTOBuilder;
-import org.opendaylight.yangtools.yang.model.api.*;
+import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
+import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -130,7 +143,7 @@ public class TypeProviderTest {
 
     private static LeafListSchemaNode provideLeafListNodeFromTopLevelContainer(final Module module, final String containerName, final String leafListNodeName) {
         final DataSchemaNode rootNode = module.getDataChildByName(containerName);
-        assertNotNull("Container foo is not present in root of module "+ module.getName(), rootNode);
+        assertNotNull("Container foo is not present in root of module " + module.getName(), rootNode);
         assertTrue(rootNode instanceof DataNodeContainer);
 
         final DataNodeContainer rootContainer = (DataNodeContainer) rootNode;
@@ -313,7 +326,7 @@ public class TypeProviderTest {
         ((TypeProviderImpl) provider).putReferencedType(enumLeafNode.getPath(), refType);
 
         final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(testTypeProviderModule, "foo",
-            "list-of-enums");
+                "list-of-enums");
         final TypeDefinition<?> enumLeafListTypedef = enumListNode.getType();
         enumType = provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode);
 
@@ -365,14 +378,6 @@ public class TypeProviderTest {
         final TypeProviderImpl provider = new TypeProviderImpl(schemaContext);
 
         final LeafrefTypeWithNullXpath leafrePath = new LeafrefTypeWithNullXpath();
-        provider.provideTypeForLeafref(leafrePath, schemaNode);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void provideTypeForLeafrefWithNullRewisionAwareXPathTest() {
-        final TypeProviderImpl provider = new TypeProviderImpl(schemaContext);
-
-        final LeafrefTypeWithNullToStringInXpath leafrePath = new LeafrefTypeWithNullToStringInXpath();
         provider.provideTypeForLeafref(leafrePath, schemaNode);
     }
 

@@ -10,6 +10,7 @@ package org.opendaylight.yangtools.sal.binding.yang.types;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -187,7 +188,7 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     @Override
     public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode,
-            final Restrictions r) {
+                                                final Restrictions r) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         Preconditions.checkArgument(typeDefinition.getQName() != null,
                 "Type Definition cannot have non specified QName (QName cannot be NULL!)");
@@ -201,7 +202,7 @@ public final class TypeProviderImpl implements TypeProvider {
             // a base type which holds these constraints -- and the class is not a Decimal64.
             if (typeDefinition instanceof DecimalTypeDefinition && !(typeDefinition instanceof Decimal64)) {
                 final Type ret = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(typeDefinition,
-                    parentNode, r);
+                        parentNode, r);
                 if (ret != null) {
                     return ret;
                 }
@@ -228,7 +229,7 @@ public final class TypeProviderImpl implements TypeProvider {
             Module module = findParentModule(schemaContext, parentNode);
             String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
             String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                typeDefinition.getPath());
+                    typeDefinition.getPath());
             String genTOName = BindingMapping.getClassName(typedefName);
             String name = packageName + "." + genTOName;
             if (!(returnType.getFullyQualifiedName().equals(name))) {
@@ -412,7 +413,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *             </ul>
      */
     public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition,
-            final SchemaNode parentNode) {
+                                                       final SchemaNode parentNode) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         if (typeDefinition.getQName() == null) {
             throw new IllegalArgumentException(
@@ -495,7 +496,9 @@ public final class TypeProviderImpl implements TypeProvider {
                 } else {
                     dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
                 }
-                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target node: %s", xpath);
+                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s)" +
+                                " at %s", strXPath, this.getParentModule(parentNode).getName(),
+                        parentNode.getQName().getModule(), this.getParentModule(parentNode).getModuleSourcePath());
 
                 if (leafContainsEnumDefinition(dataNode)) {
                     returnType = referencedTypes.get(dataNode.getPath());
@@ -508,7 +511,9 @@ public final class TypeProviderImpl implements TypeProvider {
                 returnType = Types.typeForClass(Object.class);
             }
         }
-        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s", strXPath);
+        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s (%s) at %s",
+                strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule(), this
+                        .getParentModule(parentNode).getModuleSourcePath());
         return returnType;
     }
 
@@ -579,7 +584,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *             </ul>
      */
     private Enumeration provideTypeForEnum(final EnumTypeDefinition enumTypeDef, final String enumName,
-            final SchemaNode parentNode) {
+                                           final SchemaNode parentNode) {
         Preconditions.checkArgument(enumTypeDef != null, "EnumTypeDefinition reference cannot be NULL!");
         Preconditions.checkArgument(enumTypeDef.getValues() != null,
                 "EnumTypeDefinition MUST contain at least ONE value definition!");
@@ -625,7 +630,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *
      */
     private static Enumeration addInnerEnumerationToTypeBuilder(final EnumTypeDefinition enumTypeDef, final String enumName,
-            final GeneratedTypeBuilderBase<?> typeBuilder) {
+                                                                final GeneratedTypeBuilderBase<?> typeBuilder) {
         Preconditions.checkArgument(enumTypeDef != null, "EnumTypeDefinition reference cannot be NULL!");
         Preconditions.checkArgument(enumTypeDef.getValues() != null,
                 "EnumTypeDefinition MUST contain at least ONE value definition!");
@@ -730,7 +735,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *         <code>typedef</code> equals <code>null</code>
      */
     private Type typedefToGeneratedType(final String basePackageName, final Module module,
-            final TypeDefinition<?> typedef) {
+                                        final TypeDefinition<?> typedef) {
         final String moduleName = module.getName();
         final Date moduleRevision = module.getRevision();
         if ((basePackageName != null) && (moduleName != null) && (typedef != null) && (typedef.getQName() != null)) {
@@ -741,7 +746,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 Type returnType = null;
                 if (innerTypeDefinition.getBaseType() != null) {
                     returnType = provideGeneratedTOFromExtendedType(typedef, innerTypeDefinition, basePackageName,
-                        module.getName());
+                            module.getName());
                 } else if (innerTypeDefinition instanceof UnionTypeDefinition) {
                     final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForUnionTypeDef(basePackageName,
                             (UnionTypeDefinition) innerTypeDefinition, typedefName, typedef);
@@ -813,7 +818,7 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return generated transfer object which represent<code>javaType</code>
      */
     private static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
-            final Type javaType, final String moduleName) {
+                                                              final Type javaType, final String moduleName) {
         Preconditions.checkNotNull(javaType, "javaType cannot be null");
         final String propertyName = "value";
 
@@ -849,7 +854,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *         builders
      */
     public GeneratedTOBuilder provideGeneratedTOBuilderForUnionTypeDef(final String basePackageName,
-            final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
+                                                                       final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
         final List<GeneratedTOBuilder> genTOBuilders = provideGeneratedTOBuildersForUnionTypeDef(basePackageName,
                 typedef, typeDefName, parentNode);
         GeneratedTOBuilder resultTOBuilder = null;
@@ -892,7 +897,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *             </ul>
      */
     public List<GeneratedTOBuilder> provideGeneratedTOBuildersForUnionTypeDef(final String basePackageName,
-            final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
+                                                                              final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
         Preconditions.checkNotNull(basePackageName, "Base Package Name cannot be NULL!");
         Preconditions.checkNotNull(typedef, "Type Definition cannot be NULL!");
         Preconditions.checkNotNull(typedef.getQName(), "Type definition QName cannot be NULL!");
@@ -923,7 +928,7 @@ public final class TypeProviderImpl implements TypeProvider {
                         parentNode);
             } else if (unionType instanceof UnionTypeDefinition) {
                 generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionTypeDefinition) unionType,
-                    basePackageName, parentNode));
+                        basePackageName, parentNode));
             } else if (unionType instanceof EnumTypeDefinition) {
                 final Enumeration enumeration = addInnerEnumerationToTypeBuilder((EnumTypeDefinition) unionType,
                         unionTypeName, unionGenTOBuilder);
@@ -967,7 +972,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *         <code>provideGeneratedTOBuildersForUnionTypeDef</code> method.
      */
     private List<GeneratedTOBuilder> resolveUnionSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
-            final UnionTypeDefinition unionSubtype, final String basePackageName, final SchemaNode parentNode) {
+                                                                final UnionTypeDefinition unionSubtype, final String basePackageName, final SchemaNode parentNode) {
         final String newTOBuilderName = provideAvailableNameForGenTOBuilder(parentUnionGenTOBuilder.getName());
         final List<GeneratedTOBuilder> subUnionGenTOBUilders = provideGeneratedTOBuildersForUnionTypeDef(
                 basePackageName, unionSubtype, newTOBuilderName, parentNode);
@@ -1001,7 +1006,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *
      */
     private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
-            final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode) {
+                                               final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode) {
         final String unionTypeName = unionSubtype.getQName().getLocalName();
         final Type genTO = findGenTO(unionTypeName, unionSubtype);
         if (genTO != null) {
@@ -1054,7 +1059,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *            stored
      */
     private void storeGenTO(final TypeDefinition<?> newTypeDef, final GeneratedTOBuilder genTOBuilder,
-            final SchemaNode parentNode) {
+                            final SchemaNode parentNode) {
         if (!(newTypeDef instanceof UnionTypeDefinition)) {
             final Module parentModule = findParentModule(schemaContext, parentNode);
             if (parentModule != null && parentModule.getName() != null) {
@@ -1079,7 +1084,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *            <code>unionGentransObject</code>
      */
     private static void updateUnionTypeAsProperty(final GeneratedTOBuilder unionGenTransObject, final Type type,
-            final String propertyName) {
+                                                  final String propertyName) {
         if (unionGenTransObject != null && type != null && !unionGenTransObject.containsProperty(propertyName)) {
             final GeneratedPropertyBuilder propBuilder = unionGenTransObject
                     .addProperty(BindingMapping.getPropertyName(propertyName));
@@ -1102,7 +1107,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *         <code>typedef</code> and <code>basePackageName</code>
      */
     private static GeneratedTOBuilderImpl typedefToTransferObject(final String basePackageName,
-            final TypeDefinition<?> typedef, final String moduleName) {
+                                                                  final TypeDefinition<?> typedef, final String moduleName) {
 
         final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typedef.getPath());
         final String typeDefTOName = typedef.getQName().getLocalName();
@@ -1142,7 +1147,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *             </ul>
      */
     public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final String basePackageName,
-            final TypeDefinition<?> typeDef, final String typeDefName, final String moduleName) {
+                                                                             final TypeDefinition<?> typeDef, final String typeDefName, final String moduleName) {
 
         Preconditions.checkArgument(typeDef != null, "typeDef cannot be NULL!");
         Preconditions.checkArgument(basePackageName != null, "Base Package Name cannot be NULL!");
@@ -1273,7 +1278,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *             </ul>
      */
     private GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef,
-            final TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName) {
+                                                                       final TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName) {
         Preconditions.checkArgument(innerExtendedType != null, "Extended type cannot be NULL!");
         Preconditions.checkArgument(basePackageName != null, "String with base package name cannot be NULL!");
 
@@ -1559,7 +1564,7 @@ public final class TypeProviderImpl implements TypeProvider {
     };
 
     private static String bitsToDef(final BitsTypeDefinition type, final String className, final String defaultValue,
-            final boolean isExt) {
+                                    final boolean isExt) {
         List<Bit> bits = new ArrayList<>(type.getBits());
         Collections.sort(bits, BIT_NAME_COMPARATOR);
         StringBuilder sb = new StringBuilder();

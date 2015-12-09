@@ -10,7 +10,9 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import com.google.common.io.ByteSource;
 import java.io.File;
 import java.io.IOException;
@@ -256,9 +258,8 @@ public class GeneratedTypesLeafrefTest {
             bindingGen.generateTypes(context);
             fail("Expected IllegalArgumentException caused by invalid leafref path");
         } catch (IllegalArgumentException e) {
-            String expected = "Failed to find leafref target node: ../id";
-            assertEquals(expected, e.getMessage());
+            String expected = "Failed to find leafref target";
+            assertTrue(e.getMessage().contains(expected));
         }
     }
-
 }
