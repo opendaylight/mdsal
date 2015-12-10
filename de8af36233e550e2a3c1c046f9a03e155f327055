@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_d5809a8d",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/yang/types/TypeProviderImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-12-10T16:05:52Z",
+      "side": 1,
+      "message": "do not split the string",
+      "revId": "de8af36233e550e2a3c1c046f9a03e155f327055",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_954a2282",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/yang/types/TypeProviderImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 587,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-12-10T16:05:52Z",
+      "side": 1,
+      "message": "do not perform unnecessary re-indent (here and elsewhere). This style is quite wasteful",
+      "revId": "de8af36233e550e2a3c1c046f9a03e155f327055",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_5544aa73",
+        "filename": "binding/mdsal-binding-generator-impl/src/test/java/org/opendaylight/yangtools/sal/binding/generator/impl/GeneratedTypesLeafrefTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2015-12-10T16:05:52Z",
+      "side": 1,
+      "message": "is the message unpredictable?",
+      "revId": "de8af36233e550e2a3c1c046f9a03e155f327055",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
