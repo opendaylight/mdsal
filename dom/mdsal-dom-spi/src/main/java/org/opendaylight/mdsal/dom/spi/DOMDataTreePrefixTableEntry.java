@@ -5,30 +5,37 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker;
+package org.opendaylight.mdsal.dom.spi;
 
-import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class ShardingTableEntry<V> implements Identifiable<PathArgument> {
-    private static final Logger LOG = LoggerFactory.getLogger(ShardingTableEntry.class);
+import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
+
+@Beta
+@NotThreadSafe
+public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathArgument> {
+    private static final Logger LOG = LoggerFactory.getLogger(DOMDataTreePrefixTableEntry.class);
     // FIXME: We do probably want to adapt map
-    private final Map<PathArgument, ShardingTableEntry<V>> children = new HashMap<>();
+    private final Map<PathArgument, DOMDataTreePrefixTableEntry<V>> children = new HashMap<>();
     private final PathArgument identifier;
     private V value;
 
-    ShardingTableEntry() {
+    DOMDataTreePrefixTableEntry() {
         identifier = null;
     }
 
-    ShardingTableEntry(final PathArgument identifier) {
+    DOMDataTreePrefixTableEntry(final PathArgument identifier) {
         this.identifier = Preconditions.checkNotNull(identifier);
     }
 
@@ -41,13 +48,13 @@ final class ShardingTableEntry<V> implements Identifiable<PathArgument> {
         return value;
     }
 
-    ShardingTableEntry<V> lookup(final YangInstanceIdentifier id) {
+    DOMDataTreePrefixTableEntry<V> lookup(final YangInstanceIdentifier id) {
         final Iterator<PathArgument> it = id.getPathArguments().iterator();
-        ShardingTableEntry<V> entry = this;
+        DOMDataTreePrefixTableEntry<V> entry = this;
 
         while (it.hasNext()) {
             final PathArgument a = it.next();
-            final ShardingTableEntry<V> child = entry.children.get(a);
+            final DOMDataTreePrefixTableEntry<V> child = entry.children.get(a);
             if (child == null) {
                 LOG.debug("Lookup of {} stopped at {}", id, a);
                 break;
@@ -61,13 +68,13 @@ final class ShardingTableEntry<V> implements Identifiable<PathArgument> {
 
     void store(final YangInstanceIdentifier id, final V reg) {
         final Iterator<PathArgument> it = id.getPathArguments().iterator();
-        ShardingTableEntry<V> entry = this;
+        DOMDataTreePrefixTableEntry<V> entry = this;
 
         while (it.hasNext()) {
             final PathArgument a = it.next();
-            ShardingTableEntry<V> child = entry.children.get(a);
+            DOMDataTreePrefixTableEntry<V> child = entry.children.get(a);
             if (child == null) {
-                child = new ShardingTableEntry<>(a);
+                child = new DOMDataTreePrefixTableEntry<>(a);
                 entry.children.put(a, child);
             }
             // TODO: Is this correct? We want to enter child
@@ -81,7 +88,7 @@ final class ShardingTableEntry<V> implements Identifiable<PathArgument> {
     private boolean remove(final Iterator<PathArgument> it) {
         if (it.hasNext()) {
             final PathArgument arg = it.next();
-            final ShardingTableEntry<V> child = children.get(arg);
+            final DOMDataTreePrefixTableEntry<V> child = children.get(arg);
             if (child != null) {
                 if (child.remove(it)) {
                     children.remove(arg);

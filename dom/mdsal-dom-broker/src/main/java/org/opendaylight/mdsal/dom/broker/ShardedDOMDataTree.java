@@ -21,6 +21,8 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
+import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTable;
+import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTableEntry;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -31,9 +33,9 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTree.class);
 
     @GuardedBy("this")
-    private final ShardingTable<ShardRegistration<?>> shards = ShardingTable.create();
+    private final DOMDataTreePrefixTable<ShardRegistration<?>> shards = DOMDataTreePrefixTable.create();
     @GuardedBy("this")
-    private final ShardingTable<DOMDataTreeProducer> producers = ShardingTable.create();
+    private final DOMDataTreePrefixTable<DOMDataTreeProducer> producers = DOMDataTreePrefixTable.create();
 
 
     void removeShard(final ShardRegistration<?> reg) {
@@ -67,7 +69,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
              * and if it exists, check if its registration prefix does not collide with
              * this registration.
              */
-            final ShardingTableEntry<ShardRegistration<?>> parent = shards.lookup(prefix);
+            final DOMDataTreePrefixTableEntry<ShardRegistration<?>> parent = shards.lookup(prefix);
             if (parent != null) {
                 parentReg = parent.getValue();
                 if (parentReg != null && prefix.equals(parentReg.getPrefix())) {
@@ -98,7 +100,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     @GuardedBy("this")
     private DOMDataTreeProducer findProducer(final DOMDataTreeIdentifier subtree) {
 
-        ShardingTableEntry<DOMDataTreeProducer> producerEntry = producers.lookup(subtree);
+        DOMDataTreePrefixTableEntry<DOMDataTreeProducer> producerEntry = producers.lookup(subtree);
         if (producerEntry != null) {
             return producerEntry.getValue();
         }
