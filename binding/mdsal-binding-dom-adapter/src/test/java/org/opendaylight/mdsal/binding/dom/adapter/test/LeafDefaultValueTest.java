@@ -403,5 +403,8 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         IdentityrefContainer idrefCont = identityrefContainerNode.get();
         assertNull(idrefCont.getIdentityrefLeaf());
+        assertEquals("MyDerivedIdentity", idrefCont.getIdentityrefLeaf2().getSimpleName());
+        assertEquals("MyDerivedIdentity", idrefCont.getIdentityrefLeaf3().getSimpleName());
+        assertEquals("MyDerivedIdentity2", idrefCont.getIdentityrefLeaf4().getSimpleName());
     }
 }
