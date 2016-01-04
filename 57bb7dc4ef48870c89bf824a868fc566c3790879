@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_19a94e7b",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/yang/types/TypeProviderImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2016-01-04T17:34:17Z",
+      "side": 1,
+      "message": "How much work does it take to compute the arguments?\nInlining [0] may be a good trade-off between readability and speed.\n\n[0] https://code.google.com/p/guava-libraries/source/browse/guava/src/com/google/common/base/Preconditions.java#144",
+      "range": {
+        "startLine": 496,
+        "startChar": 32,
+        "endLine": 496,
+        "endChar": 33
+      },
+      "revId": "57bb7dc4ef48870c89bf824a868fc566c3790879",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
