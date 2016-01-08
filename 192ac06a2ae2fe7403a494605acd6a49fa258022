@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_351788a5",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/YangTemplate.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 378,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-01-08T19:54:37Z",
+      "side": 1,
+      "message": "Javadocs should include a \u0027@deprecated\u0027, not a free-form note, so that it gets correctly marked in any HTML documentation generated from them.",
+      "revId": "192ac06a2ae2fe7403a494605acd6a49fa258022",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
