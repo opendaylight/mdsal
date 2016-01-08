@@ -34,6 +34,7 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition
 import org.opendaylight.yangtools.yang.model.api.SchemaNode
 import org.opendaylight.yangtools.yang.model.api.SchemaPath
+import org.opendaylight.yangtools.yang.model.api.Status
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode
 import org.opendaylight.yangtools.yang.model.api.UsesNode
@@ -371,8 +372,13 @@ class YangTemplate {
     }
 
     def static writeTypeDefinition(TypeDefinition<?> typeDefinition) {
+        var boolean isStatusDeprecated = typeDefinition.status != null && typeDefinition.status ==
+                    Status::DEPRECATED
         '''
-            type «typeDefinition.QName.localName»;
+            type «typeDefinition.QName.localName»«IF !isStatusDeprecated»;«ELSE» {
+                status «typeDefinition.status»;
+            }
+            «ENDIF»
         '''
     }
 
@@ -567,6 +573,9 @@ class YangTemplate {
                 «IF !groupingDef.childNodes.nullOrEmpty»
                     «writeDataSchemaNodes(groupingDef.childNodes)»
                 «ENDIF»
+                «IF groupingDef.status != null && groupingDef.status == Status::DEPRECATED»
+                    status «groupingDef.status»;
+                «ENDIF»
                 «IF !groupingDef.unknownSchemaNodes.nullOrEmpty»
                     «writeUnknownSchemaNodes(groupingDef.unknownSchemaNodes)»
                 «ENDIF»
@@ -589,6 +598,9 @@ class YangTemplate {
                 «IF !contSchemaNode.uses.nullOrEmpty»
                 «writeUsesNodes(contSchemaNode.uses)»
                 «ENDIF»
+                «IF contSchemaNode.status != null && contSchemaNode.status == Status::DEPRECATED»
+                status «contSchemaNode.status»;
+                «ENDIF»
                 «IF !contSchemaNode.unknownSchemaNodes.nullOrEmpty»
                 «writeUnknownSchemaNodes(contSchemaNode.unknownSchemaNodes)»
                 «ENDIF»
@@ -597,8 +609,13 @@ class YangTemplate {
     }
 
     def static writeAnyXmlSchemaNode(AnyXmlSchemaNode anyXmlSchemaNode) {
+        var boolean isStatusDeprecated = anyXmlSchemaNode.status != null && anyXmlSchemaNode.status ==
+        Status::DEPRECATED
         '''
-            anyxml «anyXmlSchemaNode.getQName.localName»;
+            anyxml «anyXmlSchemaNode.getQName.localName»«IF !isStatusDeprecated»;«ELSE» {
+                status «anyXmlSchemaNode.status»;
+            }
+            «ENDIF»
         '''
     }
 
@@ -606,6 +623,9 @@ class YangTemplate {
         '''
             leaf «leafSchemaNode.getQName.localName» {
                 type «leafSchemaNode.type.getQName.localName»;
+                «IF leafSchemaNode.status != null && leafSchemaNode.status == Status::DEPRECATED»
+                    status «leafSchemaNode.status»;
+                «ENDIF»
             }
         '''
     }
@@ -614,6 +634,9 @@ class YangTemplate {
         '''
             leaf-list «leafListSchemaNode.getQName.localName» {
                 type «leafListSchemaNode.type.getQName.localName»;
+                «IF leafListSchemaNode.status != null && leafListSchemaNode.status == Status::DEPRECATED»
+                    status «leafListSchemaNode.status»;
+                «ENDIF»
             }
         '''
     }
@@ -624,6 +647,9 @@ class YangTemplate {
                 «FOR childNode : choiceCaseNode.childNodes»
                     «writeDataSchemaNode(childNode)»
                 «ENDFOR»
+                «IF choiceCaseNode.status != null && choiceCaseNode.status == Status::DEPRECATED»
+                    status «choiceCaseNode.status»;
+                «ENDIF»
             }
         '''
     }
@@ -634,6 +660,9 @@ class YangTemplate {
                 «FOR child : choiceNode.cases»
                     «writeDataSchemaNode(child)»
                 «ENDFOR»
+                «IF choiceNode.status != null && choiceNode.status == Status::DEPRECATED»
+                    status «choiceNode.status»;
+                «ENDIF»
             }
         '''
     }
@@ -654,6 +683,9 @@ class YangTemplate {
                 «ENDIF»
                 «IF !listSchemaNode.uses.nullOrEmpty»
                     «writeUsesNodes(listSchemaNode.uses)»
+                «ENDIF»
+                «IF listSchemaNode.status != null && listSchemaNode.status == Status::DEPRECATED»
+                    status «listSchemaNode.status»;
                 «ENDIF»
                 «IF !listSchemaNode.unknownSchemaNodes.nullOrEmpty»
                     «writeUnknownSchemaNodes(listSchemaNode.unknownSchemaNodes)»
