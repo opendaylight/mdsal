@@ -94,6 +94,7 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
@@ -313,6 +314,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final String packageName = packageNameForGeneratedType(basePackageName, node.getPath());
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, node, childOf, module);
         genType.addComment(node.getDescription());
+        annotateDeprecatedIfNecessary(node.getStatus(), genType);
         genType.setDescription(createDescription(node, genType.getFullyQualifiedName()));
         genType.setModuleName(module.getName());
         genType.setReference(node.getReference());
@@ -495,6 +497,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                     addImplementedInterfaceFromUses(input, inType);
                     inType.addImplementsType(DATA_OBJECT);
                     inType.addImplementsType(augmentable(inType));
+                    annotateDeprecatedIfNecessary(rpc.getStatus(), inType);
                     resolveDataSchemaNodes(module, basePackageName, inType, inType, input.getChildNodes());
                     genCtx.get(module).addChildNodeType(input, inType);
                     final GeneratedType inTypeInstance = inType.toInstance();
@@ -507,6 +510,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                     addImplementedInterfaceFromUses(output, outType);
                     outType.addImplementsType(DATA_OBJECT);
                     outType.addImplementsType(augmentable(outType));
+                    annotateDeprecatedIfNecessary(rpc.getStatus(), outType);
                     resolveDataSchemaNodes(module, basePackageName, outType, outType, output.getChildNodes());
                     genCtx.get(module).addChildNodeType(output, outType);
                     outTypeInstance = outType.toInstance();
@@ -558,6 +562,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
                 final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition(basePackageName,
                         notification, null, module);
+                annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
                 notificationInterface.addImplementsType(NOTIFICATION);
                 genCtx.get(module).addChildNodeType(notification, notificationInterface);
 
@@ -696,6 +701,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private void groupingToGenType(final String basePackageName, final GroupingDefinition grouping, final Module module) {
         final String packageName = packageNameForGeneratedType(basePackageName, grouping.getPath());
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, grouping, module);
+        annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
         genCtx.get(module).addGroupingType(grouping.getPath(), genType);
         resolveDataSchemaNodes(module, basePackageName, genType, genType, grouping.getChildNodes());
         groupingsToGenTypes(module, grouping.getGroupings());
@@ -967,6 +973,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         augTypeBuilder.addImplementsType(DATA_OBJECT);
         augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
+        annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
         addImplementedInterfaceFromUses(augSchema, augTypeBuilder);
 
         augSchemaNodeToMethods(module, basePackageName, augTypeBuilder, augTypeBuilder, augSchema.getChildNodes());
@@ -1163,6 +1170,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             constructGetter(parent, choiceNode.getQName().getLocalName(), choiceNode.getDescription(),
                     choiceTypeBuilder);
             choiceTypeBuilder.addImplementsType(typeForClass(DataContainer.class));
+            annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
             genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
             generateTypesFromChoiceCases(module, basePackageName, choiceTypeBuilder.toInstance(), choiceNode);
         }
@@ -1211,6 +1219,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 final String packageName = packageNameForGeneratedType(basePackageName, caseNode.getPath());
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode, module);
                 caseTypeBuilder.addImplementsType(refChoiceType);
+                annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
                 genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
                 genCtx.get(module).addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
                 final Iterable<DataSchemaNode> caseChildNodes = caseNode.getChildNodes();
@@ -2244,5 +2253,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
     static String replaceAllIllegalChars(final StringBuilder stringBuilder){
         final String ret = UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
         return ret.isEmpty() ? "" : ret;
+    }
+
+    private void annotateDeprecatedIfNecessary(Status status, GeneratedTypeBuilder builder) {
+        if (status != null && status.equals(Status.DEPRECATED)) {
+            builder.addAnnotation("", "Deprecated");
+        }
     }
 }
