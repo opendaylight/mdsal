@@ -284,7 +284,7 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
         DecimalContainer decimalCont = decimalContainerNode.get();
         assertEquals(66.66, decimalCont.getDecimalLeaf().getValue().doubleValue(), 0.001);
         assertEquals(66.66, decimalCont.getDecimalLeaf2().getValue().doubleValue(), 0.001);
-        assertEquals(99.9, decimalCont.getDecimalLeaf3().getValue().doubleValue(), 0.01);
+        assertEquals(99.99, decimalCont.getDecimalLeaf3().getValue().doubleValue(), 0.001);
         assertEquals(66.66, decimalCont.getDecimalLeaf4().getValue().doubleValue(), 0.001);
         assertEquals(120.55, decimalCont.getDecimalLeaf5().doubleValue(), 0.001);
         assertEquals(null, decimalCont.getDecimalLeaf6());
@@ -403,5 +403,11 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         IdentityrefContainer idrefCont = identityrefContainerNode.get();
         assertNull(idrefCont.getIdentityrefLeaf());
+        assertEquals("MyDerivedIdentity", idrefCont.getIdentityrefLeaf2().getSimpleName());
+        assertEquals("MyDerivedIdentity", idrefCont.getIdentityrefLeaf3().getSimpleName());
+        assertEquals("MyDerivedIdentity2", idrefCont.getIdentityrefLeaf4().getSimpleName());
+        assertEquals("MyDerivedImportedIdentity", idrefCont.getIdentityrefLeaf5().getSimpleName());
+        assertEquals("MyDerivedIdentity", idrefCont.getIdentityrefLeaf6().getSimpleName());
+        assertNull(idrefCont.getIdentityrefLeaf7());
     }
 }
