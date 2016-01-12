@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_ef53806a",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2259,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-01-12T17:56:25Z",
+      "side": 1,
+      "message": "if (status \u003d\u003d Status.DEPRECATED) {\n\nshould be enough. Status.DEPRECATED.equals(stats) if you insist on spelling out the equals() method, which is not needed for enums.",
+      "revId": "0ba9b8422687a7f8eb652b70e2bdc12052a2004d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_cf695c27",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/YangTemplate.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 587,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-01-12T17:56:25Z",
+      "side": 1,
+      "message": "Status::DEPRECATED \u003d\u003d groupingDef.status should cover the null case, too",
+      "revId": "0ba9b8422687a7f8eb652b70e2bdc12052a2004d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
