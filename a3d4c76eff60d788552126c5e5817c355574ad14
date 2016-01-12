@@ -1,0 +1,7 @@
+Code-Review+2: Tony Tkacik <ttkacik@cisco.com>
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Submitted-by: Tony Tkacik <ttkacik@cisco.com>
+Submitted-at: Tue, 12 Jan 2016 14:59:06 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/32261
+Project: mdsal
+Branch: refs/heads/master
