@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -33,9 +35,9 @@ class LazyDataTreeModification<T extends DataObject> implements DataTreeModifica
     private final DataTreeIdentifier<T> path;
     private final DataObjectModification<T> rootNode;
 
-    LazyDataTreeModification(final LogicalDatastoreType datastoreType, final InstanceIdentifier<T> path, final BindingCodecTreeNode<T> codec, final DataTreeCandidate domChange) {
-        this.path = DataTreeIdentifier.create(datastoreType, path);
-        this.rootNode = LazyDataObjectModification.create(codec, domChange.getRootNode());
+    LazyDataTreeModification(DataTreeIdentifier<T> path, final DataObjectModification<T> modification) {
+        this.path = Preconditions.checkNotNull(path);
+        this.rootNode = Preconditions.checkNotNull(modification);
     }
 
     @Override
@@ -53,7 +55,10 @@ class LazyDataTreeModification<T extends DataObject> implements DataTreeModifica
             final LogicalDatastoreType datastoreType) {
         final Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> codecCtx =
                 codec.getSubtreeCodec(domChange.getRootPath());
-        return new LazyDataTreeModification(datastoreType, codecCtx.getKey(), codecCtx.getValue(), domChange);
+        final DataTreeIdentifier<?> path = DataTreeIdentifier.create(datastoreType, codecCtx.getKey());
+        final DataObjectModification<?> modification =
+                LazyDataObjectModification.create(codecCtx.getValue(), domChange.getRootNode());
+        return new LazyDataTreeModification(path, modification);
     }
 
     static <T extends DataObject> Collection<DataTreeModification<T>> from(final BindingToNormalizedNodeCodec codec,
@@ -63,6 +68,17 @@ class LazyDataTreeModification<T extends DataObject> implements DataTreeModifica
             result.add(LazyDataTreeModification.<T>create(codec, domChange, datastoreType));
         }
         return result;
+    }
+
+    static <T extends DataObject> DataTreeModification<T> create(BindingToNormalizedNodeCodec codec,
+            DOMDataTreeCandidate candidate) {
+        final Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> codecCtx =
+                codec.getSubtreeCodec(candidate.getRootPath().getRootIdentifier());
+        final DataTreeIdentifier<?> path =
+                DataTreeIdentifier.create(candidate.getRootPath().getDatastoreType(), codecCtx.getKey());
+        final DataObjectModification<?> modification =
+                LazyDataObjectModification.create(codecCtx.getValue(), candidate.getRootNode());
+        return new LazyDataTreeModification(path, modification);
     }
 
 }
