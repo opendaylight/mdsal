@@ -12,7 +12,6 @@ import com.google.common.util.concurrent.CheckedFuture;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 /**
@@ -32,7 +31,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  *
  * <h2>Implementation requirements</h2>
  *
- * <h3>Correctness assumptions</h3> Implementation SHOULD use only {@link DataTreeCandidate} and
+ * <h3>Correctness assumptions</h3> Implementation SHOULD use only {@link DOMDataTreeCandidate} and
  * provided {@link SchemaContext} for validation purposes.
  *
  * Use of any other external mutable state is discouraged, implementation MUST NOT use any
@@ -47,11 +46,11 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  * implementation SHOULD use provided schema context.
  *
  * Any other instance of {@link SchemaContext} obtained by other means, may not be valid for
- * associated DataTreeCandidate and it may lead to incorrect validation or processing of provided
+ * associated DOMDataTreeCandidate and it may lead to incorrect validation or processing of provided
  * data.
  *
  * <h3>DataTreeCandidate assumptions</h3> Implementation SHOULD NOT make any assumptions on
- * {@link DataTreeCandidate} being successfully committed until associated
+ * {@link DOMDataTreeCandidate} being successfully committed until associated
  * {@link PostCanCommitStep#preCommit()} and
  * {@link org.opendaylight.mdsal.common.api.PostPreCommitStep#commit()} callback was invoked.
  *
@@ -60,9 +59,9 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  *
  * <h3>Data Tree Validator</h3>
  *
- * Validator is implementation, which only validates {@link DataTreeCandidate} and does not retain
- * any state derived from edited data - does not care if {@link DataTreeCandidate} was rejected
- * afterwards or transaction was cancelled.
+ * Validator is implementation, which only validates {@link DOMDataTreeCandidate} and does not
+ * retain any state derived from edited data - does not care if {@link DOMDataTreeCandidate} was
+ * rejected afterwards or transaction was cancelled.
  *
  * Implementation may opt-out from receiving {@code preCommit()}, {@code commit()}, {@code abort()}
  * callbacks by returning {@link PostCanCommitStep#NOOP}.
