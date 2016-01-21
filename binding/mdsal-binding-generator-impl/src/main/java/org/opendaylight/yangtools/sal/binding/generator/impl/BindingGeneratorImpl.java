@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil.computeDefaultSUID;
+import static org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil.packageNameForAugmentedGeneratedType;
 import static org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.yangtools.binding.generator.util.BindingTypes.DATA_OBJECT;
@@ -340,7 +341,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final GeneratedTypeBuilder childOf, final ListSchemaNode node) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node);
         if (genType != null) {
-            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(), Types.listTypeFor(genType));
+            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(),
+                    Types.listTypeFor(genType));
 
             final List<String> listKeys = listKeys(node);
             final String packageName = packageNameForGeneratedType(basePackageName, node.getPath());
@@ -487,7 +489,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             if (rpc != null) {
                 final String rpcName = BindingMapping.getClassName(rpc.getQName());
                 final String rpcMethodName = BindingMapping.getPropertyName(rpcName);
-                final String rpcComment = rpc.getDescription();
+                final String rpcComment = encodeAngleBrackets(rpc.getDescription());
                 final MethodSignatureBuilder method = interfaceBuilder.addMethod(rpcMethodName);
                 final ContainerSchemaNode input = rpc.getInput();
                 final ContainerSchemaNode output = rpc.getOutput();
@@ -572,7 +574,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
                 listenerInterface.addMethod("on" + notificationInterface.getName())
                 .setAccessModifier(AccessModifier.PUBLIC).addParameter(notificationInterface, "notification")
-                .setComment(notification.getDescription()).setReturnType(Types.VOID);
+                .setComment(encodeAngleBrackets(notification.getDescription())).setReturnType(Types.VOID);
             }
         }
         listenerInterface.setDescription(createDescription(notifications, module.getName(), module.getModuleSourcePath()));
@@ -733,7 +735,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 && (enumTypeDef.getQName().getLocalName() != null)) {
             final String enumerationName = BindingMapping.getClassName(enumName);
             final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
-            enumBuilder.setDescription(enumTypeDef.getDescription());
+            final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
+            enumBuilder.setDescription(enumTypedefDescription);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
             ModuleContext ctx = genCtx.get(module);
             ctx.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
@@ -1167,8 +1170,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
         if (!choiceNode.isAddedByUses()) {
             final String packageName = packageNameForGeneratedType(basePackageName, choiceNode.getPath());
             final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(packageName, choiceNode);
-            constructGetter(parent, choiceNode.getQName().getLocalName(), choiceNode.getDescription(),
-                    choiceTypeBuilder);
+            constructGetter(parent, choiceNode.getQName().getLocalName(),
+                    choiceNode.getDescription(), choiceTypeBuilder);
             choiceTypeBuilder.addImplementsType(typeForClass(DataContainer.class));
             annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
             genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
@@ -1573,7 +1576,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             return false;
         }
         final String leafName = leaf.getQName().getLocalName();
-        final String leafDesc = leaf.getDescription();
+        final String leafDesc = encodeAngleBrackets(leaf.getDescription());
         final GeneratedPropertyBuilder propBuilder = toBuilder.addProperty(BindingMapping.getPropertyName(leafName));
         propBuilder.setReadOnly(isReadOnly);
         propBuilder.setReturnType(returnType);
@@ -1650,8 +1653,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final GeneratedTypeBuilder typeBuilder, final Module parentModule) {
         final GeneratedTOBuilderImpl returnType = new GeneratedTOBuilderImpl(genTOBuilder.getPackageName(),
                 genTOBuilder.getName());
+        final String typedefDescription = encodeAngleBrackets(typeDef.getDescription());
 
-        returnType.setDescription(typeDef.getDescription());
+        returnType.setDescription(typedefDescription);
         returnType.setReference(typeDef.getReference());
         returnType.setSchemaPath(typeDef.getPath().getPathFromRoot());
         returnType.setModuleName(parentModule.getName());
@@ -1868,7 +1872,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final String schemaNodeName, final String comment, final Type returnType) {
         final MethodSignatureBuilder getMethod = interfaceBuilder
                 .addMethod(getterMethodName(schemaNodeName, returnType));
-        getMethod.setComment(comment);
+        getMethod.setComment(encodeAngleBrackets(comment));
         getMethod.setReturnType(returnType);
         return getMethod;
     }
@@ -2108,7 +2112,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         if (verboseClassComments) {
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(YangTemplate.generateYangSnipet(schemaNodes));
+            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(schemaNodes)));
             sb.append("</pre>");
             sb.append(NEW_LINE);
         }
@@ -2118,7 +2122,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
     private String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName) {
         final StringBuilder sb = new StringBuilder();
-        final String formattedDescription = YangTemplate.formatToParagraph(schemaNode.getDescription(), 0);
+        final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription());
+        final String formattedDescription = YangTemplate.formatToParagraph(nodeDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
             sb.append(formattedDescription);
@@ -2147,7 +2152,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(YangTemplate.generateYangSnipet(schemaNode));
+            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(schemaNode)));
             sb.append("</pre>");
             sb.append(NEW_LINE);
             sb.append("The schema path to identify an instance is");
@@ -2189,7 +2194,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
     private String createDescription(final Module module) {
         final StringBuilder sb = new StringBuilder();
-        final String formattedDescription = YangTemplate.formatToParagraph(module.getDescription(), 0);
+        final String moduleDescription = encodeAngleBrackets(module.getDescription());
+        final String formattedDescription = YangTemplate.formatToParagraph(moduleDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
             sb.append(formattedDescription);
@@ -2208,7 +2214,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(YangTemplate.generateYangSnipet(module));
+            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(module)));
             sb.append("</pre>");
         }
 
