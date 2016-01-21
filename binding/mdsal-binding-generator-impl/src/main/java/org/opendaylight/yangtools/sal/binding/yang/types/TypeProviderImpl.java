@@ -7,6 +7,7 @@
  */
 package org.opendaylight.yangtools.sal.binding.yang.types;
 
+import static org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
@@ -593,7 +594,8 @@ public final class TypeProviderImpl implements TypeProvider {
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
 
         final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(basePackageName, enumerationName);
-        enumBuilder.setDescription(enumTypeDef.getDescription());
+        final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
+        enumBuilder.setDescription(enumTypedefDescription);
         enumBuilder.setReference(enumTypeDef.getReference());
         enumBuilder.setModuleName(module.getName());
         enumBuilder.setSchemaPath(enumTypeDef.getPath().getPathFromRoot());
@@ -636,7 +638,8 @@ public final class TypeProviderImpl implements TypeProvider {
         final String enumerationName = BindingMapping.getClassName(enumName);
 
         final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
-        enumBuilder.setDescription(enumTypeDef.getDescription());
+        final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
+        enumBuilder.setDescription(enumTypedefDescription);
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
         return enumBuilder.toInstance(enumBuilder);
     }
@@ -899,7 +902,8 @@ public final class TypeProviderImpl implements TypeProvider {
         if (typeDefName != null && !typeDefName.isEmpty()) {
             final String typeName = BindingMapping.getClassName(typeDefName);
             unionGenTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeName);
-            unionGenTOBuilder.setDescription(typedef.getDescription());
+            final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
+            unionGenTOBuilder.setDescription(typedefDescription);
             unionGenTOBuilder.setReference(typedef.getReference());
             unionGenTOBuilder.setSchemaPath(typedef.getPath().getPathFromRoot());
             unionGenTOBuilder.setModuleName(module.getName());
@@ -1099,8 +1103,9 @@ public final class TypeProviderImpl implements TypeProvider {
         if ((packageName != null) && (typeDefTOName != null)) {
             final String genTOName = BindingMapping.getClassName(typeDefTOName);
             final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(packageName, genTOName);
+            final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
 
-            newType.setDescription(typedef.getDescription());
+            newType.setDescription(typedefDescription);
             newType.setReference(typedef.getReference());
             newType.setSchemaPath(typedef.getPath().getPathFromRoot());
             newType.setModuleName(moduleName);
@@ -1140,8 +1145,9 @@ public final class TypeProviderImpl implements TypeProvider {
 
             final String typeName = BindingMapping.getClassName(typeDefName);
             final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeName);
+            final String typedefDescription = encodeAngleBrackets(typeDef.getDescription());
 
-            genTOBuilder.setDescription(typeDef.getDescription());
+            genTOBuilder.setDescription(typedefDescription);
             genTOBuilder.setReference(typeDef.getReference());
             genTOBuilder.setSchemaPath(typeDef.getPath().getPathFromRoot());
             genTOBuilder.setModuleName(moduleName);
@@ -1268,8 +1274,9 @@ public final class TypeProviderImpl implements TypeProvider {
         final String classTypedefName = BindingMapping.getClassName(typedefName);
         final String innerTypeDef = innerExtendedType.getQName().getLocalName();
         final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, classTypedefName);
+        final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
 
-        genTOBuilder.setDescription(typedef.getDescription());
+        genTOBuilder.setDescription(typedefDescription);
         genTOBuilder.setReference(typedef.getReference());
         genTOBuilder.setSchemaPath(typedef.getPath().getPathFromRoot());
         genTOBuilder.setModuleName(moduleName);

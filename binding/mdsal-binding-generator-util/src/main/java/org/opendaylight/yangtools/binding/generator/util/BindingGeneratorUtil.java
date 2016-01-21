@@ -50,7 +50,7 @@ import org.opendaylight.yangtools.yang.model.util.type.DecimalTypeBuilder;
 
 /**
  * Contains the methods for converting strings to valid JAVA language strings
- * (package names, class names, attribute names).
+ * (package names, class names, attribute names) and to valid javadoc comments.
  *
  *
  */
@@ -68,6 +68,8 @@ public final class BindingGeneratorUtil {
      */
     private static final CharMatcher DOT_MATCHER = CharMatcher.is('.');
     private static final CharMatcher DASH_COLON_MATCHER = CharMatcher.anyOf("-:");
+    private static final CharMatcher GT_MATCHER = CharMatcher.is('>');
+    private static final CharMatcher LT_MATCHER = CharMatcher.is('<');
 
     private static final Restrictions EMPTY_RESTRICTIONS = new Restrictions() {
         @Override
@@ -652,5 +654,18 @@ public final class BindingGeneratorUtil {
                 return false;
             }
         };
+    }
+
+    /**
+     * Encodes angle brackets in yang statement description
+     * @param description description of a yang statement which is used to generate javadoc comments
+     * @return string with encoded angle brackets
+     */
+    public static String encodeAngleBrackets(String description) {
+        if (description != null) {
+            description = LT_MATCHER.replaceFrom(description, "&lt;");
+            description = GT_MATCHER.replaceFrom(description, "&gt;");
+        }
+        return description;
     }
 }
