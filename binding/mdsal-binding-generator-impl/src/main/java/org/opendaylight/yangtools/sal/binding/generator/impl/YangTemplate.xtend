@@ -795,7 +795,6 @@ class YangTemplate {
         var boolean isFirstElementOnNewLineEmptyChar = false;
         val lineIndent = computeNextLineIndent(nextLineIndent);
 
-        formattedText = formattedText.replace("*/", "&#42;&#47;");
         formattedText = NEWLINE_OR_TAB.removeFrom(formattedText);
         formattedText = formattedText.replaceAll(" +", " ");
 
