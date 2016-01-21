@@ -26,6 +26,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.Augmentat
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
+import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 
 class BindingToNormalizedStreamWriter implements BindingStreamEventWriter, Delegator<NormalizedNodeStreamWriter> {
 
@@ -121,7 +122,8 @@ class BindingToNormalizedStreamWriter implements BindingStreamEventWriter, Deleg
     @Override
     public void leafSetEntryNode(final Object value) throws IOException {
         LeafNodeCodecContext<?> ctx = (LeafNodeCodecContext<?>) current();
-        getDelegate().leafSetEntryNode(ctx.getValueCodec().serialize(value));
+        getDelegate().leafSetEntryNode(((DataSchemaNode) ctx.getSchema()).getQName(),
+            ctx.getValueCodec().serialize(value));
     }
 
     @Override
