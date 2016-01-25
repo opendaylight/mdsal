@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_76ac48a1",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-01-25T10:14:28Z",
+      "side": 1,
+      "message": "these should be moved to constructGetter() to prevent pollution and ensure consistency",
+      "revId": "9d38148f47cf5acaa1e72b33916cd724ab25e2a4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
