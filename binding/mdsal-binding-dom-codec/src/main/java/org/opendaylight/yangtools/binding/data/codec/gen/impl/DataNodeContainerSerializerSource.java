@@ -124,8 +124,8 @@ abstract class DataNodeContainerSerializerSource extends DataObjectSerializerSou
                 prefix = "is";
             }
         }
-
-        return prefix + BindingMapping.getClassName(node.getQName().getLocalName());
+        final String potential = BindingMapping.getClassName(node.getQName().getLocalName());
+        return prefix + ("Class".equals(potential) ? "XmlClass" : potential);
     }
 
     private void emitBody(final StringBuilder b) {
