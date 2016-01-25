@@ -8,6 +8,7 @@
 package org.opendaylight.yangtools.yang.binding;
 
 import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
@@ -152,7 +153,8 @@ public final class BindingMapping {
 
     public static String getClassName(final QName name) {
         checkArgument(name != null, "Name should not be null.");
-        return toFirstUpper(toCamelCase(name.getLocalName()));
+        final String candidate = toFirstUpper(toCamelCase(name.getLocalName()));
+        return ("Class".equals(candidate) ? "XmlClass" : candidate);
     }
 
     public static String getPropertyName(final String yangIdentifier) {

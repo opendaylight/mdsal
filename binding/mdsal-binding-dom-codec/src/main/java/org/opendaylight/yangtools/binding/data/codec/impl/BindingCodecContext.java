@@ -239,7 +239,6 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
 
     private String getGetterName(final QName qName, TypeDefinition<?> typeDef) {
         final String suffix = BindingMapping.getClassName(qName);
-
         while (typeDef.getBaseType() != null) {
             typeDef = typeDef.getBaseType();
         }
