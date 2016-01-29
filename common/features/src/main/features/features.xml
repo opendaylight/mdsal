@@ -11,6 +11,7 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
 
+    <repository>mvn:org.opendaylight.odlparent/features-odlparent/{{VERSION}}/xml/features</repository>
     <repository>mvn:org.opendaylight.yangtools/features-yangtools/{{VERSION}}/xml/features</repository>
 
     <feature name='odl-mdsal-binding' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding'>
@@ -33,11 +34,11 @@
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{VERSION}}</bundle>
     </feature>
-    
+
     <feature name='odl-mdsal-dom-broker' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
         <feature version='${yangtools.version}'>odl-yangtools-yang-parser</feature>
         <feature version='${project.version}'>odl-mdsal-dom-api</feature>
-        <bundle>mvn:com.lmax/disruptor/{{VERSION}}</bundle>
+        <feature version='${lmax.version}'>odl-lmax</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-broker/{{VERSION}}</bundle>
