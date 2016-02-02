@@ -38,7 +38,7 @@
     <feature name='odl-mdsal-dom-broker' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
         <feature version='${yangtools.version}'>odl-yangtools-yang-parser</feature>
         <feature version='${project.version}'>odl-mdsal-dom-api</feature>
-        <feature version='${lmax.version}'>odl-lmax</feature>
+        <feature version='[3.3.0,4.0.0)'>odl-lmax</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-broker/{{VERSION}}</bundle>
