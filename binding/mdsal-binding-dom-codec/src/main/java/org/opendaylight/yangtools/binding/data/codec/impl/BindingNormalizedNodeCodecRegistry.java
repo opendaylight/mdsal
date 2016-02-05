@@ -10,9 +10,6 @@ package org.opendaylight.yangtools.binding.data.codec.impl;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -58,18 +55,23 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         BindingNormalizedNodeSerializer {
     private static final Logger LOG = LoggerFactory.getLogger(BindingNormalizedNodeCodecRegistry.class);
 
+    private final ClassValue<DataObjectSerializer> serializers = new ClassValue<DataObjectSerializer>() {
+        @Override
+        protected DataObjectSerializer computeValue(final Class<?> type) {
+            final DataObjectSerializerImplementation prototype = generator.getSerializer(type);
+            return new DataObjectSerializerProxy(prototype);
+        }
+    };
     private final DataObjectSerializerGenerator generator;
-    private final LoadingCache<Class<? extends DataObject>, DataObjectSerializer> serializers;
     private volatile BindingCodecContext codecContext;
 
     public BindingNormalizedNodeCodecRegistry(final DataObjectSerializerGenerator generator) {
         this.generator = Preconditions.checkNotNull(generator);
-        this.serializers = CacheBuilder.newBuilder().weakKeys().build(new GeneratorLoader());
     }
 
     @Override
     public DataObjectSerializer getSerializer(final Class<? extends DataObject> type) {
-        return serializers.getUnchecked(type);
+        return serializers.get(type);
     }
 
     public BindingCodecTree getCodecContext() {
@@ -267,14 +269,6 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
                 return Optional.of((T) ctx.deserialize(input.get()));
             }
             return Optional.absent();
-        }
-    }
-
-    private final class GeneratorLoader extends CacheLoader<Class<? extends DataContainer>, DataObjectSerializer> {
-        @Override
-        public DataObjectSerializer load(final Class<? extends DataContainer> key) throws Exception {
-            final DataObjectSerializerImplementation prototype = generator.getSerializer(key);
-            return new DataObjectSerializerProxy(prototype);
         }
     }
 

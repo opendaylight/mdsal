@@ -8,9 +8,6 @@
 
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import java.lang.reflect.Method;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,28 +22,23 @@ abstract class ContextReferenceExtractor {
 
     private static final Logger LOG = LoggerFactory.getLogger(ContextReferenceExtractor.class);
     private static final ContextReferenceExtractor NULL_EXTRACTOR = new ContextReferenceExtractor() {
-
         @Override
         InstanceIdentifier<?> extract(final DataObject obj) {
             return null;
         }
     };
 
-
-    private static final LoadingCache<Class<?>, ContextReferenceExtractor> EXTRACTORS = CacheBuilder.newBuilder()
-            .weakKeys().build(new CacheLoader<Class<?>, ContextReferenceExtractor>() {
-
-                @Override
-                public ContextReferenceExtractor load(final Class<?> key) throws Exception {
-                    return create(key);
-                }
-            });
-
+    private static final ClassValue<ContextReferenceExtractor> EXTRACTORS = new ClassValue<ContextReferenceExtractor>() {
+        @Override
+        protected ContextReferenceExtractor computeValue(final Class<?> type) {
+            return create(type);
+        }
+    };
 
     private static final String GET_VALUE_NAME = "getValue";
 
     static ContextReferenceExtractor from(final Class<?> obj) {
-        return EXTRACTORS.getUnchecked(obj);
+        return EXTRACTORS.get(obj);
     }
 
     /**
