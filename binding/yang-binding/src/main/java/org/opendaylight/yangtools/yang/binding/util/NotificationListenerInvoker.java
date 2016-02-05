@@ -9,9 +9,7 @@ package org.opendaylight.yangtools.yang.binding.util;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.invoke.MethodHandle;
@@ -37,19 +35,17 @@ public final class NotificationListenerInvoker {
 
     private static final Lookup LOOKUP = MethodHandles.publicLookup();
 
-    private static final LoadingCache<Class<? extends NotificationListener>, NotificationListenerInvoker> INVOKERS = CacheBuilder
-            .newBuilder().weakKeys()
-            .build(new CacheLoader<Class<? extends NotificationListener>, NotificationListenerInvoker>() {
-
-                @Override
-                public NotificationListenerInvoker load(final Class<? extends NotificationListener> key) throws Exception {
-                    return createInvoker(key);
-                }
-
-            });
+    private static final ClassValue<NotificationListenerInvoker> INVOKERS = new ClassValue<NotificationListenerInvoker>() {
+        @SuppressWarnings("unchecked")
+        @Override
+        protected NotificationListenerInvoker computeValue(final Class<?> type) {
+            return Verify.verifyNotNull(createInvoker((Class<? extends NotificationListener>) type));
+        }
+    };
 
     private final Map<QName, MethodHandle> methodInvokers;
 
+    // FIXME: hide this constructor
     public NotificationListenerInvoker(final Map<QName, MethodHandle> map) {
         this.methodInvokers = map;
     }
@@ -67,7 +63,7 @@ public final class NotificationListenerInvoker {
     public static NotificationListenerInvoker from(final Class<? extends NotificationListener> type) {
         Preconditions.checkArgument(type.isInterface());
         Preconditions.checkArgument(BindingReflections.isBindingClass(type));
-        return INVOKERS.getUnchecked(type);
+        return INVOKERS.get(type);
     }
 
     /**

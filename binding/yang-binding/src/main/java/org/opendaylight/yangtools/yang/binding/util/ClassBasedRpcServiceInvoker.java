@@ -8,9 +8,6 @@
 package org.opendaylight.yangtools.yang.binding.util;
 
 import com.google.common.base.Preconditions;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,19 +16,17 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 
 final class ClassBasedRpcServiceInvoker extends AbstractMappedRpcInvoker<String> {
-    private static final LoadingCache<Class<? extends RpcService>, RpcServiceInvoker> INVOKERS = CacheBuilder.newBuilder()
-            .weakKeys()
-            .build(new CacheLoader<Class<? extends RpcService>, RpcServiceInvoker>() {
-                @Override
-                public RpcServiceInvoker load(final Class<? extends RpcService> key) {
-                    final Map<String, Method> ret = new HashMap<>();
-                    for (Method m : key.getMethods()) {
-                        ret.put(m.getName(), m);
-                    }
+    private static final ClassValue<RpcServiceInvoker> INVOKERS = new ClassValue<RpcServiceInvoker>() {
+        @Override
+        protected RpcServiceInvoker computeValue(final Class<?> type) {
+          final Map<String, Method> ret = new HashMap<>();
+          for (Method m : type.getMethods()) {
+              ret.put(m.getName(), m);
+          }
 
-                    return new ClassBasedRpcServiceInvoker(ret);
-                }
-            });
+          return new ClassBasedRpcServiceInvoker(ret);
+        }
+    };
 
     ClassBasedRpcServiceInvoker(final Map<String, Method> ret) {
         super(ret);
@@ -45,6 +40,6 @@ final class ClassBasedRpcServiceInvoker extends AbstractMappedRpcInvoker<String>
     static RpcServiceInvoker instanceFor(final Class<? extends RpcService> type) {
         Preconditions.checkArgument(type.isInterface());
         Preconditions.checkArgument(BindingReflections.isBindingClass(type));
-        return INVOKERS.getUnchecked(type);
+        return INVOKERS.get(type);
     }
 }

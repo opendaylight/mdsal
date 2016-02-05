@@ -11,9 +11,6 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Iterables;
 import java.util.Collections;
 import java.util.List;
@@ -35,15 +32,12 @@ import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 
 public final class Types {
-    private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
-            new CacheLoader<Class<?>, ConcreteType>() {
-                @Override
-                public ConcreteType load(final Class<?> key) {
-                    return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
-                }
+    private static final ClassValue<ConcreteType> TYPE_CACHE = new ClassValue<ConcreteType>() {
+        @Override
+        protected ConcreteType computeValue(final Class<?> type) {
+            return new ConcreteTypeImpl(type.getPackage().getName(), type.getSimpleName(), null);
+        }
     };
-    private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
-            CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
 
     private static final Type SET_TYPE = typeForClass(Set.class);
     private static final Type LIST_TYPE = typeForClass(List.class);
@@ -99,7 +93,7 @@ public final class Types {
      * @return Description of class
      */
     public static ConcreteType typeForClass(final Class<?> cls) {
-        return TYPE_CACHE.getUnchecked(cls);
+        return TYPE_CACHE.get(cls);
     }
 
     public static ConcreteType typeForClass(final Class<?> cls, final Restrictions restrictions) {
