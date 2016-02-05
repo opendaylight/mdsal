@@ -137,6 +137,10 @@ final class ChoiceNodeCodecContext<D extends DataObject> extends DataContainerCo
 
     @Override
     public NodeCodecContext<?> yangPathArgumentChild(final YangInstanceIdentifier.PathArgument arg) {
+        if(arg instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates) {
+            final DataContainerCodecPrototype<?> cazeProto = byYangCaseChild.get(new NodeIdentifier(arg.getNodeType()));
+            return cazeProto.get().yangPathArgumentChild(arg);
+        }
         final DataContainerCodecPrototype<?> cazeProto = byYangCaseChild.get(arg);
         childNonNull(cazeProto != null, arg,"Argument %s is not valid child of %s", arg, getSchema());
         return cazeProto.get().yangPathArgumentChild(arg);
