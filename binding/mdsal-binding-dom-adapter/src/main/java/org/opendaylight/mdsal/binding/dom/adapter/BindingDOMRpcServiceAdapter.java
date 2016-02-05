@@ -7,18 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.mdsal.dom.api.DOMService;
-
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import com.google.common.base.Preconditions;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 
@@ -33,16 +29,13 @@ public class BindingDOMRpcServiceAdapter implements RpcConsumerRegistry {
 
     };
 
-    private final LoadingCache<Class<? extends RpcService>, RpcServiceAdapter> proxies = CacheBuilder.newBuilder()
-            .weakKeys()
-            .build(new CacheLoader<Class<? extends RpcService>, RpcServiceAdapter>() {
-
-                @Override
-                public RpcServiceAdapter load(final Class<? extends RpcService> key) throws Exception {
-                    return createProxy(key);
-                }
-
-            });
+    private final ClassValue<RpcServiceAdapter> proxies = new ClassValue<RpcServiceAdapter>() {
+        @SuppressWarnings("unchecked")
+        @Override
+        protected RpcServiceAdapter computeValue(final Class<?> type) {
+            return createProxy((Class<? extends RpcService>) type);
+        }
+    };
 
     private final DOMRpcService domService;
     private final BindingToNormalizedNodeCodec codec;
@@ -57,7 +50,7 @@ public class BindingDOMRpcServiceAdapter implements RpcConsumerRegistry {
     @Override
     public <T extends RpcService> T getRpcService(final Class<T> rpcService) {
         Preconditions.checkArgument(rpcService != null, "Rpc Service needs to be specied.");
-        return (T) proxies.getUnchecked(rpcService).getProxy();
+        return (T) proxies.get(rpcService).getProxy();
     }
 
     private RpcServiceAdapter createProxy(final Class<? extends RpcService> key) {
