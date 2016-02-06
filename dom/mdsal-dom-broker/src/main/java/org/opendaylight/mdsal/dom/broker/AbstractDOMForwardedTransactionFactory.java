@@ -110,27 +110,27 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      * <p>
      * Implementation of composite Write-only transaction is following:
      *
-     * <ul>
-     * <li>
+     * &lt;ul&gt;
+     * &lt;li&gt;
      * {@link DOMDataTreeWriteTransaction#put(LogicalDatastoreType, org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
      * - backing subtransaction is selected by {@link LogicalDatastoreType},
      * {@link DOMStoreWriteTransaction#write(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
-     * is invoked on selected subtransaction.</li>
-     * <li>
+     * is invoked on selected subtransaction.&lt;/li&gt;
+     * &lt;li&gt;
      * {@link DOMDataTreeWriteTransaction#merge(LogicalDatastoreType, org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
      * - backing subtransaction is selected by {@link LogicalDatastoreType},
      * {@link DOMStoreWriteTransaction#merge(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
-     * is invoked on selected subtransaction.</li>
-     * <li>
+     * is invoked on selected subtransaction.&lt;/li&gt;
+     * &lt;li&gt;
      * {@link DOMDataTreeWriteTransaction#delete(LogicalDatastoreType, org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
      * - backing subtransaction is selected by {@link LogicalDatastoreType},
      * {@link DOMStoreWriteTransaction#delete(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
      * is invoked on selected subtransaction.
-     * <li> {@link DOMDataTreeWriteTransaction#submit()} - results in invoking
+     * &lt;li&gt; {@link DOMDataTreeWriteTransaction#submit()} - results in invoking
      * {@link DOMStoreWriteTransaction#ready()}, gathering all resulting cohorts and then invoking
      * finalized implementation callback {@link #submit(DOMDataTreeWriteTransaction, Collection)} with
-     * transaction which was commited and gathered results.</li>
-     * </ul>
+     * transaction which was commited and gathered results.&lt;/li&gt;
+     * &lt;/ul&gt;
      *
      * Id of returned transaction is generated via {@link #newTransactionIdentifier()}.
      *

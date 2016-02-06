@@ -24,11 +24,11 @@ public interface DOMStoreThreePhaseCommitCohort {
      *
      * @return ListenableFuture with vote of the participant. Vote {@link ListenableFuture#get()} is
      *         following:
-     *         <ul>
-     *         <li>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;
      *         true if transaction is approved by data store.
-     *         <li>false if the transaction is not approved by data store and should be aborted.
-     *         </ul>
+     *         &lt;li&gt;false if the transaction is not approved by data store and should be aborted.
+     *         &lt;/ul&gt;
      */
     ListenableFuture<Boolean> canCommit();
 

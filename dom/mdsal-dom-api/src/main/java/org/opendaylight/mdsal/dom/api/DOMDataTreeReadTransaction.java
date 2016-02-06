@@ -35,14 +35,14 @@ public interface DOMDataTreeReadTransaction extends AsyncReadTransaction<YangIns
      *            read
      * @return a CheckFuture containing the result of the read. The Future blocks until the
      *         commit operation is complete. Once complete:
-     *         <ul>
-     *         <li>If the data at the supplied path exists, the Future returns an Optional object
-     *         containing the data.</li>
-     *         <li>If the data at the supplied path does not exist, the Future returns
-     *         Optional#absent().</li>
-     *         <li>If the read of the data fails, the Future will fail with a
-     *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
-     *         </ul>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;If the data at the supplied path exists, the Future returns an Optional object
+     *         containing the data.&lt;/li&gt;
+     *         &lt;li&gt;If the data at the supplied path does not exist, the Future returns
+     *         Optional#absent().&lt;/li&gt;
+     *         &lt;li&gt;If the read of the data fails, the Future will fail with a
+     *         {@link ReadFailedException} or an exception derived from ReadFailedException.&lt;/li&gt;
+     *         &lt;/ul&gt;
      */
     CheckedFuture<Optional<NormalizedNode<?,?>>, ReadFailedException> read(
             LogicalDatastoreType store, YangInstanceIdentifier path);
@@ -62,12 +62,12 @@ public interface DOMDataTreeReadTransaction extends AsyncReadTransaction<YangIns
      *            Path which uniquely identifies subtree which client want to
      *            check existence of
      * @return a CheckFuture containing the result of the check.
-     *         <ul>
-     *         <li>If the data at the supplied path exists, the Future returns a Boolean
-     *         whose value is true, false otherwise</li>
-     *         <li>If checking for the data fails, the Future will fail with a
-     *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
-     *         </ul>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;If the data at the supplied path exists, the Future returns a Boolean
+     *         whose value is true, false otherwise&lt;/li&gt;
+     *         &lt;li&gt;If checking for the data fails, the Future will fail with a
+     *         {@link ReadFailedException} or an exception derived from ReadFailedException.&lt;/li&gt;
+     *         &lt;/ul&gt;
      */
     CheckedFuture<Boolean, ReadFailedException> exists(
         LogicalDatastoreType store, YangInstanceIdentifier path);

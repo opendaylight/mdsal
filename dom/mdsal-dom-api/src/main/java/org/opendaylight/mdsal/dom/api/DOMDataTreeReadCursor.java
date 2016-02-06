@@ -37,12 +37,12 @@ public interface DOMDataTreeReadCursor extends DOMDataTreeCursor {
      *
      * @param child Child identifier
      * @return a CheckFuture containing the result of the check.
-     *         <ul>
-     *         <li>If the data at the supplied path exists, the Future returns a Boolean whose value
-     *         is true, false otherwise</li> <li>If checking for the data fails, the Future will
+     *         &lt;ul&gt;
+     *         &lt;li&gt;If the data at the supplied path exists, the Future returns a Boolean whose value
+     *         is true, false otherwise&lt;/li&gt; &lt;li&gt;If checking for the data fails, the Future will
      *         fail with a {@link ReadFailedException} or an exception derived from
-     *         ReadFailedException.</li>
-     *         </ul>
+     *         ReadFailedException.&lt;/li&gt;
+     *         &lt;/ul&gt;
      */
     CheckedFuture<Boolean, ReadFailedException> exists(@Nonnull PathArgument child);
 }

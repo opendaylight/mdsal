@@ -31,11 +31,11 @@ import org.slf4j.LoggerFactory;
  * {@link DOMStoreWriteTransaction} transactions. A sub-transaction is selected by
  * {@link LogicalDatastoreType} type parameter in:
  *
- * <ul>
- * <li>{@link #put(LogicalDatastoreType, YangInstanceIdentifier, NormalizedNode)}
- * <li>{@link #delete(LogicalDatastoreType, YangInstanceIdentifier)}
- * <li>{@link #merge(LogicalDatastoreType, YangInstanceIdentifier, NormalizedNode)}
- * </ul>
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link #put(LogicalDatastoreType, YangInstanceIdentifier, NormalizedNode)}
+ * &lt;li&gt;{@link #delete(LogicalDatastoreType, YangInstanceIdentifier)}
+ * &lt;li&gt;{@link #merge(LogicalDatastoreType, YangInstanceIdentifier, NormalizedNode)}
+ * &lt;/ul&gt;
  * <p>
  * {@link #submit()} will result in invocation of
  * {@link DOMDataCommitImplementation#submit(org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction, Iterable)}
