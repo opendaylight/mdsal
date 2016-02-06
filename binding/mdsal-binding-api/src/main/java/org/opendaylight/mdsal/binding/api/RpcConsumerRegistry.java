@@ -28,14 +28,14 @@ public interface RpcConsumerRegistry extends BindingService {
      * <p>
      *
      * The following describes the behavior of the proxy when invoking RPC methods:
-     * <ul>
-     * <li>If an actual implementation is registered with the MD-SAL, all invocations are forwarded
-     * to the registered implementation.</li>
-     * <li>If no actual implementation is registered, all invocations will fail by throwing
-     * {@link IllegalStateException}.</li>
-     * <li>Prior to invoking the actual implementation, the method arguments are are validated. If
+     * &lt;ul&gt;
+     * &lt;li&gt;If an actual implementation is registered with the MD-SAL, all invocations are forwarded
+     * to the registered implementation.&lt;/li&gt;
+     * &lt;li&gt;If no actual implementation is registered, all invocations will fail by throwing
+     * {@link IllegalStateException}.&lt;/li&gt;
+     * &lt;li&gt;Prior to invoking the actual implementation, the method arguments are are validated. If
      * any are invalid, an {@link IllegalArgumentException} is thrown.
-     * </ul>
+     * &lt;/ul&gt;
      *
      * The returned proxy is automatically updated with the most recent registered implementation.
      * <p>

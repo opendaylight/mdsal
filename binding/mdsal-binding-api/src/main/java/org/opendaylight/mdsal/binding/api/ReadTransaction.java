@@ -37,14 +37,14 @@ public interface ReadTransaction extends AsyncReadTransaction<InstanceIdentifier
      *            read
      * @return a CheckFuture containing the result of the read. The Future blocks until the
      *         commit operation is complete. Once complete:
-     *         <ul>
-     *         <li>If the data at the supplied path exists, the Future returns an Optional object
-     *         containing the data.</li>
-     *         <li>If the data at the supplied path does not exist, the Future returns
-     *         Optional#absent().</li>
-     *         <li>If the read of the data fails, the Future will fail with a
-     *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
-     *         </ul>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;If the data at the supplied path exists, the Future returns an Optional object
+     *         containing the data.&lt;/li&gt;
+     *         &lt;li&gt;If the data at the supplied path does not exist, the Future returns
+     *         Optional#absent().&lt;/li&gt;
+     *         &lt;li&gt;If the read of the data fails, the Future will fail with a
+     *         {@link ReadFailedException} or an exception derived from ReadFailedException.&lt;/li&gt;
+     *         &lt;/ul&gt;
      */
     <T extends DataObject> CheckedFuture<Optional<T>,ReadFailedException> read(
             LogicalDatastoreType store, InstanceIdentifier<T> path);

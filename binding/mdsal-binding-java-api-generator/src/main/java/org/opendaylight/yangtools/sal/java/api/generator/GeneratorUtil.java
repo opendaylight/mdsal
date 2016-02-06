@@ -111,19 +111,19 @@ public final class GeneratorUtil {
      * @param imports
      *            map of the imports for <code>parentGenType</code>
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if the <code>parentGenType</code> equals
-     *             <code>null</code></li>
-     *             <li>if the name of <code>parentGenType</code> equals
-     *             <code>null</code></li>
-     *             <li>if the name of the package of <code>parentGenType</code>
-     *             equals <code>null</code></li>
-     *             <li>if the <code>type</code> equals <code>null</code></li>
-     *             <li>if the name of <code>type</code> equals <code>null</code>
-     *             </li>
-     *             <li>if the name of the package of <code>type</code> equals
-     *             <code>null</code></li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if the <code>parentGenType</code> equals
+     *             <code>null</code>&lt;/li&gt;
+     *             &lt;li&gt;if the name of <code>parentGenType</code> equals
+     *             <code>null</code>&lt;/li&gt;
+     *             &lt;li&gt;if the name of the package of <code>parentGenType</code>
+     *             equals <code>null</code>&lt;/li&gt;
+     *             &lt;li&gt;if the <code>type</code> equals <code>null</code>&lt;/li&gt;
+     *             &lt;li&gt;if the name of <code>type</code> equals <code>null</code>
+     *             &lt;/li&gt;
+     *             &lt;li&gt;if the name of the package of <code>type</code> equals
+     *             <code>null</code>&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     public static void putTypeIntoImports(final GeneratedType parentGenType, final Type type,
             final Map<String, String> imports) {
@@ -167,16 +167,16 @@ public final class GeneratorUtil {
      *            generated transfer object in which is <code>constName</code>
      *            sought
      * @return boolean value
-     *         <ul>
-     *         <li>true - if <code>constName</code> is in the list of the
-     *         constant definition for <code>genTO</code></li>
-     *         <li>false - in other cases</li>
-     *         </ul>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;true - if <code>constName</code> is in the list of the
+     *         constant definition for <code>genTO</code>&lt;/li&gt;
+     *         &lt;li&gt;false - in other cases&lt;/li&gt;
+     *         &lt;/ul&gt;
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>constName</code> equals <code>null</code></li>
-     *             <li>if <code>genTO</code> equals <code>null</code></li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>constName</code> equals <code>null</code>&lt;/li&gt;
+     *             &lt;li&gt;if <code>genTO</code> equals <code>null</code>&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     public static boolean isConstantInTO(final String constName, final GeneratedTransferObject genTO) {
         if (constName == null || genTO == null) {
@@ -228,14 +228,14 @@ public final class GeneratorUtil {
      * @return string with type name for <code>type</code> in the full format or
      *         in the short format
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if the <code>type</code> equals <code>null</code></li>
-     *             <li>if the name of the <code>type</code> equals
-     *             <code>null</code></li>
-     *             <li>if the name of the package of the <code>type</code>
-     *             equals <code>null</code></li>
-     *             <li>if the <code>imports</code> equals <code>null</code></li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if the <code>type</code> equals <code>null</code>&lt;/li&gt;
+     *             &lt;li&gt;if the name of the <code>type</code> equals
+     *             <code>null</code>&lt;/li&gt;
+     *             &lt;li&gt;if the name of the package of the <code>type</code>
+     *             equals <code>null</code>&lt;/li&gt;
+     *             &lt;li&gt;if the <code>imports</code> equals <code>null</code>&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     public static String getExplicitType(final GeneratedType parentGenType, final Type type,
             final Map<String, String> imports) {
@@ -286,8 +286,8 @@ public final class GeneratorUtil {
      * @param imports
      *            map of necessary imports for <code>parentGenType</code>
      * @return if <code>type</code> is of the type <code>ParametrizedType</code> <br />
-     *         <li>then <code>builder</code> + actual <code>type</code>
-     *         parameters</li> <li>else only <code>builder</code></li>
+     *         &lt;li&gt;then <code>builder</code> + actual <code>type</code>
+     *         parameters&lt;/li&gt; &lt;li&gt;else only <code>builder</code>&lt;/li&gt;
      */
     private static StringBuilder addActualTypeParameters(final StringBuilder builder, final Type type,
             final GeneratedType parentGenType, final Map<String, String> imports) {

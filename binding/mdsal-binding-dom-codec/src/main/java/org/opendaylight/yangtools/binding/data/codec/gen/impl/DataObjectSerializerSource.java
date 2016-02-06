@@ -48,11 +48,11 @@ abstract class DataObjectSerializerSource extends AbstractSource {
     /**
      * Returns body of static serialize method.
      *
-     * <ul>
-     * <li> {@link DataObjectSerializerRegistry} - registry of serializers
-     * <li> {@link DataObject} - object to be serialized
-     * <li> {@link BindingStreamEventWriter} - writer to which events should be serialized.
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt; {@link DataObjectSerializerRegistry} - registry of serializers
+     * &lt;li&gt; {@link DataObject} - object to be serialized
+     * &lt;li&gt; {@link BindingStreamEventWriter} - writer to which events should be serialized.
+     * &lt;/ul&gt;
      *
      * @return Valid javassist code describing static serialization body.
      */

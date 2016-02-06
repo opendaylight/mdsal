@@ -14,11 +14,11 @@ import com.google.common.base.Preconditions;
  * Definition of static property for generated class
  * <p>
  * This definition consists of
- * <ul>
- * <li>name - property name</li>
- * <li>type - Java type for property</li>
- * <li>value - value to which property should be initialized</li>
- * </ul>
+ * &lt;ul&gt;
+ * &lt;li&gt;name - property name&lt;/li&gt;
+ * &lt;li&gt;type - Java type for property&lt;/li&gt;
+ * &lt;li&gt;value - value to which property should be initialized&lt;/li&gt;
+ * &lt;/ul&gt;
  */
 public class StaticConstantDefinition {
 
