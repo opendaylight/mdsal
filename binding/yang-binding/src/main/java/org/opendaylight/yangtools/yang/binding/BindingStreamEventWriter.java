@@ -18,58 +18,58 @@ import java.io.IOException;
  *
  * <h3>Emmiting Event Stream</h3>
  *
- * <ul>
- * <li><code>container</code> - Container node representation, start event is
+ * &lt;ul&gt;
+ * &lt;li&gt;<code>container</code> - Container node representation, start event is
  * emitted using {@link #startContainerNode(Class, int)} and node end event is
  * emitted using {@link #endNode()}. Container node is implementing
  * {@link DataObject} interface.
  *
- * <li><code>list</code> - YANG list statement has two representation in event
+ * &lt;li&gt;<code>list</code> - YANG list statement has two representation in event
  * stream - unkeyed list and map. Unkeyed list is YANG list which did not
  * specify key.
  *
- * <ul>
- * <li><code>Map</code> - Map start event is emitted using
+ * &lt;ul&gt;
+ * &lt;li&gt;<code>Map</code> - Map start event is emitted using
  * {@link #startMapNode(Class, int)} and is ended using {@link #endNode()}. Each map
  * entry start is emitted using {@link #startMapEntryNode(Identifier, int)} with Map of keys
- * and finished using {@link #endNode()}.</li>
+ * and finished using {@link #endNode()}.&lt;/li&gt;
  *
- * <li><code>UnkeyedList</code> - Unkeyed list represent list without keys,
+ * &lt;li&gt;<code>UnkeyedList</code> - Unkeyed list represent list without keys,
  * unkeyed list start is emitted using {@link #startUnkeyedList(Class, int)} list
  * end is emitted using {@link #endNode()}. Each list item is emitted using
- * {@link #startUnkeyedListItem(int)} and ended using {@link #endNode()}.</li>
- * </ul></li>
+ * {@link #startUnkeyedListItem(int)} and ended using {@link #endNode()}.&lt;/li&gt;
+ * &lt;/ul&gt;&lt;/li&gt;
  *
- * <li><code>leaf</code> - Leaf node event is emitted using
+ * &lt;li&gt;<code>leaf</code> - Leaf node event is emitted using
  * {@link #leafNode(String, Object)}. {@link #endNode()} MUST be not emitted for
- * leaf node.</li>
+ * leaf node.&lt;/li&gt;
  *
- * <li><code>leaf-list</code> - Leaf list start is emitted using
+ * &lt;li&gt;<code>leaf-list</code> - Leaf list start is emitted using
  * {@link #startLeafSet(String, int)}. Leaf list end is emitted using
  * {@link #endNode()}. Leaf list entries are emitted using
  * {@link #leafSetEntryNode(Object)}.
  *
- * <li><code>anyxml - Anyxml node event is emitted using
+ * &lt;li&gt;<code>anyxml - Anyxml node event is emitted using
  * {@link #leafNode(String, Object)}. {@link #endNode()} MUST be not emitted
- * for anyxml node.</code></li>
+ * for anyxml node.</code>&lt;/li&gt;
  *
  *
- * <li><code>choice</code> Choice node event is emitted by
+ * &lt;li&gt;<code>choice</code> Choice node event is emitted by
  * {@link #startChoiceNode(Class, int)} event and must be immediately followed by
  * {@link #startCase(Class, int)} event. Choice node is finished by emitting an
- * {@link #endNode()} event.</li>
+ * {@link #endNode()} event.&lt;/li&gt;
  *
- * <li>
+ * &lt;li&gt;
  * <code>case</code> - Case node may be emitted only inside choice node by
  * invoking {@link #startCase(Class, int)}. Case node is finished be emitting an
- * {@link #endNode()} event.</li>
+ * {@link #endNode()} event.&lt;/li&gt;
  *
- * <li>
+ * &lt;li&gt;
  * <code>augment</code> - Represents augmentation, augmentation node is started
  * by invoking {@link #startAugmentationNode(Class)} and
- * finished by invoking {@link #endNode()}.</li>
+ * finished by invoking {@link #endNode()}.&lt;/li&gt;
  *
- * </ul>
+ * &lt;/ul&gt;
  *
  * <h3>Implementation notes</h3> This interface is not intended to be
  * implemented by users of generated Binding DTOs but to be used by utilities,
@@ -199,15 +199,15 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *
      * <p>
      * Valid sub-events are:
-     * <ul>
-     * <li>{@link #leafNode(String, Object)}</li>
-     * <li>{@link #startContainerNode(Class, int)}</li>
-     * <li>{@link #startChoiceNode(Class, int)}</li>
-     * <li>{@link #startLeafSet(String, int)}</li>
-     * <li>{@link #startMapNode(Class, int)}</li>
-     * <li>{@link #startUnkeyedList(Class, int)}</li>
-     * <li>{@link #startAugmentationNode(Class)}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link #leafNode(String, Object)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startContainerNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startChoiceNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startLeafSet(String, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startMapNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startUnkeyedList(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startAugmentationNode(Class)}&lt;/li&gt;
+     * &lt;/ul&gt;
      *
      * @param container
      *            name of node as defined in schema, namespace and revision are
@@ -263,15 +263,15 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <p>
      * Valid sub-events are:
      *
-     * <ul>
-     * <li>{@link #leafNode(String, Object)}</li>
-     * <li>{@link #startContainerNode(Class, int)}</li>
-     * <li>{@link #startChoiceNode(Class, int)}</li>
-     * <li>{@link #startLeafSet(String, int)}</li>
-     * <li>{@link #startMapNode(Class, int)}</li>
-     * <li>{@link #startUnkeyedList(Class, int)}</li>
-     * <li>{@link #startAugmentationNode(Class)}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link #leafNode(String, Object)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startContainerNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startChoiceNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startLeafSet(String, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startMapNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startUnkeyedList(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startAugmentationNode(Class)}&lt;/li&gt;
+     * &lt;/ul&gt;
      *
      *
      * @param childSizeHint
@@ -344,15 +344,15 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *
      * <p>
      * Valid sub-events are:
-     * <ul>
-     * <li>{@link #leafNode(String, Object)}</li>
-     * <li>{@link #startContainerNode(Class, int)}</li>
-     * <li>{@link #startChoiceNode(Class, int)}</li>
-     * <li>{@link #startLeafSet(String, int)}</li>
-     * <li>{@link #startMapNode(Class, int)}</li>
-     * <li>{@link #startUnkeyedList(Class, int)}</li>
-     * <li>{@link #startAugmentationNode(Class)}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link #leafNode(String, Object)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startContainerNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startChoiceNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startLeafSet(String, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startMapNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startUnkeyedList(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startAugmentationNode(Class)}&lt;/li&gt;
+     * &lt;/ul&gt;
      *
      * @param keyValues
      *            Key of map entry node
@@ -397,15 +397,15 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *
      * <p>
      * Valid sub-events are:
-     * <ul>
-     * <li>{@link #leafNode(String, Object)}</li>
-     * <li>{@link #startContainerNode(Class, int)}</li>
-     * <li>{@link #startChoiceNode(Class, int)}</li>
-     * <li>{@link #startLeafSet(String, int)}</li>
-     * <li>{@link #startMapNode(Class, int)}</li>
-     * <li>{@link #startUnkeyedList(Class, int)}</li>
-     * <li>{@link #startAugmentationNode(Class)}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link #leafNode(String, Object)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startContainerNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startChoiceNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startLeafSet(String, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startMapNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startUnkeyedList(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startAugmentationNode(Class)}&lt;/li&gt;
+     * &lt;/ul&gt;
      *
      * @param caze Case class
      * @throws IllegalArgumentException
@@ -422,14 +422,14 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <p>
      * Valid sub-events are:
      *
-     * <ul>
-     * <li>{@link #leafNode(String, Object)}</li>
-     * <li>{@link #startContainerNode(Class, int)}</li>
-     * <li>{@link #startChoiceNode(Class, int)}</li>
-     * <li>{@link #startLeafSet(String, int)}</li>
-     * <li>{@link #startMapNode(Class, int)}</li>
-     * <li>{@link #startUnkeyedList(Class, int)}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link #leafNode(String, Object)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startContainerNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startChoiceNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startLeafSet(String, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startMapNode(Class, int)}&lt;/li&gt;
+     * &lt;li&gt;{@link #startUnkeyedList(Class, int)}&lt;/li&gt;
+     * &lt;/ul&gt;
      *
      * <p>
      * Note this is only method, which does not require childSizeHint, since

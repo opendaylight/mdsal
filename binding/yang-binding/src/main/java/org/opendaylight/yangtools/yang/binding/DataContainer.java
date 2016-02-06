@@ -12,14 +12,14 @@ package org.opendaylight.yangtools.yang.binding;
  * 
  * Marker interface which must be implmeneted by all interfaces
  * generated for YANG:
- * <ul>
- * <li>Rpc Input
- * <li>Output 
- * <li>Notification
- * <li>Container
- * <li>List
- * <li>Case
- * </ul>
+ * &lt;ul&gt;
+ * &lt;li&gt;Rpc Input
+ * &lt;li&gt;Output 
+ * &lt;li&gt;Notification
+ * &lt;li&gt;Container
+ * &lt;li&gt;List
+ * &lt;li&gt;Case
+ * &lt;/ul&gt;
  */
 public interface DataContainer {
 

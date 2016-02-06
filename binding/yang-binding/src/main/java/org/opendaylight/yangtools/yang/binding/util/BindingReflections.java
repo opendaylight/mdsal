@@ -539,11 +539,11 @@ public class BindingReflections {
      * supplied class.
      * <p>
      * If class is
-     * <ul>
-     * <li>rpc input: local name is "input".
-     * <li>rpc output: local name is "output".
-     * <li>augmentation: local name is "module name".
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;rpc input: local name is "input".
+     * &lt;li&gt;rpc output: local name is "output".
+     * &lt;li&gt;augmentation: local name is "module name".
+     * &lt;/ul&gt;
      *
      * There is also fallback, if it is not possible to compute QName using
      * following algorithm returns module QName.
@@ -618,14 +618,14 @@ public class BindingReflections {
      * data.
      * <p>
      * Two augmentations or cases could be substituted only if and if:
-     * <ul>
-     * <li>Both implements same interfaces</li>
-     * <li>Both have same children</li>
-     * <li>If augmentations: Both have same augmentation target class. Target
-     * class was generated for data node in grouping.</li>
-     * <li>If cases: Both are from same choice. Choice class was generated for
-     * data node in grouping.</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;Both implements same interfaces&lt;/li&gt;
+     * &lt;li&gt;Both have same children&lt;/li&gt;
+     * &lt;li&gt;If augmentations: Both have same augmentation target class. Target
+     * class was generated for data node in grouping.&lt;/li&gt;
+     * &lt;li&gt;If cases: Both are from same choice. Choice class was generated for
+     * data node in grouping.&lt;/li&gt;
+     * &lt;/ul&gt;
      * <p>
      * <b>Explanation:</b> Binding Specification reuses classes generated for
      * groupings as part of normal data tree, this classes from grouping could
