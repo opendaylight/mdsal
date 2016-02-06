@@ -50,7 +50,7 @@ import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
  *
  * @see org.opendaylight.yangtools.sal.binding.yang.types.TypeProviderImpl
  *
- * @author Lukas Sedlak <lsedlak@cisco.com>
+ * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
 @RunWith(JUnit4.class)
 public class TypeProviderTest {

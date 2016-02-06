@@ -18,7 +18,7 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 /**
  * Mock LeafrefDypeDefinition implementation with RevisionAwareXPath null reference
  *
- * @author Lukas Sedlak <lsedlak@cisco.com>
+ * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
 public class LeafrefTypeWithNullXpath implements LeafrefTypeDefinition {
     @Override public RevisionAwareXPath getPathStatement() {

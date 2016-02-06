@@ -52,8 +52,9 @@ public class IdentityrefTypeTest {
 
     /**
      * Test mainly for the method
-     * {@link TypeProviderImpl#provideTypeForIdentityref()
+     * {@link TypeProviderImpl#provideTypeForIdentityref(IdentityrefTypeDefinition)
      * provideTypeForIdentityref}
+     * @throws IOException IOException
      */
     @Test
     public void testIdentityrefYangBuiltInType() throws IOException {
