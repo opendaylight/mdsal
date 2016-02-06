@@ -53,10 +53,11 @@ public class IdentityrefTypeTest {
 
     /**
      * Test mainly for the method
-     * {@link TypeProviderImpl#provideTypeForIdentityref()
+     * {@link TypeProviderImpl#provideTypeForIdentityref(IdentityrefTypeDefinition)
      * provideTypeForIdentityref}
-     * @throws ReactorException
-     * @throws SourceException
+     * @throws ReactorException Reactor exception
+     * @throws SourceException Source exception
+     * @throws IOException IOException
      */
     @Test
     public void testIdentityrefYangBuiltInType() throws IOException, SourceException, ReactorException {
