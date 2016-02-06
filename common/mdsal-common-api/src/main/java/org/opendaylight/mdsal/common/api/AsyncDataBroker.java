@@ -17,10 +17,10 @@ import org.opendaylight.yangtools.concepts.Path;
  *
  * <p>
  * All operations on the data tree are performed via one of the transactions:
- * <ul>
- * <li>Read-Only - allocated using {@link #newReadOnlyTransaction()}
- * <li>Write-Only - allocated using {@link #newWriteOnlyTransaction()}
- * </ul>
+ * &lt;ul&gt;
+ * &lt;li&gt;Read-Only - allocated using {@link #newReadOnlyTransaction()}
+ * &lt;li&gt;Write-Only - allocated using {@link #newWriteOnlyTransaction()}
+ * &lt;/ul&gt;
  *
  * <p>
  * These transactions provide a stable isolated view of data tree, which is guaranteed to be not

@@ -15,17 +15,17 @@ import org.opendaylight.yangtools.concepts.Path;
  * <p>
  * <b>Note:</b> This interface is not intended to be used directly, but rather via subinterfaces
  * which introduces additional semantics to allocated transactions.
- * <ul>
- * <li> {@link AsyncDataBroker}
- * <li> {@link TransactionChain}
- * </ul>
+ * &lt;ul&gt;
+ * &lt;li&gt; {@link AsyncDataBroker}
+ * &lt;li&gt; {@link TransactionChain}
+ * &lt;/ul&gt;
  *
  * <p>
  * All operations on the data tree are performed via one of the transactions:
- * <ul>
- * <li>Read-Only - allocated using {@link #newReadOnlyTransaction()}
- * <li>Write-Only - allocated using {@link #newWriteOnlyTransaction()}
- * </ul>
+ * &lt;ul&gt;
+ * &lt;li&gt;Read-Only - allocated using {@link #newReadOnlyTransaction()}
+ * &lt;li&gt;Write-Only - allocated using {@link #newWriteOnlyTransaction()}
+ * &lt;/ul&gt;
  *
  * <p>
  * These transactions provides a stable isolated view of the data tree, which is guaranteed to be

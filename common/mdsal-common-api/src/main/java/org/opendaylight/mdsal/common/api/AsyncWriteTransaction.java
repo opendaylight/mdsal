@@ -172,20 +172,20 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * <h2>Failure scenarios</h2>
      * <p>
      * Transaction may fail because of multiple reasons, such as
-     * <ul>
-     * <li>Another transaction finished earlier and modified the same node in a non-compatible way
+     * &lt;ul&gt;
+     * &lt;li&gt;Another transaction finished earlier and modified the same node in a non-compatible way
      * (see below). In this case the returned future will fail with an
      * {@link OptimisticLockFailedException}. It is the responsibility of the caller to create a new
      * transaction and submit the same modification again in order to update data tree.
      * <i><b>Warning</b>: In most cases, retrying after an OptimisticLockFailedException will result
      * in a high probability of success. However, there are scenarios, albeit unusual, where any
      * number of retries will not succeed. Therefore it is strongly recommended to limit the number
-     * of retries (2 or 3) to avoid an endless loop.</i></li>
-     * <li>Data change introduced by this transaction did not pass validation by commit handlers or
+     * of retries (2 or 3) to avoid an endless loop.</i>&lt;/li&gt;
+     * &lt;li&gt;Data change introduced by this transaction did not pass validation by commit handlers or
      * data was incorrectly structured. Returned future will fail with a
      * {@link DataValidationFailedException}. User should not retry to create new transaction with
-     * same data, since it probably will fail again.</li>
-     * </ul>
+     * same data, since it probably will fail again.&lt;/li&gt;
+     * &lt;/ul&gt;
      *
      * <h3>Change compatibility</h3>
      *

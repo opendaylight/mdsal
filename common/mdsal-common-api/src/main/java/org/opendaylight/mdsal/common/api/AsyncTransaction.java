@@ -16,10 +16,10 @@ import org.opendaylight.yangtools.concepts.Path;
  * A common parent for all transactions which operate on a conceptual data tree.
  *
  * See derived transaction types for more concrete behavior:
- * <ul>
- * <li>{@link AsyncReadTransaction} - Read capabilities, user is able to read data from data tree</li>
- * <li>{@link AsyncWriteTransaction} - Write capabilities, user is able to propose changes to data tree</li>
- * </ul>
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link AsyncReadTransaction} - Read capabilities, user is able to read data from data tree&lt;/li&gt;
+ * &lt;li&gt;{@link AsyncWriteTransaction} - Write capabilities, user is able to propose changes to data tree&lt;/li&gt;
+ * &lt;/ul&gt;
  *
  * <b>Implementation Note:</b> This interface is not intended to be implemented
  * by users of MD-SAL.
