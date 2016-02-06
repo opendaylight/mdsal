@@ -32,12 +32,12 @@ public interface Type {
     /**
      * Returns fully qualified name of Type. <br>
      * The fully qualified name of Type MUST be returned in following format:
-     * <ul>
-     * <li>If does not contains package name: [type name] (e.g. int, byte,
-     * byte[],...)</li>
-     * <li>If Type contains package name: [package name].[type name] (e.g
-     * java.lang.Byte, org.opendaylight.controller.gen.GenType)</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;If does not contains package name: [type name] (e.g. int, byte,
+     * byte[],...)&lt;/li&gt;
+     * &lt;li&gt;If Type contains package name: [package name].[type name] (e.g
+     * java.lang.Byte, org.opendaylight.controller.gen.GenType)&lt;/li&gt;
+     * &lt;/ul&gt;
      * 
      * @return fully qualified name of Type.
      */

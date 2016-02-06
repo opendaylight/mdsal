@@ -19,7 +19,7 @@ import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
  * Test Model Provider designated to load test resources and provide Schema Context
  * for testing of TypeProviderImpl
  *
- * @author Lukas Sedlak <lsedlak@cisco.com>
+ * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
 final class TypeProviderModel {
 

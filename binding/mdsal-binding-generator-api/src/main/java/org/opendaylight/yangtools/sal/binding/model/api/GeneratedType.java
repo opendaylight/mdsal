@@ -11,23 +11,23 @@ import java.util.List;
 
 /**
  * Every Java interface has to be specified with:
- * <ul>
- * <li><code>package</code> that belongs into</li>
- * <li><code>interface</code> name (with commentary that <b>SHOULD</b> be
+ * &lt;ul&gt;
+ * &lt;li&gt;<code>package</code> that belongs into&lt;/li&gt;
+ * &lt;li&gt;<code>interface</code> name (with commentary that <b>SHOULD</b> be
  * present to proper define interface and base <i>contracts</i> specified for
- * interface)</li>
- * <li>Each Generated Type can define list of types that Generated Type can
+ * interface)&lt;/li&gt;
+ * &lt;li&gt;Each Generated Type can define list of types that Generated Type can
  * implement to extend it's definition (i.e. interface extends list of
- * interfaces or java class implements list of interfaces)</li>
- * <li>Each Generated Type can contain multiple enclosed definitions of
+ * interfaces or java class implements list of interfaces)&lt;/li&gt;
+ * &lt;li&gt;Each Generated Type can contain multiple enclosed definitions of
  * Generated Types (i.e. interface can contain N enclosed interface definitions
- * or enclosed classes)</li>
- * <li><code>enum</code> and <code>constant</code> definitions (i.e. each
+ * or enclosed classes)&lt;/li&gt;
+ * &lt;li&gt;<code>enum</code> and <code>constant</code> definitions (i.e. each
  * constant definition is by default defined as <code>public static final</code>
- * + type (either primitive or object) and constant name</li>
- * <li><code>method definitions</code> with specified input parameters (with
- * types) and return values</li>
- * </ul>
+ * + type (either primitive or object) and constant name&lt;/li&gt;
+ * &lt;li&gt;<code>method definitions</code> with specified input parameters (with
+ * types) and return values&lt;/li&gt;
+ * &lt;/ul&gt;
  *
  * By the definition of the interface constant, enum, enclosed types and method
  * definitions MUST be public, so there is no need to specify the scope of

@@ -128,13 +128,13 @@ public final class BindingGeneratorUtil {
      * Converts module name to valid JAVA package name.
      *
      * The package name consists of:
-     * <ul>
-     * <li>prefix - <i>org.opendaylight.yang.gen.v</i></li>
-     * <li>module YANG version - <i>org.opendaylight.yang.gen.v</i></li>
-     * <li>module namespace - invalid characters are replaced with dots</li>
-     * <li>revision prefix - <i>.rev</i></li>
-     * <li>revision - YYYYMMDD (MM and DD aren't spread to the whole length)</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;prefix - <i>org.opendaylight.yang.gen.v</i>&lt;/li&gt;
+     * &lt;li&gt;module YANG version - <i>org.opendaylight.yang.gen.v</i>&lt;/li&gt;
+     * &lt;li&gt;module namespace - invalid characters are replaced with dots&lt;/li&gt;
+     * &lt;li&gt;revision prefix - <i>.rev</i>&lt;/li&gt;
+     * &lt;li&gt;revision - YYYYMMDD (MM and DD aren't spread to the whole length)&lt;/li&gt;
+     * &lt;/ul&gt;
      *
      * @param module
      *            module which contains data about namespace and revision date
@@ -267,10 +267,10 @@ public final class BindingGeneratorUtil {
      *            type definition for which the package name will be generated *
      * @return string with valid JAVA package name
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>basePackageName</code> equals <code>null</code></li>
-     *             <li>if <code>typeDefinition</code> equals <code>null</code></li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>basePackageName</code> equals <code>null</code>&lt;/li&gt;
+     *             &lt;li&gt;if <code>typeDefinition</code> equals <code>null</code>&lt;/li&gt;
+     *             &lt;/ul&gt;
      * @deprecated This method ignores typeDefinition argument and its result is only
      *             <code>BindingMapping.normalizePackageName(basePackageName)</code>.
      *             Aside from tests, there is not a single user in OpenDaylight codebase,
@@ -334,10 +334,10 @@ public final class BindingGeneratorUtil {
      *            <code>token</code> should|shuldn't be uppercased
      * @return string in the cammel case format
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>token</code> without white spaces is empty</li>
-     *             <li>if <code>token</code> equals null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>token</code> without white spaces is empty&lt;/li&gt;
+     *             &lt;li&gt;if <code>token</code> equals null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     private static String parseToCamelCase(final String token, final boolean uppercase) {
         if (token == null) {

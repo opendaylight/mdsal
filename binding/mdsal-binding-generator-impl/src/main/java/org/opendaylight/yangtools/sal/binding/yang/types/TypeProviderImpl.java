@@ -137,10 +137,10 @@ public final class TypeProviderImpl implements TypeProvider {
      * @param refType
      *            type which represents the map value
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>refTypePath</code> equal null</li>
-     *             <li>if <code>refType</code> equal null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>refTypePath</code> equal null&lt;/li&gt;
+     *             &lt;li&gt;if <code>refType</code> equal null&lt;/li&gt;
+     *             &lt;/ul&gt;
      *
      */
     public void putReferencedType(final SchemaPath refTypePath, final Type refType) {
@@ -181,11 +181,11 @@ public final class TypeProviderImpl implements TypeProvider {
      * @param typeDefinition
      *            type definition which is converted to JAVA type
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>typeDefinition</code> equal null</li>
-     *             <li>if Qname of <code>typeDefinition</code> equal null</li>
-     *             <li>if name of <code>typeDefinition</code> equal null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>typeDefinition</code> equal null&lt;/li&gt;
+     *             &lt;li&gt;if Qname of <code>typeDefinition</code> equal null&lt;/li&gt;
+     *             &lt;li&gt;if name of <code>typeDefinition</code> equal null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     @Override
     public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode, final Restrictions r) {
@@ -404,11 +404,11 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return JAVA <code>Type</code> which represents
      *         <code>typeDefinition</code>
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>typeDefinition</code> equal null</li>
-     *             <li>if Q name of <code>typeDefinition</code></li>
-     *             <li>if name of <code>typeDefinition</code></li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>typeDefinition</code> equal null&lt;/li&gt;
+     *             &lt;li&gt;if Q name of <code>typeDefinition</code>&lt;/li&gt;
+     *             &lt;li&gt;if name of <code>typeDefinition</code>&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
@@ -466,10 +466,10 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return JAVA <code>Type</code> of data schema node which is referenced in
      *         <code>leafrefType</code>
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>leafrefType</code> equal null</li>
-     *             <li>if path statement of <code>leafrefType</code> equal null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>leafrefType</code> equal null&lt;/li&gt;
+     *             &lt;li&gt;if path statement of <code>leafrefType</code> equal null&lt;/li&gt;
+     *             &lt;/ul&gt;
      *
      */
     public Type provideTypeForLeafref(final LeafrefTypeDefinition leafrefType, final SchemaNode parentNode) {
@@ -522,10 +522,10 @@ public final class TypeProviderImpl implements TypeProvider {
      *            data schema node for which is checked if it is leaf and if it
      *            is of enum type
      * @return boolean value
-     *         <ul>
-     *         <li>true - if <code>dataNode</code> is leaf of type enumeration</li>
-     *         <li>false - other cases</li>
-     *         </ul>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;true - if <code>dataNode</code> is leaf of type enumeration&lt;/li&gt;
+     *         &lt;li&gt;false - other cases&lt;/li&gt;
+     *         &lt;/ul&gt;
      */
     private static boolean leafContainsEnumDefinition(final SchemaNode dataNode) {
         if (dataNode instanceof LeafSchemaNode) {
@@ -545,11 +545,11 @@ public final class TypeProviderImpl implements TypeProvider {
      *            data schema node for which is checked if it is leaflist and if
      *            it is of enum type
      * @return boolean value
-     *         <ul>
-     *         <li>true - if <code>dataNode</code> is leaflist of type
-     *         enumeration</li>
-     *         <li>false - other cases</li>
-     *         </ul>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;true - if <code>dataNode</code> is leaflist of type
+     *         enumeration&lt;/li&gt;
+     *         &lt;li&gt;false - other cases&lt;/li&gt;
+     *         &lt;/ul&gt;
      */
     private static boolean leafListContainsEnumDefinition(final SchemaNode dataNode) {
         if (dataNode instanceof LeafListSchemaNode) {
@@ -573,12 +573,12 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return enumeration type which is built with data (name, enum values)
      *         from <code>enumTypeDef</code>
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>enumTypeDef</code> equals null</li>
-     *             <li>if enum values of <code>enumTypeDef</code> equal null</li>
-     *             <li>if Q name of <code>enumTypeDef</code> equal null</li>
-     *             <li>if name of <code>enumTypeDef</code> equal null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>enumTypeDef</code> equals null&lt;/li&gt;
+     *             &lt;li&gt;if enum values of <code>enumTypeDef</code> equal null&lt;/li&gt;
+     *             &lt;li&gt;if Q name of <code>enumTypeDef</code> equal null&lt;/li&gt;
+     *             &lt;li&gt;if name of <code>enumTypeDef</code> equal null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     private Enumeration provideTypeForEnum(final EnumTypeDefinition enumTypeDef, final String enumName, final SchemaNode parentNode) {
         Preconditions.checkArgument(enumTypeDef != null, "EnumTypeDefinition reference cannot be NULL!");
@@ -617,13 +617,13 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return enumeration type which contains enumeration data form
      *         <code>enumTypeDef</code>
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>enumTypeDef</code> equals null</li>
-     *             <li>if enum values of <code>enumTypeDef</code> equal null</li>
-     *             <li>if Q name of <code>enumTypeDef</code> equal null</li>
-     *             <li>if name of <code>enumTypeDef</code> equal null</li>
-     *             <li>if name of <code>typeBuilder</code> equal null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>enumTypeDef</code> equals null&lt;/li&gt;
+     *             &lt;li&gt;if enum values of <code>enumTypeDef</code> equal null&lt;/li&gt;
+     *             &lt;li&gt;if Q name of <code>enumTypeDef</code> equal null&lt;/li&gt;
+     *             &lt;li&gt;if name of <code>enumTypeDef</code> equal null&lt;/li&gt;
+     *             &lt;li&gt;if name of <code>typeBuilder</code> equal null&lt;/li&gt;
+     *             &lt;/ul&gt;
      *
      */
     private static Enumeration addInnerEnumerationToTypeBuilder(final EnumTypeDefinition enumTypeDef, final String enumName, final GeneratedTypeBuilderBase<?> typeBuilder) {
@@ -883,11 +883,11 @@ public final class TypeProviderImpl implements TypeProvider {
      *            string with name for generated TO
      * @return generated TO builder which represents <code>typedef</code>
      * @throws NullPointerException
-     *             <ul>
-     *             <li>if <code>basePackageName</code> is null</li>
-     *             <li>if <code>typedef</code> is null</li>
-     *             <li>if Qname of <code>typedef</code> is null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>basePackageName</code> is null&lt;/li&gt;
+     *             &lt;li&gt;if <code>typedef</code> is null&lt;/li&gt;
+     *             &lt;li&gt;if Qname of <code>typedef</code> is null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     public List<GeneratedTOBuilder> provideGeneratedTOBuildersForUnionTypeDef(final String basePackageName, final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
         Preconditions.checkNotNull(basePackageName, "Base Package Name cannot be NULL!");
@@ -1130,10 +1130,10 @@ public final class TypeProviderImpl implements TypeProvider {
      *            string with the name for generated TO builder
      * @return generated TO builder which represents <code>typeDef</code>
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>typeDef</code> equals null</li>
-     *             <li>if <code>basePackageName</code> equals null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>typeDef</code> equals null&lt;/li&gt;
+     *             &lt;li&gt;if <code>basePackageName</code> equals null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final String basePackageName, final TypeDefinition<?> typeDef, final String typeDefName, final String moduleName) {
 
@@ -1221,10 +1221,10 @@ public final class TypeProviderImpl implements TypeProvider {
      * @param regularExpressions
      *            list of string which represent regular expressions
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>genTOBuilder</code> equals null</li>
-     *             <li>if <code>regularExpressions</code> equals null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>genTOBuilder</code> equals null&lt;/li&gt;
+     *             &lt;li&gt;if <code>regularExpressions</code> equals null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     private static void addStringRegExAsConstant(final GeneratedTOBuilder genTOBuilder, final List<String> regularExpressions) {
         if (genTOBuilder == null) {
@@ -1260,11 +1260,11 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return generated TO which extends generated TO for
      *         <code>innerExtendedType</code>
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>extendedType</code> equals null</li>
-     *             <li>if <code>basePackageName</code> equals null</li>
-     *             <li>if <code>typedefName</code> equals null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>extendedType</code> equals null&lt;/li&gt;
+     *             &lt;li&gt;if <code>basePackageName</code> equals null&lt;/li&gt;
+     *             &lt;li&gt;if <code>typedefName</code> equals null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     private GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef, final TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName) {
         Preconditions.checkArgument(innerExtendedType != null, "Extended type cannot be NULL!");

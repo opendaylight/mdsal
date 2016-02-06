@@ -39,7 +39,7 @@ import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 /**
  * Test class for testing BaseYangTypes class.
  *
- * @author Lukas Sedlak <lsedlak@cisco.com>
+ * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
 public class BaseYangTypesTest {
 

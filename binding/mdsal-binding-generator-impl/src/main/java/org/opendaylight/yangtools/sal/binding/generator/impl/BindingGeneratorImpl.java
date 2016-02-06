@@ -211,16 +211,16 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            types
      * @return list of types (usually <code>GeneratedType</code> or
      *         <code>GeneratedTransferObject</code>) which:
-     *         <ul>
-     *         <li>are generated from <code>context</code> schema nodes and</li>
-     *         <li>are also part of some of the module in <code>modules</code>
-     *         set.</li>
-     *         </ul>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;are generated from <code>context</code> schema nodes and&lt;/li&gt;
+     *         &lt;li&gt;are also part of some of the module in <code>modules</code>
+     *         set.&lt;/li&gt;
+     *         &lt;/ul&gt;
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if arg <code>context</code> is null or</li>
-     *             <li>if arg <code>modules</code> is null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if arg <code>context</code> is null or&lt;/li&gt;
+     *             &lt;li&gt;if arg <code>modules</code> is null&lt;/li&gt;
+     *             &lt;/ul&gt;
      * @throws IllegalStateException
      *             if <code>context</code> contain no modules
      */
@@ -280,10 +280,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @param module
      *            module from which is obtained set of type definitions
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if module is null</li>
-     *             <li>if name of module is null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if module is null&lt;/li&gt;
+     *             &lt;li&gt;if name of module is null&lt;/li&gt;
+     *             &lt;/ul&gt;
      * @throws IllegalStateException
      *             if set of type definitions from module is null
      */
@@ -389,10 +389,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            module from which is obtained list of all augmentation objects
      *            to iterate over them
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if the module is null</li>
-     *             <li>if the name of module is null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if the module is null&lt;/li&gt;
+     *             &lt;li&gt;if the name of module is null&lt;/li&gt;
+     *             &lt;/ul&gt;
      * @throws IllegalStateException
      *             if set of augmentations from module is null
      */
@@ -464,10 +464,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            module from which is obtained set of all rpc objects to
      *            iterate over them
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if the module is null</li>
-     *             <li>if the name of module is null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if the module is null&lt;/li&gt;
+     *             &lt;li&gt;if the name of module is null&lt;/li&gt;
+     *             &lt;/ul&gt;
      * @throws IllegalStateException
      *             if set of rpcs from module is null
      */
@@ -536,10 +536,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            module from which is obtained set of all notification objects
      *            to iterate over them
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if the module equals null</li>
-     *             <li>if the name of module equals null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if the module equals null&lt;/li&gt;
+     *             &lt;li&gt;if the name of module equals null&lt;/li&gt;
+     *             &lt;/ul&gt;
      * @throws IllegalStateException
      *             if set of notifications from module is null
      */
@@ -789,10 +789,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            current module
      * @param parentUsesNode
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>augmentPackageName</code> equals null</li>
-     *             <li>if <code>augSchema</code> equals null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>augmentPackageName</code> equals null&lt;/li&gt;
+     *             &lt;li&gt;if <code>augSchema</code> equals null&lt;/li&gt;
+     *             &lt;/ul&gt;
      * @throws IllegalStateException
      *             if augment target path is null
      */
@@ -1157,10 +1157,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            choice node which is mapped to generated type. Also child
      *            nodes - cases are mapped to generated types.
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>basePackageName</code> is null</li>
-     *             <li>if <code>choiceNode</code> is null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>basePackageName</code> is null&lt;/li&gt;
+     *             &lt;li&gt;if <code>choiceNode</code> is null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     private void choiceToGeneratedType(final Module module, final String basePackageName,
             final GeneratedTypeBuilder parent, final ChoiceSchemaNode choiceNode) {
@@ -1200,11 +1200,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            choice case node which is mapped to generated type
      * @return list of generated types for <code>caseNodes</code>.
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>basePackageName</code> equals null</li>
-     *             <li>if <code>refChoiceType</code> equals null</li>
-     *             <li>if <code>caseNodes</code> equals null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>basePackageName</code> equals null&lt;/li&gt;
+     *             &lt;li&gt;if <code>refChoiceType</code> equals null&lt;/li&gt;
+     *             &lt;li&gt;if <code>caseNodes</code> equals null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     private void generateTypesFromChoiceCases(final Module module, final String basePackageName,
             final Type refChoiceType, final ChoiceSchemaNode choiceNode) {
@@ -1288,11 +1288,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @return list of generated types which represents augmented cases of
      *         choice <code>refChoiceType</code>
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>basePackageName</code> is null</li>
-     *             <li>if <code>targetType</code> is null</li>
-     *             <li>if <code>augmentedNodes</code> is null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>basePackageName</code> is null&lt;/li&gt;
+     *             &lt;li&gt;if <code>targetType</code> is null&lt;/li&gt;
+     *             &lt;li&gt;if <code>augmentedNodes</code> is null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     private void generateTypesFromAugmentedChoiceCases(final Module module, final String basePackageName,
             final Type targetType, final ChoiceSchemaNode targetNode, final Iterable<DataSchemaNode> augmentedNodes) {
@@ -1378,11 +1378,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @param module
      *            Module in which type was defined
      * @return boolean value
-     *         <ul>
-     *         <li>false - if <code>leaf</code> or <code>typeBuilder</code> are
-     *         null</li>
-     *         <li>true - in other cases</li>
-     *         </ul>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;false - if <code>leaf</code> or <code>typeBuilder</code> are
+     *         null&lt;/li&gt;
+     *         &lt;li&gt;true - in other cases&lt;/li&gt;
+     *         &lt;/ul&gt;
      */
     private Type resolveLeafSchemaNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf, final Module module) {
         if (leaf == null || typeBuilder == null || leaf.isAddedByUses()) {
@@ -1564,11 +1564,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @param isReadOnly
      *            boolean value which says if leaf property is|isn't read only
      * @return boolean value
-     *         <ul>
-     *         <li>false - if <code>leaf</code>, <code>toBuilder</code> or leaf
-     *         name equals null or if leaf is added by <i>uses</i>.</li>
-     *         <li>true - other cases</li>
-     *         </ul>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;false - if <code>leaf</code>, <code>toBuilder</code> or leaf
+     *         name equals null or if leaf is added by <i>uses</i>.&lt;/li&gt;
+     *         &lt;li&gt;true - other cases&lt;/li&gt;
+     *         &lt;/ul&gt;
      */
     private static boolean resolveLeafSchemaNodeAsProperty(final GeneratedTOBuilder toBuilder, final LeafSchemaNode leaf,
             final Type returnType, final boolean isReadOnly) {
@@ -1599,11 +1599,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            <code>typeBuilder</code> as getter method
      * @param module
      * @return boolean value
-     *         <ul>
-     *         <li>true - if <code>node</code>, <code>typeBuilder</code>,
-     *         nodeName equal null or <code>node</code> is added by <i>uses</i></li>
-     *         <li>false - other cases</li>
-     *         </ul>
+     *         &lt;ul&gt;
+     *         &lt;li&gt;true - if <code>node</code>, <code>typeBuilder</code>,
+     *         nodeName equal null or <code>node</code> is added by <i>uses</i>&lt;/li&gt;
+     *         &lt;li&gt;false - other cases&lt;/li&gt;
+     *         &lt;/ul&gt;
      */
     private boolean resolveLeafListSchemaNode(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode node, final Module module) {
         if (node == null || typeBuilder == null || node.isAddedByUses()) {
@@ -1779,12 +1779,12 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            return type name prefix
      * @return generated type builder for <code>schemaNode</code>
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>schemaNode</code> is null</li>
-     *             <li>if <code>packageName</code> is null</li>
-     *             <li>if QName of schema node is null</li>
-     *             <li>if schemaNode name is null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>schemaNode</code> is null&lt;/li&gt;
+     *             &lt;li&gt;if <code>packageName</code> is null&lt;/li&gt;
+     *             &lt;li&gt;if QName of schema node is null&lt;/li&gt;
+     *             &lt;li&gt;if schemaNode name is null&lt;/li&gt;
+     *             &lt;/ul&gt;
      *
      */
     private GeneratedTypeBuilder addRawInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
@@ -1896,10 +1896,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @param module
      *            current module
      * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>schemaNode</code> equals null</li>
-     *             <li>if <code>typeBuilder</code> equals null</li>
-     *             </ul>
+     *             &lt;ul&gt;
+     *             &lt;li&gt;if <code>schemaNode</code> equals null&lt;/li&gt;
+     *             &lt;li&gt;if <code>typeBuilder</code> equals null&lt;/li&gt;
+     *             &lt;/ul&gt;
      */
     private void addSchemaNodeToListBuilders(final String basePackageName, final DataSchemaNode schemaNode,
             final GeneratedTypeBuilder typeBuilder, final GeneratedTOBuilder genTOBuilder, final List<String> listKeys,

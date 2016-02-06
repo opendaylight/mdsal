@@ -79,16 +79,16 @@ public class BindingGeneratorUtilTest {
 
     /**
      * Tests methods:
-     * <ul>
-     * <li>moduleNamespaceToPackageName</li> - with revision
-     * <li>packageNameForGeneratedType</li>
-     * <ul>
-     * <li>validateJavaPackage</li>
-     * </ul>
-     * <li>packageNameForTypeDefinition</li> <li>moduleNamespaceToPackageName</li>
-     * - without revision </ul>
-     * @throws ReactorException
-     * @throws SourceException
+     * &lt;ul&gt;
+     * &lt;li&gt;moduleNamespaceToPackageName&lt;/li&gt; - with revision
+     * &lt;li&gt;packageNameForGeneratedType&lt;/li&gt;
+     * &lt;ul&gt;
+     * &lt;li&gt;validateJavaPackage&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;li&gt;packageNameForTypeDefinition&lt;/li&gt; &lt;li&gt;moduleNamespaceToPackageName&lt;/li&gt;
+     * - without revision &lt;/ul&gt;
+     * @throws ReactorException Reactor exception
+     * @throws SourceException Source exception
      */
     @Test
     public void testBindingGeneratorUtilMethods() throws IOException, SourceException, ReactorException {
@@ -173,10 +173,10 @@ public class BindingGeneratorUtilTest {
 
     /**
      * Test for the method
-     * <ul>
-     * <li>{@link BindingGeneratorUtil#packageNameForTypeDefinition()
-     * packageNameForTypeDefinition()}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link BindingGeneratorUtil#packageNameForTypeDefinition(String, TypeDefinition)
+     * packageNameForTypeDefinition(String, TypeDefinition)}&lt;/li&gt;
+     * &lt;/ul&gt;
      */
     @Test
     @Deprecated
@@ -188,10 +188,10 @@ public class BindingGeneratorUtilTest {
 
     /**
      * Test for the method
-     * <ul>
-     * <li>{@link BindingGeneratorUtil#packageNameForTypeDefinition()
-     * packageNameForTypeDefinition()}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link BindingGeneratorUtil#packageNameForTypeDefinition(String, TypeDefinition)
+     * packageNameForTypeDefinition(String, TypeDefinition)}&lt;/li&gt;
+     * &lt;/ul&gt;
      */
     @Test
     @Deprecated
@@ -203,10 +203,10 @@ public class BindingGeneratorUtilTest {
 
     /**
      * Test for the method
-     * <ul>
-     * <li>{@link BindingGeneratorUtil#packageNameForGeneratedType()
-     * packageNameForGeneratedType()}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link BindingGeneratorUtil#packageNameForGeneratedType(String, SchemaPath)
+     * packageNameForGeneratedType(String, SchemaPath)}&lt;/li&gt;
+     * &lt;/ul&gt;
      */
     @Test
     public void testPackageNameForGeneratedTypeNullBasePackageName() {
@@ -216,10 +216,10 @@ public class BindingGeneratorUtilTest {
 
     /**
      * Test for the method
-     * <ul>
-     * <li>{@link BindingGeneratorUtil#packageNameForGeneratedType()
-     * packageNameForGeneratedType()}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link BindingGeneratorUtil#packageNameForGeneratedType(String, SchemaPath)
+     * packageNameForGeneratedType(String, SchemaPath)}&lt;/li&gt;
+     * &lt;/ul&gt;
      */
     @Test
     public void testPackageNameForGeneratedTypeNullSchemaPath() {
@@ -229,10 +229,10 @@ public class BindingGeneratorUtilTest {
 
     /**
      * Test for the method
-     * <ul>
-     * <li>{@link BindingGeneratorUtil#parseToClassName()
-     * parseToClassName()}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link BindingGeneratorUtil#parseToClassName(String)
+     * parseToClassName(String)}&lt;/li&gt;
+     * &lt;/ul&gt;
      */
     @Test
     public void testParseToClassNameNullValue() {
@@ -246,10 +246,10 @@ public class BindingGeneratorUtilTest {
 
     /**
      * Test for the method
-     * <ul>
-     * <li>{@link BindingGeneratorUtil#parseToClassName()
-     * parseToClassName()}</li>
-     * </ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link BindingGeneratorUtil#parseToClassName(String)
+     * parseToClassName(String)}&lt;/li&gt;
+     * &lt;/ul&gt;
      */
     @Test
     public void testParseToClassNameEmptyValue() {
@@ -263,10 +263,10 @@ public class BindingGeneratorUtilTest {
 
     /**
      * Test for the method
-     * <ul>
-     * <li>{@link BindingGeneratorUtil#validateParameterName()
-     * validateParameterName()}</li>
-     * <ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link BindingGeneratorUtil#resolveJavaReservedWordEquivalency(String)
+     * resolveJavaReservedWordEquivalency(String)}&lt;/li&gt;
+     * &lt;ul&gt;
      */
     @Test
     public void testValidateParameterName() {
@@ -279,21 +279,21 @@ public class BindingGeneratorUtilTest {
 
     /**
      * Tests the methods:
-     * <ul>
-     * <li>parseToClassName</li>
-     * <ul>
-     * <li>parseToCamelCase</li>
-     * <ul>
-     * <li>replaceWithCamelCase</li>
-     * </ul>
-     * </ul> <li>parseToValidParamName</li>
-     * <ul>
-     * <li>parseToCamelCase</li>
-     * <ul>
-     * <li>replaceWithCamelCase</li>
-     * </ul>
-     * </ul>
-     * <ul>
+     * &lt;ul&gt;
+     * &lt;li&gt;parseToClassName&lt;/li&gt;
+     * &lt;ul&gt;
+     * &lt;li&gt;parseToCamelCase&lt;/li&gt;
+     * &lt;ul&gt;
+     * &lt;li&gt;replaceWithCamelCase&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;/ul&gt; &lt;li&gt;parseToValidParamName&lt;/li&gt;
+     * &lt;ul&gt;
+     * &lt;li&gt;parseToCamelCase&lt;/li&gt;
+     * &lt;ul&gt;
+     * &lt;li&gt;replaceWithCamelCase&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;/ul&gt;
+     * &lt;ul&gt;
      */
     @Test
     public void testParsingMethods() {

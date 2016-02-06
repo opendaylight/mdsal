@@ -14,7 +14,7 @@ import org.opendaylight.yangtools.yang.model.api.*;
 /**
  * Mock Leaf Schema Node designated to increase branch coverage in test cases.
  *
- * @author Lukas Sedlak <lsedlak@cisco.com>
+ * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
 public class TestLeafSchemaNode implements LeafSchemaNode {
     @Override public TypeDefinition<?> getType() {
