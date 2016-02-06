@@ -35,9 +35,8 @@ public abstract class AbstractSchemaAwareTest  {
 
     /**
      * Setups test with Schema context.
-     * This method is called before {@link #setupWithSchemaService(SchemaService)}
      *
-     * @param context
+     * @param context schema context
      */
     protected abstract void setupWithSchema(SchemaContext context);
 
