@@ -9,15 +9,20 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Preconditions;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-class ForeignShardModificationContext {
-
+@NotThreadSafe
+final class ForeignShardModificationContext {
+    private static final Logger LOG = LoggerFactory.getLogger(ForeignShardModificationContext.class);
     private final DOMDataTreeIdentifier identifier;
     private final DOMDataTreeShardProducer producer;
     private DOMDataTreeShardWriteTransaction tx;
     private DOMDataTreeWriteCursor cursor;
+    private volatile boolean notReady = true;
 
     ForeignShardModificationContext(final DOMDataTreeIdentifier identifier, final DOMDataTreeShardProducer producer) {
         this.identifier = Preconditions.checkNotNull(identifier);
@@ -25,10 +30,12 @@ class ForeignShardModificationContext {
     }
 
     DOMDataTreeWriteCursor getCursor() {
-        if (tx == null) {
-            tx = producer.createTransaction();
-        }
+        Preconditions.checkState(notReady, "Context %s has been readied", this);
+
         if (cursor == null) {
+            if (tx == null) {
+                tx = producer.createTransaction();
+            }
             cursor = tx.createCursor(getIdentifier());
         }
         return cursor;
@@ -39,13 +46,21 @@ class ForeignShardModificationContext {
     }
 
     void ready() {
-        // FIXME: mark the fact this is ready, prevent instantiation of cursor
+        if (!notReady) {
+            // Idempotent, but emit a debug
+            LOG.debug("Duplicate ready() of context {}", this);
+            return;
+        }
+
+        notReady = true;
         if (cursor != null) {
             cursor.close();
-
-            if (tx != null) {
-                tx.ready();
-            }
+            cursor = null;
+        }
+        if (tx != null) {
+            tx.ready();
+            // TODO: it would be nice if we could clear this reference
+            // tx = null;
         }
     }
 
