@@ -25,7 +25,7 @@ public class HostBuilderTest {
         testIpv6("1234:5678:9abc:def1:2345:6789:abcd:ef12");
     }
 
-    private void testIpv6(final String ivp6string) {
+    private static void testIpv6(final String ivp6string) {
         final Host host = HostBuilder.getDefaultInstance(ivp6string);
         assertEquals(new Host(new IpAddress(new Ipv6Address(ivp6string))), host);
     }
