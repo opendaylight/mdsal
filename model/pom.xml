@@ -12,11 +12,11 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>0.8.0-Beryllium</version>
+        <version>0.8.1-SNAPSHOT</version>
         <relativePath>../binding/binding-parent</relativePath>
     </parent>
     <groupId>org.opendaylight.mdsal.model</groupId>
-    <!--<version>0.8.0-Beryllium</version>-->
+    <!--<version>0.8.1-SNAPSHOT</version>-->
     <modelVersion>4.0.0</modelVersion>
     <artifactId>model-parent</artifactId>
     <packaging>pom</packaging>
@@ -24,7 +24,7 @@
     <description>${project.artifactId}</description>
 
     <properties>
-       <mdsal.model.version>0.8.0-Beryllium</mdsal.model.version>
+       <mdsal.model.version>0.8.1-SNAPSHOT</mdsal.model.version>
     </properties>
 
     <modules>
