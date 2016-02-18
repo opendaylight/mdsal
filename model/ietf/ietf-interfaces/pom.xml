@@ -12,12 +12,12 @@
     <parent>
         <artifactId>model-ietf</artifactId>
         <groupId>org.opendaylight.mdsal.model</groupId>
-        <version>0.8.0-SNAPSHOT</version>
+        <version>0.8.0-Beryllium</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ietf-interfaces</artifactId>
-    <version>2014.05.08.8-SNAPSHOT</version>
+    <version>2014.05.08.8-Beryllium</version>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
     <packaging>bundle</packaging>
