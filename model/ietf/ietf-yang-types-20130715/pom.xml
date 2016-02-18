@@ -23,6 +23,12 @@
     <description>${project.artifactId}</description>
     <packaging>bundle</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>ietf-type-util</artifactId>
+        </dependency>
+    </dependencies>
 
   <!--
       Maven Site Configuration
