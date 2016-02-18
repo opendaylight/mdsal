@@ -122,6 +122,11 @@
                 <artifactId>general-entity</artifactId>
                 <version>0.8.1-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>ietf-type-util</artifactId>
+                <version>0.8.1-SNAPSHOT</version>
+            </dependency>
             <!-- TODO: Sort dependencies alphabetically? -->
         </dependencies>
     </dependencyManagement>

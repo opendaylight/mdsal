@@ -37,6 +37,8 @@
 
         <module>ietf-restconf</module>
         <module>ietf-inet-types-2013-07-15</module>
+
+        <module>ietf-type-util</module>
     </modules>
 
   <!--
