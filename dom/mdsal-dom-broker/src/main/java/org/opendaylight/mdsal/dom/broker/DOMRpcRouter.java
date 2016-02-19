@@ -7,16 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
-
-import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
-import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
-import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -27,17 +17,26 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
+import org.opendaylight.mdsal.dom.api.DOMRpcException;
+import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
+import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
+import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -69,7 +68,7 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
 
         final Collection<DOMRpcIdentifier> removedRpcs = notPresentRpcs(newTable, rpcs);
         routingTable = newTable;
-        if(!removedRpcs.isEmpty()) {
+        if (!removedRpcs.isEmpty()) {
             final Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> capturedListeners = listeners;
             listenerNotifier.execute(new Runnable() {
                 @Override
@@ -95,7 +94,7 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
         final Collection<DOMRpcIdentifier> addedRpcs = notPresentRpcs(oldTable, rpcs);
         routingTable = newTable;
 
-        if(!addedRpcs.isEmpty()) {
+        if (!addedRpcs.isEmpty()) {
             final Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> capturedListeners = listeners;
             listenerNotifier.execute(new Runnable() {
                 @Override
