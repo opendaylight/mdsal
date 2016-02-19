@@ -15,9 +15,9 @@ import java.util.Map.Entry;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
-import org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
@@ -70,6 +70,7 @@ class LazyDataTreeModification<T extends DataObject> implements DataTreeModifica
         return result;
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     static <T extends DataObject> DataTreeModification<T> create(BindingToNormalizedNodeCodec codec,
             DOMDataTreeCandidate candidate) {
         final Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> codecCtx =
