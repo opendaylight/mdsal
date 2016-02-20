@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import com.google.common.net.InetAddresses;
 import com.google.common.primitives.UnsignedBytes;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -209,7 +210,7 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
      * @throws NullPointerException if addr is null
      */
     @Nonnull public final P6 ipv6PrefixFor(@Nonnull final InetAddress addr) {
-        return prefix6Factory.newInstance(addr.getHostAddress() + "/128");
+        return prefix6Factory.newInstance(addressStringV6(addr) + "/128");
     }
 
     /**
@@ -227,7 +228,7 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         Preconditions.checkNotNull(addr, "Address must not be null");
         Preconditions.checkArgument(addr instanceof Inet6Address, "Address has to be an Inet6Address");
         Preconditions.checkArgument(mask >= 0 && mask <= 128, "Invalid mask %s", mask);
-        return prefix6Factory.newInstance(addr.getHostAddress() + '/' + mask);
+        return prefix6Factory.newInstance(addressStringV6(addr) + '/' + mask);
     }
 
     private static void appendIpv4String(final StringBuilder sb, final byte[] bytes) {
@@ -250,10 +251,14 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         Preconditions.checkArgument(bytes.length == 16, "IPv6 address length is 16 bytes");
 
         try {
-            return Inet6Address.getByAddress(bytes).getHostAddress();
+            return addressStringV6(Inet6Address.getByAddress(bytes));
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException(String.format("Invalid input %s", bytes), e);
         }
+    }
+
+    private static String addressStringV6(final InetAddress addr) {
+        return InetAddresses.toAddrString(addr);
     }
 
     private static String prefixStringV4(final byte[] bytes) {
