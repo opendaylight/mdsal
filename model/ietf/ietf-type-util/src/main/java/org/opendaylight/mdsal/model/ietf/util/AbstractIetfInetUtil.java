@@ -97,6 +97,32 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         return prefixToAddress(address4Factory, ipv4PrefixString(prefix));
     }
 
+    @Nonnull public final byte[] ipv4AddressBytes(@Nonnull final A4 addr) {
+        /*
+         * This implementation relies heavily on the input string having been validated to comply with
+         * the Ipv4Address pattern, which may include a zone index.
+         */
+        final String str = ipv4AddressString(addr);
+        final byte[] bytes = new byte[4];
+
+        int out = 0;
+        int val = 0;
+        for (int i = 0; i < str.length(); ++i) {
+            final char c = str.charAt(i);
+            if (c == '%') {
+                break;
+            } else if (c == '.') {
+                bytes[out++] = (byte) val;
+                val = 0;
+            } else {
+                val = 10 * val + (c - '0');
+            }
+        }
+
+        bytes[out] = (byte) val;
+        return bytes;
+    }
+
     /**
      * Create a /32 Ipv4Prefix by interpreting input bytes as an IPv4 address.
      *
@@ -198,6 +224,16 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
 
     @Nonnull public final A6 ipv6AddressFrom(@Nonnull final P6 prefix) {
         return prefixToAddress(address6Factory, ipv6PrefixString(prefix));
+    }
+
+    @Nonnull public final byte[] ipv6AddressBytes(@Nonnull final A6 addr) {
+        String str = ipv6AddressString(addr);
+        final int percent = str.indexOf('%');
+        if (percent != -1) {
+            str = str.substring(0, percent);
+        }
+
+        return InetAddresses.forString(str).getAddress();
     }
 
     /**
