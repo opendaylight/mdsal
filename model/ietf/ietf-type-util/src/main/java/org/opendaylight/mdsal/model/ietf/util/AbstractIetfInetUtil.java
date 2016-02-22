@@ -15,13 +15,13 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import org.opendaylight.yangtools.yang.binding.util.StringValueObjectFactory;
 
 /**
  * A set of utility methods to efficiently instantiate various ietf-inet-types DTOs.
- *
- * FIXME: IPv6 addresses are not emitted in canonical format as specified by the model.
  */
 @Beta
 public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
@@ -40,6 +40,10 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
 
     protected abstract A ipv4Address(A4 addr);
     protected abstract A ipv6Address(A6 addr);
+    protected abstract String ipv4AddressString(A4 addr);
+    protected abstract String ipv6AddressString(A6 addr);
+    protected abstract String ipv4PrefixString(P4 prefix);
+    protected abstract String ipv6PrefixString(P6 prefix);
 
     @Nonnull public final A ipAddressFor(@Nonnull final byte[] bytes) {
         switch (bytes.length) {
@@ -87,6 +91,10 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         Preconditions.checkNotNull(addr, "Address must not be null");
         Preconditions.checkArgument(addr instanceof Inet4Address, "Address has to be an Inet4Address");
         return address4Factory.newInstance(addr.getHostAddress());
+    }
+
+    @Nonnull public final A4 ipv4AddressFrom(@Nonnull final P4 prefix) {
+        return prefixToAddress(address4Factory, ipv4PrefixString(prefix));
     }
 
     /**
@@ -147,6 +155,24 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         return prefix4Factory.newInstance(addr.getHostAddress() + '/' + mask);
     }
 
+    @Nonnull public final P4 ipv4PrefixFor(@Nonnull final A4 addr) {
+        Preconditions.checkNotNull(addr, "Address must not be null");
+        return prefix4Factory.newInstance(ipv4AddressString(addr) + "/32");
+    }
+
+    @Nonnull public final P4 ipv4PrefixFor(@Nonnull final A4 addr, final int mask) {
+        Preconditions.checkNotNull(addr, "Address must not be null");
+        Preconditions.checkArgument(mask >= 0 && mask <= 32, "Invalid mask %s", mask);
+        return prefix4Factory.newInstance(ipv4AddressString(addr) + '/' + mask);
+    }
+
+    @Nonnull public final Entry<A4, Integer> splitIpv4Prefix(@Nonnull final P4 prefix) {
+        final String str = ipv4PrefixString(prefix);
+        final int slash = str.lastIndexOf('/');
+        final A4 addr = address4Factory.newInstance(str.substring(0, slash));
+        return new SimpleImmutableEntry<>(addr, Integer.valueOf(str.substring(slash + 1)));
+    }
+
     /**
      * Create an Ipv6Address by interpreting input bytes as an IPv6 address.
      *
@@ -170,7 +196,11 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
     @Nonnull public final A6 ipv6AddressFor(@Nonnull final InetAddress addr) {
         Preconditions.checkNotNull(addr, "Address must not be null");
         Preconditions.checkArgument(addr instanceof Inet6Address, "Address has to be an Inet6Address");
-        return address6Factory.newInstance(addr.getHostAddress());
+        return address6Factory.newInstance(addressStringV6(addr));
+    }
+
+    @Nonnull public final A6 ipv6AddressFrom(@Nonnull final P6 prefix) {
+        return prefixToAddress(address6Factory, ipv6PrefixString(prefix));
     }
 
     /**
@@ -229,6 +259,28 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         Preconditions.checkArgument(addr instanceof Inet6Address, "Address has to be an Inet6Address");
         Preconditions.checkArgument(mask >= 0 && mask <= 128, "Invalid mask %s", mask);
         return prefix6Factory.newInstance(addressStringV6(addr) + '/' + mask);
+    }
+
+    @Nonnull public final P6 ipv6PrefixFor(@Nonnull final A6 addr) {
+        Preconditions.checkNotNull(addr, "Address must not be null");
+        return prefix6Factory.newInstance(ipv6AddressString(addr) + "/128");
+    }
+
+    @Nonnull public final P6 ipv6PrefixFor(@Nonnull final A6 addr, final int mask) {
+        Preconditions.checkNotNull(addr, "Address must not be null");
+        Preconditions.checkArgument(mask >= 0 && mask <= 128, "Invalid mask %s", mask);
+        return prefix6Factory.newInstance(ipv6AddressString(addr) + '/' + mask);
+    }
+
+    @Nonnull public final Entry<A6, Integer> splitIpv6Prefix(@Nonnull final P6 prefix) {
+        final String str = ipv6PrefixString(prefix);
+        final int slash = str.lastIndexOf('/');
+        final A6 addr = address6Factory.newInstance(str.substring(0, slash));
+        return new SimpleImmutableEntry<>(addr, Integer.valueOf(str.substring(slash + 1)));
+    }
+
+    private static <T> T prefixToAddress(final StringValueObjectFactory<T> factory, final String str) {
+        return factory.newInstance(str.substring(0, str.lastIndexOf('/')));
     }
 
     private static void appendIpv4String(final StringBuilder sb, final byte[] bytes) {

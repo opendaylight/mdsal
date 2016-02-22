@@ -12,8 +12,6 @@ import org.opendaylight.mdsal.model.ietf.util.AbstractIetfInetUtil;
 
 /**
  * A set of utility methods to efficiently instantiate various ietf-inet-types DTOs.
- *
- * FIXME: IPv6 addresses are not emitted in canonical format as specified by the model.
  */
 @Beta
 public final class IetfInetUtil extends AbstractIetfInetUtil<Ipv4Address, Ipv4Prefix, Ipv6Address, Ipv6Prefix, IpAddress> {
@@ -31,5 +29,25 @@ public final class IetfInetUtil extends AbstractIetfInetUtil<Ipv4Address, Ipv4Pr
     @Override
     protected IpAddress ipv6Address(final Ipv6Address addr) {
         return new IpAddress(addr);
+    }
+
+    @Override
+    protected String ipv4AddressString(final Ipv4Address addr) {
+        return addr.getValue();
+    }
+
+    @Override
+    protected String ipv6AddressString(final Ipv6Address addr) {
+        return addr.getValue();
+    }
+
+    @Override
+    protected String ipv4PrefixString(final Ipv4Prefix prefix) {
+        return prefix.getValue();
+    }
+
+    @Override
+    protected String ipv6PrefixString(final Ipv6Prefix prefix) {
+        return prefix.getValue();
     }
 }
