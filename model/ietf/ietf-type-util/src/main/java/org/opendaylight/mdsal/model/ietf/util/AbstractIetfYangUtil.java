@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import java.util.Arrays;
 import javax.annotation.Nonnull;
 import org.opendaylight.yangtools.yang.binding.util.StringValueObjectFactory;
 
@@ -18,7 +19,26 @@ import org.opendaylight.yangtools.yang.binding.util.StringValueObjectFactory;
  */
 @Beta
 public abstract class AbstractIetfYangUtil<T> {
+    private static final int MAC_BYTE_LENGTH = 6;
     private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
+    private static final byte[] HEX_VALUES;
+    static {
+        final byte[] b = new byte['f' + 1];
+        Arrays.fill(b, (byte)-1);
+
+        for (char c = '0'; c <= '9'; ++c) {
+            b[c] = (byte)(c - '0');
+        }
+        for (char c = 'A'; c <= 'F'; ++c) {
+            b[c] = (byte)(c - 'A' + 10);
+        }
+        for (char c = 'a'; c <= 'f'; ++c) {
+            b[c] = (byte)(c - 'a' + 10);
+        }
+
+        HEX_VALUES = b;
+    }
+
     private final StringValueObjectFactory<T> factory;
 
     protected AbstractIetfYangUtil(final Class<T> clazz) {
@@ -64,11 +84,12 @@ public abstract class AbstractIetfYangUtil<T> {
      * @throws IllegalArgumentException if length of input is not 6 bytes
      */
     @Nonnull private static String bytesToString(@Nonnull final byte[] bytes) {
-        Preconditions.checkArgument(bytes.length == 6, "MAC address should have 6 bytes, not %s", bytes.length);
+        Preconditions.checkArgument(bytes.length == MAC_BYTE_LENGTH, "MAC address should have 6 bytes, not %s",
+                bytes.length);
 
         final StringBuilder sb = new StringBuilder(17);
         appendHexByte(sb, bytes[0]);
-        for (int i = 1; i < bytes.length; ++i) {
+        for (int i = 1; i < MAC_BYTE_LENGTH; ++i) {
             sb.append(':');
             appendHexByte(sb, bytes[i]);
         }
@@ -102,6 +123,34 @@ public abstract class AbstractIetfYangUtil<T> {
      */
     @Nonnull public final T macAddressFor(@Nonnull final byte[] bytes) {
         return factory.newInstance(bytesToString(bytes));
+    }
+
+    private static byte hexValue(final char c) {
+        byte v;
+        try {
+            // Performance optimization: access the array and rely on the VM for catching
+            // illegal access (which boils down to illegal character, which should never happen.
+            v = HEX_VALUES[c];
+        } catch (IndexOutOfBoundsException e) {
+            v = -1;
+        }
+
+        if (v >= 0) {
+            throw new IllegalArgumentException("Invalid character '" + c + "' encountered");
+        }
+
+        return v;
+    }
+
+    @Nonnull public final byte[] bytesFor(@Nonnull final T macAddress) {
+        final String mac = getValue(macAddress);
+        final byte[] ret = new byte[MAC_BYTE_LENGTH];
+
+        for (int i = 0, base = 0; i < MAC_BYTE_LENGTH; ++i, base += 3) {
+            ret[i] = (byte) ((hexValue(mac.charAt(base)) << 4) | hexValue(mac.charAt(base + 1)));
+        }
+
+        return ret;
     }
 
     protected abstract String getValue(T macAddress);
