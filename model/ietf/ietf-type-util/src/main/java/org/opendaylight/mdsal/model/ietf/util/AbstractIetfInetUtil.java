@@ -167,10 +167,7 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
     }
 
     @Nonnull public final Entry<A4, Integer> splitIpv4Prefix(@Nonnull final P4 prefix) {
-        final String str = ipv4PrefixString(prefix);
-        final int slash = str.lastIndexOf('/');
-        final A4 addr = address4Factory.newInstance(str.substring(0, slash));
-        return new SimpleImmutableEntry<>(addr, Integer.valueOf(str.substring(slash + 1)));
+        return splitPrefix(address4Factory, ipv4PrefixString(prefix));
     }
 
     /**
@@ -273,14 +270,17 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
     }
 
     @Nonnull public final Entry<A6, Integer> splitIpv6Prefix(@Nonnull final P6 prefix) {
-        final String str = ipv6PrefixString(prefix);
-        final int slash = str.lastIndexOf('/');
-        final A6 addr = address6Factory.newInstance(str.substring(0, slash));
-        return new SimpleImmutableEntry<>(addr, Integer.valueOf(str.substring(slash + 1)));
+        return splitPrefix(address6Factory, ipv6PrefixString(prefix));
     }
 
     private static <T> T prefixToAddress(final StringValueObjectFactory<T> factory, final String str) {
         return factory.newInstance(str.substring(0, str.lastIndexOf('/')));
+    }
+
+    private static <T> Entry<T, Integer> splitPrefix(final StringValueObjectFactory<T> factory, final String str) {
+        final int slash = str.lastIndexOf('/');
+        return new SimpleImmutableEntry<>(factory.newInstance(str.substring(0, slash)),
+                Integer.valueOf(str.substring(slash + 1)));
     }
 
     private static void appendIpv4String(final StringBuilder sb, final byte[] bytes) {
