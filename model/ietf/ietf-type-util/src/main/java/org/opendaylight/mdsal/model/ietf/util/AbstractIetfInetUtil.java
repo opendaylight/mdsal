@@ -25,6 +25,8 @@ import org.opendaylight.yangtools.yang.binding.util.StringValueObjectFactory;
  */
 @Beta
 public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
+    private static final int INET4_LENGTH = 4;
+    private static final int INET6_LENGTH = 16;
     private final StringValueObjectFactory<A4> address4Factory;
     private final StringValueObjectFactory<P4> prefix4Factory;
     private final StringValueObjectFactory<A6> address6Factory;
@@ -103,23 +105,9 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
          * the Ipv4Address pattern, which may include a zone index.
          */
         final String str = ipv4AddressString(addr);
-        final byte[] bytes = new byte[4];
-
-        int out = 0;
-        int val = 0;
-        for (int i = 0; i < str.length(); ++i) {
-            final char c = str.charAt(i);
-            if (c == '%') {
-                break;
-            } else if (c == '.') {
-                bytes[out++] = (byte) val;
-                val = 0;
-            } else {
-                val = 10 * val + (c - '0');
-            }
-        }
-
-        bytes[out] = (byte) val;
+        final byte[] bytes = new byte[INET4_LENGTH];
+        final int percent = str.indexOf('%');
+        fillIpv4Bytes(bytes, str, percent == -1 ? str.length() : percent);
         return bytes;
     }
 
@@ -194,6 +182,32 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
 
     @Nonnull public final Entry<A4, Integer> splitIpv4Prefix(@Nonnull final P4 prefix) {
         return splitPrefix(address4Factory, ipv4PrefixString(prefix));
+    }
+
+    @Nonnull public final byte[] ipv4PrefixToBytes(@Nonnull final P4 prefix) {
+        final String str = ipv4PrefixString(prefix);
+        final int slash = str.lastIndexOf('/');
+
+        final byte[] bytes = new byte[INET4_LENGTH + 1];
+        fillIpv4Bytes(bytes, str, slash);
+        bytes[INET4_LENGTH] = (byte)Integer.parseInt(str.substring(slash + 1), 10);
+        return bytes;
+    }
+
+    private static void fillIpv4Bytes(final byte[] bytes, final String str, final int limit) {
+        int out = 0;
+        int val = 0;
+        for (int i = 0; i < limit; ++i) {
+            final char c = str.charAt(i);
+            if (c == '.') {
+                bytes[out++] = (byte) val;
+                val = 0;
+            } else {
+                val = 10 * val + (c - '0');
+            }
+        }
+
+        bytes[out] = (byte) val;
     }
 
     /**
@@ -319,11 +333,21 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
                 Integer.valueOf(str.substring(slash + 1)));
     }
 
+    @Nonnull public final byte[] ipv6PrefixToBytes(@Nonnull final P6 prefix) {
+        final String str = ipv6PrefixString(prefix);
+        final int slash = str.lastIndexOf('/');
+
+        final byte[] bytes = new byte[INET6_LENGTH + 1];
+        System.arraycopy(InetAddresses.forString(str.substring(0, slash)).getAddress(), 0, bytes, 0, INET6_LENGTH);
+        bytes[INET6_LENGTH] = (byte)Integer.parseInt(str.substring(slash + 1), 10);
+        return bytes;
+    }
+
     private static void appendIpv4String(final StringBuilder sb, final byte[] bytes) {
-        Preconditions.checkArgument(bytes.length == 4, "IPv4 address length is 4 bytes");
+        Preconditions.checkArgument(bytes.length == INET4_LENGTH, "IPv4 address length is 4 bytes");
 
         sb.append(UnsignedBytes.toInt(bytes[0]));
-        for (int i = 1; i < 4; ++i) {
+        for (int i = 1; i < INET4_LENGTH; ++i) {
             sb.append('.');
             sb.append(UnsignedBytes.toInt(bytes[i]));
         }
@@ -336,7 +360,7 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
     }
 
     private static String addressStringV6(final byte[] bytes) {
-        Preconditions.checkArgument(bytes.length == 16, "IPv6 address length is 16 bytes");
+        Preconditions.checkArgument(bytes.length == INET6_LENGTH, "IPv6 address length is 16 bytes");
 
         try {
             return addressStringV6(Inet6Address.getByAddress(bytes));
