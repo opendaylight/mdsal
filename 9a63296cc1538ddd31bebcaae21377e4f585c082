@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_dd7a1576",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/yangtools/binding/generator/util/Types.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-02-24T20:17:41Z",
+      "side": 1,
+      "message": "Preconditions.checkNotNull()?",
+      "revId": "9a63296cc1538ddd31bebcaae21377e4f585c082",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_1d98fdbe",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/yangtools/binding/generator/util/Types.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-02-24T20:17:41Z",
+      "side": 1,
+      "message": "I wonder: do we want to instantiate this in the constructor?",
+      "revId": "9a63296cc1538ddd31bebcaae21377e4f585c082",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
