@@ -70,7 +70,7 @@ final class Ipv6Utils {
 
        final byte[] dst = new byte[INADDR6SZ];
 
-       boolean saw_xdigit = false;
+       boolean haveVal = false;
        int val = 0;
        int colonp = -1;
        int j = 0;
@@ -81,18 +81,17 @@ final class Ipv6Utils {
            // v6 separator
            if (ch == ':') {
                curtok = i;
-               if (!saw_xdigit) {
+               if (haveVal) {
+                   // removed overrun check - the regexp checks for valid data
+                   dst[j++] = (byte) ((val >>> 8) & 0xff);
+                   dst[j++] = (byte) (val & 0xff);
+                   haveVal = false;
+                   val = 0;
+               } else {
                    // no need to check separator position validity - regexp does that
                    colonp = j;
-                   continue;
                }
 
-               // removed overrun check - the regexp checks for valid data
-
-               dst[j++] = (byte) ((val >>> 8) & 0xff);
-               dst[j++] = (byte) (val & 0xff);
-               saw_xdigit = false;
-               val = 0;
                continue;
            }
 
@@ -104,7 +103,7 @@ final class Ipv6Utils {
                 */
                Ipv4Utils.fillIpv4Bytes(dst, j, addrStr, curtok, addrStrLen);
                j += INADDR4SZ;
-               saw_xdigit = false;
+               haveVal = false;
                break;
            }
 
@@ -116,10 +115,10 @@ final class Ipv6Utils {
             */
            final int chval = AbstractIetfYangUtil.hexValue(ch);
            val = (val << 4) | chval;
-           saw_xdigit = true;
+           haveVal = true;
        }
 
-       if (saw_xdigit) {
+       if (haveVal) {
            Verify.verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
            dst[j++] = (byte) ((val >> 8) & 0xff);
            dst[j++] = (byte) (val & 0xff);
