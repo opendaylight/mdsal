@@ -56,35 +56,30 @@ final class Ipv6Utils {
     /**
      * Convert Ipv6Address object to a valid Canonical v6 address in byte format
      *
-     * @param ipv6Address - v6 Address object
-     *
-     * FIXME: rovarga: this looks wrong
-     * @return - byte array of size 16. Last byte contains netmask
-     *
+     * @param addrStr IPv6 address string
+     * @return byte array of size 16 containing the binary IPv6 address
      * @throws NullPointerException if ipv6address is null
      */
-   public static @Nonnull byte[] bytesForString(final @Nonnull String ipv6Address) {
-       final int percentPos = ipv6Address.indexOf('%');
-       // FIXME: do not perform a copy, just set the limit here.
-       final String address = percentPos == -1 ? ipv6Address : ipv6Address.substring(0, percentPos);
+   public static @Nonnull byte[] bytesForString(final @Nonnull String addrStr) {
+       final int percentPos = addrStr.indexOf('%');
+       final int addrStrLen = percentPos == -1 ? addrStr.length() : percentPos;
 
        /* Leading :: requires some special handling. */
        int i = 0;
-       if (address.charAt(i) == ':') {
+       if (addrStr.charAt(i) == ':') {
            // Note ++i side-effect in check
-           Preconditions.checkArgument(address.charAt(++i) == ':', "Invalid v6 address '%s'", ipv6Address);
+           Preconditions.checkArgument(addrStr.charAt(++i) == ':', "Invalid v6 address '%s'", addrStr);
        }
 
        final byte[] dst = new byte[INADDR6SZ];
 
-       final int src_length = address.length();
        boolean saw_xdigit = false;
        int val = 0;
        int colonp = -1;
        int j = 0;
        int curtok = i;
-       while (i < src_length) {
-           final char ch = address.charAt(i++);
+       while (i < addrStrLen) {
+           final char ch = addrStr.charAt(i++);
 
            /* v6 separator */
            if (ch == ':') {
@@ -112,8 +107,8 @@ final class Ipv6Utils {
                 * deficiencies as the java v6 implementation we can invoke it
                 * straight away and be done with it
                 */
-               Preconditions.checkArgument(j != (INADDR6SZ - INADDR4SZ - 1), "Invalid v4 in v6 mapping in %s", ipv6Address);
-               InetAddress _inet_form = InetAddresses.forString(address.substring(curtok, src_length));
+               Preconditions.checkArgument(j != (INADDR6SZ - INADDR4SZ - 1), "Invalid v4 in v6 mapping in %s", addrStr);
+               InetAddress _inet_form = InetAddresses.forString(addrStr.substring(curtok, addrStrLen));
 
                Preconditions.checkArgument(_inet_form instanceof Inet4Address);
                System.arraycopy(_inet_form.getAddress(), 0, dst, j, INADDR4SZ);
@@ -134,13 +129,13 @@ final class Ipv6Utils {
        }
 
        if (saw_xdigit) {
-           Verify.verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", ipv6Address);
+           Verify.verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
            dst[j++] = (byte) ((val >> 8) & 0xff);
            dst[j++] = (byte) (val & 0xff);
        }
 
        if (colonp != -1) {
-           Verify.verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", ipv6Address);
+           Verify.verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
 
            final int n = j - colonp;
            for (i = 1; i <= n; i++) {
@@ -150,7 +145,7 @@ final class Ipv6Utils {
            j = INADDR6SZ;
        }
 
-       Verify.verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", ipv6Address);
+       Verify.verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
        return dst;
    }
 }
