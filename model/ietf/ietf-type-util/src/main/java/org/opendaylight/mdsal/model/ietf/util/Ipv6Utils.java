@@ -8,9 +8,11 @@
 package org.opendaylight.mdsal.model.ietf.util;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Verify;
 import com.google.common.net.InetAddresses;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import javax.annotation.Nonnull;
 
 /**
  * IPv6 address parsing for ietf-inet-types ipv6-address and ipv6-prefix. This is an internal implementation
@@ -58,68 +60,35 @@ final class Ipv6Utils {
      *
      * FIXME: rovarga: this looks wrong
      * @return - byte array of size 16. Last byte contains netmask
+     *
+     * @throws NullPointerException if ipv6address is null
      */
-   public static byte[] bytesForString(final String ipv6Address) {
-       /*
-        * Do not modify this routine to take direct strings input!!!
-        * Key checks have been removed based on the assumption that
-        * the input is validated via regexps in Ipv6Prefix()
-        */
+   public static @Nonnull byte[] bytesForString(final @Nonnull String ipv6Address) {
+       final int percentPos = ipv6Address.indexOf('%');
+       // FIXME: do not perform a copy, just set the limit here.
+       final String address = percentPos == -1 ? ipv6Address : ipv6Address.substring(0, percentPos);
 
-       String [] address =  (ipv6Address).split("%");
-
-       int colonp;
-       char ch;
-       boolean saw_xdigit;
-
-       /* Isn't it fun - the above variable names are the same in BSD and Sun sources */
-
-       int val;
-
-       char[] src = address[0].toCharArray();
-
-       byte[] dst = new byte[INADDR6SZ];
-
-       int src_length = src.length;
-
-       colonp = -1;
-       int i = 0, j = 0;
+       // FIXME: fixme: use address.charAt() instead
+       char[] src = address.toCharArray();
 
        /* Leading :: requires some special handling. */
-
-       /* Isn't it fun - the above comment is again the same in BSD and Sun sources,
-        * We will derive our code from BSD. Shakespear always sounds better
-        * in original Clingon. So does Dilbert.
-        */
-
+       int i = 0;
        if (src[i] == ':') {
-           Preconditions.checkArgument(src[++i] == ':', "Invalid v6 address");
+           Preconditions.checkArgument(src[++i] == ':', "Invalid v6 address '%s'", ipv6Address);
        }
 
+       final byte[] dst = new byte[INADDR6SZ];
+
+       final int src_length = src.length;
+       boolean saw_xdigit = false;
+       int val = 0;
+       int colonp = -1;
+       int j = 0;
        int curtok = i;
-       saw_xdigit = false;
-
-
-       val = 0;
        while (i < src_length) {
-           ch = src[i++];
-           int chval = Character.digit(ch, 16);
-
-           /* Business as usual - ipv6 address digit.
-            * We can remove all checks from the original BSD code because
-            * the regexp has already verified that we are not being fed
-            * anything bigger than 0xffff between the separators.
-            */
-
-           if (chval != -1) {
-               val <<= 4;
-               val |= chval;
-               saw_xdigit = true;
-               continue;
-           }
+           final char ch = src[i++];
 
            /* v6 separator */
-
            if (ch == ':') {
                curtok = i;
                if (!saw_xdigit) {
@@ -138,18 +107,15 @@ final class Ipv6Utils {
            }
 
            /* frankenstein - v4 attached to v6, mixed notation */
-
            if (ch == '.' && ((j + INADDR4SZ) <= INADDR6SZ)) {
 
                /* this has passed the regexp so it is fairly safe to parse it
                 * straight away. As v4 addresses do not suffer from the same
-                * defficiencies as the java v6 implementation we can invoke it
+                * deficiencies as the java v6 implementation we can invoke it
                 * straight away and be done with it
                 */
-
-               Preconditions.checkArgument(j != (INADDR6SZ - INADDR4SZ - 1), "Invalid v4 in v6 mapping");
-
-               InetAddress _inet_form = InetAddresses.forString(address[0].substring(curtok, src_length));
+               Preconditions.checkArgument(j != (INADDR6SZ - INADDR4SZ - 1), "Invalid v4 in v6 mapping in %s", ipv6Address);
+               InetAddress _inet_form = InetAddresses.forString(address.substring(curtok, src_length));
 
                Preconditions.checkArgument(_inet_form instanceof Inet4Address);
                System.arraycopy(_inet_form.getAddress(), 0, dst, j, INADDR4SZ);
@@ -158,18 +124,27 @@ final class Ipv6Utils {
                saw_xdigit = false;
                break;
            }
-           /* removed parser exit on invalid char - no need to do it, regexp checks it */
+
+           /* Business as usual - ipv6 address digit.
+            * We can remove all checks from the original BSD code because
+            * the regexp has already verified that we are not being fed
+            * anything bigger than 0xffff between the separators.
+            */
+           final int chval = AbstractIetfYangUtil.hexValue(ch);
+           val = (val << 4) | chval;
+           saw_xdigit = true;
        }
+
        if (saw_xdigit) {
-           Preconditions.checkArgument(j + INT16SZ <= INADDR6SZ, "Overrun in v6 parsing, should not occur");
+           Verify.verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", ipv6Address);
            dst[j++] = (byte) ((val >> 8) & 0xff);
            dst[j++] = (byte) (val & 0xff);
        }
 
        if (colonp != -1) {
-           int n = j - colonp;
+           Verify.verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", ipv6Address);
 
-           Preconditions.checkArgument(j != INADDR6SZ, "Overrun in v6 parsing, should not occur");
+           final int n = j - colonp;
            for (i = 1; i <= n; i++) {
                dst[INADDR6SZ - i] = dst[colonp + n - i];
                dst[colonp + n - i] = 0;
@@ -177,9 +152,7 @@ final class Ipv6Utils {
            j = INADDR6SZ;
        }
 
-       Preconditions.checkArgument(j == INADDR6SZ, "Overrun in v6 parsing, should not occur");
-
+       Verify.verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", ipv6Address);
        return dst;
    }
-
 }
