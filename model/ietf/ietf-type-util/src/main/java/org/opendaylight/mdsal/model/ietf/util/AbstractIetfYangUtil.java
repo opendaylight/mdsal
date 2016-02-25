@@ -126,7 +126,7 @@ public abstract class AbstractIetfYangUtil<T> {
         return factory.newInstance(bytesToString(bytes));
     }
 
-    private static byte hexValue(final char c) {
+    static byte hexValue(final char c) {
         byte v;
         try {
             // Performance optimization: access the array and rely on the VM for catching
