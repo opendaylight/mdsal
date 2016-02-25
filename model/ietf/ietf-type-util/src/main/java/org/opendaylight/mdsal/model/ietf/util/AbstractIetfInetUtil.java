@@ -138,6 +138,41 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         return prefix4Factory.newInstance(prefixStringV4(address, mask));
     }
 
+    @Nonnull public final P4 ipv4PrefixForShort(@Nonnull final byte[] address, final int mask) {
+        if (mask == 0) {
+            // Easy case, reuse the template
+            return prefix4Factory.getTemplate();
+        }
+
+        final int size = (mask / Byte.SIZE) + ((mask % Byte.SIZE == 0) ? 0 : 1);
+        if (size == INET4_LENGTH) {
+            // Another easy one, fall back to non-short
+            return ipv4PrefixFor(address, mask);
+        }
+
+        final StringBuilder sb = new StringBuilder(18);
+
+        // Add from address
+        sb.append(Byte.toUnsignedInt(address[0]));
+        for (int i = 1; i < size; i++) {
+            sb.append('.');
+            sb.append(Byte.toUnsignedInt(address[i]));
+        }
+
+        // Add zeros
+        for (int i = size; i < INET4_LENGTH; i++) {
+            sb.append('.');
+            sb.append(0);
+        }
+
+        // Add mask
+        Preconditions.checkArgument(mask > 0 && mask <= 32, "Invalid mask %s", mask);
+        sb.append('/');
+        sb.append(mask);
+
+        return prefix4Factory.newInstance(sb.toString());
+    }
+
     /**
      * Create a /32 Ipv4Prefix for an {@link Inet4Address}
      *
