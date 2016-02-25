@@ -36,15 +36,25 @@ public class Ipv6UtilsTest {
     }
 
     @Test
-    public void testRfc6052() {
-        assertEqualResult("2001:db8:c000:221::");
-        assertEqualResult("2001:db8:1c0:2:21::");
-        assertEqualResult("2001:db8:122:c000:2:2100::");
-        assertEqualResult("2001:db8:122:3c0:0:221::");
-        assertEqualResult("2001:db8:122:344:c0:2:2100::");
-        assertEqualResult("2001:db8:122:344::192.0.2.33");
+    public void testRfc4291() {
+        assertEqualResult("ABCD:EF01:2345:6789:ABCD:EF01:2345:6789");
+        assertEqualResult("2001:DB8:0:0:8:800:200C:417A");
+        assertEqualResult("2001:DB8::8:800:200C:417A");
+        assertEqualResult("FF01:0:0:0:0:0:0:101");
+        assertEqualResult("FF01::101");
+        assertEqualResult("0:0:0:0:0:0:0:1");
+        assertEqualResult("::1");
+        assertEqualResult("0:0:0:0:0:0:0:0");
+        assertEqualResult("::");
 
-        assertEqualResult("64:ff9b::192.0.2.33");
+        final byte[] test1 = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 1, 68, 3 };
+        assertArrayEquals(test1, bytesForString("0:0:0:0:0:0:13.1.68.3"));
+        assertArrayEquals(test1, bytesForString("::13.1.68.3"));
+
+        final byte[] test2 = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte)255, (byte)255,
+                (byte)129, (byte)144, 52, 38 };
+        assertArrayEquals(test2, bytesForString("0:0:0:0:0:FFFF:129.144.52.38"));
+        assertArrayEquals(test2, bytesForString("::FFFF:129.144.52.38"));
     }
 
     @Test
@@ -81,6 +91,18 @@ public class Ipv6UtilsTest {
             bytesForString("::ffff:192.0.2.1"));
         assertArrayEquals(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 0xff, (byte) 0xff, (byte)192, 0, 2, 1 },
             bytesForString("0:0:0:0:0:ffff:192.0.2.1"));
+    }
+
+    @Test
+    public void testRfc6052() {
+        assertEqualResult("2001:db8:c000:221::");
+        assertEqualResult("2001:db8:1c0:2:21::");
+        assertEqualResult("2001:db8:122:c000:2:2100::");
+        assertEqualResult("2001:db8:122:3c0:0:221::");
+        assertEqualResult("2001:db8:122:344:c0:2:2100::");
+        assertEqualResult("2001:db8:122:344::192.0.2.33");
+
+        assertEqualResult("64:ff9b::192.0.2.33");
     }
 
     // Utility for quick comparison with Guava
