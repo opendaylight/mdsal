@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
+import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 /**
@@ -126,16 +127,18 @@ final class Ipv6Utils {
 
        if (colonp != -1) {
            Verify.verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
-
-           final int n = j - colonp;
-           for (i = 1; i <= n; i++) {
-               dst[INADDR6SZ - i] = dst[j - i];
-               dst[j - i] = 0;
-           }
+           expandZeros(dst, colonp, j);
        } else {
            Verify.verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
        }
 
        return dst;
    }
+
+   private static void expandZeros(final byte[] bytes, final int where, final int filledBytes) {
+       final int tailLength = filledBytes - where;
+       final int tailOffset = INADDR6SZ - tailLength;
+       System.arraycopy(bytes, where, bytes, tailOffset, tailLength);
+       Arrays.fill(bytes, where, tailOffset, (byte)0);
+    }
 }
