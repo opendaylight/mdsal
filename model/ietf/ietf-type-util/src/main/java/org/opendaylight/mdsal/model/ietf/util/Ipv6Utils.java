@@ -142,10 +142,10 @@ final class Ipv6Utils {
                dst[INADDR6SZ - i] = dst[colonp + n - i];
                dst[colonp + n - i] = 0;
            }
-           j = INADDR6SZ;
+       } else {
+           Verify.verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
        }
 
-       Verify.verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
        return dst;
    }
 }
