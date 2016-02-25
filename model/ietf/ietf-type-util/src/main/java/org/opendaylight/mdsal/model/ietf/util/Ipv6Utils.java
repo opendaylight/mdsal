@@ -68,25 +68,23 @@ final class Ipv6Utils {
        // FIXME: do not perform a copy, just set the limit here.
        final String address = percentPos == -1 ? ipv6Address : ipv6Address.substring(0, percentPos);
 
-       // FIXME: fixme: use address.charAt() instead
-       char[] src = address.toCharArray();
-
        /* Leading :: requires some special handling. */
        int i = 0;
-       if (src[i] == ':') {
-           Preconditions.checkArgument(src[++i] == ':', "Invalid v6 address '%s'", ipv6Address);
+       if (address.charAt(i) == ':') {
+           // Note ++i side-effect in check
+           Preconditions.checkArgument(address.charAt(++i) == ':', "Invalid v6 address '%s'", ipv6Address);
        }
 
        final byte[] dst = new byte[INADDR6SZ];
 
-       final int src_length = src.length;
+       final int src_length = address.length();
        boolean saw_xdigit = false;
        int val = 0;
        int colonp = -1;
        int j = 0;
        int curtok = i;
        while (i < src_length) {
-           final char ch = src[i++];
+           final char ch = address.charAt(i++);
 
            /* v6 separator */
            if (ch == ':') {
