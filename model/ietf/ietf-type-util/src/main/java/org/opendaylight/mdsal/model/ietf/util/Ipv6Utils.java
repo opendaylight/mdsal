@@ -61,7 +61,7 @@ final class Ipv6Utils {
        final int percentPos = addrStr.indexOf('%');
        final int addrStrLen = percentPos == -1 ? addrStr.length() : percentPos;
 
-       /* Leading :: requires some special handling. */
+       // Leading :: requires some special handling.
        int i = 0;
        if (addrStr.charAt(i) == ':') {
            // Note ++i side-effect in check
@@ -78,16 +78,16 @@ final class Ipv6Utils {
        while (i < addrStrLen) {
            final char ch = addrStr.charAt(i++);
 
-           /* v6 separator */
+           // v6 separator
            if (ch == ':') {
                curtok = i;
                if (!saw_xdigit) {
-                   /* no need to check separator position validity - regexp does that */
+                   // no need to check separator position validity - regexp does that
                    colonp = j;
                    continue;
                }
 
-               /* removed overrun check - the regexp checks for valid data */
+               // removed overrun check - the regexp checks for valid data
 
                dst[j++] = (byte) ((val >>> 8) & 0xff);
                dst[j++] = (byte) (val & 0xff);
@@ -96,9 +96,8 @@ final class Ipv6Utils {
                continue;
            }
 
-           /* frankenstein - v4 attached to v6, mixed notation */
+           // frankenstein - v4 attached to v6, mixed notation
            if (ch == '.' && ((j + INADDR4SZ) <= INADDR6SZ)) {
-
                /*
                 * This has passed the regexp so it is fairly safe to parse it
                 * straight away. Use the Ipv4Utils for that.
@@ -109,7 +108,8 @@ final class Ipv6Utils {
                break;
            }
 
-           /* Business as usual - ipv6 address digit.
+           /*
+            * Business as usual - ipv6 address digit.
             * We can remove all checks from the original BSD code because
             * the regexp has already verified that we are not being fed
             * anything bigger than 0xffff between the separators.
