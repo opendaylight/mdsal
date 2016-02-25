@@ -130,8 +130,8 @@ final class Ipv6Utils {
 
            final int n = j - colonp;
            for (i = 1; i <= n; i++) {
-               dst[INADDR6SZ - i] = dst[colonp + n - i];
-               dst[colonp + n - i] = 0;
+               dst[INADDR6SZ - i] = dst[j - i];
+               dst[j - i] = 0;
            }
        } else {
            Verify.verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
