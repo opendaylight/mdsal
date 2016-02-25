@@ -59,7 +59,7 @@ final class Ipv6Utils {
      * FIXME: rovarga: this looks wrong
      * @return - byte array of size 16. Last byte contains netmask
      */
-   public static byte[] canonicalBinaryV6Address(final String ipv6Address) {
+   public static byte[] bytesForString(final String ipv6Address) {
        /*
         * Do not modify this routine to take direct strings input!!!
         * Key checks have been removed based on the assumption that

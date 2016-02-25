@@ -17,7 +17,7 @@ import org.junit.Test;
 public class Ipv6UtilsTest {
     @Test
     public void testFullQuads() {
-        byte [] ipv6binary = Ipv6Utils.canonicalBinaryV6Address("0000:0000:0000:0000:0000:0000:0000:0001");
+        byte [] ipv6binary = Ipv6Utils.bytesForString("0000:0000:0000:0000:0000:0000:0000:0001");
         Assert.assertArrayEquals(InetAddresses.forString("::1").getAddress(), ipv6binary);
     }
 }
