@@ -9,9 +9,6 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
-import com.google.common.net.InetAddresses;
-import java.net.Inet4Address;
-import java.net.InetAddress;
 import javax.annotation.Nonnull;
 
 /**
@@ -102,18 +99,12 @@ final class Ipv6Utils {
            /* frankenstein - v4 attached to v6, mixed notation */
            if (ch == '.' && ((j + INADDR4SZ) <= INADDR6SZ)) {
 
-               /* this has passed the regexp so it is fairly safe to parse it
-                * straight away. As v4 addresses do not suffer from the same
-                * deficiencies as the java v6 implementation we can invoke it
-                * straight away and be done with it
+               /*
+                * This has passed the regexp so it is fairly safe to parse it
+                * straight away. Use the Ipv4Utils for that.
                 */
-               Preconditions.checkArgument(j != (INADDR6SZ - INADDR4SZ - 1), "Invalid v4 in v6 mapping in %s", addrStr);
-               InetAddress _inet_form = InetAddresses.forString(addrStr.substring(curtok, addrStrLen));
-
-               Preconditions.checkArgument(_inet_form instanceof Inet4Address);
-               System.arraycopy(_inet_form.getAddress(), 0, dst, j, INADDR4SZ);
+               Ipv4Utils.fillIpv4Bytes(dst, j, addrStr, curtok, addrStrLen);
                j += INADDR4SZ;
-
                saw_xdigit = false;
                break;
            }
