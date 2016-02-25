@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import static com.google.common.net.InetAddresses.forString;
 import static org.junit.Assert.assertArrayEquals;
-import static org.opendaylight.mdsal.model.ietf.util.Ipv6Utils.canonicalBinaryV6Address;
+import static org.opendaylight.mdsal.model.ietf.util.Ipv6Utils.bytesForString;
 import org.junit.Test;
 
 public class Ipv6UtilsTest {
@@ -32,7 +32,7 @@ public class Ipv6UtilsTest {
 
     @Test
     public void testZoneIndex() {
-        assertArrayEquals(forString("::1").getAddress(), canonicalBinaryV6Address("::1%2"));
+        assertArrayEquals(forString("::1").getAddress(), bytesForString("::1%2"));
     }
 
     @Test
@@ -85,6 +85,6 @@ public class Ipv6UtilsTest {
 
     // Utility for quick comparison with Guava
     private static void assertEqualResult(final String str) {
-        assertArrayEquals(forString(str).getAddress(), canonicalBinaryV6Address(str));
+        assertArrayEquals(forString(str).getAddress(), bytesForString(str));
     }
 }

@@ -63,7 +63,7 @@ final class Ipv6Utils {
      *
      * @throws NullPointerException if ipv6address is null
      */
-   public static @Nonnull byte[] canonicalBinaryV6Address(final @Nonnull String ipv6Address) {
+   public static @Nonnull byte[] bytesForString(final @Nonnull String ipv6Address) {
        final int percentPos = ipv6Address.indexOf('%');
        // FIXME: do not perform a copy, just set the limit here.
        final String address = percentPos == -1 ? ipv6Address : ipv6Address.substring(0, percentPos);
