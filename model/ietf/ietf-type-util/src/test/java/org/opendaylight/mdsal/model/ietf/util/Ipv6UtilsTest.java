@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.model.ietf.util;
 
+import com.google.common.net.InetAddresses;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,14 +15,9 @@ import org.junit.Test;
  * @author Anton Ivanov aivanov@brocade.com
  */
 public class Ipv6UtilsTest {
-    /*
-     * Test canonicalBinaryV6Address
-     */
     @Test
-    public void canonicalBinaryV6AddressTest() {
+    public void testFullQuads() {
         byte [] ipv6binary = Ipv6Utils.canonicalBinaryV6Address("0000:0000:0000:0000:0000:0000:0000:0001");
-        byte [] expected = {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,1};
-
-        Assert.assertArrayEquals(expected, ipv6binary);
+        Assert.assertArrayEquals(InetAddresses.forString("::1").getAddress(), ipv6binary);
     }
 }
