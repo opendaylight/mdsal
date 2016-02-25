@@ -139,6 +139,24 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         return prefix4Factory.newInstance(prefixStringV4(address, mask));
     }
 
+    @Nonnull public final P4 ipv4PrefixForShort(@Nonnull final byte[] address, final int mask) {
+        if (mask == 0) {
+            // Easy case, reuse the template
+            return prefix4Factory.getTemplate();
+        }
+
+        return v4PrefixForShort(address, 0, (mask / Byte.SIZE) + ((mask % Byte.SIZE == 0) ? 0 : 1), mask);
+    }
+
+    @Nonnull public final P4 ipv4PrefixForShort(@Nonnull final byte[] array, final int startOffset, final int mask) {
+        if (mask == 0) {
+            // Easy case, reuse the template
+            return prefix4Factory.getTemplate();
+        }
+
+        return v4PrefixForShort(array, startOffset, (mask / Byte.SIZE) + ((mask % Byte.SIZE == 0) ? 0 : 1), mask);
+    }
+
     /**
      * Create a /32 Ipv4Prefix for an {@link Inet4Address}
      *
@@ -262,6 +280,25 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         return prefix6Factory.newInstance(addressStringV6(address) + '/' + mask);
     }
 
+    @Nonnull public final P6 ipv6PrefixForShort(@Nonnull final byte[] address, final int mask) {
+        return ipv6PrefixForShort(address, 0, mask);
+    }
+
+    @Nonnull public final P6 ipv6PrefixForShort(@Nonnull final byte[] array, final int startOffset, final int mask) {
+        if (mask == 0) {
+            // Easy case, reuse the template
+            return prefix6Factory.getTemplate();
+        }
+
+        Preconditions.checkArgument(mask > 0 && mask <= 128, "Invalid mask %s", mask);
+        final int size = (mask / Byte.SIZE) + ((mask % Byte.SIZE == 0) ? 0 : 1);
+
+        // Until we can instantiate an IPv6 address for a partial array, use a temporary buffer
+        byte[] tmp = new byte[INET6_LENGTH];
+        System.arraycopy(array, startOffset, tmp, 0, size);
+        return ipv6PrefixFor(tmp, mask);
+    }
+
     /**
      * Create a /128 Ipv6Prefix by interpreting input bytes as an IPv4 address.
      *
@@ -372,5 +409,34 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         sb.append('/');
         sb.append(mask);
         return sb.toString();
+    }
+
+    private P4 v4PrefixForShort(@Nonnull final byte[] array, final int startOffset, final int size, final int mask) {
+        if (startOffset == 0 && size == INET4_LENGTH && array.length == INET4_LENGTH) {
+            // Easy case, fall back to non-short
+            return ipv4PrefixFor(array, mask);
+        }
+
+        final StringBuilder sb = new StringBuilder(18);
+
+        // Add from address
+        sb.append(UnsignedBytes.toInt(array[startOffset]));
+        for (int i = 1; i < size; i++) {
+            sb.append('.');
+            sb.append(UnsignedBytes.toInt(array[startOffset + i]));
+        }
+
+        // Add zeros
+        for (int i = size; i < INET4_LENGTH; i++) {
+            sb.append('.');
+            sb.append(0);
+        }
+
+        // Add mask
+        Preconditions.checkArgument(mask > 0 && mask <= 32, "Invalid mask %s", mask);
+        sb.append('/');
+        sb.append(mask);
+
+        return prefix4Factory.newInstance(sb.toString());
     }
 }
