@@ -272,13 +272,11 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
     }
 
     @Nonnull public final byte[] ipv6AddressBytes(@Nonnull final A6 addr) {
-        String str = ipv6AddressString(addr);
+        final String str = ipv6AddressString(addr);
+        final byte[] bytes = new byte[INET6_LENGTH];
         final int percent = str.indexOf('%');
-        if (percent != -1) {
-            str = str.substring(0, percent);
-        }
-
-        return InetAddresses.forString(str).getAddress();
+        Ipv6Utils.fillIpv6Bytes(bytes, str, percent == -1 ? str.length() : percent);
+        return bytes;
     }
 
     /**
@@ -385,10 +383,9 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
 
     @Nonnull public final byte[] ipv6PrefixToBytes(@Nonnull final P6 prefix) {
         final String str = ipv6PrefixString(prefix);
-        final int slash = str.lastIndexOf('/');
-
         final byte[] bytes = new byte[INET6_LENGTH + 1];
-        System.arraycopy(InetAddresses.forString(str.substring(0, slash)).getAddress(), 0, bytes, 0, INET6_LENGTH);
+        final int slash = str.lastIndexOf('/');
+        Ipv6Utils.fillIpv6Bytes(bytes, str, slash);
         bytes[INET6_LENGTH] = (byte)Integer.parseInt(str.substring(slash + 1), 10);
         return bytes;
     }
