@@ -54,38 +54,34 @@ final class Ipv6Utils {
     /**
      * Convert Ipv6Address object to a valid Canonical v6 address in byte format
      *
-     * @param addrStr IPv6 address string
-     * @return byte array of size 16 containing the binary IPv6 address
+     * @param bytes Byte array for output
+     * @param str String representation
+     * @param strLimit String offset which should not be processed
      * @throws NullPointerException if ipv6address is null
      */
-   public static @Nonnull byte[] bytesForString(final @Nonnull String addrStr) {
-       final int percentPos = addrStr.indexOf('%');
-       final int addrStrLen = percentPos == -1 ? addrStr.length() : percentPos;
-
+    static void fillIpv6Bytes(final @Nonnull byte[] bytes, final String str, final int strLimit) {
        // Leading :: requires some special handling.
        int i = 0;
-       if (addrStr.charAt(i) == ':') {
+       if (str.charAt(i) == ':') {
            // Note ++i side-effect in check
-           Preconditions.checkArgument(addrStr.charAt(++i) == ':', "Invalid v6 address '%s'", addrStr);
+           Preconditions.checkArgument(str.charAt(++i) == ':', "Invalid v6 address '%s'", str);
        }
-
-       final byte[] dst = new byte[INADDR6SZ];
 
        boolean haveVal = false;
        int val = 0;
        int colonp = -1;
        int j = 0;
        int curtok = i;
-       while (i < addrStrLen) {
-           final char ch = addrStr.charAt(i++);
+       while (i < strLimit) {
+           final char ch = str.charAt(i++);
 
            // v6 separator
            if (ch == ':') {
                curtok = i;
                if (haveVal) {
                    // removed overrun check - the regexp checks for valid data
-                   dst[j++] = (byte) ((val >>> 8) & 0xff);
-                   dst[j++] = (byte) (val & 0xff);
+                   bytes[j++] = (byte) ((val >>> 8) & 0xff);
+                   bytes[j++] = (byte) (val & 0xff);
                    haveVal = false;
                    val = 0;
                } else {
@@ -102,7 +98,7 @@ final class Ipv6Utils {
                 * This has passed the regexp so it is fairly safe to parse it
                 * straight away. Use the Ipv4Utils for that.
                 */
-               Ipv4Utils.fillIpv4Bytes(dst, j, addrStr, curtok, addrStrLen);
+               Ipv4Utils.fillIpv4Bytes(bytes, j, str, curtok, strLimit);
                j += INADDR4SZ;
                haveVal = false;
                break;
@@ -120,19 +116,17 @@ final class Ipv6Utils {
        }
 
        if (haveVal) {
-           Verify.verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
-           dst[j++] = (byte) ((val >> 8) & 0xff);
-           dst[j++] = (byte) (val & 0xff);
+           Verify.verify(j + INT16SZ <= INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+           bytes[j++] = (byte) ((val >> 8) & 0xff);
+           bytes[j++] = (byte) (val & 0xff);
        }
 
        if (colonp != -1) {
-           Verify.verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
-           expandZeros(dst, colonp, j);
+           Verify.verify(j != INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
+           expandZeros(bytes, colonp, j);
        } else {
-           Verify.verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", addrStr);
+           Verify.verify(j == INADDR6SZ, "Overrun in parsing of '%s', should not occur", str);
        }
-
-       return dst;
    }
 
    private static void expandZeros(final byte[] bytes, final int where, final int filledBytes) {
