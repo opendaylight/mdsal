@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import static com.google.common.net.InetAddresses.forString;
 import static org.junit.Assert.assertArrayEquals;
-import static org.opendaylight.mdsal.model.ietf.util.Ipv6Utils.bytesForString;
+import static org.opendaylight.mdsal.model.ietf.util.Ipv6Utils.fillIpv6Bytes;
 import org.junit.Test;
 
 public class Ipv6UtilsTest {
@@ -28,11 +28,6 @@ public class Ipv6UtilsTest {
     @Test
     public void testFullQuads() {
         assertEqualResult("0000:0000:0000:0000:0000:0000:0000:0001");
-    }
-
-    @Test
-    public void testZoneIndex() {
-        assertArrayEquals(forString("::1").getAddress(), bytesForString("::1%2"));
     }
 
     @Test
@@ -103,6 +98,12 @@ public class Ipv6UtilsTest {
         assertEqualResult("2001:db8:122:344::192.0.2.33");
 
         assertEqualResult("64:ff9b::192.0.2.33");
+    }
+
+    private static byte[] bytesForString(final String str) {
+        final byte[] bytes = new byte[16];
+        fillIpv6Bytes(bytes, str, str.length());
+        return bytes;
     }
 
     // Utility for quick comparison with Guava
