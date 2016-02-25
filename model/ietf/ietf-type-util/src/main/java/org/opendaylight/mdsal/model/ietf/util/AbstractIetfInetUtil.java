@@ -106,7 +106,7 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         final String str = ipv4AddressString(addr);
         final byte[] bytes = new byte[INET4_LENGTH];
         final int percent = str.indexOf('%');
-        fillIpv4Bytes(bytes, str, percent == -1 ? str.length() : percent);
+        Ipv4Utils.fillIpv4Bytes(bytes, 0, str, 0, percent == -1 ? str.length() : percent);
         return bytes;
     }
 
@@ -188,25 +188,9 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         final int slash = str.lastIndexOf('/');
 
         final byte[] bytes = new byte[INET4_LENGTH + 1];
-        fillIpv4Bytes(bytes, str, slash);
+        Ipv4Utils.fillIpv4Bytes(bytes, 0, str, 0, slash);
         bytes[INET4_LENGTH] = (byte)Integer.parseInt(str.substring(slash + 1), 10);
         return bytes;
-    }
-
-    private static void fillIpv4Bytes(final byte[] bytes, final String str, final int limit) {
-        int out = 0;
-        int val = 0;
-        for (int i = 0; i < limit; ++i) {
-            final char c = str.charAt(i);
-            if (c == '.') {
-                bytes[out++] = (byte) val;
-                val = 0;
-            } else {
-                val = 10 * val + (c - '0');
-            }
-        }
-
-        bytes[out] = (byte) val;
     }
 
     /**
