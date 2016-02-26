@@ -428,8 +428,7 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
 
         // Add zeros
         for (int i = size; i < INET4_LENGTH; i++) {
-            sb.append('.');
-            sb.append(0);
+            sb.append(".0");
         }
 
         // Add mask
