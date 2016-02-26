@@ -42,4 +42,14 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
     protected String ipv6PrefixString(final IpClass prefix) {
         return prefix._value;
     }
+
+    @Override
+    protected IpClass maybeIpv4Address(IpClass addr) {
+        return addr;
+    }
+
+    @Override
+    protected IpClass maybeIpv6Address(IpClass addr) {
+        return addr;
+    }
 }
