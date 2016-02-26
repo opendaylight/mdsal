@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.clustering;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import java.lang.AutoCloseable;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.api.clustering.Entity;
 import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipCandidateRegistration;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thomas Pantelis
  */
-public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipService {
+public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipService, AutoCloseable {
     static final Logger LOG = LoggerFactory.getLogger(BindingDOMEntityOwnershipServiceAdapter.class);
 
     private final DOMEntityOwnershipService domService;
@@ -64,5 +65,9 @@ public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipS
 
     private DOMEntity toDOMEntity(Entity entity) {
         return new DOMEntity(entity.getType(), conversionCodec.toNormalized(entity.getIdentifier()));
+    }
+
+    @Override
+    public void close() {
     }
 }
