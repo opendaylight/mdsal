@@ -35,7 +35,7 @@ public final class Types {
                 }
     };
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
-            CacheBuilder.newBuilder().weakKeys().softValues().build(TYPE_LOADER);
+            CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
 
     private static final Type SET_TYPE = typeForClass(Set.class);
     private static final Type LIST_TYPE = typeForClass(List.class);
