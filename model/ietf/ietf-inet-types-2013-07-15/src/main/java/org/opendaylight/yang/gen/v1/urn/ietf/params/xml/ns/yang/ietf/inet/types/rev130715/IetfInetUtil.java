@@ -50,4 +50,14 @@ public final class IetfInetUtil extends AbstractIetfInetUtil<Ipv4Address, Ipv4Pr
     protected String ipv6PrefixString(final Ipv6Prefix prefix) {
         return prefix.getValue();
     }
+
+    @Override
+    protected Ipv4Address maybeIpv4Address(final IpAddress addr) {
+        return addr.getIpv4Address();
+    }
+
+    @Override
+    protected Ipv6Address maybeIpv6Address(final IpAddress addr) {
+        return addr.getIpv6Address();
+    }
 }
