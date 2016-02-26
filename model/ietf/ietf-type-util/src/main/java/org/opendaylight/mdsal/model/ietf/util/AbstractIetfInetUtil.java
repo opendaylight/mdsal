@@ -18,6 +18,7 @@ import java.net.UnknownHostException;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.util.StringValueObjectFactory;
 
 /**
@@ -40,12 +41,14 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
         this.prefix6Factory = StringValueObjectFactory.create(prefix6Class, "::0/0");
     }
 
-    protected abstract A ipv4Address(A4 addr);
-    protected abstract A ipv6Address(A6 addr);
-    protected abstract String ipv4AddressString(A4 addr);
-    protected abstract String ipv6AddressString(A6 addr);
-    protected abstract String ipv4PrefixString(P4 prefix);
-    protected abstract String ipv6PrefixString(P6 prefix);
+    @Nonnull protected abstract A ipv4Address(@Nonnull A4 addr);
+    @Nonnull protected abstract A ipv6Address(@Nonnull A6 addr);
+    @Nullable protected abstract A4 maybeIpv4Address(@Nonnull A addr);
+    @Nullable protected abstract A6 maybeIpv6Address(@Nonnull A addr);
+    @Nonnull protected abstract String ipv4AddressString(@Nonnull A4 addr);
+    @Nonnull protected abstract String ipv6AddressString(@Nonnull A6 addr);
+    @Nonnull protected abstract String ipv4PrefixString(@Nonnull P4 prefix);
+    @Nonnull protected abstract String ipv6PrefixString(@Nonnull P6 prefix);
 
     @Nonnull public final A ipAddressFor(@Nonnull final byte[] bytes) {
         switch (bytes.length) {
@@ -66,6 +69,32 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
             return ipv6Address(ipv6AddressFor(addr));
         } else {
             throw new IllegalArgumentException("Unhandled address " + addr);
+        }
+    }
+
+    @Nonnull public final InetAddress inetAddressFor(@Nonnull final A addr) {
+        final A4 v4 = maybeIpv4Address(addr);
+        if (v4 != null) {
+            return inet4AddressFor(v4);
+        }
+        final A6 v6 = maybeIpv6Address(addr);
+        Preconditions.checkArgument(v6 != null, "Address %s is neither IPv4 nor IPv6", addr);
+        return inet6AddressFor(v6);
+    }
+
+    @Nonnull public final Inet4Address inet4AddressFor(@Nonnull final A4 addr) {
+        try {
+            return (Inet4Address) InetAddress.getByAddress(ipv4AddressBytes(addr));
+        } catch (UnknownHostException e) {
+            throw new IllegalArgumentException("Invalid address " + addr, e);
+        }
+    }
+
+    @Nonnull public final Inet6Address inet6AddressFor(@Nonnull final A6 addr) {
+        try {
+            return (Inet6Address) InetAddress.getByAddress(ipv6AddressBytes(addr));
+        } catch (UnknownHostException e) {
+            throw new IllegalArgumentException("Invalid address " + addr, e);
         }
     }
 
