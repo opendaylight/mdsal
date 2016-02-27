@@ -27,7 +27,6 @@ import static org.opendaylight.yangtools.binding.generator.util.Types.typeForCla
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -483,7 +482,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
         final GeneratedTypeBuilder interfaceBuilder = moduleTypeBuilder(module, "Service");
         interfaceBuilder.addImplementsType(Types.typeForClass(RpcService.class));
-        interfaceBuilder.setDescription(createDescription(rpcDefinitions, module.getName(), module.getModuleSourcePath()));
+        interfaceBuilder.setDescription(createDescription(rpcDefinitions, module.getName()));
 
         for (final RpcDefinition rpc : rpcDefinitions) {
             if (rpc != null) {
@@ -577,7 +576,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 .setComment(encodeAngleBrackets(notification.getDescription())).setReturnType(Types.VOID);
             }
         }
-        listenerInterface.setDescription(createDescription(notifications, module.getName(), module.getModuleSourcePath()));
+        listenerInterface.setDescription(createDescription(notifications, module.getName()));
 
         genCtx.get(module).addTopLevelNodeType(listenerInterface);
     }
@@ -1447,7 +1446,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         return returnType;
     }
 
-    private static TypeDefinition<?> getBaseOrDeclaredType(TypeDefinition<?> typeDef) {
+    private static TypeDefinition<?> getBaseOrDeclaredType(final TypeDefinition<?> typeDef) {
         if (typeDef instanceof ExtendedType) {
             // Legacy behaviour returning ExtendedType is enough
             return typeDef;
@@ -2091,7 +2090,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         return list == null || list.isEmpty();
     }
 
-    private String createDescription(final Set<? extends SchemaNode> schemaNodes, final String moduleName, final String moduleSourcePath) {
+    private String createDescription(final Set<? extends SchemaNode> schemaNodes, final String moduleName) {
         final StringBuilder sb = new StringBuilder();
 
         if (!isNullOrEmpty(schemaNodes)) {
@@ -2103,10 +2102,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 sb.append("Interface for receiving the following YANG notifications defined in module <b>" + moduleName + "</b>");
             }
         }
-        sb.append(NEW_LINE);
-        sb.append("<br>(Source path: <i>");
-        sb.append(moduleSourcePath);
-        sb.append("</i>):");
         sb.append(NEW_LINE);
 
         if (verboseClassComments) {
@@ -2145,10 +2140,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
             sb.append("This class represents the following YANG schema fragment defined in module <b>");
             sb.append(module.getName());
             sb.append("</b>");
-            sb.append(NEW_LINE);
-            sb.append("<br>(Source path: <i>");
-            sb.append(module.getModuleSourcePath());
-            sb.append("</i>):");
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
@@ -2208,10 +2199,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
             sb.append(module.getName());
             sb.append("</b>");
             sb.append(NEW_LINE);
-            sb.append("<br>Source path: <i>");
-            sb.append(module.getModuleSourcePath());
-            sb.append("</i>):");
-            sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
             sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(module)));
@@ -2261,7 +2248,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         return ret.isEmpty() ? "" : ret;
     }
 
-    private void annotateDeprecatedIfNecessary(Status status, GeneratedTypeBuilder builder) {
+    private static void annotateDeprecatedIfNecessary(final Status status, final GeneratedTypeBuilder builder) {
         if (status == Status.DEPRECATED) {
             builder.addAnnotation("", "Deprecated");
         }
