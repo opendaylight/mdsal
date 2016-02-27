@@ -11,7 +11,6 @@ import static org.opendaylight.yangtools.binding.generator.util.BindingGenerator
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -493,9 +492,8 @@ public final class TypeProviderImpl implements TypeProvider {
                 } else {
                     dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
                 }
-                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s) at %s",
-                        strXPath, this.getParentModule(parentNode).getName(),
-                        parentNode.getQName().getModule(), this.getParentModule(parentNode).getModuleSourcePath());
+                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s)",
+                        strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule());
 
                 if (leafContainsEnumDefinition(dataNode)) {
                     returnType = referencedTypes.get(dataNode.getPath());
@@ -508,9 +506,8 @@ public final class TypeProviderImpl implements TypeProvider {
                 returnType = Types.typeForClass(Object.class);
             }
         }
-        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s (%s) at %s",
-                strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule(), this
-                        .getParentModule(parentNode).getModuleSourcePath());
+        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s (%s)",
+                strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule(), this);
         return returnType;
     }
 
@@ -1545,12 +1542,7 @@ public final class TypeProviderImpl implements TypeProvider {
         return sb.toString();
     }
 
-    private static final Comparator<Bit> BIT_NAME_COMPARATOR = new Comparator<Bit>() {
-        @Override
-        public int compare(final Bit o1, final Bit o2) {
-            return o1.getName().compareTo(o2.getName());
-        }
-    };
+    private static final Comparator<Bit> BIT_NAME_COMPARATOR = (o1, o2) -> o1.getName().compareTo(o2.getName());
 
     private static String bitsToDef(final BitsTypeDefinition type, final String className, final String defaultValue, final boolean isExt) {
         List<Bit> bits = new ArrayList<>(type.getBits());
@@ -1631,12 +1623,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 }
                 if (module == null) {
                     List<Module> modulesList = new ArrayList<>(modules);
-                    Collections.sort(modulesList, new Comparator<Module>() {
-                        @Override
-                        public int compare(final Module o1, final Module o2) {
-                            return o1.getRevision().compareTo(o2.getRevision());
-                        }
-                    });
+                    Collections.sort(modulesList, (o1, o2) -> o1.getRevision().compareTo(o2.getRevision()));
                     module = modulesList.get(0);
                 }
             } else {
