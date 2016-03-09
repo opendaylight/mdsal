@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_cda1a347",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/BindingCodecContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-03-09T09:58:54Z",
+      "side": 1,
+      "message": "special cases in multiple places: this should be centralized in BindingMapping.",
+      "revId": "0b027d7fc6cc6fe6433a26526291203da5acfe40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
