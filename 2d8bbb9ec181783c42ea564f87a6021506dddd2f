@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_28de3ddd",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/BindingMapping.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-03-09T12:33:54Z",
+      "side": 1,
+      "message": "WOuld not this rename containers which was named class and has\nClass interface generated (which is allowed) change to generate interface XmlClass?\n\nThis could be considered breaking change. I think it should be safer to to fix the user (codecs) which used incorrect method as described in bug?",
+      "range": {
+        "startLine": 154,
+        "startChar": 2,
+        "endLine": 157,
+        "endChar": 68
+      },
+      "revId": "2d8bbb9ec181783c42ea564f87a6021506dddd2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
