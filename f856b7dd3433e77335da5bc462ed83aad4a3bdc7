@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_b1959134",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/yangtools/sal/java/api/generator/test/CompilationTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-03-11T12:14:09Z",
+      "side": 1,
+      "message": "missing empty line between groups",
+      "revId": "f856b7dd3433e77335da5bc462ed83aad4a3bdc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_1199dd6d",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/BindingMapping.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-03-11T12:14:09Z",
+      "side": 1,
+      "message": "check callings of this method if it can be deleted or not",
+      "range": {
+        "startLine": 144,
+        "startChar": 3,
+        "endLine": 144,
+        "endChar": 63
+      },
+      "revId": "f856b7dd3433e77335da5bc462ed83aad4a3bdc7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
