@@ -837,7 +837,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         } else {
             generateTypesFromAugmentedChoiceCases(module, augmentPackageName, targetTypeBuilder.toInstance(),
-                    (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes());
+                    (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes(), null);
         }
     }
 
@@ -872,7 +872,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                     augSchema);
         } else {
             generateTypesFromAugmentedChoiceCases(module, augmentPackageName, targetTypeBuilder.toInstance(),
-                    (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes());
+                    (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes(), usesNodeParent);
         }
     }
 
@@ -1295,7 +1295,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *             </ul>
      */
     private void generateTypesFromAugmentedChoiceCases(final Module module, final String basePackageName,
-            final Type targetType, final ChoiceSchemaNode targetNode, final Iterable<DataSchemaNode> augmentedNodes) {
+            final Type targetType, final ChoiceSchemaNode targetNode, final Iterable<DataSchemaNode> augmentedNodes,
+            final DataNodeContainer usesNodeParent) {
         checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         checkArgument(targetType != null, "Referenced Choice Type cannot be NULL.");
         checkArgument(augmentedNodes != null, "Set of Choice Case Nodes cannot be NULL.");
@@ -1326,10 +1327,20 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 }
 
                 ChoiceCaseNode node = null;
+                final String caseLocalName = caseNode.getQName().getLocalName();
                 if (caseNode instanceof ChoiceCaseNode) {
                     node = (ChoiceCaseNode) caseNode;
+                } else if (targetNode.getCaseNodeByName(caseLocalName) == null) {
+                    final String targetNodeLocalName = targetNode.getQName().getLocalName();
+                    for (DataSchemaNode dataSchemaNode : usesNodeParent.getChildNodes()) {
+                        if (dataSchemaNode instanceof ChoiceSchemaNode && targetNodeLocalName.equals(dataSchemaNode.getQName
+                                ().getLocalName())) {
+                            node = ((ChoiceSchemaNode) dataSchemaNode).getCaseNodeByName(caseLocalName);
+                            break;
+                        }
+                    }
                 } else {
-                    node = targetNode.getCaseNodeByName(caseNode.getQName().getLocalName());
+                    node = targetNode.getCaseNodeByName(caseLocalName);
                 }
                 final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
                 if (childNodes != null) {
