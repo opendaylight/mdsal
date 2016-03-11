@@ -27,6 +27,7 @@ import static org.opendaylight.yangtools.binding.generator.util.Types.typeForCla
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -109,6 +110,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
 import org.opendaylight.yangtools.yang.parser.builder.util.Comparators;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.CaseShorthandImpl;
 import org.opendaylight.yangtools.yang.parser.util.ModuleDependencySort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1328,7 +1330,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 if (caseNode instanceof ChoiceCaseNode) {
                     node = (ChoiceCaseNode) caseNode;
                 } else {
-                    node = targetNode.getCaseNodeByName(caseNode.getQName().getLocalName());
+                    node = new CaseShorthandImpl(caseNode);
                 }
                 final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
                 if (childNodes != null) {
