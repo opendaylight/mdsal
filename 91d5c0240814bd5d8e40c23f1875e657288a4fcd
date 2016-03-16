@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a42497e_dee3e531",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2262,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-03-16T18:57:31Z",
+      "side": 1,
+      "message": "this looks like something we should be exposing as a utility from yangtools -- isn\u0027t there already a class which does exactly the same thing?",
+      "revId": "91d5c0240814bd5d8e40c23f1875e657288a4fcd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
