@@ -28,11 +28,20 @@ public class TestModel {
     public static final QName ID_QNAME = QName.create(TEST_QNAME, "id");
     public static final QName NAME_QNAME = QName.create(TEST_QNAME, "name");
     public static final QName VALUE_QNAME = QName.create(TEST_QNAME, "value");
+    public static final QName INNER_CONTAINER = QName.create(TEST_QNAME, "inner-container");
+    public static final QName ANOTHER_SHARD_CONTAINER = QName.create(TEST_QNAME, "another-shard");
+    public static final QName NEW_SHARD_LIST = QName.create(TEST_QNAME, "new-shard-list");
+    public static final QName SHARDED_VALUE_1 = QName.create(TEST_QNAME, "sharded-value-1");
+    public static final QName SHARDED_VALUE_2 = QName.create(TEST_QNAME, "sharded-value-2");
     private static final String DATASTORE_TEST_YANG = "/odl-datastore-test.yang";
 
     public static final YangInstanceIdentifier TEST_PATH = YangInstanceIdentifier.of(TEST_QNAME);
     public static final YangInstanceIdentifier TEST2_PATH = YangInstanceIdentifier.of(TEST2_QNAME);
     public static final YangInstanceIdentifier OUTER_LIST_PATH = YangInstanceIdentifier.builder(TEST_PATH).node(OUTER_LIST_QNAME).build();
+    public static final YangInstanceIdentifier INNER_LIST_PATH = YangInstanceIdentifier.builder(OUTER_LIST_PATH).node(INNER_LIST_QNAME).build();
+    public static final YangInstanceIdentifier INNER_CONTAINER_PATH = YangInstanceIdentifier.builder(TEST_PATH).node(INNER_CONTAINER).build();
+    public static final YangInstanceIdentifier ANOTHER_SHARD_PATH = YangInstanceIdentifier.builder(INNER_CONTAINER_PATH).node(ANOTHER_SHARD_CONTAINER).build();
+    public static final YangInstanceIdentifier NEW_SHARD_LIST_PATH = YangInstanceIdentifier.builder(ANOTHER_SHARD_PATH).node(NEW_SHARD_LIST).build();
     public static final QName TWO_QNAME = QName.create(TEST_QNAME,"two");
     public static final QName THREE_QNAME = QName.create(TEST_QNAME,"three");
 

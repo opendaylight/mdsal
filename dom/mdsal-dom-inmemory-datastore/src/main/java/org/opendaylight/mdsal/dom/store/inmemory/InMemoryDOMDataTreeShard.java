@@ -139,6 +139,13 @@ public class InMemoryDOMDataTreeShard implements WriteableDOMDataTreeShard, Sche
     }
 
     private void updateProducersAndListeners(final Map<DOMDataTreeIdentifier, ChildShardContext> reparented) {
+        if (reparented.isEmpty()) {
+            //nothing was reparented no need to update anything
+            return;
+        }
+        for (Entry<DOMDataTreeIdentifier, ChildShardContext> entry : reparented.entrySet()) {
+            // need to track producers to be able to do anything with them
+        }
         // FIXME: implement this
         throw new UnsupportedOperationException();
     }
