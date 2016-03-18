@@ -30,6 +30,10 @@ class ShardDataModificationBuilder extends ModificationContextNodeBuilder<ShardD
         putNode(value.getIdentifier().getRootIdentifier(), leafNode);
     }
 
+    public void addSubshard(final DOMDataTreeIdentifier prefix, final ForeignShardModificationContext value) {
+        childShards.put(prefix, value);
+    }
+
     private void putNode(final YangInstanceIdentifier key, final WriteableSubshardBoundaryNode subshardNode) {
         ModificationContextNodeBuilder<?> current = this;
         Iterator<PathArgument> toBoundary = toRelative(key).getPathArguments().iterator();
