@@ -139,6 +139,13 @@ public class InMemoryDOMDataTreeShard implements WriteableDOMDataTreeShard, Sche
     }
 
     private void updateProducersAndListeners(final Map<DOMDataTreeIdentifier, ChildShardContext> reparented) {
+        if (reparented.isEmpty()) {
+            //nothing was reparented no need to update anything
+            return;
+        }
+        for (Entry<DOMDataTreeIdentifier, ChildShardContext> entry : reparented.entrySet()) {
+            // need to track producers to be able to do anything with them
+        }
         // FIXME: implement this
         throw new UnsupportedOperationException();
     }
@@ -205,8 +212,9 @@ public class InMemoryDOMDataTreeShard implements WriteableDOMDataTreeShard, Sche
             ForeignShardModificationContext foreignContext =
                     new ForeignShardModificationContext(spec.getPrefix(), spec.createProducer());
             builder.addSubshard(foreignContext);
+            builder.addSubshard(spec.getPrefix(), foreignContext);
         }
 
-        return new InmemoryDOMDataTreeShardWriteTransaction(builder.build());
+        return new InmemoryDOMDataTreeShardWriteTransaction(builder.build(), dataTree);
     }
 }
