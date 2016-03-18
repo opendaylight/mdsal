@@ -39,6 +39,33 @@ module odl-datastore-test {
                 }
             }
         }
+
+        container inner-container {
+
+            leaf sharded-value-1 {
+                type string;
+            }
+
+            leaf sharded-value-2 {
+                type string;
+            }
+
+            container another-shard {
+                list new-shard-list {
+                    key name;
+                    leaf name {
+                        type string;
+                    }
+                    leaf value {
+                        type string;
+                    }
+                }
+
+                leaf another-shard-value {
+                    type string;
+                }
+            }
+        }
     }
 
     container test2 {
