@@ -16,6 +16,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 
 final class ShardDataModification extends WriteableNodeWithSubshard {
 
@@ -63,11 +64,13 @@ final class ShardDataModification extends WriteableNodeWithSubshard {
         return childShards;
     }
 
-    public void seal() {
-        rootContext.ready();
+    public DataTreeModification seal() {
+        final DataTreeModification rootModification = rootContext.ready();
         for (ForeignShardModificationContext childShard : childShards.values()) {
             childShard.ready();
         }
+
+        return rootModification;
     }
 
 }
