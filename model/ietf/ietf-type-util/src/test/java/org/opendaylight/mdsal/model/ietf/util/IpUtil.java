@@ -8,7 +8,7 @@
 
 package org.opendaylight.mdsal.model.ietf.util;
 
-final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpClass, IpClass> {
+final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpClass, IpClass, IpClass> {
     IpUtil() {
         super(IpClass.class, IpClass.class, IpClass.class, IpClass.class);
     }
@@ -20,6 +20,16 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
 
     @Override
     protected IpClass ipv6Address(final IpClass addr) {
+        return addr;
+    }
+
+    @Override
+    protected IpClass ipv4Prefix(IpClass addr) {
+        return addr;
+    }
+
+    @Override
+    protected IpClass ipv6Prefix(IpClass addr) {
         return addr;
     }
 

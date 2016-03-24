@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.binding.util.StringValueObjectFactory;
  * A set of utility methods to efficiently instantiate various ietf-inet-types DTOs.
  */
 @Beta
-public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
+public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A, P> {
     private static final int INET4_LENGTH = 4;
     private static final int INET6_LENGTH = 16;
     private final StringValueObjectFactory<A4> address4Factory;
@@ -42,6 +42,8 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
 
     @Nonnull protected abstract A ipv4Address(@Nonnull A4 addr);
     @Nonnull protected abstract A ipv6Address(@Nonnull A6 addr);
+    @Nonnull protected abstract P ipv4Prefix(@Nonnull P4 addr);
+    @Nonnull protected abstract P ipv6Prefix(@Nonnull P6 addr);
     @Nullable protected abstract A4 maybeIpv4Address(@Nonnull A addr);
     @Nullable protected abstract A6 maybeIpv6Address(@Nonnull A addr);
     @Nonnull protected abstract String ipv4AddressString(@Nonnull A4 addr);
@@ -49,11 +51,19 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
     @Nonnull protected abstract String ipv4PrefixString(@Nonnull P4 prefix);
     @Nonnull protected abstract String ipv6PrefixString(@Nonnull P6 prefix);
 
+    /**
+     * Create an IpAddress by interpreting input bytes as an IPv4 or IPv6 address, based on array length.
+     *
+     * @param bytes 4-byte (IPv4) or 6-byte (IPv6) array
+     * @return An IpAddress object
+     * @throws IllegalArgumentException if bytes has length different from 4 or 6
+     * @throws NullPointerException if bytes is null
+     */
     @Nonnull public final A ipAddressFor(@Nonnull final byte[] bytes) {
         switch (bytes.length) {
-            case 4:
+            case INET4_LENGTH:
                 return ipv4Address(ipv4AddressFor(bytes));
-            case 16:
+            case INET6_LENGTH:
                 return ipv6Address(ipv6AddressFor(bytes));
             default:
                 throw new IllegalArgumentException("Invalid array length " + bytes.length);
@@ -66,6 +76,41 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
             return ipv4Address(ipv4AddressFor(addr));
         } else if (addr instanceof Inet6Address) {
             return ipv6Address(ipv6AddressFor(addr));
+        } else {
+            throw new IllegalArgumentException("Unhandled address " + addr);
+        }
+    }
+
+    /**
+     * Create an IpPrefix by combining the address with a mask. The address
+     * bytes are interpreted as an address and the specified mask is concatenated to
+     * it. The address bytes are not masked.
+     *
+     * @param bytes Input address as a 4-byte (IPv4) or 16-byte (IPv6) array
+     * @param mask Prefix mask
+     * @return An IpPrefix object
+     * @throws IllegalArgumentException if bytes has length different from 4 or 16 or if mask is not
+     *         in range 0-32 or 0-128 respectively
+     * @throws NullPointerException if bytes is null
+     */
+
+    @Nonnull public final P ipPrefixFor(@Nonnull final byte[] bytes, final int mask) {
+        switch (bytes.length) {
+            case INET4_LENGTH:
+                return ipv4Prefix(ipv4PrefixFor(bytes, mask));
+            case INET6_LENGTH:
+                return ipv6Prefix(ipv6PrefixFor(bytes, mask));
+            default:
+                throw new IllegalArgumentException("Invalid array length " + bytes.length);
+        }
+    }
+
+    @Nonnull public final P ipPrefixFor(@Nonnull final InetAddress addr, final int mask) {
+        Preconditions.checkNotNull(addr, "Address must not be null");
+        if (addr instanceof Inet4Address) {
+            return ipv4Prefix(ipv4PrefixFor(addr, mask));
+        } else if (addr instanceof Inet6Address) {
+            return ipv6Prefix(ipv6PrefixFor(addr, mask));
         } else {
             throw new IllegalArgumentException("Unhandled address " + addr);
         }
@@ -295,7 +340,7 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A> {
      * bytes are interpreted as an address and the specified mask is concatenated to
      * it. The address bytes are not masked.
      *
-     * @param address Input address as a 4-byte array
+     * @param address Input address as a 16-byte array
      * @param mask Prefix mask
      * @return An Ipv6Prefix object
      * @throws IllegalArgumentException if bytes has length different from 16 or if mask is not in range 0-128
