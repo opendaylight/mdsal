@@ -14,7 +14,7 @@ import org.opendaylight.mdsal.model.ietf.util.AbstractIetfInetUtil;
  * A set of utility methods to efficiently instantiate various ietf-inet-types DTOs.
  */
 @Beta
-public final class IetfInetUtil extends AbstractIetfInetUtil<Ipv4Address, Ipv4Prefix, Ipv6Address, Ipv6Prefix, IpAddress> {
+public final class IetfInetUtil extends AbstractIetfInetUtil<Ipv4Address, Ipv4Prefix, Ipv6Address, Ipv6Prefix, IpAddress, IpPrefix> {
     public static final IetfInetUtil INSTANCE = new IetfInetUtil();
 
     private IetfInetUtil() {
@@ -29,6 +29,16 @@ public final class IetfInetUtil extends AbstractIetfInetUtil<Ipv4Address, Ipv4Pr
     @Override
     protected IpAddress ipv6Address(final Ipv6Address addr) {
         return new IpAddress(addr);
+    }
+
+    @Override
+    protected IpPrefix ipv4Prefix(Ipv4Prefix addr) {
+        return new IpPrefix(addr);
+    }
+
+    @Override
+    protected IpPrefix ipv6Prefix(Ipv6Prefix addr) {
+        return new IpPrefix(addr);
     }
 
     @Override
