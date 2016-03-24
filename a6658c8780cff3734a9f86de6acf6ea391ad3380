@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3f45e8_5f9506e3",
+        "filename": "model/ietf/ietf-type-util/src/main/java/org/opendaylight/mdsal/model/ietf/util/AbstractIetfInetUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-03-24T10:04:25Z",
+      "side": 1,
+      "message": "this needs some documentation, as it is not clear that bytes has to have a specific length.",
+      "revId": "a6658c8780cff3734a9f86de6acf6ea391ad3380",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_1ffc1e3e",
+        "filename": "model/ietf/ietf-type-util/src/main/java/org/opendaylight/mdsal/model/ietf/util/AbstractIetfInetUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-03-24T10:04:25Z",
+      "side": 1,
+      "message": "use provided constants (INET?_LENGTH)",
+      "revId": "a6658c8780cff3734a9f86de6acf6ea391ad3380",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
