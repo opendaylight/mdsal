@@ -1,0 +1,42 @@
+module odl-test-namespaces {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:yangtools:test:namespaces";
+    prefix "otn";
+
+    description
+        "Testing for the same identifier in different namespaces.
+        see http://tools.ietf.org/html/rfc6020#section-6.2.1";
+
+    revision "2016-03-31" {
+        description
+            "Initial revision.";
+    }
+
+    // TODO: Add extension named odl-test-namespace
+
+    // TODO: Add feature named odl-test-namespace
+
+    typedef odl-test-namespace {
+        type string;
+    }
+
+    identity odl-test-namespace {
+    }
+
+    grouping odl-test-namespace {
+        leaf odl-test-namespace {
+            type odl-test-namespace;
+        }
+    }
+
+    container odl-test-namespace {
+        // This identifier scoped under top level of the module.
+        choice odl-test-namespace {
+            case odl-test-namespace {
+                uses odl-test-namespace;
+                // The enclosed leaf is scoped under odl-test-namespace container.
+            }
+        }
+    }
+
+}
