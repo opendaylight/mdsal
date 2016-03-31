@@ -1,0 +1,39 @@
+module odl-test-identifier {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:yangtools:test:identifier";
+    prefix "oti";
+
+    description
+        "Testing allowed identifier names.
+        see http://tools.ietf.org/html/rfc6020#section-6.2";
+
+    revision "2016-03-31" {
+        description
+            "Initial revision.";
+    }
+
+    container items {
+        list item {
+            key "foo Foo foo0 foo_ foo- foo."
+            leaf foo {
+                type string;
+            }
+            leaf Foo {
+                type string;
+            }
+            leaf foo0 {
+                type string;
+            }
+            leaf foo_ {
+                type string;
+            }
+            leaf foo- {
+                type string;
+            }
+            leaf foo. {
+                type string;
+            }
+        }
+    }
+
+}
