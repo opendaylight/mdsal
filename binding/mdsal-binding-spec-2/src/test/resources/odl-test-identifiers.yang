@@ -1,0 +1,52 @@
+module odl-test-identifiers {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:mdsal:binding2:test:identifiers";
+    prefix "oti";
+
+    description
+        "Testing allowed identifier names.
+        see http://tools.ietf.org/html/rfc6020#section-6.2";
+
+    revision "2016-03-31" {
+        description
+            "Initial revision, for ODL Boron.";
+    }
+
+    container items {
+        list item {
+            description
+                "Each identifier starts with an uppercase or lowercase ASCII
+                letter or an underscore character, followed by zero or more ASCII
+                letters, digits, underscore characters, hyphens, and dots.";
+            key "foo Foo FOO fOO foo0 foo_ foo- foo. _foo"
+            leaf foo {
+                type string;
+            }
+            leaf Foo {
+                type string;
+            }
+            leaf FOO {
+                type string;
+            }
+            leaf fOO {
+                type string;
+            }
+            leaf foo0 {
+                type string;
+            }
+            leaf foo_ {
+                type string;
+            }
+            leaf foo- {
+                type string;
+            }
+            leaf foo. {
+                type string;
+            }
+            leaf _foo {
+                type string;
+            }
+        }
+    }
+
+}
