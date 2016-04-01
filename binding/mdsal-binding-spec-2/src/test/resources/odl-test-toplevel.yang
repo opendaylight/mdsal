@@ -1,0 +1,99 @@
+module odl-test-toplevel {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:mdsal:binding2:test:toplevel";
+    prefix "ott";
+
+    description
+        "Testing for various data structures at top level of module.
+        see http://tools.ietf.org/html/rfc6020#section-7.1.1";
+
+    revision "2016-03-31" {
+        description
+            "Initial revision, for ODL Boron.";
+    }
+
+    // TODO: Create model with other non-data structures, such as rpc and notification.
+    // TODO: Test definitions at top level of submodule.
+
+    grouping config-leaf {
+        leaf config-leaf {
+            type string;
+            config true;
+        }
+    }
+
+    grouping state-leaf {
+        leaf state-leaf {
+            type string;
+            config false;
+        }
+    }
+
+    uses state-leaf;  // Top level non-config string leaf named "state-leaf".
+
+    container non-presence-container {
+        uses config-leaf;
+    }
+
+    container presence-container {
+        presence "Container is present.";
+        uses config-leaf;
+    }
+
+    leaf-list ordered-leaflist {
+        ordered-by user;
+        type string;
+    }
+
+    leaf-list unordered-leaflist {
+        ordered-by system;
+        type string;
+    }
+
+    list ordered-keyed-list {
+        ordered-by user;
+        key config-leaf;
+        uses config-leaf;
+    }
+
+    list unordered-keyed-list {
+        ordered-by system;
+        key config-leaf;
+        uses config-leaf;
+    }
+
+    list ordered-unkeyed-list {
+        config false;  // 'The "key" statement, which MUST be present if the list represents configuration'
+        ordered-by user;
+        description
+            "http://tools.ietf.org/html/rfc6020#section-7.7.5
+            says \"This statement is ignored if the list represents state data\",
+            but we are still hoping for some kind of ordering (perhaps from MD-SAL application?)
+            to be preserved.";
+        uses state-leaf;
+    }
+
+    list unordered-unkeyed-list {
+        config false;  // 'The "key" statement, which MUST be present if the list represents configuration'
+        ordered-by system;
+        description
+            "http://tools.ietf.org/html/rfc6020#section-7.7.5
+            says \"This statement is ignored if the list represents state data\",
+            but we are still hoping the system responds with a reasonable ordering.
+
+            http://tools.ietf.org/html/rfc6020#section-7.7.5.1
+            \"An implementation SHOULD use the same order for
+            the same data, regardless of how the data were created.\"";
+        uses state-leaf;
+    }
+
+    choice choice {
+        case case {
+            uses config-leaf;
+        }
+    }
+
+    anyxml anyxml {
+    }
+
+}
