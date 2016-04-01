@@ -1,0 +1,83 @@
+module _ {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:mdsal:binding2:test:underscore";
+    include __;
+
+    description
+        "Testing for the same identifier (single underscore) in different namespaces.
+        see http://tools.ietf.org/html/rfc6020#section-6.2.1
+
+        This is basically the same as odl-test-namespaces,
+        but with "_" instead of a readable identifier.
+        Additionally, __ submodule is included, which adds container with list.
+
+        Each identifier starts with an uppercase or lowercase ASCII
+        letter or an underscore character, followed by zero or more ASCII
+        letters, digits, underscore characters, hyphens, and dots.";
+
+    revision "2016-03-31" {
+        description
+            "Initial revision, for ODL Boron.";
+    }
+
+    extension _ {
+        description
+            "All extension names defined in a module and its submodules share
+            the same extension identifier namespace.";
+    }
+
+    feature _ {
+        description
+            "All feature names defined in a module and its submodules share the
+            same feature identifier namespace.";
+    }
+
+    identity _ {
+        description
+            "All identity names defined in a module and its submodules share
+            the same identity identifier namespace.";
+    }
+
+    typedef _ {
+        description
+            "All derived type names defined within a parent node or at the top
+            level of the module or its submodules share the same type
+            identifier namespace.";
+        type string;
+    }
+
+    grouping _ {
+        description
+            "All grouping names defined within a parent node or at the top
+            level of the module or its submodules share the same grouping
+            identifier namespace.";
+        leaf _ {
+            description
+                "This namespace is scoped to the parent node or module, unless the
+                parent node is a case node.  In that case, the namespace is scoped
+                to the closest ancestor node that is not a case or choice node.";
+            type odl-test-namespaces;
+        }
+    }
+
+    container _ {
+        description
+            "All leafs, leaf-lists, lists, containers, choices, rpcs, actions,
+            notifications, anydatas, and anyxmls defined (directly or through
+            a uses statement) within a parent node or at the top level of the
+            module or its submodules share the same identifier namespace.";
+        choice __ {
+            description
+                "The leaf from grouping would end up scoped under container,
+                so the choice has to have a different identifier.";
+            case _ {
+                description
+                    "All cases within a choice share the same case identifier
+                    namespace.  This namespace is scoped to the parent choice node.";
+                uses _;
+                // See descriptions of leaf and choice.
+            }
+        }
+    }
+
+}
