@@ -1,0 +1,26 @@
+submodule __ {
+    yang-version 1;
+    belongs-to _ {
+        prefix _;
+    }
+
+    description
+        "Testing for an identifier (double underscore).
+        see http://tools.ietf.org/html/rfc6020#section-6.2.1
+
+        This is a simple test verifying submodule does not break
+        handling of _ as identifier.";
+
+    revision "2016-03-31" {
+        description
+            "Initial revision, for ODL Boron.";
+    }
+
+    container __ {
+        list _ {
+            key _;
+            uses _:_;
+        }
+    }
+
+}
