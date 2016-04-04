@@ -12,7 +12,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import java.net.URI;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
@@ -222,293 +220,168 @@ final class YangTextTemplate {
         return sb;
     }
 
-    // FIXME: below lies unaudited xtend-generated code
-
     private static String writeModuleImports(final Set<ModuleImport> moduleImports) {
-        String _xblockexpression = null;
-        {
-            boolean _isNullOrEmpty = isNullOrEmpty(moduleImports);
-            if (_isNullOrEmpty) {
-                return "";
+        final StringBuilder sb = new StringBuilder();
+        for (final ModuleImport moduleImport : moduleImports) {
+            if (sb.length() != 0) {
+                sb.append('\n');
             }
-            StringConcatenation _builder = new StringConcatenation();
-            {
-                boolean _hasElements = false;
-                for(final ModuleImport moduleImport : moduleImports) {
-                    if (!_hasElements) {
-                        _hasElements = true;
-                    } else {
-                        _builder.appendImmediate("\n", "");
-                    }
-                    {
-                        boolean _and = false;
-                        boolean _notEquals = (!Objects.equal(moduleImport, null));
-                        if (!_notEquals) {
-                            _and = false;
-                        } else {
-                            String _moduleName = moduleImport.getModuleName();
-                            boolean _isNullOrEmpty_1 = Strings.isNullOrEmpty(_moduleName);
-                            boolean _not = (!_isNullOrEmpty_1);
-                            _and = _not;
-                        }
-                        if (_and) {
-                            _builder.append("import ");
-                            String _moduleName_1 = moduleImport.getModuleName();
-                            _builder.append(_moduleName_1);
-                            _builder.append(" { prefix \"");
-                            String _prefix = moduleImport.getPrefix();
-                            _builder.append(_prefix);
-                            _builder.append("\"; }");
-                            _builder.newLineIfNotEmpty();
-                        }
-                    }
+            if (moduleImport != null) {
+                final String name = moduleImport.getModuleName();
+                if (!Strings.isNullOrEmpty(name)) {
+                    sb.append("import ").append(name).append(" { prefix \"").append(moduleImport.getPrefix());
+                    sb.append("\"; }\n");
                 }
             }
-            _xblockexpression = _builder.toString();
         }
-        return _xblockexpression;
+
+        return sb.toString();
     }
 
     private static CharSequence writeRevision(final Date moduleRevision, final String moduleDescription) {
-        CharSequence _xblockexpression = null;
-        {
-            final int revisionIndent = 12;
-            StringConcatenation _builder = new StringConcatenation();
-            _builder.append("revision ");
-            SimpleDateFormat _revisionFormat = SimpleDateFormatUtil.getRevisionFormat();
-            String _format = _revisionFormat.format(moduleRevision);
-            _builder.append(_format);
-            _builder.append(" {");
-            _builder.newLineIfNotEmpty();
-            _builder.append("    ");
-            _builder.append("description \"");
-            String _formatToParagraph = YangTextTemplate.formatToParagraph(moduleDescription, revisionIndent);
-            _builder.append(_formatToParagraph, "    ");
-            _builder.append("\";");
-            _builder.newLineIfNotEmpty();
-            _builder.append("}");
-            _builder.newLine();
-            _xblockexpression = _builder;
-        }
-        return _xblockexpression;
+        final StringConcatenation sc = new StringConcatenation();
+        sc.append("revision ");
+        sc.append(SimpleDateFormatUtil.getRevisionFormat().format(moduleRevision));
+        sc.append(" {\n");
+        sc.append("    description \"");
+        sc.append(YangTextTemplate.formatToParagraph(moduleDescription, 12), "    ");
+        sc.append("\";\n");
+        sc.append("}\n");
+        return sc;
     }
 
-    public static String generateYangSnipet(final Module module) {
-        StringConcatenation _builder = new StringConcatenation();
-        _builder.append("module ");
-        String _name = module.getName();
-        _builder.append(_name, "");
-        _builder.append(" {");
-        _builder.newLineIfNotEmpty();
-        _builder.append("    ");
-        _builder.append("yang-version ");
-        String _yangVersion = module.getYangVersion();
-        _builder.append(_yangVersion, "    ");
-        _builder.append(";");
-        _builder.newLineIfNotEmpty();
-        _builder.append("    ");
-        _builder.append("namespace \"");
-        QNameModule _qNameModule = module.getQNameModule();
-        URI _namespace = _qNameModule.getNamespace();
-        String _string = _namespace.toString();
-        _builder.append(_string, "    ");
-        _builder.append("\";");
-        _builder.newLineIfNotEmpty();
-        _builder.append("    ");
-        _builder.append("prefix \"");
-        String _prefix = module.getPrefix();
-        _builder.append(_prefix, "    ");
-        _builder.append("\";");
-        _builder.newLineIfNotEmpty();
-        _builder.newLine();
-        {
-            Set<ModuleImport> _imports = module.getImports();
-            boolean _isNullOrEmpty = isNullOrEmpty(_imports);
-            boolean _not = (!_isNullOrEmpty);
-            if (_not) {
-                _builder.append("    ");
-                Set<ModuleImport> _imports_1 = module.getImports();
-                String _writeModuleImports = writeModuleImports(_imports_1);
-                _builder.append(_writeModuleImports, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+    static String generateYangSnipet(final Module module) {
+        final StringConcatenation sc = new StringConcatenation();
+        sc.append("module ");
+        sc.append(module.getName());
+        sc.append(" {\n");
+        sc.append("    yang-version ");
+        sc.append(module.getYangVersion());
+        sc.append(";\n");
+        sc.append("    namespace \"");
+        sc.append(module.getQNameModule().getNamespace().toString());
+        sc.append("\";\n");
+        sc.append("    prefix \"");
+        sc.append(module.getPrefix());
+        sc.append("\";\n\n");
+
+        final Set<ModuleImport> imports = module.getImports();
+        if (!isNullOrEmpty(imports)) {
+            sc.append("    ");
+            sc.append(writeModuleImports(imports), "    ");
         }
-        {
-            Date _revision = module.getRevision();
-            boolean _notEquals = (!Objects.equal(_revision, null));
-            if (_notEquals) {
-                _builder.append("    ");
-                Date _revision_1 = module.getRevision();
-                String _description = module.getDescription();
-                CharSequence _writeRevision = writeRevision(_revision_1, _description);
-                _builder.append(_writeRevision, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final Date revision = module.getRevision();
+        if (revision != null) {
+            sc.append("    ");
+            sc.append(writeRevision(revision, module.getDescription()), "    ");
+            sc.newLine();
         }
-        {
-            Collection<DataSchemaNode> _childNodes = module.getChildNodes();
-            boolean _isNullOrEmpty_1 = isNullOrEmpty(_childNodes);
-            boolean _not_1 = (!_isNullOrEmpty_1);
-            if (_not_1) {
-                _builder.newLine();
-                _builder.append("    ");
-                Collection<DataSchemaNode> _childNodes_1 = module.getChildNodes();
-                CharSequence _writeDataSchemaNodes = writeDataSchemaNodes(_childNodes_1);
-                _builder.append(_writeDataSchemaNodes, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final Collection<DataSchemaNode> childNodes = module.getChildNodes();
+        if (!isNullOrEmpty(childNodes)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeDataSchemaNodes(childNodes), "    ");
+            sc.newLineIfNotEmpty();
         }
-        {
-            Set<GroupingDefinition> _groupings = module.getGroupings();
-            boolean _isNullOrEmpty_2 = isNullOrEmpty(_groupings);
-            boolean _not_2 = (!_isNullOrEmpty_2);
-            if (_not_2) {
-                _builder.newLine();
-                _builder.append("    ");
-                Set<GroupingDefinition> _groupings_1 = module.getGroupings();
-                CharSequence _writeGroupingDefs = writeGroupingDefs(_groupings_1);
-                _builder.append(_writeGroupingDefs, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final Set<GroupingDefinition> groupings = module.getGroupings();
+        if (!isNullOrEmpty(groupings)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeGroupingDefs(groupings), "    ");
+            sc.newLineIfNotEmpty();
         }
-        {
-            Set<AugmentationSchema> _augmentations = module.getAugmentations();
-            boolean _isNullOrEmpty_3 = isNullOrEmpty(_augmentations);
-            boolean _not_3 = (!_isNullOrEmpty_3);
-            if (_not_3) {
-                _builder.newLine();
-                _builder.append("    ");
-                Set<AugmentationSchema> _augmentations_1 = module.getAugmentations();
-                CharSequence _writeAugments = writeAugments(_augmentations_1);
-                _builder.append(_writeAugments, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final Set<AugmentationSchema> augmentations = module.getAugmentations();
+        if (!isNullOrEmpty(augmentations)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeAugments(augmentations), "    ");
+            sc.newLineIfNotEmpty();
         }
-        {
-            Set<Deviation> _deviations = module.getDeviations();
-            boolean _isNullOrEmpty_4 = isNullOrEmpty(_deviations);
-            boolean _not_4 = (!_isNullOrEmpty_4);
-            if (_not_4) {
-                _builder.newLine();
-                _builder.append("    ");
-                Set<Deviation> _deviations_1 = module.getDeviations();
-                CharSequence _writeDeviations = writeDeviations(_deviations_1);
-                _builder.append(_writeDeviations, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final Set<Deviation> deviations = module.getDeviations();
+        if (!isNullOrEmpty(deviations)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeDeviations(deviations), "    ");
+            sc.newLineIfNotEmpty();
         }
-        {
-            List<ExtensionDefinition> _extensionSchemaNodes = module.getExtensionSchemaNodes();
-            boolean _isNullOrEmpty_5 = isNullOrEmpty(_extensionSchemaNodes);
-            boolean _not_5 = (!_isNullOrEmpty_5);
-            if (_not_5) {
-                _builder.newLine();
-                _builder.append("    ");
-                List<ExtensionDefinition> _extensionSchemaNodes_1 = module.getExtensionSchemaNodes();
-                CharSequence _writeExtensions = writeExtensions(_extensionSchemaNodes_1);
-                _builder.append(_writeExtensions, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final List<ExtensionDefinition> extensionSchemaNodes = module.getExtensionSchemaNodes();
+        if (!isNullOrEmpty(extensionSchemaNodes)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeExtensions(extensionSchemaNodes), "    ");
+            sc.newLineIfNotEmpty();
         }
-        {
-            Set<FeatureDefinition> _features = module.getFeatures();
-            boolean _isNullOrEmpty_6 = isNullOrEmpty(_features);
-            boolean _not_6 = (!_isNullOrEmpty_6);
-            if (_not_6) {
-                _builder.newLine();
-                _builder.append("    ");
-                Set<FeatureDefinition> _features_1 = module.getFeatures();
-                CharSequence _writeFeatures = writeFeatures(_features_1);
-                _builder.append(_writeFeatures, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final Set<FeatureDefinition> features = module.getFeatures();
+        if (!isNullOrEmpty(features)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeFeatures(features), "    ");
+            sc.newLineIfNotEmpty();
         }
-        {
-            Set<IdentitySchemaNode> _identities = module.getIdentities();
-            boolean _isNullOrEmpty_7 = isNullOrEmpty(_identities);
-            boolean _not_7 = (!_isNullOrEmpty_7);
-            if (_not_7) {
-                _builder.newLine();
-                _builder.append("    ");
-                Set<IdentitySchemaNode> _identities_1 = module.getIdentities();
-                CharSequence _writeIdentities = writeIdentities(_identities_1);
-                _builder.append(_writeIdentities, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final Set<IdentitySchemaNode> identities = module.getIdentities();
+        if (!isNullOrEmpty(identities)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeIdentities(identities), "    ");
+            sc.newLineIfNotEmpty();
         }
-        {
-            Set<NotificationDefinition> _notifications = module.getNotifications();
-            boolean _isNullOrEmpty_8 = isNullOrEmpty(_notifications);
-            boolean _not_8 = (!_isNullOrEmpty_8);
-            if (_not_8) {
-                _builder.newLine();
-                _builder.append("    ");
-                Set<NotificationDefinition> _notifications_1 = module.getNotifications();
-                CharSequence _writeNotifications = writeNotifications(_notifications_1);
-                _builder.append(_writeNotifications, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final Set<NotificationDefinition> notifications = module.getNotifications();
+        if (!isNullOrEmpty(notifications)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeNotifications(notifications), "    ");
+            sc.newLineIfNotEmpty();
         }
-        {
-            Set<RpcDefinition> _rpcs = module.getRpcs();
-            boolean _isNullOrEmpty_9 = isNullOrEmpty(_rpcs);
-            boolean _not_9 = (!_isNullOrEmpty_9);
-            if (_not_9) {
-                _builder.newLine();
-                _builder.append("    ");
-                Set<RpcDefinition> _rpcs_1 = module.getRpcs();
-                CharSequence _writeRPCs = writeRPCs(_rpcs_1);
-                _builder.append(_writeRPCs, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final Set<RpcDefinition> rpcs = module.getRpcs();
+        if (!isNullOrEmpty(rpcs)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeRPCs(rpcs), "    ");
+            sc.newLineIfNotEmpty();
         }
-        {
-            List<UnknownSchemaNode> _unknownSchemaNodes = module.getUnknownSchemaNodes();
-            boolean _isNullOrEmpty_10 = isNullOrEmpty(_unknownSchemaNodes);
-            boolean _not_10 = (!_isNullOrEmpty_10);
-            if (_not_10) {
-                _builder.newLine();
-                _builder.append("    ");
-                List<UnknownSchemaNode> _unknownSchemaNodes_1 = module.getUnknownSchemaNodes();
-                CharSequence _writeUnknownSchemaNodes = writeUnknownSchemaNodes(_unknownSchemaNodes_1);
-                _builder.append(_writeUnknownSchemaNodes, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final List<UnknownSchemaNode> unknownSchemaNodes = module.getUnknownSchemaNodes();
+        if (!isNullOrEmpty(unknownSchemaNodes)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeUnknownSchemaNodes(unknownSchemaNodes), "    ");
+            sc.newLineIfNotEmpty();
         }
-        {
-            Set<UsesNode> _uses = module.getUses();
-            boolean _isNullOrEmpty_11 = isNullOrEmpty(_uses);
-            boolean _not_11 = (!_isNullOrEmpty_11);
-            if (_not_11) {
-                _builder.newLine();
-                _builder.append("    ");
-                Set<UsesNode> _uses_1 = module.getUses();
-                CharSequence _writeUsesNodes = writeUsesNodes(_uses_1);
-                _builder.append(_writeUsesNodes, "    ");
-                _builder.newLineIfNotEmpty();
-            }
+
+        final Set<UsesNode> uses = module.getUses();
+        if (!isNullOrEmpty(uses)) {
+            sc.newLine();
+            sc.append("    ");
+            sc.append(writeUsesNodes(uses), "    ");
+            sc.newLineIfNotEmpty();
         }
-        _builder.append("}");
-        _builder.newLine();
-        return _builder.toString();
+
+        sc.append("}\n");
+        return sc.toString();
     }
 
     private static CharSequence writeRPCs(final Set<RpcDefinition> rpcDefs) {
-        StringConcatenation _builder = new StringConcatenation();
-        {
-            for(final RpcDefinition rpc : rpcDefs) {
-                {
-                    boolean _notEquals = (!Objects.equal(rpc, null));
-                    if (_notEquals) {
-                        CharSequence _writeRPC = writeRPC(rpc);
-                        _builder.append(_writeRPC);
-                        _builder.newLineIfNotEmpty();
-                    }
-                }
+        final StringConcatenation sc = new StringConcatenation();
+        for (final RpcDefinition rpc : rpcDefs) {
+            if (rpc != null) {
+                sc.append(writeRPC(rpc));
+                sc.newLineIfNotEmpty();
             }
         }
-        return _builder;
+        return sc;
     }
+
+    // FIXME: below lies unaudited xtend-generated code
 
     private static CharSequence writeRPC(final RpcDefinition rpc) {
         CharSequence _xblockexpression = null;
