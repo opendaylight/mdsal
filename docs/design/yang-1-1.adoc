@@ -1,0 +1,25 @@
+= MD-SAL Support for YANG 1.1
+Tony Tkacik <ttkacik@cisco.com>
+:toc:
+:rfc6020: https://tools.ietf.org/html/rfc6020
+:rfc6020bis: https://tools.ietf.org/html/draft-ietf-netmod-rfc6020bis
+
+== Introduction
+
+=== Significant changes that affects MD-SAL DOM
+
+-  Added a new statement `action` that is used to define operations
+   tied to data nodes.
+-  Allow notifications to be tied to data nodes.
+
+== `action` Keyword
+
+.Definition from link::{rfc6020bis}[YANG 1.1]
+The "action" statement is used to define an operation connected to a
+specific container or list data node.  It takes one argument, which
+is an identifier, followed by a block of substatements that holds
+detailed action information.  The argument is the name of the action.
+
+`action` is conceptually same as *Routed RPC* in the context of the MD-SAL, which
+we used to model an RPC (action) connected to specific container or list data node.
+Since MD-SAL does not
