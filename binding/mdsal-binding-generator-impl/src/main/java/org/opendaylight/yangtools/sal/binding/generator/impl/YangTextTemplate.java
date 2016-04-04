@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil;
@@ -305,7 +304,7 @@ final class YangTextTemplate {
                             _and = false;
                         } else {
                             String _moduleName = moduleImport.getModuleName();
-                            boolean _isNullOrEmpty_1 = StringExtensions.isNullOrEmpty(_moduleName);
+                            boolean _isNullOrEmpty_1 = Strings.isNullOrEmpty(_moduleName);
                             boolean _not = (!_isNullOrEmpty_1);
                             _and = _not;
                         }
@@ -588,7 +587,7 @@ final class YangTextTemplate {
             _builder.newLineIfNotEmpty();
             {
                 String _description = rpc.getDescription();
-                boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(_description);
+                boolean _isNullOrEmpty = Strings.isNullOrEmpty(_description);
                 boolean _not = (!_isNullOrEmpty);
                 if (_not) {
                     _builder.append("    ");
@@ -635,7 +634,7 @@ final class YangTextTemplate {
             }
             {
                 String _reference = rpc.getReference();
-                boolean _isNullOrEmpty_2 = StringExtensions.isNullOrEmpty(_reference);
+                boolean _isNullOrEmpty_2 = Strings.isNullOrEmpty(_reference);
                 boolean _not_2 = (!_isNullOrEmpty_2);
                 if (_not_2) {
                     _builder.append("    ");
@@ -763,7 +762,7 @@ final class YangTextTemplate {
             _builder.newLineIfNotEmpty();
             {
                 String _description = notification.getDescription();
-                boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(_description);
+                boolean _isNullOrEmpty = Strings.isNullOrEmpty(_description);
                 boolean _not = (!_isNullOrEmpty);
                 if (_not) {
                     _builder.append("    ");
@@ -828,7 +827,7 @@ final class YangTextTemplate {
             }
             {
                 String _reference = notification.getReference();
-                boolean _isNullOrEmpty_5 = StringExtensions.isNullOrEmpty(_reference);
+                boolean _isNullOrEmpty_5 = Strings.isNullOrEmpty(_reference);
                 boolean _not_5 = (!_isNullOrEmpty_5);
                 if (_not_5) {
                     _builder.append("    ");
@@ -1071,7 +1070,7 @@ final class YangTextTemplate {
             }
             {
                 String _description = identity.getDescription();
-                boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(_description);
+                boolean _isNullOrEmpty = Strings.isNullOrEmpty(_description);
                 boolean _not = (!_isNullOrEmpty);
                 if (_not) {
                     _builder.append("    ");
@@ -1088,7 +1087,7 @@ final class YangTextTemplate {
             }
             {
                 String _reference = identity.getReference();
-                boolean _isNullOrEmpty_1 = StringExtensions.isNullOrEmpty(_reference);
+                boolean _isNullOrEmpty_1 = Strings.isNullOrEmpty(_reference);
                 boolean _not_1 = (!_isNullOrEmpty_1);
                 if (_not_1) {
                     _builder.append("    ");
@@ -1165,7 +1164,7 @@ final class YangTextTemplate {
         _builder.newLineIfNotEmpty();
         {
             String _description = featureDef.getDescription();
-            boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(_description);
+            boolean _isNullOrEmpty = Strings.isNullOrEmpty(_description);
             boolean _not = (!_isNullOrEmpty);
             if (_not) {
                 _builder.append("    ");
@@ -1182,7 +1181,7 @@ final class YangTextTemplate {
         }
         {
             String _reference = featureDef.getReference();
-            boolean _isNullOrEmpty_1 = StringExtensions.isNullOrEmpty(_reference);
+            boolean _isNullOrEmpty_1 = Strings.isNullOrEmpty(_reference);
             boolean _not_1 = (!_isNullOrEmpty_1);
             if (_not_1) {
                 _builder.append("    ");
@@ -1251,7 +1250,7 @@ final class YangTextTemplate {
             _builder.newLineIfNotEmpty();
             {
                 String _description = extensionDef.getDescription();
-                boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(_description);
+                boolean _isNullOrEmpty = Strings.isNullOrEmpty(_description);
                 boolean _not = (!_isNullOrEmpty);
                 if (_not) {
                     _builder.append("    ");
@@ -1268,7 +1267,7 @@ final class YangTextTemplate {
             }
             {
                 String _argument = extensionDef.getArgument();
-                boolean _isNullOrEmpty_1 = StringExtensions.isNullOrEmpty(_argument);
+                boolean _isNullOrEmpty_1 = Strings.isNullOrEmpty(_argument);
                 boolean _not_1 = (!_isNullOrEmpty_1);
                 if (_not_1) {
                     _builder.append("    ");
@@ -1281,7 +1280,7 @@ final class YangTextTemplate {
             }
             {
                 String _reference = extensionDef.getReference();
-                boolean _isNullOrEmpty_2 = StringExtensions.isNullOrEmpty(_reference);
+                boolean _isNullOrEmpty_2 = Strings.isNullOrEmpty(_reference);
                 boolean _not_2 = (!_isNullOrEmpty_2);
                 if (_not_2) {
                     _builder.append("    ");
@@ -1341,7 +1340,7 @@ final class YangTextTemplate {
         _builder.newLineIfNotEmpty();
         {
             String _reference = deviation.getReference();
-            boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(_reference);
+            boolean _isNullOrEmpty = Strings.isNullOrEmpty(_reference);
             boolean _not = (!_isNullOrEmpty);
             if (_not) {
                 _builder.append("    ");
@@ -1365,7 +1364,7 @@ final class YangTextTemplate {
             } else {
                 Deviation.Deviate _deviate_1 = deviation.getDeviate();
                 String _name = _deviate_1.name();
-                boolean _isNullOrEmpty_1 = StringExtensions.isNullOrEmpty(_name);
+                boolean _isNullOrEmpty_1 = Strings.isNullOrEmpty(_name);
                 boolean _not_1 = (!_isNullOrEmpty_1);
                 _and = _not_1;
             }
@@ -1448,7 +1447,7 @@ final class YangTextTemplate {
             } else {
                 RevisionAwareXPath _whenCondition_1 = augment.getWhenCondition();
                 String _string = _whenCondition_1.toString();
-                boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(_string);
+                boolean _isNullOrEmpty = Strings.isNullOrEmpty(_string);
                 boolean _not = (!_isNullOrEmpty);
                 _and = _not;
             }
@@ -1464,7 +1463,7 @@ final class YangTextTemplate {
         }
         {
             String _description = augment.getDescription();
-            boolean _isNullOrEmpty_1 = StringExtensions.isNullOrEmpty(_description);
+            boolean _isNullOrEmpty_1 = Strings.isNullOrEmpty(_description);
             boolean _not_1 = (!_isNullOrEmpty_1);
             if (_not_1) {
                 _builder.append("    ");
@@ -1481,7 +1480,7 @@ final class YangTextTemplate {
         }
         {
             String _reference = augment.getReference();
-            boolean _isNullOrEmpty_2 = StringExtensions.isNullOrEmpty(_reference);
+            boolean _isNullOrEmpty_2 = Strings.isNullOrEmpty(_reference);
             boolean _not_2 = (!_isNullOrEmpty_2);
             if (_not_2) {
                 _builder.append("    ");
