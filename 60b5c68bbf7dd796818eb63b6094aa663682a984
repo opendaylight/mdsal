@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a4c51b2_88bc6d6e",
+        "filename": "docs/analysis/binding-v2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-04-04T20:52:39Z",
+      "side": 1,
+      "message": "IS-IS is spelled differenty :)",
+      "range": {
+        "startLine": 54,
+        "startChar": 48,
+        "endLine": 54,
+        "endChar": 53
+      },
+      "revId": "60b5c68bbf7dd796818eb63b6094aa663682a984",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_2890b9eb",
+        "filename": "docs/analysis/binding-v2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-04-04T20:52:39Z",
+      "side": 1,
+      "message": "Using top-level package name defined in the package namespace will work better:\norg.opendaylight.yang.gen.v1.{grp,type,data,...}",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 101,
+        "endChar": 20
+      },
+      "revId": "60b5c68bbf7dd796818eb63b6094aa663682a984",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
