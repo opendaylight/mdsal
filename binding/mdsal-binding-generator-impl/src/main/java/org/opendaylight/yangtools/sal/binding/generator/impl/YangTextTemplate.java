@@ -150,8 +150,8 @@ final class YangTextTemplate {
             sc.newLineIfNotEmpty();
         }
         if (schemaNode instanceof EnumTypeDefinition.EnumPair) {
-            sc.append(writeEnumPair(((EnumTypeDefinition.EnumPair)schemaNode)), "");
-            sc.newLineIfNotEmpty();
+            sc.append(writeEnumPair(((EnumTypeDefinition.EnumPair)schemaNode)));
+            sc.newLine();
         }
         if (schemaNode instanceof ExtensionDefinition) {
             sc.append(writeExtension(((ExtensionDefinition)schemaNode)), "");
@@ -207,37 +207,22 @@ final class YangTextTemplate {
         return sc.toString();
     }
 
-    // FIXME: below lies unaudited xtend-generated code
-
     private static CharSequence writeEnumPair(final EnumTypeDefinition.EnumPair pair) {
-        CharSequence _xblockexpression = null;
-        {
-            Integer _value = pair.getValue();
-            boolean hasEnumPairValue = (!Objects.equal(_value, null));
-            StringConcatenation _builder = new StringConcatenation();
-            _builder.append("enum ");
-            String _name = pair.getName();
-            _builder.append(_name, "");
-            {
-                if ((!hasEnumPairValue)) {
-                    _builder.append(";");
-                } else {
-                    _builder.append("{");
-                    _builder.newLineIfNotEmpty();
-                    _builder.append("    ");
-                    _builder.append("value ");
-                    Integer _value_1 = pair.getValue();
-                    _builder.append(_value_1, "    ");
-                    _builder.append(";");
-                    _builder.newLineIfNotEmpty();
-                    _builder.append("}");
-                    _builder.newLine();
-                }
-            }
-            _xblockexpression = _builder;
+        final StringBuilder sb = new StringBuilder();
+        sb.append("enum ").append(pair.getName());
+
+        final Integer value = pair.getValue();
+        if (value != null) {
+            sb.append("{\n");
+            sb.append("    value ").append(value).append(";\n");
+            sb.append("}\n");
+        } else {
+            sb.append(';');
         }
-        return _xblockexpression;
+        return sb;
     }
+
+    // FIXME: below lies unaudited xtend-generated code
 
     private static String writeModuleImports(final Set<ModuleImport> moduleImports) {
         String _xblockexpression = null;
