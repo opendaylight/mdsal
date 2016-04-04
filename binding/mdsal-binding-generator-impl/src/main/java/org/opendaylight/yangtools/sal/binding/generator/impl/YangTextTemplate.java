@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil;
@@ -128,6 +127,10 @@ final class YangTextTemplate {
         return sb.append(lineBuilder).append('\n').toString();
     }
 
+    private static boolean isNullOrEmpty(final Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
+
     private static String formatToAugmentPath(final Iterable<QName> schemaPath) {
         final StringBuilder sb = new StringBuilder();
         for (QName pathElement : schemaPath) {
@@ -187,7 +190,7 @@ final class YangTextTemplate {
     }
 
     static String generateYangSnipet(final Set<? extends SchemaNode> nodes) {
-        if (nodes == null || nodes.isEmpty()) {
+        if (isNullOrEmpty(nodes)) {
             return "";
         }
 
@@ -239,7 +242,7 @@ final class YangTextTemplate {
     private static String writeModuleImports(final Set<ModuleImport> moduleImports) {
         String _xblockexpression = null;
         {
-            boolean _isNullOrEmpty = IterableExtensions.isNullOrEmpty(moduleImports);
+            boolean _isNullOrEmpty = isNullOrEmpty(moduleImports);
             if (_isNullOrEmpty) {
                 return "";
             }
@@ -335,7 +338,7 @@ final class YangTextTemplate {
         _builder.newLine();
         {
             Set<ModuleImport> _imports = module.getImports();
-            boolean _isNullOrEmpty = IterableExtensions.isNullOrEmpty(_imports);
+            boolean _isNullOrEmpty = isNullOrEmpty(_imports);
             boolean _not = (!_isNullOrEmpty);
             if (_not) {
                 _builder.append("    ");
@@ -359,7 +362,7 @@ final class YangTextTemplate {
         }
         {
             Collection<DataSchemaNode> _childNodes = module.getChildNodes();
-            boolean _isNullOrEmpty_1 = IterableExtensions.isNullOrEmpty(_childNodes);
+            boolean _isNullOrEmpty_1 = isNullOrEmpty(_childNodes);
             boolean _not_1 = (!_isNullOrEmpty_1);
             if (_not_1) {
                 _builder.newLine();
@@ -372,7 +375,7 @@ final class YangTextTemplate {
         }
         {
             Set<GroupingDefinition> _groupings = module.getGroupings();
-            boolean _isNullOrEmpty_2 = IterableExtensions.isNullOrEmpty(_groupings);
+            boolean _isNullOrEmpty_2 = isNullOrEmpty(_groupings);
             boolean _not_2 = (!_isNullOrEmpty_2);
             if (_not_2) {
                 _builder.newLine();
@@ -385,7 +388,7 @@ final class YangTextTemplate {
         }
         {
             Set<AugmentationSchema> _augmentations = module.getAugmentations();
-            boolean _isNullOrEmpty_3 = IterableExtensions.isNullOrEmpty(_augmentations);
+            boolean _isNullOrEmpty_3 = isNullOrEmpty(_augmentations);
             boolean _not_3 = (!_isNullOrEmpty_3);
             if (_not_3) {
                 _builder.newLine();
@@ -398,7 +401,7 @@ final class YangTextTemplate {
         }
         {
             Set<Deviation> _deviations = module.getDeviations();
-            boolean _isNullOrEmpty_4 = IterableExtensions.isNullOrEmpty(_deviations);
+            boolean _isNullOrEmpty_4 = isNullOrEmpty(_deviations);
             boolean _not_4 = (!_isNullOrEmpty_4);
             if (_not_4) {
                 _builder.newLine();
@@ -411,7 +414,7 @@ final class YangTextTemplate {
         }
         {
             List<ExtensionDefinition> _extensionSchemaNodes = module.getExtensionSchemaNodes();
-            boolean _isNullOrEmpty_5 = IterableExtensions.isNullOrEmpty(_extensionSchemaNodes);
+            boolean _isNullOrEmpty_5 = isNullOrEmpty(_extensionSchemaNodes);
             boolean _not_5 = (!_isNullOrEmpty_5);
             if (_not_5) {
                 _builder.newLine();
@@ -424,7 +427,7 @@ final class YangTextTemplate {
         }
         {
             Set<FeatureDefinition> _features = module.getFeatures();
-            boolean _isNullOrEmpty_6 = IterableExtensions.isNullOrEmpty(_features);
+            boolean _isNullOrEmpty_6 = isNullOrEmpty(_features);
             boolean _not_6 = (!_isNullOrEmpty_6);
             if (_not_6) {
                 _builder.newLine();
@@ -437,7 +440,7 @@ final class YangTextTemplate {
         }
         {
             Set<IdentitySchemaNode> _identities = module.getIdentities();
-            boolean _isNullOrEmpty_7 = IterableExtensions.isNullOrEmpty(_identities);
+            boolean _isNullOrEmpty_7 = isNullOrEmpty(_identities);
             boolean _not_7 = (!_isNullOrEmpty_7);
             if (_not_7) {
                 _builder.newLine();
@@ -450,7 +453,7 @@ final class YangTextTemplate {
         }
         {
             Set<NotificationDefinition> _notifications = module.getNotifications();
-            boolean _isNullOrEmpty_8 = IterableExtensions.isNullOrEmpty(_notifications);
+            boolean _isNullOrEmpty_8 = isNullOrEmpty(_notifications);
             boolean _not_8 = (!_isNullOrEmpty_8);
             if (_not_8) {
                 _builder.newLine();
@@ -463,7 +466,7 @@ final class YangTextTemplate {
         }
         {
             Set<RpcDefinition> _rpcs = module.getRpcs();
-            boolean _isNullOrEmpty_9 = IterableExtensions.isNullOrEmpty(_rpcs);
+            boolean _isNullOrEmpty_9 = isNullOrEmpty(_rpcs);
             boolean _not_9 = (!_isNullOrEmpty_9);
             if (_not_9) {
                 _builder.newLine();
@@ -476,7 +479,7 @@ final class YangTextTemplate {
         }
         {
             List<UnknownSchemaNode> _unknownSchemaNodes = module.getUnknownSchemaNodes();
-            boolean _isNullOrEmpty_10 = IterableExtensions.isNullOrEmpty(_unknownSchemaNodes);
+            boolean _isNullOrEmpty_10 = isNullOrEmpty(_unknownSchemaNodes);
             boolean _not_10 = (!_isNullOrEmpty_10);
             if (_not_10) {
                 _builder.newLine();
@@ -489,7 +492,7 @@ final class YangTextTemplate {
         }
         {
             Set<UsesNode> _uses = module.getUses();
-            boolean _isNullOrEmpty_11 = IterableExtensions.isNullOrEmpty(_uses);
+            boolean _isNullOrEmpty_11 = isNullOrEmpty(_uses);
             boolean _not_11 = (!_isNullOrEmpty_11);
             if (_not_11) {
                 _builder.newLine();
@@ -555,7 +558,7 @@ final class YangTextTemplate {
             }
             {
                 Set<GroupingDefinition> _groupings = rpc.getGroupings();
-                boolean _isNullOrEmpty_1 = IterableExtensions.isNullOrEmpty(_groupings);
+                boolean _isNullOrEmpty_1 = isNullOrEmpty(_groupings);
                 boolean _not_1 = (!_isNullOrEmpty_1);
                 if (_not_1) {
                     _builder.append("    ");
@@ -633,7 +636,7 @@ final class YangTextTemplate {
             _builder.newLine();
             {
                 Collection<DataSchemaNode> _childNodes = input.getChildNodes();
-                boolean _isNullOrEmpty = IterableExtensions.isNullOrEmpty(_childNodes);
+                boolean _isNullOrEmpty = isNullOrEmpty(_childNodes);
                 boolean _not = (!_isNullOrEmpty);
                 if (_not) {
                     _builder.append("    ");
@@ -663,7 +666,7 @@ final class YangTextTemplate {
             _builder.newLine();
             {
                 Collection<DataSchemaNode> _childNodes = output.getChildNodes();
-                boolean _isNullOrEmpty = IterableExtensions.isNullOrEmpty(_childNodes);
+                boolean _isNullOrEmpty = isNullOrEmpty(_childNodes);
                 boolean _not = (!_isNullOrEmpty);
                 if (_not) {
                     _builder.append("    ");
@@ -734,7 +737,7 @@ final class YangTextTemplate {
             }
             {
                 Collection<DataSchemaNode> _childNodes = notification.getChildNodes();
-                boolean _isNullOrEmpty_1 = IterableExtensions.isNullOrEmpty(_childNodes);
+                boolean _isNullOrEmpty_1 = isNullOrEmpty(_childNodes);
                 boolean _not_1 = (!_isNullOrEmpty_1);
                 if (_not_1) {
                     _builder.append("    ");
@@ -746,7 +749,7 @@ final class YangTextTemplate {
             }
             {
                 Set<AugmentationSchema> _availableAugmentations = notification.getAvailableAugmentations();
-                boolean _isNullOrEmpty_2 = IterableExtensions.isNullOrEmpty(_availableAugmentations);
+                boolean _isNullOrEmpty_2 = isNullOrEmpty(_availableAugmentations);
                 boolean _not_2 = (!_isNullOrEmpty_2);
                 if (_not_2) {
                     _builder.append("    ");
@@ -758,7 +761,7 @@ final class YangTextTemplate {
             }
             {
                 Set<GroupingDefinition> _groupings = notification.getGroupings();
-                boolean _isNullOrEmpty_3 = IterableExtensions.isNullOrEmpty(_groupings);
+                boolean _isNullOrEmpty_3 = isNullOrEmpty(_groupings);
                 boolean _not_3 = (!_isNullOrEmpty_3);
                 if (_not_3) {
                     _builder.append("    ");
@@ -770,7 +773,7 @@ final class YangTextTemplate {
             }
             {
                 Set<UsesNode> _uses = notification.getUses();
-                boolean _isNullOrEmpty_4 = IterableExtensions.isNullOrEmpty(_uses);
+                boolean _isNullOrEmpty_4 = isNullOrEmpty(_uses);
                 boolean _not_4 = (!_isNullOrEmpty_4);
                 if (_not_4) {
                     _builder.append("    ");
@@ -817,7 +820,7 @@ final class YangTextTemplate {
     private static CharSequence writeUnknownSchemaNodes(final List<UnknownSchemaNode> unknownSchemaNodes) {
         CharSequence _xblockexpression = null;
         {
-            boolean _isNullOrEmpty = IterableExtensions.isNullOrEmpty(unknownSchemaNodes);
+            boolean _isNullOrEmpty = isNullOrEmpty(unknownSchemaNodes);
             if (_isNullOrEmpty) {
                 return "";
             }
@@ -873,7 +876,7 @@ final class YangTextTemplate {
             _builder.append("uses ");
             SchemaPath _groupingPath = usesNode.getGroupingPath();
             Iterable<QName> _pathFromRoot = _groupingPath.getPathFromRoot();
-            QName _head = IterableExtensions.<QName>head(_pathFromRoot);
+            QName _head = Iterables.getFirst(_pathFromRoot, null);
             String _localName = _head.getLocalName();
             _builder.append(_localName, "");
             {
@@ -919,7 +922,7 @@ final class YangTextTemplate {
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("refine ");
         Iterable<QName> _pathFromRoot = path.getPathFromRoot();
-        QName _last = IterableExtensions.<QName>last(_pathFromRoot);
+        QName _last = Iterables.getLast(_pathFromRoot, null);
         _builder.append(_last, "");
         _builder.append(" {");
         _builder.newLineIfNotEmpty();
@@ -976,7 +979,7 @@ final class YangTextTemplate {
     private static CharSequence writeIdentities(final Set<IdentitySchemaNode> identities) {
         CharSequence _xblockexpression = null;
         {
-            boolean _isNullOrEmpty = IterableExtensions.isNullOrEmpty(identities);
+            boolean _isNullOrEmpty = isNullOrEmpty(identities);
             if (_isNullOrEmpty) {
                 return "";
             }
@@ -1464,7 +1467,7 @@ final class YangTextTemplate {
         }
         {
             Collection<DataSchemaNode> _childNodes = augment.getChildNodes();
-            boolean _isNullOrEmpty_3 = IterableExtensions.isNullOrEmpty(_childNodes);
+            boolean _isNullOrEmpty_3 = isNullOrEmpty(_childNodes);
             boolean _not_3 = (!_isNullOrEmpty_3);
             if (_not_3) {
                 _builder.append("    ");
@@ -1476,7 +1479,7 @@ final class YangTextTemplate {
         }
         {
             Set<UsesNode> _uses = augment.getUses();
-            boolean _isNullOrEmpty_4 = IterableExtensions.isNullOrEmpty(_uses);
+            boolean _isNullOrEmpty_4 = isNullOrEmpty(_uses);
             boolean _not_4 = (!_isNullOrEmpty_4);
             if (_not_4) {
                 _builder.append("    ");
@@ -1511,7 +1514,7 @@ final class YangTextTemplate {
             _builder.newLineIfNotEmpty();
             {
                 Set<GroupingDefinition> _groupings = groupingDef.getGroupings();
-                boolean _isNullOrEmpty = IterableExtensions.isNullOrEmpty(_groupings);
+                boolean _isNullOrEmpty = isNullOrEmpty(_groupings);
                 boolean _not = (!_isNullOrEmpty);
                 if (_not) {
                     _builder.append("    ");
@@ -1523,7 +1526,7 @@ final class YangTextTemplate {
             }
             {
                 Collection<DataSchemaNode> _childNodes = groupingDef.getChildNodes();
-                boolean _isNullOrEmpty_1 = IterableExtensions.isNullOrEmpty(_childNodes);
+                boolean _isNullOrEmpty_1 = isNullOrEmpty(_childNodes);
                 boolean _not_1 = (!_isNullOrEmpty_1);
                 if (_not_1) {
                     _builder.append("    ");
@@ -1545,7 +1548,7 @@ final class YangTextTemplate {
             }
             {
                 List<UnknownSchemaNode> _unknownSchemaNodes = groupingDef.getUnknownSchemaNodes();
-                boolean _isNullOrEmpty_2 = IterableExtensions.isNullOrEmpty(_unknownSchemaNodes);
+                boolean _isNullOrEmpty_2 = isNullOrEmpty(_unknownSchemaNodes);
                 boolean _not_2 = (!_isNullOrEmpty_2);
                 if (_not_2) {
                     _builder.append("    ");
@@ -1582,7 +1585,7 @@ final class YangTextTemplate {
             _builder.newLineIfNotEmpty();
             {
                 Collection<DataSchemaNode> _childNodes = contSchemaNode.getChildNodes();
-                boolean _isNullOrEmpty = IterableExtensions.isNullOrEmpty(_childNodes);
+                boolean _isNullOrEmpty = isNullOrEmpty(_childNodes);
                 boolean _not = (!_isNullOrEmpty);
                 if (_not) {
                     _builder.append("    ");
@@ -1594,7 +1597,7 @@ final class YangTextTemplate {
             }
             {
                 Set<AugmentationSchema> _availableAugmentations = contSchemaNode.getAvailableAugmentations();
-                boolean _isNullOrEmpty_1 = IterableExtensions.isNullOrEmpty(_availableAugmentations);
+                boolean _isNullOrEmpty_1 = isNullOrEmpty(_availableAugmentations);
                 boolean _not_1 = (!_isNullOrEmpty_1);
                 if (_not_1) {
                     _builder.append("    ");
@@ -1606,7 +1609,7 @@ final class YangTextTemplate {
             }
             {
                 Set<GroupingDefinition> _groupings = contSchemaNode.getGroupings();
-                boolean _isNullOrEmpty_2 = IterableExtensions.isNullOrEmpty(_groupings);
+                boolean _isNullOrEmpty_2 = isNullOrEmpty(_groupings);
                 boolean _not_2 = (!_isNullOrEmpty_2);
                 if (_not_2) {
                     _builder.append("    ");
@@ -1618,7 +1621,7 @@ final class YangTextTemplate {
             }
             {
                 Set<UsesNode> _uses = contSchemaNode.getUses();
-                boolean _isNullOrEmpty_3 = IterableExtensions.isNullOrEmpty(_uses);
+                boolean _isNullOrEmpty_3 = isNullOrEmpty(_uses);
                 boolean _not_3 = (!_isNullOrEmpty_3);
                 if (_not_3) {
                     _builder.append("    ");
@@ -1640,7 +1643,7 @@ final class YangTextTemplate {
             }
             {
                 List<UnknownSchemaNode> _unknownSchemaNodes = contSchemaNode.getUnknownSchemaNodes();
-                boolean _isNullOrEmpty_4 = IterableExtensions.isNullOrEmpty(_unknownSchemaNodes);
+                boolean _isNullOrEmpty_4 = isNullOrEmpty(_unknownSchemaNodes);
                 boolean _not_4 = (!_isNullOrEmpty_4);
                 if (_not_4) {
                     _builder.append("    ");
@@ -1906,7 +1909,7 @@ final class YangTextTemplate {
             }
             {
                 Collection<DataSchemaNode> _childNodes = listSchemaNode.getChildNodes();
-                boolean _isNullOrEmpty = IterableExtensions.isNullOrEmpty(_childNodes);
+                boolean _isNullOrEmpty = isNullOrEmpty(_childNodes);
                 boolean _not = (!_isNullOrEmpty);
                 if (_not) {
                     _builder.append("    ");
@@ -1918,7 +1921,7 @@ final class YangTextTemplate {
             }
             {
                 Set<AugmentationSchema> _availableAugmentations = listSchemaNode.getAvailableAugmentations();
-                boolean _isNullOrEmpty_1 = IterableExtensions.isNullOrEmpty(_availableAugmentations);
+                boolean _isNullOrEmpty_1 = isNullOrEmpty(_availableAugmentations);
                 boolean _not_1 = (!_isNullOrEmpty_1);
                 if (_not_1) {
                     _builder.append("    ");
@@ -1930,7 +1933,7 @@ final class YangTextTemplate {
             }
             {
                 Set<GroupingDefinition> _groupings = listSchemaNode.getGroupings();
-                boolean _isNullOrEmpty_2 = IterableExtensions.isNullOrEmpty(_groupings);
+                boolean _isNullOrEmpty_2 = isNullOrEmpty(_groupings);
                 boolean _not_2 = (!_isNullOrEmpty_2);
                 if (_not_2) {
                     _builder.append("    ");
@@ -1942,7 +1945,7 @@ final class YangTextTemplate {
             }
             {
                 Set<UsesNode> _uses = listSchemaNode.getUses();
-                boolean _isNullOrEmpty_3 = IterableExtensions.isNullOrEmpty(_uses);
+                boolean _isNullOrEmpty_3 = isNullOrEmpty(_uses);
                 boolean _not_3 = (!_isNullOrEmpty_3);
                 if (_not_3) {
                     _builder.append("    ");
@@ -1964,7 +1967,7 @@ final class YangTextTemplate {
             }
             {
                 List<UnknownSchemaNode> _unknownSchemaNodes = listSchemaNode.getUnknownSchemaNodes();
-                boolean _isNullOrEmpty_4 = IterableExtensions.isNullOrEmpty(_unknownSchemaNodes);
+                boolean _isNullOrEmpty_4 = isNullOrEmpty(_unknownSchemaNodes);
                 boolean _not_4 = (!_isNullOrEmpty_4);
                 if (_not_4) {
                     _builder.append("    ");
