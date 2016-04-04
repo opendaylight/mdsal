@@ -56,6 +56,7 @@
         <feature version='${yangtools.version}'>odl-yangtools-yang-data</feature>
         <bundle>mvn:org.javassist/javassist/{{VERSION}}</bundle>
         <bundle>mvn:org.apache.commons/commons-lang3/{{VERSION}}</bundle>
+        <bundle>mvn:org.eclipse.xtext/org.eclipse.xtext.xbase.lib/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-impl/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-util/{{VERSION}}</bundle>
