@@ -12,8 +12,6 @@ import java.util.Date
 import java.util.List
 import java.util.Map
 import java.util.Set
-import java.util.StringTokenizer
-import org.opendaylight.yangtools.yang.common.QName
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode
@@ -41,14 +39,11 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPair
 import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
-import com.google.common.base.CharMatcher
 
 class YangTemplate {
 
     // FIXME: this is not thread-safe and seems to be unused!
     private static var Module module = null
-
-    private static val CharMatcher NEWLINE_OR_TAB = CharMatcher.anyOf("\n\t")
 
     def static String generateYangSnipet(SchemaNode schemaNode) {
         if (schemaNode == null)
@@ -131,7 +126,7 @@ class YangTemplate {
 
         '''
             revision «SimpleDateFormatUtil.getRevisionFormat.format(moduleRevision)» {
-                description "«formatToParagraph(moduleDescription, revisionIndent)»";
+                description "«YangTextTemplate.formatToParagraph(moduleDescription, revisionIndent)»";
             }
         '''
     }
@@ -554,7 +549,7 @@ class YangTemplate {
 
     def static writeAugment(AugmentationSchema augment) {
         '''
-            augment «formatToAugmentPath(augment.targetPath.pathFromRoot)» {
+            augment «YangTextTemplate.formatToAugmentPath(augment.targetPath.pathFromRoot)» {
                 «IF augment.whenCondition != null && !augment.whenCondition.toString.nullOrEmpty»
                 when "«augment.whenCondition.toString»";
                 «ENDIF»
@@ -764,100 +759,5 @@ class YangTemplate {
                 «writeListSchemaNode(child)»
             «ENDIF»
         '''
-    }
-    
-    static def String formatSchemaPath(String moduleName, Iterable<QName> schemaPath) {
-        var currentElement = schemaPath.head
-        val StringBuilder sb = new StringBuilder()
-        sb.append(moduleName)
-
-        for(pathElement : schemaPath) {
-            if(!currentElement.namespace.equals(pathElement.namespace)) {
-                currentElement = pathElement
-                sb.append('/')
-                sb.append(pathElement)
-            }
-            else {
-                sb.append('/')
-                sb.append(pathElement.localName)
-            }
-        }
-        return sb.toString
-    }
-
-    static def String formatToParagraph(String text, int nextLineIndent) {
-        if (text == null || text.isEmpty())
-            return '';
-
-        var String formattedText = text;
-        val StringBuilder sb = new StringBuilder();
-        val StringBuilder lineBuilder = new StringBuilder();
-        var boolean isFirstElementOnNewLineEmptyChar = false;
-        val lineIndent = computeNextLineIndent(nextLineIndent);
-
-        formattedText = NEWLINE_OR_TAB.removeFrom(formattedText);
-        formattedText = formattedText.replaceAll(" +", " ");
-
-        val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
-
-        while (tokenizer.hasMoreElements()) {
-            val String nextElement = tokenizer.nextElement().toString();
-
-            if (lineBuilder.length() + nextElement.length() > 80) {
-                if (lineBuilder.charAt(lineBuilder.length() - 1) == ' ') {
-                    lineBuilder.setLength(0);
-                    lineBuilder.append(lineBuilder.substring(0, lineBuilder.length() - 1));
-                }
-                if (lineBuilder.charAt(0) == ' ') {
-                    lineBuilder.setLength(0);
-                    lineBuilder.append(lineBuilder.substring(1));
-                }
-
-                sb.append(lineBuilder);
-                lineBuilder.setLength(0);
-                sb.append("\n");
-
-                if (nextLineIndent > 0) {
-                    sb.append(lineIndent)
-                }
-
-                if (nextElement.toString().equals(" "))
-                    isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar;
-            }
-            if (isFirstElementOnNewLineEmptyChar) {
-                isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar;
-            } else {
-                lineBuilder.append(nextElement);
-            }
-        }
-        sb.append(lineBuilder);
-        sb.append("\n");
-
-        return sb.toString();
-    }
-
-    def private static formatToAugmentPath(Iterable<QName> schemaPath) {
-        val StringBuilder sb = new StringBuilder();
-
-        for(pathElement : schemaPath) {
-            val ns = pathElement.namespace
-            val localName = pathElement.localName
-
-            sb.append("\\(")
-            sb.append(ns)
-            sb.append(')')
-            sb.append(localName)
-        }
-        return sb.toString
-    }
-
-    private static def computeNextLineIndent(int nextLineIndent) {
-        val StringBuilder sb = new StringBuilder()
-        var i = 0
-        while (i < nextLineIndent) {
-            sb.append(' ')
-            i = i + 1
-        }
-        return sb.toString
     }
 }
