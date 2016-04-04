@@ -2118,7 +2118,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName) {
         final StringBuilder sb = new StringBuilder();
         final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription());
-        final String formattedDescription = YangTemplate.formatToParagraph(nodeDescription, 0);
+        final String formattedDescription = YangTextTemplate.formatToParagraph(nodeDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
             sb.append(formattedDescription);
@@ -2149,7 +2149,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             sb.append("The schema path to identify an instance is");
             sb.append(NEW_LINE);
             sb.append("<i>");
-            sb.append(YangTemplate.formatSchemaPath(module.getName(), schemaNode.getPath().getPathFromRoot()));
+            sb.append(YangTextTemplate.formatSchemaPath(module.getName(), schemaNode.getPath().getPathFromRoot()));
             sb.append("</i>");
             sb.append(NEW_LINE);
 
@@ -2186,7 +2186,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private String createDescription(final Module module) {
         final StringBuilder sb = new StringBuilder();
         final String moduleDescription = encodeAngleBrackets(module.getDescription());
-        final String formattedDescription = YangTemplate.formatToParagraph(moduleDescription, 0);
+        final String formattedDescription = YangTextTemplate.formatToParagraph(moduleDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
             sb.append(formattedDescription);
