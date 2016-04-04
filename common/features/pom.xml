@@ -83,10 +83,6 @@
           </dependency>
 
             <!-- Binding MD-SAL & Java Binding -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>maven-sal-api-gen-plugin</artifactId>
-            </dependency>
              <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>mdsal-binding-generator-api</artifactId>
@@ -98,10 +94,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>mdsal-binding-generator-impl</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>mdsal-binding-java-api-generator</artifactId>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
