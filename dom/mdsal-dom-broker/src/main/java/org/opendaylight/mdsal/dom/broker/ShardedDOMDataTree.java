@@ -59,9 +59,12 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     }
 
     @Override
-    public <T extends DOMDataTreeShard> ListenerRegistration<T> registerDataTreeShard(final DOMDataTreeIdentifier prefix, final T shard) throws DOMDataTreeShardingConflictException {
+    public <T extends DOMDataTreeShard> ListenerRegistration<T> registerDataTreeShard(final DOMDataTreeIdentifier prefix, final T shard, final DOMDataTreeProducer producer) throws DOMDataTreeShardingConflictException {
         final ShardRegistration<T> reg;
         final ShardRegistration<?> parentReg;
+
+        Preconditions.checkArgument(producer.getSubtrees().size() == 1, "Producer that is used to verify namespace claim can only claim a single namespace");
+        Preconditions.checkArgument(prefix.equals(producer.getSubtrees().iterator().next()), "Trying to register shard to a different namespace than the producer has claimed");
 
         synchronized (this) {
             /*

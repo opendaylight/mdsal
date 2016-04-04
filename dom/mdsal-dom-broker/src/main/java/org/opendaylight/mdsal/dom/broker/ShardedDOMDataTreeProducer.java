@@ -204,7 +204,7 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         return new ShardedDOMDataTreeProducer(dataTree, shardMap, shards);
     }
 
-    Set<DOMDataTreeIdentifier> getSubtrees() {
+    public Set<DOMDataTreeIdentifier> getSubtrees() {
         return idToShard.keySet();
     }
 
