@@ -2107,7 +2107,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         if (verboseClassComments) {
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(schemaNodes)));
+            sb.append(encodeAngleBrackets(YangTextTemplate.generateYangSnipet(schemaNodes)));
             sb.append("</pre>");
             sb.append(NEW_LINE);
         }
@@ -2143,7 +2143,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(schemaNode)));
+            sb.append(encodeAngleBrackets(YangTextTemplate.generateYangSnipet(schemaNode)));
             sb.append("</pre>");
             sb.append(NEW_LINE);
             sb.append("The schema path to identify an instance is");
@@ -2201,7 +2201,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(module)));
+            sb.append(encodeAngleBrackets(YangTextTemplate.generateYangSnipet(module)));
             sb.append("</pre>");
         }
 
