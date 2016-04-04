@@ -12,8 +12,6 @@ import java.util.Date
 import java.util.List
 import java.util.Map
 import java.util.Set
-import java.util.StringTokenizer
-import org.opendaylight.yangtools.yang.common.QName
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode
@@ -41,14 +39,11 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPair
 import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
-import com.google.common.base.CharMatcher
 
 class YangTemplate {
 
     // FIXME: this is not thread-safe and seems to be unused!
     private static var Module module = null
-
-    private static val CharMatcher NEWLINE_OR_TAB = CharMatcher.anyOf("\n\t")
 
     def static String generateYangSnipet(SchemaNode schemaNode) {
         if (schemaNode == null)
@@ -103,7 +98,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeEnumPair(EnumPair pair) {
+    def private static writeEnumPair(EnumPair pair) {
         var boolean hasEnumPairValue = pair.value != null
         '''
             enum «pair.name»«IF !hasEnumPairValue»;«ELSE»{
@@ -113,7 +108,7 @@ class YangTemplate {
         '''
     }
 
-    def static String writeModuleImports(Set<ModuleImport> moduleImports) {
+    def private static String writeModuleImports(Set<ModuleImport> moduleImports) {
         if (moduleImports.nullOrEmpty)
             return ''
 
@@ -126,12 +121,12 @@ class YangTemplate {
         '''
     }
 
-    def static writeRevision(Date moduleRevision, String moduleDescription) {
+    def private static writeRevision(Date moduleRevision, String moduleDescription) {
         val revisionIndent = 12
 
         '''
             revision «SimpleDateFormatUtil.getRevisionFormat.format(moduleRevision)» {
-                description "«formatToParagraph(moduleDescription, revisionIndent)»";
+                description "«YangTextTemplate.formatToParagraph(moduleDescription, revisionIndent)»";
             }
         '''
     }
@@ -198,7 +193,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeRPCs(Set<RpcDefinition> rpcDefs) {
+    def private static writeRPCs(Set<RpcDefinition> rpcDefs) {
         '''
             «FOR rpc : rpcDefs»
                 «IF rpc != null»
@@ -208,7 +203,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeRPC(RpcDefinition rpc) {
+    def private static writeRPC(RpcDefinition rpc) {
         var boolean isStatusDeprecated = rpc.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
@@ -238,7 +233,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeRpcInput(ContainerSchemaNode input) {
+    def private static writeRpcInput(ContainerSchemaNode input) {
         if(input == null)
             return ''
 
@@ -252,7 +247,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeRpcOutput(ContainerSchemaNode output) {
+    def private static writeRpcOutput(ContainerSchemaNode output) {
         if(output == null)
             return ''
 
@@ -265,7 +260,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeNotifications(Set<NotificationDefinition> notifications) {
+    def private static writeNotifications(Set<NotificationDefinition> notifications) {
         '''
             «FOR notification : notifications»
                 «IF notification != null»
@@ -275,7 +270,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeNotification(NotificationDefinition notification) {
+    def private static writeNotification(NotificationDefinition notification) {
         var boolean isStatusDeprecated = notification.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
@@ -309,7 +304,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeUnknownSchemaNodes(List<UnknownSchemaNode> unknownSchemaNodes) {
+    def private static writeUnknownSchemaNodes(List<UnknownSchemaNode> unknownSchemaNodes) {
         if (unknownSchemaNodes.nullOrEmpty)
             return ''
 
@@ -320,11 +315,11 @@ class YangTemplate {
         '''
     }
 
-    def static writeUnknownSchemaNode(UnknownSchemaNode unknownSchemaNode) {
+    def private static writeUnknownSchemaNode(UnknownSchemaNode unknownSchemaNode) {
         return ''
     }
 
-    def static writeUsesNodes(Set<UsesNode> usesNodes) {
+    def private static writeUsesNodes(Set<UsesNode> usesNodes) {
         if (usesNodes == null) {
             return ''
         }
@@ -338,7 +333,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeUsesNode(UsesNode usesNode) {
+    def private static writeUsesNode(UsesNode usesNode) {
         val hasRefines = !usesNode.refines.empty
 
         '''
@@ -350,7 +345,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeRefines(Map<SchemaPath, SchemaNode> refines) {
+    def private static writeRefines(Map<SchemaPath, SchemaNode> refines) {
         '''
             «FOR path : refines.keySet»
             «val schemaNode = refines.get(path)»
@@ -359,7 +354,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeRefine(SchemaPath path, SchemaNode schemaNode) {
+    def private static writeRefine(SchemaPath path, SchemaNode schemaNode) {
         '''
             refine «path.pathFromRoot.last» {
                 «IF schemaNode instanceof DataSchemaNode»
@@ -369,17 +364,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeTypeDefinitions(Set<TypeDefinition<?>> typeDefinitions) {
-        '''
-            «FOR typeDefinition : typeDefinitions»
-                «IF typeDefinition != null»
-                «writeTypeDefinition(typeDefinition)»
-                «ENDIF»
-            «ENDFOR»
-        '''
-    }
-
-    def static writeTypeDefinition(TypeDefinition<?> typeDefinition) {
+    def private static writeTypeDefinition(TypeDefinition<?> typeDefinition) {
         var boolean isStatusDeprecated = typeDefinition.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
@@ -392,7 +377,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeIdentities(Set<IdentitySchemaNode> identities) {
+    def private static writeIdentities(Set<IdentitySchemaNode> identities) {
         if (identities.nullOrEmpty)
             return ''
         '''
@@ -402,7 +387,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeIdentity(IdentitySchemaNode identity) {
+    def private static writeIdentity(IdentitySchemaNode identity) {
         if (identity == null)
             return ''
         '''
@@ -425,7 +410,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeIdentityNs(IdentitySchemaNode identity) {
+    def private static writeIdentityNs(IdentitySchemaNode identity) {
         if(module == null)
             return ''
 
@@ -436,7 +421,7 @@ class YangTemplate {
         return ''
     }
 
-    def static writeFeatures(Set<FeatureDefinition> features) {
+    def private static writeFeatures(Set<FeatureDefinition> features) {
         '''
             «FOR feature : features»
                 «IF feature != null»
@@ -446,7 +431,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeFeature(FeatureDefinition featureDef) {
+    def private static writeFeature(FeatureDefinition featureDef) {
         '''
             feature «featureDef.QName.localName» {
                 «IF !featureDef.description.nullOrEmpty»
@@ -464,7 +449,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeExtensions(List<ExtensionDefinition> extensions) {
+    def private static writeExtensions(List<ExtensionDefinition> extensions) {
         '''
             «FOR anExtension : extensions»
                 «IF anExtension != null»
@@ -474,7 +459,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeExtension(ExtensionDefinition extensionDef) {
+    def private static writeExtension(ExtensionDefinition extensionDef) {
         var boolean isStatusDeprecated = extensionDef.status == Status::DEPRECATED
 
         '''
@@ -500,7 +485,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeDeviations(Set<Deviation> deviations) {
+    def private static writeDeviations(Set<Deviation> deviations) {
         '''
             «FOR deviation : deviations»
                 «IF deviation != null»
@@ -510,7 +495,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeDeviation(Deviation deviation) {
+    def private static writeDeviation(Deviation deviation) {
         '''
             deviation «deviation.targetPath» {
                 «IF !deviation.reference.nullOrEmpty»
@@ -524,7 +509,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeAugments(Set<AugmentationSchema> augments) {
+    def private static writeAugments(Set<AugmentationSchema> augments) {
         '''
             «FOR augment : augments»
                 «IF augment != null»
@@ -534,7 +519,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeDataSchemaNodes(Collection<DataSchemaNode> dataSchemaNodes) {
+    def private static writeDataSchemaNodes(Collection<DataSchemaNode> dataSchemaNodes) {
         '''
             «FOR schemaNode : dataSchemaNodes»
                 «writeDataSchemaNode(schemaNode)»
@@ -542,7 +527,7 @@ class YangTemplate {
         '''
     }
 
-    def static CharSequence writeGroupingDefs(Set<GroupingDefinition> groupingDefs) {
+    def private static CharSequence writeGroupingDefs(Set<GroupingDefinition> groupingDefs) {
         '''
             «FOR groupingDef : groupingDefs»
                 «IF groupingDef != null»
@@ -552,9 +537,9 @@ class YangTemplate {
         '''
     }
 
-    def static writeAugment(AugmentationSchema augment) {
+    def private static writeAugment(AugmentationSchema augment) {
         '''
-            augment «formatToAugmentPath(augment.targetPath.pathFromRoot)» {
+            augment «YangTextTemplate.formatToAugmentPath(augment.targetPath.pathFromRoot)» {
                 «IF augment.whenCondition != null && !augment.whenCondition.toString.nullOrEmpty»
                 when "«augment.whenCondition.toString»";
                 «ENDIF»
@@ -579,7 +564,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeGroupingDef(GroupingDefinition groupingDef) {
+    def private static writeGroupingDef(GroupingDefinition groupingDef) {
         var boolean isStatusDeprecated = groupingDef.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
@@ -602,7 +587,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeContSchemaNode(ContainerSchemaNode contSchemaNode) {
+    def private static writeContSchemaNode(ContainerSchemaNode contSchemaNode) {
         var boolean isStatusDeprecated = contSchemaNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
@@ -631,7 +616,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeAnyXmlSchemaNode(AnyXmlSchemaNode anyXmlSchemaNode) {
+    def private static writeAnyXmlSchemaNode(AnyXmlSchemaNode anyXmlSchemaNode) {
         var boolean isStatusDeprecated = anyXmlSchemaNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
@@ -644,7 +629,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeLeafSchemaNode(LeafSchemaNode leafSchemaNode) {
+    def private static writeLeafSchemaNode(LeafSchemaNode leafSchemaNode) {
         var boolean isStatusDeprecated = leafSchemaNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
@@ -659,7 +644,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeLeafListSchemaNode(LeafListSchemaNode leafListSchemaNode) {
+    def private static writeLeafListSchemaNode(LeafListSchemaNode leafListSchemaNode) {
         var boolean isStatusDeprecated = leafListSchemaNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
@@ -674,7 +659,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeChoiceCaseNode(ChoiceCaseNode choiceCaseNode) {
+    def private static writeChoiceCaseNode(ChoiceCaseNode choiceCaseNode) {
         var boolean isStatusDeprecated = choiceCaseNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
@@ -691,7 +676,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeChoiceNode(ChoiceSchemaNode choiceNode) {
+    def private static writeChoiceNode(ChoiceSchemaNode choiceNode) {
         var boolean isStatusDeprecated = choiceNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
@@ -708,7 +693,7 @@ class YangTemplate {
         '''
     }
 
-    def static writeListSchemaNode(ListSchemaNode listSchemaNode) {
+    def private static writeListSchemaNode(ListSchemaNode listSchemaNode) {
         var boolean isStatusDeprecated = listSchemaNode.status == Status::DEPRECATED
 
         '''
@@ -740,7 +725,7 @@ class YangTemplate {
         '''
     }
 
-    def static CharSequence writeDataSchemaNode(DataSchemaNode child) {
+    def private static CharSequence writeDataSchemaNode(DataSchemaNode child) {
         '''
             «IF child instanceof ContainerSchemaNode»
                 «writeContSchemaNode(child)»
@@ -764,100 +749,5 @@ class YangTemplate {
                 «writeListSchemaNode(child)»
             «ENDIF»
         '''
-    }
-    
-    static def String formatSchemaPath(String moduleName, Iterable<QName> schemaPath) {
-        var currentElement = schemaPath.head
-        val StringBuilder sb = new StringBuilder()
-        sb.append(moduleName)
-
-        for(pathElement : schemaPath) {
-            if(!currentElement.namespace.equals(pathElement.namespace)) {
-                currentElement = pathElement
-                sb.append('/')
-                sb.append(pathElement)
-            }
-            else {
-                sb.append('/')
-                sb.append(pathElement.localName)
-            }
-        }
-        return sb.toString
-    }
-
-    static def String formatToParagraph(String text, int nextLineIndent) {
-        if (text == null || text.isEmpty())
-            return '';
-
-        var String formattedText = text;
-        val StringBuilder sb = new StringBuilder();
-        val StringBuilder lineBuilder = new StringBuilder();
-        var boolean isFirstElementOnNewLineEmptyChar = false;
-        val lineIndent = computeNextLineIndent(nextLineIndent);
-
-        formattedText = NEWLINE_OR_TAB.removeFrom(formattedText);
-        formattedText = formattedText.replaceAll(" +", " ");
-
-        val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
-
-        while (tokenizer.hasMoreElements()) {
-            val String nextElement = tokenizer.nextElement().toString();
-
-            if (lineBuilder.length() + nextElement.length() > 80) {
-                if (lineBuilder.charAt(lineBuilder.length() - 1) == ' ') {
-                    lineBuilder.setLength(0);
-                    lineBuilder.append(lineBuilder.substring(0, lineBuilder.length() - 1));
-                }
-                if (lineBuilder.charAt(0) == ' ') {
-                    lineBuilder.setLength(0);
-                    lineBuilder.append(lineBuilder.substring(1));
-                }
-
-                sb.append(lineBuilder);
-                lineBuilder.setLength(0);
-                sb.append("\n");
-
-                if (nextLineIndent > 0) {
-                    sb.append(lineIndent)
-                }
-
-                if (nextElement.toString().equals(" "))
-                    isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar;
-            }
-            if (isFirstElementOnNewLineEmptyChar) {
-                isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar;
-            } else {
-                lineBuilder.append(nextElement);
-            }
-        }
-        sb.append(lineBuilder);
-        sb.append("\n");
-
-        return sb.toString();
-    }
-
-    def private static formatToAugmentPath(Iterable<QName> schemaPath) {
-        val StringBuilder sb = new StringBuilder();
-
-        for(pathElement : schemaPath) {
-            val ns = pathElement.namespace
-            val localName = pathElement.localName
-
-            sb.append("\\(")
-            sb.append(ns)
-            sb.append(')')
-            sb.append(localName)
-        }
-        return sb.toString
-    }
-
-    private static def computeNextLineIndent(int nextLineIndent) {
-        val StringBuilder sb = new StringBuilder()
-        var i = 0
-        while (i < nextLineIndent) {
-            sb.append(' ')
-            i = i + 1
-        }
-        return sb.toString
     }
 }
