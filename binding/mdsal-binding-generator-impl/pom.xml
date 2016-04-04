@@ -66,16 +66,6 @@
             <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.xtend</groupId>
-            <artifactId>org.eclipse.xtend.lib</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtend</groupId>
-            <artifactId>org.eclipse.xtend.lib.macro</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.xtext</groupId>
             <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
             <scope>provided</scope>
@@ -97,9 +87,7 @@
                         </Export-Package>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Dependency>
-                            org.eclipse.xtend.lib;inline=true,
-                            org.eclipse.xtend.lib.macro;inline=true,
-                            org.eclipse.xtext.xbase.lib;inline=true,
+                            org.eclipse.xtext.xbase.lib;inline=org/eclipse/xtend2/lib/**,
                         </Embed-Dependency>
                     </instructions>
                 </configuration>
