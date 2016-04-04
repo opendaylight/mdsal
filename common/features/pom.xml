@@ -67,70 +67,76 @@
             <type>xml</type>
         </dependency>
 
+
         <dependency>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>mdsal-common-api</artifactId>
-          </dependency>
+            <groupId>org.eclipse.xtext</groupId>
+            <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
+        </dependency>
 
-          <dependency>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>mdsal-dom-api</artifactId>
-          </dependency>
-          <dependency>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>mdsal-dom-spi</artifactId>
-          </dependency>
-          <dependency>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>mdsal-dom-broker</artifactId>
-          </dependency>
-          <dependency>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-          </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-common-api</artifactId>
+        </dependency>
 
-            <!-- Binding MD-SAL & Java Binding -->
-             <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>mdsal-binding-generator-api</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>mdsal-binding-generator-util</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>mdsal-binding-generator-impl</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>yang-binding</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>mdsal-binding-dom-codec</artifactId>
-            </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-dom-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-dom-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-dom-broker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
+        </dependency>
 
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>mdsal-binding-api</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>mdsal-binding-dom-adapter</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>mdsal-binding-util</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}.model</groupId>
-                <artifactId>yang-ext</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}.model</groupId>
-                <artifactId>general-entity</artifactId>
-            </dependency>
+        <!-- Binding MD-SAL & Java Binding -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-binding-generator-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-binding-generator-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-binding-generator-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>yang-binding</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-binding-dom-codec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-binding-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-binding-dom-adapter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-binding-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}.model</groupId>
+            <artifactId>yang-ext</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}.model</groupId>
+            <artifactId>general-entity</artifactId>
+        </dependency>
     </dependencies>
 
   <!--
