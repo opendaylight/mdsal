@@ -136,120 +136,75 @@ final class YangTextTemplate {
         return sb.toString();
     }
 
-    // FIXME: below lies unaudited xtend-generated code
-
     static String generateYangSnipet(final SchemaNode schemaNode) {
-        String _xblockexpression = null;
-        {
-            boolean _equals = Objects.equal(schemaNode, null);
-            if (_equals) {
-                return "";
-            }
-            StringConcatenation _builder = new StringConcatenation();
-            {
-                if ((schemaNode instanceof DataSchemaNode)) {
-                    CharSequence _writeDataSchemaNode = writeDataSchemaNode(((DataSchemaNode)schemaNode));
-                    _builder.append(_writeDataSchemaNode, "");
-                    _builder.newLineIfNotEmpty();
-                }
-            }
-            {
-                if ((schemaNode instanceof EnumTypeDefinition.EnumPair)) {
-                    CharSequence _writeEnumPair = writeEnumPair(((EnumTypeDefinition.EnumPair)schemaNode));
-                    _builder.append(_writeEnumPair, "");
-                    _builder.newLineIfNotEmpty();
-                }
-            }
-            {
-                if ((schemaNode instanceof ExtensionDefinition)) {
-                    CharSequence _writeExtension = writeExtension(((ExtensionDefinition)schemaNode));
-                    _builder.append(_writeExtension, "");
-                    _builder.newLineIfNotEmpty();
-                }
-            }
-            {
-                if ((schemaNode instanceof FeatureDefinition)) {
-                    CharSequence _writeFeature = writeFeature(((FeatureDefinition)schemaNode));
-                    _builder.append(_writeFeature, "");
-                    _builder.newLineIfNotEmpty();
-                }
-            }
-            {
-                if ((schemaNode instanceof GroupingDefinition)) {
-                    CharSequence _writeGroupingDef = writeGroupingDef(((GroupingDefinition)schemaNode));
-                    _builder.append(_writeGroupingDef, "");
-                    _builder.newLineIfNotEmpty();
-                }
-            }
-            {
-                if ((schemaNode instanceof IdentitySchemaNode)) {
-                    CharSequence _writeIdentity = writeIdentity(((IdentitySchemaNode)schemaNode));
-                    _builder.append(_writeIdentity, "");
-                    _builder.newLineIfNotEmpty();
-                }
-            }
-            {
-                if ((schemaNode instanceof NotificationDefinition)) {
-                    CharSequence _writeNotification = writeNotification(((NotificationDefinition)schemaNode));
-                    _builder.append(_writeNotification, "");
-                    _builder.newLineIfNotEmpty();
-                }
-            }
-            {
-                if ((schemaNode instanceof RpcDefinition)) {
-                    CharSequence _writeRPC = writeRPC(((RpcDefinition)schemaNode));
-                    _builder.append(_writeRPC, "");
-                    _builder.newLineIfNotEmpty();
-                }
-            }
-            {
-                if ((schemaNode instanceof TypeDefinition<?>)) {
-                    CharSequence _writeTypeDefinition = writeTypeDefinition(((TypeDefinition<?>)schemaNode));
-                    _builder.append(_writeTypeDefinition, "");
-                    _builder.newLineIfNotEmpty();
-                }
-            }
-            {
-                if ((schemaNode instanceof UnknownSchemaNode)) {
-                    String _writeUnknownSchemaNode = writeUnknownSchemaNode(((UnknownSchemaNode)schemaNode));
-                    _builder.append(_writeUnknownSchemaNode, "");
-                    _builder.newLineIfNotEmpty();
-                }
-            }
-            _xblockexpression = _builder.toString();
+        if (schemaNode == null) {
+            return "";
         }
-        return _xblockexpression;
+
+        final StringConcatenation sc = new StringConcatenation();
+        if (schemaNode instanceof DataSchemaNode) {
+            sc.append(writeDataSchemaNode(((DataSchemaNode)schemaNode)), "");
+            sc.newLineIfNotEmpty();
+        }
+        if (schemaNode instanceof EnumTypeDefinition.EnumPair) {
+            sc.append(writeEnumPair(((EnumTypeDefinition.EnumPair)schemaNode)), "");
+            sc.newLineIfNotEmpty();
+        }
+        if (schemaNode instanceof ExtensionDefinition) {
+            sc.append(writeExtension(((ExtensionDefinition)schemaNode)), "");
+            sc.newLineIfNotEmpty();
+        }
+        if (schemaNode instanceof FeatureDefinition) {
+            sc.append(writeFeature(((FeatureDefinition)schemaNode)), "");
+            sc.newLineIfNotEmpty();
+        }
+        if (schemaNode instanceof GroupingDefinition) {
+            sc.append(writeGroupingDef(((GroupingDefinition)schemaNode)), "");
+            sc.newLineIfNotEmpty();
+        }
+        if (schemaNode instanceof IdentitySchemaNode) {
+            sc.append(writeIdentity(((IdentitySchemaNode)schemaNode)), "");
+            sc.newLineIfNotEmpty();
+        }
+        if (schemaNode instanceof NotificationDefinition) {
+            sc.append(writeNotification(((NotificationDefinition)schemaNode)), "");
+            sc.newLineIfNotEmpty();
+        }
+        if (schemaNode instanceof RpcDefinition) {
+            CharSequence _writeRPC = writeRPC(((RpcDefinition)schemaNode));
+            sc.append(_writeRPC, "");
+            sc.newLineIfNotEmpty();
+        }
+        if (schemaNode instanceof TypeDefinition<?>) {
+            sc.append(writeTypeDefinition(((TypeDefinition<?>)schemaNode)), "");
+            sc.newLineIfNotEmpty();
+        }
+        if (schemaNode instanceof UnknownSchemaNode) {
+            sc.append(writeUnknownSchemaNode(((UnknownSchemaNode)schemaNode)), "");
+            sc.newLineIfNotEmpty();
+        }
+        return sc.toString();
     }
 
     static String generateYangSnipet(final Set<? extends SchemaNode> nodes) {
-        String _xblockexpression = null;
-        {
-            boolean _isNullOrEmpty = IterableExtensions.isNullOrEmpty(nodes);
-            if (_isNullOrEmpty) {
-                return "";
-            }
-            StringConcatenation _builder = new StringConcatenation();
-            {
-                for(final SchemaNode node : nodes) {
-                    {
-                        if ((node instanceof NotificationDefinition)) {
-                            CharSequence _writeNotification = writeNotification(((NotificationDefinition)node));
-                            _builder.append(_writeNotification, "");
-                            _builder.newLineIfNotEmpty();
-                        } else {
-                            if ((node instanceof RpcDefinition)) {
-                                CharSequence _writeRPC = writeRPC(((RpcDefinition) node));
-                                _builder.append(_writeRPC, "");
-                                _builder.newLineIfNotEmpty();
-                            }
-                        }
-                    }
-                }
-            }
-            _xblockexpression = _builder.toString();
+        if (nodes == null || nodes.isEmpty()) {
+            return "";
         }
-        return _xblockexpression;
+
+        final StringConcatenation sc = new StringConcatenation();
+        for (final SchemaNode node : nodes) {
+            if (node instanceof NotificationDefinition) {
+                sc.append(writeNotification(((NotificationDefinition)node)), "");
+                sc.newLineIfNotEmpty();
+            } else if (node instanceof RpcDefinition) {
+                sc.append(writeRPC(((RpcDefinition) node)), "");
+                sc.newLineIfNotEmpty();
+            }
+        }
+        return sc.toString();
     }
+
+    // FIXME: below lies unaudited xtend-generated code
 
     private static CharSequence writeEnumPair(final EnumTypeDefinition.EnumPair pair) {
         CharSequence _xblockexpression = null;
