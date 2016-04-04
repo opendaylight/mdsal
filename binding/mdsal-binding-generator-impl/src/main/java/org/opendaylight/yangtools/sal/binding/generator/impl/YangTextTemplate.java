@@ -146,7 +146,7 @@ final class YangTextTemplate {
 
         final StringConcatenation sc = new StringConcatenation();
         if (schemaNode instanceof DataSchemaNode) {
-            sc.append(writeDataSchemaNode(((DataSchemaNode)schemaNode)), "");
+            sc.append(writeDataSchemaNode(((DataSchemaNode)schemaNode)));
             sc.newLineIfNotEmpty();
         }
         if (schemaNode instanceof EnumTypeDefinition.EnumPair) {
@@ -154,23 +154,23 @@ final class YangTextTemplate {
             sc.newLine();
         }
         if (schemaNode instanceof ExtensionDefinition) {
-            sc.append(writeExtension(((ExtensionDefinition)schemaNode)), "");
+            sc.append(writeExtension(((ExtensionDefinition)schemaNode)));
             sc.newLineIfNotEmpty();
         }
         if (schemaNode instanceof FeatureDefinition) {
-            sc.append(writeFeature(((FeatureDefinition)schemaNode)), "");
+            sc.append(writeFeature(((FeatureDefinition)schemaNode)));
             sc.newLineIfNotEmpty();
         }
         if (schemaNode instanceof GroupingDefinition) {
-            sc.append(writeGroupingDef(((GroupingDefinition)schemaNode)), "");
+            sc.append(writeGroupingDef(((GroupingDefinition)schemaNode)));
             sc.newLineIfNotEmpty();
         }
         if (schemaNode instanceof IdentitySchemaNode) {
-            sc.append(writeIdentity(((IdentitySchemaNode)schemaNode)), "");
+            sc.append(writeIdentity(((IdentitySchemaNode)schemaNode)));
             sc.newLineIfNotEmpty();
         }
         if (schemaNode instanceof NotificationDefinition) {
-            sc.append(writeNotification(((NotificationDefinition)schemaNode)), "");
+            sc.append(writeNotification(((NotificationDefinition)schemaNode)));
             sc.newLineIfNotEmpty();
         }
         if (schemaNode instanceof RpcDefinition) {
@@ -179,11 +179,11 @@ final class YangTextTemplate {
             sc.newLineIfNotEmpty();
         }
         if (schemaNode instanceof TypeDefinition<?>) {
-            sc.append(writeTypeDefinition(((TypeDefinition<?>)schemaNode)), "");
+            sc.append(writeTypeDefinition(((TypeDefinition<?>)schemaNode)));
             sc.newLineIfNotEmpty();
         }
         if (schemaNode instanceof UnknownSchemaNode) {
-            sc.append(writeUnknownSchemaNode(((UnknownSchemaNode)schemaNode)), "");
+            sc.append(writeUnknownSchemaNode(((UnknownSchemaNode)schemaNode)));
             sc.newLineIfNotEmpty();
         }
         return sc.toString();
@@ -197,10 +197,10 @@ final class YangTextTemplate {
         final StringConcatenation sc = new StringConcatenation();
         for (final SchemaNode node : nodes) {
             if (node instanceof NotificationDefinition) {
-                sc.append(writeNotification(((NotificationDefinition)node)), "");
+                sc.append(writeNotification(((NotificationDefinition)node)));
                 sc.newLineIfNotEmpty();
             } else if (node instanceof RpcDefinition) {
-                sc.append(writeRPC(((RpcDefinition) node)), "");
+                sc.append(writeRPC(((RpcDefinition) node)));
                 sc.newLineIfNotEmpty();
             }
         }
@@ -254,10 +254,10 @@ final class YangTextTemplate {
                         if (_and) {
                             _builder.append("import ");
                             String _moduleName_1 = moduleImport.getModuleName();
-                            _builder.append(_moduleName_1, "");
+                            _builder.append(_moduleName_1);
                             _builder.append(" { prefix \"");
                             String _prefix = moduleImport.getPrefix();
-                            _builder.append(_prefix, "");
+                            _builder.append(_prefix);
                             _builder.append("\"; }");
                             _builder.newLineIfNotEmpty();
                         }
@@ -277,7 +277,7 @@ final class YangTextTemplate {
             _builder.append("revision ");
             SimpleDateFormat _revisionFormat = SimpleDateFormatUtil.getRevisionFormat();
             String _format = _revisionFormat.format(moduleRevision);
-            _builder.append(_format, "");
+            _builder.append(_format);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             _builder.append("    ");
@@ -501,7 +501,7 @@ final class YangTextTemplate {
                     boolean _notEquals = (!Objects.equal(rpc, null));
                     if (_notEquals) {
                         CharSequence _writeRPC = writeRPC(rpc);
-                        _builder.append(_writeRPC, "");
+                        _builder.append(_writeRPC);
                         _builder.newLineIfNotEmpty();
                     }
                 }
@@ -525,7 +525,7 @@ final class YangTextTemplate {
             _builder.append("rpc ");
             QName _qName = rpc.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             {
@@ -676,7 +676,7 @@ final class YangTextTemplate {
                     boolean _notEquals = (!Objects.equal(notification, null));
                     if (_notEquals) {
                         CharSequence _writeNotification = writeNotification(notification);
-                        _builder.append(_writeNotification, "");
+                        _builder.append(_writeNotification);
                         _builder.newLineIfNotEmpty();
                     }
                 }
@@ -700,7 +700,7 @@ final class YangTextTemplate {
             _builder.append("notification ");
             QName _qName = notification.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             {
@@ -813,7 +813,7 @@ final class YangTextTemplate {
             {
                 for(final UnknownSchemaNode unknownSchemaNode : unknownSchemaNodes) {
                     String _writeUnknownSchemaNode = writeUnknownSchemaNode(unknownSchemaNode);
-                    _builder.append(_writeUnknownSchemaNode, "");
+                    _builder.append(_writeUnknownSchemaNode);
                     _builder.newLineIfNotEmpty();
                 }
             }
@@ -840,7 +840,7 @@ final class YangTextTemplate {
                         boolean _notEquals = (!Objects.equal(usesNode, null));
                         if (_notEquals) {
                             CharSequence _writeUsesNode = writeUsesNode(usesNode);
-                            _builder.append(_writeUsesNode, "");
+                            _builder.append(_writeUsesNode);
                             _builder.newLineIfNotEmpty();
                         }
                     }
@@ -863,7 +863,7 @@ final class YangTextTemplate {
             Iterable<QName> _pathFromRoot = _groupingPath.getPathFromRoot();
             QName _head = Iterables.getFirst(_pathFromRoot, null);
             String _localName = _head.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             {
                 if ((!hasRefines)) {
                     _builder.append(";");
@@ -896,7 +896,7 @@ final class YangTextTemplate {
                 final SchemaNode schemaNode = refines.get(path);
                 _builder.newLineIfNotEmpty();
                 CharSequence _writeRefine = writeRefine(path, schemaNode);
-                _builder.append(_writeRefine, "");
+                _builder.append(_writeRefine);
                 _builder.newLineIfNotEmpty();
             }
         }
@@ -908,7 +908,7 @@ final class YangTextTemplate {
         _builder.append("refine ");
         Iterable<QName> _pathFromRoot = path.getPathFromRoot();
         QName _last = Iterables.getLast(_pathFromRoot, null);
-        _builder.append(_last, "");
+        _builder.append(_last);
         _builder.append(" {");
         _builder.newLineIfNotEmpty();
         {
@@ -939,7 +939,7 @@ final class YangTextTemplate {
             _builder.append("type ");
             QName _qName = typeDefinition.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             {
                 if ((!isStatusDeprecated)) {
                     _builder.append(";");
@@ -972,7 +972,7 @@ final class YangTextTemplate {
             {
                 for(final IdentitySchemaNode identity : identities) {
                     CharSequence _writeIdentity = writeIdentity(identity);
-                    _builder.append(_writeIdentity, "");
+                    _builder.append(_writeIdentity);
                     _builder.newLineIfNotEmpty();
                 }
             }
@@ -992,7 +992,7 @@ final class YangTextTemplate {
             _builder.append("identity ");
             QName _qName = identity.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             {
@@ -1088,7 +1088,7 @@ final class YangTextTemplate {
                     boolean _notEquals = (!Objects.equal(feature, null));
                     if (_notEquals) {
                         CharSequence _writeFeature = writeFeature(feature);
-                        _builder.append(_writeFeature, "");
+                        _builder.append(_writeFeature);
                         _builder.newLineIfNotEmpty();
                     }
                 }
@@ -1102,7 +1102,7 @@ final class YangTextTemplate {
         _builder.append("feature ");
         QName _qName = featureDef.getQName();
         String _localName = _qName.getLocalName();
-        _builder.append(_localName, "");
+        _builder.append(_localName);
         _builder.append(" {");
         _builder.newLineIfNotEmpty();
         {
@@ -1164,7 +1164,7 @@ final class YangTextTemplate {
                     boolean _notEquals = (!Objects.equal(anExtension, null));
                     if (_notEquals) {
                         CharSequence _writeExtension = writeExtension(anExtension);
-                        _builder.append(_writeExtension, "");
+                        _builder.append(_writeExtension);
                         _builder.newLineIfNotEmpty();
                     }
                 }
@@ -1188,7 +1188,7 @@ final class YangTextTemplate {
             _builder.append("extension ");
             QName _qName = extensionDef.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             {
@@ -1265,7 +1265,7 @@ final class YangTextTemplate {
                     boolean _notEquals = (!Objects.equal(deviation, null));
                     if (_notEquals) {
                         CharSequence _writeDeviation = writeDeviation(deviation);
-                        _builder.append(_writeDeviation, "");
+                        _builder.append(_writeDeviation);
                         _builder.newLineIfNotEmpty();
                     }
                 }
@@ -1278,7 +1278,7 @@ final class YangTextTemplate {
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("deviation ");
         SchemaPath _targetPath = deviation.getTargetPath();
-        _builder.append(_targetPath, "");
+        _builder.append(_targetPath);
         _builder.append(" {");
         _builder.newLineIfNotEmpty();
         {
@@ -1334,7 +1334,7 @@ final class YangTextTemplate {
                     boolean _notEquals = (!Objects.equal(augment, null));
                     if (_notEquals) {
                         CharSequence _writeAugment = writeAugment(augment);
-                        _builder.append(_writeAugment, "");
+                        _builder.append(_writeAugment);
                         _builder.newLineIfNotEmpty();
                     }
                 }
@@ -1348,7 +1348,7 @@ final class YangTextTemplate {
         {
             for(final DataSchemaNode schemaNode : dataSchemaNodes) {
                 CharSequence _writeDataSchemaNode = writeDataSchemaNode(schemaNode);
-                _builder.append(_writeDataSchemaNode, "");
+                _builder.append(_writeDataSchemaNode);
                 _builder.newLineIfNotEmpty();
             }
         }
@@ -1363,7 +1363,7 @@ final class YangTextTemplate {
                     boolean _notEquals = (!Objects.equal(groupingDef, null));
                     if (_notEquals) {
                         CharSequence _writeGroupingDef = writeGroupingDef(groupingDef);
-                        _builder.append(_writeGroupingDef, "");
+                        _builder.append(_writeGroupingDef);
                         _builder.newLineIfNotEmpty();
                     }
                 }
@@ -1378,7 +1378,7 @@ final class YangTextTemplate {
         SchemaPath _targetPath = augment.getTargetPath();
         Iterable<QName> _pathFromRoot = _targetPath.getPathFromRoot();
         String _formatToAugmentPath = YangTextTemplate.formatToAugmentPath(_pathFromRoot);
-        _builder.append(_formatToAugmentPath, "");
+        _builder.append(_formatToAugmentPath);
         _builder.append(" {");
         _builder.newLineIfNotEmpty();
         {
@@ -1494,7 +1494,7 @@ final class YangTextTemplate {
             _builder.append("grouping ");
             QName _qName = groupingDef.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             {
@@ -1565,7 +1565,7 @@ final class YangTextTemplate {
             _builder.append("container ");
             QName _qName = contSchemaNode.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             {
@@ -1660,7 +1660,7 @@ final class YangTextTemplate {
             _builder.append("anyxml ");
             QName _qName = anyXmlSchemaNode.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             {
                 if ((!isStatusDeprecated)) {
                     _builder.append(";");
@@ -1697,7 +1697,7 @@ final class YangTextTemplate {
             _builder.append("leaf ");
             QName _qName = leafSchemaNode.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             _builder.append("    ");
@@ -1740,7 +1740,7 @@ final class YangTextTemplate {
             _builder.append("leaf-list ");
             QName _qName = leafListSchemaNode.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             _builder.append("    ");
@@ -1783,7 +1783,7 @@ final class YangTextTemplate {
             _builder.append("case ");
             QName _qName = choiceCaseNode.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             {
@@ -1827,7 +1827,7 @@ final class YangTextTemplate {
             _builder.append("choice ");
             QName _qName = choiceNode.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             {
@@ -1871,7 +1871,7 @@ final class YangTextTemplate {
             _builder.append("list ");
             QName _qName = listSchemaNode.getQName();
             String _localName = _qName.getLocalName();
-            _builder.append(_localName, "");
+            _builder.append(_localName);
             _builder.append(" {");
             _builder.newLineIfNotEmpty();
             _builder.append("    ");
@@ -1974,14 +1974,14 @@ final class YangTextTemplate {
         {
             if ((child instanceof ContainerSchemaNode)) {
                 CharSequence _writeContSchemaNode = writeContSchemaNode(((ContainerSchemaNode)child));
-                _builder.append(_writeContSchemaNode, "");
+                _builder.append(_writeContSchemaNode);
                 _builder.newLineIfNotEmpty();
             }
         }
         {
             if ((child instanceof AnyXmlSchemaNode)) {
                 CharSequence _writeAnyXmlSchemaNode = writeAnyXmlSchemaNode(((AnyXmlSchemaNode)child));
-                _builder.append(_writeAnyXmlSchemaNode, "");
+                _builder.append(_writeAnyXmlSchemaNode);
                 _builder.newLineIfNotEmpty();
             }
         }
@@ -1995,28 +1995,28 @@ final class YangTextTemplate {
         {
             if ((child instanceof LeafListSchemaNode)) {
                 CharSequence _writeLeafListSchemaNode = writeLeafListSchemaNode(((LeafListSchemaNode)child));
-                _builder.append(_writeLeafListSchemaNode, "");
+                _builder.append(_writeLeafListSchemaNode);
                 _builder.newLineIfNotEmpty();
             }
         }
         {
             if ((child instanceof ChoiceCaseNode)) {
                 CharSequence _writeChoiceCaseNode = writeChoiceCaseNode(((ChoiceCaseNode)child));
-                _builder.append(_writeChoiceCaseNode, "");
+                _builder.append(_writeChoiceCaseNode);
                 _builder.newLineIfNotEmpty();
             }
         }
         {
             if ((child instanceof ChoiceSchemaNode)) {
                 CharSequence _writeChoiceNode = writeChoiceNode(((ChoiceSchemaNode)child));
-                _builder.append(_writeChoiceNode, "");
+                _builder.append(_writeChoiceNode);
                 _builder.newLineIfNotEmpty();
             }
         }
         {
             if ((child instanceof ListSchemaNode)) {
                 CharSequence _writeListSchemaNode = writeListSchemaNode(((ListSchemaNode)child));
-                _builder.append(_writeListSchemaNode, "");
+                _builder.append(_writeListSchemaNode);
                 _builder.newLineIfNotEmpty();
             }
         }
