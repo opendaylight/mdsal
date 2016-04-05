@@ -10,121 +10,129 @@ Robert Varga <rovarga@cisco.com>
 == Terminology
 
 Data Tree::
-  The instatiated logical tree representing configuration or operational state
-  data of modeled problem domain (e.g controller, network)
+  An instantiated logical tree that represents configuration or operational state data of a modeled problem domain (for example, a controller or a
+  network)
 
 Data Tree Consumer::
-  Component acting on data, after this data are introduced into particular
-  subtree(s) of Data Tree.
+  A component acting on data, after this data are introduced into one or more 
+  particular subtrees of a Data Tree.
 
 Data Tree Identifier::
-  A unique identifier for a particular subtree of Data Tree. It is composed of
-  the logical data store type and the instance identifier of the root node.
-  It is represented by `DOMDataTreeIdentifier`.
+  A unique identifier for a particular subtree of a Data Tree. It is composed of
+  the logical data store type and the instance identifier of the subtree's root node. It is represented by a `DOMDataTreeIdentifier`.
 
 Data Tree Producer::
-  Component responsible for providing data for particular subtree(s) of Data Tree.
+  A component responsible for providing data for one or more particular subtrees of a Data Tree.
 
 Data Tree Shard::
-  Component responsible for providing storage or access to particular subtree
-  of Data Tree.
+  A component responsible for providing storage or access to a particular subtree of a Data Tree.
 
 Shard Layout::
-  Longest-prefix mapping between Data Tree Identifiers and Data Tree Shards
-  responsible for providing access to data subtree.
+  A longest-prefix mapping between Data Tree Identifiers and Data Tree Shards
+  responsible for providing access to a data subtree.
 
 
 == Basic Concepts
 
 === Data Tree is a Namespace
-The concept of a data tree comes from {rfc6020}[RFC6020]. It is is vaguely split
-into two instances, configuration and operational. The implicit assumption is that
-*config implies oper*, e.g. any configuration data is also valid operational data.
-Further interactions between the two are left undefined and YANG language is not
-strictly extensible in the number and semantics of these instances, leaving
-a lot to implementation details. An outline of use, consistent with current
-MD-SAL design, is outlined in
-https://tools.ietf.org/html/draft-kwatsen-netmod-opstate[draft-kwatsen-netmod-opstate].
+The concept of a data tree comes from {rfc6020}[RFC6020]. It is is vaguely
+split into two instances, configuration and operational. The implicit 
+assumption is that *config implies oper*, i.e. any configuration data is
+also a valid operational data. Further interactions between the two are left
+undefined and the YANG language is not strictly extensible in the number and
+semantics of these instances, leaving a lot to implementation details. An
+outline of data tree use, which is consistent with the current MD-SAL design,
+is described in https://tools.ietf.org/html/draft-kwatsen-netmod-opstate[draft-kwatsen-netmod-opstate].
 
-OpenDaylight MD-SAL design makes no inherent assumptions about config/oper
-relationship, treating them as separate entities and making them fully
-addressable (via `DOMDataTreeIdentifier`). It is up to MD-SAL plugins (e.g. protocol
-plugins, applications) to maintain this relationship. This reflects
-the asynchronous nature of applying configuration and also the fact that
+The OpenDaylight MD-SAL design makes no inherent assumptions about the 
+relationship between the configuration and operational data tree instances.
+They are treated as separate entities and they are both fully addressable via
+the `DOMDataTreeIdentifier` objects. It is up to MD-SAL plugins (e.g. protocol
+plugins or applications) to maintain this relationship. This reflects the
+asynchronous nature of applying configuration and also the fact that the
 intended configuration data may be subject to translation (such as template
 configuration instantiation).
 
-Each of configuration and operational spaces are instances of the Conceptual Data Tree.
-Any data item in the conceptual data tree is addressed via `YangInstanceIdentifier`,
-which is a hierarchical. content-based, unique identifier. All applications
-identify data using these identifiers to MD-SAL services, which are expect
-to perform proper namespace management such that logical operation connectivity
-is maintained.
+Both the configuration and operational namespaces (data trees) are instances
+of the Conceptual Data Tree. Any data item in the conceptual data tree is
+addressed via a `YangInstanceIdentifier` object, which is a unique,
+hierarchical, content-based identifier. All applications use the identifier
+objects to identify data to MD-SAL services, which in turn are expected to
+perform proper namespace management such that logical operation connectivity is
+maintained.
+
+// Can you reword '...are expected to perform proper namespace management such that logical operation connectivity is maintained...' - not clear what you mean
 
 === Identifiers versus Locators
+
 It is important to note that when we talk about Identifiers and Locators,
 we *do not* mean
 https://en.wikipedia.org/wiki/Uniform_Resource_Identifier[URIs and URLs],
 but rather URNs and URLs as strictly separate entities. MD-SAL plugins do not
-have access to locators and it is the job of MD-SAL services to provide location
-independence.
+have access to locators and it is the job of MD-SAL services to provide 
+location independence.
 
-Exact details on how a particular MD-SAL service achieves location independence
-is currently left up to the implementation, which leads to the problem of having
-MD-SAL service cooperate, such as storing data in different backends (in-memory,
-SQL, NoSQL, etc.) and providing unified access to all available data. Note that
-data availability is subject to capabilities of the storage engine and its
-operational state, which leads to the design decision that `YangInstanceIdentifier`
-needs to be performed in two steps:
+The details of how a particular MD-SAL service achieves location independence
+is currently left up to the service's implementation, which leads to the 
+problem of having MD-SAL services cooperate, such as storing data in different 
+backends (in-memory, SQL, NoSQL, etc.) and providing unified access to all 
+available data. Note that data availability is subject to capabilities of a 
+particular storage engine and its operational state, which leads to the design
+decision that a `YangInstanceIdentifier` lookup needs to be performed in two 
+steps:
 
-. a longest-prefix match is performed to locate the storage backend instance for
+. A longest-prefix match is performed to locate the storage backend instance for
   that identifier
-. masked path elements are resolved by the storage backend.
+. Masked path elements are resolved by the storage engine
 
 === Data Tree Shard
-A process similar to the first step is performed today by the Distributed Data Store
-implementation to split data into Shards. The concept of a shard as currently
-implemented is limited to specifying namespaces and does not allow pluggable
-storage engines.
 
-In the context of the conceptual data tree, the Shard concept is generalized
-as the shorthad equivalent of a storage backend instance. Shards can be attached
-at any (even wildcard) `YangInstanceIdentifier`. This contract is exposed via
-the `DOMShardedDataTree`, which is an MD-SAL SPI class implementing
-an `YangInstanceIdentifier` -> `Shard` registry service. This is an omnipresent
-MD-SAL service, Shard Registry, whose visibility scope is a single
-OpenDaylight instance (e.g. a cluster member). *Shard Layout* is used to refer
+A process similar to the first step above is performed today by the Distributed
+Data Store implementation to split data into Shards. The concept of a Shard as
+currently implemented is limited to specifying namespaces, and it does not 
+allow for pluggable storage engines.
+
+In context of the Conceptual Data Tree, the concept of a Shard is generalized
+as the shorthand equivalent of a storage backend instance. A Shard can be 
+attached at any (even wildcard) `YangInstanceIdentifier`. This contract is
+exposed via the `DOMShardedDataTree`, which is an MD-SAL SPI class that
+implements an `YangInstanceIdentifier` -> `Shard` registry service. This is
+an omnipresent MD-SAL service, Shard Registry, whose visibility scope is a
+single OpenDaylight instance (i.e. a cluster member). *Shard Layout* refers
 to the mapping information contained in this service.
 
 === Federation, Replication and High Availability
 
 Support for various multi-node scenarios is a concern outside of core MD-SAL.
 If a particular scenario requires the shard layout to be replicated (either
-fully or partially), it is up to the Shard providers to maintain an omnipresent
+fully or partially), it is up to Shard providers to maintain an omnipresent
 service on each node, which in turn is responsible for dynamically registering
-`DOMDataTreeShard` instances with Shard Registry.
+`DOMDataTreeShard` instances with the Shard Registry service.
 
 Since the Shard Layout is strictly local to a particular OpenDaylight instance,
 an OpenDaylight cluster is geared towards being asymmetric with each node
 serving its own view of the data. This allows each node to project its local
-operational details, as well as partitioning of the data set being worked on
-based on workload and node availability. Partial symmetry of the conceptual
+operational details, as well as the partitioning of the data set being worked
+on based on workload and node availability. Partial symmetry of the conceptual
 data tree can still be maintained to the extent that a particular deployment
 requires.
+
+// Can you reword: "...OpenDaylight cluster is geared towards being asymmetric with each node serving its own view of the data." It should be two sentences. But i can't figure out how to split it.
 
 == Design
 
 [[design-listener]]
 ==== Data Tree Listener
 
-Data Tree Listener is data consumer, e.g. process wanting to act on data
-after it has been introduced to the conceptual data tree.
+A Data Tree Listener is a data consumer, for example a process that wants
+to act on data after it has been introduced to the Conceptual Data Tree.
 
-Data Tree Listener implements {mdsal-apidoc}DOMDataTreeListener.html[DOMDataTreeListener]
+A Data Tree Listener implements the {mdsal-apidoc}DOMDataTreeListener.html[DOMDataTreeListener]
 interface and registers itself using {mdsal-apidoc}DOMDataTreeService.html[DOMDataTreeService].
 
-Data Tree Listener may register for multiple subtrees and each time it is invoked
-it will be provided with current state of all subtrees, it is listening for.
+A Data Tree Listener may register for multiple subtrees. Each time it is 
+invoked it will be provided with the current state of all subtrees that it
+is registered for.
 
 
 // FIXME: Consider linking / inlining interface
@@ -140,31 +148,37 @@ public interface DOMDataTreeListener extends EventListener {
   void onDataTreeFailed(Collection<DOMDataTreeListeningException> causes); // (2)
 }
 ----
-<1> Invoked when subscribed data tree changed. `changes` contains collection
-    of changes, `subtrees` contains current state of all subtrees to which
-    listener is registered.
-<2> Invoked when a subtree listening failure occurs. This can be triggered,
-    for example, when a connection to external subtree source is broken.
+<1> Invoked when the data tree to which the Data Tree Listener is subscribed 
+    to changed. `changes` contains the collection of changes, `subtrees` 
+    contains the current state of all subtrees to which the listener is
+    registered.
+<2> Invoked when a subtree listening failure occurs. For example, a failure
+    can be triggered when a connection to an external subtree source is 
+    broken.
 
 [[design-producer]]
 ==== Data Tree Producer
 
-Data Tree Producer represents source of data in system.
-Producer implementations are not required to implement specific interface, but
-uses a {mdsal-apidoc}DOMDataTreeProducer.html[DOMDataTreeProducer] instance
-to publish data (modify conceptual data tree).
+A Data Tree Producer represents source of data in system. Data TreeProducer
+implementations are not required to implement a specific interface, but
+use a {mdsal-apidoc}DOMDataTreeProducer.html[DOMDataTreeProducer] instance
+to publish data (i.e. to modify the Conceptual Data Tree).
 
-Data Tree Producer is exclusively bound to subtree(s) of Conceptual Data Tree,
-which prevents other producers to modify same subtree.
+A Data Tree Producer is exclusively bound to one or more subtrees of the 
+Conceptual Data Tree, i.e. binding a Data Tree Producer to a subtree prevents
+other Data Tree Producers from modifying the subtree.
 
-* Failed Data Tree Producer still holds namespace claim (exclusive lock of subtree)
-  till it is closed.
+* A failed Data Tree Producer still holds a calim to the namespace to which
+  it is bound (i.e. the exclusive lock of the subtree) untill it is closed.
 
-{mdsal-apidoc}DOMDataTreeProducer.html[DOMDataTreeProducer]  Represents Data producer context
+{mdsal-apidoc}DOMDataTreeProducer.html[DOMDataTreeProducer] represents a
+Data Tree Producer context
 
-* allows transactions to be submitted to the subtrees specified at creation time
+* allows transactions to be submitted to  subtrees specified at creation
+  time
 * at any given time there may be a single transaction open.
-* once a transaction is submitted, it will proceed to be committed asynchronously.
+* once a transaction is submitted, it will proceed to be committed
+  asynchronously.
 
 
 
@@ -178,50 +192,63 @@ public interface DOMDataTreeProducer extends DOMDataTreeProducerFactory, AutoClo
   DOMDataTreeProducer createProducer(Collection<DOMDataTreeIdentifier> subtrees); // (2)
 }
 ----
-<1> Allocates new transaction, all transactions previously allocated must have
-    been either submitted or canceled. Setting `isolated` to `true` disables
-    state compression for this transaction.
-<2> Creates sub-producer for provided `subtrees`, parent producer loses the
-    ability to access the specified paths until the resulting (child) producer
-    is shut down.
+<1> Allocates a new transaction. All previously allocated transactions must
+    have been either submitted or canceled. Setting `isolated` to `true`
+    disables state compression for this transaction.
+<2> Creates a sub-producer for the provided `subtrees`. The parent producer 
+    loses the ability to access the specified paths until the resulting child 
+    producer is shut down.
+    
+// Would it be better to say 'closed' rather than 'shut down'?
 
 [[design-shard]]
 === Data Tree Shard
 
-- *Data Tree Shard* is always bound to either `OPERATIONAL`, or `CONFIG` space, never combined.
+- *A Data Tree Shard* is always bound to either the `OPERATIONAL`, or the
+  `CONFIG` space, never to both at the same time.
 
-- *Data Tree Shards* may be nested, parent shard must be aware of sub-shards and
- has to execute every request in the context of a self-consistent view
- of sub-shards liveness. Data requests passing through it need to be multiplexed
- with sub-shard creation/deletion.
+- *Data Tree Shards* may be nested, the parent shard must be aware of sub-shards
+  and execute every request in context of a self-consistent view of sub-shards 
+  liveness. Data requests passing through it must be multiplexed with sub-shard 
+  creations/deletions.
+  
+// Can you reword or explain this" "... must execute every request in context of a self-consistent view of sub-shards liveness..."
 
-- *Shard Layout* is local to OpenDaylight instance.
+- *Shard Layout* is local to an OpenDaylight instance.
 
-- *Shard Layout* is modified by agents (registering / unregistering Data Tree Shards)
-in order to make Data Tree Shard and underlaying data available to local instance
+- *Shard Layout* is modified by agents (registering / unregistering Data Tree
+  Shards) in order to make the Data Tree Shard and the underlaying data 
+  available to local instance.
 
+// '..available to local instance' of what?
 
-==== Registering Shard
+==== Registering a Shard
 
-NOTE: Namespace in this context means Data Tree Identifier prefix
+// '..Registering a Shard' with what?
 
-. *Claim namespace* - Agent registering shard must prove that it has sufficient
-  rights to modify subtree where shard is going to be attached.
-  Namespace claim is realized by having Data Tree Producer instance which is
-  bound to same subtree as shard, and producer must not have any open child
-  producers and should not have any outstanding transactions.
+NOTE: Namespace in this context means a Data Tree Identifier prefix.
 
-. *Create shard instance* - Once namespace is claimed, agent creates
+. *Claim a namespace* - An agent that is registering a shard must prove that it
+  has sufficient rights to modify the subtree where the shard is going to be 
+  attached. A namespace for the shard is claimed by binding a Data Tree Producer
+  instance to same subtree where the shard will be bound. The Data Tree Producer
+  must not have any open child producers, and it should not have any outstanding
+  transactions.
+
+. *Create a shard instance* - Once a namespace is claimed, the agent creates a
   shard instance.
-. *Attach shard* - Agent registers created shard instance along with providing
-  Data Tree Producer instance to verify namespace claim. Shard is verified if it
-  is able to cooperate with parent shard and then it is attached to parent shard
-  and Shard layout.
-. *Remove namespace claim* (optional) - If shard is providing storage for applications,
-  agent should close Data Tree Producer instance in order to make subtree available
-  to applications.
+  
+. *Attach shard* - The agent registers the created shard instance and provides
+  in the reigstration the Data Tree Producer instance to verify the namespace 
+  claim. The newly created Shard is checked for its ability to cooperate with
+  its parent shard. If the check is successful, the newly created Shard is 
+  attached to its parent shard and recorded in the Shard layout.
+  
+. *Remove namespace claim* (optional) - If the Shard is providing storage for
+  applications, the agent should close the Data Tree Producer instance to make
+  the subtree available to applications.
 
-IMPORTANT: Step 1, 2 and 3  may fail and recovery strategy depends
-on step which failed and failure reason.
+IMPORTANT: Steps 1, 2 and 3  may fail, and the recovery strategy depends
+on which step failed and on the failure reason.
 
 // FIXME: Describe possible failures and recovery scenarios
