@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a4c51b2_c4b939eb",
+        "filename": "common/parent/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-06T11:21:20Z",
+      "side": 1,
+      "message": "Would it make sense to put this in a variable?",
+      "revId": "bcc54ed32b5dd3d9ba43e641e6666703682d0aa0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
