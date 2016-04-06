@@ -110,14 +110,18 @@ service on each node, which in turn is responsible for dynamically registering
 `DOMDataTreeShard` instances with the Shard Registry service.
 
 Since the Shard Layout is strictly local to a particular OpenDaylight instance,
-an OpenDaylight cluster is geared towards being asymmetric with each node
-serving its own view of the data. This allows each node to project its local
-operational details, as well as the partitioning of the data set being worked
-on based on workload and node availability. Partial symmetry of the conceptual
-data tree can still be maintained to the extent that a particular deployment
-requires.
+an OpenDaylight cluster is not strictly consistent in its mapping of
+`YangInstanceIdentifier` to data. When a query for the entire data tree is executed,
+the returned result will vary between member instances based on the differences
+of their Shard Layouts. This allows each node to project its local operational
+details, as well as the partitioning of the data set being worked on based
+on workload and node availability.
 
-// Can you reword: "...OpenDaylight cluster is geared towards being asymmetric with each node serving its own view of the data." It should be two sentences. But i can't figure out how to split it.
+Partial symmetry of the conceptual data tree can still be maintained to
+the extent that a particular deployment requires. For example the Shard
+containing the OpenFlow topology can be configured to be registered on all
+cluster members, leading to queries into that topology returning consistent
+results.
 
 == Design
 
@@ -168,13 +172,13 @@ A Data Tree Producer is exclusively bound to one or more subtrees of the
 Conceptual Data Tree, i.e. binding a Data Tree Producer to a subtree prevents
 other Data Tree Producers from modifying the subtree.
 
-* A failed Data Tree Producer still holds a calim to the namespace to which
+* A failed Data Tree Producer still holds a claim to the namespace to which
   it is bound (i.e. the exclusive lock of the subtree) untill it is closed.
 
 {mdsal-apidoc}DOMDataTreeProducer.html[DOMDataTreeProducer] represents a
 Data Tree Producer context
 
-* allows transactions to be submitted to  subtrees specified at creation
+* allows transactions to be submitted to subtrees specified at creation
   time
 * at any given time there may be a single transaction open.
 * once a transaction is submitted, it will proceed to be committed
@@ -197,9 +201,7 @@ public interface DOMDataTreeProducer extends DOMDataTreeProducerFactory, AutoClo
     disables state compression for this transaction.
 <2> Creates a sub-producer for the provided `subtrees`. The parent producer
     loses the ability to access the specified paths until the resulting child
-    producer is shut down.
-
-// Would it be better to say 'closed' rather than 'shut down'?
+    producer is closed.
 
 [[design-shard]]
 === Data Tree Shard
@@ -210,21 +212,27 @@ public interface DOMDataTreeProducer extends DOMDataTreeProducerFactory, AutoClo
 - *Data Tree Shards* may be nested, the parent shard must be aware of sub-shards
   and execute every request in context of a self-consistent view of sub-shards
   liveness. Data requests passing through it must be multiplexed with sub-shard
-  creations/deletions.
-
-// Can you reword or explain this" "... must execute every request in context of a self-consistent view of sub-shards liveness..."
+  creations/deletions. In other words, if an application creates a transaction
+  rooted at the parent Shard and attempts to access data residing in a sub-shard,
+  the parent Shard implementation must coordinate with the sub-shard
+  implementation to provide the illusion that the data resides in the parent shard.
+  In the case of a transaction running concurrently with sub-shard creation or
+  deletion, these operations need to execute atomically with respect to each other,
+  which is to say that the transactions must completely execute as if the sub-shard
+  creation/deletion occurred before the transaction started or as if the transaction
+  completed before the sub-shard creation/deletion request was executed. This
+  requirement can also be satisfied by the Shard implementation preventing
+  transactions from completing. A Shard implementation may choose to abort any
+  open transactions prior to executing a sub-shard operation.
 
 - *Shard Layout* is local to an OpenDaylight instance.
 
 - *Shard Layout* is modified by agents (registering / unregistering Data Tree
   Shards) in order to make the Data Tree Shard and the underlaying data
-  available to local instance.
+  available to plugins and applications executing on that particular OpenDaylight
+  instance.
 
-// '..available to local instance' of what?
-
-==== Registering a Shard
-
-// '..Registering a Shard' with what?
+==== Registering a Shard with the Conceptual Data Tree
 
 NOTE: Namespace in this context means a Data Tree Identifier prefix.
 
@@ -248,7 +256,7 @@ NOTE: Namespace in this context means a Data Tree Identifier prefix.
   applications, the agent should close the Data Tree Producer instance to make
   the subtree available to applications.
 
-IMPORTANT: Steps 1, 2 and 3  may fail, and the recovery strategy depends
+IMPORTANT: Steps 1, 2 and 3 may fail, and the recovery strategy depends
 on which step failed and on the failure reason.
 
 // FIXME: Describe possible failures and recovery scenarios
