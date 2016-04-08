@@ -212,6 +212,7 @@ public class InMemoryDOMDataTreeShard implements WriteableDOMDataTreeShard, Sche
             ForeignShardModificationContext foreignContext =
                     new ForeignShardModificationContext(spec.getPrefix(), spec.createProducer());
             builder.addSubshard(foreignContext);
+            builder.addSubshard(spec.getPrefix(), foreignContext);
         }
 
         return new InmemoryDOMDataTreeShardWriteTransaction(builder.build());

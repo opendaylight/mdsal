@@ -11,6 +11,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Iterator;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -18,8 +19,13 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 
 class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteTransaction {
+
+    private InMemoryDOMDataTreeShardThreePhaseCommitCohort commitCohort;
+
     private enum SimpleCursorOperation {
         MERGE {
             @Override
@@ -65,9 +71,16 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     private final ShardDataModification modification;
     private DOMDataTreeWriteCursor cursor;
+    private DataTree rootShardDataTree;
+    private DataTreeModification rootModification = null;
 
     InmemoryDOMDataTreeShardWriteTransaction(final ShardDataModification root) {
         this.modification = Preconditions.checkNotNull(root);
+    }
+
+    InmemoryDOMDataTreeShardWriteTransaction(final ShardDataModification root, final DataTree rootShardDataTree) {
+        this.modification = Preconditions.checkNotNull(root);
+        this.rootShardDataTree = Preconditions.checkNotNull(rootShardDataTree);
     }
 
     private DOMDataTreeWriteCursor getCursor() {
@@ -122,10 +135,32 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     @Override
     public void ready() {
 
-        modification.seal();
+        rootModification = modification.seal();
 
+        commitCohort = new InMemoryDOMDataTreeShardThreePhaseCommitCohort(rootShardDataTree, rootModification, modification.getChildShards());
+    }
 
-        return;
+    @Override
+    public ListenableFuture<Boolean> validate() {
+        return commitCohort.canCommit();
+    }
+
+    @Override
+    public ListenableFuture<Void> prepare() {
+        return commitCohort.preCommit();
+    }
+
+    @Override
+    public ListenableFuture<Void> commit() {
+        return commitCohort.commit();
+    }
+
+    public void submit() {
+        Preconditions.checkNotNull(commitCohort);
+
+        commitCohort.canCommit();
+        commitCohort.preCommit();
+        commitCohort.commit();
     }
 
     public void followUp() {

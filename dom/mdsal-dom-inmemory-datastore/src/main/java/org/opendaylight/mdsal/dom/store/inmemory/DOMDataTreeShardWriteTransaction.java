@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.annotations.Beta;
+import com.google.common.util.concurrent.ListenableFuture;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -34,4 +35,10 @@ public interface DOMDataTreeShardWriteTransaction {
      * @throws IllegalStateException if this transaction has an unclosed cursor.
      */
     void ready();
+
+    ListenableFuture<Boolean> validate();
+
+    ListenableFuture<Void> prepare();
+
+    ListenableFuture<Void> commit();
 }
