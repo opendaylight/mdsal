@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="mdsal">
     <body>
-        <menu name="Overview">
-            <item name="Javadocs" href="apidocs/index.html" />
+        <menu name="Overview">        
+          <item name="Javadocs" href="apidocs/index.html" />
+        </menu>
+        <menu name="Architecture &amp; Design">
+          <item name="Conceptual Data Tree" href="conceptual-data-tree.html" />
         </menu>
     </body>
 </project>
