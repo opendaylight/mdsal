@@ -60,6 +60,10 @@ module odl-datastore-test {
                         type string;
                     }
                 }
+
+                leaf another-shard-value {
+                    type string;
+                }
             }
         }
     }

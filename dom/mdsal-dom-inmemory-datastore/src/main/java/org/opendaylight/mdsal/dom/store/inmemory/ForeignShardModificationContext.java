@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.ListenableFuture;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -66,5 +67,19 @@ final class ForeignShardModificationContext {
 
     DOMDataTreeIdentifier getIdentifier() {
         return identifier;
+    }
+
+    ListenableFuture<Boolean> validate() {
+        return tx.validate();
+    }
+
+    ListenableFuture<Void> prepare() {
+        return tx.prepare();
+    }
+
+    ListenableFuture<Void> submit() {
+        final ListenableFuture<Void> commit = tx.commit();
+        tx = null;
+        return commit;
     }
 }
