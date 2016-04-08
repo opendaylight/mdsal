@@ -11,6 +11,10 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import java.util.Iterator;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -18,8 +22,13 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 
 class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteTransaction {
+
+    private InMemoryDOMDataTreeShardThreePhaseCommitCohort commitCohort;
+
     private enum SimpleCursorOperation {
         MERGE {
             @Override
@@ -65,9 +74,12 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     private final ShardDataModification modification;
     private DOMDataTreeWriteCursor cursor;
+    private DataTree rootShardDataTree;
+    private DataTreeModification rootModification = null;
 
-    InmemoryDOMDataTreeShardWriteTransaction(final ShardDataModification root) {
+    InmemoryDOMDataTreeShardWriteTransaction(final ShardDataModification root, final DataTree rootShardDataTree) {
         this.modification = Preconditions.checkNotNull(root);
+        this.rootShardDataTree = Preconditions.checkNotNull(rootShardDataTree);
     }
 
     private DOMDataTreeWriteCursor getCursor() {
@@ -122,10 +134,51 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     @Override
     public void ready() {
 
-        modification.seal();
+        rootModification = modification.seal();
 
+        commitCohort = new InMemoryDOMDataTreeShardThreePhaseCommitCohort(rootShardDataTree, rootModification, modification.getChildShards());
+    }
 
-        return;
+    @Override
+    public ListenableFuture<Void> submit() {
+        Preconditions.checkNotNull(commitCohort);
+
+        SettableFuture<Void> submit = SettableFuture.create();
+
+        // FIXME: howto avoid this crappy chaining of futures?
+        Futures.addCallback(commitCohort.canCommit(), new CohortCallback<Boolean>(submit){
+            @Override
+            public void onSuccess(final Boolean result) {
+                Futures.addCallback(commitCohort.preCommit(), new CohortCallback<Void>(submit){
+                    @Override
+                    public void onSuccess(final Void result) {
+                        Futures.addCallback(commitCohort.commit(), new CohortCallback<Void>(submit){
+                            @Override
+                            public void onSuccess(final Void result) {
+                                submit.set(null);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        return submit;
+    }
+
+    @Override
+    public ListenableFuture<Boolean> validate() {
+        return commitCohort.canCommit();
+    }
+
+    @Override
+    public ListenableFuture<Void> prepare() {
+        return commitCohort.preCommit();
+    }
+
+    @Override
+    public ListenableFuture<Void> commit() {
+        return commitCohort.commit();
     }
 
     public void followUp() {
@@ -138,5 +191,24 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         YangInstanceIdentifier relativePath = toRelative(prefix.getRootIdentifier());
         ret.enter(relativePath.getPathArguments());
         return ret;
+    }
+
+    private static class CohortCallback<T> implements FutureCallback<T>{
+
+        private SettableFuture<Void> future;
+
+        CohortCallback(final SettableFuture<Void> future) {
+            this.future = future;
+        }
+
+        @Override
+        public void onSuccess(T result) {
+            //NOOP
+        }
+
+        @Override
+        public void onFailure(Throwable t) {
+            future.setException(t);
+        }
     }
 }

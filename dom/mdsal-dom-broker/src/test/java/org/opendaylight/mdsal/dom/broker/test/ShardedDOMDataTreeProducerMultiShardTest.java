@@ -83,7 +83,18 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
                         .build();
 
         cursor.write(TestModel.INNER_CONTAINER_PATH.getLastPathArgument(), containerNode);
+        cursor.enter(TestModel.INNER_CONTAINER_PATH.getLastPathArgument());
+
+        final ContainerNode lowerShardContainer = ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier(new NodeIdentifier(TestModel.ANOTHER_SHARD_CONTAINER))
+                .withChild(ImmutableLeafNodeBuilder.create().withNodeIdentifier(new NodeIdentifier(TestModel.ANOTHER_SHARD_VALUE)).build())
+                .build();
+
+        cursor.write(TestModel.ANOTHER_SHARD_PATH.getLastPathArgument(), lowerShardContainer);
         cursor.close();
+        transaction.ready();
+        transaction.submit();
+
 
 
     }
