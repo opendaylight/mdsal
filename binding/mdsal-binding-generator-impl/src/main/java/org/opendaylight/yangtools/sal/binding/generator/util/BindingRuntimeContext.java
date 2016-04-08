@@ -18,7 +18,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
@@ -214,13 +213,24 @@ public class BindingRuntimeContext implements Immutable {
         final Set<QName> childNames = new HashSet<>();
         final Set<DataSchemaNode> realChilds = new HashSet<>();
         for (final DataSchemaNode child : origSchema.getChildNodes()) {
-            realChilds.add(target.getDataChildByName(child.getQName()));
-            childNames.add(child.getQName());
+            final DataSchemaNode dataChildQNname = target.getDataChildByName(child.getQName());
+            final String childLocalName = child.getQName().getLocalName();
+            if (dataChildQNname == null) {
+                for (DataSchemaNode dataSchemaNode : target.getChildNodes()) {
+                    if (childLocalName.equals(dataSchemaNode.getQName().getLocalName())) {
+                        realChilds.add(dataSchemaNode);
+                        childNames.add(dataSchemaNode.getQName());
+                    }
+                }
+            } else {
+                realChilds.add(dataChildQNname);
+                childNames.add(child.getQName());
+            }
         }
 
         final AugmentationIdentifier identifier = new AugmentationIdentifier(childNames);
         final AugmentationSchema proxy = new EffectiveAugmentationSchema(origSchema, realChilds);
-        return new AbstractMap.SimpleEntry<>(identifier, proxy);
+        return new SimpleEntry<>(identifier, proxy);
     }
 
     /**
@@ -317,7 +327,7 @@ public class BindingRuntimeContext implements Immutable {
      * @return mapped enum constants from yang with their corresponding values in generated binding classes
      */
     public BiMap<String, String> getEnumMapping(final Class<?> enumClass) {
-        final Map.Entry<GeneratedType, Object> typeWithSchema = getTypeWithSchema(enumClass);
+        final Entry<GeneratedType, Object> typeWithSchema = getTypeWithSchema(enumClass);
         return getEnumMapping(typeWithSchema);
     }
 
@@ -325,7 +335,7 @@ public class BindingRuntimeContext implements Immutable {
      * See {@link #getEnumMapping(Class)}}
      */
     public BiMap<String, String> getEnumMapping(final String enumClass) {
-        final Map.Entry<GeneratedType, Object> typeWithSchema = getTypeWithSchema(enumClass);
+        final Entry<GeneratedType, Object> typeWithSchema = getTypeWithSchema(enumClass);
         return getEnumMapping(typeWithSchema);
     }
 
