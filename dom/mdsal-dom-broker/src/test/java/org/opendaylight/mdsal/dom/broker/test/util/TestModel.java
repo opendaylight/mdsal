@@ -33,6 +33,7 @@ public class TestModel {
     public static final QName NEW_SHARD_LIST = QName.create(TEST_QNAME, "new-shard-list");
     public static final QName SHARDED_VALUE_1 = QName.create(TEST_QNAME, "sharded-value-1");
     public static final QName SHARDED_VALUE_2 = QName.create(TEST_QNAME, "sharded-value-2");
+    public static final QName ANOTHER_SHARD_VALUE = QName.create(TEST_QNAME, "another-shard-value");
     private static final String DATASTORE_TEST_YANG = "/odl-datastore-test.yang";
 
     public static final YangInstanceIdentifier TEST_PATH = YangInstanceIdentifier.of(TEST_QNAME);

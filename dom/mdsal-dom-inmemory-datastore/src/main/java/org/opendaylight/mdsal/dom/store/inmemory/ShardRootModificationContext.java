@@ -13,6 +13,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModificationCursor;
 
 class ShardRootModificationContext {
@@ -50,12 +51,14 @@ class ShardRootModificationContext {
         return modification != null;
     }
 
-    void ready() {
+    DataTreeModification ready() {
         if (cursor != null) {
             cursor.close();
         }
         if (modification != null) {
             modification.ready();
         }
+
+        return modification;
     }
 }
