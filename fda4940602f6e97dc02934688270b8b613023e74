@@ -22,6 +22,29 @@
       "revId": "fda4940602f6e97dc02934688270b8b613023e74",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a494da4_612b1231",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeShardingService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-04-11T11:27:19Z",
+      "side": 1,
+      "message": "Insert new line here",
+      "range": {
+        "startLine": 37,
+        "startChar": 87,
+        "endLine": 37,
+        "endChar": 90
+      },
+      "revId": "fda4940602f6e97dc02934688270b8b613023e74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
