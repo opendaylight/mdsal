@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a494da4_2163cab2",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/yangtools/binding/generator/util/Types.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-04-11T11:01:05Z",
+      "side": 1,
+      "message": "visibility?\ninner class for public use?",
+      "range": {
+        "startLine": 352,
+        "startChar": 4,
+        "endLine": 352,
+        "endChar": 50
+      },
+      "revId": "4d7e823a215b34c0097d1c3798fa6ad4c28a7f64",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
