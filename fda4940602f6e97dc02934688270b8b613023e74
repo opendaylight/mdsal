@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a494da4_81261e67",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeProducer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-04-11T11:12:59Z",
+      "side": 1,
+      "message": "Implementation detail, should be part of SPI, currently client  use-cases does not require this.",
+      "range": {
+        "startLine": 86,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 45
+      },
+      "revId": "fda4940602f6e97dc02934688270b8b613023e74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
