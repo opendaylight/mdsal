@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a494da4_c1f826c7",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/util/BindingRuntimeContext.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-04-11T11:09:16Z",
+      "side": 1,
+      "message": "cache this in a local variable outside of loop and perform equals() on that.",
+      "range": {
+        "startLine": 219,
+        "startChar": 72,
+        "endLine": 219,
+        "endChar": 103
+      },
+      "revId": "903a70e4dadc8becf5de7b1bc7d08151ec7b12d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
