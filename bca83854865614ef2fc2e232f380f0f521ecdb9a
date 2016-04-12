@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a494da4_64379bb1",
+        "filename": "src/site/site.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 3635
+      },
+      "writtenOn": "2016-04-12T15:59:23Z",
+      "side": 1,
+      "message": "Please remove spaces.",
+      "range": {
+        "startLine": 4,
+        "startChar": 30,
+        "endLine": 4,
+        "endChar": 38
+      },
+      "revId": "bca83854865614ef2fc2e232f380f0f521ecdb9a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
