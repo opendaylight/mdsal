@@ -1,0 +1,19 @@
+module foo {
+    namespace "urn:test:foo";
+    prefix foo;
+
+    revision 2016-01-01 {
+    }
+
+    grouping foo {
+        container bar {
+        }
+    }
+
+    choice bar {
+        description "Bug 1466 Instance Identifier is unable to represent Choice / Case, only children ";
+        case foo {
+            uses foo;
+        }
+    }
+}

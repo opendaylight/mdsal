@@ -1,0 +1,14 @@
+module missingAnyXml {
+    namespace "urn:test:missingAnyXml";
+    prefix may;
+
+    revision 2016-01-01 {
+    }
+
+    anyxml data {
+        description "Bug 706 Missing support for anyxml statement in java generator and mapping service";
+        leaf test {
+            type string;
+        }
+    }
+}

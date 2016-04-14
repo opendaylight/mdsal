@@ -1,0 +1,29 @@
+module augmentedContainer {
+    namespace "urn:test:augmentedContainer";
+    prefix ac;
+
+    revision 2016-01-01 {
+    }
+
+    grouping linkstate-routes {
+        description "Bug 1644 - InstanceIdentifier does not properly capture choice-case child relationship";
+        container linkstate-routes {
+            list linkstate-route {
+            }
+        }
+    }
+
+    augment test-choice {
+        case linkstate-routes-case {
+            uses linkstate-routes;
+        }
+    }
+
+    choice test-choice {
+        case test-case {
+            leaf test-leaf {
+                type string;
+            }
+        }
+    }
+}
