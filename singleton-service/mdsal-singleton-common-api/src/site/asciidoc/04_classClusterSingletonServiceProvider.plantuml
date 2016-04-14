@@ -1,0 +1,48 @@
+["plantuml", "04_classClusterSingletonServiceProvider", "svg"]
+
+------------
+@startuml
+
+  interface "AutoCloseable" as auto {
+    +void close();
+  }
+
+  interface "GenericEntityOwnershipListener" as eosList {
+    +void ownershipChanged(EntityOwnershipChange ownershipChange);
+  }
+
+  interface "ClusterSingletonServiceProvider" as cssProvider {
+    ClusterSingletonServiceRegistration registerClusterSingletonService(ClusterSingletonService);
+  }
+
+  abstract "AbstractClusterSingletonServiceProviderImpl" as acssProviderImpl {
+    +final void initializeProvider();
+    +final ClusterSingletonServiceRegistration registerClusterSingletonService(ClusterSingletonService);
+    +final void ownershipChanged(OwnershipChange);
+    +final void close();
+    #abstract EntityOwnershipListenerRegistration registerListener(String entityType, GenericEntityOwnershipService service);
+    #abstract GenericEntity createEntity(String entityType, String entityIdentifier);
+    #abstract String getServiceIdentifierFromEntity(GenericEntity entity);
+    #final void cleaningProvider(Throwable t);
+  }
+
+  class "DOMClusterSingletonServiceProviderImpl" as domCssProviderImpl {
+    #final DOMEntity createEntity(String entityType, String entityIdentifier);
+    #final DOMEntityOwnershipListenerRegistration registerListener(String type, DOMEntityOwnershipService eos);
+    #final String getServiceIdentifierFromEntity(DOMEntity entity);
+  }
+
+  class "ClusterSingletonServiceProviderImpl" as cssProviderImpl {
+    #final Entity createEntity(String type, String ident);
+    #final EntityOwnershipListenerRegistration registerListener(String type, EntityOwnershipService eos);
+    #final String getServiceIdentifierFromEntity(Entity entity);
+  }
+
+  cssProvider --|> auto
+  acssProviderImpl --|> cssProvider
+  acssProviderImpl --|> eosList
+  cssProviderImpl --|> acssProviderImpl
+  domCssProviderImpl --|> acssProviderImpl
+
+@enduml
+------------
