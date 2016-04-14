@@ -1,0 +1,14 @@
+module fooOne {
+    namespace "urn:test:fooOne";
+    prefix foo;
+
+    revision 2016-01-01 {
+    }
+
+    typedef exampleTest {type string;}
+    container example {
+        container example {
+            leaf example {type exampleTest;}
+        }
+    }
+}
