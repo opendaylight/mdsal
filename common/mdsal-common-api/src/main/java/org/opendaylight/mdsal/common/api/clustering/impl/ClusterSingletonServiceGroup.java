@@ -6,10 +6,15 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.common.api.clustering;
+package org.opendaylight.mdsal.common.api.clustering.impl;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
+import org.opendaylight.mdsal.common.api.clustering.ClusterSingletonService;
+import org.opendaylight.mdsal.common.api.clustering.ClusterSingletonServiceRegistration;
+import org.opendaylight.mdsal.common.api.clustering.GenericEntity;
+import org.opendaylight.mdsal.common.api.clustering.GenericEntityOwnershipChange;
 import org.opendaylight.yangtools.concepts.Path;
 
 /**
@@ -29,6 +34,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <E> the GenericEntity type
  * @param <C> the GenericEntityOwnershipChange type
  */
+@VisibleForTesting
 interface ClusterSingletonServiceGroup<P extends Path<P>, E extends GenericEntity<P>,
                                        C extends GenericEntityOwnershipChange<P, E>> {
 
