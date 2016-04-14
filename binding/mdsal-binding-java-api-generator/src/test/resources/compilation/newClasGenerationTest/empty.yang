@@ -1,0 +1,15 @@
+module empty {
+    namespace "urn:test:empty";
+    prefix ey;
+
+    revision 2016-01-01 {
+        description "Bug 1870 Type empty needs better representation which will
+        clearly describe it semantics: Leaf present. The best way is to introduce
+        enumeration with value PRESENT eg. Empty.PRESENT and null could still be
+        not present.";
+    }
+
+    leaf example {
+        type empty;
+    }
+}
