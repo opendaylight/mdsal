@@ -1,0 +1,17 @@
+module foo1a {
+    namespace "urn:test:foo1a";
+    prefix f1a;
+
+    revision 2016-01-01 {
+        description "Default code";
+    }
+
+    container a {
+        container b {
+            container c {
+            }
+        }
+        container bar {
+        }
+    }
+}
