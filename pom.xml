@@ -37,6 +37,7 @@
       <module>binding2</module>
       <module>model</module>
       <module>entityownership</module>
+      <module>singleton-service</module>
     </modules>
 
     <build>
