@@ -1,0 +1,23 @@
+module camelCase {
+    namespace "urn:test:camelCase";
+    prefix cc;
+
+    revision 2016-01-01 {
+        description "Bug 2822 - CodeGenerator unable to generate class for
+        grouping, The Binding Spec is very explicit as to when camel-casing
+        occurs, e.g. 'container foo-bar' and 'container foobar' generate 'FooBar'
+        and 'Foobar'.";
+    }
+
+    grouping linkstate {
+        leaf test {
+            type string;
+        }
+    }
+
+    grouping link-state {
+        leaf test2 {
+            type string;
+        }
+    }
+}

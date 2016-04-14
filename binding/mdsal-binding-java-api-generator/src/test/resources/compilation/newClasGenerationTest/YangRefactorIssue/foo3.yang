@@ -1,0 +1,22 @@
+module foo3 {
+    namespace "urn:test:foo3";
+    prefix f3;
+
+    revision 2016-01-01 {
+        description "Second refactor grouping augment";
+    }
+
+    grouping aa {
+        container b {
+        }
+    }
+
+    container a {
+        uses aa {
+            augment b {
+                container c {
+                }
+            }
+        }
+    }
+}

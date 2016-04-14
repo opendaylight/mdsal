@@ -1,0 +1,23 @@
+module foo4 {
+    namespace "urn:test:foo4";
+    prefix f4;
+
+    revision 2016-01-01 {
+        description "Third refactor only grouping";
+    }
+
+    grouping ga {
+        container b {
+            uses gb;
+        }
+    }
+
+    grouping gb {
+        container c {
+        }
+    }
+
+    container a {
+        uses ga;
+    }
+}
