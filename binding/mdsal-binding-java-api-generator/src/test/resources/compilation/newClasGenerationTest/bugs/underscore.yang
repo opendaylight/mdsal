@@ -1,0 +1,16 @@
+module underscore {
+    namespace "urn:test:underscore";
+    prefix underscore;
+
+    revision 2016-01-01 {
+        description "underscore as name";
+    }
+
+    choice __ {
+        case _ {
+            leaf _ {
+                type string;
+            }
+        }
+    }
+}

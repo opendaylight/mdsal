@@ -1,0 +1,12 @@
+submodule includedSubmodule {
+    revision 2016-01-01 {
+        description "included submodule  yang CAN NOT CONTAIN namespace AND prefix, MUST CONTAIN belongs to";
+    }
+
+    belongs-to "complex" {
+        prefix "clx";
+    }
+
+    container submodule-included-container {
+    }
+}

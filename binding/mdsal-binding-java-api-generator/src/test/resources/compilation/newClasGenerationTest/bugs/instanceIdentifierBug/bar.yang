@@ -1,0 +1,18 @@
+module bar {
+    namespace "urn:test:bar";
+    prefix bar;
+
+    revision 2016-01-01 {
+    }
+
+    import foo {
+        prefix "foo";
+        revision-date 2016-01-01;
+    }
+
+    augment foo:bar {
+        case foo {
+            uses foo:foo;
+        }
+    }
+}
