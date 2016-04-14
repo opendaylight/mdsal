@@ -1,0 +1,203 @@
+= Cluster Wide Services
+
+----
+Our current deployment model assumes symmetric clusters, where all services are activated on all nodes and application developers have to deal with deciding which service is actually alive especially in the (common) scenario, where centralized data processing is required.
+
+A typical example is OpenFlow Topology Manager, which needs to talk to all OF switches connected to a cluster and make sense of how they are connected. Such a service typically needs only a failover capability, e.g. ensuring the service runs in the cluster (or its surviving partition).
+
+Forcing all such applications to interact with EOS is an overkill, as they will end up producing essentially-equivalent code all over the ecosystem, with each copy having different issues (because reliable clustering is hard).
+----
+
+== General Cluster Singleton Service approach
+Main idea represents a single cluster service instance. Entity Ownership Service (EOS) represents base Leadership choice for one Entity instance. So we are able to move candidate election to EOS. So every application or service has to have own Entity and every cluster node application or service instance has to have own Entity Candidate. Every registered candidate should be notified about its actual role in cluster.
+
+So there is only one fully instantiated application or service instance in cluster at one time. That could be realized by a double candidate approach where a application or service instance maintains a candidate registration for ownership of the service entity in the cluster and also a registration that acts as a guard to ensure a service instance has fully closed prior to relinquishing service ownership. To achieve ownership of the service, a service candidate must hold ownership of both these entities. (see next sequence diagram)
+
+.Double Candidate Solution (Async. Close Guard)
+include::01_doubleCandidateSimpleSequence.plantuml[]
+
+Double candidate approach is a solution for prevent async. close functionality (e.g. finish opened Transaction to DDS). So **main entity** candidate is focusing for actual application role in cluster and **close guard entity** candidate is a guard for all async. unfinished process. So every new Leader has to registered own **close guard entity** candidate.
+Old leader has to close its **close guard entity** candidate in last step. In this time new leader will take leadership for **close guard entity** candidate (it has to hold ownership for both candidate signature). That is the marker to full start cluster node application instance and old leader stops successfully. Figure 1 presents whole processing.
+
+IMPORTANT: Double candidate approach (async. close guard) prerequisite is "actual ownership doesn't change by new candidate registration".
+
+=== Cluster Singleton Service
+Double candidate solution is relevant for all services and we don't need to implement same code for every instances. So we are able to hide whole EOS interaction for user and we can encapsulate it to some "ODL Cluster Singleton Service Provider" parent.
+
+.Class Diagram Cluster Singleton Service
+include::02_classClusterSingletonService.plantuml[]
+
+=== Cluster Singleton Service Grouping
+Sometimes we wish to have couple of services to run on same Cluster Node. So Double candidate EOS interaction could by realized for a list of ClusterSingletonService instances.
+
+.Class Diagram Cluster Singleton Service Group
+include::03_classClusterSingletonServiceGroup.plantuml[]
+
+
+=== Cluster Singleton Service Provider
+Provider implementation is realized as stay alone service which has to be instantiated for every ClusterNode and it has to be available for every depend applications. So class diagram looks as next.
+
+.Class Diagram Cluster Singleton Service Provider
+include::04_classClusterSingletonServiceProvider.plantuml[]
+
+=== Cluster Singleton Service RPC implementation sample
+We'd like to show a grouping RPC service sample. RPC services don't need be a part of same project.
+
+[source,java]
+----
+public class SampleClusterSingletonServiceRPC_1 implements ClusterSingletonService, AutoCloseable {
+
+    /* Property contains an entity name guard for all instances of this group of services */
+    private static final String CLUSTER_SERVICE_GROUP_IDENTIFIER = "sample-service-group";
+
+    private ClusterSingletonServiceRegistration registration;
+
+    public SampleClusterSingletonServiceRPC_1(final ClusterSingletonServiceProvider provider) {
+        Preconditions.checkArgument(provider != null);
+        this.registration = provider.registerClusterSingletonService(this);
+    }
+
+    @Override
+    public void instantiateServiceInstance() {
+        // TODO : implement start service functionality
+    }
+
+    @Override
+    public ListenableFuture<Void> closeServiceInstance() {
+        // TODO : implement sync. or async. stop service functionality
+        return Futures.immediateFuture(null);
+    }
+
+    @Override
+    public String getServiceGroupIdentifier() {
+        return CLUSTER_SERVICE_GROUP_IDENTIFIER;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (registration != null) {
+            registration.close();
+            registration = null;
+        }
+    }
+
+}
+
+public class SampleClusterSingletonServiceRPC_2 implements ClusterSingletonService, AutoCloseable {
+
+    /* Property contains an entity name guard for all instances of this group of services */
+    private static final String CLUSTER_SERVICE_GROUP_IDENTIFIER = "sample-service-group";
+
+    private ClusterSingletonServiceRegistration registration;
+
+    public SampleClusterSingletonServiceRPC_1(final ClusterSingletonServiceProvider provider) {
+        Preconditions.checkArgument(provider != null);
+        this.registration = provider.registerClusterSingletonService(this);
+    }
+
+    @Override
+    public void instantiateServiceInstance() {
+        // TODO : implement start service functionality
+    }
+
+    @Override
+    public ListenableFuture<Void> closeServiceInstance() {
+        // TODO : implement sync. or async. stop service functionality
+        return Futures.immediateFuture(null);
+    }
+
+    @Override
+    public String getServiceGroupIdentifier() {
+        return CLUSTER_SERVICE_GROUP_IDENTIFIER;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (registration != null) {
+            registration.close();
+            registration = null;
+        }
+    }
+
+}
+----
+
+Both RPCs are instantiated for some ClusterNode and RPCs have only one instance in whole Cluster.
+
+=== Cluster Singleton Application 
+OSGi module application could be understand like service too. So we would like to focus for OSGi container like a application loader. Every OSGi app has own lifecycle which should be adapting to use EOS and only master could be loading fully. We wish to encapsulate EOS interaction in an ODL application Loader.
+
+.Life cycle of plug-ins in OSGi
+include::05_pluginOsgiLifeCycle.plantuml[]
+
+==== Application Module instantiation
+Every "ODL app." has Provider class which is instantiated in __AbstractModule<ODL app>__ class. Module has method __createInstance()__ which start an application Provider. So application provider has to implement __ClusterSingletonService__ interface and the application provider initialization (or constructor) has to register itself to ClusterSingletonServiceProvider. The application Provider body will be initialized by leader ClusterNode election for master only.
+
+.Base Cluster-wide app instantiation
+include::06_baseAppSingleInstance.plantuml[]
+
+So we are able to hide whole EOS interaction for user and encapsulate inside "ClusterSingletonServiceProvider". Application/service needs only implement relevant interface and registrates itself to provider.
+
+Simplified sequence diagram (without double candidate) is displayed in next picture:
+
+.Simply Cluster-wide app instantiation (without double candidate)
+include::07_processAppSingleInstSimply.plantuml[]
+
+Full sequence implementation diagram for __AbstractClusterProjectProvider__ is displayed in next picture:l
+
+.Cluster-wide app instantiation
+include::08_processAppSingleInst.plantuml[]
+
+[source,java]
+----
+public class ClusterSingletonProjectSample implements ClusterSingletonService, AutoCloseable {
+
+    /* Property contains an entity name guard for all instances of this group of services */
+    private static final String CLUSTER_SERVICE_GROUP_IDENTIFIER = "sample-service-group";
+
+    private ClusterSingletonServiceRegistration registration;
+
+    public ClusterSingletonProjectSample(final ClusterSingletonServiceProvider provider) {
+        Preconditions.checkArgument(provider != null);
+        this.registration = provider.registerClusterSingletonService(this);
+    }
+
+    @Override
+    public void instantiateServiceInstance() {
+        // TODO : implement start project functionality
+
+    }
+
+    @Override
+    public ListenableFuture<Void> closeServiceInstance() {
+        // TODO : implement sync. or async. stop project functionality
+        return Futures.immediateFuture(null);
+    }
+
+    @Override
+    public String getServiceGroupIdentifier() {
+        return CLUSTER_SERVICE_GROUP_IDENTIFIER;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (registration != null) {
+            registration.close();
+            registration = null;
+        }
+    }
+
+}
+
+public class ApplicationModule extends ProjectAbstractModule<? extends AbstractStatisticsManagerModule> {
+
+    ...
+
+    @Override
+    public java.lang.AutoCloseable createInstance() {
+        AbstractServiceProvider projectProvider = 
+            new ClusterSingletonProjectSample(getClusterSingletonServiceProviderDependency());
+        return projectProvider;
+    }
+}
+----
