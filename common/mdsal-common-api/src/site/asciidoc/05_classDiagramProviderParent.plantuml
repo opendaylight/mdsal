@@ -1,0 +1,67 @@
+["plantuml", "05_classDiagramProviderParent", "svg"]
+
+------------
+@startuml
+
+  interface "AutoCloseable" as auto {
+    +void close();
+  }
+  interface "GenericEntityOwnershipListener" as eosList {
+    +void ownershipChanged(EntityOwnershipChange ownershipChange);
+  }
+  class "AbstractModule<M extends AbstractModule>" as abModule {
+    +abstract AutoCloseable createInstance();
+  }
+  class "ClusterWideAppModule" as appModule
+
+  interface "EntityOwnershipService" as eos {
+    +EntityOwnershipListenerRegistration registerListener(@Nonnull String entityType, @Nonnull EntityOwnershipListener listener);
+    +EntityOwnershipCandidateRegistration registerCandidate(@Nonnull Entity entity) throws CandidateAlreadyRegisteredException;
+  }
+
+  abstract "DOMAbstractServiceProvider" as domAbProvider {
+    #final DOMEntity createEntity(final String type, final String ident);
+    #final DOMEntityOwnershipListenerRegistration registerListener(final String type, final DOMEntityOwnershipService eos);
+  }
+
+  abstract "AbstractServiceProvider" as absProjectProvider {
+    #final Entity createEntity(final String type, final String ident);
+    #final EntityOwnershipListenerRegistration registerListener(final String type, final EntityOwnershipService eos);
+  }
+
+  abstract "AbstractGenericServiceProvider" as abProvider {
+    +final void initializeProvider();
+    +final void ownershipChanged(C ownershipChange);
+    +final void close()
+
+    #abstract E createEntity(final String type, final String ident);
+    #abstract R registerListener(String type, S entityOwnershipService);
+    #abstract void setupProject();
+    #abstract ListenableFuture<Void> suspendProject();
+
+    -void tryToTakeOwnership();
+    -void takeOwnership();
+    -void lostOwnership();
+  }
+
+  class "AppProviderImpl" as appProvider
+
+
+  appModule --|> abModule
+
+  appModule - appProvider : createInstance >
+  appProvider - eos : registerListener >
+  appProvider - eos : registerCandidate(Main|CloseGuard) >
+
+  eos - appProvider : ownershipChanged(Main|CloseGuard) >
+
+  abProvider --|> auto
+  abProvider --|> eosList
+  appProvider --|> domAbProvider
+  appProvider --|> absProjectProvider
+  absProjectProvider --|> abProvider
+  domAbProvider --|> abProvider
+
+
+@enduml
+------------

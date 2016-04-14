@@ -1,0 +1,138 @@
+= Cluster Wide Services
+
+----
+Our current deployment model assumes symmetric clusters, where all services are activated on all nodes and application developers have to deal with deciding which service is actually alive especially in the (common) scenario, where centralized data processing is required.
+
+A typical example is OpenFlow Topology Manager, which needs to talk to all OF switches connected to a cluster and make sense of how they are connected. Such a service typically needs only a failover capability, e.g. ensuring the service runs in the cluster (or its surviving partition).
+
+Forcing all such applications to interact with EOS is an overkill, as they will end up producing essentially-equivalent code all over the ecosystem, with each copy having different issues (because reliable clustering is hard).
+----
+
+== General Cluster Singleton Service approach
+Main idea represents a single cluster service instance. Entity Ownership Service (EOS) represents base Leadership choice for one Entity instance. So we are able to move candidate election to EOS. So every application or service has to have own Entity and every cluster node application or service instance has to have own Entity Candidate. Every registered candidate should be notified about its actual role in cluster.
+
+So there is only one fully instantiated application or service instance in cluster at one time. That could be realized by a double candidate approach where a application or service instance maintains a candidate registration for ownership of the service entity in the cluster and also a registration that acts as a guard to ensure a service instance has fully closed prior to relinquishing service ownership. To achieve ownership of the service, a service candidate must hold ownership of both these entities. (see next sequence diagram)
+
+.Double Candidate Solution (Async. Close Guard)
+include::01_doubleCandidateSimpleSequence.plantuml[]
+
+Double candidate approach is a solution for prevent async. close functionality (e.g. finish opened Transaction to DDS). So **main entity** candidate is focusing for actual application role in cluster and **close guard entity** candidate is a guard for all async. unfinished process. So every new Leader has to registered own **close guard entity** candidate.
+Old leader has to close its **close guard entity** candidate in last step. In this time new leader will take leadership for **close guard entity** candidate (it has to hold ownership for both candidate signature). That is the marker to full start cluster node application instance and old leader stops successfully. Figure 1 presents whole processing.
+
+IMPORTANT: Double candidate approach (async. close guard) prerequisite is "actual ownership doesn't change by new candidate registration".
+
+=== Cluster Singleton Service
+Double candidate solution is relevant for all services and we don't need to implement same code for every instances. So we are able to hide whole EOS interaction for user and we can encapsulate it to some "ODL Singleton Service Provider" parent. So class diagram looks as next.
+
+.Class Diagram Provider parent
+include::02_classDiagramProvider.plantuml[]
+
+[source,java]
+----
+public class SampleClusterSingletonServiceImpl extends AbstractServiceProvider {
+
+    /* Property contains an entity name guard for all instances of this service */
+    private static final String MY_SERVICE_NAME = "sampleClusterSingletonService";
+    
+    public SampleClusterSingletonServiceImpl(final EntityOwnershipService eos) {
+        super(eos, MY_SERVICE_NAME);
+        // TODO : add all needed params. for your service class. This sample
+        // contains only necessary params. 
+    }
+    
+    @Override
+    protected void instantiateServiceInstance() {
+        // TODO : implement start service functionality
+    }
+
+    @Override
+    protected ListenableFuture<Void> closeServiceInstance() {
+        // TODO : implement sync. or async. stop service functionality
+        return Futures.immediateFuture(null);
+    }
+}
+
+public class ProjectProvider implements AutoCloseable {
+    
+    private SampleClusterSingletonServcieImpl service;
+    
+    public ProjectProvider(final EntityOwnershipService eos) {
+        service = new SampleClusterSingletonServcieImpl(eos);
+        // next method call registers all needed Entity and eos chose one for instance 
+        service.initializeProvider();
+    }
+    
+    public void close() {
+        if (service != null) {
+            service.close();
+            service = null;
+        }
+    }
+}
+----
+
+=== Cluster Singleton Application 
+OSGi module application could be understand like service too. So we would like to focus for OSGi container like a application loader. Every OSGi app has own lifecycle which should be adapting to use EOS and only master could be loading fully. We wish to encapsulate EOS interaction in an ODL application Loader.
+
+.Life cycle of plug-ins in OSGi
+include::03_pluginOsgiLifeCycle.plantuml[]
+
+==== Provider Abstract Parent
+Every "ODL app." has Provider class which is instantiated in __AbstractModule<ODL app>__ class. We could prepare one AbstractParent for every "ODL app. provider".
+
+.Base Cluster-wide app instantiation
+include::04_baseAppSingleInstance.plantuml[]
+
+So we are able to hide whole EOS interaction for user and encapsulate to some "ODL app Provider" parent. So class diagram could be as next:
+
+.Class Diagram Provider parent suggestion
+include::05_classDiagramProviderParent.plantuml[]
+
+Simplified sequence diagram (without double candidate) is displayed in next picture:
+
+.Simply Cluster-wide app instantiation (without double candidate)
+include::06_processAppSingleInstSimply.plantuml[]
+
+Full sequence implementation diagram for __AbstractClusterProjectProvider__ is displayed in next picture:
+
+.Cluster-wide app instantiation
+include::07_processAppSingleInst.plantuml[]
+
+[source,java]
+----
+public class ClusterSingletonProjectSample extends AbstractServiceProvider {
+    
+    /* Property contains an entity name guard for all instances of this project */
+    private static final String MY_PROJECT_NAME = "sampleClusterSingletonProject";
+    
+    public ClusterSingletonProjectSample(final EntityOwnershipService eos) {
+        super(eos, MY_PROJECT_NAME);
+        // TODO : add all needed params. for your project provider class. This
+        // sample contains only necessary params. 
+    }
+    
+    @Override
+    protected void instantiateServiceInstance() {
+        // TODO : implement start project functionality
+    }
+
+    @Override
+    protected ListenableFuture<Void> closeServiceInstance() {
+        // TODO : implement sync. or async. stop project functionality
+        return Futures.immediateFuture(null);
+    }
+}
+
+public class ApplicationModule extends ProjectAbstractModule<? extends AbstractStatisticsManagerModule> {
+
+    ...
+
+    @Override
+    public java.lang.AutoCloseable createInstance() {
+        AbstractServiceProvider projectProvider = 
+            new ClusterSingletonProjectSample(getEntityOwnershipServiceDependency());
+        projectProvider.initializeProvider();
+        return projectProvider;
+    }
+}
+----
