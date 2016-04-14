@@ -1,0 +1,13 @@
+submodule simpleIncluded {
+    revision 2016-01-01 {
+        description "Simple included yang CAN NOT CONTAIN namespace AND prefix MUST CONTAIN belongs to";
+    }
+
+    belongs-to "complex" {
+        prefix "clx";
+    }
+
+    container simple-included-container {
+
+    }
+}

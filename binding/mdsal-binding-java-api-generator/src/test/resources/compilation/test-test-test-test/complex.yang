@@ -1,0 +1,32 @@
+module complex {
+    yang-version "1";
+    namespace "urn:test:complex";
+    prefix cx;
+    description "complex-description";
+
+    import simple {
+        prefix sl;
+        revision-date 2016-01-01;
+    }
+
+    include simpleIncluded;
+
+    organization "simple-organization";
+    contact "simple-contact";
+
+    revision 2016-01-01 {
+        description "complex yang";
+        reference "initial complex yang reference";
+    }
+
+    typedef complex-typedef {
+        description "complex-typedef description";
+        reference "complex-typedef reference";
+        units "complex-typedef units definition";
+        default "complex-typedef default string";
+        status "current";
+        type string {
+
+        }
+    }
+}
