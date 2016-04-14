@@ -1,0 +1,14 @@
+module mainYangTestImported {
+    namespace "urn:test:mainYangTestImported";
+    prefix myti;
+
+    revision 2016-01-01 {
+        description "imported yang for testing spec v2";
+    }
+
+    container main-cont-imported {
+        leaf main-cont-imported-leaf {
+            type string;
+        }
+    }
+}

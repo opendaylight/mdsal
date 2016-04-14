@@ -1,0 +1,12 @@
+module testingYang1 {
+    namespace "urn:test:testingYang1";
+    prefix ty1;
+
+    revision 2016-01-01 {
+        description "Main yang for testing spec v2 created by tony";
+    }
+
+    grouping main-group {
+
+    }
+}
