@@ -1,0 +1,36 @@
+module foo2 {
+    namespace "urn:test:foo2";
+    prefix f2;
+
+    revision 2016-01-01 {
+        description "Augments of the same element should be put together";
+    }
+
+    import foo1a {
+        prefix f1;
+        revision-date 2016-01-01;
+    }
+
+    augment "/f1:a" {
+        container from-b {
+        }
+    }
+
+    augment "/f1:a/f1:b" {
+        container from-b-1 {
+        }
+    }
+
+    augment "/f1:a/f1:b" {
+        container from-b-2 {
+        }
+    }
+
+//       desired behavior
+//       augment "/f1:a/f1:b" {
+//           container from-b-1 {
+//           }
+//           container from-b-2 {
+//           }
+//       } 
+}

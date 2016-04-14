@@ -1,0 +1,107 @@
+module complex {
+    yang-version "1";
+    namespace "urn:test:complex";
+    prefix cx;
+    description "complex-description";
+
+    import simple {
+        prefix sl;
+        revision-date 2016-01-01;
+    }
+
+    include includedSubmodule;
+
+    organization "simple-organization";
+    contact "simple-contact";
+
+    revision 2016-01-01 {
+        description "complex yang";
+        reference "initial complex yang reference";
+    }
+
+    typedef complex-typedef {
+        description "complex-typedef description";
+        reference "complex-typedef reference";
+        units "complex-typedef units definition";
+        default "complex-typedef default string";
+        status "current";
+        type union {
+            type string {
+                length "0..4";
+                pattern "[0-9a-fA-F]*";
+            }
+            type bits {
+                bit bit1 {
+                    position 0;
+                }
+                bit bit2 {
+                    position 1;
+                }
+            }
+            type enumeration {
+                enum enum1 {
+                    value 1;
+                }
+                enum enum2 {
+                    value 2;
+                }
+            }
+            type int32 {
+                range "11..max";
+            }
+        }
+    }
+
+    container complex-container-interface {
+        presence "This is container with presence";
+        leaf ifType {
+            type enumeration {
+                enum yes;
+                enum no;
+            }
+        }
+        leaf ifNumber {
+            mandatory "true";
+            type uint32;
+            default 0;
+            must "ifNumber < 10" {
+                error-message "Number must be lesser than 10";
+            }
+        }
+        must "ifType != 'no' or " + "(ifType = 'no' and ifNumber = 1)" {
+            error-message "Number must be 1 or there must be YES";
+        }
+    }
+
+    leaf-list complex-leaflist {
+        ordered-by user;
+        type union {
+            type string {
+                length "0..5";
+            }
+            type enumeration {
+                enum enum1 {
+                    value 1;
+                }
+                enum enum2 {
+                    value 2;
+                }
+            }
+        }
+        min-elements 1;
+        max-elements 10;
+        when "/complex-container-interface/ifType = yes";
+    }
+
+    list complex-list {
+        key "complex-list-key";
+        unique "complex-list-unique";
+        config true;
+        leaf complex-list-key {
+            type string;
+        }
+        leaf complex-list-unique {
+            type complex-typedef;
+        }
+    }
+}
