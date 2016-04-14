@@ -1,0 +1,38 @@
+module sameNameIssue {
+    namespace "urn:test:sameNameIssue";
+    prefix "sni";
+
+    revision 2016-01-01 {
+        description "Another approach to Bug 2822, where these names after processing look the same";
+    }
+
+    container example {
+        leaf foo {
+            type string;
+        }
+        leaf Foo {
+            type string;
+        }
+        leaf FOO {
+            type string;
+        }
+        leaf fOO {
+            type string;
+        }
+        leaf foo0 {
+            type string;
+        }
+        leaf foo_ {
+            type string;
+        }
+        leaf foo- {
+            type string;
+        }
+        leaf foo. {
+            type string;
+        }
+        leaf _foo {
+            type string;
+        }
+    }
+}

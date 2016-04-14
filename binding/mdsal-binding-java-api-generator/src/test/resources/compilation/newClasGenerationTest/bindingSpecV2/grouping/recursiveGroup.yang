@@ -1,0 +1,19 @@
+module recursiveGroup {
+    namespace "urn:test:recursiveGroup";
+    prefix rg;
+
+    revision 2016-01-01 {
+        description "nested grouping naming problem ";
+    }
+
+    grouping a {
+        grouping b {
+            leaf b {
+                type string;
+            }
+        }
+        container b {
+            uses b;
+        }
+    }
+}

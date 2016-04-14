@@ -1,0 +1,25 @@
+submodule includedSubmodule {
+    revision 2016-01-01 {
+        description "included submodule  yang CAN NOT CONTAIN namespace AND prefix, MUST CONTAIN belongs to";
+    }
+
+    belongs-to "complex" {
+        prefix "clx";
+    }
+
+    augment "/clx:complex-list/complex-list-choice" {
+        when "/complex-container-interface/ifNumber != 5";
+        leaf submodule-included-augmented {
+            type string;
+            default "Not 5";
+        }
+    }
+
+    container submodule-included-container {
+        grouping submodule-included-container-grouping {
+            leaf submodule-included-container-grouping {
+                type string;
+            }
+        }
+    }
+}
