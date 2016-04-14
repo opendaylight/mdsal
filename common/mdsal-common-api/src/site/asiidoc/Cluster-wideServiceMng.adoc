@@ -1,0 +1,60 @@
+== Cluster-wide service management
+
+IMPORTANT: This document is only draft
+
+----
+Our current deployment model assumes symmetric clusters, where all services are activated on all nodes and application developers have to deal with deciding which service is actually alive especially in the (common) scenario, where centralized data processing is required.
+
+A typical example is OpenFlow Topology Manager, which needs to talk to all OF switches connected to a cluster and make sense of how they are connected. Such a service typically needs only a failover capability, e.g. ensuring the service runs in the cluster (or its surviving partition).
+
+Forcing all such applications to interact with EOS is an overkill, as they will end up producing essentially-equivalent code all over the ecosystem, with each copy having different issues (because reliable clustering is hard).
+----
+
+Applications in cluster could be split for two base groups :
+
+* apps instantiated per cluster node (e.g. OpenflowPlugin)
+* apps instantiated once per cluster node suite (e.g. TopologyManager)
+
+Applications which need to be instantiated per cluster only once has base problem. Which node is the right one:
+
+* Data Store Node - applications need to interact with Distributed Data Store (DDS) (read / write). This applications need to have instance on same Cluster Node as DDS.
+* Device Node - applications need to interact with device (RPCs). This applications need to have instance on same Cluster Node as Leader connection holder.
+
+First step has to focus for general solution and in next we are able to focus to solve additional problems for a choice the right one clusterNode.
+
+=== First step suggestions
+Entity Ownership Service (EOS) represents base Leadership choice for one Entity instance. So we are able to move candidate election to EOS. So every application has to have own Entity and every cluster node application instance has to have own Entity Candidate. Every registered candidate should be notified about its actual role in cluster.
+
+.Double Candidate Solution
+include::01_doubleCandidateSimpleSequence.plantuml[]
+
+Double candidate approach is a solution for prevent async. close functionality (e.g. finish opened Transaction to DDS). So **main** candidate is focusing for actual application role in cluster and **secondary** candidate is a guard for all async. unfinished process. So every new Leader has to registered own **secondary** candidate.
+Old leader has to close its **secondary** candidate in last step. In this time new leader will take leadership for **secondary** candidate (it has to hold leadership for both candidate signature). That is the marker to full start cluster node application instance and old leader stops successfully. Figure 1 presents whole processing.
+
+IMPORTANT: Double candidate approach prerequisite is "actual leadership doesn't change by new candidate registration". 
+
+We would like to focus for OSGi container like a application loader. Every OSGi app has own lifecycle which should be adapting to use EOS and only master could be loading fully. We wish to encapsulate EOS interaction in an ODL application Loader. 
+
+.Life cycle of plug-ins in OSGi
+include::02_pluginOsgiLifeCycle.plantuml[]
+
+==== Provider Abstract Parent
+Every "ODL app." has Provider class which is instantiated in __AbstractModule<ODL app>__ class. We could prepare one AbstractParent for every "ODL app. provider".
+
+.Base Cluster-wide app instantiation
+include::03_baseAppSingleInstance.plantuml[]
+
+So we are able to hide whole EOS interaction for user and encapsulate to some "ODL app Provider" parent. So class diagram could be as next:
+
+.Class Diagram Provider parent suggestion
+include::04_classDiagramProviderParent.plantuml[]
+
+Simplified sequence diagram (without double candidate) is displayed in next picture:
+
+.Simply Cluster-wide app instantiation (without double candidate)
+include::05_processAppSingleInstSimply.plantuml[]
+
+Full sequence implementation diagram for __AbstractClusterProjectProvider__ is displayed in next picture:
+
+.Cluster-wide app instantiation
+include::06_processAppSingleInst.plantuml[]
