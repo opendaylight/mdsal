@@ -1,0 +1,34 @@
+["plantuml", "05_pluginOsgiLifeCycle", "svg"]
+
+------------
+@startuml
+
+
+  (Start) as (s)
+  (Installed) as (inst)
+  (Resolved) as (res)
+  (Uninstalled) as (uninst)
+
+  (Starting) as (st)
+  (Active) as (act)
+  (Stopping) as (stop)
+
+  (inst) -[hidden]> (st)
+  (res) -[hidden]> (act)
+  (uninst) -[hidden]> (stop)
+
+  (s) --|> (inst)
+  (inst) --|> (res)
+  (inst) <|-- (res)
+  (res) --|> (uninst)
+  (inst) --|> (uninst)
+
+  (st) --|> (act)
+  (act) --|> (stop) : stop
+
+  (res) --|> (st) : start
+  (stop) --|> (res)
+
+
+@enduml
+------------
