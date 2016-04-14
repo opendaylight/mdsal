@@ -1,0 +1,78 @@
+["plantuml", "07_processAppSingleInstSimply", "svg"]
+
+------------
+@startuml
+
+
+  autonumber "<font color=red><b>[00]"
+
+  participant "OSGi container" as osgi
+  participant "AbstractModule<ODL app>" as module
+  participant "ODL app ProviderImpl" as provider
+  participant "ODL app Body" as body
+  participant "ClusterSingletonServiceProvider" as cssProvider
+  participant "EntityOwnershipService" as eos
+
+  activate osgi
+    osgi -> module : <<init>>
+    activate module
+      module -> provider : initializeProvider()
+      activate provider
+        provider -> cssProvider : registerClusterSingletonService()
+        activate cssProvider
+          cssProvider -> eos : registerCandidate
+          activate eos
+            cssProvider <-- eos
+          deactivate eos
+          provider <-- cssProvider
+        deactivate cssProvider
+        module <-- provider
+      deactivate provider
+      osgi <-- module
+    deactivate module
+  deactivate osgi
+
+  alt "Get Role Master"
+    activate eos
+    cssProvider <- eos : ownershipChanged(isOwner=true)
+      activate cssProvider
+        cssProvider -> provider : instantiateServiceInstance()
+        activate provider
+          provider -> body : <<init>>
+          activate body
+            provider <-- body
+          deactivate body
+          cssProvider <-- provider
+        deactivate provider
+        cssProvider --> eos
+      deactivate cssProvider
+    deactivate eos
+  else "Get Role Slave"
+    alt "Was Master"
+      cssProvider <- eos : ownershipChanged(isOwner=false, wasOwner=true)
+      activate eos
+        activate cssProvider
+          cssProvider -> provider : closeServiceInstance()
+          activate provider
+            provider -> body : close
+            activate body
+              provider <-- body : close
+            deactivate body
+            cssProvider <-- provider
+          deactivate provider
+          cssProvider --> eos
+        deactivate cssProvider
+      deactivate eos
+    else "Was Not Master"
+      cssProvider <- eos : ownershipChanged(isOwner=false, wasOwner=false)
+      activate eos
+        activate cssProvider
+          cssProvider --> eos
+        deactivate cssProvider
+      deactivate eos
+    end
+  end
+
+
+@enduml
+------------
