@@ -1,0 +1,26 @@
+module testingYang3 {
+    namespace "urn:test:testingYang3";
+    prefix y3;
+
+    revision 2016-01-01 {
+        description "testingYang3";
+    }
+
+    import complex {
+        prefix cx;
+        revision-date 2016-01-01;
+    }
+
+    import importingModule {
+        prefix im;
+        revision-date 2016-01-01;
+    }
+
+    grouping grouping-module3 {
+        uses cx:grouping-module1 {
+            augment "list-module1-1/list-module1-2/container-module1" {
+                uses im:grouping-module2;
+            }
+        }
+    }
+}

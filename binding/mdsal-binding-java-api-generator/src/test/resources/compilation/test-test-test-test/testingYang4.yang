@@ -1,0 +1,28 @@
+module testingYang4 {
+    namespace "urn:test:testingYang4";
+    prefix y4;
+
+    revision 2016-01-01 {
+        description "testingYang3";
+    }
+
+    import testingYang3 {
+        prefix y3;
+        revision-date 2016-01-01;
+    }
+
+    import importingModule {
+        prefix im;
+        revision-date 2016-01-01;
+    }
+
+    container module4-main {
+        container container-module-4 {
+            uses y3:grouping-module3 {
+                augment "list-module1-1/list-module1-2/container-module1" {
+                    uses im:grouping-module2;
+                }
+            }
+        }
+    }
+}
