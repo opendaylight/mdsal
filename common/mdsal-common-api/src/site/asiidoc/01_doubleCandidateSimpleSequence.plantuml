@@ -1,0 +1,84 @@
+["plantuml", "01_doubleCandidateSimpleSequence", "svg"]
+
+------------
+@startuml
+
+  autonumber "<font color=red><b>[00]"
+
+  participant "OSGi Container" as osgi
+  participant "Application" as app
+  participant "Application Body" as body
+  participant "EntitiOwnerhsipService" as eos
+
+  alt "Initialization"
+    osgi -> app : <<init>>
+    activate osgi
+      activate app
+        app -> eos : registerListener()
+        activate eos
+          app <-- eos
+        deactivate eos
+      deactivate app
+      app -> eos : registerCandidate(MainEntity)
+      activate app
+        activate eos
+          app <-- eos
+        deactivate eos
+        osgi <-- app
+      deactivate app
+    deactivate osgi
+
+  else "Try to take Leadership"
+    eos -> app : ownershipChanged(isOwner=true) [MainEntity]
+    activate eos
+      activate app
+        app -> eos : registerCandidate(CloseGuardEntity)
+        app <-- eos
+        eos <-- app
+      deactivate app
+    deactivate eos
+
+  else "Take Leadership"
+    eos -> app : ownershipChanged(isOwner=true) [CloseGuardEntity]
+    activate eos
+    activate app
+      app -> body : <<init>>
+      activate body
+        ...
+        app <-- body
+      deactivate body
+    eos <-- app
+    deactivate app
+    deactivate eos
+
+  else "Lost Leadership"
+    alt "CloseGuardEntity is not registered (initial phase)"
+      eos -> app : ownershipChanged(isOwner=false, wasOwner=false) [MainEntity]
+      activate eos
+      activate app
+        eos <-- app
+      deactivate app
+      deactivate eos
+
+    else "CloseGuardEntity is registered (realy lost leadership)"
+      eos -> app : ownershipChanged(isOwner=false, wasOwner=true) [MainEntity]
+      activate eos
+      activate app
+        app -\ body : close
+      deactivate app
+      activate body
+        ...
+        app \-- body
+      deactivate body
+      activate app
+        app -> eos :closeGuardCandidateRegistration.close
+        app <-- eos
+        eos <-- app
+      deactivate app
+      deactivate eos
+
+    end
+  end
+
+@enduml
+------------
