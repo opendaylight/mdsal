@@ -1,0 +1,16 @@
+module foo1 {
+    namespace "urn:test:foo1";
+    prefix f1;
+
+    revision 2016-01-01 {
+        description "DTO and builders needs to be in different packages";
+    }
+
+    container foo {
+        description "class fooBuilder";
+    }
+
+    container foo-builder {
+        description "class fooBuilder";
+    }
+}

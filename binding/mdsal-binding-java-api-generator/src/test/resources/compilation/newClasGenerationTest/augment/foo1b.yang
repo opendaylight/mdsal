@@ -1,0 +1,27 @@
+module foo1b {
+    namespace "urn:test:foo1b";
+    prefix f1b;
+
+    revision 2016-01-01 {
+        description "First refactor, this code should look the same as the default code due
+        to the fact that these augments are in the same module";
+    }
+
+    container a {
+    }
+
+    augment a {
+        container b {
+        }
+    }
+
+    augment a {
+        container bar {
+        }
+    }
+
+    augment "/a/b" {
+        container c {
+        }
+    }
+}
