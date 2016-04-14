@@ -1,0 +1,23 @@
+["plantuml", "04_baseAppSingleInstance", "svg"]
+
+------------
+@startuml
+
+  cloud "Cluster" as cluster {
+    component "EntitiOwnershipService" as eos
+  }
+
+  package "Any Cluster-Wide osgi app" as app {
+    component "ODL app module" as appModule
+    component "ODL app provide" as provider
+    component "ODL app body" as body
+  }
+
+  appModule -> provider : <<init>>
+  eos <-- provider : register app candidate
+  eos --> provider : get EOS Role
+  provider --> body : <<init>> for Master only
+
+
+@enduml
+------------

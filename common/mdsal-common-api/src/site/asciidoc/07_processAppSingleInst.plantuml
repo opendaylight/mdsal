@@ -1,0 +1,187 @@
+["plantuml", "07_processAppSingleInst", "svg"]
+
+------------
+@startuml
+
+
+  autonumber "<font color=red><b>[00]"
+
+  participant "OSGi container" as osgi
+  participant "AbstractModule<ODL app>" as module
+  participant "ODL AppProjectProvider\nextends AbstractProjectProvider" as provider
+  participant "ODL app Body" as body
+  participant "EntityOwnershipService" as eos
+
+  == Initialization ==
+
+  activate osgi
+    osgi -> module : <<init>>
+    activate module
+      module -> provider : initializeProvider()
+      activate provider
+        provider -> eos : registerCandidate(MainEntity)
+        activate eos
+          provider <-- eos
+        deactivate eos
+        module <-- provider
+      deactivate provider
+      osgi <-- module
+    deactivate module
+  deactivate osgi
+
+  alt "Get MainCandidate Role Master"
+    eos -> eos : <<getRole(MainCandidate)>>
+    note over eos
+      hasOwner=false call election
+      hasOwner=true return Slave for every new registration
+    end note
+    activate eos
+      provider <- eos : ownershipChanged(MainEntity, isOwner=true)
+      activate provider
+        provider -> eos : registerCandidate(CloseGuardEntity)
+        activate eos
+          provider <-- eos
+        deactivate eos
+        provider --> eos
+      deactivate provider
+    deactivate eos
+    eos -> eos : newElection
+    note over eos
+      initialization phase does not have close guard
+      candidate registration so it starts with election
+    end note
+    activate eos
+      provider <- eos : ownershipChanged(CloseGuardEntity, isOwner=true)
+      activate provider
+        provider -> body : <<init>>
+        activate body
+          ...
+          provider <-- body
+        deactivate body
+      deactivate provider
+    deactivate eos
+
+  else "Get MainCandidate Role Slave"
+    eos -> eos : getRole
+    activate eos
+      provider <- eos : ownershipChanged(MainEntity, isOwner=false)
+      activate provider
+        note over provider : "NOOP"
+        provider --> eos
+      deactivate provider
+    deactivate eos
+  end
+
+  == Repetition ==
+
+  alt "Get MainCandidate Role Master"
+    eos -> eos : <<newElection>>
+    activate eos
+      provider <- eos : ownershipChanged(MainEntity, isOwner=true)
+      activate provider
+        provider -> eos : registerCandidate(CloseGuardEntity)
+        activate eos
+          provider <-- eos
+        deactivate eos
+        provider --> eos
+      deactivate provider
+    deactivate eos
+    eos -> eos : getRole
+    note over eos
+      hasOwner=true so EOS returns Slave and we have to
+      wait for unregistration old Leader of CloseGuard Candidate
+    end note
+    activate eos
+      provider <-eos : ownershipChange(CloseGuardEntity, isOwner=false)
+      activate provider
+        note over provider : "NOOP"
+        provider --> eos
+      deactivate provider
+    deactivate eos
+
+  else "Get MainCandidate Role Slave"
+    eos -> eos : <<newElection>>
+    activate eos
+      provider <- eos : ownershipChange(MainEntity, isOwner=false)
+      activate provider
+        provider -\ body : <<close>>
+      deactivate provider
+    deactivate eos
+    activate body
+      note over body : "close could be async. operation"
+      ...
+      provider \-- body
+    deactivate body
+    activate provider
+      provider -> eos : unregisterCandidate(CloseGuardEntity)
+      activate eos
+        provider <-- eos
+      deactivate eos
+    deactivate provider
+
+  else "Get CloseGuardCandidate Role Master"
+    eos -> eos : <<newElection>>
+    activate eos
+      provider <- eos : ownershipChange(CloseGuardEntity, isOwner=true)
+      activate provider
+        provider -> body : <<init>>
+        activate body
+          ...
+          provider <-- body
+        deactivate body
+        provider --> eos
+      deactivate provider
+    deactivate eos
+
+  end
+
+  == Termination ==
+
+  activate osgi
+    osgi -> module : <<close>>
+    activate module
+      module -> provider : close()
+      activate provider
+        provider -> eos : unregisterCandidate(MainEntity)
+        activate eos
+          provider <-- eos
+        deactivate eos
+        module <-- provider
+      deactivate provider
+      osgi <-- module
+    deactivate module
+  deactivate osgi
+
+  alt "Get MainCandidate Leader Role Slave"
+    activate eos
+      provider <- eos : ownershipChange(MainEntity, wasOwner=true)
+      activate provider
+        provider -\ body : <<close>>
+      deactivate provider
+    deactivate eos
+    activate body
+      note over body : "close could be async. operation"
+      ...
+      provider \-- body
+    deactivate body
+    activate provider
+      provider -> eos : unregisterCandidate(CloseGuardEntity)
+      activate eos
+        provider <-- eos
+      deactivate eos
+    deactivate provider
+
+  else "Get MainCandidate NotLeader Role Slave"
+    provider <- eos : ownershipChange(MainEntity, wasOwner=false)
+    activate eos
+      activate provider
+        note over provider : "NOOP"
+        provider --> eos
+      deactivate provider
+    deactivate eos
+
+  end
+
+
+@enduml
+------------
