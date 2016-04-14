@@ -11,6 +11,7 @@
 .settings
 target
 *.iml
+*.svg
 .idea
 bin
 xtend-gen

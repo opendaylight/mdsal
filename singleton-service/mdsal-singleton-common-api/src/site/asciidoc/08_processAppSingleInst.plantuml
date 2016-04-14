@@ -1,0 +1,272 @@
+["plantuml", "08_processAppSingleInst", "svg"]
+
+------------
+@startuml
+
+
+  autonumber "<font color=red><b>[00]"
+
+  participant "OSGi container" as osgi
+  participant "AbstractModule<ODL app>" as module
+  participant "ODL ServiceProvider\nextends ClusterSingletonService" as provider
+  participant "ODL app Body" as body
+  participant "ClusterSingletonServiceProvider" as cssProvider
+  participant "ClusterSingletonServiceGroup" as cssGroup
+  participant "EntityOwnershipService" as eos
+
+  == Initialization ==
+
+  activate osgi
+    osgi -> module : <<init>>
+    activate module
+      module -> provider : initializeProvider()
+      activate provider
+        provider -> cssProvider : registerClusterSingletonService()
+        activate cssProvider
+  alt "New Group"
+          cssProvider -> cssGroup : <<init>>
+          activate cssProvider
+            activate cssGroup
+              cssProvider <-- cssGroup
+            deactivate cssGroup
+          deactivate cssProvider
+          cssProvider -> cssGroup : initializationClusterSingletonGroup()
+          activate cssProvider
+            activate cssGroup
+              cssGroup -> eos : registerCandidate
+              activate eos
+                cssGroup <-- eos
+              deactivate eos
+              cssProvider <-- cssGroup
+            deactivate cssGroup
+          deactivate cssProvider
+  else "Group is exist"
+          cssProvider -> cssGroup : registerService
+          activate cssProvider
+            activate cssGroup
+              cssProvider <-- cssGroup
+            deactivate cssGroup
+          deactivate cssProvider
+  end
+        provider <-- cssProvider
+        deactivate cssProvider
+        module <-- provider
+      deactivate provider
+      osgi <-- module
+    deactivate module
+  deactivate osgi
+
+  alt "Get MainCandidate Role Master"
+    eos -> eos : <<getRole(MainCandidate)>>
+    note over eos
+      hasOwner=false call election
+      hasOwner=true return Slave for every new registration
+    end note
+    activate eos
+      cssProvider <- eos : ownershipChanged(MainEntity, isOwner=true)
+      activate cssProvider
+        cssProvider -> cssGroup : ownerchipChanged(MainEntity, isOwner=true)
+        activate cssGroup
+          cssGroup -> eos : registerCandidate(CloseGuardEntity)
+          activate eos
+            cssGroup <-- eos
+          deactivate eos
+          cssProvider <-- cssGroup
+        deactivate cssGroup
+        cssProvider --> eos
+      deactivate cssProvider
+    deactivate eos
+    eos -> eos : newElection
+    note over eos
+      initialization phase does not have close guard
+      candidate registration so it starts with election
+    end note
+    activate eos
+      cssProvider <- eos : ownershipChanged(CloseGuardEntity, isOwner=true)
+      activate cssProvider
+        cssProvider -> cssGroup : ownershipChanged(CloseGuardEntity, isOwner=true)
+        activate cssGroup
+          cssGroup -> provider : instantiateServiceInstance()
+          activate provider
+            provider -> body : <<init>>
+            activate body
+              ...
+              provider <-- body
+            deactivate body
+            cssGroup <-- provider
+          deactivate provider
+          cssProvider <-- cssGroup
+        deactivate cssGroup
+        cssProvider --> eos
+      deactivate cssProvider
+    deactivate eos
+
+  else "Get MainCandidate Role Slave"
+    eos -> eos : getRole
+    activate eos
+      cssProvider <- eos : ownershipChanged(MainEntity, isOwner=false)
+      activate cssProvider
+        cssProvider -> cssGroup
+        activate cssGroup
+          note over cssGroup : "NOOP"
+          cssProvider <-- cssGroup
+        deactivate cssGroup
+        cssProvider --> eos
+      deactivate cssProvider
+    deactivate eos
+  end
+
+  == Repetition ==
+
+  alt "Get MainCandidate Role Master"
+    eos -> eos : <<newElection>>
+    activate eos
+      cssProvider <- eos : ownershipChanged(MainEntity, isOwner=true)
+      activate cssProvider
+        cssProvider -> cssGroup : ownershipChanged(MainEntity, isOwner=true)
+        activate cssGroup
+          cssGroup -> eos : registerCandidate(CloseGuardEntity)
+          activate eos
+            cssGroup <-- eos
+          deactivate eos
+          cssProvider <-- cssGroup
+        deactivate cssGroup
+        cssProvider --> eos
+      deactivate cssProvider
+    deactivate eos
+    eos -> eos : getRole
+    note over eos
+      hasOwner=true so EOS returns Slave and we have to
+      wait for unregistration old Leader of CloseGuard Candidate
+    end note
+    activate eos
+      cssProvider <-eos : ownershipChanged(CloseGuardEntity, isOwner=false)
+      activate cssProvider
+        cssProvider -> cssGroup : ownershipChanged(CloseGuardEntity, isOwner=false)
+        activate cssGroup
+          note over cssGroup : "NOOP"
+            cssProvider <-cssGroup
+        deactivate cssGroup
+      cssProvider --> eos
+      deactivate cssProvider
+    deactivate eos
+
+  else "Get MainCandidate Role Slave"
+    eos -> eos : <<newElection>>
+    activate eos
+      cssProvider <- eos : ownershipChanged(MainEntity, isOwner=false)
+      activate cssProvider
+        cssProvider -> cssGroup : ownershipChanged(MainEntity, isOwner=false)
+        activate cssGroup
+          cssGroup -> provider : closeServiceInstance()
+          activate provider
+            provider -\ body : <<close>>
+            activate body
+              ...
+              note over body : "close could be async. operation"
+              provider \-- body
+            deactivate body
+            cssGroup <-- provider
+          deactivate provider
+          cssGroup -> eos : unregisterCandidate(CloseGuardEntity)
+          activate eos
+            cssGroup <-- eos
+          deactivate eos
+          cssProvider <-- cssGroup
+        deactivate cssGroup
+        cssProvider --> eos
+      deactivate cssProvider
+    deactivate eos
+
+  else "Get CloseGuardCandidate Role Master"
+    eos -> eos : <<newElection>>
+    activate eos
+      cssProvider <- eos : ownershipChanged(CloseGuardEntity, isOwner=true)
+      activate cssProvider
+        cssProvider -> cssGroup : ownershipChanged(CloseGuardEntity, isOwner=true)
+        activate cssGroup
+          cssGroup -> provider : instantiateServiceInstance()
+          activate provider
+            provider -> body : <<init>>
+            activate body
+              ...
+              provider <-- body
+            deactivate body
+            cssGroup <-- provider
+          deactivate provider
+          cssProvider <-- cssGroup
+        deactivate cssGroup
+        cssProvider --> eos
+      deactivate cssProvider
+    deactivate eos
+
+  end
+
+  == Termination ==
+
+  activate osgi
+    osgi -> module : <<close>>
+    activate module
+      module -> provider : close()
+      activate provider
+        provider -> cssGroup : closeRegistration()
+        activate cssGroup
+          cssGroup -> eos : unregisterCandidate(MainEntity)
+          activate eos
+            cssGroup <-- eos
+          deactivate eos
+          provider <-- cssGroup
+        deactivate cssGroup
+        module <-- provider
+      deactivate provider
+      osgi <-- module
+    deactivate module
+  deactivate osgi
+
+  alt "Get MainCandidate Leader Role Slave"
+    activate eos
+      cssProvider <- eos : ownersipChanged(MainEntity, wasOwner=true)
+      activate cssProvider
+        cssProvider -> cssGroup : ownershipChanged(MainEntity, wasOwner=true)
+        activate cssGroup
+          cssGroup -> provider : closeServiceInstance()
+          activate provider
+            provider -\ body : <<close>>
+          deactivate provider
+        deactivate cssGroup
+      deactivate cssProvider
+    deactivate eos
+    activate body
+      note over body : "close could be async. operation"
+      ...
+      provider \-- body
+    deactivate body
+    activate provider
+      provider -> cssGroup : unregisterCandidate(CloseGuardEntity)
+      activate cssGroup
+        cssGroup -> eos : unregisterCandidate(CloseGuardEntity)
+        activate eos
+          cssGroup <-- eos
+        deactivate eos
+        provider <-- cssGroup
+      deactivate cssGroup
+    deactivate provider
+
+  else "Get MainCandidate NotLeader Role Slave"
+    activate eos
+      cssProvider <- eos : ownershipChange(MainEntity, wasOwner=false)
+      activate cssProvider
+        cssProvider -> cssGroup
+        activate cssGroup
+          note over cssGroup : "NOOP"
+          cssProvider <-- cssGroup
+        deactivate cssGroup
+        cssProvider --> eos
+      deactivate cssProvider
+    deactivate eos
+
+  end
+
+
+@enduml
+------------
