@@ -6,10 +6,13 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.common.api.clustering;
+package org.opendaylight.mdsal.common.api.clustering.impl;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.mdsal.common.api.clustering.ClusterSingletonService;
+import org.opendaylight.mdsal.common.api.clustering.ClusterSingletonServiceRegistration;
 
 /**
  * Package protected help class represent a Delegator for {@link ClusterSingletonService}
@@ -21,6 +24,7 @@ import com.google.common.util.concurrent.ListenableFuture;
  * service or application in osgi container. Any another servicies from group can not be
  * stoped.
  */
+@VisibleForTesting
 class ClusterSingletonServiceRegistrationDelegator
         implements ClusterSingletonServiceRegistration, ClusterSingletonService {
 
