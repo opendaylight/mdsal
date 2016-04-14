@@ -1,0 +1,33 @@
+module foo3 {
+    namespace "urn:test:foo3";
+    prefix f3;
+
+    revision 2016-01-01 {
+        description "
+        list foo - data.Foo
+        key identifier - key.foo.FooIdentifier,
+        type union - type.foo.identifier.IdentifierUnion,
+        container foo-identifier - data.FooIdentifier,
+        typedef foo-identifier - type.FooIdentifier
+        same solution applies for type and typedef as
+        shown in comment";
+    }
+
+
+    container nodes {
+//      typedef foo
+        list node {
+            key id;
+            leaf id {
+                leaf ref ?
+            }
+        }
+    }
+
+
+
+    container nodes {
+//      type foo
+        uses nodes;
+    }
+}
