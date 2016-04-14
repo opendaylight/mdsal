@@ -27,6 +27,7 @@
       <module>mdsal-singleton-common-api</module>
       <module>mdsal-singleton-dom-api</module>
       <module>mdsal-singleton-binding-api</module>
+      <module>mdsal-singleton-common-spi</module>
     </modules>
 
 
