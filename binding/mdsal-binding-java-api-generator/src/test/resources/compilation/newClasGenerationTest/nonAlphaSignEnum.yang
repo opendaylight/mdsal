@@ -1,0 +1,23 @@
+module nonAlphaSignEnum {
+    namespace "urn:test:nonAlphaSignEnum";
+    prefix nase;
+
+    revision 2016-01-01 {
+        description "Bug 2332 Binding Java API Generator -> doesn't handle non-alphabetic signs in names of enum
+         constants
+        Bug 2872 - Generated Java Enumerations should contain mapping to the string counter part, value-one should be
+         accesible, now the generatede code looks like public enum TestEnum { ValueOne(0)... there should be easy way
+         for user to get string represtation of this enum
+        Bug 2641 - Enumeration value defined in yang model is translated without underscore";
+    }
+
+    leaf example {
+        type enumeration {
+            enum "L-CSR-10M-APP-3Y=";
+            enum "value-one";
+            enum REACTIVE_MODE {
+                description "Default deployment mode. ";
+            }
+        }
+    }
+}

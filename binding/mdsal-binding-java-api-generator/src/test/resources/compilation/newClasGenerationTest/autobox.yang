@@ -1,0 +1,17 @@
+module autobox {
+    namespace "urn:test:autobox";
+    prefix ab;
+
+    revision 2016-01-01 {
+        description "Bug 1478 - Autoboxing support - In situations where we have a containing element which
+        has as its child a single container, we should make it easy to autobox it ";
+    }
+
+    container example-outter {
+        container example-inner {
+            leaf example {
+                type string;
+            }
+        }
+    }
+}

@@ -1,0 +1,69 @@
+module namespaceCollision {
+    namespace "urn:test:namespaceCollision";
+    prefix nsc;
+
+    revision 2016-01-01 {
+    }
+
+    extension example {
+        argument "word";
+    }
+
+    identity example {
+        description "bug 2655 grouping next to identity";
+    }
+
+    typedef example {
+        description "bug 476 grouping next to type def";
+        type string;
+    }
+
+    grouping example {
+        description "bug 2656 enum in grouping";
+        leaf example {
+            type enumeration {
+                enum "one" {
+                    value 1;
+                    description "Testing enum 1";
+                }
+                enum "two" {
+                    value 2;
+                    description "Testing enum 2";
+                }
+            }
+        }
+    }
+
+    container example {
+        container example {
+            leaf example {
+                type example;
+            }
+        }
+    }
+
+    grouping example-input {
+        description "bug 138 grouping rpc input";
+        leaf example-input-leaf {
+            type boolean;
+        }
+    }
+
+    rpc example {
+        input {
+            uses example-input;
+        }
+    }
+
+    choice testing-example {
+        description "bug 2360 Binding Java API Generator: Inner class with same name as outer class is not allowed";
+        case myCase {
+            leaf myCase {
+                type Union {
+                    type int32;
+                    type string;
+                }
+            }
+        }
+    }
+}
