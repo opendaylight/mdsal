@@ -1,0 +1,18 @@
+module differentGeneratedCodeForGroup {
+    namespace "urn:test:differentGeneratedCodeForGroup";
+    prefix dgcfg;
+
+    revision 2016-01-01 {
+        description "generated code looks different in group and in container for same list";
+    }
+
+    grouping a {
+        leaf-list b {
+            type string;
+        }
+    }
+
+    container ab {
+        uses a;
+    }
+}
