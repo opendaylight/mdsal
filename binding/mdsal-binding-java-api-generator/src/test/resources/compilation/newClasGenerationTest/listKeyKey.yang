@@ -1,0 +1,15 @@
+module listKeyKey {
+    namespace "urn:test:listKeyKey";
+    prefix lkk;
+
+    revision 2016-01-01 {
+    }
+
+    list example {
+        description "bug 157 key with name key";
+        key "key";
+        leaf key {
+            type string;
+        }
+    }
+}

@@ -574,6 +574,21 @@ public class CompilationTest extends BaseCompilationTest {
         cleanUp(sourcesOutputDir, compiledOutputDir);
     }
 
+    @Test
+    public void newClasGenerationTest() throws Exception {
+        final File sourcesOutputDir = new File(GENERATOR_OUTPUT_PATH + FS + "newClasGenerationTest");
+        assertTrue("Failed to create test file '" + sourcesOutputDir + "'", sourcesOutputDir.mkdir());
+        final File compiledOutputDir = new File(COMPILER_OUTPUT_PATH + FS + "newClasGenerationTest");
+        assertTrue("Failed to create test file '" + compiledOutputDir + "'", compiledOutputDir.mkdir());
+
+        generateTestSources("/compilation/newClasGenerationTest", sourcesOutputDir);
+
+        // Test if sources are compilable
+        testCompilation(sourcesOutputDir, compiledOutputDir);
+
+        cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+
     /**
      * Test if class generated for node from grouping implements ChildOf.
      *
