@@ -1,0 +1,39 @@
+["plantuml", "03_classClusterSingletonServiceGroup", "svg"]
+
+------------
+@startuml
+
+interface "AutoCloseable" as auto {
+  +void close();
+}
+
+interface "ClusterSingletonService" as csService {
+  +void instantiateServiceInstance();
+  +ListenableFuture<Void> closeServiceInstance();
+  +String getServiceGroupIdentifier();
+}
+
+interface "ClusterSingletonServiceGroup" as cssGroup {
+  +void initializationClusterSingletonGroup()
+  +ClusterSingletonServiceRegistration registerService(ClusterSingletonService);
+  +void unregisterService(ClusterSingletonService);
+  +void ownershipChanged(final OwnershipChange ownershipChange);
+  +ListenableFuture<List<Void>> closingClusterSingletonGroup();
+}
+
+interface "ClusterSingletonServiceRegistration" as cssRegistration {
+}
+
+interface "ClusterSingletonServiceProvider" as cssProvider {
+  +ClusterSingletonServiceRegistration registerClusterSingletonService(ClusterSingletonService);
+}
+
+cssProvider --|> auto
+cssRegistration --|> auto
+
+csService - cssProvider : registerClusterSingletonService
+cssProvider - cssGroup : registerClusterSingletonService
+
+
+@enduml
+------------
