@@ -1,0 +1,22 @@
+module foo2a {
+    namespace "urn:test:foo2a";
+    prefix f2;
+
+    revision 2016-01-01 {
+        description "Second refactor grouping augment";
+    }
+
+    grouping ga {
+        container b {
+        }
+    }
+
+    container a {
+        uses ga {
+            augment b {
+                container c {
+                }
+            }
+        }
+    }
+}

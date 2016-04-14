@@ -1,0 +1,46 @@
+module importingModule {
+    namespace "urn:test:importedModule";
+    prefix im;
+
+    revision 2016-01-01 {
+        description "importedtesting submodule";
+    }
+
+    import complex {
+        prefix cx;
+        revision-date 2016-01-01;
+    }
+
+    uses cx:complex-grouping {
+        refine grp-cont {
+            description "new lf desc";
+            reference "new lf ref";
+        }
+
+        refine grp-cont/grp-lls {
+            must "new = n";
+            config false;
+            min-elements 8;
+            max-elements 10;
+        }
+
+        refine grp-cont/grp-ls {
+            config false;
+            min-elements 8;
+            max-elements 10;
+        }
+
+        refine grp-cont/grp-axml {
+            mandatory false;
+        }
+    }
+
+    deviation cx:submodule-included-container/name {
+        deviate replace {
+            type string;
+        }
+        deviate add {
+            default "new default";
+        }
+    }
+}

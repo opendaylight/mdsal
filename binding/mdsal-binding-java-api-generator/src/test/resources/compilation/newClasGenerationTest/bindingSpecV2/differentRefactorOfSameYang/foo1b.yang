@@ -1,0 +1,21 @@
+module foo1b {
+    namespace "urn:test:foo1b";
+    prefix f1b;
+
+    revision 2016-01-01 {
+        description "First refactor only augment";
+    }
+
+    container a {
+    }
+
+    augment "/a" {
+        container b {
+        }
+    }
+
+    augment "/a/b" {
+        container c {
+        }
+    }
+}

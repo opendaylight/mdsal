@@ -1,0 +1,46 @@
+submodule includedSubmodule {
+    revision 2016-01-01 {
+        description "included submodule  yang CAN NOT CONTAIN namespace AND prefix, MUST CONTAIN belongs to";
+    }
+
+    belongs-to "complex" {
+        prefix "clx";
+    }
+
+    augment "/clx:complex-list/complex-list-choice" {
+        when "/complex-container-interface/ifNumber != 5";
+        leaf submodule-included-augmented {
+            type string;
+            default "Not 5";
+        }
+    }
+
+    grouping submodule-included-grouping {
+        leaf submodule-included-grouping-leaf {
+            type string;
+            default "default value";
+        }
+    }
+
+    container submodule-included-container {
+        leaf ip {
+            type string;
+        }
+
+        leaf port {
+            type int16;
+        }
+
+        leaf name {
+            type int16;
+        }
+
+        leaf type {
+            type string;
+        }
+
+        must "port < 1000 and port > 4000" {
+            error-message "Port must between 1000..4000";
+        }
+    }
+}
