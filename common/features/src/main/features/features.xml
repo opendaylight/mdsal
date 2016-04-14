@@ -85,16 +85,36 @@
         <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-common-spi/{{VERSION}}</bundle>
     </feature>
 
-    <feature name='odl-mdsal-eos-dom' version='${project.version}' description='OpenDaylight :: MD-SAL :: EOS :: Common'>
+    <feature name='odl-mdsal-eos-dom' version='${project.version}' description='OpenDaylight :: MD-SAL :: EOS :: DOM'>
         <feature version='${project.version}'>odl-mdsal-eos-common</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-dom-api/{{VERSION}}</bundle>
     </feature>
 
-    <feature name='odl-mdsal-eos-binding' version='${project.version}' description='OpenDaylight :: MD-SAL :: EOS :: Common'>
+    <feature name='odl-mdsal-eos-binding' version='${project.version}' description='OpenDaylight :: MD-SAL :: EOS :: Binding'>
         <feature version='${project.version}'>odl-mdsal-eos-dom</feature>
         <feature version='${project.version}'>odl-mdsal-binding-dom-adapter</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-binding-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-binding-adapter/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-singleton-common' version='${project.version}' description='OpenDaylight :: MD-SAL :: Singleton :: Common'>
+        <feature version='${project.version}'>odl-mdsal-eos-common</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-common-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-common-spi/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-singleton-dom' version='${project.version}' description='OpenDaylight :: MD-SAL :: Singleton :: DOM'>
+        <feature version='${project.version}'>odl-mdsal-singleton-common</feature>
+        <feature version='${project.version}'>odl-mdsal-eos-dom</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-dom-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-dom-impl/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-singleton-binding' version='${project.version}' description='OpenDaylight :: MD-SAL :: Singleton :: Binding'>
+        <feature version='${project.version}'>odl-mdsal-singleton-common</feature>
+        <feature version='${project.version}'>odl-mdsal-eos-binding</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-binding-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-binding-impl/{{VERSION}}</bundle>
     </feature>
 
 </features>
