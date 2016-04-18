@@ -25,6 +25,14 @@ public class EntityOwnershipChange extends GenericEntityOwnershipChange<Instance
      * {@inheritDoc}
      */
     public EntityOwnershipChange(@Nonnull final Entity entity, @Nonnull final EntityOwnershipChangeState state) {
-        super(entity, state);
+        super(entity, state, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public EntityOwnershipChange(@Nonnull final Entity entity, @Nonnull final EntityOwnershipChangeState state,
+            final boolean inJeopardy) {
+        super(entity, state, inJeopardy);
     }
 }

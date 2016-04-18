@@ -22,10 +22,17 @@ import org.opendaylight.yangtools.concepts.Path;
 public class GenericEntityOwnershipChange<P extends Path<P>, E extends GenericEntity<P>> {
     private final E entity;
     private final EntityOwnershipChangeState state;
+    private final boolean inJeopardy;
 
-    public GenericEntityOwnershipChange(@Nonnull E entity, @Nonnull EntityOwnershipChangeState state) {
+    public GenericEntityOwnershipChange(@Nonnull final E entity, @Nonnull final EntityOwnershipChangeState state) {
+        this(entity, state, false);
+    }
+
+    public GenericEntityOwnershipChange(@Nonnull final E entity, @Nonnull final EntityOwnershipChangeState state,
+            final boolean inJeopardy) {
         this.entity = Preconditions.checkNotNull(entity, "entity can't be null");
         this.state = Preconditions.checkNotNull(state, "state can't be null");
+        this.inJeopardy = inJeopardy;
     }
 
     /**
@@ -44,8 +51,18 @@ public class GenericEntityOwnershipChange<P extends Path<P>, E extends GenericEn
         return state;
     }
 
+    /**
+     * Returns the current jeopardy state. When in a jeopardy state, the values from other methods may potentially
+     * be out of date.
+     *
+     * @return true if the local node is in a jeopardy state. If false, the reported information is accurate.
+     */
+    public boolean inJeopardy() {
+        return inJeopardy;
+    }
+
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [entity=" + entity + ", state=" + state + "]";
+        return getClass().getSimpleName() + " [entity=" + entity + ", state=" + state + ", inJeopardy=" + inJeopardy + "]";
     }
 }

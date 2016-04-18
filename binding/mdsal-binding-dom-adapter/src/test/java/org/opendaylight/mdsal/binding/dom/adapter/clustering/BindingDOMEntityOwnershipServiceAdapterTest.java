@@ -70,10 +70,10 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
 
     @Test
     public void testRegisterCandidate() throws CandidateAlreadyRegisteredException {
-        DOMEntityOwnershipCandidateRegistration mockDOMReg = mock(DOMEntityOwnershipCandidateRegistration.class);
+        final DOMEntityOwnershipCandidateRegistration mockDOMReg = mock(DOMEntityOwnershipCandidateRegistration.class);
         doReturn(mockDOMReg).when(mockDOMService).registerCandidate(DOM_ENTITY);
 
-        EntityOwnershipCandidateRegistration reg = adapter.registerCandidate(BINDING_ENTITY);
+        final EntityOwnershipCandidateRegistration reg = adapter.registerCandidate(BINDING_ENTITY);
 
         assertNotNull("registerCandidate returned null", reg);
         assertEquals("getInstance", BINDING_ENTITY, reg.getInstance());
@@ -84,28 +84,28 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
 
     @Test
     public void testRegisterListener() {
-        DOMEntityOwnershipListenerRegistration mockDOMReg = mock(DOMEntityOwnershipListenerRegistration.class);
+        final DOMEntityOwnershipListenerRegistration mockDOMReg = mock(DOMEntityOwnershipListenerRegistration.class);
         doReturn(mockDOMReg).when(mockDOMService).registerListener(eq(DOM_ENTITY.getType()),
                 any(DOMEntityOwnershipListener.class));
-        EntityOwnershipListener mockListener = mock(EntityOwnershipListener.class);
+        final EntityOwnershipListener mockListener = mock(EntityOwnershipListener.class);
 
-        EntityOwnershipListenerRegistration reg = adapter.registerListener(BINDING_ENTITY.getType(), mockListener);
+        final EntityOwnershipListenerRegistration reg = adapter.registerListener(BINDING_ENTITY.getType(), mockListener);
 
         assertNotNull("registerListener returned null", reg);
         assertEquals("getInstance", mockListener, reg.getInstance());
         assertEquals("getEntityType", BINDING_ENTITY.getType(), reg.getEntityType());
 
-        ArgumentCaptor<DOMEntityOwnershipListener> domListenerCaptor = ArgumentCaptor.forClass(DOMEntityOwnershipListener.class);
+        final ArgumentCaptor<DOMEntityOwnershipListener> domListenerCaptor = ArgumentCaptor.forClass(DOMEntityOwnershipListener.class);
         verify(mockDOMService).registerListener(eq(DOM_ENTITY.getType()),  domListenerCaptor.capture());
 
-        DOMEntityOwnershipChange domOwnershipChange = new DOMEntityOwnershipChange(DOM_ENTITY,
-                EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
+        final DOMEntityOwnershipChange domOwnershipChange = new DOMEntityOwnershipChange(DOM_ENTITY,
+                EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, true);
         domListenerCaptor.getValue().ownershipChanged(domOwnershipChange );
 
-        ArgumentCaptor<EntityOwnershipChange> ownershipChangeCaptor = ArgumentCaptor.forClass(EntityOwnershipChange.class);
+        final ArgumentCaptor<EntityOwnershipChange> ownershipChangeCaptor = ArgumentCaptor.forClass(EntityOwnershipChange.class);
         verify(mockListener).ownershipChanged(ownershipChangeCaptor.capture());
 
-        EntityOwnershipChange change = ownershipChangeCaptor.getValue();
+        final EntityOwnershipChange change = ownershipChangeCaptor.getValue();
         assertEquals("getEntity", BINDING_ENTITY, change.getEntity());
         assertEquals("getState", EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, change.getState());
 
@@ -115,10 +115,10 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
 
     @Test
     public void testGetOwnershipState() {
-        Optional<EntityOwnershipState>  expectedState = Optional.of(EntityOwnershipState.IS_OWNER);
+        final Optional<EntityOwnershipState>  expectedState = Optional.of(EntityOwnershipState.IS_OWNER);
         doReturn(expectedState).when(mockDOMService).getOwnershipState(DOM_ENTITY);
 
-        Optional<EntityOwnershipState> actualState = adapter.getOwnershipState(BINDING_ENTITY);
+        final Optional<EntityOwnershipState> actualState = adapter.getOwnershipState(BINDING_ENTITY);
 
         assertSame("getOwnershipState", expectedState, actualState);
     }

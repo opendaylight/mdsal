@@ -24,19 +24,20 @@ class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
     private final BindingToNormalizedNodeCodec conversionCodec;
     private final EntityOwnershipListener bindingListener;
 
-    DOMEntityOwnershipListenerAdapter(EntityOwnershipListener bindingListener,
-            BindingToNormalizedNodeCodec conversionCodec) {
+    DOMEntityOwnershipListenerAdapter(final EntityOwnershipListener bindingListener,
+            final BindingToNormalizedNodeCodec conversionCodec) {
         this.bindingListener = Preconditions.checkNotNull(bindingListener);
         this.conversionCodec = Preconditions.checkNotNull(conversionCodec);
     }
 
     @Override
-    public void ownershipChanged(DOMEntityOwnershipChange ownershipChange) {
+    public void ownershipChanged(final DOMEntityOwnershipChange ownershipChange) {
         try {
-            Entity entity = new Entity(ownershipChange.getEntity().getType(), conversionCodec.toBinding(
+            final Entity entity = new Entity(ownershipChange.getEntity().getType(), conversionCodec.toBinding(
                     ownershipChange.getEntity().getIdentifier()).get());
-            bindingListener.ownershipChanged(new EntityOwnershipChange(entity, ownershipChange.getState()));
-        } catch (Exception e) {
+            bindingListener.ownershipChanged(new EntityOwnershipChange(entity, ownershipChange.getState(),
+                    ownershipChange.inJeopardy()));
+        } catch (final Exception e) {
             BindingDOMEntityOwnershipServiceAdapter.LOG.error("Error converting DOM entity ID {} to binding InstanceIdentifier",
                     ownershipChange.getEntity().getIdentifier(), e);
         }
