@@ -25,6 +25,14 @@ public class DOMEntityOwnershipChange extends GenericEntityOwnershipChange<YangI
      * {@inheritDoc}
      */
     public DOMEntityOwnershipChange(@Nonnull final DOMEntity entity, @Nonnull final EntityOwnershipChangeState state) {
-        super(entity, state);
+        super(entity, state, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public DOMEntityOwnershipChange(@Nonnull final DOMEntity entity, @Nonnull final EntityOwnershipChangeState state,
+            final boolean inJeopardy) {
+        super(entity, state, inJeopardy);
     }
 }
