@@ -1,0 +1,71 @@
+module mainYangTest {
+    namespace "urn:test:mainYangTest";
+    prefix myt;
+
+    revision 2016-01-01 {
+        description "Main yang for testing spec v2";
+    }
+
+    grouping main-group {
+        container main-group-cont {
+            uses second-group;
+            leaf main-group-cont-leaf {
+                type string;
+            }
+            list main-group-cont-list-ordered {
+                ordered-by user;
+                key "name-1";
+                leaf name-1 {
+                    type string;
+                }
+                leaf type-1 {
+                    type string;
+                }
+            }
+            list main-group-cont-list-unordered {
+                key "name-2";
+                leaf name-2 {
+                    type string;
+                }
+                leaf type-2 {
+                    type string;
+                }
+            }
+            choice main-group-cont-choice {
+                case a {
+                    leaf case-1 {
+                        type string;
+                    }
+                }
+                case b {
+                    leaf case2-1 {
+                        type string;
+                    }
+                }
+            }
+            leaf leaf-ref-test {
+                type leafref {
+                    path "../main-group-cont-leaf";
+                }
+            }
+        }
+    }
+
+    grouping second-group {
+        container second-group-cont {
+            leaf second-group-cont-leaf {
+                type string;
+            }
+        }
+    }
+
+    augment "/main-cont" {
+        leaf main-augmented-leaf {
+            type string;
+        }
+    }
+
+    container main-cont {
+        uses main-group;
+    }
+}
