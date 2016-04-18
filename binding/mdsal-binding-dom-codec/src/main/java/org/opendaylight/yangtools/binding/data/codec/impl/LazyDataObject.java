@@ -23,6 +23,7 @@ import org.opendaylight.yangtools.binding.data.codec.util.AugmentationReader;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
@@ -90,11 +91,27 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
                     return false;
                 }
             }
+
+            if (Augmentable.class.isAssignableFrom(context.getBindingClass())) {
+                if(!getAugmentationsImpl().equals(getAllAugmentations(other))) {
+                    return false;
+                }
+            }
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             LOG.warn("Can not determine equality of {} and {}", this, other, e);
             return false;
         }
         return true;
+    }
+
+    private static Map<Class<? extends Augmentation<?>>, Augmentation<?>> getAllAugmentations(Object dataObject) {
+        if (dataObject instanceof AugmentationReader) {
+            return ((AugmentationReader) dataObject).getAugmentations(dataObject);
+        } else if(dataObject instanceof Augmentable<?>){
+            return BindingReflections.getAugmentations((Augmentable<?>) dataObject);
+        }
+
+        throw new IllegalArgumentException("Unable to get all augmentations from " + dataObject);
     }
 
     private Integer bindingHashCode() {
