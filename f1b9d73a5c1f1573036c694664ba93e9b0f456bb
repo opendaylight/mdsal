@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_80573a02",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/test-test-test-test/mainYangTestImporting.yang",
+        "patchSetId": 11
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-04-18T12:23:53Z",
+      "side": 1,
+      "message": "missing prefix",
+      "range": {
+        "startLine": 27,
+        "startChar": 13,
+        "endLine": 27,
+        "endChar": 23
+      },
+      "revId": "f1b9d73a5c1f1573036c694664ba93e9b0f456bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_2052ae13",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/test-test-test-test/mainYangTestImporting.yang",
+        "patchSetId": 11
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-04-18T12:23:53Z",
+      "side": 1,
+      "message": "augment is not valid sub-statement of container",
+      "range": {
+        "startLine": 28,
+        "startChar": 8,
+        "endLine": 28,
+        "endChar": 34
+      },
+      "revId": "f1b9d73a5c1f1573036c694664ba93e9b0f456bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
