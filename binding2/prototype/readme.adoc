@@ -1,0 +1,14 @@
+== Design Binding specification v2
+
+This patch represents initial prototyping of binding specification v2 where:
+
+* Java code was generated from YANG module with binding spec v1
+* manually refactored according to new v2 rules for packages
+
+
+=== Further notes:
+
+* generated structures
+* yang-binding refactored
+* grouping & data package suffix added
+* trailling whitespaces fixed
