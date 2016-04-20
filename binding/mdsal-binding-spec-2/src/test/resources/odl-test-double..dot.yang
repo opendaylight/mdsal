@@ -1,0 +1,14 @@
+module odl-test-double..dot {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:mdsal:binding2:test:double..dot";
+    prefix "dd";
+
+    description
+        "Module aimed to create package name with two consecutive dots.";
+
+    revision "2016-04-20" {
+        description
+            "Initial revision, for ODL Boron.";
+    }
+
+}
