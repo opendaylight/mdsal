@@ -1,0 +1,14 @@
+module odl-test-foo-bar {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:mdsal:binding2:test:foo-bar";
+    prefix "fmb";
+
+    description
+        "One of several modules for testing collisions due to too similar namespaces.";
+
+    revision "2016-04-20" {
+        description
+            "Initial revision, for ODL Boron.";
+    }
+
+}
