@@ -1534,7 +1534,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                         qname.getRevision());
                 final ModuleContext mc = genCtx.get(unionModule);
                 returnType = mc.getTypedefs().get(typeDef.getPath());
-            } else if (typeDef instanceof EnumTypeDefinition && BaseTypes.ENUMERATION_QNAME.equals(typeDef.getQName())) {
+            } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
                 // Annonymous enumeration (already generated, since it is inherited via uses).
                 LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
                 QName qname = originalLeaf.getQName();
