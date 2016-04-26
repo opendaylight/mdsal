@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "fa57193c_63b9372e",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 1335,
+      "author": {
+        "id": 2745
+      },
+      "writtenOn": "2016-04-26T12:33:16Z",
+      "side": 1,
+      "message": "it is necessary to test name equality of nodes. Uses\u0027s parent node can have many choice nodes, you don\u0027t have to find the right one ...",
+      "range": {
+        "startLine": 1335,
+        "startChar": 28,
+        "endLine": 1335,
+        "endChar": 70
+      },
+      "revId": "0ae9249b6e86cd1a77a061e40ab9280691bb13b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa57193c_e86d2606",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
         "patchSetId": 4
