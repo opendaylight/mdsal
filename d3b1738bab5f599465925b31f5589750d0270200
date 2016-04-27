@@ -1,0 +1,837 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_16cb58a6",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/clustering/AbstractProjectProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Instead of duplicating the javadocs form AbstractGenericProvider, you can just link to it, i.e.:\n\n\"Binding version of {@link AbstractGenericProjectProvider}\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_34bbf70f",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "provide -\u003e represents",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_743c4f94",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "remove \"functionality for every ProjectProvider\" doesn\u0027t really add anything and sounds confusing.\n\nChange next sentence to \"There is only one fully instantiated project instance in a cluster at one time.\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_14951340",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"Single instance ...\" -\u003e  \"This is realized via a double candidate approach where a project instance maintains a candidate registration for ownership of the project entity in the cluster and also a registration that acts as a guard to ensure a project instance has fully closed prior to relinquishing project ownership. To achieve ownership of the project, a project candidate must hold ownership of both these entities.\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_54f2eb9a",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Can we rename this to AbstractGenericProjectProvider?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_54202bf7",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"bundle\" is an OSGi concept, also entity types must be unique so we should probably qualify it - how about \"org.opendaylight.mdsal.projectEntityType\". Also constant represents a type so rename to PROJECT_ENTITY_TYPE.",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_947923ff",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "The term \"double candidate\" seems a bit esoteric. How about \"org.opendaylight.mdsal.project.asyncCloseEntityType\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_f4221f00",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Can we expand to \"entityOwnershipService\" for clarity?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_f62504ac",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Can we rename to projectEntity for clarity?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_d4355b47",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"Identificator\" isn\u0027t actually an English word :) How about \"projectEntityIdentifier\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_3455b71d",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Semaphores are typically use to allow access to multiple threads. Since a Semaphore with 1 permit is equivalent to a mutual exclusion lock, why not use a ReentrantLock for clarity?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_964be858",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Can we rename to \"projectEntityListenerReg\" and \"asyncCloseEntityListenerReg\" for clarity?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_7648d45b",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Can we rename to \"projectEntityCandidateReg\" and \"asyncCloseEntityCandidateReg\" for clarity?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_1426b316",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"Initializes all internal instance members.\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_344657c0",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"entityOwnershipService the {@link GenericEntityOwnershipService} instance\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_b411c7ae",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "This should be protected since class is abstract.",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_747e0fe6",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "It\u0027s a little dangerous to invoke overridden methods in the base ctor as the derived class isn\u0027t fully constructed yet. It looks like this call can be done lazily in initializationClusterProjectProvider.",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_f4505f60",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Same thing wrt to invoking overridden method, also it\u0027s not safe to leak the instance out of the constructor via registerListener as its not fully constructed.  registerListener should be called in the initialize method.",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_344bf7b1",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"Creates an extended {@link GenericEntity} instance.\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_b4d6e7c3",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"entityType  the type of the entity\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_14db53ee",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"entityIdentifier  the identifier of the entity\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_f4d7bfbd",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Can we rename params to \"entityType\" and \"entityIdentifier\" for clarity?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_94c76312",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"entityType  the type of the entity\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_54fcab3e",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Do we need this abstract method, i.e. can\u0027t you just call eos.registerListener(type, this)?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_d49f1b02",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"This method is invoked to instantiate an underlying project instance when ownership has been granted for the project entity.\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_9495a3e6",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "So this is called to instantiate a project instance so can we rename to \"instantiateInstance\"?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_b4a42758",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"This method is invoked to close the underlying project instance when ownership has been lost for the project entity. If the act of closing the instance may perform blocking operations or take some time, it should be done asynchronously to avoid blocking the current thread.\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_749a8f15",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Remove space",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_74c1efe3",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"return a ListenableFuture that is completed when the underlying instance close operation is complete.\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_148993ca",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Can we rename to \"closeInstance\"?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_14b0738a",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "I assume this method must be called once on startup. \n\n\"This method must be called once on startup to initialize this provider.\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_b4bb8771",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Can we rename to \"initializeProvider\"?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_b6042c16",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "By using a Lock instead of a Semaphore, the lock() method doesn\u0027t throw an exception so you don\u0027t need the needReleaseLock flag, it you obtain the lock before the try.",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_160a3821",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "ownershipChange won\u0027t be null.",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_16f4f8f0",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Why do we call close here and not suspendProject? How would we recover when the inJeopardy state heals?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_36377ce5",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Use enum constant for clarity - LOCAL_OWNERSHIP_GRANTED.",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_7631f4eb",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Use enum constant for clarity - LOCAL_OWNERSHIP_LOST_NEW_OWNER || LOCAL_OWNERSHIP_LOST_NO_OWNER.",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_d64d6074",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Same as above wrt to enums",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_56ddd06f",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Is this really an error condition that requires us to close?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_96e76840",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "We\u0027ve already closed the doubleCandidateProjectEntityReg above. It doesn\u0027t seem  like we need to call getSuspendCallback here to wait for the Future and close the doubleCandidateProjectEntityReg again.",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_36ac9ced",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Can we rename to \"newAsyncCloseCallback\"?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_167d186f",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Since this method is used for the doubleCandidateRegistration, do we need to pass it in?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_f6aa24d3",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Add @Nullable",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_b6870c61",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "\"Unexpected error closing project instance\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_f681844b",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "The term \"Leadership\" is used for raft - EOS term is \"Ownership\" so rename to \"tryToTake Ownership\".",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_56967095",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "rename to \"takeOwnership\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_3693fca4",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "rename to \"lostOwnership\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_741d6f73",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Can we rename to \"closeResources\"?",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_f6cfc4ae",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/clustering/DOMAbstractProjectProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-27T14:58:17Z",
+      "side": 1,
+      "message": "Instead of duplicating the javadocs form AbstractGenericProvider, you can just link to it, i.e.:\n\n\"Binding version of {@link AbstractGenericProjectProvider}\"",
+      "revId": "d3b1738bab5f599465925b31f5589750d0270200",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
