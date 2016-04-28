@@ -1,0 +1,41 @@
+module foo {
+    namespace "urn:test:foo";
+    prefix fo;
+
+    revision 2016-01-01 {
+        description "Inner classes - spec 1 enum, union, bits... spec 2 no inner classes, these classes should be
+        generated into type package. There is conflict in name";
+    }
+
+    container simple-container {
+        leaf bar {
+            type union {
+                type enumeration {
+                    enum enum1 {
+                        value 1;
+                    }
+                    enum enum2 {
+                        value 2;
+                    }
+                }
+                type bits {
+                    bit bit1 {
+                        position 0;
+                    }
+                    bit bit2 {
+                        position 1;
+                    }
+                }
+                type union {
+                    type string {
+                        length "0..5";
+                    }
+                }
+            }
+        }
+
+        typedef bar.enum {
+            type string;
+        }
+    }
+}

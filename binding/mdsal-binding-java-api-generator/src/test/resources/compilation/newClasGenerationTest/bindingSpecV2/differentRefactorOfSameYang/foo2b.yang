@@ -1,0 +1,19 @@
+module foo2b {
+    namespace "urn:test:foo2b";
+    prefix f2b;
+
+    revision 2016-01-01 {
+        description "Third refactor one grouping";
+    }
+
+    grouping ga {
+        container b {
+            container c {
+            }
+        }
+    }
+
+    container a {
+        uses ga;
+    }
+}
