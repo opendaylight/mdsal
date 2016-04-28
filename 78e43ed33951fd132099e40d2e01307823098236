@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fa57193c_0face4ec",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShard.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 3127
+      },
+      "writtenOn": "2016-04-28T06:58:48Z",
+      "side": 1,
+      "message": "Removed, according to the design we\u0027ve had with you and tony shards should be registered hierarchicaly from top to bottom.\nI\u0027ll remove this whole method in a subsequent patch and add enforcement of this rule.",
+      "parentUuid": "fa57193c_6ed5a942",
+      "revId": "78e43ed33951fd132099e40d2e01307823098236",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa57193c_cecaf5a0",
         "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardThreePhaseCommitCohort.java",
         "patchSetId": 8
@@ -30,6 +48,24 @@
       "writtenOn": "2016-04-21T23:30:21Z",
       "side": 1,
       "message": "can it be package-private?",
+      "revId": "78e43ed33951fd132099e40d2e01307823098236",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_6fb9202e",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardThreePhaseCommitCohort.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 3127
+      },
+      "writtenOn": "2016-04-28T06:58:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa57193c_cecaf5a0",
       "revId": "78e43ed33951fd132099e40d2e01307823098236",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fa57193c_4fb6dc3e",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardThreePhaseCommitCohort.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 3127
+      },
+      "writtenOn": "2016-04-28T06:58:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa57193c_aecfc1af",
+      "revId": "78e43ed33951fd132099e40d2e01307823098236",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa57193c_eec0997e",
         "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardThreePhaseCommitCohort.java",
         "patchSetId": 8
@@ -64,6 +118,24 @@
       "writtenOn": "2016-04-21T23:30:21Z",
       "side": 1,
       "message": "checkState() is more appropriate here, and should include a message about the fact that user tried to submit an aborted transaction.",
+      "revId": "78e43ed33951fd132099e40d2e01307823098236",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_af821850",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardThreePhaseCommitCohort.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 3127
+      },
+      "writtenOn": "2016-04-28T06:58:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa57193c_eec0997e",
       "revId": "78e43ed33951fd132099e40d2e01307823098236",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
