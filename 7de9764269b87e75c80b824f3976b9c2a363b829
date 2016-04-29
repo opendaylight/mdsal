@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_2a426b10",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding2/spec/IdentifiableItem.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-04-29T10:48:07Z",
+      "side": 1,
+      "message": "can this be null?",
+      "range": {
+        "startLine": 27,
+        "startChar": 16,
+        "endLine": 27,
+        "endChar": 21
+      },
+      "revId": "7de9764269b87e75c80b824f3976b9c2a363b829",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_aabe7bfd",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding2/spec/Item.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-04-29T10:48:07Z",
+      "side": 1,
+      "message": "final?",
+      "range": {
+        "startLine": 22,
+        "startChar": 10,
+        "endLine": 22,
+        "endChar": 22
+      },
+      "revId": "7de9764269b87e75c80b824f3976b9c2a363b829",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_ea37d3ae",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding2/spec/Item.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-04-29T10:48:07Z",
+      "side": 1,
+      "message": "can it be null?",
+      "range": {
+        "startLine": 25,
+        "startChar": 16,
+        "endLine": 25,
+        "endChar": 22
+      },
+      "revId": "7de9764269b87e75c80b824f3976b9c2a363b829",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_ca3c8f96",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding2/spec/Item.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-04-29T10:48:07Z",
+      "side": 1,
+      "message": "use field directly",
+      "range": {
+        "startLine": 35,
+        "startChar": 15,
+        "endLine": 35,
+        "endChar": 24
+      },
+      "revId": "7de9764269b87e75c80b824f3976b9c2a363b829",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
