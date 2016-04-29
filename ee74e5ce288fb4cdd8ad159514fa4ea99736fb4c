@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_6a546354",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProjectProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-29T13:18:55Z",
+      "side": 1,
+      "message": "\"So we will...\" is a redundant statement - please remove.",
+      "revId": "ee74e5ce288fb4cdd8ad159514fa4ea99736fb4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_4a519f61",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProjectProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-29T13:18:55Z",
+      "side": 1,
+      "message": "\"Single instance\" is misplaced - please remove",
+      "revId": "ee74e5ce288fb4cdd8ad159514fa4ea99736fb4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_aa4e7bbf",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProjectProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-29T13:18:55Z",
+      "side": 1,
+      "message": "As mentioned earlier, it is unsafe to call overridden methods and also leak this instance in the constructor. registerListener should be called in the initialize method.",
+      "revId": "ee74e5ce288fb4cdd8ad159514fa4ea99736fb4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_cacc8f38",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProjectProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-29T13:18:55Z",
+      "side": 1,
+      "message": "Is this really worthy of reporting this as an error message? Seems like this should be debug.",
+      "revId": "ee74e5ce288fb4cdd8ad159514fa4ea99736fb4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_6adbc3ed",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProjectProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-04-29T13:18:55Z",
+      "side": 1,
+      "message": "I\u0027m curious why you set needReleaseLock to false here. How would the lock get released in this case as it looks like you always try to acquire first? Can you explain in code comments what you\u0027re doing here and what\u0027s the purpose of the clusterLock? There\u0027s probably something I\u0027m missing here...",
+      "revId": "ee74e5ce288fb4cdd8ad159514fa4ea99736fb4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
