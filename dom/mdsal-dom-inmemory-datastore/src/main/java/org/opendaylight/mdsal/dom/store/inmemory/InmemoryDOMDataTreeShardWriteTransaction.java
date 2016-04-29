@@ -78,20 +78,23 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         }
     }
 
-    private InMemoryDOMDataTreeShardThreePhaseCommitCohort commitCohort;
     private final ShardDataModification modification;
     private DOMDataTreeWriteCursor cursor;
     private DataTree rootShardDataTree;
     private DataTreeModification rootModification = null;
 
     private ArrayList<DOMStoreThreePhaseCommitCohort> cohorts = new ArrayList<>();
+    private InMemoryDOMDataTreeShardChangePublisher changePublisher;
 
     // FIXME inject into shard?
     private ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 
-    InmemoryDOMDataTreeShardWriteTransaction(final ShardDataModification root, final DataTree rootShardDataTree) {
+    InmemoryDOMDataTreeShardWriteTransaction(final ShardDataModification root,
+                                             final DataTree rootShardDataTree,
+                                             final InMemoryDOMDataTreeShardChangePublisher changePublisher) {
         this.modification = Preconditions.checkNotNull(root);
         this.rootShardDataTree = Preconditions.checkNotNull(rootShardDataTree);
+        this.changePublisher = Preconditions.checkNotNull(changePublisher);
     }
 
     private DOMDataTreeWriteCursor getCursor() {
@@ -149,7 +152,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         LOG.debug("Readying open transaction on shard {}", modification.getPrefix());
         rootModification = modification.seal();
 
-        cohorts.add(new InMemoryDOMDataTreeShardThreePhaseCommitCohort(rootShardDataTree, rootModification));
+        cohorts.add(new InMemoryDOMDataTreeShardThreePhaseCommitCohort(rootShardDataTree, rootModification, changePublisher));
         for (Entry<DOMDataTreeIdentifier, ForeignShardModificationContext> entry : modification.getChildShards().entrySet()) {
             cohorts.add(new ForeignShardThreePhaseCommitCohort(entry.getKey(), entry.getValue()));
         }

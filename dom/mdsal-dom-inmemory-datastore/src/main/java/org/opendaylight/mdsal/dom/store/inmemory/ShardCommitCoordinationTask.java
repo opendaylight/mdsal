@@ -40,7 +40,7 @@ class ShardCommitCoordinationTask implements Callable<Void> {
 
             return null;
         } catch (TransactionCommitFailedException e) {
-            LOG.warn("Shard: {} Submit Error during phase {}, starting Abort", rootShardPrefix, e);
+            LOG.warn("Shard: {} Submit Error during phase Commit, starting Abort", rootShardPrefix, e);
             //FIXME abort here
             throw e;
         }
