@@ -11,6 +11,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.Collections;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
@@ -29,12 +30,15 @@ class InMemoryDOMDataTreeShardThreePhaseCommitCohort implements DOMStoreThreePha
     private final DataTree dataTree;
     private final DataTreeModification modification;
     private DataTreeCandidate candidate;
+    private final InMemoryDOMDataTreeShardChangePublisher changePublisher;
 
     InMemoryDOMDataTreeShardThreePhaseCommitCohort(final DataTree dataTree,
-                                                   final DataTreeModification modification) {
+                                                   final DataTreeModification modification,
+                                                   final InMemoryDOMDataTreeShardChangePublisher changePublisher) {
         Preconditions.checkNotNull(dataTree);
         this.dataTree = dataTree;
         this.modification = modification;
+        this.changePublisher = changePublisher;
     }
 
     @Override
@@ -76,6 +80,8 @@ class InMemoryDOMDataTreeShardThreePhaseCommitCohort implements DOMStoreThreePha
     public ListenableFuture<Void> commit() {
         Preconditions.checkState(candidate != null, "Attempted to commit an aborted transaction");
         dataTree.commit(candidate);
+        // publish this change for listeners
+        changePublisher.publishChange(candidate);
         return SUCCESSFUL_FUTURE;
     }
 }
