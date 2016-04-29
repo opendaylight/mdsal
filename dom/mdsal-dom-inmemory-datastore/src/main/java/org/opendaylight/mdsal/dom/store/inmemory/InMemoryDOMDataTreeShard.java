@@ -17,10 +17,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTable;
+import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.TreeType;
@@ -29,7 +34,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 
 @Beta
-public class InMemoryDOMDataTreeShard implements WriteableDOMDataTreeShard, SchemaContextListener {
+public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeShard, SchemaContextListener {
 
     private static final class SubshardProducerSpecification {
         private final Collection<DOMDataTreeIdentifier> prefixes = new ArrayList<>(1);
@@ -51,8 +56,7 @@ public class InMemoryDOMDataTreeShard implements WriteableDOMDataTreeShard, Sche
             return shard.getPrefix();
         }
     }
-
-    private static final class ChildShardContext {
+    static final class ChildShardContext {
         private final WriteableDOMDataTreeShard shard;
         private final DOMDataTreeIdentifier prefix;
 
@@ -71,9 +75,12 @@ public class InMemoryDOMDataTreeShard implements WriteableDOMDataTreeShard, Sche
     }
 
     private final DOMDataTreePrefixTable<ChildShardContext> childShardsTable = DOMDataTreePrefixTable.create();
+
     private final Map<DOMDataTreeIdentifier, ChildShardContext> childShards = new HashMap<>();
     private final DOMDataTreeIdentifier prefix;
     private final DataTree dataTree;
+
+    private InMemoryDOMDataTreeShardChangePublisher shardChangePublisher;
 
     private InMemoryDOMDataTreeShard(final DOMDataTreeIdentifier prefix) {
         this.prefix = Preconditions.checkNotNull(prefix);
@@ -81,6 +88,22 @@ public class InMemoryDOMDataTreeShard implements WriteableDOMDataTreeShard, Sche
         final TreeType treeType = treeTypeFor(prefix.getDatastoreType());
         this.dataTree = prefix.getRootIdentifier().isEmpty() ? InMemoryDataTreeFactory.getInstance().create(treeType)
                 : InMemoryDataTreeFactory.getInstance().create(treeType, prefix.getRootIdentifier());
+    }
+
+    private InMemoryDOMDataTreeShard(final DOMDataTreeIdentifier prefix, final ExecutorService dataTreeChangeExecutor,
+                                     final int maxDataChangeListenerQueueSize) {
+        this.prefix = Preconditions.checkNotNull(prefix);
+
+        final TreeType treeType = treeTypeFor(prefix.getDatastoreType());
+        this.dataTree = prefix.getRootIdentifier().isEmpty() ? InMemoryDataTreeFactory.getInstance().create(treeType)
+                : InMemoryDataTreeFactory.getInstance().create(treeType, prefix.getRootIdentifier());
+
+        this.shardChangePublisher = new InMemoryDOMDataTreeShardChangePublisher(dataTreeChangeExecutor, maxDataChangeListenerQueueSize, dataTree, prefix.getRootIdentifier(), childShards);
+    }
+
+    public static InMemoryDOMDataTreeShard create(final DOMDataTreeIdentifier id, final ExecutorService dataTreeChangeExecutor,
+                                                  final int maxDataChangeListenerQueueSize) {
+        return new InMemoryDOMDataTreeShard(id, dataTreeChangeExecutor, maxDataChangeListenerQueueSize);
     }
 
     public static InMemoryDOMDataTreeShard create(final DOMDataTreeIdentifier id) {
@@ -111,6 +134,12 @@ public class InMemoryDOMDataTreeShard implements WriteableDOMDataTreeShard, Sche
                 prodPrefix, prefix);
         }
         return new InMemoryDOMDataTreeShardProducer(this, prefixes);
+    }
+
+    @Nonnull
+    @Override
+    public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(@Nonnull YangInstanceIdentifier treeId, @Nonnull L listener) {
+        return shardChangePublisher.registerTreeChangeListener(treeId, listener);
     }
 
     private void addChildShard(final DOMDataTreeIdentifier prefix, final DOMDataTreeShard child) {
@@ -212,6 +241,6 @@ public class InMemoryDOMDataTreeShard implements WriteableDOMDataTreeShard, Sche
             builder.addSubshard(spec.getPrefix(), foreignContext);
         }
 
-        return new InmemoryDOMDataTreeShardWriteTransaction(builder.build(), dataTree);
+        return new InmemoryDOMDataTreeShardWriteTransaction(builder.build(), dataTree, shardChangePublisher);
     }
 }
