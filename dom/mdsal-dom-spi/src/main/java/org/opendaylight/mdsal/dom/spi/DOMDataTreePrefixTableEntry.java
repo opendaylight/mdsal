@@ -48,6 +48,7 @@ public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathAr
     DOMDataTreePrefixTableEntry<V> lookup(final YangInstanceIdentifier id) {
         final Iterator<PathArgument> it = id.getPathArguments().iterator();
         DOMDataTreePrefixTableEntry<V> entry = this;
+        DOMDataTreePrefixTableEntry<V> lastPresentEntry = entry;
 
         while (it.hasNext()) {
             final PathArgument a = it.next();
@@ -58,9 +59,13 @@ public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathAr
             }
 
             entry = child;
+
+            if (child.getValue() != null) {
+                lastPresentEntry = child;
+            }
         }
 
-        return entry;
+        return lastPresentEntry;
     }
 
     void store(final YangInstanceIdentifier id, final V reg) {

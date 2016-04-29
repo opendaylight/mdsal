@@ -70,7 +70,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher extends AbstractRegist
     }
 
     @Override
-    public final <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L> registerTreeChangeListener(final YangInstanceIdentifier treeId, final L listener) {
+    public <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L> registerTreeChangeListener(final YangInstanceIdentifier treeId, final L listener) {
         // Take the write lock
         takeLock();
         try {
@@ -91,7 +91,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher extends AbstractRegist
         }
     }
 
-    private void lookupAndNotify(final List<PathArgument> args, final int offset, final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> node, final DataTreeCandidate candidate) {
+    protected void lookupAndNotify(final List<PathArgument> args, final int offset, final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> node, final DataTreeCandidate candidate) {
         if (args.size() != offset) {
             final PathArgument arg = args.get(offset);
 
@@ -108,7 +108,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher extends AbstractRegist
         }
     }
 
-    private void notifyNode(final YangInstanceIdentifier path, final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> regNode, final DataTreeCandidateNode candNode) {
+    protected void notifyNode(final YangInstanceIdentifier path, final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> regNode, final DataTreeCandidateNode candNode) {
         if (candNode.getModificationType() == ModificationType.UNMODIFIED) {
             LOG.debug("Skipping unmodified candidate {}", path);
             return;
