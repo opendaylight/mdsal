@@ -11,6 +11,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.Collections;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
@@ -29,19 +30,22 @@ class InMemoryDOMDataTreeShardThreePhaseCommitCohort implements DOMStoreThreePha
     private final DataTree dataTree;
     private final DataTreeModification modification;
     private DataTreeCandidate candidate;
+    private final InMemoryDOMDataTreeShardChangePublisher changePublisher;
 
     InMemoryDOMDataTreeShardThreePhaseCommitCohort(final DataTree dataTree,
-                                                   final DataTreeModification modification) {
+                                                   final DataTreeModification modification,
+                                                   final InMemoryDOMDataTreeShardChangePublisher changePublisher) {
         Preconditions.checkNotNull(dataTree);
         this.dataTree = dataTree;
         this.modification = modification;
+        this.changePublisher = changePublisher;
     }
 
     @Override
     public ListenableFuture<Boolean> canCommit() {
         try {
             dataTree.validate(modification);
-            LOG.debug("DataTreeModification {} validated");
+            LOG.debug("DataTreeModification {} validated", modification);
 
             return CAN_COMMIT_FUTURE;
         } catch (DataValidationFailedException e) {
@@ -59,6 +63,7 @@ class InMemoryDOMDataTreeShardThreePhaseCommitCohort implements DOMStoreThreePha
     public ListenableFuture<Void> preCommit() {
         try {
             candidate = dataTree.prepare(modification);
+            LOG.debug("DataTreeModification {} prepared", modification);
             return SUCCESSFUL_FUTURE;
         } catch (Exception e) {
             LOG.warn("Unexpected failure in preparation phase", e);
@@ -74,8 +79,11 @@ class InMemoryDOMDataTreeShardThreePhaseCommitCohort implements DOMStoreThreePha
 
     @Override
     public ListenableFuture<Void> commit() {
+        LOG.warn("Commiting candidate {}", candidate.toString());
         Preconditions.checkState(candidate != null, "Attempted to commit an aborted transaction");
         dataTree.commit(candidate);
+        // publish this change for listeners
+        changePublisher.publishChange(candidate);
         return SUCCESSFUL_FUTURE;
     }
 }
