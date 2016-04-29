@@ -51,7 +51,7 @@ class ShardCanCommitCoordinationTask implements Callable<Boolean> {
             try {
                 final Boolean result = (Boolean)canCommit.get();
                 if (result == null || !result) {
-                    throw new TransactionCommitFailedException("Can Commit failed, no detailed cause available.");
+                    throw new TransactionCommitFailedException("CanCommit failed, no detailed cause available.");
                 }
             } catch (InterruptedException | ExecutionException e) {
                 throw new TransactionCommitFailedException("CanCommit failed", e);

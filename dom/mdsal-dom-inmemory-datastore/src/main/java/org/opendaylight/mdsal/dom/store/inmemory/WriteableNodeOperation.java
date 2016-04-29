@@ -93,17 +93,29 @@ abstract class WriteableNodeOperation implements WriteCursorStrategy {
     @Override
     @SuppressWarnings("rawtypes")
     public final void writeToCurrent(final NormalizedNodeContainer<?, ?, ?> data) {
+        // write the entire thing into the cursor
+        write(data.getIdentifier(), data);
+        // write children while honoring subshards
+        cursor.enter(data.getIdentifier());
         for (NormalizedNode<?, ?> writtenChild : data.getValue()) {
             write(writtenChild.getIdentifier(), writtenChild);
         }
         // Delete step
+        //FIXME do we need this? seems like subshard writes are already delegated to subshard and not written to current
         for (Entry<PathArgument, WriteableModificationNode> shardChild : node.getChildrenWithSubshards().entrySet()) {
             PathArgument childId = shardChild.getKey();
             @SuppressWarnings("unchecked")
             Optional<NormalizedNode<?, ?>> writtenValue = ((NormalizedNodeContainer) data).getChild(childId);
-            if (!writtenValue.isPresent()) {
-                delete(childId, shardChild.getValue());
+            if (writtenValue.isPresent()) {
+                deleteFromCurrent(childId);
             }
         }
+        cursor.exit();
+    }
+
+    private final void deleteFromCurrent(final PathArgument arg) {
+//        cursor.enter(arg);
+        cursor.delete(arg);
+//        cursor.exit();
     }
 }
