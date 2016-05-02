@@ -332,8 +332,8 @@ container top {
 }
 ----
 
-[plantuml]
-....
+[uml, file="case.png"]
+--
 set namespaceSeparator none
 
 package spec {
@@ -362,7 +362,7 @@ data.top.base.Bar -u-|> data.top.base.Foo
 
 data.Top o- data.top.Base
 data.top.base.Foo o- data.top.base.foo.Foo
-....
+--
 
 == Specific rules
 
@@ -470,15 +470,15 @@ grouping simple  { <1>
     with signature `public grp.simple.FooData getFoo();`
 <3> Is represented by getter in `grp.SimpleGrouping` with signature `public String getBar()`
 
-[plantuml]
-....
+[uml, file="grouping1.png"]
+--
 interface grp.SimpleGrouping {
   + getBar() : String
   + getFoo() : grp.simple.FooData
 }
 interface grp.simple.FooData
 grp.SimpleGrouping o- grp.simple.FooData
-....
+--
 ====
 
 ==== Data Node substatements
@@ -540,8 +540,8 @@ container top {
 }
 ----
 
-[plantuml]
-....
+[uml, file="grouping2.png"]
+--
 set namespaceSeparator none
 
 interface grp.SimpleGrouping {
@@ -559,9 +559,9 @@ grp.SimpleGrouping o-- grp.simple.FooData
 data.Top o-- data.top.Foo
 data.Top -|> grp.SimpleGrouping
 data.top.Foo -|> grp.simple.FooData
-....
+--
 
-NOTE: Diagram does not show all details for `data.Top`  and `data.top.Foo`, which
+NOTE: Diagram does not show all details for `data.Top` and `data.top.Foo`, which
 are based on <<instantiated-data-tree-rules>>
 
 ====
@@ -586,8 +586,8 @@ container top {
 }
 ----
 
-[plantuml]
-....
+[uml, file="grouping3.png"]
+--
 set namespaceSeparator none
 
 interface grp.withinner.inner.ContData
@@ -621,7 +621,7 @@ grp.withinner.InnerGrouping o-- grp.withinner.inner.ContData : contains
 
 grp.withinner.ContData -|> grp.withinner.inner.ContData : is concretization of (implements)
 
-....
+--
 
 NOTE: Diagram does not show all details for `data.Top`  and `data.top.Cont`, which
 are based on <<instantiated-data-tree-rules>>
@@ -654,8 +654,8 @@ container top {
 
 ----
 
-[plantuml]
-....
+[uml, file="grouping4.png"]
+--
 set namespaceSeparator none
 
 interface data.Top
@@ -673,7 +673,7 @@ grp.ExampleGrouping o-- grp.example.NestedData
 
 data.Top -|> grp.ExampleGrouping
 data.top.Nested -|> grp.example.NestedData
-....
+--
 
 NOTE: Diagram does not show all details for `data.Top`, `data.top.Nested` and
 `data.top.nested.Bar`, which are based on <<instantiated-data-tree-rules>>
@@ -705,8 +705,8 @@ grouping top {
 
 ----
 
-[plantuml]
-....
+[uml, file="grouping5.png"]
+--
 set namespaceSeparator none
 
 interface grp.TopGrouping
@@ -723,7 +723,7 @@ grp.ExampleGrouping o-- grp.example.NestedData
 
 grp.TopGrouping -|> grp.ExampleGrouping
 grp.top.NestedData -|> grp.example.NestedData
-....
+--
 
 ====
 
@@ -792,15 +792,15 @@ container top {
 
 .Java representation for both variants
 ----
-[plantuml]
-....
+[uml, file="augment1.png"]
+--
 set namespaceSeparator none
 
 interface data.Top
 interface data.top.Foo
 
 data.Top o- data.top.Foo
-....
+--
 
 ====
 
@@ -832,8 +832,8 @@ module foo {
 
 ----
 
-[plantuml]
-....
+[uml,file="augment2.png"]
+--
 set namespaceSeparator none
 
 interface Augmentable<T>
@@ -850,7 +850,7 @@ top.data.Top -u-|> Augmentable : T = top.data.Top
 foo.data.FooTop -u-|> Augmentation : T = top.data.Top
 top.data.Top o-- foo.data.FooTop
 foo.data.FooTop o-- foo.data.top.Bar
-....
+--
 
 ====
 
@@ -885,8 +885,8 @@ module foo {
 
 ----
 
-[plantuml]
-....
+[uml,file="augment3.png"]
+--
 set namespaceSeparator none
 
 interface Augmentable<T>
@@ -906,8 +906,7 @@ foo.data.FooTop -u-|> Augmentation : T = top.data.Top
 top.data.Top o-- foo.data.FooTop
 foo.data.FooTop o-- foo.data.top.Bar
 foo.data.FooTop o-- foo.data.top.Baz
-
-....
+--
 
 ====
 
@@ -946,8 +945,8 @@ module foo {
 
 ----
 
-[plantuml]
-....
+[uml, file="augment4.png"]
+--
 set namespaceSeparator none
 
 interface Augmentable<T>
@@ -978,6 +977,4 @@ target.data.Second o-- foo.data.FooSecond
 
 foo.data.FooFirst o-- foo.data.first.Bar
 foo.data.FooSecond o-- foo.data.second.Baz
-
-....
-====
+--
