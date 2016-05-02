@@ -22,8 +22,9 @@ Builder::
 
 === Binding Specification v2 Concepts
 
-<<Instantiated>>::
-  Represent node, which is instantiated
+<<Instantiable>>::
+  Represent node, which is instantiable by users as a part of notification,
+  rpc, action or data tree.
 <<TreeNode>>::
   Represents node, which is part of instantiated data tree, this interface
   is not used directly, but rather via <<TreeChildNode>>. See <<instantiated-data-tree-rules>>
@@ -42,6 +43,38 @@ Builder::
 <<InstanceIdentifier>>::
   Unique identifier of node / subtree in data tree, which provides unambiguous
   information, how to reference node / subtree in Instantiated Data Tree.
+
+
+[cols="6"]
+|===
+.2+|Statement .2+| In groupings 3+| Instantiable .2+| Augmentable
+| In Data | In RPC | In Notification
+
+| `grouping` | Yes | No | No | No | No
+
+| `container` | Yes | Yes | Yes | Yes | Yes
+
+| `leaf` | Yes | Yes | Yes | Yes | No
+
+| `leaf-list` | Yes | Yes | Yes | Yes | No
+
+| `list` | Yes | Yes | Yes | Yes | Yes
+
+| `anydata` | Yes | Yes | Yes | Yes | No
+
+| `anyxml` | Yes | Yes | Yes | Yes | No
+
+| `choice` | Yes | Yes | Yes | Yes | Yes
+
+| `case` | Yes | Yes | Yes | Yes | Yes
+
+| `input` | Yes | No | Yes | No | Yes
+
+| `output` | Yes | No | Yes | No | Yes
+
+| `notification` | Yes | No | No | Yes | Yes
+
+|===
 
 == Namespaces
 
