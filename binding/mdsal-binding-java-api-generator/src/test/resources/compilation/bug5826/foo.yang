@@ -1,0 +1,38 @@
+module foo {
+    yang-version 1;
+    namespace "urn:yang.foo";
+    prefix "foo";
+
+    revision "2016-01-01" {
+    }
+
+    grouping common-cars {
+        leaf brand {
+            type union {
+                type uint64;
+                type string;
+            }
+        }
+        leaf engine {
+            type string;
+        }
+
+/**
+        leaf gearbox {
+            type string;
+        }**/
+    }
+
+    container cars {
+        list car {
+            key "brand brand-whole engine";
+            uses common-cars;
+            leaf brand-whole {
+                type union {
+                    type uint64;
+                    type string;
+                }
+            }
+        }
+    }
+}

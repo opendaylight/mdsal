@@ -1,0 +1,24 @@
+module foo {
+    yang-version 1;
+    namespace "urn:yang.foo";
+    prefix "foo";
+
+    revision "2016-01-01" {
+    }
+
+    container boolean-container {
+        list boolean-list {
+            key "boolean-leaf";
+            leaf boolean-leaf {
+                type boolean;
+            }
+        }
+
+        list boolean-list-int {
+            key "boolean-leaf-int";
+            leaf boolean-leaf-int {
+                type int8;
+            }
+        }
+    }
+}
