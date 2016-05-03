@@ -1396,7 +1396,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *         </ul>
      */
     private Type resolveLeafSchemaNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf, final Module module) {
-        if (leaf == null || typeBuilder == null || leaf.isAddedByUses()) {
+        if (leaf == null || typeBuilder == null) {
             return null;
         }
 
@@ -1409,7 +1409,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         Type returnType = null;
 
         final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
-        if (isInnerType(leaf, typeDef)) {
+//        if (isInnerType(leaf, typeDef)) {
             if (typeDef instanceof EnumTypeDefinition) {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
@@ -1439,10 +1439,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(getBaseOrDeclaredType(typeDef), leaf,
                         restrictions);
             }
-        } else {
-            final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
-            returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
-        }
+//        } else {
+//            final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
+//            returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
+//        }
 
         if (returnType == null) {
             return null;
