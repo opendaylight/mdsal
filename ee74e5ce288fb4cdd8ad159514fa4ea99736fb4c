@@ -174,6 +174,24 @@
       "revId": "ee74e5ce288fb4cdd8ad159514fa4ea99736fb4c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_0c217c9f",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/AbstractGenericProjectProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-05-03T15:06:39Z",
+      "side": 1,
+      "message": "Can you add comments in the code here to clarify?",
+      "parentUuid": "fa57193c_0b604931",
+      "revId": "ee74e5ce288fb4cdd8ad159514fa4ea99736fb4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
