@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_c2bc6b6f",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1548,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-04T12:42:39Z",
+      "side": 1,
+      "message": "This check looks iffy ... what are we really checking for? Isn\u0027t this really typeDef.getBaseType() \u003d\u003d null ?",
+      "range": {
+        "startLine": 1548,
+        "startChar": 64,
+        "endLine": 1548,
+        "endChar": 106
+      },
+      "revId": "431774247338d958c8b0b21a6119abb49fc0a810",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
