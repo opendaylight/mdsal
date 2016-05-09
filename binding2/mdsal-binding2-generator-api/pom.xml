@@ -10,28 +10,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-      <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-parent</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
-      <relativePath>../common/parent</relativePath>
+        <groupId>org.opendaylight.mdsal</groupId>
+        <artifactId>mdsal-binding2</artifactId>
+        <version>0.9.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>mdsal-binding2</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>${project.artifactId}</name>
-    <description>${project.artifactId}</description>
+    <artifactId>mdsal-binding2-generator-api</artifactId>
 
-    <modules>
-      <module>mdsal-binding2-spec</module>
-      <module>mdsal-model-binding2-parent</module>
-      <module>mdsal-binding2-maven-api-gen-plugin</module>
-      <module>mdsal-binding2-generator-api</module>
-      <module>mdsal-binding2-generator-impl</module>
-      <module>mdsal-binding2-java-api-generator</module>
-      <module>mdsal-binding2-generator-util</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-model-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-spec</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
+
 
   <!--
       Maven Site Configuration
