@@ -777,8 +777,11 @@ public final class TypeProviderImpl implements TypeProvider {
                     makeSerializable((GeneratedTOBuilderImpl) genTOBuilder);
                     returnType = genTOBuilder.toInstance();
                 } else {
-                    final Type javaType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(
+                    Type javaType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(
                             innerTypeDefinition, typedef);
+                    if (javaType == null) {
+                        javaType = javaTypeForSchemaDefinitionType(innerTypeDefinition, typedef);
+                    }
                     returnType = wrapJavaTypeIntoTO(basePackageName, typedef, javaType, module.getName());
                 }
                 if (returnType != null) {
@@ -924,8 +927,11 @@ public final class TypeProviderImpl implements TypeProvider {
                         unionTypeName, unionGenTOBuilder);
                 updateUnionTypeAsProperty(unionGenTOBuilder, enumeration, unionTypeName);
             } else {
-                final Type javaType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(unionType,
+                Type javaType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(unionType,
                         parentNode);
+                if (javaType == null) {
+                    javaType = javaTypeForSchemaDefinitionType(unionType, parentNode);
+                }
                 updateUnionTypeAsProperty(unionGenTOBuilder, javaType, unionTypeName);
             }
         }
