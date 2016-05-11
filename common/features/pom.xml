@@ -12,17 +12,17 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>features-parent</artifactId>
-        <version>1.6.2-SNAPSHOT</version>
+        <version>1.6.2-Beryllium-SR2</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>features-mdsal</artifactId>
-    <version>2.0.2-SNAPSHOT</version>
+    <version>2.0.2-Beryllium-SR2</version>
     <packaging>jar</packaging>
 
     <properties>
-        <yangtools.version>0.8.2-SNAPSHOT</yangtools.version>
+        <yangtools.version>0.8.2-Beryllium-SR2</yangtools.version>
     </properties>
 
     <dependencyManagement>
