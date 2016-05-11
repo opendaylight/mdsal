@@ -12,18 +12,18 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>features-parent</artifactId>
-        <version>1.6.2-Beryllium-SR2</version>
+        <version>1.6.3-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>features-mdsal-model</artifactId>
-    <version>0.8.2-Beryllium-SR2</version>
+    <version>0.8.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
-      <yangtools.version>0.8.2-Beryllium-SR2</yangtools.version>
-      <mdsal.version>2.0.2-Beryllium-SR2</mdsal.version>
+      <yangtools.version>0.8.3-SNAPSHOT</yangtools.version>
+      <mdsal.version>2.0.3-SNAPSHOT</mdsal.version>
     </properties>
 
     <dependencyManagement>
@@ -45,7 +45,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>mdsal-model-artifacts</artifactId>
-                <version>0.8.2-Beryllium-SR2</version>
+                <version>0.8.3-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

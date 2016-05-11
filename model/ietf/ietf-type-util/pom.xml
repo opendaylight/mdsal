@@ -4,10 +4,10 @@
   <parent>
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>model-ietf</artifactId>
-    <version>0.8.2-Beryllium-SR2</version>
+    <version>0.8.3-SNAPSHOT</version>
   </parent>
   <artifactId>ietf-type-util</artifactId>
-  <version>0.8.2-Beryllium-SR2</version>
+  <version>0.8.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <dependencies>

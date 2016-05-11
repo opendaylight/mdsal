@@ -14,18 +14,18 @@
     <parent>
       <groupId>org.opendaylight.odlparent</groupId>
       <artifactId>odlparent-lite</artifactId>
-      <version>1.6.2-Beryllium-SR2</version>
+      <version>1.6.3-SNAPSHOT</version>
       <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>mdsal-model-artifacts</artifactId>
-    <version>0.8.2-Beryllium-SR2</version>
+    <version>0.8.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
         <!-- Model versions -->
-        <ietf.topology.version>2013.10.21.8.2-Beryllium-SR2</ietf.topology.version>
+        <ietf.topology.version>2013.10.21.8.3-SNAPSHOT</ietf.topology.version>
     </properties>
 
     <dependencyManagement>
@@ -33,37 +33,37 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>iana-afn-safi</artifactId>
-                <version>2013.07.04.8.2-Beryllium-SR2</version>
+                <version>2013.07.04.8.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>iana-if-type-2014-05-08</artifactId>
-                <version>2014.05.08.8.2-Beryllium-SR2</version>
+                <version>2014.05.08.8.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-inet-types</artifactId>
-                <version>2010.09.24.8.2-Beryllium-SR2</version>
+                <version>2010.09.24.8.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-yang-types</artifactId>
-                <version>2010.09.24.8.2-Beryllium-SR2</version>
+                <version>2010.09.24.8.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-yang-types-20130715</artifactId>
-                <version>2013.07.15.8.2-Beryllium-SR2</version>
+                <version>2013.07.15.8.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-interfaces</artifactId>
-                <version>2014.05.08.8.2-Beryllium-SR2</version>
+                <version>2014.05.08.8.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-restconf</artifactId>
-                <version>2013.10.19.8.2-Beryllium-SR2</version>
+                <version>2013.10.19.8.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
@@ -98,34 +98,34 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>opendaylight-l2-types</artifactId>
-                <version>2013.08.27.8.2-Beryllium-SR2</version>
+                <version>2013.08.27.8.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-network-2015-06-08</artifactId>
-                <version>1.0.2-Beryllium-SR2</version>
+                <version>1.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-inet-types-2013-07-15</artifactId>
-                <version>1.0.2-Beryllium-SR2</version>
+                <version>1.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>features-mdsal-model</artifactId>
                 <classifier>features</classifier>
-                <version>0.8.2-Beryllium-SR2</version>
+                <version>0.8.3-SNAPSHOT</version>
                 <type>xml</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>general-entity</artifactId>
-                <version>0.8.2-Beryllium-SR2</version>
+                <version>0.8.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-type-util</artifactId>
-                <version>0.8.2-Beryllium-SR2</version>
+                <version>0.8.3-SNAPSHOT</version>
             </dependency>
             <!-- TODO: Sort dependencies alphabetically? -->
         </dependencies>
