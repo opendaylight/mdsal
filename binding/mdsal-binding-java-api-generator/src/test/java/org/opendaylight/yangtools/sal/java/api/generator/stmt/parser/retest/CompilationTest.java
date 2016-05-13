@@ -15,6 +15,7 @@ import static org.opendaylight.yangtools.sal.java.api.generator.stmt.parser.rete
 import static org.opendaylight.yangtools.sal.java.api.generator.stmt.parser.retest.CompilationTestUtils.GENERATOR_OUTPUT_PATH;
 import static org.opendaylight.yangtools.sal.java.api.generator.stmt.parser.retest.CompilationTestUtils.NS_BAR;
 import static org.opendaylight.yangtools.sal.java.api.generator.stmt.parser.retest.CompilationTestUtils.NS_BAZ;
+import static org.opendaylight.yangtools.sal.java.api.generator.stmt.parser.retest.CompilationTestUtils.NS_BUG5882;
 import static org.opendaylight.yangtools.sal.java.api.generator.stmt.parser.retest.CompilationTestUtils.NS_FOO;
 import static org.opendaylight.yangtools.sal.java.api.generator.stmt.parser.retest.CompilationTestUtils.NS_TEST;
 import static org.opendaylight.yangtools.sal.java.api.generator.stmt.parser.retest.CompilationTestUtils.assertContainsConstructor;
@@ -590,16 +591,32 @@ public class CompilationTest extends BaseCompilationTest {
     }
 
     @Test
-    public void testBug5788() throws Exception {
-        final File sourcesOutputDir = new File(GENERATOR_OUTPUT_PATH + FS + "bug5788");
+    public void testBug5882() throws Exception {
+        final File sourcesOutputDir = new File(GENERATOR_OUTPUT_PATH + FS + "bug5882");
         assertTrue("Failed to create test file '" + sourcesOutputDir + "'", sourcesOutputDir.mkdir());
-        final File compiledOutputDir = new File(COMPILER_OUTPUT_PATH + FS + "bug5788");
+        final File compiledOutputDir = new File(COMPILER_OUTPUT_PATH + FS + "bug5882");
         assertTrue("Failed to create test file '" + compiledOutputDir + "'", compiledOutputDir.mkdir());
-
-        generateTestSources("/compilation/bug5788", sourcesOutputDir);
+        generateTestSources("/compilation/bug5882", sourcesOutputDir);
 
         // Test if sources are compilable
         testCompilation(sourcesOutputDir, compiledOutputDir);
+
+        final File parent = new File(sourcesOutputDir, NS_BUG5882);
+        assertTrue(new File(parent, "FooData.java").exists());
+        assertTrue(new File(parent, "TypedefCurrent.java").exists());
+        assertTrue(new File(parent, "TypedefDeprecated.java").exists());
+
+        final String pkg = BASE_PKG + ".urn.yang.foo.rev160102";
+        final ClassLoader loader = new URLClassLoader(new URL[] { compiledOutputDir.toURI().toURL() });
+        final Class cls = loader.loadClass(pkg + ".FooData");
+        final Class clsDepr = loader.loadClass(pkg + ".TypedefDeprecated");
+
+        for (Method method : cls.getDeclaredMethods()) {
+            if (method.getName().equals("getLeafDeprecated")) {
+                assertTrue(method.getAnnotations()[0].toString().contains("Deprecated"));
+            }
+        }
+        assertTrue(clsDepr.getAnnotations()[0].toString().contains("Deprecated"));
 
         cleanUp(sourcesOutputDir, compiledOutputDir);
     }
