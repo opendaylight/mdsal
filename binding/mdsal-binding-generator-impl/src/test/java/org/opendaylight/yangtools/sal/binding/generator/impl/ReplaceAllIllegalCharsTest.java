@@ -17,7 +17,7 @@ public class ReplaceAllIllegalCharsTest {
         String inputString = "abcu\\uuuuu\\uuua\\u\\\\uabc\\\\uuuu\\\\\\uuuu\\\\\\\\uuuu///uu/u/u/u/u/u/u";
 
         StringBuilder sb = new StringBuilder(inputString);
-        String resultString = BindingGeneratorImpl.replaceAllIllegalChars(sb);
+        String resultString = BindingTextUtils.replaceAllIllegalChars(sb);
 
         String expectedString = "abcu\\\\uuuuu\\\\uuua\\\\u\\\\uabc\\\\uuuu\\\\uuuu\\\\uuuu///uu/u/u/u/u/u/u";
         assertEquals(expectedString, resultString);
