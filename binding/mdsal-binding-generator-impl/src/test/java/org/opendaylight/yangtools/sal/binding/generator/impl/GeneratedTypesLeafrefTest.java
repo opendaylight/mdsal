@@ -258,7 +258,7 @@ public class GeneratedTypesLeafrefTest {
             bindingGen.generateTypes(context);
             fail("Expected IllegalArgumentException caused by invalid leafref path");
         } catch (IllegalArgumentException e) {
-            String expected = "Failed to find leafref target: ../id in module foo (QNameModule{ns=urn:yang.foo, rev=2014-03-10}) at";
+            String expected = "Failed to find leafref target: ../id in module foo (QNameModule{ns=urn:yang.foo, rev=2014-03-10})";
             assertTrue(e.getMessage().startsWith(expected));
         }
     }
