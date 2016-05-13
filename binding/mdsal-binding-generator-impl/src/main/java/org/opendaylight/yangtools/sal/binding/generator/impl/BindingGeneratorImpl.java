@@ -102,7 +102,6 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
@@ -1885,6 +1884,19 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 .addMethod(getterMethodName(schemaNodeName, returnType));
         getMethod.setComment(encodeAngleBrackets(comment));
         getMethod.setReturnType(returnType);
+
+
+
+
+
+        getMethod.addAnnotation("", "Deprecated");
+
+
+
+
+
+
+
         return getMethod;
     }
 
