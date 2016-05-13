@@ -1,0 +1,55 @@
+module foo {
+    namespace "urn:yang.foo";
+    prefix "foo";
+
+    revision "2016-01-02" {
+    }
+
+    typedef typedef-deprecated {
+        status deprecated;
+        type uint8 {
+            range "0 .. 100";
+        }
+        description "deprecated";
+    }
+
+    typedef typedef-current {
+        status current;
+        type uint8 {
+            range "0 .. 100";
+        }
+        description "current";
+    }
+
+    leaf leaf-deprecated {
+        status deprecated;
+        type typedef-deprecated;
+    }
+
+    leaf leaf-current {
+        type typedef-current;
+    }
+
+    grouping grouping-deprecated {
+        status deprecated;
+        leaf leaf-deprecated {
+            status deprecated;
+            type typedef-deprecated;
+        }
+
+        leaf leaf-current {
+            type typedef-current;
+        }
+    }
+
+    grouping grouping-current {
+        leaf leaf-deprecated {
+            status deprecated;
+            type typedef-deprecated;
+        }
+
+        leaf leaf-current {
+            type typedef-current;
+        }
+    }
+}
