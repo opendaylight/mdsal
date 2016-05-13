@@ -65,6 +65,7 @@ import org.opendaylight.yangtools.yang.model.api.RevisionAwareXPath;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
@@ -560,7 +561,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
     /**
      * Converts <code>enumTypeDef</code> to
-     * {@link org.opendaylight.yangtools.sal.binding.model.api.Enumeration
+     * {@link Enumeration
      * enumeration}.
      *
      * @param enumTypeDef
@@ -820,6 +821,9 @@ public final class TypeProviderImpl implements TypeProvider {
         genTOBuilder.addEqualsIdentity(genPropBuilder);
         genTOBuilder.addHashIdentity(genPropBuilder);
         genTOBuilder.addToStringProperty(genPropBuilder);
+        if (typedef.getStatus() == Status.DEPRECATED) {
+            genTOBuilder.addAnnotation("", "Deprecated");
+        }
         if (javaType instanceof ConcreteType && "String".equals(javaType.getName()) && typedef.getBaseType() != null) {
             final List<String> regExps = resolveRegExpressionsFromTypedef(typedef);
             addStringRegExAsConstant(genTOBuilder, regExps);
