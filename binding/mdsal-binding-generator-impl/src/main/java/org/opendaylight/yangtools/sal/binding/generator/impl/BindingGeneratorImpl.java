@@ -102,7 +102,6 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
@@ -332,7 +331,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf, final ContainerSchemaNode node) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node);
         if (genType != null) {
-            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(), genType);
+            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(), genType, node.getStatus());
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes());
         }
     }
@@ -342,7 +341,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node);
         if (genType != null) {
             constructGetter(parent, node.getQName().getLocalName(), node.getDescription(),
-                    Types.listTypeFor(genType));
+                    Types.listTypeFor(genType), node.getStatus());
 
             final List<String> listKeys = listKeys(node);
             final String packageName = packageNameForGeneratedType(basePackageName, node.getPath());
@@ -1171,7 +1170,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final String packageName = packageNameForGeneratedType(basePackageName, choiceNode.getPath());
             final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(packageName, choiceNode);
             constructGetter(parent, choiceNode.getQName().getLocalName(),
-                    choiceNode.getDescription(), choiceTypeBuilder);
+                    choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus());
             choiceTypeBuilder.addImplementsType(typeForClass(DataContainer.class));
             annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
             genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
@@ -1453,7 +1452,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             leafDesc = "";
         }
 
-        final MethodSignatureBuilder getter = constructGetter(typeBuilder, leafName, leafDesc, returnType);
+        final MethodSignatureBuilder getter = constructGetter(typeBuilder, leafName, leafDesc, returnType, leaf.getStatus());
         processContextRefExtension(leaf, getter, parentModule);
         return returnType;
     }
@@ -1656,7 +1655,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
 
         final ParameterizedType listType = Types.listTypeFor(returnType);
-        constructGetter(typeBuilder, nodeName.getLocalName(), node.getDescription(), listType);
+        constructGetter(typeBuilder, nodeName.getLocalName(), node.getDescription(), listType, node.getStatus());
         return true;
     }
 
@@ -1876,13 +1875,18 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            string with comment for the getter method
      * @param returnType
      *            type which represents the return type of the getter method
+     * @param status
+     *            status from yang file, for deprecated annotation
      * @return method signature builder which represents the getter method of
      *         <code>interfaceBuilder</code>
      */
     private static MethodSignatureBuilder constructGetter(final GeneratedTypeBuilder interfaceBuilder,
-            final String schemaNodeName, final String comment, final Type returnType) {
+            final String schemaNodeName, final String comment, final Type returnType, final Status status) {
         final MethodSignatureBuilder getMethod = interfaceBuilder
                 .addMethod(getterMethodName(schemaNodeName, returnType));
+        if (status == Status.DEPRECATED) {
+            getMethod.addAnnotation("", "Deprecated");
+        }
         getMethod.setComment(encodeAngleBrackets(comment));
         getMethod.setReturnType(returnType);
         return getMethod;
@@ -1948,7 +1952,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         if (genTOBuilder != null) {
             final GeneratedTransferObject genTO = genTOBuilder.toInstance();
-            constructGetter(typeBuilder, "key", "Returns Primary Key of Yang List Type", genTO);
+            constructGetter(typeBuilder, "key", "Returns Primary Key of Yang List Type", genTO, Status.CURRENT);
             genCtx.get(module).addGeneratedTOBuilder(genTOBuilder);
         }
     }
