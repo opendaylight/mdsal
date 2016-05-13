@@ -493,9 +493,8 @@ public final class TypeProviderImpl implements TypeProvider {
                 } else {
                     dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
                 }
-                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s) at %s",
-                        strXPath, this.getParentModule(parentNode).getName(),
-                        parentNode.getQName().getModule(), this.getParentModule(parentNode).getModuleSourcePath());
+                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s)",
+                        strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule());
 
                 if (leafContainsEnumDefinition(dataNode)) {
                     returnType = referencedTypes.get(dataNode.getPath());
@@ -508,9 +507,8 @@ public final class TypeProviderImpl implements TypeProvider {
                 returnType = Types.typeForClass(Object.class);
             }
         }
-        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s (%s) at %s",
-                strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule(), this
-                        .getParentModule(parentNode).getModuleSourcePath());
+        Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s (%s)",
+                strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule(), this);
         return returnType;
     }
 
@@ -1547,7 +1545,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
     private static final Comparator<Bit> BIT_NAME_COMPARATOR = new Comparator<Bit>() {
         @Override
-        public int compare(final Bit o1, final Bit o2) {
+        public int compare(Bit o1, Bit o2) {
             return o1.getName().compareTo(o2.getName());
         }
     };
@@ -1633,7 +1631,7 @@ public final class TypeProviderImpl implements TypeProvider {
                     List<Module> modulesList = new ArrayList<>(modules);
                     Collections.sort(modulesList, new Comparator<Module>() {
                         @Override
-                        public int compare(final Module o1, final Module o2) {
+                        public int compare(Module o1, Module o2) {
                             return o1.getRevision().compareTo(o2.getRevision());
                         }
                     });
