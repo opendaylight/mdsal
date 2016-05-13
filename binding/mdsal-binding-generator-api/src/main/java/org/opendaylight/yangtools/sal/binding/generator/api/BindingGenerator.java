@@ -7,6 +7,7 @@
  */
 package org.opendaylight.yangtools.sal.binding.generator.api;
 
+import com.google.common.base.Optional;
 import java.util.List;
 import java.util.Set;
 
@@ -51,4 +52,8 @@ public interface BindingGenerator {
      * 
      */
     List<Type> generateTypes(final SchemaContext context, final Set<Module> modules);
+
+    /**
+     * List<Type> generateTypes(final SchemaContext context, final Optional<Set<Module>> modules);
+    **/
 }
