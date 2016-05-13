@@ -54,6 +54,7 @@ import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
 import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
+import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
 import org.opendaylight.yangtools.sal.binding.model.api.Constant;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
@@ -102,7 +103,6 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
@@ -1883,6 +1883,13 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final String schemaNodeName, final String comment, final Type returnType) {
         final MethodSignatureBuilder getMethod = interfaceBuilder
                 .addMethod(getterMethodName(schemaNodeName, returnType));
+        if (returnType instanceof GeneratedType) {
+            for (AnnotationType annotation : ((GeneratedType) returnType).getAnnotations()) {
+                if (annotation.getName().equals("Deprecated")) {
+                    getMethod.addAnnotation("", "Deprecated");
+                }
+            }
+        }
         getMethod.setComment(encodeAngleBrackets(comment));
         getMethod.setReturnType(returnType);
         return getMethod;
