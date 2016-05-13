@@ -8,6 +8,7 @@
 package org.opendaylight.yangtools.sal.java.api.generator.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Predicate;
@@ -572,16 +573,32 @@ public class CompilationTest extends BaseCompilationTest {
     }
 
     @Test
-    public void testBug5788() throws Exception {
-        final File sourcesOutputDir = new File(CompilationTestUtils.GENERATOR_OUTPUT_PATH + CompilationTestUtils.FS + "bug5788");
+    public void testBug5882() throws Exception {
+        final File sourcesOutputDir = new File(CompilationTestUtils.GENERATOR_OUTPUT_PATH + CompilationTestUtils.FS + "bug5882");
         assertTrue("Failed to create test file '" + sourcesOutputDir + "'", sourcesOutputDir.mkdir());
-        final File compiledOutputDir = new File(CompilationTestUtils.COMPILER_OUTPUT_PATH + CompilationTestUtils.FS + "bug5788");
+        final File compiledOutputDir = new File(CompilationTestUtils.COMPILER_OUTPUT_PATH + CompilationTestUtils.FS + "bug5882");
         assertTrue("Failed to create test file '" + compiledOutputDir + "'", compiledOutputDir.mkdir());
-
-        generateTestSources("/compilation/bug5788", sourcesOutputDir);
+        generateTestSources("/compilation/bug5882", sourcesOutputDir);
 
         // Test if sources are compilable
         CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
+
+        final File parent = new File(sourcesOutputDir, CompilationTestUtils.NS_BUG5882);
+        assertTrue(new File(parent, "FooData.java").exists());
+        assertTrue(new File(parent, "TypedefCurrent.java").exists());
+        assertTrue(new File(parent, "TypedefDeprecated.java").exists());
+
+        final String pkg = CompilationTestUtils.BASE_PKG + ".urn.yang.foo.rev160102";
+        final ClassLoader loader = new URLClassLoader(new URL[] { compiledOutputDir.toURI().toURL() });
+        final Class cls = loader.loadClass(pkg + ".FooData");
+        final Class clsDepr = loader.loadClass(pkg + ".TypedefDeprecated");
+        assertNotNull(clsDepr);
+
+        for (Method method : cls.getDeclaredMethods()) {
+            if (method.getName().equals("getLeafDeprecated")) {
+                assertTrue(method.getAnnotations()[0].toString().contains("Deprecated"));
+            }
+        }
 
         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
     }
