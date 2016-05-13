@@ -64,6 +64,7 @@ import org.slf4j.LoggerFactory;
 final class BindingCodecContext implements CodecContextFactory, BindingCodecTree, Immutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingCodecContext.class);
     static final String GETTER_PREFIX = "get";
+    static final String GETTER_PREFIX_BOOLEAN = "is";
 
     private final Codec<YangInstanceIdentifier, InstanceIdentifier<?>> instanceIdentifierCodec;
     private final Codec<QName, Class<?>> identityCodec;
