@@ -22,12 +22,22 @@ final class ValueContext {
     private final Codec<Object, Object> codec;
     private final MethodHandle getter;
     private final Class<?> identifier;
-    private final String getterName;
+    private final String getterName, getterNameBoolean;
 
     ValueContext(final Class<?> identifier, final LeafNodeCodecContext <?>leaf) {
         getterName = BindingCodecContext.GETTER_PREFIX + BindingMapping.getClassName(leaf.getDomPathArgument().getNodeType());
+        getterNameBoolean = BindingCodecContext.GETTER_PREFIX_BOOLEAN + BindingMapping.getClassName(leaf.getDomPathArgument()
+                .getNodeType());
         try {
-            getter = LOOKUP.unreflect(identifier.getMethod(getterName)).asType(OBJECT_METHOD);
+            MethodHandle possibleGetter;
+            try {
+                possibleGetter = LOOKUP.unreflect(identifier.getMethod(getterName)).asType
+                        (OBJECT_METHOD);
+            } catch (NoSuchMethodException e) {
+                possibleGetter = LOOKUP.unreflect(identifier.getMethod(getterNameBoolean)).asType
+                        (OBJECT_METHOD);
+            }
+            getter = possibleGetter;
         } catch (IllegalAccessException | NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException(String.format("Cannot find method %s in class %s", getterName, identifier), e);
         }
