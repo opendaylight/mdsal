@@ -11,6 +11,7 @@ import static org.opendaylight.yangtools.binding.generator.util.BindingGenerator
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
