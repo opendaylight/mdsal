@@ -41,12 +41,12 @@ public class CompilationTestUtils {
     static final File COMPILER_OUTPUT_DIR = new File(COMPILER_OUTPUT_PATH);
 
     static final String AUGMENTATION = "interface org.opendaylight.yangtools.yang.binding.Augmentation";
-
     static final String BASE_PATH = "org" + FS + "opendaylight" + FS + "yang" + FS + "gen" + FS + "v1";
     static final String NS_TEST = BASE_PATH + FS + "urn" + FS + "opendaylight" + FS + "test" + FS + "rev131008";
     static final String NS_FOO = BASE_PATH + FS + "urn" + FS + "opendaylight" + FS + "foo" + FS + "rev131008";
     static final String NS_BAR = BASE_PATH + FS + "urn" + FS + "opendaylight" + FS + "bar" + FS + "rev131008";
     static final String NS_BAZ = BASE_PATH + FS + "urn" + FS + "opendaylight" + FS + "baz" + FS + "rev131008";
+    static final String NS_TEMP = BASE_PATH + FS + "urn" + FS + "yang" + FS + "foo" + FS + "rev160102";
 
     /**
      * Method to clean resources. It is manually called at the end of each test
