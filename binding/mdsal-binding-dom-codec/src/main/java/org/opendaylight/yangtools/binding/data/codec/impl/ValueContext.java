@@ -13,6 +13,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
+import java.util.Objects;
 import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 
@@ -25,7 +26,13 @@ final class ValueContext {
     private final String getterName;
 
     ValueContext(final Class<?> identifier, final LeafNodeCodecContext <?>leaf) {
-        getterName = BindingCodecContext.GETTER_PREFIX + BindingMapping.getClassName(leaf.getDomPathArgument().getNodeType());
+        final String returnType = leaf.getGetter().getReturnType().getName();
+        final String getterBody = BindingMapping.getClassName(leaf.getDomPathArgument().getNodeType());
+        if (Objects.equals(returnType, "java.lang.Boolean")) {
+            getterName = BindingCodecContext.GETTER_PREFIX_BOOLEAN.concat(getterBody);
+        } else {
+            getterName = BindingCodecContext.GETTER_PREFIX.concat(getterBody);
+        }
         try {
             getter = LOOKUP.unreflect(identifier.getMethod(getterName)).asType(OBJECT_METHOD);
         } catch (IllegalAccessException | NoSuchMethodException | SecurityException e) {
