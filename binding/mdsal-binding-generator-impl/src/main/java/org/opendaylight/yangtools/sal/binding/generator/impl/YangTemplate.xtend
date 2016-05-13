@@ -207,7 +207,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = rpc.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             rpc «rpc.QName.localName» {
                 «IF !rpc.description.nullOrEmpty»
@@ -274,7 +274,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = notification.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             notification «notification.QName.localName» {
                 «IF !notification.description.nullOrEmpty»
@@ -368,7 +368,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = typeDefinition.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             type «typeDefinition.QName.localName»«IF !isStatusDeprecated»;«ELSE» {
                 status «typeDefinition.status»;
@@ -464,7 +464,7 @@ class YangTemplate {
 
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             extension «extensionDef.QName.localName» {
                 «IF !extensionDef.description.nullOrEmpty»
@@ -568,7 +568,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = groupingDef.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             grouping «groupingDef.QName.localName» {
                 «IF !groupingDef.groupings.nullOrEmpty»
@@ -591,7 +591,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = contSchemaNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             container «contSchemaNode.getQName.localName» {
                 «IF !contSchemaNode.childNodes.nullOrEmpty»
@@ -620,7 +620,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = anyXmlSchemaNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             anyxml «anyXmlSchemaNode.getQName.localName»«IF !isStatusDeprecated»;«ELSE» {
                 status «anyXmlSchemaNode.status»;
@@ -633,7 +633,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = leafSchemaNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             leaf «leafSchemaNode.getQName.localName» {
                 type «leafSchemaNode.type.getQName.localName»;
@@ -648,7 +648,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = leafListSchemaNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             leaf-list «leafListSchemaNode.getQName.localName» {
                 type «leafListSchemaNode.type.getQName.localName»;
@@ -663,7 +663,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = choiceCaseNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             case «choiceCaseNode.getQName.localName» {
                 «FOR childNode : choiceCaseNode.childNodes»
@@ -680,7 +680,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = choiceNode.status == Status::DEPRECATED
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             choice «choiceNode.getQName.localName» {
                 «FOR child : choiceNode.cases»
@@ -698,7 +698,7 @@ class YangTemplate {
 
         '''
             «IF isStatusDeprecated»
-            @deprecated - status DEPRECATED
+            deprecated - status DEPRECATED
             «ENDIF»
             list «listSchemaNode.getQName.localName» {
                 key «FOR listKey : listSchemaNode.keyDefinition SEPARATOR " "»"«listKey.localName»"
