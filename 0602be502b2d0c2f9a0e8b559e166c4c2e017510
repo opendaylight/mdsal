@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_7fdeb540",
+        "filename": "binding/yang-binding/src/test/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifierTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-16T12:28:54Z",
+      "side": 1,
+      "message": "static import goes first",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 33
+      },
+      "revId": "0602be502b2d0c2f9a0e8b559e166c4c2e017510",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
