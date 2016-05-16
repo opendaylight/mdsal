@@ -22,6 +22,30 @@
       "revId": "ed7175d8f6bc155df6f1b9a0b747e3e423c04eb8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_8a3c25e4",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/yang/types/TypeProviderImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 934,
+      "author": {
+        "id": 3316
+      },
+      "writtenOn": "2016-05-16T18:42:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa57193c_d302636e",
+      "range": {
+        "startLine": 930,
+        "startChar": 0,
+        "endLine": 934,
+        "endChar": 17
+      },
+      "revId": "ed7175d8f6bc155df6f1b9a0b747e3e423c04eb8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
