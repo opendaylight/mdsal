@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_3fd43d1f",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/yangtools/binding/data/codec/impl/UnionValueOptionContextTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-16T12:27:30Z",
+      "side": 1,
+      "message": "same IDE issues as in other Java files, please set up your IDE according to coding style\nhttps://wiki.opendaylight.org/view/OpenDaylight_Controller:Developing_With_Intellij",
+      "revId": "7f15f1e6a0703f106c3757faa56a22c3af0b5887",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
