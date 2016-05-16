@@ -150,9 +150,11 @@ public class InstanceIdentifierTest {
         final InstanceIdentifier<Node> II2 =
                 InstanceIdentifier.builder(Nodes.class).child(Node.class, new NodeKey(10)).build();
         assertNotEquals("HashCode", II1.hashCode(), II2.hashCode());
+        assertNotEquals("Builder HashCode", II1.builder().hashCode(), II2.builder().hashCode());
 
         final InstanceIdentifier<Node> II3 =
                 InstanceIdentifier.builder(Nodes.class).child(Node.class, new NodeKey(1)).build();
         assertEquals("HashCode", II1.hashCode(), II3.hashCode());
+        assertEquals("Builder HashCode", II1.builder().hashCode(), II3.builder().hashCode());
     }
 }
