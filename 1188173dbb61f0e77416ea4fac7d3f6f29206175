@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_dffee1ad",
+        "filename": "binding/yang-binding/src/test/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifierTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-16T12:22:58Z",
+      "side": 1,
+      "message": "don\u0027t use asterisk, set up your IDE please",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 33
+      },
+      "revId": "1188173dbb61f0e77416ea4fac7d3f6f29206175",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
