@@ -7,11 +7,6 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -22,6 +17,8 @@ import org.opendaylight.yangtools.yang.binding.test.mock.NodeChild;
 import org.opendaylight.yangtools.yang.binding.test.mock.NodeChildKey;
 import org.opendaylight.yangtools.yang.binding.test.mock.NodeKey;
 import org.opendaylight.yangtools.yang.binding.test.mock.Nodes;
+
+import static org.junit.Assert.*;
 
 public class InstanceIdentifierTest {
 
@@ -143,5 +140,19 @@ public class InstanceIdentifierTest {
         assertNotNull(nodesIdentifier);
         InstanceIdentifier<DataObject> dataObjectIdentifier = instanceIdentifier.firstIdentifierOf(DataObject.class);
         assertNull(dataObjectIdentifier);
+    }
+
+    @Test
+    public void hashCodeTest(){
+        final InstanceIdentifier<Node> II1 =
+                InstanceIdentifier.builder(Nodes.class).child(Node.class, new NodeKey(1)).build();
+
+        final InstanceIdentifier<Node> II2 =
+                InstanceIdentifier.builder(Nodes.class).child(Node.class, new NodeKey(10)).build();
+        assertNotEquals("HashCode", II1.hashCode(), II2.hashCode());
+
+        final InstanceIdentifier<Node> II3 =
+                InstanceIdentifier.builder(Nodes.class).child(Node.class, new NodeKey(1)).build();
+        assertEquals("HashCode", II1.hashCode(), II3.hashCode());
     }
 }
