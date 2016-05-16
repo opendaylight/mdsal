@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_1f30599d",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/DOMDataTreeIdentifierTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-16T12:25:36Z",
+      "side": 1,
+      "message": "missing license header, please set up your IDE properly",
+      "revId": "0b577eb1706eaa46644c1815bf34219c85916210",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_bf204d4a",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/DOMDataTreeIdentifierTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-16T12:25:36Z",
+      "side": 1,
+      "message": "no empty line between imports, order should be alphabetical, please set up your IDE properly",
+      "revId": "0b577eb1706eaa46644c1815bf34219c85916210",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_5f2ad12c",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/DOMDataTreeIdentifierTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-16T12:25:36Z",
+      "side": 1,
+      "message": "static should be first, set up your IDE properly",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 33
+      },
+      "revId": "0b577eb1706eaa46644c1815bf34219c85916210",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_7f27d564",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/DOMDataTreeIdentifierTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-16T12:25:36Z",
+      "side": 1,
+      "message": "delete it",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 3
+      },
+      "revId": "0b577eb1706eaa46644c1815bf34219c85916210",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
