@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_9a02b46d",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/ValueContext.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 2745
+      },
+      "writtenOn": "2016-05-17T12:10:47Z",
+      "side": 1,
+      "message": "In case of boolean getter method this error message will be inconsistent (field \"getter\" holds boolean getter method and field \"getterName\" holds the name of non-boolean getter method name) ... , so please set also the field \"getterName\" based on the getter method is boolean or not.",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 45
+      },
+      "revId": "0a77d5831d445b290857faa7701cd39fcd8a88a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
