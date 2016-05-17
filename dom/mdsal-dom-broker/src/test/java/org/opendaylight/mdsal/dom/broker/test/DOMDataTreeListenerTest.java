@@ -91,7 +91,7 @@ public class DOMDataTreeListenerTest {
             LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH);
 
     @Before
-    public void setupStore() {
+    public void setupStore() throws Exception{
         InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
                 MoreExecutors.newDirectExecutorService());
         InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",

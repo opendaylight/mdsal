@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -11,11 +11,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
@@ -23,7 +20,6 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.binding.yang.types.BaseYangTypes;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 
 public class ExtendedTypedefTest {
 
@@ -32,7 +28,7 @@ public class ExtendedTypedefTest {
         File abstractTopology = new File(getClass().getResource("/typedef-of-typedef/typedef_of_typedef.yang").toURI());
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
 
-        final SchemaContext context = new YangParserImpl().parseFiles(Arrays.asList(abstractTopology, ietfInetTypes));
+        final SchemaContext context =  RetestUtils.parseYangSources(abstractTopology, ietfInetTypes);
         assertNotNull("Schema Context is null", context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -97,7 +93,7 @@ public class ExtendedTypedefTest {
         // extended-typedef-union
         assertNotNull("ExtendedTypedefUnion object not found", extendedTypedefUnion);
         properties = extendedTypedefUnion.getProperties();
-        assertTrue("ExtendedTypedefUnion shouldn't have any property", properties.isEmpty());
+        assertEquals("ExtendedTypedefUnion shouldn't have any property", 0, properties.size());
 
         extendTO = extendedTypedefUnion.getSuperType();
         assertEquals("Incorrect extension fo ExtendedTypedefUnion.", "UnionTypedef", extendTO.getName());

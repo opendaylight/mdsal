@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -20,8 +20,8 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangContextParser;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
 
@@ -55,9 +55,8 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
     }
 
     @Test
-    public void choiceCaseResolvingTypeTest() throws IOException {
-        final YangContextParser parser = new YangParserImpl();
-        final SchemaContext context = parser.parseFiles(testModels);
+    public void choiceCaseResolvingTypeTest() throws IOException, SourceException, ReactorException {
+        final SchemaContext context = RetestUtils.parseYangSources(testModels);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -73,7 +72,7 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
         checkGeneratedType(genTypes, "LockType", pcgPref); // choice
 
         genType = checkGeneratedType(genTypes, "GlobalLock", pcgPref + ".lock.type"); // case
-        containsMethods(genType, new NameTypePattern("getGlobalLock", "GlobalLock"));
+        SupportTestUtil.containsMethods(genType, new NameTypePattern("getGlobalLock", "GlobalLock"));
         containsInterface("LockType", genType);
 
         genType = checkGeneratedType(genTypes, "PartialLock", pcgPref + ".lock.type"); // case

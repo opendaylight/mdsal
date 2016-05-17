@@ -58,7 +58,7 @@ public class DOMBrokerTest {
     private CommitExecutorService commitExecutor;
 
     @Before
-    public void setupStore() {
+    public void setupStore() throws Exception{
 
         InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
                 MoreExecutors.newDirectExecutorService());

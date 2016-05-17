@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -9,6 +9,9 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,20 +25,17 @@ import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangContextParser;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 
 public class SupportTestUtil {
 
-    public static SchemaContext resolveSchemaContextFromFiles(final URI... yangFiles) throws IOException {
-        final YangContextParser parser = new YangParserImpl();
+    public static SchemaContext resolveSchemaContextFromFiles(final URI... yangFiles) throws IOException, SourceException, ReactorException {
 
         final List<File> inputFiles = new ArrayList<File>();
         for (int i = 0; i < yangFiles.length; ++i) {
             inputFiles.add(new File(yangFiles[i]));
         }
 
-        return parser.parseFiles(inputFiles);
+        return RetestUtils.parseYangSources(inputFiles);
     }
 
     public static void containsMethods(final GeneratedType genType, final NameTypePattern... searchedSignsWhat) {

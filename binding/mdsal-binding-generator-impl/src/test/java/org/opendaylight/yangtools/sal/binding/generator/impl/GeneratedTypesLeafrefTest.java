@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -12,17 +12,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import com.google.common.io.ByteSource;
+
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
@@ -30,44 +25,22 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangContextParser;
-import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
-import org.opendaylight.yangtools.yang.parser.builder.impl.BuilderUtils;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class GeneratedTypesLeafrefTest {
 
-    public static Set<Module> loadModules(final Collection<InputStream> input) throws IOException,
-            YangSyntaxErrorException {
-        Collection<ByteSource> sources = BuilderUtils.streamsToByteSources(input);
-        final YangContextParser parser = new YangParserImpl();
-        SchemaContext ctx = parser.parseSources(sources);
-        return ctx.getModules();
-    }
-
-    private static SchemaContext resolveSchemaContextFromFiles(final URI... yangFiles) throws IOException {
-        final YangContextParser parser = new YangParserImpl();
-
-        final List<File> inputFiles = new ArrayList<File>();
-        for (URI yangFile : yangFiles) {
-            inputFiles.add(new File(yangFile));
-        }
-
-        return parser.parseFiles(inputFiles);
-    }
-
     @Test
-    public void testLeafrefResolving() throws URISyntaxException, IOException {
+    public void testLeafrefResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         File abstractTopology = new File(getClass().getResource(
                 "/leafref-test-models/abstract-topology@2013-02-08.yang").toURI());
         File ietfInterfaces = new File(getClass().getResource("/ietf/ietf-interfaces.yang").toURI());
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
         File ietfYangTypes = new File(getClass().getResource("/ietf/ietf-yang-types.yang").toURI());
 
-        final SchemaContext context = new YangParserImpl().parseFiles(Arrays.asList(abstractTopology, ietfInterfaces,
-                ietfInetTypes, ietfYangTypes));
+        final SchemaContext context =  RetestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+                ietfInetTypes, ietfYangTypes);
         assertNotNull(context);
         assertEquals(4, context.getModules().size());
 
@@ -244,11 +217,11 @@ public class GeneratedTypesLeafrefTest {
     }
 
     @Test
-    public void testLeafrefInvalidPathResolving() throws URISyntaxException, IOException {
+    public void testLeafrefInvalidPathResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         final URI resource = getClass().getResource("/leafref-test-invalid-model/foo.yang").toURI();
         assertNotNull(resource);
 
-        final SchemaContext context = resolveSchemaContextFromFiles(resource);
+        final SchemaContext context =  RetestUtils.parseYangSources(new File(resource));
         assertNotNull(context);
         assertEquals(1, context.getModules().size());
 
@@ -257,8 +230,8 @@ public class GeneratedTypesLeafrefTest {
             bindingGen.generateTypes(context);
             fail("Expected IllegalArgumentException caused by invalid leafref path");
         } catch (IllegalArgumentException e) {
-            String expected = "Failed to find leafref target: ../id in module foo (QNameModule{ns=urn:yang.foo, rev=2014-03-10})";
-            assertTrue(e.getMessage().startsWith(expected));
+            String expected = "Failed to find leafref target";
+            assertTrue(e.getMessage().contains(expected));
         }
     }
 }

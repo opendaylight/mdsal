@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -16,18 +16,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
 
 public class DocGenTest {
     public static final String FS = File.separator;
     private static final String TEST_PATH = "target" + FS + "test" + FS + "site";
     private static final File GENERATOR_OUTPUT_DIR = new File(TEST_PATH);
-    private YangParserImpl parser;
 
     @Before
     public void init() {
@@ -35,7 +35,6 @@ public class DocGenTest {
             deleteTestDir(GENERATOR_OUTPUT_DIR);
         }
         assertTrue(GENERATOR_OUTPUT_DIR.mkdirs());
-        parser = new YangParserImpl();
     }
 
     @After
@@ -48,13 +47,14 @@ public class DocGenTest {
     @Test
     public void testListGeneration() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/doc-gen");
-        final SchemaContext context = parser.parseFiles(sourceFiles);
+        final SchemaContext context = RetestUtils.parseYangSources(sourceFiles);
+        final Set<Module> modules = context.getModules();
         final BasicCodeGenerator generator = new DocumentationGeneratorImpl();
-        Collection<File> generatedFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, context.getModules());
+        Collection<File> generatedFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, modules);
         assertEquals(4, generatedFiles.size());
     }
 
-    private static List<File> getSourceFiles(final String path) throws Exception {
+    private static List<File> getSourceFiles(String path) throws Exception {
         final URI resPath = DocGenTest.class.getResource(path).toURI();
         final File sourcesDir = new File(resPath);
         if (sourcesDir.exists()) {
@@ -70,7 +70,7 @@ public class DocGenTest {
         }
     }
 
-    private static void deleteTestDir(final File file) {
+    private static void deleteTestDir(File file) {
         if (file.isDirectory()) {
             File[] filesToDelete = file.listFiles();
             if (filesToDelete != null) {

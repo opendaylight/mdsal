@@ -31,10 +31,11 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.DataContaine
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 
 public class ShardedDOMDataTreeProducerMultiShardTest {
 
-    private final SchemaContext schemaContext = TestModel.createTestContext();
+    private SchemaContext schemaContext;
 
     private static final DOMDataTreeIdentifier ROOT_ID = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
             YangInstanceIdentifier.EMPTY);
@@ -58,6 +59,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
     @Before
     public void setUp() throws Exception {
+        schemaContext = TestModel.createTestContext();
 
         rootShard = InMemoryDOMDataTreeShard.create(ROOT_ID);
         rootShard.onGlobalContextUpdated(schemaContext);

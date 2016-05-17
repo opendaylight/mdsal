@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -11,10 +11,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
+import java.io.File;
 import java.net.URI;
 import java.util.List;
-
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
@@ -32,7 +31,7 @@ public class GeneratedTypesBitsTest {
     public void testGeneretedTypesBitsTest() throws Exception {
         final URI yangTypesPath = getClass().getResource("/simple-bits-demo.yang").toURI();
 
-        final SchemaContext context = SupportTestUtil.resolveSchemaContextFromFiles(yangTypesPath);
+        final SchemaContext context =  RetestUtils.parseYangSources(new File(yangTypesPath));
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -109,17 +108,17 @@ public class GeneratedTypesBitsTest {
 
         assertTrue(byteTypeFound);
 
-        assertEquals(classPropertiesNumb,8);
+        assertEquals(8, classPropertiesNumb);
 
-        assertEquals(toStringPropertiesNum,8);
-        assertEquals(equalPropertiesNum,8);
-        assertEquals(hashPropertiesNum,8);
+        assertEquals(8, toStringPropertiesNum);
+        assertEquals(8, equalPropertiesNum);
+        assertEquals(8, hashPropertiesNum);
         assertTrue(leafParentFound);
 
         assertNotNull(methodSignaturesList);
 
         assertTrue(getByteLeafMethodFound);
-        assertEquals(nameReturnParamType,"ByteType");
+        assertEquals("ByteType", nameReturnParamType);
 
         assertFalse(setByteLeafMethodFound);
         assertEquals(0, setByteLeafMethodParamNum);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -12,23 +12,22 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.EffectiveSchemaContext;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
-
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
 
 public class BindingGeneratorImplTest {
 
@@ -51,7 +50,7 @@ public class BindingGeneratorImplTest {
         reactor.addSources(ISIS_20131021, L3_20131021,
                 NETWORK_TOPOLOGY_20131021);
 
-        SchemaContext context = reactor.buildEffective();
+        EffectiveSchemaContext context = reactor.buildEffective();
         assertNotNull(context);
 
         List<Type> generateTypes = new BindingGeneratorImpl(false)
@@ -62,13 +61,11 @@ public class BindingGeneratorImplTest {
 
     @Test
     public void choiceNodeGenerationTest() throws IOException,
-            YangSyntaxErrorException, URISyntaxException {
+            YangSyntaxErrorException, URISyntaxException, SourceException, ReactorException {
         File resourceFile = new File(getClass().getResource(
                 "/binding-generator-impl-test/choice-test.yang").toURI());
-        File resourceDir = resourceFile.getParentFile();
 
-        YangParserImpl parser = YangParserImpl.getInstance();
-        SchemaContext context = parser.parseFile(resourceFile, resourceDir);
+        SchemaContext context = RetestUtils.parseYangSources(resourceFile);
 
         List<Type> generateTypes = new BindingGeneratorImpl(false)
                 .generateTypes(context);
@@ -161,15 +158,15 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void notificationGenerationTest() throws IOException, YangSyntaxErrorException, URISyntaxException {
-        File resourceFile = new File(getClass().getResource("/binding-generator-impl-test/notification-test.yang")
-                .toURI());
-        File resourceDir = resourceFile.getParentFile();
+    public void notificationGenerationTest() throws IOException,
+            YangSyntaxErrorException, URISyntaxException, SourceException, ReactorException {
+        File resourceFile = new File(getClass().getResource(
+                "/binding-generator-impl-test/notification-test.yang").toURI());
 
-        YangParserImpl parser = YangParserImpl.getInstance();
-        SchemaContext context = parser.parseFile(resourceFile, resourceDir);
+        SchemaContext context = RetestUtils.parseYangSources(resourceFile);
 
-        List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
+        List<Type> generateTypes = new BindingGeneratorImpl(false)
+                .generateTypes(context);
 
         GeneratedType foo = null;
         for (Type type : generateTypes) {

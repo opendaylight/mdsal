@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -8,9 +8,9 @@
 package org.opendaylight.yangtools.sal.binding.generator.impl;
 
 import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
@@ -19,27 +19,14 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangContextParser;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 
 public class GenerateInnerClassForBitsAndUnionInLeavesTest {
-
-    private static SchemaContext resolveSchemaContextFromFiles(final URI... yangFiles) throws Exception {
-        final YangContextParser parser = new YangParserImpl();
-
-        final List<File> inputFiles = new ArrayList<File>();
-        for (URI yangFile : yangFiles) {
-            inputFiles.add(new File(yangFile));
-        }
-
-        return parser.parseFiles(inputFiles);
-    }
 
     @Test
     public void testInnerClassCreationForBitsAndUnionsInLeafes() throws Exception {
         final URI yangTypesPath = getClass().getResource("/bit_and_union_in_leaf.yang").toURI();
 
-        final SchemaContext context = resolveSchemaContextFromFiles(yangTypesPath);
+        final SchemaContext context = RetestUtils.parseYangSources(new File(yangTypesPath));
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

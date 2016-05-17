@@ -42,6 +42,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 
 public class InMemoryDataStoreTest {
 
@@ -49,7 +50,7 @@ public class InMemoryDataStoreTest {
     private InMemoryDOMDataStore domStore;
 
     @Before
-    public void setupStore() throws IOException, YangSyntaxErrorException {
+    public void setupStore() throws IOException, YangSyntaxErrorException, ReactorException {
         domStore = new InMemoryDOMDataStore("TEST", MoreExecutors.newDirectExecutorService());
         schemaContext = TestModel.createTestContext();
         domStore.onGlobalContextUpdated(schemaContext);

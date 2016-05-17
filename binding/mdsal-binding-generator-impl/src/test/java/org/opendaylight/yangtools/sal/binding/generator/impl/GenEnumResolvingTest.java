@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -10,14 +10,12 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
@@ -25,17 +23,16 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 
 public class GenEnumResolvingTest {
 
     @Test
-    public void testLeafEnumResolving() throws URISyntaxException, IOException {
+    public void testLeafEnumResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         File ietfInterfaces = new File(getClass().getResource("/enum-test-models/ietf-interfaces@2012-11-15.yang")
                 .toURI());
         File ianaIfTypeModel = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
 
-        final SchemaContext context = new YangParserImpl().parseFiles(Arrays.asList(ietfInterfaces, ianaIfTypeModel));
+        final SchemaContext context =  RetestUtils.parseYangSources(ietfInterfaces, ianaIfTypeModel);
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -95,9 +92,9 @@ public class GenEnumResolvingTest {
     }
 
     @Test
-    public void testTypedefEnumResolving() throws URISyntaxException, IOException {
+    public void testTypedefEnumResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         File ianaIfType = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
-        final SchemaContext context = new YangParserImpl().parseFiles(Collections.singleton(ianaIfType));
+        final SchemaContext context =  RetestUtils.parseYangSources(ianaIfType);
         assertTrue(context != null);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
         final List<Type> genTypes = bindingGen.generateTypes(context);
@@ -112,15 +109,15 @@ public class GenEnumResolvingTest {
     }
 
     @Test
-    public void testLeafrefEnumResolving() throws URISyntaxException, IOException {
+    public void testLeafrefEnumResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         File abstractTopology = new File(getClass().getResource("/enum-test-models/abstract-topology@2013-02-08.yang")
                 .toURI());
         File ietfInterfaces = new File(getClass().getResource("/enum-test-models/ietf-interfaces@2012-11-15.yang")
                 .toURI());
         File ianaIfType = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
 
-        final SchemaContext context = new YangParserImpl().parseFiles(Arrays.asList(abstractTopology, ietfInterfaces,
-                ianaIfType));
+        final SchemaContext context =  RetestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+                ianaIfType);
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
         final List<Type> genTypes = bindingGen.generateTypes(context);
