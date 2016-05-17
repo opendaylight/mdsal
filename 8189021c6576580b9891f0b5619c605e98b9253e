@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_da20acb2",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/YangTemplate.xtend",
+        "patchSetId": 11
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-17T14:06:53Z",
+      "side": 1,
+      "message": "not needed anymore? here and other places",
+      "range": {
+        "startLine": 207,
+        "startChar": 8,
+        "endLine": 207,
+        "endChar": 73
+      },
+      "revId": "8189021c6576580b9891f0b5619c605e98b9253e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
