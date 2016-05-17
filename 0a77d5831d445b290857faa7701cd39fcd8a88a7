@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "fa57193c_9a391444",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/ValueContext.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-17T12:19:34Z",
+      "side": 1,
+      "message": "set this variable for both cases, get rid of getterNameBoolean",
+      "range": {
+        "startLine": 25,
+        "startChar": 25,
+        "endLine": 25,
+        "endChar": 35
+      },
+      "revId": "0a77d5831d445b290857faa7701cd39fcd8a88a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa57193c_9a02b46d",
         "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/ValueContext.java",
         "patchSetId": 4
