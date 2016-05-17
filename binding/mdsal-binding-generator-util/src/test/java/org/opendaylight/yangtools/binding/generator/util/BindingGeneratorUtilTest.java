@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -13,7 +13,12 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+
 import com.google.common.base.Optional;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -22,6 +27,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -42,7 +48,6 @@ import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
-import org.opendaylight.yangtools.yang.model.parser.api.YangContextParser;
 import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.Decimal64;
@@ -52,14 +57,13 @@ import org.opendaylight.yangtools.yang.model.util.Int16;
 import org.opendaylight.yangtools.yang.model.util.StringType;
 import org.opendaylight.yangtools.yang.model.util.Uint16;
 import org.opendaylight.yangtools.yang.parser.builder.impl.ModuleBuilder;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 
 public class BindingGeneratorUtilTest {
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
-    private static List<File> loadTestResources(final String testFile) {
+    private static List<File> loadTestResources(String testFile) {
         final List<File> testModels = new ArrayList<File>();
         File listModelFile;
         try {
@@ -81,14 +85,14 @@ public class BindingGeneratorUtilTest {
      * &lt;/ul&gt;
      * &lt;li&gt;packageNameForTypeDefinition&lt;/li&gt; &lt;li&gt;moduleNamespaceToPackageName&lt;/li&gt;
      * - without revision &lt;/ul&gt;
-     *
-     * @throws IOException IOException
+     * @throws ReactorException Reactor exception
+     * @throws SourceException Source exception
      */
     @Test
-    public void testBindingGeneratorUtilMethods() throws IOException {
+    public void testBindingGeneratorUtilMethods() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/module.yang");
-        final YangContextParser parser = new YangParserImpl();
-        final Set<Module> modules = parser.parseFiles(testModels).getModules();
+
+        final Set<Module> modules = RetestUtils.parseYangSources(testModels).getModules();
         String packageName = "";
         Module module = null;
         for (Module m : modules) {

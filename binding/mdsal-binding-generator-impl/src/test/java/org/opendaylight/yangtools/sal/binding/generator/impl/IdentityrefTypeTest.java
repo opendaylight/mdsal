@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -10,13 +10,15 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
@@ -26,8 +28,6 @@ import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.binding.yang.types.TypeProviderImpl;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangContextParser;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 
 public class IdentityrefTypeTest {
 
@@ -52,14 +52,15 @@ public class IdentityrefTypeTest {
 
     /**
      * Test mainly for the method
-     * {@link TypeProviderImpl#provideTypeForIdentityref(IdentityrefTypeDefinition)
+     * TypeProviderImpl#provideTypeForIdentityref(IdentityrefTypeDefinition)
      * provideTypeForIdentityref}
+     * @throws ReactorException Reactor exception
+     * @throws SourceException Source exception
      * @throws IOException IOException
      */
     @Test
-    public void testIdentityrefYangBuiltInType() throws IOException {
-        final YangContextParser parser = new YangParserImpl();
-        final SchemaContext context = parser.parseFiles(testModels);
+    public void testIdentityrefYangBuiltInType() throws IOException, SourceException, ReactorException {
+        final SchemaContext context = RetestUtils.parseYangSources(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

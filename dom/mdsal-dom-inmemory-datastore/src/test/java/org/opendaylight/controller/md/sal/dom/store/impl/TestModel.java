@@ -10,12 +10,18 @@ package org.opendaylight.controller.md.sal.dom.store.impl;
 import com.google.common.io.ByteSource;
 import com.google.common.io.Resources;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
+import java.util.List;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
 
 public class TestModel {
 
@@ -34,12 +40,25 @@ public class TestModel {
     public static final QName TWO_QNAME = QName.create(TEST_QNAME, "two");
     public static final QName THREE_QNAME = QName.create(TEST_QNAME, "three");
 
-    private static ByteSource getInputStream() {
-        return Resources.asByteSource(TestModel.class.getResource(DATASTORE_TEST_YANG));
+  //  private static ByteSource getInputStream() {
+  //      return Resources.asByteSource(TestModel.class.getResource(DATASTORE_TEST_YANG));
+   // }
+
+    private static InputStream getInputStream() {
+        return TestModel.class.getResourceAsStream(DATASTORE_TEST_YANG);
     }
 
-    public static SchemaContext createTestContext() throws IOException, YangSyntaxErrorException {
-        YangParserImpl parser = new YangParserImpl();
-        return parser.parseSources(Collections.singletonList(getInputStream()));
+    public static SchemaContext createTestContext() throws IOException, YangSyntaxErrorException, ReactorException {
+        //YangParserImpl parser = new YangParserImpl();
+        //return parser.parseSources(Collections.singletonList(getInputStream()));
+        return parseYangStreams(Collections.singletonList(getInputStream()));
+    }
+
+    private static SchemaContext parseYangStreams(List<InputStream> streams)
+            throws SourceException, ReactorException {
+
+        CrossSourceStatementReactor.BuildAction reactor = YangInferencePipeline.RFC6020_REACTOR
+                .newBuild();
+        return reactor.buildEffective(streams);
     }
 }

@@ -46,7 +46,7 @@ public class DOMTransactionChainTest {
     private AbstractDOMDataBroker domBroker;
 
     @Before
-    public void setupStore() {
+    public void setupStore() throws Exception{
         InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER", MoreExecutors.newDirectExecutorService());
         InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG", MoreExecutors.newDirectExecutorService());
         schemaContext = TestModel.createTestContext();

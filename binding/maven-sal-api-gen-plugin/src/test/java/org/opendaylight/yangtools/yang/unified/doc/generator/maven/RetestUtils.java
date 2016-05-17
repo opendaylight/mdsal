@@ -1,19 +1,27 @@
-package org.opendaylight.yangtools.sal.binding.yang.types.stmt.parser.retest;
+/*
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 
-import java.util.List;
+package org.opendaylight.yangtools.yang.unified.doc.generator.maven;
 
+import org.opendaylight.yangtools.yang.parser.util.NamedFileInputStream;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.io.FileNotFoundException;
-import java.io.FileInputStream;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
-import java.io.File;
+import java.util.List;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.source.StatementStreamSource;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.parser.spi.source.StatementStreamSource;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
 import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
 
 public class RetestUtils {
 
@@ -36,7 +44,7 @@ public class RetestUtils {
         StatementStreamSource[] sources = new StatementStreamSource[files.length];
 
         for(int i = 0; i<files.length; i++) {
-            sources[i] = new YangStatementSourceImpl(new FileInputStream(files[i]));
+            sources[i] = new YangStatementSourceImpl(new NamedFileInputStream(files[i],files[i].getPath()));
         }
 
         return parseYangSources(sources);

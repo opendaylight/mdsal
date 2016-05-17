@@ -1,10 +1,11 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.opendaylight.yangtools.sal.binding.yang.types;
 
 import static org.junit.Assert.assertEquals;
@@ -21,7 +22,6 @@ import org.junit.Test;
 import org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil;
 import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
@@ -33,9 +33,8 @@ import org.opendaylight.yangtools.yang.model.api.type.IntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
-import org.opendaylight.yangtools.yang.model.parser.api.YangContextParser;
-import org.opendaylight.yangtools.yang.model.util.ExtendedType;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 /**
  * Test class for testing BaseYangTypes class.
@@ -62,15 +61,11 @@ public class BaseYangTypesTest {
     private static EmptyTypeDefinition empty = null;
     private static BooleanTypeDefinition bool = null;
 
-    @SuppressWarnings("deprecation")
     @BeforeClass
-    public static void setup() {
+    public static void setup() throws SourceException, ReactorException {
         final List<InputStream> modelsToParse = Collections
             .singletonList(BaseYangTypesTest.class.getResourceAsStream("/base-yang-types.yang"));
-        final YangContextParser parser = new YangParserImpl();
-        final Set<Module> modules = parser.parseYangModelsFromStreams(modelsToParse);
-        assertTrue(!modules.isEmpty());
-        schemaContext = parser.resolveSchemaContext(modules);
+        schemaContext = RetestUtils.parseYangStreams(modelsToParse);
         assertNotNull(schemaContext);
         initTypeDefinitionsFromSchemaContext();
     }
@@ -81,9 +76,10 @@ public class BaseYangTypesTest {
 
         for (final TypeDefinition<?> typedef : typedefs) {
             assertNotNull(typedef);
-            assertTrue(typedef instanceof ExtendedType);
 
             final TypeDefinition<?> baseType = typedef.getBaseType();
+            assertNotNull(baseType);
+
             if (baseType instanceof BinaryTypeDefinition) {
                 binary = (BinaryTypeDefinition) baseType;
             } else if (baseType instanceof DecimalTypeDefinition) {

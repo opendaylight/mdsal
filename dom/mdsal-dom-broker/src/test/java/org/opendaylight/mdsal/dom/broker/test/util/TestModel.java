@@ -9,12 +9,17 @@ package org.opendaylight.mdsal.dom.broker.test.util;
 
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
 
 public class TestModel {
 
@@ -55,9 +60,15 @@ public class TestModel {
         return TestModel.class.getResourceAsStream(DATASTORE_TEST_YANG);
     }
 
-    public static SchemaContext createTestContext() {
-        YangParserImpl parser = new YangParserImpl();
-        Set<Module> modules = parser.parseYangModelsFromStreams(Collections.singletonList(getDatastoreTestInputStream()));
-        return parser.resolveSchemaContext(modules);
+    public static SchemaContext createTestContext() throws ReactorException {
+        return parseYangStreams(Collections.singletonList(getDatastoreTestInputStream()));
+    }
+
+    private static SchemaContext parseYangStreams(List<InputStream> streams)
+            throws SourceException, ReactorException {
+
+        CrossSourceStatementReactor.BuildAction reactor = YangInferencePipeline.RFC6020_REACTOR
+                .newBuild();
+        return reactor.buildEffective(streams);
     }
 }

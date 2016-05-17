@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -9,15 +9,16 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.opendaylight.yangtools.sal.binding.generator.impl.SupportTestUtil.containsAttributes;
 import static org.opendaylight.yangtools.sal.binding.generator.impl.SupportTestUtil.containsMethods;
+import static org.opendaylight.yangtools.sal.binding.generator.impl.SupportTestUtil.containsAttributes;
 
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
@@ -26,8 +27,6 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangContextParser;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 
 public class BitAndUnionTOEnclosingTest {
 
@@ -35,9 +34,9 @@ public class BitAndUnionTOEnclosingTest {
     private static List<Type> genTypes = null;
     private static GeneratedType parentContainer = null;
 
-    public static void parseResources() throws IOException {
-        final YangContextParser parser = new YangParserImpl();
-        final SchemaContext context = parser.parseFiles(testModels);
+    public static void parseResources() throws IOException, SourceException, ReactorException {
+
+        final SchemaContext context = RetestUtils.parseYangSources(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -54,7 +53,7 @@ public class BitAndUnionTOEnclosingTest {
     }
 
     @BeforeClass
-    public static void loadTestResources() throws IOException, URISyntaxException {
+    public static void loadTestResources() throws IOException, URISyntaxException, SourceException, ReactorException {
         final File listModelFile = new File(ExtendedTypedefTest.class.getResource("/bit_and_union.yang").toURI());
         testModels.add(listModelFile);
         parseResources();

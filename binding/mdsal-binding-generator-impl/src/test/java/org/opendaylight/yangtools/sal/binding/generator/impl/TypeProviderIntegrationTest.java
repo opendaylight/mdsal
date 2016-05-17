@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -24,7 +23,6 @@ import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 
 public class TypeProviderIntegrationTest {
     private final String PKG = "org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.";
@@ -38,7 +36,7 @@ public class TypeProviderIntegrationTest {
                 .toURI());
         File ietfInetTypes = new File(TypeProviderIntegrationTest.class.getResource("/ietf/ietf-inet-types.yang")
                 .toURI());
-        context = new YangParserImpl().parseFiles(Arrays.asList(abstractTopology, ietfInetTypes));
+        context = RetestUtils.parseYangSources(abstractTopology, ietfInetTypes);
         assertNotNull(context);
     }
 

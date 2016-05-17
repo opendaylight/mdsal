@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -30,8 +30,6 @@ import org.junit.Test;
 import org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangContextParser;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 import org.sonatype.plexus.build.incremental.DefaultBuildContext;
 
 /**
@@ -133,8 +131,7 @@ public class YangModuleInfoCompilationTest {
 
     private static void generateTestSources(final String resourceDirPath, final File sourcesOutputDir) throws Exception {
         final List<File> sourceFiles = getSourceFiles(resourceDirPath);
-        YangContextParser parser = new YangParserImpl();
-        final SchemaContext context = parser.parseFiles(sourceFiles);
+        final SchemaContext context = RetestUtils.parseYangSources(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.generateSources(context, sourcesOutputDir, context.getModules());

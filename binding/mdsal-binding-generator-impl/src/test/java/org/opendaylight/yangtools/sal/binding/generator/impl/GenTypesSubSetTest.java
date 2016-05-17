@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -12,17 +12,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.impl.YangParserImpl;
 
 public class GenTypesSubSetTest {
 
@@ -34,8 +31,8 @@ public class GenTypesSubSetTest {
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
         File ietfYangTypes = new File(getClass().getResource("/ietf/ietf-yang-types.yang").toURI());
 
-        final SchemaContext context = new YangParserImpl().parseFiles(Arrays.asList(abstractTopology, ietfInterfaces,
-                ietfInetTypes, ietfYangTypes));
+        final SchemaContext context = RetestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+                ietfInetTypes, ietfYangTypes);
         Set<Module> modules = context.getModules();
 
         final Set<Module> toGenModules = new HashSet<>();
@@ -66,8 +63,8 @@ public class GenTypesSubSetTest {
         File ietfYangTypes = new File(getClass().getResource("/ietf/ietf-yang-types.yang").toURI());
         File ianaIfType = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
 
-        final SchemaContext context = new YangParserImpl().parseFiles(Arrays.asList(abstractTopology, ietfInterfaces,
-                ietfInetTypes, ietfYangTypes, ianaIfType));
+        final SchemaContext context = RetestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+                ietfInetTypes, ietfYangTypes, ianaIfType);
         assertNotNull("Schema Context is null", context);
         final Set<Module> modules = context.getModules();
 
