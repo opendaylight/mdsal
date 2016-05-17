@@ -45,6 +45,30 @@
       "revId": "0a77d5831d445b290857faa7701cd39fcd8a88a7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_da3a6c33",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/ValueContext.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-17T12:20:13Z",
+      "side": 1,
+      "message": "this part becomes valid eventually",
+      "parentUuid": "fa57193c_9a02b46d",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 45
+      },
+      "revId": "0a77d5831d445b290857faa7701cd39fcd8a88a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
