@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_1ac4e45d",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/test/Bug5845booleanKey.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-17T10:40:26Z",
+      "side": 1,
+      "message": "...Test",
+      "range": {
+        "startLine": 34,
+        "startChar": 13,
+        "endLine": 34,
+        "endChar": 30
+      },
+      "revId": "8149163d9c774ae389ad51ca00e3d69ff6708a1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
