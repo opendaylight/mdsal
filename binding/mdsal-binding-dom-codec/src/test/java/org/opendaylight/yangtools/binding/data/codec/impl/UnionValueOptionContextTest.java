@@ -1,15 +1,22 @@
+/*
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+
 package org.opendaylight.yangtools.binding.data.codec.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Method;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Method;
-
-import static org.junit.Assert.*;
-
-/**
- * Created by peter.nosal
- */
 public class UnionValueOptionContextTest {
     private static UnionValueOptionContext TEST_UVOC_1;
     private static UnionValueOptionContext TEST_UVOC_2;

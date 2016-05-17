@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,9 +7,14 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.test.mock.FooChild;
 import org.opendaylight.yangtools.yang.binding.test.mock.InstantiatedFoo;
 import org.opendaylight.yangtools.yang.binding.test.mock.Node;
@@ -17,8 +22,6 @@ import org.opendaylight.yangtools.yang.binding.test.mock.NodeChild;
 import org.opendaylight.yangtools.yang.binding.test.mock.NodeChildKey;
 import org.opendaylight.yangtools.yang.binding.test.mock.NodeKey;
 import org.opendaylight.yangtools.yang.binding.test.mock.Nodes;
-
-import static org.junit.Assert.*;
 
 public class InstanceIdentifierTest {
 
