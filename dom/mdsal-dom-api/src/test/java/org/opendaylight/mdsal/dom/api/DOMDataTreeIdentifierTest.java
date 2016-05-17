@@ -1,21 +1,30 @@
+/*
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+
 package org.opendaylight.mdsal.dom.api;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URI;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.codec.StringCodec;
 
-import java.net.URI;
-
-import static org.junit.Assert.*;
-
-/**
- * Created by peter.nosal
- */
 public class DOMDataTreeIdentifierTest {
-    private static final QNameModule TEST_MODULE = QNameModule.create(URI.create("urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"), null);
+    private static final QNameModule TEST_MODULE =
+            QNameModule.create(URI.create("urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"), null);
 
     private static final String REF_LISTS = "ref-lists";
     private static final String TEST_LISTS = "test-lists";
@@ -32,25 +41,38 @@ public class DOMDataTreeIdentifierTest {
     private static final DOMDataTreeIdentifier TEST_DIFF_TREE =
             new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, TEST_YII_IID);
 
+    @Test(expected = NullPointerException.class)
+    public void constructTest() throws Exception{
+        assertNotNull("Instantiation", new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID));
+        assertNull("Instantiation with null", new DOMDataTreeIdentifier(null, REF_YII_IID));
+        assertNotNull("Instantiation with null", new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, null));
+    }
 
     @Test
-    public void hashCodeTest(){
-        assertEquals("hashCode",
-                REF_TREE.hashCode(), new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID).hashCode());
+    public void hashCodeTest() throws Exception{
+        assertEquals("hashCode", REF_TREE.hashCode(),
+                new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID).hashCode());
 
         assertNotEquals("hashCode", REF_TREE.hashCode(), TEST_DIFF_TREE.hashCode());
     }
 
     @Test
-    public void equalsTest(){
+    public void equalsTest() throws Exception{
         assertTrue("Equals same",
                 REF_TREE.equals(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)));
 
-        assertEquals("Different", false, REF_TREE.equals(TEST_DIFF_TREE));
+        assertFalse("Different DataStoreType",
+                REF_TREE.equals(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, REF_YII_IID)));
+
+        assertTrue("Equals same instance", REF_TREE.equals(REF_TREE));
+
+        assertFalse("Different object", REF_TREE.equals(new Object()));
+
+        assertFalse("Different instance", REF_TREE.equals(TEST_DIFF_TREE));
     }
 
     @Test
-    public void compareToTest(){
+    public void compareToTest() throws Exception{
         final YangInstanceIdentifier COMPARE_FIRST_IID = YangInstanceIdentifier.create(
                 new YangInstanceIdentifier.NodeIdentifier(QName.create(TEST_MODULE, COMPARE_FIRST_LISTS)));
         final YangInstanceIdentifier COMPARE_SECOND_IID = YangInstanceIdentifier.create(
@@ -58,6 +80,17 @@ public class DOMDataTreeIdentifierTest {
 
         assertEquals("Compare same to same",
                 REF_TREE.compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)), 0);
+
+        assertNotEquals("Compare same to same with different datastore",
+                REF_TREE.compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, REF_YII_IID)), 0);
+
+        assertEquals("Compare same to same with different datastore",
+                new DOMDataTreeIdentifier(
+                        LogicalDatastoreType.OPERATIONAL,
+                        YangInstanceIdentifier.create(
+                                YangInstanceIdentifier.NodeIdentifier.create(QName.create(TEST_MODULE, REF_LISTS)),
+                                YangInstanceIdentifier.NodeIdentifier.create(QName.create(TEST_MODULE, TEST_LISTS))))
+                .compareTo(REF_TREE), 1);
 
         assertTrue("Compare first to second",
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, COMPARE_FIRST_IID).compareTo(
@@ -69,7 +102,7 @@ public class DOMDataTreeIdentifierTest {
     }
 
     @Test
-    public void containsTest(){
+    public void containsTest() throws Exception{
         assertTrue("Contains",
                 REF_TREE.contains(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)));
 
@@ -77,7 +110,7 @@ public class DOMDataTreeIdentifierTest {
     }
 
     @Test
-    public void toStringTest(){
+    public void toStringTest() throws Exception{
         assertTrue("ToString",  REF_TREE.toString().contains(REF_TREE.getRootIdentifier().toString())
                             &&  REF_TREE.toString().contains(REF_TREE.getDatastoreType().toString()));
     }
