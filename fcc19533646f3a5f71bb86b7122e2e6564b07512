@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_e494eae3",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/ValueContext.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-19T07:48:27Z",
+      "side": 1,
+      "message": "Two minor things wrong with this:\n- major copy\u0026paste, the LOOKUP.unreflect() part should be shared once the lookup succeeds\n- in case of both methods missing, the error raised will only indicate the \u0027is\u0027 method missing\n\nThe major problem is the approach taken: we do have a LeafNodeCodecContext, which contains the corresponding SchemaNode, hence we have the exact type available. But rather than using that information we resort to blind guesses. Why?",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 13
+      },
+      "revId": "fcc19533646f3a5f71bb86b7122e2e6564b07512",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_24f0a266",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/ValueContext.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-19T07:48:27Z",
+      "side": 1,
+      "message": "string concatenation of arguments: don\u0027t ever do that.",
+      "range": {
+        "startLine": 41,
+        "startChar": 95,
+        "endLine": 41,
+        "endChar": 120
+      },
+      "revId": "fcc19533646f3a5f71bb86b7122e2e6564b07512",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
