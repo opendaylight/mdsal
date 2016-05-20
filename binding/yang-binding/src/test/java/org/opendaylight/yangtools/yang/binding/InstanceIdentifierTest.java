@@ -5,6 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.opendaylight.yangtools.yang.binding;
 
 import static org.junit.Assert.assertEquals;
@@ -12,9 +13,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.test.mock.FooChild;
 import org.opendaylight.yangtools.yang.binding.test.mock.InstantiatedFoo;
 import org.opendaylight.yangtools.yang.binding.test.mock.Node;
@@ -27,7 +27,6 @@ public class InstanceIdentifierTest {
 
     @Test
     public void constructWithPredicates() {
-
         InstanceIdentifier<Nodes> nodes = InstanceIdentifier.builder(Nodes.class).build();
 
         assertNotNull(nodes);
@@ -44,9 +43,9 @@ public class InstanceIdentifierTest {
 
     @Test
     public void fluentConstruction() {
-
         InstanceIdentifier<Nodes> nodes = InstanceIdentifier.builder(Nodes.class).build();
-        InstanceIdentifier<Node> node = InstanceIdentifier.builder(Nodes.class).child(Node.class,new NodeKey(10)).build();
+        InstanceIdentifier<Node> node =
+                InstanceIdentifier.builder(Nodes.class).child(Node.class,new NodeKey(10)).build();
 
         assertNotNull(node);
         assertEquals(Node.class, node.getTargetType());
@@ -57,7 +56,8 @@ public class InstanceIdentifierTest {
 
     @Test
     public void negativeContains() {
-        InstanceIdentifier<FooChild> fooChild = InstanceIdentifier.builder(Nodes.class).child(InstantiatedFoo.class).child(FooChild.class).build();
+        InstanceIdentifier<FooChild> fooChild =
+                InstanceIdentifier.builder(Nodes.class).child(InstantiatedFoo.class).child(FooChild.class).build();
 
         InstanceIdentifier<Node> nodeTen = InstanceIdentifier.builder(Nodes.class) //
                 .child(Node.class,new NodeKey(10)).build();
@@ -137,7 +137,8 @@ public class InstanceIdentifierTest {
 
     @Test
     public void firstIdentifierOfTest() {
-        InstanceIdentifier<Node> instanceIdentifier = InstanceIdentifier.builder(Nodes.class).child(Node.class,new NodeKey(10)).build();
+        InstanceIdentifier<Node> instanceIdentifier =
+                InstanceIdentifier.builder(Nodes.class).child(Node.class,new NodeKey(10)).build();
 
         InstanceIdentifier<Nodes> nodesIdentifier = instanceIdentifier.firstIdentifierOf(Nodes.class);
         assertNotNull(nodesIdentifier);
