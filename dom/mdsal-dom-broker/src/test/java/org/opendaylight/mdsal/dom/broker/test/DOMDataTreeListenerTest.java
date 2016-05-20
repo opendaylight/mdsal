@@ -5,6 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.opendaylight.mdsal.dom.broker.test;
 
 import static org.junit.Assert.assertEquals;
@@ -14,20 +15,6 @@ import static org.junit.Assert.assertTrue;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
-
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.mdsal.dom.spi.store.DOMStore;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitDeadlockException;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
-import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ForwardingExecutorService;
 import com.google.common.util.concurrent.ListeningExecutorService;
@@ -43,6 +30,19 @@ import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitDeadlockException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
+import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
+import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.spi.store.DOMStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
@@ -66,11 +66,13 @@ public class DOMDataTreeListenerTest {
     private ExecutorService futureExecutor;
     private CommitExecutorService commitExecutor;
 
-    private static final DataContainerChild<?, ?> OUTER_LIST = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+    private static final DataContainerChild<?, ?> OUTER_LIST =
+            ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
             .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
             .build();
 
-    private static final DataContainerChild<?, ?> OUTER_LIST_2 = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+    private static final DataContainerChild<?, ?> OUTER_LIST_2 =
+            ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
             .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2))
             .build();
 
@@ -91,7 +93,7 @@ public class DOMDataTreeListenerTest {
             LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH);
 
     @Before
-    public void setupStore() throws Exception{
+    public void setupStore() throws Exception {
         InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
                 MoreExecutors.newDirectExecutorService());
         InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
@@ -101,9 +103,9 @@ public class DOMDataTreeListenerTest {
         operStore.onGlobalContextUpdated(schemaContext);
         configStore.onGlobalContextUpdated(schemaContext);
 
-        ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore>builder() //
-                .put(CONFIGURATION, configStore) //
-                .put(OPERATIONAL, operStore) //
+        ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
+                .put(CONFIGURATION, configStore)
+                .put(OPERATIONAL, operStore)
                 .build();
 
         commitExecutor = new CommitExecutorService(Executors.newSingleThreadExecutor());
@@ -337,11 +339,14 @@ public class DOMDataTreeListenerTest {
                 dataTreeChangeService.registerDataTreeChangeListener(OUTER_LIST_DATA_TREE_ID, listener);
 
         final YangInstanceIdentifier.NodeIdentifierWithPredicates outerListEntryId1 =
-                new YangInstanceIdentifier.NodeIdentifierWithPredicates(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
+                new YangInstanceIdentifier.NodeIdentifierWithPredicates(
+                        TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
         final YangInstanceIdentifier.NodeIdentifierWithPredicates outerListEntryId2 =
-                new YangInstanceIdentifier.NodeIdentifierWithPredicates(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);
+                new YangInstanceIdentifier.NodeIdentifierWithPredicates(
+                        TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);
         final YangInstanceIdentifier.NodeIdentifierWithPredicates outerListEntryId3 =
-                new YangInstanceIdentifier.NodeIdentifierWithPredicates(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 3);
+                new YangInstanceIdentifier.NodeIdentifierWithPredicates(
+                        TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 3);
 
         final MapEntryNode outerListEntry1 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1);
         final MapEntryNode outerListEntry2 = ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2);
@@ -420,7 +425,6 @@ public class DOMDataTreeListenerTest {
         }
         return dataTreeChangeService;
     }
-
 
     static class CommitExecutorService extends ForwardingExecutorService {
 
