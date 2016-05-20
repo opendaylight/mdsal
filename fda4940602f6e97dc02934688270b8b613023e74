@@ -45,6 +45,52 @@
       "revId": "fda4940602f6e97dc02934688270b8b613023e74",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_54cc5dbc",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataTree.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T21:21:16Z",
+      "side": 1,
+      "message": "DOMDataTreeIdentifier firstSubtree \u003d Iterables.getOnlyElement(producer.getSubtrees());\nPreconditions.checkArgument(firstSubtree !\u003d null, ...);\nPreconditions.checkArgument(prefix.equals(firstSubtree));\n\ngranted, it throws the same exception if subtrees contains null, but that should be fine.",
+      "range": {
+        "startLine": 66,
+        "startChar": 3,
+        "endLine": 67,
+        "endChar": 176
+      },
+      "revId": "fda4940602f6e97dc02934688270b8b613023e74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_143945a4",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataTreeProducer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T21:21:16Z",
+      "side": 1,
+      "message": "missing @Override?",
+      "range": {
+        "startLine": 207,
+        "startChar": 4,
+        "endLine": 207,
+        "endChar": 10
+      },
+      "revId": "fda4940602f6e97dc02934688270b8b613023e74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
