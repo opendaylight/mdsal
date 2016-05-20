@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_198a201b",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/ValueContext.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T18:06:22Z",
+      "side": 1,
+      "message": "This has unneeded strings.\n\nif (Boolean.class.equals(leaf.getGetter().getReturnType())) {\n\nwill work without hard-coding strings and will be actually faster. At any rate this is not what I meant. \n\nNote how LeafNodeCodecContext is allocated from a codepath which has knowledge of the expected return type -- see BindingContextContext.getLeafNodes() and how it calls getGetterName() -- doing exactly what we are trying to replicate here.\n\nSo the question is: how is the name of the method we are trying to look up here related to leaf.getGetter().getName()? I would think they are the same.",
+      "range": {
+        "startLine": 31,
+        "startChar": 39,
+        "endLine": 31,
+        "endChar": 58
+      },
+      "revId": "713a8f0c334710b861314353722250f1bc7ac738",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
