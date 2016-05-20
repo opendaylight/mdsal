@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_9b7d88b4",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/test/DOMDataTreeListenerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-20T13:01:13Z",
+      "side": 1,
+      "message": "don\u0027t do this ... either prepare some abstract class test and reuse it or prepare what you need in your test class",
+      "range": {
+        "startLine": 78,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 10
+      },
+      "revId": "5418bd0e775e1eeb3a9ab008bea02f01588835f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
