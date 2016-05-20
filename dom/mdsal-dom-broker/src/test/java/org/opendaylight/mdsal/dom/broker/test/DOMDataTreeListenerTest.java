@@ -5,6 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.opendaylight.mdsal.dom.broker.test;
 
 import static org.junit.Assert.assertEquals;
@@ -74,7 +75,7 @@ public class DOMDataTreeListenerTest {
             .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2))
             .build();
 
-    private static final NormalizedNode<?, ?> TEST_CONTAINER = Builders.containerBuilder()
+    public static final NormalizedNode<?, ?> TEST_CONTAINER = Builders.containerBuilder()
             .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TestModel.TEST_QNAME))
             .withChild(OUTER_LIST)
             .build();
