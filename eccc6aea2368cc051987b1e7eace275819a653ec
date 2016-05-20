@@ -1,0 +1,349 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_944c3544",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/generator/api/BindingGenerator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "abstract method declaration: final should not be here",
+      "range": {
+        "startLine": 37,
+        "startChar": 29,
+        "endLine": 37,
+        "endChar": 35
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_d456add1",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/generator/api/ClassLoadingStrategy.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "public interface, add javadocs describing interface and methods. Is \u0027fullyQualifiedName\u0027 really a Fully Qualified Class Name (JLS), in which case \u0027fqcn\u0027 would be a better argument name.",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 1
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_b45179da",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/generator/spi/TypeProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "add class javadoc",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 29
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_f462d1ab",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/AccessModifier.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "since this has equivalents in JLS, do we want to provide\n\nboolean AccessModifier.matchesMember(java.lang.reflect.Member member) {\n    return Modifier.isPublic(member.getModifiers);\n}\n\nhere?",
+      "range": {
+        "startLine": 19,
+        "startChar": 4,
+        "endLine": 19,
+        "endChar": 39
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_345d69ea",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/AnnotationType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "is this equivalent to \u0027!getParamters().isEmpty()\u0027? If so, can we at least provide a default implementation here?",
+      "range": {
+        "startLine": 62,
+        "startChar": 3,
+        "endLine": 62,
+        "endChar": 33
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_341449f4",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/AnnotationType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "this stinks a bit. I presume if no values are present an implementation could return a null, but isn\u0027t it a caller error to attempt such a thing? In other words, would it make sense to specify @throws NoSuchElementException.\n\nWhat happens if there is more than value? Is it legal to call this method? If so, shouldn\u0027t it just return the first value?",
+      "range": {
+        "startLine": 86,
+        "startChar": 21,
+        "endLine": 86,
+        "endChar": 24
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_74f521ca",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/BaseTypeWithRestrictions.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "would it make sense to expose new values (or delta) through a method?",
+      "range": {
+        "startLine": 15,
+        "startChar": 27,
+        "endLine": 15,
+        "endChar": 53
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_142e6543",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/CodeGenerator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "what is returned on !isAcceptable(type)?",
+      "range": {
+        "startLine": 21,
+        "startChar": 15,
+        "endLine": 21,
+        "endChar": 16
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_f43011a0",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/CodeGenerator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "looks like we need a UnitName extends StringIdentifier\u003cUnitName\u003e to not leak strings all over the place.\n\nStringIdentifier is currently final, but can be turned into an abstract class.",
+      "range": {
+        "startLine": 44,
+        "startChar": 16,
+        "endLine": 44,
+        "endChar": 37
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_34e28903",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/Constant.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "can this be reasonably implemented here as a default method?",
+      "range": {
+        "startLine": 66,
+        "startChar": 11,
+        "endLine": 66,
+        "endChar": 31
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_d4f22dd1",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/DocumentedType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "can this return null? If so, wrap in an Optional",
+      "range": {
+        "startLine": 27,
+        "startChar": 3,
+        "endLine": 27,
+        "endChar": 28
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_74e36105",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/DocumentedType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "can this return null? If so, wrap in an Optional",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 26
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_94e8b5e3",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/DocumentedType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "Collection or maybe even a List?",
+      "range": {
+        "startLine": 46,
+        "startChar": 4,
+        "endLine": 46,
+        "endChar": 12
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_b4edf9f1",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/Enumeration.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "can this be null? if so, can we make this an Optional\u003cInteger\u003e? if not, does it make sense to make this an int?",
+      "range": {
+        "startLine": 68,
+        "startChar": 8,
+        "endLine": 68,
+        "endChar": 15
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_14bca5db",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/GeneratedProperty.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-05-20T22:02:24Z",
+      "side": 1,
+      "message": "missing @Override?",
+      "range": {
+        "startLine": 24,
+        "startChar": 4,
+        "endLine": 24,
+        "endChar": 22
+      },
+      "revId": "eccc6aea2368cc051987b1e7eace275819a653ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
