@@ -5,27 +5,15 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
-
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.mdsal.dom.spi.store.DOMStore;
-
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitDeadlockException;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
-import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ForwardingExecutorService;
@@ -43,9 +31,23 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitDeadlockException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
+import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
+import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.spi.store.DOMStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
@@ -58,8 +60,7 @@ public class DOMBrokerTest {
     private CommitExecutorService commitExecutor;
 
     @Before
-    public void setupStore() throws Exception{
-
+    public void setupStore() throws Exception {
         InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
                 MoreExecutors.newDirectExecutorService());
         InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
@@ -69,9 +70,9 @@ public class DOMBrokerTest {
         operStore.onGlobalContextUpdated(schemaContext);
         configStore.onGlobalContextUpdated(schemaContext);
 
-        ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore> builder() //
-                .put(CONFIGURATION, configStore) //
-                .put(OPERATIONAL, operStore) //
+        ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore> builder()
+                .put(CONFIGURATION, configStore)
+                .put(OPERATIONAL, operStore)
                 .build();
 
         commitExecutor = new CommitExecutorService(Executors.newSingleThreadExecutor());
@@ -94,7 +95,6 @@ public class DOMBrokerTest {
 
     @Test(timeout=10000)
     public void testTransactionIsolation() throws InterruptedException, ExecutionException {
-
         assertNotNull(domBroker);
 
         DOMDataTreeReadTransaction readTx = domBroker.newReadOnlyTransaction();
@@ -102,13 +102,13 @@ public class DOMBrokerTest {
 
         DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
+
         /**
          *
          * Writes /test in writeTx
          *
          */
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
-
 
         /**
          *
@@ -122,7 +122,6 @@ public class DOMBrokerTest {
 
     @Test(timeout=10000)
     public void testTransactionCommit() throws InterruptedException, ExecutionException {
-
         DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
         /**
@@ -141,7 +140,6 @@ public class DOMBrokerTest {
 
     @Test(expected=TransactionCommitFailedException.class)
     public void testRejectedCommit() throws Exception {
-
         commitExecutor.delegate = Mockito.mock( ExecutorService.class );
         Mockito.doThrow( new RejectedExecutionException( "mock" ) )
             .when( commitExecutor.delegate ).execute( Mockito.any( Runnable.class ) );
@@ -173,6 +171,61 @@ public class DOMBrokerTest {
         }.start();
 
         return caughtEx;
+    }
+
+    @Test(expected = ReadFailedException.class)
+    public void basicTests() throws Exception {
+        final DataContainerChild<?, ?> outerList = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+                .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
+                .build();
+        final NormalizedNode<?, ?> testContainer = Builders.containerBuilder()
+                .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TestModel.TEST_QNAME))
+                .withChild(outerList)
+                .build();
+
+        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        DOMDataTreeReadTransaction readRx = domBroker.newReadOnlyTransaction();
+        assertNotNull(writeTx);
+        assertNotNull(readRx);
+
+        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.submit().get();
+        assertFalse(writeTx.cancel());
+
+        assertEquals(false, domBroker.newReadOnlyTransaction().exists(CONFIGURATION, TestModel.TEST_PATH).get());
+        assertEquals(true, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
+        assertEquals(false, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST2_PATH).get());
+
+        writeTx = domBroker.newWriteOnlyTransaction();
+        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.delete(OPERATIONAL, TestModel.TEST_PATH);
+        writeTx.submit().get();
+        assertEquals(false, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
+        assertTrue(domBroker.newWriteOnlyTransaction().cancel());
+
+        writeTx = domBroker.newWriteOnlyTransaction();
+        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        writeTx.merge(OPERATIONAL, TestModel.TEST_PATH, testContainer);
+        writeTx.submit().get();
+        assertEquals(true, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
+        assertEquals(true, domBroker.newReadOnlyTransaction().read(OPERATIONAL, TestModel.TEST_PATH).get()
+                 .get().toString().contains(testContainer.toString()));
+
+        readRx.close();
+        //Expected exception after close call
+        readRx.read(OPERATIONAL, TestModel.TEST_PATH).checkedGet();
+    }
+
+    @Test
+    public void closeTest() throws Exception {
+        final String TEST_EXCEPTION = "TestException";
+
+        domBroker.setCloseable(() -> { throw new Exception(TEST_EXCEPTION); });
+        try{
+            domBroker.close();
+        }catch(Exception e){
+            assertTrue(e.getMessage().contains(TEST_EXCEPTION));
+        }
     }
 
     static class CommitExecutorService extends ForwardingExecutorService {

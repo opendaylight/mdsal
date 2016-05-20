@@ -7,8 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.api.clustering;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.opendaylight.mdsal.dom.api.clustering.DOMEntity.ENTITY;
-import static org.junit.Assert.*;
+
 import java.util.List;
 import java.util.Map.Entry;
 import org.junit.Test;
@@ -21,10 +23,12 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
  * @author Thomas Pantelis
  */
 public class DOMEntityTest {
-    static String ENTITY_TYPE1 = "type1";
-    static String ENTITY_TYPE2 = "type2";
-    static final YangInstanceIdentifier ID1 = YangInstanceIdentifier.of(QName.create("test", "2015-11-24", "one"));
-    static final YangInstanceIdentifier ID2 = YangInstanceIdentifier.of(QName.create("test", "2015-11-24", "two"));
+    private static String ENTITY_TYPE1 = "type1";
+    private static String ENTITY_TYPE2 = "type2";
+    private static final YangInstanceIdentifier ID1 = YangInstanceIdentifier.of(QName.create(
+            "test", "2015-11-24", "one"));
+    private static final YangInstanceIdentifier ID2 = YangInstanceIdentifier.of(QName.create(
+            "test", "2015-11-24", "two"));
 
     @Test
     public void testHashCode() {
@@ -54,7 +58,8 @@ public class DOMEntityTest {
         assertEquals("pathArgs size", 2, pathArgs.size());
         assertEquals("First PathArgument node type", ENTITY, pathArgs.get(0).getNodeType());
         assertEquals("Second PathArgument node type", ENTITY, pathArgs.get(1).getNodeType());
-        Entry<QName, Object> key = ((NodeIdentifierWithPredicates) pathArgs.get(1)).getKeyValues().entrySet().iterator().next();
+        Entry<QName, Object> key = ((NodeIdentifierWithPredicates) pathArgs.get(1)).getKeyValues().entrySet()
+                .iterator().next();
         assertEquals("Key node type", QName.create(ENTITY, "name"), key.getKey());
         assertEquals("Key value", "foo", key.getValue());
     }
