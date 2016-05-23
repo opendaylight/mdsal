@@ -93,17 +93,23 @@ abstract class WriteableNodeOperation implements WriteCursorStrategy {
     @Override
     @SuppressWarnings("rawtypes")
     public final void writeToCurrent(final NormalizedNodeContainer<?, ?, ?> data) {
+        // write the entire thing into the cursor
+        write(data.getIdentifier(), data);
+        // write the children with subshard check and subshard write if we are going into subshard
+        cursor.enter(data.getIdentifier());
         for (NormalizedNode<?, ?> writtenChild : data.getValue()) {
             write(writtenChild.getIdentifier(), writtenChild);
         }
-        // Delete step
+        // Delete step - remove subshard data that was written into current shard
         for (Entry<PathArgument, WriteableModificationNode> shardChild : node.getChildrenWithSubshards().entrySet()) {
             PathArgument childId = shardChild.getKey();
             @SuppressWarnings("unchecked")
             Optional<NormalizedNode<?, ?>> writtenValue = ((NormalizedNodeContainer) data).getChild(childId);
-            if (!writtenValue.isPresent()) {
-                delete(childId, shardChild.getValue());
+            if (writtenValue.isPresent()) {
+                // delete from current
+                cursor.delete(childId);
             }
         }
+        cursor.exit();
     }
 }
