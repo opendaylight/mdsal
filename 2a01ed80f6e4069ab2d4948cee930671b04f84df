@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_80022809",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/yangtools/sal/java/api/generator/test/UnionWithIdentityrefTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-05-24T12:22:19Z",
+      "side": 1,
+      "message": "please allow one empty line between static and rest of imports",
+      "revId": "2a01ed80f6e4069ab2d4948cee930671b04f84df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
