@@ -127,6 +127,14 @@
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-type-util</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>ietf-packet-fields</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>ietf-access-control-list</artifactId>
+        </dependency>
     </dependencies>
 
   <!--

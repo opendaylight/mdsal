@@ -32,6 +32,8 @@
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-network-2015-06-08/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-inet-types-2013-07-15/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-type-util/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-packet-fields/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-access-control-list/{{VERSION}}</bundle>
     </feature>
 
 </features>

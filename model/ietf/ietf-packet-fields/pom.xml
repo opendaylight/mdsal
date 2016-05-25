@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- vi: set et smarttab sw=4 tabstop=4: -->
 <!--
- Copyright (c) 2013 Cisco Systems, Inc. and others.  All rights reserved.
+ Copyright © 2016 Red Hat, Inc. and others. All rights reserved.
 
  This program and the accompanying materials are made available under the
  terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -10,38 +10,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <artifactId>model-parent</artifactId>
+        <artifactId>model-ietf</artifactId>
         <groupId>org.opendaylight.mdsal.model</groupId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>model-ietf</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>ietf-packet-fields</artifactId>
+    <version>0.7.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
+    <packaging>bundle</packaging>
 
-    <modules>
-        <module>ietf-inet-types</module>
-        <module>ietf-interfaces</module>
-        <module>ietf-yang-types</module>
-        <module>ietf-yang-types-20130715</module>
-        <module>ietf-network</module>
-        <module>ietf-packet-fields</module>
-        <module>ietf-access-control-list</module>
+    <dependencies>
+    <dependency>
+      <groupId>org.opendaylight.mdsal.model</groupId>
+      <artifactId>ietf-interfaces</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal.model</groupId>
+      <artifactId>ietf-yang-types-20130715</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal.model</groupId>
+      <artifactId>ietf-inet-types-2013-07-15</artifactId>
+    </dependency>
+    </dependencies>
 
-        <!-- Legacy IETF topology models -->
-        <module>ietf-ted</module>
-        <module>ietf-topology</module>
-        <module>ietf-topology-isis</module>
-        <module>ietf-topology-l3-unicast-igp</module>
-        <module>ietf-topology-ospf</module>
-
-        <module>ietf-restconf</module>
-        <module>ietf-inet-types-2013-07-15</module>
-
-        <module>ietf-type-util</module>
-    </modules>
 
   <!--
       Maven Site Configuration
