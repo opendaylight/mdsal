@@ -13,32 +13,21 @@
   <dependencies>
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-common-api</artifactId>
+      <artifactId>odl-mdsal-singleton-common</artifactId>
+      <classifier>features</classifier>
+      <type>xml</type>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-eos-dom-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-singleton-common-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.yangtools</groupId>
-      <artifactId>yang-data-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.yangtools</groupId>
-      <artifactId>yang-model-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>odl-mdsal-eos-dom</artifactId>
+      <classifier>features</classifier>
+      <type>xml</type>
     </dependency>
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.yangtools</groupId>

@@ -41,11 +41,6 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding2-generator-util</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
