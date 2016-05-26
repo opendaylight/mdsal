@@ -21,8 +21,12 @@
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-model-api</artifactId>
+            <artifactId>odl-yangtools-yang-data</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <classifier>features</classifier>
+            <type>xml</type>
         </dependency>
+        <!-- TODO This should be odl-mdsal-binding-base but that introduces a loop -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>yang-binding</artifactId>

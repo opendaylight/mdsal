@@ -35,6 +35,7 @@
         <module>ietf</module>
         <module>l2-types</module>
         <module>general-entity</module>
+        <module>odl-mdsal-models</module>
     </modules>
 
     <dependencyManagement>
@@ -48,17 +49,6 @@
           </dependency>
       </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>yang-binding</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-common</artifactId>
-        </dependency>
-    </dependencies>
 
   <!--
       Maven Site Configuration
