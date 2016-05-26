@@ -14,43 +14,7 @@
     <repository>mvn:org.opendaylight.odlparent/features-odlparent/{{VERSION}}/xml/features</repository>
     <repository>mvn:org.opendaylight.yangtools/features-yangtools/{{VERSION}}/xml/features</repository>
 
-    <feature name='odl-mdsal-binding' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding'>
-        <feature version='${project.version}'>odl-mdsal-binding-dom-adapter</feature>
-        <feature version='${project.version}'>odl-mdsal-dom</feature>
-    </feature>
-
-    <feature name='odl-mdsal-dom' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM'>
-        <feature version='${project.version}'>odl-mdsal-dom-broker</feature>
-    </feature>
-
-    <feature name='odl-mdsal-common' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
-        <feature version='${yangtools.version}'>odl-yangtools-common</feature>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-common-api/{{VERSION}}</bundle>
-    </feature>
-
-    <feature name='odl-mdsal-dom-api' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM API &amp; SPI'>
-        <feature version='${project.version}'>odl-mdsal-common</feature>
-        <feature version='${yangtools.version}'>odl-yangtools-yang-data</feature>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{VERSION}}</bundle>
-    </feature>
-
-    <feature name='odl-mdsal-dom-broker' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
-        <feature version='${yangtools.version}'>odl-yangtools-yang-parser</feature>
-        <feature version='${project.version}'>odl-mdsal-dom-api</feature>
-        <feature version='[3.3.0,4.0.0)'>odl-lmax</feature>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-broker/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-inmemory-datastore/{{VERSION}}</bundle>
-    </feature>
-
-    <feature name='odl-mdsal-binding-base' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Base Concepts'>
-        <feature version='${yangtools.version}'>odl-yangtools-common</feature>
-        <bundle>mvn:org.opendaylight.mdsal/yang-binding/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal.model/yang-ext/{{VERSION}}</bundle>
-    </feature>
-
+    <!-- Mostly matched, there's just the yang-binding stuff to sort out -->
     <feature name='odl-mdsal-binding-runtime' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Generator'>
         <feature version='${project.version}'>odl-mdsal-binding-base</feature>
         <feature version='${yangtools.version}'>odl-yangtools-yang-data</feature>
