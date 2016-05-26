@@ -80,7 +80,9 @@
             <dependencies>
                 <dependency>
                     <groupId>org.opendaylight.mdsal</groupId>
-                    <artifactId>yang-binding</artifactId>
+                    <artifactId>odl-mdsal-binding-base</artifactId>
+                    <classifier>features</classifier>
+                    <type>xml</type>
                 </dependency>
             </dependencies>
             <build>

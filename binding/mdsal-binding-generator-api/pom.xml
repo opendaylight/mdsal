@@ -21,11 +21,15 @@
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-model-api</artifactId>
+            <artifactId>odl-yangtools-yang-data</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>yang-binding</artifactId>
+            <artifactId>odl-mdsal-binding-base</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
         </dependency>
     </dependencies>
 

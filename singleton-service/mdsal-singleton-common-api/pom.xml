@@ -12,24 +12,10 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-eos-common-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.yangtools</groupId>
-      <artifactId>concepts</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.yangtools</groupId>
-      <artifactId>util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.yangtools</groupId>
-      <artifactId>yang-common</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>odl-mdsal-eos-common</artifactId>
+      <classifier>features</classifier>
+      <type>xml</type>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
