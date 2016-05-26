@@ -35,6 +35,7 @@
         <module>ietf</module>
         <module>l2-types</module>
         <module>general-entity</module>
+        <module>odl-mdsal-models</module>
     </modules>
 
     <dependencyManagement>
