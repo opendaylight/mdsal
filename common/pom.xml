@@ -34,6 +34,15 @@
       <module>artifacts</module>
       <module>features</module>
       <module>mdsal-common-api</module>
+      <module>odl-mdsal-binding</module>
+      <module>odl-mdsal-binding-api</module>
+      <module>odl-mdsal-binding-base</module>
+      <module>odl-mdsal-binding-dom-adapter</module>
+      <module>odl-mdsal-binding-runtime</module>
+      <module>odl-mdsal-common</module>
+      <module>odl-mdsal-dom</module>
+      <module>odl-mdsal-dom-api</module>
+      <module>odl-mdsal-dom-broker</module>
     </modules>
 
 
