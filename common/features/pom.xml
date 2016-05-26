@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
-        <artifactId>features-parent</artifactId>
+        <artifactId>odlparent</artifactId>
         <version>1.7.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
@@ -19,7 +19,7 @@
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>features-mdsal</artifactId>
     <version>2.1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>feature</packaging>
 
     <properties>
         <yangtools.version>1.0.0-SNAPSHOT</yangtools.version>
@@ -53,107 +53,99 @@
     </dependencyManagement>
 
     <dependencies>
-
         <dependency>
-            <groupId>org.opendaylight.odlparent</groupId>
-            <artifactId>features-odlparent</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>odl-mdsal-binding</artifactId>
+            <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
-
         <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>features-yangtools</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>odl-mdsal-binding-api</artifactId>
+            <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
-
-
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-common-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-dom-api</artifactId>
+            <artifactId>odl-mdsal-binding-base</artifactId>
+            <version>${project.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-dom-spi</artifactId>
+            <artifactId>odl-mdsal-binding-dom-adapter</artifactId>
+            <version>${project.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-dom-broker</artifactId>
+            <artifactId>odl-mdsal-binding-runtime</artifactId>
+            <version>${project.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-        </dependency>
-
-        <!-- Binding MD-SAL & Java Binding -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-binding-generator-api</artifactId>
+            <artifactId>odl-mdsal-common</artifactId>
+            <version>${project.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-binding-generator-util</artifactId>
+            <artifactId>odl-mdsal-dom</artifactId>
+            <version>${project.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-binding-generator-impl</artifactId>
+            <artifactId>odl-mdsal-dom-api</artifactId>
+            <version>${project.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>yang-binding</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-binding-dom-codec</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-binding-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-binding-dom-adapter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-binding-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}.model</groupId>
-            <artifactId>yang-ext</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}.model</groupId>
-            <artifactId>general-entity</artifactId>
+            <artifactId>odl-mdsal-dom-broker</artifactId>
+            <version>${project.version}</version>
+            <classifier>features</classifier>
+            <type>xml</type>
         </dependency>
     </dependencies>
 
-  <!--
-      Maven Site Configuration
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <version>3.0.7-SNAPSHOT</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <aggregateFeatures>true</aggregateFeatures>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-      The following configuration is necessary for maven-site-plugin to
-      correctly identify the correct deployment path for OpenDaylight Maven
-      sites.
-  -->
-  <url>${odl.site.url}/${project.groupId}/${stream}/${project.artifactId}/</url>
+    <!--
+        Maven Site Configuration
 
-  <distributionManagement>
-    <site>
-      <id>opendaylight-site</id>
-      <url>${nexus.site.url}/${project.artifactId}/</url>
-    </site>
-  </distributionManagement>
+        The following configuration is necessary for maven-site-plugin to
+        correctly identify the correct deployment path for OpenDaylight Maven
+        sites.
+    -->
+    <url>${odl.site.url}/${project.groupId}/${stream}/${project.artifactId}/</url>
+
+    <distributionManagement>
+        <site>
+            <id>opendaylight-site</id>
+            <url>${nexus.site.url}/${project.artifactId}/</url>
+        </site>
+    </distributionManagement>
 
 </project>
