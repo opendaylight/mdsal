@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa57193c_bed2e159",
+        "filename": "model/ietf/ietf-access-control-list/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 4082
+      },
+      "writtenOn": "2016-05-27T01:54:51Z",
+      "side": 1,
+      "message": "I suggest to map version to IETF version such as 0.6.0/0.7.0",
+      "revId": "146acd9858b0a79ebe774c0246da0a57777b744b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_9ed71d4b",
+        "filename": "model/ietf/ietf-access-control-list/src/main/yang/ietf-access-control-list.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 4082
+      },
+      "writtenOn": "2016-05-27T01:54:51Z",
+      "side": 1,
+      "message": "I assume it is draft 6 instead of draft 7 (https://tools.ietf.org/html/draft-ietf-netmod-acl-model-07)",
+      "revId": "146acd9858b0a79ebe774c0246da0a57777b744b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
