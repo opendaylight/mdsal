@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fa57193c_9e3efd8a",
+        "filename": "model/ietf/ietf-access-control-list/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2016-05-27T05:51:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa57193c_bed2e159",
+      "revId": "146acd9858b0a79ebe774c0246da0a57777b744b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa57193c_9ed71d4b",
         "filename": "model/ietf/ietf-access-control-list/src/main/yang/ietf-access-control-list.yang",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-05-27T01:54:51Z",
       "side": 1,
       "message": "I assume it is draft 6 instead of draft 7 (https://tools.ietf.org/html/draft-ietf-netmod-acl-model-07)",
+      "revId": "146acd9858b0a79ebe774c0246da0a57777b744b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa57193c_be3941a6",
+        "filename": "model/ietf/ietf-access-control-list/src/main/yang/ietf-access-control-list.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2016-05-27T05:51:12Z",
+      "side": 1,
+      "message": "It is draft 7 (revision date 2016-02-18). I took it from [1]. I think the copy right is not updated. \n\n[1]https://github.com/YangModels/yang/blob/master/experimental/ietf/ACL-MODEL/ietf-access-control-list.yang",
+      "parentUuid": "fa57193c_9ed71d4b",
       "revId": "146acd9858b0a79ebe774c0246da0a57777b744b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
