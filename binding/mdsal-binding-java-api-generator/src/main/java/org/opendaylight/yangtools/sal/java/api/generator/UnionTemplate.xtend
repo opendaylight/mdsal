@@ -7,10 +7,12 @@
  */
 package org.opendaylight.yangtools.sal.java.api.generator
 
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject
-import java.beans.ConstructorProperties
-import org.opendaylight.yangtools.sal.binding.model.api.Enumeration
 import static org.opendaylight.yangtools.binding.generator.util.Types.*
+import com.google.common.base.Preconditions;
+import java.beans.ConstructorProperties
+import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty
+import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject
+import org.opendaylight.yangtools.sal.binding.model.api.Enumeration
 
 /**
  * Template for generating JAVA class.
@@ -132,7 +134,7 @@ class UnionTemplate extends ClassTemplate {
             «ENDIF»
         «ENDFOR»
     '''
-    
+
     def typeBuilder() {
         val outerCls = getOuterClassName(type);
         if(outerCls !== null) {
@@ -148,6 +150,27 @@ class UnionTemplate extends ClassTemplate {
             }
         «ENDFOR»
     '''
+
+    override protected getterMethod(GeneratedProperty field) {
+        if (!"value".equals(field.name)) {
+            return super.getterMethod(field)
+        }
+
+        Preconditions.checkArgument("char[]".equals(field.returnType.importedName))
+
+        '''
+            public char[] «field.getterMethodName»() {
+                if («field.fieldName» == null) {
+                    // FIXME: iterate over members and get the value
+                }
+                return «field.fieldName» == null ? null : «field.fieldName».clone();
+            }
+        '''
+    }
+
+    override def isReadOnly(GeneratedProperty field) {
+        return !"value".equals(field.name) && super.isReadOnly(field)
+    }
 
     override protected copyConstructor() '''
         /**
