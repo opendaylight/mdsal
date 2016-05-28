@@ -11,7 +11,6 @@ import static org.opendaylight.yangtools.binding.generator.util.BindingGenerator
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -844,25 +843,18 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return generated TO builder with the list of enclosed generated TO
      *         builders
      */
-    public GeneratedTOBuilder provideGeneratedTOBuilderForUnionTypeDef(final String basePackageName, final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
-        final List<GeneratedTOBuilder> genTOBuilders = provideGeneratedTOBuildersForUnionTypeDef(basePackageName,
+    public GeneratedTOBuilder provideGeneratedTOBuilderForUnionTypeDef(final String basePackageName,
+            final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
+        final List<GeneratedTOBuilder> builders = provideGeneratedTOBuildersForUnionTypeDef(basePackageName,
                 typedef, typeDefName, parentNode);
-        GeneratedTOBuilder resultTOBuilder = null;
-        if (genTOBuilders.isEmpty()) {
-            throw new IllegalStateException("No GeneratedTOBuilder objects generated from union " + typedef);
-        }
+        Preconditions.checkState(!builders.isEmpty(), "No GeneratedTOBuilder objects generated from union %s", typedef);
 
-        resultTOBuilder = genTOBuilders.remove(0);
-        for (GeneratedTOBuilder genTOBuilder : genTOBuilders) {
+        final GeneratedTOBuilder resultTOBuilder = builders.remove(0);
+        for (GeneratedTOBuilder genTOBuilder : builders) {
             resultTOBuilder.addEnclosingTransferObject(genTOBuilder);
         }
 
-        final GeneratedPropertyBuilder genPropBuilder = resultTOBuilder.addProperty("value");
-        genPropBuilder.setReturnType(Types.CHAR_ARRAY);
-        resultTOBuilder.addEqualsIdentity(genPropBuilder);
-        resultTOBuilder.addHashIdentity(genPropBuilder);
-        resultTOBuilder.addToStringProperty(genPropBuilder);
-
+        resultTOBuilder.addProperty("value").setReturnType(Types.CHAR_ARRAY);
         return resultTOBuilder;
     }
 
