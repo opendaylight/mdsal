@@ -9,23 +9,33 @@
 package org.opendaylight.mdsal.dom.broker.test;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 
-import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
-
-import org.opendaylight.mdsal.dom.api.DOMMountPoint;
-import org.opendaylight.mdsal.dom.api.DOMMountPointService;
-import org.opendaylight.mdsal.dom.api.DOMMountPointService.DOMMountPointBuilder;
 import com.google.common.base.Optional;
+import com.google.common.collect.ClassToInstanceMap;
+import java.lang.reflect.Field;
 import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.mdsal.dom.api.DOMMountPoint;
+import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService.DOMMountPointBuilder;
+import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
+import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl.DOMMountPointBuilderImpl;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public class MountPointServiceTest {
 
-    private DOMMountPointService mountService;
-    private static final YangInstanceIdentifier PATH = YangInstanceIdentifier.of(QName.create("namespace", "12-12-2012", "top"));
+    private static DOMMountPointService mountService;
+    private static final YangInstanceIdentifier PATH =
+            YangInstanceIdentifier.of(QName.create("namespace", "12-12-2012", "top"));
 
     @Before
     public void setup() {
@@ -33,7 +43,10 @@ public class MountPointServiceTest {
     }
 
     @Test
-    public void createSimpleMountPoint() {
+    public void createSimpleMountPoint() throws Exception{
+        final DOMMountPointListener listener = mock(DOMMountPointListener.class);
+        doNothing().when(listener).onMountPointCreated(PATH);
+        mountService.registerProvisionListener(listener);
         Optional<DOMMountPoint> mountNotPresent = mountService.getMountPoint(PATH);
         assertFalse(mountNotPresent.isPresent());
         DOMMountPointBuilder mountBuilder = mountService.createMountPoint(PATH);
@@ -41,5 +54,66 @@ public class MountPointServiceTest {
 
         Optional<DOMMountPoint> mountPresent = mountService.getMountPoint(PATH);
         assertTrue(mountPresent.isPresent());
+    }
+
+    @Test
+    public void unregisterTest() throws Exception{
+        final DOMMountPointListener listener = mock(DOMMountPointListener.class);
+        doNothing().when(listener).onMountPointCreated(PATH);
+        doNothing().when(listener).onMountPointRemoved(PATH);
+        final DOMMountPointServiceImpl mountService =  new DOMMountPointServiceImpl();
+        mountService.registerProvisionListener(listener);
+        DOMMountPointBuilder mountBuilder = mountService.createMountPoint(PATH);
+        mountBuilder.register();
+
+        Optional<DOMMountPoint> mountPresent = mountService.getMountPoint(PATH);
+        assertTrue(mountPresent.isPresent());
+
+        mountService.unregisterMountPoint(PATH);
+
+        mountPresent = mountService.getMountPoint(PATH);
+        assertFalse(mountPresent.isPresent());
+    }
+
+    @Test
+    public void mountRegistrationTest() throws Exception{
+        DOMMountPointBuilder mountBuilder = mountService.createMountPoint(PATH);
+        ObjectRegistration<DOMMountPoint> objectRegistration = mountBuilder.register();
+
+        Optional<DOMMountPoint> mountPresent = mountService.getMountPoint(PATH);
+        assertTrue(mountPresent.isPresent());
+        assertSame(objectRegistration.getInstance(), mountPresent.get());
+
+        objectRegistration.close();
+
+        mountPresent = mountService.getMountPoint(PATH);
+        assertFalse(mountPresent.isPresent());
+
+    }
+
+    @Test
+    public void mountBuilderTest() throws Exception{
+        final DOMMountPointBuilderImpl mountBuilder = (DOMMountPointBuilderImpl) mountService.createMountPoint(PATH);
+        mountBuilder.register();
+
+        final SchemaContext mockSchemaContext = mock(SchemaContext.class);
+        mountBuilder.addInitialSchemaContext(mockSchemaContext);
+
+        final Field schemaContextField = DOMMountPointBuilderImpl.class.getDeclaredField("schemaContext");
+        schemaContextField.setAccessible(true);
+
+        final SchemaContext schemaContext = (SchemaContext) schemaContextField.get(mountBuilder);
+
+        assertSame(mockSchemaContext, schemaContext);
+
+        final Field servicesField = DOMMountPointBuilderImpl.class.getDeclaredField("services");
+        servicesField.setAccessible(true);
+
+        final ClassToInstanceMap<DOMService> services = (ClassToInstanceMap<DOMService>) servicesField.get(mountBuilder);
+        assertTrue(services.isEmpty());
+        assertFalse(services.containsKey(DOMService.class));
+        mountBuilder.addService(DOMService.class, null);
+        assertFalse(services.isEmpty());
+        assertTrue(services.containsKey(DOMService.class));
     }
 }
