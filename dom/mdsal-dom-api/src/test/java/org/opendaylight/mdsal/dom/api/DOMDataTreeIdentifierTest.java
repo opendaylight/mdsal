@@ -41,15 +41,23 @@ public class DOMDataTreeIdentifierTest {
     private static final DOMDataTreeIdentifier TEST_DIFF_TREE =
             new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, TEST_YII_IID);
 
-    @Test(expected = NullPointerException.class)
-    public void constructTest() throws Exception{
+    @Test
+    public void constructTest() throws Exception {
         assertNotNull("Instantiation", new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID));
-        assertNull("Instantiation with null", new DOMDataTreeIdentifier(null, REF_YII_IID));
-        assertNotNull("Instantiation with null", new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, null));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void firstArgumentNullTest() throws Exception {
+        new DOMDataTreeIdentifier(null, REF_YII_IID);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void secondArgumentNullTest() throws Exception {
+        new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, null);
     }
 
     @Test
-    public void hashCodeTest() throws Exception{
+    public void hashCodeTest() throws Exception {
         assertEquals("hashCode", REF_TREE.hashCode(),
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID).hashCode());
 
@@ -57,7 +65,7 @@ public class DOMDataTreeIdentifierTest {
     }
 
     @Test
-    public void equalsTest() throws Exception{
+    public void equalsTest() throws Exception {
         assertTrue("Equals same",
                 REF_TREE.equals(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)));
 
@@ -72,7 +80,7 @@ public class DOMDataTreeIdentifierTest {
     }
 
     @Test
-    public void compareToTest() throws Exception{
+    public void compareToTest() throws Exception {
         final YangInstanceIdentifier COMPARE_FIRST_IID = YangInstanceIdentifier.create(
                 new YangInstanceIdentifier.NodeIdentifier(QName.create(TEST_MODULE, COMPARE_FIRST_LISTS)));
         final YangInstanceIdentifier COMPARE_SECOND_IID = YangInstanceIdentifier.create(
@@ -102,7 +110,7 @@ public class DOMDataTreeIdentifierTest {
     }
 
     @Test
-    public void containsTest() throws Exception{
+    public void containsTest() throws Exception {
         assertTrue("Contains",
                 REF_TREE.contains(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, REF_YII_IID)));
 
@@ -110,7 +118,7 @@ public class DOMDataTreeIdentifierTest {
     }
 
     @Test
-    public void toStringTest() throws Exception{
+    public void toStringTest() throws Exception {
         assertTrue("ToString",  REF_TREE.toString().contains(REF_TREE.getRootIdentifier().toString())
                             &&  REF_TREE.toString().contains(REF_TREE.getDatastoreType().toString()));
     }

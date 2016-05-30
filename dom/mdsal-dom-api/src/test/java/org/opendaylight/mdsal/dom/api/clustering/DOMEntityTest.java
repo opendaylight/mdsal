@@ -21,10 +21,12 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
  * @author Thomas Pantelis
  */
 public class DOMEntityTest {
-    static String ENTITY_TYPE1 = "type1";
-    static String ENTITY_TYPE2 = "type2";
-    static final YangInstanceIdentifier ID1 = YangInstanceIdentifier.of(QName.create("test", "2015-11-24", "one"));
-    static final YangInstanceIdentifier ID2 = YangInstanceIdentifier.of(QName.create("test", "2015-11-24", "two"));
+    private static String ENTITY_TYPE1 = "type1";
+    private static String ENTITY_TYPE2 = "type2";
+    private static final YangInstanceIdentifier ID1 =
+            YangInstanceIdentifier.of(QName.create("test", "2015-11-24", "one"));
+    private static final YangInstanceIdentifier ID2 =
+            YangInstanceIdentifier.of(QName.create("test", "2015-11-24", "two"));
 
     @Test
     public void testHashCode() {

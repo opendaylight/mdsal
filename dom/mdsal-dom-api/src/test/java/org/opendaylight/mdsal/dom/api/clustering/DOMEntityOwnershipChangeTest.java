@@ -21,7 +21,7 @@ public class DOMEntityOwnershipChangeTest {
     private static final DOMEntity ENTITY = new DOMEntity(ENTITY_TYPE, ID);
 
     @Test
-    public void createTest() throws Exception{
+    public void createTest() throws Exception {
         assertNotNull(new DOMEntityOwnershipChange(ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED));
         assertNotNull(new DOMEntityOwnershipChange(ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, false));
     }
