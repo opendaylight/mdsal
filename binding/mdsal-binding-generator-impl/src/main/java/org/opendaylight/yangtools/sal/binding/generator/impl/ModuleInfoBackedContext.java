@@ -117,7 +117,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         return true;
     }
 
-    private YangTextSchemaSource toYangTextSource(SourceIdentifier identifier, final YangModuleInfo moduleInfo) {
+    private static YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier, final YangModuleInfo moduleInfo) {
         return new YangTextSchemaSource(identifier) {
 
             @Override
@@ -126,7 +126,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
             }
 
             @Override
-            protected ToStringHelper addToStringAttributes(ToStringHelper toStringHelper) {
+            protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
                 return toStringHelper;
             }
         };
