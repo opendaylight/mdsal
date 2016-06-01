@@ -349,8 +349,8 @@ public final class Types {
         }
     }
 
-    public static <T extends Number> DefaultRestrictions getDefaultRestrictions(final T min, final T max) {
-        return new DefaultRestrictions(min, max);
+    public static <T extends Number> DefaultRestrictions<T> getDefaultRestrictions(final T min, final T max) {
+        return new DefaultRestrictions<>(min, max);
     }
 
     private static final class DefaultRestrictions<T extends Number> implements Restrictions {
