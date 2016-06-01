@@ -78,8 +78,8 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
     }
 
     @Override
-    public void addValue(final String name, final Integer value, final String description) {
-        final EnumPairImpl p = new EnumPairImpl(name, value, description);
+    public void addValue(final String name, final String rawName, final Integer value, final String description) {
+        final EnumPairImpl p = new EnumPairImpl(name, rawName, value, description);
         values = LazyCollections.lazyAdd(values, p);
         unmodifiableValues = Collections.unmodifiableList(values);
     }
@@ -117,7 +117,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
                 if (enumPair != null) {
                     final String enumPairName = BindingMapping.getClassName(enumPair.getName());
                     Integer enumPairValue = enumPair.getValue();
-
+                    String enumPairRawName = enumPair.getRawName();
                     if (enumPairValue == null) {
                         enumPairValue = listIndex;
                     }
@@ -125,7 +125,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
                         listIndex = enumPairValue;
                     }
 
-                    this.addValue(enumPairName, enumPairValue, enumPair.getDescription());
+                    this.addValue(enumPairName, enumPairRawName, enumPairValue, enumPair.getDescription());
                     listIndex++;
                 }
             }
@@ -136,12 +136,14 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
     private static final class EnumPairImpl implements Enumeration.Pair {
 
         private final String name;
+        private final String rawName;
         private final Integer value;
         private final String description;
 
-        public EnumPairImpl(final String name, final Integer value, final String description) {
+        public EnumPairImpl(final String name, final String rawName, final Integer value, final String description) {
             super();
             this.name = name;
+            this.rawName = rawName;
             this.value = value;
             this.description = description;
         }
@@ -149,6 +151,11 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         @Override
         public String getName() {
             return name;
+        }
+
+        @Override
+        public String getRawName() {
+            return rawName;
         }
 
         @Override
@@ -283,6 +290,10 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
                 builder.append(valPair.getName());
                 builder.append(" (");
                 builder.append(valPair.getValue());
+                builder.append(", ");
+                builder.append("\"");
+                builder.append(valPair.getName());
+                builder.append("\"");
 
                 if (i == (values.size() - 1)) {
                     builder.append(" );");

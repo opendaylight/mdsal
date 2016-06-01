@@ -57,6 +57,13 @@ public interface Enumeration extends GeneratedType {
         String getName();
 
         /**
+         * Returns the raw name from the YANG source.
+         *
+         * @return the raw name from the YANG source.
+         */
+        String getRawName();
+
+        /**
          * Returns value of the enumeration item.
          *
          * @return the value of the enumeration item.

@@ -43,9 +43,9 @@ class EnumTemplate extends BaseTemplate {
         return body
     }
 
-    def writeEnumItem(String name, int value, String description) '''
+    def writeEnumItem(String name, String rawName, int value, String description) '''
         «asJavadoc(encodeAngleBrackets(description))»
-        «name»(«value»)
+        «name»(«value», "«rawName»")
     '''
 
     /**
@@ -60,6 +60,7 @@ class EnumTemplate extends BaseTemplate {
 
 
             int value;
+            String name;
             private static final java.util.Map<java.lang.Integer, «enums.name»> VALUE_MAP;
 
             static {
@@ -72,8 +73,9 @@ class EnumTemplate extends BaseTemplate {
                 VALUE_MAP = b.build();
             }
 
-            private «enums.name»(int value) {
+            private «enums.name»(int value, String name) {
                 this.value = value;
+                this.name = name;
             }
 
             /**
@@ -81,6 +83,10 @@ class EnumTemplate extends BaseTemplate {
              */
             public int getIntValue() {
                 return value;
+            }
+
+            public String getName() {
+                return name;
             }
 
             /**
@@ -96,7 +102,7 @@ class EnumTemplate extends BaseTemplate {
     def writeEnumeration(Enumeration enumeration)
     '''
     «FOR v : enumeration.values SEPARATOR ",\n" AFTER ";"»
-    «writeEnumItem(v.name, v.value, v.description)»«
+    «writeEnumItem(v.name, v.rawName, v.value, v.description)»«
     ENDFOR»
     '''
 }

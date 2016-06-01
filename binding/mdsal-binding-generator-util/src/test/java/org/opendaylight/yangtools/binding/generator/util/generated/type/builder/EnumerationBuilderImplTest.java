@@ -53,7 +53,7 @@ public class EnumerationBuilderImplTest {
         enumerationBuilder.setModuleName(moduleName);
         enumerationBuilder.setReference(reference);
         enumerationBuilder.setSchemaPath(Collections.singletonList(qName));
-        enumerationBuilder.addValue(valueName, value, valueDescription);
+        enumerationBuilder.addValue(valueName, valueName, value, valueDescription);
         enumerationBuilder.addAnnotation(packageName, "TestAnnotation");
         enumerationBuilderSame = new EnumerationBuilderImpl(packageName, name);
         enumerationBuilderOtherName = new EnumerationBuilderImpl(packageName, "SomeOtherName");
@@ -113,13 +113,13 @@ public class EnumerationBuilderImplTest {
         Enumeration enumerationOtherName = enumerationBuilderOtherName.toInstance(enumerationBuilderOtherName);
         assertNotEquals(enumeration, enumerationOtherName);
 
-        enumerationBuilderSame.addValue(valueName, value, valueDescription);
+        enumerationBuilderSame.addValue(valueName, valueName, value, valueDescription);
         Enumeration enumerationSame = enumerationBuilderSame.toInstance(enumerationBuilderSame);
         assertEquals(enumeration, enumerationSame);
 
         EnumerationBuilderImpl enumerationBuilderSame1 = new EnumerationBuilderImpl(packageName, name);
         Enumeration enumerationSame1 = enumerationBuilderSame1.toInstance(enumerationBuilderSame1);
-        enumerationBuilderSame1.addValue(valueName, 14, valueDescription);
+        enumerationBuilderSame1.addValue(valueName, valueName, 14, valueDescription);
         // Enums are equal thanks to same package name and local name
         assertEquals(enumeration, enumerationSame1);
     }
@@ -128,7 +128,7 @@ public class EnumerationBuilderImplTest {
     public void testEnumerationToString() {
         String formattedString =
                 "public enum " + name + " {\n" +
-                "\t TestValue " + "(12 );\n" +
+                "\t TestValue " + "(12, \"TestValue\" );\n" +
                 "}";
         String s = "Enumeration [packageName="+packageName+", definingType="+packageName+"."+name+", name="+name+
                 ", values=[EnumPair [name=TestValue, value=12]]]";
@@ -162,6 +162,7 @@ public class EnumerationBuilderImplTest {
         private final List<UnknownSchemaNode> unknownNodes = Collections.emptyList();
         private final String name;
         private final Integer value;
+        private final String rawName;
 
         private EnumPairImpl(QName qName) {
             qname = qName;
@@ -171,6 +172,7 @@ public class EnumerationBuilderImplTest {
             status = Status.CURRENT;
             name = "SomeName";
             value = 45;
+            rawName = "some-name";
         }
 
         public static EnumPairImpl create(QName qName) {
@@ -210,6 +212,11 @@ public class EnumerationBuilderImplTest {
         @Override
         public String getName() {
             return name;
+        }
+
+        @Override
+        public String getRawName() {
+            return rawName;
         }
 
         @Override
