@@ -17,7 +17,6 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -63,9 +62,9 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         void apply(final DOMDataTreeWriteCursor cursor, final YangInstanceIdentifier path,
                 final NormalizedNode<?, ?> data) {
             int enterCount = 0;
-            Iterator<PathArgument> it = path.getPathArguments().iterator();
+            final Iterator<PathArgument> it = path.getPathArguments().iterator();
             while (it.hasNext()) {
-                PathArgument currentArg = it.next();
+                final PathArgument currentArg = it.next();
                 if (it.hasNext()) {
                     // We need to enter one level deeper, we are not at leaf (modified) node
                     cursor.enter(currentArg);
@@ -80,15 +79,15 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     private final ShardDataModification modification;
     private DOMDataTreeWriteCursor cursor;
-    private DataTree rootShardDataTree;
+    private final DataTree rootShardDataTree;
     private DataTreeModification rootModification = null;
 
-    private ArrayList<DOMStoreThreePhaseCommitCohort> cohorts = new ArrayList<>();
-    private InMemoryDOMDataTreeShardChangePublisher changePublisher;
+    private final ArrayList<DOMStoreThreePhaseCommitCohort> cohorts = new ArrayList<>();
+    private final InMemoryDOMDataTreeShardChangePublisher changePublisher;
     private boolean finished = false;
 
     // FIXME inject into shard?
-    private ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+    private final ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 
     InmemoryDOMDataTreeShardWriteTransaction(final ShardDataModification root,
                                              final DataTree rootShardDataTree,
@@ -106,7 +105,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     }
 
     void delete(final YangInstanceIdentifier path) {
-        YangInstanceIdentifier relativePath = toRelative(path);
+        final YangInstanceIdentifier relativePath = toRelative(path);
         Preconditions.checkArgument(!YangInstanceIdentifier.EMPTY.equals(relativePath),
                 "Deletion of shard root is not allowed");
         SimpleCursorOperation.DELETE.apply(getCursor(), relativePath , null);
@@ -121,7 +120,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     }
 
     private YangInstanceIdentifier toRelative(final YangInstanceIdentifier path) {
-        Optional<YangInstanceIdentifier> relative =
+        final Optional<YangInstanceIdentifier> relative =
                 path.relativeTo(modification.getPrefix().getRootIdentifier());
         Preconditions.checkArgument(relative.isPresent());
         return relative.get();
@@ -147,7 +146,9 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     public void close() {
         Preconditions.checkState(!finished, "Attempting to close an already finished transaction.");
         modification.closeTransactions();
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
         finished = true;
     }
 
@@ -170,7 +171,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         rootModification = modification.seal();
 
         cohorts.add(new InMemoryDOMDataTreeShardThreePhaseCommitCohort(rootShardDataTree, rootModification, changePublisher));
-        for (Entry<DOMDataTreeIdentifier, ForeignShardModificationContext> entry : modification.getChildShards().entrySet()) {
+        for (final Entry<DOMDataTreeIdentifier, ForeignShardModificationContext> entry : modification.getChildShards().entrySet()) {
             cohorts.add(new ForeignShardThreePhaseCommitCohort(entry.getKey(), entry.getValue()));
         }
         finished = true;
@@ -220,8 +221,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     public DOMDataTreeWriteCursor createCursor(final DOMDataTreeIdentifier prefix) {
         Preconditions.checkState(!finished, "Transaction is finished/closed already.");
         Preconditions.checkState(cursor == null, "Previous cursor wasn't closed");
-        DOMDataTreeWriteCursor ret = getCursor();
-        YangInstanceIdentifier relativePath = toRelative(prefix.getRootIdentifier());
+        final DOMDataTreeWriteCursor ret = getCursor();
+        final YangInstanceIdentifier relativePath = toRelative(prefix.getRootIdentifier());
         ret.enter(relativePath.getPathArguments());
         return ret;
     }
