@@ -11,12 +11,13 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import javax.annotation.Nonnull;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorProvider;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 
 // FIXME: this should be moved to a separate package
 @Beta
-public interface DOMDataTreeShardWriteTransaction {
+public interface DOMDataTreeShardWriteTransaction extends DOMDataTreeCursorProvider {
     /**
      * Create a new write cursor. Any previous cursors have to be {@link DOMDataTreeWriteCursor#close()}d.
      *
@@ -25,6 +26,7 @@ public interface DOMDataTreeShardWriteTransaction {
      * @throws IllegalStateException if a previous cursor has not been closed.
      * @throws NullPointerException if prefix is null.
      */
+    @Override
     @Nonnull DOMDataTreeWriteCursor createCursor(@Nonnull DOMDataTreeIdentifier prefix);
 
     /**
@@ -43,7 +45,6 @@ public interface DOMDataTreeShardWriteTransaction {
 
     ListenableFuture<Void> submit();
 
-    //FIXME: remove these from the public api?
     ListenableFuture<Boolean> validate();
 
     ListenableFuture<Void> prepare();
