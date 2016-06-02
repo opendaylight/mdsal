@@ -11,6 +11,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import java.util.Collection;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShardProducer;
 
 public interface WriteableDOMDataTreeShard extends DOMDataTreeShard {
 
