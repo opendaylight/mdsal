@@ -82,4 +82,16 @@ final class ForeignShardModificationContext {
         tx = null;
         return commit;
     }
+
+    void closeForeignTransaction() {
+        if (cursor != null) {
+            cursor.close();
+            cursor = null;
+        }
+
+        if (tx != null) {
+            tx.close();
+            tx = null;
+        }
+    }
 }

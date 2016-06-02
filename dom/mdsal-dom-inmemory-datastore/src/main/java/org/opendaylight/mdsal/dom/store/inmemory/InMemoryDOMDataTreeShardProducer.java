@@ -29,7 +29,7 @@ final class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer
 
     @Override
     public InmemoryDOMDataTreeShardWriteTransaction createTransaction() {
-        Preconditions.checkState(currentTx == null);
+        Preconditions.checkState(currentTx == null || currentTx.isFinished(), "Previous transaction not finished yet.");
         if (lastSubmittedTx != null) {
             currentTx = parentShard.createTransaction(lastSubmittedTx);
         } else {

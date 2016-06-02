@@ -73,4 +73,10 @@ final class ShardDataModification extends WriteableNodeWithSubshard {
         return rootModification;
     }
 
+    public void closeTransactions() {
+        for (final ForeignShardModificationContext childShard : childShards.values()) {
+            childShard.closeForeignTransaction();
+        }
+    }
+
 }

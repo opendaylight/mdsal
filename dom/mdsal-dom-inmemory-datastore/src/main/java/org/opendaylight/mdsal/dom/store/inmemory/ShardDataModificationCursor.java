@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -17,9 +18,11 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 class ShardDataModificationCursor implements DOMDataTreeWriteCursor {
 
     private final Deque<WriteCursorStrategy> stack = new ArrayDeque<>();
+    private final InmemoryDOMDataTreeShardWriteTransaction parent;
 
-    ShardDataModificationCursor(final ShardDataModification root) {
+    ShardDataModificationCursor(final ShardDataModification root, final InmemoryDOMDataTreeShardWriteTransaction parent) {
         stack.push(root.createOperation(null));
+        this.parent = Preconditions.checkNotNull(parent);
     }
 
     @Override
@@ -61,7 +64,7 @@ class ShardDataModificationCursor implements DOMDataTreeWriteCursor {
 
     @Override
     public void close() {
-
+        parent.cursorClosed();
     }
 
     @Override

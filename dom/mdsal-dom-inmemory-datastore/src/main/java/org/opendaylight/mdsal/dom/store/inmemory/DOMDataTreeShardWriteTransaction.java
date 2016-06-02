@@ -36,6 +36,11 @@ public interface DOMDataTreeShardWriteTransaction {
      */
     void ready();
 
+    /**
+     * Close this transaction and all other foreign shard transactions that were opened as a part of this transaction.
+     */
+    void close();
+
     ListenableFuture<Void> submit();
 
     //FIXME: remove these from the public api?
