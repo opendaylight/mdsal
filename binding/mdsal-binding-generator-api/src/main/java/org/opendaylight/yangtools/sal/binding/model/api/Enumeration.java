@@ -56,6 +56,8 @@ public interface Enumeration extends GeneratedType {
          */
         String getName();
 
+        String getMappedName();
+
         /**
          * Returns value of the enumeration item.
          *

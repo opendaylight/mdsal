@@ -131,7 +131,7 @@ public class EnumerationBuilderImplTest {
                 "\t TestValue " + "(12 );\n" +
                 "}";
         String s = "Enumeration [packageName="+packageName+", definingType="+packageName+"."+name+", name="+name+
-                ", values=[EnumPair [name=TestValue, value=12]]]";
+                ", values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]";
 
         assertEquals(s, enumeration.toString());
         assertEquals(formattedString, enumeration.toFormattedString());
