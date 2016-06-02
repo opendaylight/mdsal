@@ -8,9 +8,11 @@
 package org.opendaylight.mdsal.dom.broker.test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 
+import com.google.common.util.concurrent.Futures;
 import java.util.Collection;
 import java.util.Collections;
 import org.junit.Before;
@@ -18,22 +20,22 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.broker.ShardedDOMDataTree;
 import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
-import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
+import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardProducer;
+import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardWriteTransaction;
+import org.opendaylight.mdsal.dom.store.inmemory.WriteableDOMDataTreeShard;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 public class ShardedDOMDataTreeProducerSingleShardTest {
 
@@ -46,7 +48,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     private static final Collection<DOMDataTreeIdentifier> SUBTREES_ROOT = Collections.singleton(ROOT_ID);
     private static final Collection<DOMDataTreeIdentifier> SUBTREES_TEST = Collections.singleton(TEST_ID);
 
-    interface MockTestShard extends DOMDataTreeShard, DOMStore {
+    interface MockTestShard extends WriteableDOMDataTreeShard {
 
     }
 
@@ -56,6 +58,12 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
 
     @Mock(name = "storeWriteTx")
     private DOMStoreWriteTransaction writeTxMock;
+
+    @Mock
+    private DOMDataTreeShardProducer producerMock;
+
+    @Mock
+    private DOMDataTreeShardWriteTransaction shardTxMock;
 
     @Mock(name = "storeTxChain")
     private DOMStoreTransactionChain txChainMock;
@@ -72,9 +80,10 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
         shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard);
 
         doReturn("rootShard").when(rootShard).toString();
-        doReturn(txChainMock).when(rootShard).createTransactionChain();
-        doReturn(writeTxMock).when(txChainMock).newWriteOnlyTransaction();
-        doReturn(TestCommitCohort.ALLWAYS_SUCCESS).when(writeTxMock).ready();
+        doReturn(producerMock).when(rootShard).createProducer(any(Collection.class));
+        doReturn(shardTxMock).when(producerMock).createTransaction();
+        doNothing().when(shardTxMock).ready();
+        doReturn(Futures.immediateFuture(null)).when(shardTxMock).submit();
 
         producer = treeService.createProducer(SUBTREES_ROOT);
     }
@@ -92,7 +101,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
 
     @Test
     public void closeWithTxSubmitted() throws DOMDataTreeProducerException {
-        DOMDataTreeWriteTransaction tx = producer.createTransaction(false);
+        DOMDataTreeCursorAwareTransaction tx = producer.createTransaction(false);
         tx.submit();
         producer.close();
     }
@@ -121,9 +130,8 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     public void writeChildProducerDataToParentTx() {
         DOMDataTreeProducer childProducer = producer.createProducer(SUBTREES_TEST);
         assertNotNull(childProducer);
-        DOMDataTreeWriteTransaction parentTx = producer.createTransaction(true);
-        parentTx.put(TEST_ID.getDatastoreType(), TEST_ID.getRootIdentifier(),
-                ImmutableNodes.containerNode(TestModel.TEST_QNAME));
+        DOMDataTreeCursorAwareTransaction parentTx = producer.createTransaction(true);
+        parentTx.createCursor(TEST_ID);
     }
 
     @Test
