@@ -50,10 +50,12 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
     }
 
     @Override
-    protected void notifyListeners(@Nonnull Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations, @Nonnull YangInstanceIdentifier path, @Nonnull DataTreeCandidateNode node) {
+    protected void notifyListeners(@Nonnull final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
+                                   @Nonnull final YangInstanceIdentifier path,
+                                   @Nonnull final DataTreeCandidateNode node) {
         final DataTreeCandidate candidate = DataTreeCandidates.newDataTreeCandidate(path, node);
 
-        for (AbstractDOMDataTreeChangeListenerRegistration<?> reg : registrations) {
+        for (final AbstractDOMDataTreeChangeListenerRegistration<?> reg : registrations) {
             LOG.debug("Enqueueing candidate {} to registration {}", candidate, registrations);
             notificationManager.submitNotification(reg, candidate);
         }

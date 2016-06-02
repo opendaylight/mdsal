@@ -2,7 +2,6 @@ package org.opendaylight.mdsal.dom.broker.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.anyMap;
@@ -62,7 +61,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
     static {
         try {
             schemaContext = TestModel.createTestContext();
-        } catch (ReactorException e) {
+        } catch (final ReactorException e) {
             LOG.error("Unable to create schema context for TestModel", e);
         }
     }
