@@ -85,6 +85,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     private ArrayList<DOMStoreThreePhaseCommitCohort> cohorts = new ArrayList<>();
     private InMemoryDOMDataTreeShardChangePublisher changePublisher;
+    private boolean finished = false;
 
     // FIXME inject into shard?
     private ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
@@ -99,7 +100,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     private DOMDataTreeWriteCursor getCursor() {
         if (cursor == null) {
-            cursor = new ShardDataModificationCursor(modification);
+            cursor = new ShardDataModificationCursor(modification, this);
         }
         return cursor;
     }
@@ -143,11 +144,25 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     }
 
     public void close() {
-        // TODO Auto-generated method stub
+        Preconditions.checkState(!finished, "Attempting to close an already finished transaction.");
+        cursor.close();
+        finished = true;
+    }
+
+    void cursorClosed() {
+        Preconditions.checkNotNull(cursor);
+        cursor = null;
+    }
+
+    public boolean isFinished() {
+        return finished;
     }
 
     @Override
     public void ready() {
+        Preconditions.checkState(!finished, "Attempting to ready an already finished transaction.");
+        Preconditions.checkState(cursor == null, "Attempting to ready a transaction that has an open cursor.");
+        Preconditions.checkNotNull(modification, "Attempting to ready an empty transaction.");
 
         LOG.debug("Readying open transaction on shard {}", modification.getPrefix());
         rootModification = modification.seal();
@@ -156,6 +171,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         for (Entry<DOMDataTreeIdentifier, ForeignShardModificationContext> entry : modification.getChildShards().entrySet()) {
             cohorts.add(new ForeignShardThreePhaseCommitCohort(entry.getKey(), entry.getValue()));
         }
+        finished = true;
     }
 
     @Override
@@ -163,7 +179,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         LOG.debug("Submitting open transaction on shard {}", modification.getPrefix());
 
         Preconditions.checkNotNull(cohorts);
-        Preconditions.checkState(!cohorts.isEmpty(), "Submitting an empty transaction");
+        Preconditions.checkState(!cohorts.isEmpty(), "Transaction was not readied yet.");
 
         final ListenableFuture<Void> submit = executor.submit(new ShardSubmitCoordinationTask(modification.getPrefix(), cohorts));
 
@@ -200,6 +216,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     @Override
     public DOMDataTreeWriteCursor createCursor(final DOMDataTreeIdentifier prefix) {
+        Preconditions.checkState(!finished, "Transaction is finished/closed already.");
+        Preconditions.checkState(cursor == null, "Previous cursor wasn't closed");
         DOMDataTreeWriteCursor ret = getCursor();
         YangInstanceIdentifier relativePath = toRelative(prefix.getRootIdentifier());
         ret.enter(relativePath.getPathArguments());
