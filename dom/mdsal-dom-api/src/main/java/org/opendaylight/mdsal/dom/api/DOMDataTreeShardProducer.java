@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
 import java.util.Collection;
@@ -14,7 +14,6 @@ import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardWriteTransaction;
 
-// FIXME: this should probably be moved to a different package
 @Beta
 public interface DOMDataTreeShardProducer {
     /**

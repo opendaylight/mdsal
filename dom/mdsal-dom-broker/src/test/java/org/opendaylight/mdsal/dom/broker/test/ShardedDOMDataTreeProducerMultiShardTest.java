@@ -33,7 +33,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.broker.ShardedDOMDataTree;
 import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
-import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardProducer;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShardProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardWriteTransaction;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataTreeShard;
 import org.opendaylight.mdsal.dom.store.inmemory.WriteableDOMDataTreeShard;

@@ -12,6 +12,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeShardProducer;
 
 final class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
 
