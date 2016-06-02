@@ -17,9 +17,11 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 class ShardDataModificationCursor implements DOMDataTreeWriteCursor {
 
     private final Deque<WriteCursorStrategy> stack = new ArrayDeque<>();
+    private final DataTreeModificationCursorAdaptor delegateCursor;
 
     ShardDataModificationCursor(final ShardDataModification root) {
         stack.push(root.createOperation(null));
+        delegateCursor = root.getDelegateCursor();
     }
 
     @Override
@@ -61,7 +63,12 @@ class ShardDataModificationCursor implements DOMDataTreeWriteCursor {
 
     @Override
     public void close() {
+        delegateCursor.close();
+    }
 
+    @Override
+    public boolean isClosed() {
+        return delegateCursor.isClosed();
     }
 
     @Override

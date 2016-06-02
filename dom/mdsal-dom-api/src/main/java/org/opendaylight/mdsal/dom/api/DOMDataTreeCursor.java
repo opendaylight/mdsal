@@ -77,4 +77,10 @@ public interface DOMDataTreeCursor extends AutoCloseable {
      */
     @Override
     void close();
+
+    /**
+     * Return true/false based on if the cursor was closed yet.
+     * @return true if cursor was closed, false otherwise
+     */
+    boolean isClosed();
 }

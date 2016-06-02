@@ -46,6 +46,10 @@ final class ShardDataModification extends WriteableNodeWithSubshard {
         return rootContext.getIdentifier().getRootIdentifier().getLastPathArgument();
     }
 
+    DataTreeModificationCursorAdaptor getDelegateCursor() {
+        return rootContext.cursor();
+    }
+
     static ShardDataModification from(ShardRootModificationContext root,
             Map<YangInstanceIdentifier, ForeignShardModificationContext> shards) {
 

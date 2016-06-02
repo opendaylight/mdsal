@@ -19,6 +19,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification
 final class DataTreeModificationCursorAdaptor extends ForwardingObject implements DOMDataTreeWriteCursor {
 
     private final DataTreeModificationCursor delegate;
+    private boolean closed = false;
 
     private DataTreeModificationCursorAdaptor(final DataTreeModificationCursor delegate) {
         this.delegate = Preconditions.checkNotNull(delegate);
@@ -74,6 +75,12 @@ final class DataTreeModificationCursorAdaptor extends ForwardingObject implement
     @Override
     public void close() {
         delegate.close();
+        closed = true;
+    }
+
+    @Override
+    public boolean isClosed() {
+        return closed;
     }
 
     @Override

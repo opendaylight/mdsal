@@ -34,7 +34,7 @@ class ShardRootModificationContext {
     }
 
     DataTreeModificationCursorAdaptor cursor() {
-        if (cursor == null) {
+        if (cursor == null || cursor.isClosed()) {
             if (modification == null) {
                 modification = (CursorAwareDataTreeModification) snapshot.newModification();
             }
@@ -54,11 +54,15 @@ class ShardRootModificationContext {
     DataTreeModification ready() {
         if (cursor != null) {
             cursor.close();
+            cursor = null;
         }
+        DataTreeModification ret = null;
         if (modification != null) {
             modification.ready();
+            ret = modification;
+            modification = null;
         }
 
-        return modification;
+        return ret;
     }
 }

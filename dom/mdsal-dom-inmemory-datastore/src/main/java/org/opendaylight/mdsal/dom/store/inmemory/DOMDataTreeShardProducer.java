@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 @Beta
 public interface DOMDataTreeShardProducer {
     /**
-     * Return the collection of three identifiers to which this producer is bound. This collection
+     * Return the collection of tree identifiers to which this producer is bound. This collection
      * is constant during the lifetime of a producer.
      *
      * @return Collection of data tree identifiers.
