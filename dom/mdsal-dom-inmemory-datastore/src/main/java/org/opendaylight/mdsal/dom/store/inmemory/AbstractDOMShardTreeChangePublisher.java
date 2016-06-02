@@ -126,7 +126,6 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
 
     private static final class DOMDataTreeListenerWithSubshards implements DOMDataTreeChangeListener {
 
-        // TODO should we synchronize the access to the dataTree snapshots?
         private final DataTree dataTree;
         private final YangInstanceIdentifier listenerPath;
         private final DOMDataTreeChangeListener delegate;
@@ -145,14 +144,14 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         @Override
         public void onDataTreeChanged(@Nonnull final Collection<DataTreeCandidate> changes) {
             LOG.debug("Received data changed {}", changes.iterator().next());
-            final DataTreeCandidate newCandidate = applyChanges(changes);
-            delegate.onDataTreeChanged(Collections.singleton(newCandidate));
+            delegate.onDataTreeChanged(changes);
         }
 
         void onDataTreeChanged(final YangInstanceIdentifier rootPath, final Collection<DataTreeCandidate> changes) {
-            onDataTreeChanged(changes.stream()
+            final List<DataTreeCandidate> newCandidates = changes.stream()
                     .map(candidate -> DataTreeCandidates.newDataTreeCandidate(rootPath, candidate.getRootNode()))
-                    .collect(Collectors.toList()));
+                    .collect(Collectors.toList());
+            delegate.onDataTreeChanged(Collections.singleton(applyChanges(newCandidates)));
         }
 
         void addSubshard(final ChildShardContext context) {
@@ -167,7 +166,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         }
 
         void close() {
-            for (ListenerRegistration<DOMDataTreeChangeListener> registration : registrations.values()) {
+            for (final ListenerRegistration<DOMDataTreeChangeListener> registration : registrations.values()) {
                 registration.close();
             }
             registrations.clear();
