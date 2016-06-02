@@ -129,12 +129,12 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         Preconditions.checkArgument(!subtrees.isEmpty(), "Subtrees may not be empty");
 
         final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap = new HashMap<>();
-        for (final DOMDataTreeIdentifier s : subtrees) {
+        for (final DOMDataTreeIdentifier subtree : subtrees) {
             // Attempting to create a disconnected producer -- all subtrees have to be unclaimed
-            final DOMDataTreeProducer producer = findProducer(s);
-            Preconditions.checkArgument(producer == null, "Subtree %s is attached to producer %s", s, producer);
+            final DOMDataTreeProducer producer = findProducer(subtree);
+            Preconditions.checkArgument(producer == null, "Subtree %s is attached to producer %s", subtree, producer);
 
-            shardMap.put(s, shards.lookup(s).getValue().getInstance());
+            shardMap.put(subtree, shards.lookup(subtree).getValue().getInstance());
         }
 
         return createProducer(shardMap);
