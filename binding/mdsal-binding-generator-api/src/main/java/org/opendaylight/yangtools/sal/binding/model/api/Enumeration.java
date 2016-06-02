@@ -50,11 +50,18 @@ public interface Enumeration extends GeneratedType {
     interface Pair extends DocumentedNode {
 
         /**
-         * Returns the name of the enumeration item.
+         * Returns the name of the enumeration item as it is specified in the input yang.
          *
-         * @return the name of the enumeration item.
+         * @return the name of the enumeration item as it is specified in the input yang.
          */
         String getName();
+
+        /**
+         * Returns the binding representation for the name of the enumeration item.
+         *
+         * @return the binding representation for the name of the enumeration item.
+         */
+        String getMappedName();
 
         /**
          * Returns value of the enumeration item.
