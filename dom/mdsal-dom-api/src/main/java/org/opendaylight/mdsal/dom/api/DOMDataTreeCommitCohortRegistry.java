@@ -25,6 +25,7 @@ public interface DOMDataTreeCommitCohortRegistry extends DOMDataBrokerExtension 
      *
      * @param path Subtree path on which commit cohort operates.
      * @param cohort Commit cohort
+     * @param <T> Cohort subclass
      * @return Registaration object for DOM Data Three Commit cohort.
      */
     <T extends DOMDataTreeCommitCohort> DOMDataTreeCommitCohortRegistration<T> registerCommitCohort(
