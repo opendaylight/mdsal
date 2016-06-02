@@ -39,7 +39,6 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     private static final class SubshardProducerSpecification {
         private final Collection<DOMDataTreeIdentifier> prefixes = new ArrayList<>(1);
         private final ChildShardContext shard;
-
         SubshardProducerSpecification(final ChildShardContext subshard) {
             this.shard = Preconditions.checkNotNull(subshard);
         }
@@ -60,9 +59,11 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     private final DOMDataTreePrefixTable<ChildShardContext> childShardsTable = DOMDataTreePrefixTable.create();
 
     private final Map<DOMDataTreeIdentifier, ChildShardContext> childShards = new HashMap<>();
+
     private final DOMDataTreeIdentifier prefix;
     private final DataTree dataTree;
 
+    private SchemaContext schemaContext;
     private InMemoryDOMDataTreeShardChangePublisher shardChangePublisher;
 
     private InMemoryDOMDataTreeShard(final DOMDataTreeIdentifier prefix, final ExecutorService dataTreeChangeExecutor,
@@ -83,6 +84,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     @Override
     public void onGlobalContextUpdated(final SchemaContext context) {
         dataTree.setSchemaContext(context);
+        schemaContext = context;
     }
 
     @Override
@@ -108,7 +110,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
 
     @Nonnull
     @Override
-    public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(@Nonnull YangInstanceIdentifier treeId, @Nonnull L listener) {
+    public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(@Nonnull final YangInstanceIdentifier treeId, @Nonnull final L listener) {
         return shardChangePublisher.registerTreeChangeListener(treeId, listener);
     }
 

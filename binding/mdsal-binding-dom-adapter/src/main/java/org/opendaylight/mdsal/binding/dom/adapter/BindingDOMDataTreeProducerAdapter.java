@@ -9,10 +9,12 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Preconditions;
 import java.util.Collection;
+import org.opendaylight.mdsal.binding.api.CursorAwareWriteTransaction;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeProducer;
 import org.opendaylight.mdsal.binding.api.DataTreeProducerException;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
@@ -32,9 +34,9 @@ class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
     }
 
     @Override
-    public WriteTransaction createTransaction(final boolean isolated) {
-        final DOMDataTreeWriteTransaction domTx = delegate.createTransaction(isolated);
-        return new BindingDOMWriteTransactionAdapter<DOMDataTreeWriteTransaction>(domTx, codec);
+    public CursorAwareWriteTransaction createTransaction(final boolean isolated) {
+        final DOMDataTreeCursorAwareTransaction domTx = delegate.createTransaction(isolated);
+        return new BindingDOMCursorAwareWriteTransactionAdapter<>(domTx, codec);
     }
 
     static DataTreeProducer create(final DOMDataTreeProducer domProducer,
