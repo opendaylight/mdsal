@@ -12,10 +12,13 @@ import static org.junit.Assert.assertNotNull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
+import org.opendaylight.mdsal.dom.api.DOMDataTreeCursor;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import com.google.common.util.concurrent.CheckedFuture;
 import java.net.URI;
@@ -55,16 +58,20 @@ public abstract class AbstractDOMDataTreeServiceTestSuite {
      * @throws DOMDataTreeProducerException
      * @throws TransactionCommitFailedException
      */
+
     @Test
     public final void testBasicProducer() throws DOMDataTreeProducerException, TransactionCommitFailedException {
         // Create a producer. It is an AutoCloseable resource, hence the try-with pattern
         try (final DOMDataTreeProducer prod = service().createProducer(Collections.singleton(UNORDERED_CONTAINER_TREE))) {
             assertNotNull(prod);
 
-            final DOMDataTreeWriteTransaction tx = prod.createTransaction(true);
+            final DOMDataTreeCursorAwareTransaction tx = prod.createTransaction(true);
             assertNotNull(tx);
 
-            tx.put(LogicalDatastoreType.OPERATIONAL, UNORDERED_CONTAINER_IID, ImmutableContainerNodeBuilder.create().build());
+            final DOMDataTreeWriteCursor cursor = tx.createCursor(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, UNORDERED_CONTAINER_IID));
+            assertNotNull(cursor);
+            cursor.write(UNORDERED_CONTAINER_IID.getLastPathArgument(), ImmutableContainerNodeBuilder.create().build());
+            cursor.close();
 
             final CheckedFuture<Void, TransactionCommitFailedException> f = tx.submit();
             assertNotNull(f);
