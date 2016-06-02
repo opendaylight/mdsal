@@ -1,0 +1,216 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_87e2a501",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-02T08:25:50Z",
+      "side": 1,
+      "message": "By looking at tree terminology, I assume that sub-terms like \u0027root\u0027, \u0027node\u0027 and \u0027child\u0027 are self-explanatory enough, therefore final terms TreeNode, TreeRott and TreeChildNode should do OK eventually.\n\nhttps://en.wikipedia.org/wiki/Tree_(data_structure)",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 76
+      },
+      "revId": "c2f0b6eef3f18940907010f7a4fca2d53ce4896a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_e7e60116",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-02T08:25:50Z",
+      "side": 1,
+      "message": "OK",
+      "range": {
+        "startLine": 34,
+        "startChar": 2,
+        "endLine": 34,
+        "endChar": 52
+      },
+      "revId": "c2f0b6eef3f18940907010f7a4fca2d53ce4896a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_87b905ec",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-02T08:25:50Z",
+      "side": 1,
+      "message": "not sure if I understand you correctly, I guess we can keep the initial text and its meaning \"separate\", but let\u0027s discuss it if you like.",
+      "revId": "c2f0b6eef3f18940907010f7a4fca2d53ce4896a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_c7e3fd03",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-02T08:25:50Z",
+      "side": 1,
+      "message": "perhaps rather \"external node\" or it can stay as it is.",
+      "range": {
+        "startLine": 296,
+        "startChar": 3,
+        "endLine": 296,
+        "endChar": 17
+      },
+      "revId": "c2f0b6eef3f18940907010f7a4fca2d53ce4896a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_27f119ce",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-02T08:25:50Z",
+      "side": 1,
+      "message": "perhaps rather \"internal node\" or it can stay as it is",
+      "range": {
+        "startLine": 300,
+        "startChar": 3,
+        "endLine": 300,
+        "endChar": 17
+      },
+      "revId": "c2f0b6eef3f18940907010f7a4fca2d53ce4896a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_67baf1e2",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-02T08:25:50Z",
+      "side": 1,
+      "message": "This is not about container in container, please see this issue with description:\n\nhttps://bugs.opendaylight.org/show_bug.cgi?id\u003d1478",
+      "revId": "c2f0b6eef3f18940907010f7a4fca2d53ce4896a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_c7cadd6d",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 428,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-02T08:25:50Z",
+      "side": 1,
+      "message": "OK",
+      "range": {
+        "startLine": 428,
+        "startChar": 30,
+        "endLine": 428,
+        "endChar": 37
+      },
+      "revId": "c2f0b6eef3f18940907010f7a4fca2d53ce4896a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_a7b409f3",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 518,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-02T08:25:50Z",
+      "side": 1,
+      "message": "we understand data schema node as schema node in this context, but OK",
+      "revId": "c2f0b6eef3f18940907010f7a4fca2d53ce4896a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_27c8f973",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 521,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-02T08:25:50Z",
+      "side": 1,
+      "message": "My opinion: to add \"Data\" suffix makes it more self-explanatory and clear",
+      "range": {
+        "startLine": 521,
+        "startChar": 6,
+        "endLine": 521,
+        "endChar": 34
+      },
+      "revId": "c2f0b6eef3f18940907010f7a4fca2d53ce4896a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_87b0e5f5",
+        "filename": "binding2/mdsal-binding2-spec/src/site/asciidoc/binding-2.adoc",
+        "patchSetId": 1
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-02T08:25:50Z",
+      "side": 1,
+      "message": "just wondering, is this supposed to be suggestion to avoid of using \"Data\" suffix too?",
+      "range": {
+        "startLine": 556,
+        "startChar": 0,
+        "endLine": 561,
+        "endChar": 4
+      },
+      "revId": "c2f0b6eef3f18940907010f7a4fca2d53ce4896a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
