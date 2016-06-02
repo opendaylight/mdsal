@@ -255,8 +255,8 @@ public class TypeProviderTest {
         final Enumeration enumType = (Enumeration) result;
         final List<Enumeration.Pair> enumValues = enumType.getValues();
         assertTrue(!enumValues.isEmpty());
-        assertEquals("A", enumValues.get(0).getName());
-        assertEquals("B", enumValues.get(1).getName());
+        assertEquals("a", enumValues.get(0).getName());
+        assertEquals("b", enumValues.get(1).getName());
 
         leaf = provideLeafNodeFromTopLevelContainer(testTypeProviderModule, "foo", "resolve-direct-use-of-enum");
         leafType = leaf.getType();

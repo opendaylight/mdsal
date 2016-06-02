@@ -115,7 +115,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
             int listIndex = 0;
             for (final EnumPair enumPair : enums) {
                 if (enumPair != null) {
-                    final String enumPairName = BindingMapping.getClassName(enumPair.getName());
+                    final String enumPairName = enumPair.getName();
                     Integer enumPairValue = enumPair.getValue();
 
                     if (enumPairValue == null) {
@@ -149,6 +149,11 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         @Override
         public String getName() {
             return name;
+        }
+
+        @Override
+        public String getMappedName() {
+            return BindingMapping.getClassName(name);
         }
 
         @Override
@@ -200,6 +205,8 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
             StringBuilder builder = new StringBuilder();
             builder.append("EnumPair [name=");
             builder.append(name);
+            builder.append(", mappedName=");
+            builder.append(getMappedName());
             builder.append(", value=");
             builder.append(value);
             builder.append("]");
@@ -280,7 +287,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
             for (final Enumeration.Pair valPair : values) {
                 builder.append("\t");
                 builder.append(" ");
-                builder.append(valPair.getName());
+                builder.append(valPair.getMappedName());
                 builder.append(" (");
                 builder.append(valPair.getValue());
 
