@@ -48,7 +48,7 @@ public interface DataTreeProducer extends DataTreeProducerFactory, AutoCloseable
      *        is processed separately from any preceding transactions. Non-barrier transactions may
      *        be merged and processed in a batch, such that any observers see the modifications
      *        contained in them as if the modifications were made in a single transaction.
-     * @return A new {@link WriteTransaction}
+     * @return A new {@link CursorAwareWriteTransaction}
      * @throws IllegalStateException if a previous transaction was not closed.
      * @throws IllegalThreadStateException if the calling thread context does not match the
      *         lifecycle rules enforced by the producer state (e.g. bound or unbound). This
@@ -56,7 +56,7 @@ public interface DataTreeProducer extends DataTreeProducerFactory, AutoCloseable
      *         correct operation.
      */
     @Nonnull
-    WriteTransaction createTransaction(boolean isolated);
+    CursorAwareWriteTransaction createTransaction(boolean isolated);
 
     /**
      * {@inheritDoc}
