@@ -182,6 +182,28 @@
             <groupId>${project.groupId}.model</groupId>
             <artifactId>general-entity</artifactId>
         </dependency>
+
+        <!-- Binding specification version 2-->
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-generator-api</artifactId>
+            <version>0.9.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-spec</artifactId>
+            <version>0.9.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-generator-impl</artifactId>
+            <version>0.9.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-generator-util</artifactId>
+            <version>0.9.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
   <!--
