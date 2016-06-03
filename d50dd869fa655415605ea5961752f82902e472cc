@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_a711a8ae",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/yangtools/binding/data/codec/impl/UnionValueOptionContextTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5994
+      },
+      "writtenOn": "2016-06-03T08:51:27Z",
+      "side": 1,
+      "message": "no, because then I cant acces foo methods, for example at line 26, 30, etc...",
+      "parentUuid": "da5c1566_6d401d57",
+      "range": {
+        "startLine": 55,
+        "startChar": 4,
+        "endLine": 55,
+        "endChar": 14
+      },
+      "revId": "d50dd869fa655415605ea5961752f82902e472cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_cd24c9c8",
         "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/yangtools/binding/data/codec/impl/UnionValueOptionContextTest.java",
         "patchSetId": 7
@@ -87,6 +111,30 @@
       "writtenOn": "2016-05-31T10:48:47Z",
       "side": 1,
       "message": "is it necessary here and other places?",
+      "range": {
+        "startLine": 52,
+        "startChar": 31,
+        "endLine": 52,
+        "endChar": 47
+      },
+      "revId": "d50dd869fa655415605ea5961752f82902e472cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_47208cf7",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/DOMDataTreeIdentifierTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5994
+      },
+      "writtenOn": "2016-06-03T08:51:27Z",
+      "side": 1,
+      "message": "yes, it is good practice if you do not expect Exception to be thrown to pass test",
+      "parentUuid": "da5c1566_e847fb49",
       "range": {
         "startLine": 52,
         "startChar": 31,
