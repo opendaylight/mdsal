@@ -1,8 +1,8 @@
 = MD-SAL Karaf Features =
 
 
-[plantuml]
-....
+[uml, file="features-binding1.png"]
+--
 
 [odl-yangtools-yang-parser] as yang.parser
 [odl-yangtools-yang-data] as yang.data
@@ -50,5 +50,4 @@ dom --> dom.api
 
 binding --> binding.dom.adapter
 binding --> dom
-
-....
+--
