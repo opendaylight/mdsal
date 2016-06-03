@@ -34,4 +34,26 @@
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-type-util/{{VERSION}}</bundle>
     </feature>
 
+    <feature name='odl-mdsal-binding2-models' version='${project.version}'
+             description='OpenDaylight :: MD-SAL Binding2 :: Models'>
+        <feature version='${mdsal.version}'>odl-mdsal-binding2-base</feature>
+        <bundle>mvn:org.opendaylight.mdsal.model/iana-afn-safi/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/iana-if-type-2014-05-08/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-inet-types/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-interfaces/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-yang-types/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-yang-types-20130715/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-restconf/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/yang-ext/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/opendaylight-l2-types/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-ted/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-topology/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-topology-isis/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-topology-ospf/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-topology-l3-unicast-igp/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-network-2015-06-08/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-inet-types-2013-07-15/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-type-util/{{VERSION}}</bundle>
+    </feature>
+
 </features>

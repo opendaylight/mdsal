@@ -19,6 +19,11 @@
         <feature version='${project.version}'>odl-mdsal-dom</feature>
     </feature>
 
+    <feature name='odl-mdsal-binding2' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding2'>
+        <feature version='${project.version}'>odl-mdsal-binding2-dom-adapter</feature>
+        <feature version='${project.version}'>odl-mdsal-dom</feature>
+    </feature>
+
     <feature name='odl-mdsal-dom' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM'>
         <feature version='${project.version}'>odl-mdsal-dom-broker</feature>
     </feature>
@@ -51,6 +56,13 @@
         <bundle>mvn:org.opendaylight.mdsal.model/yang-ext/{{VERSION}}</bundle>
     </feature>
 
+    <feature name='odl-mdsal-binding2-base' version='${project.version}'
+             description='OpenDaylight :: MD-SAL :: Binding2 Base Concepts'>
+        <feature version='${yangtools.version}'>odl-yangtools-common</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding2-spec/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/yang-ext/{{VERSION}}</bundle>
+    </feature>
+
     <feature name='odl-mdsal-binding-runtime' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Generator'>
         <feature version='${project.version}'>odl-mdsal-binding-base</feature>
         <feature version='${yangtools.version}'>odl-yangtools-yang-data</feature>
@@ -63,6 +75,18 @@
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-dom-codec/{{VERSION}}</bundle>
     </feature>
 
+    <feature name='odl-mdsal-binding2-runtime' version='${project.version}'
+             description='OpenDaylight :: MD-SAL :: Binding2 Generator'>
+        <feature version='${project.version}'>odl-mdsal-binding2-base</feature>
+        <feature version='${yangtools.version}'>odl-yangtools-yang-data</feature>
+        <bundle>mvn:org.javassist/javassist/{{VERSION}}</bundle>
+        <bundle>mvn:org.apache.commons/commons-lang3/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding2-generator-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding2-generator-impl/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding2-generator-util/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-dom-codec/{{VERSION}}</bundle>
+    </feature>
+
     <feature name='odl-mdsal-binding-api' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Base Concepts'>
         <feature version='${project.version}'>odl-mdsal-common</feature>
         <feature version='${project.version}'>odl-mdsal-binding-base</feature>
@@ -71,9 +95,26 @@
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-util/{{VERSION}}</bundle>
     </feature>
 
+    <feature name='odl-mdsal-binding2-api' version='${project.version}'
+             description='OpenDaylight :: MD-SAL :: Binding2 Base Concepts'>
+        <feature version='${project.version}'>odl-mdsal-common</feature>
+        <feature version='${project.version}'>odl-mdsal-binding2-base</feature>
+        <bundle>mvn:org.opendaylight.mdsal.model/general-entity/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-util/{{VERSION}}</bundle>
+    </feature>
+
     <feature name='odl-mdsal-binding-dom-adapter' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Generator'>
         <feature version='${project.version}'>odl-mdsal-binding-runtime</feature>
         <feature version='${project.version}'>odl-mdsal-binding-api</feature>
+        <feature version='${project.version}'>odl-mdsal-dom-api</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-dom-adapter/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-binding2-dom-adapter' version='${project.version}'
+             description='OpenDaylight :: MD-SAL :: Binding2 Generator'>
+        <feature version='${project.version}'>odl-mdsal-binding2-runtime</feature>
+        <feature version='${project.version}'>odl-mdsal-binding2-api</feature>
         <feature version='${project.version}'>odl-mdsal-dom-api</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-dom-adapter/{{VERSION}}</bundle>
     </feature>
