@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_491d36bd",
+        "filename": "model/ietf/ietf-access-control-list/src/main/yang/ietf-access-control-list.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2016-06-04T08:02:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da5c1566_6152d814",
+      "revId": "f46dd85cac97425f2feff6b1f52089eb66086add",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_c1576401",
         "filename": "model/ietf/ietf-access-control-list/src/main/yang/ietf-access-control-list.yang",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-06-03T07:38:46Z",
       "side": 1,
       "message": "add revision-date here",
+      "revId": "f46dd85cac97425f2feff6b1f52089eb66086add",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_a97972fe",
+        "filename": "model/ietf/ietf-access-control-list/src/main/yang/ietf-access-control-list.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2016-06-04T08:02:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da5c1566_c1576401",
       "revId": "f46dd85cac97425f2feff6b1f52089eb66086add",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_897e2ee3",
+        "filename": "model/ietf/ietf-packet-fields/src/main/yang/ietf-packet-fields.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2016-06-04T08:02:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da5c1566_e13d48bd",
+      "revId": "f46dd85cac97425f2feff6b1f52089eb66086add",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_414b5459",
         "filename": "model/ietf/ietf-packet-fields/src/main/yang/ietf-packet-fields.yang",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2016-06-03T07:38:46Z",
       "side": 1,
       "message": "add revision-date here",
+      "revId": "f46dd85cac97425f2feff6b1f52089eb66086add",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_e9836aca",
+        "filename": "model/ietf/ietf-packet-fields/src/main/yang/ietf-packet-fields.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2016-06-04T08:02:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da5c1566_414b5459",
       "revId": "f46dd85cac97425f2feff6b1f52089eb66086add",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_c98826ea",
+        "filename": "model/ietf/ietf-packet-fields/src/main/yang/ietf-packet-fields.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2016-06-04T08:02:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da5c1566_2148e05a",
+      "revId": "f46dd85cac97425f2feff6b1f52089eb66086add",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_e16428e7",
         "filename": "model/ietf/ietf-packet-fields/src/main/yang/ietf-packet-fields.yang",
         "patchSetId": 2
@@ -98,6 +188,24 @@
       "writtenOn": "2016-06-03T07:38:46Z",
       "side": 1,
       "message": "Do you copy from datatracker.ietf.org? I saw some difference in description.",
+      "revId": "f46dd85cac97425f2feff6b1f52089eb66086add",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_296d6233",
+        "filename": "model/ietf/ietf-packet-fields/src/main/yang/ietf-packet-fields.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2016-06-04T08:02:40Z",
+      "side": 1,
+      "message": "I copied it from [1].\n[1]https://github.com/YangModels/yang/tree/master/experimental/ietf",
+      "parentUuid": "da5c1566_e16428e7",
       "revId": "f46dd85cac97425f2feff6b1f52089eb66086add",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
