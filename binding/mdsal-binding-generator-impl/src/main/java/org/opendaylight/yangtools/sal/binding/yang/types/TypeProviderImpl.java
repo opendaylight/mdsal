@@ -81,7 +81,6 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.Decimal64;
-import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.UnionType;
@@ -1178,14 +1177,7 @@ public final class TypeProviderImpl implements TypeProvider {
         Preconditions.checkArgument(typedef != null, "typedef can't be null");
 
         final List<PatternConstraint> patternConstraints;
-        if (typedef instanceof ExtendedType) {
-            final TypeDefinition<?> strTypeDef = baseTypeDefForExtendedType(typedef);
-            if (strTypeDef instanceof StringTypeDefinition) {
-                patternConstraints = ((ExtendedType)typedef).getPatternConstraints();
-            } else {
-                patternConstraints = ImmutableList.of();
-            }
-        } else if (typedef instanceof StringTypeDefinition) {
+        if (typedef instanceof StringTypeDefinition) {
             // FIXME: run diff against base
             patternConstraints = ((StringTypeDefinition) typedef).getPatternConstraints();
         } else {
