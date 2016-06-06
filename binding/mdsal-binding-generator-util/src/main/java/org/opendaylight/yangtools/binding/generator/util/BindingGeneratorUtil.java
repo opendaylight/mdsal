@@ -43,8 +43,6 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.Decimal64;
-import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.type.DecimalTypeBuilder;
 
@@ -498,8 +496,8 @@ public final class BindingGeneratorUtil {
             // instantiate a temporary unconstrained type and compare them.
             //
             // FIXME: looking at the generated code it looks as though we need to pass the restrictions without
-            //        comparison and also even in the case of the old parser
-            if (type instanceof DecimalTypeDefinition && !(type instanceof Decimal64)) {
+            //        comparison
+            if (type instanceof DecimalTypeDefinition) {
                 final DecimalTypeDefinition decimal = (DecimalTypeDefinition) type;
                 final DecimalTypeBuilder tmpBuilder = BaseTypes.decimalTypeBuilder(decimal.getPath());
                 tmpBuilder.setFractionDigits(decimal.getFractionDigits());
@@ -550,26 +548,7 @@ public final class BindingGeneratorUtil {
          *
          * FIXME: this probably not the best solution and needs further analysis.
          */
-        if (type instanceof ExtendedType) {
-            final ExtendedType ext = (ExtendedType)type;
-            length = ext.getLengthConstraints();
-            pattern = ext.getPatternConstraints();
-
-            // Interesting special-case...
-            List<RangeConstraint> tmp = ext.getRangeConstraints();
-            if (tmp.isEmpty()) {
-                final TypeDefinition<?> base = ext.getBaseType();
-                if (base instanceof IntegerTypeDefinition) {
-                    tmp = ((IntegerTypeDefinition)base).getRangeConstraints();
-                } else if (base instanceof UnsignedIntegerTypeDefinition) {
-                    tmp = ((UnsignedIntegerTypeDefinition)base).getRangeConstraints();
-                } else if (base instanceof DecimalTypeDefinition) {
-                    tmp = ((DecimalTypeDefinition)base).getRangeConstraints();
-                }
-            }
-
-            range = tmp;
-        } else if (type instanceof BinaryTypeDefinition) {
+        if (type instanceof BinaryTypeDefinition) {
             final BinaryTypeDefinition binary = (BinaryTypeDefinition)type;
             final BinaryTypeDefinition base = binary.getBaseType();
             if (base != null && base.getBaseType() != null) {
