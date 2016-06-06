@@ -105,7 +105,6 @@ import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
-import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
 import org.opendaylight.yangtools.yang.parser.util.ModuleDependencySort;
 import org.slf4j.Logger;
@@ -1378,11 +1377,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         // Embedded type definition with new parser. Also takes care of the old parser with bits
         if (leaf.getPath().equals(type.getPath().getParent())) {
-            return true;
-        }
-
-        // Old parser uses broken Union type, which does not change its schema path
-        if (type instanceof UnionType) {
             return true;
         }
 
