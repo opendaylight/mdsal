@@ -12,9 +12,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
-import com.google.common.base.Optional;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -24,9 +21,9 @@ import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
-import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
-import org.opendaylight.yangtools.yang.model.util.EnumerationType;
+import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 
 public class EnumerationBuilderImplTest {
 
@@ -144,9 +141,8 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void testUpdateEnumPairsFromEnumTypeDef() {
-        EnumTypeDefinition.EnumPair enumPair = EnumPairImpl.create(qName);
-        EnumTypeDefinition enumTypeDefinition = EnumerationType.create(SchemaPath.SAME,
-                Arrays.asList(enumPair), Optional.of(enumPair));
+        EnumTypeDefinition enumTypeDefinition = BaseTypes.enumerationTypeBuilder(SchemaPath.SAME)
+                .addEnum(EnumPairImpl.create(qName)).build();
         enumerationBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDefinition);
     }
 
@@ -163,7 +159,7 @@ public class EnumerationBuilderImplTest {
         private final String name;
         private final Integer value;
 
-        private EnumPairImpl(QName qName) {
+        private EnumPairImpl(final QName qName) {
             qname = qName;
             path = SchemaPath.SAME;
             description = "Some Other Description";
@@ -173,7 +169,7 @@ public class EnumerationBuilderImplTest {
             value = 45;
         }
 
-        public static EnumPairImpl create(QName qName) {
+        public static EnumPairImpl create(final QName qName) {
             return new EnumPairImpl(qName);
         }
 
