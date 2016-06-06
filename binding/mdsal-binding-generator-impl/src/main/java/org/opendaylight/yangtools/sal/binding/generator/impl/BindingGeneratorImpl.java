@@ -27,7 +27,6 @@ import static org.opendaylight.yangtools.binding.generator.util.Types.typeForCla
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -38,6 +37,7 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -107,7 +107,6 @@ import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
-import org.opendaylight.yangtools.yang.parser.builder.util.Comparators;
 import org.opendaylight.yangtools.yang.parser.util.ModuleDependencySort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,6 +116,27 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final Splitter BSDOT_SPLITTER = Splitter.on("\\.");
     private static final char NEW_LINE = '\n';
+
+    /**
+     * Comparator based on augment target path.
+     */
+    private static final Comparator<AugmentationSchema> AUGMENT_COMP = (o1, o2) -> {
+        final Iterator<QName> thisIt = o1.getTargetPath().getPathFromRoot().iterator();
+        final Iterator<QName> otherIt = o2.getTargetPath().getPathFromRoot().iterator();
+
+        while (thisIt.hasNext()) {
+            if (!otherIt.hasNext()) {
+                return 1;
+            }
+
+            final int comp = thisIt.next().compareTo(otherIt.next());
+            if (comp != 0) {
+                return comp;
+            }
+        }
+
+        return otherIt.hasNext() ? -1 : 0;
+    };
 
     /**
      * Constant with the concrete name of identifier.
@@ -426,7 +446,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         final Set<AugmentationSchema> augmentations = module.getAugmentations();
         final List<AugmentationSchema> sortedAugmentations = new ArrayList<>(augmentations);
-        Collections.sort(sortedAugmentations, Comparators.AUGMENT_COMP);
+        Collections.sort(sortedAugmentations, AUGMENT_COMP);
 
         return sortedAugmentations;
     }
