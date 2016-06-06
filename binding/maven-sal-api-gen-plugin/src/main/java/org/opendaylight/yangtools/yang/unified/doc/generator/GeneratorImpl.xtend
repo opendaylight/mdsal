@@ -50,7 +50,6 @@ import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition
-import org.opendaylight.yangtools.yang.model.util.ExtendedType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
@@ -1308,10 +1307,6 @@ class GeneratorImpl {
         «type.lengthConstraints.toLengthStmt»
     '''
 
-    private def dispatch toLength(ExtendedType type) '''
-        «type.lengthConstraints.toLengthStmt»
-    '''
-
     private def dispatch toRange(TypeDefinition<?> type) {
     }
 
@@ -1324,10 +1319,6 @@ class GeneratorImpl {
     '''
 
     private def dispatch toRange(UnsignedIntegerTypeDefinition type) '''
-        «type.rangeConstraints.toRangeStmt»
-    '''
-
-    private def dispatch toRange(ExtendedType type) '''
         «type.rangeConstraints.toRangeStmt»
     '''
 
