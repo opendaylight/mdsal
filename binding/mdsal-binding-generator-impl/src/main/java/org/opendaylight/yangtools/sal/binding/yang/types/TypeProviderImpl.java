@@ -80,11 +80,8 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.Decimal64;
-import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.opendaylight.yangtools.yang.model.util.UnionType;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
@@ -94,6 +91,11 @@ import org.slf4j.LoggerFactory;
 public final class TypeProviderImpl implements TypeProvider {
     private static final Logger LOG = LoggerFactory.getLogger(TypeProviderImpl.class);
     private static final Pattern NUMBERS_PATTERN = Pattern.compile("[0-9]+\\z");
+
+    // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
+    // the case, as unions are emitted to their correct schema path.
+    private static final SchemaPath UNION_PATH = SchemaPath.create(true,
+        org.opendaylight.yangtools.yang.model.util.type.BaseTypes.UNION_QNAME);
 
     /**
      * Contains the schema data red from YANG files.
@@ -199,8 +201,8 @@ public final class TypeProviderImpl implements TypeProvider {
         if (typeDefinition.getBaseType() == null) {
             // We have to deal with differing handling of decimal64. The old parser used a fixed Decimal64 type
             // and generated an enclosing ExtendedType to hold any range constraints. The new parser instantiates
-            // a base type which holds these constraints -- and the class is not a Decimal64.
-            if (typeDefinition instanceof DecimalTypeDefinition && !(typeDefinition instanceof Decimal64)) {
+            // a base type which holds these constraints.
+            if (typeDefinition instanceof DecimalTypeDefinition) {
                 final Type ret = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(typeDefinition, parentNode, r);
                 if (ret != null) {
                     return ret;
@@ -1178,14 +1180,7 @@ public final class TypeProviderImpl implements TypeProvider {
         Preconditions.checkArgument(typedef != null, "typedef can't be null");
 
         final List<PatternConstraint> patternConstraints;
-        if (typedef instanceof ExtendedType) {
-            final TypeDefinition<?> strTypeDef = baseTypeDefForExtendedType(typedef);
-            if (strTypeDef instanceof StringTypeDefinition) {
-                patternConstraints = ((ExtendedType)typedef).getPatternConstraints();
-            } else {
-                patternConstraints = ImmutableList.of();
-            }
-        } else if (typedef instanceof StringTypeDefinition) {
+        if (typedef instanceof StringTypeDefinition) {
             // FIXME: run diff against base
             patternConstraints = ((StringTypeDefinition) typedef).getPatternConstraints();
         } else {
@@ -1364,7 +1359,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *         definition to the base type
      */
     private static int getTypeDefinitionDepth(final TypeDefinition<?> typeDefinition) {
-        // FIXME: rewrite this in a non-recursive manner, without ExtendedType and UnionType
+        // FIXME: rewrite this in a non-recursive manner
         if (typeDefinition == null) {
             return 1;
         }
@@ -1645,18 +1640,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 Date revision = first.getRevision();
                 Module parentModule = schemaContext.findModuleByNamespaceAndRevision(namespace, revision);
                 String basePackageName = BindingMapping.getRootPackageName(parentModule.getQNameModule());
-
-                // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
-                // the case, as unions are emitted to their correct schema path. Create a proxy instance to meet the
-                // codepath's expectations
-                final SchemaPath typePath;
-                if (type instanceof UnionType) {
-                    typePath = type.getPath();
-                } else {
-                    typePath = UnionType.create(((UnionTypeDefinition)type).getTypes()).getPath();
-                }
-
-                String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typePath);
+                String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, UNION_PATH);
                 className = packageName + "." + BindingMapping.getClassName(node.getQName());
             }
         }

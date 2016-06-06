@@ -103,7 +103,6 @@ import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
-import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
@@ -1371,11 +1370,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
     }
 
     private static boolean isInnerType(final LeafSchemaNode leaf, final TypeDefinition<?> type) {
-        // Deal with old parser, clearing out references to typedefs
-        if (type instanceof ExtendedType) {
-            return false;
-        }
-
         // New parser with encapsulated type
         if (leaf.getPath().equals(type.getPath())) {
             return true;
@@ -1472,10 +1466,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
     }
 
     private static TypeDefinition<?> getBaseOrDeclaredType(final TypeDefinition<?> typeDef) {
-        if (typeDef instanceof ExtendedType) {
-            // Legacy behaviour returning ExtendedType is enough
-            return typeDef;
-        }
         // Returns DerivedType in case of new parser.
         final TypeDefinition<?> baseType = typeDef.getBaseType();
         return (baseType != null && baseType.getBaseType() != null) ? baseType : typeDef;
@@ -2017,10 +2007,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
     /**
      * Builds generated TO builders for <code>typeDef</code> of type
-     * {@link org.opendaylight.yangtools.yang.model.util.UnionType UnionType} or
-     * {@link org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition
-     * BitsTypeDefinition} which are also added to <code>typeBuilder</code> as
-     * enclosing transfer object.
+     * {@link UnionTypeDefinition} or {@link BitsTypeDefinition} which are
+     * also added to <code>typeBuilder</code> as enclosing transfer object.
      *
      * If more then one generated TO builder is created for enclosing then all
      * of the generated TO builders are added to <code>typeBuilder</code> as

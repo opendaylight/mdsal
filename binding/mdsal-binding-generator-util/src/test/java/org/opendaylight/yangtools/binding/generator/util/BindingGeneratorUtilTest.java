@@ -16,12 +16,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-
 import com.google.common.base.Optional;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,21 +41,18 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
-import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
-import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
-import org.opendaylight.yangtools.yang.model.util.Decimal64;
-import org.opendaylight.yangtools.yang.model.util.ExtendedType;
-import org.opendaylight.yangtools.yang.model.util.ExtendedType.Builder;
-import org.opendaylight.yangtools.yang.model.util.Int16;
-import org.opendaylight.yangtools.yang.model.util.StringType;
-import org.opendaylight.yangtools.yang.model.util.Uint16;
+import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.util.type.DerivedTypes;
+import org.opendaylight.yangtools.yang.model.util.type.RestrictedTypes;
+import org.opendaylight.yangtools.yang.model.util.type.StringTypeBuilder;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class BindingGeneratorUtilTest {
+    private static final SchemaPath ROOT_PATH = SchemaPath.create(true, QName.create("/root"));
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
@@ -321,22 +316,16 @@ public class BindingGeneratorUtilTest {
 
         Optional<String> absent = Optional.absent();
 
-        Builder extTypeBuilder = ExtendedType.builder(new QName(URI.create("namespace"), "localName"),
-                Int16.getInstance(), absent, absent, SchemaPath.create(true, QName.create("/root")));
+        final StringTypeBuilder builder = RestrictedTypes.newStringBuilder(BaseTypes.stringType(), ROOT_PATH);
 
-        ArrayList<LengthConstraint> lenght = new ArrayList<LengthConstraint>();
-        ArrayList<RangeConstraint> range = new ArrayList<RangeConstraint>();
-        ArrayList<PatternConstraint> pattern = new ArrayList<PatternConstraint>();
 
-        lenght.add(BaseConstraints.newLengthConstraint(1, 2, absent, absent));
-        range.add(BaseConstraints.newRangeConstraint(1, 2, absent, absent));
-        pattern.add(BaseConstraints.newPatternConstraint(".*", absent, absent));
+        ArrayList<LengthConstraint> length = new ArrayList<LengthConstraint>();
+        length.add(BaseConstraints.newLengthConstraint(1, 2, absent, absent));
 
-        extTypeBuilder.lengths(lenght);
-        extTypeBuilder.ranges(range);
-        extTypeBuilder.patterns(pattern);
+        builder.setLengthAlternatives(length);
+        builder.addPatternConstraint(BaseConstraints.newPatternConstraint(".*", absent, absent));
 
-        Restrictions restrictions = BindingGeneratorUtil.getRestrictions(extTypeBuilder.build());
+        Restrictions restrictions = BindingGeneratorUtil.getRestrictions(builder.build());
 
         assertNotNull(restrictions);
 
@@ -355,33 +344,21 @@ public class BindingGeneratorUtilTest {
 
     @Test
     public void getEmptyRestrictionsTest() {
-
-        Optional<String> absent = Optional.absent();
-
-        Builder extTypeBuilder = ExtendedType.builder(new QName(URI.create("namespace"), "localName"),
-                StringType.getInstance(), absent, absent, SchemaPath.create(true, QName.create("/root")));
-
-        Restrictions restrictions = BindingGeneratorUtil.getRestrictions(extTypeBuilder.build());
+        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(BaseTypes.stringType(), ROOT_PATH).build();
+        Restrictions restrictions = BindingGeneratorUtil.getRestrictions(type);
 
         assertNotNull(restrictions);
         assertTrue(restrictions.isEmpty());
-
     }
 
     @Test
     public void getDefaultIntegerRestrictionsTest() {
-
-        Optional<String> absent = Optional.absent();
-
-        Builder extTypeBuilder = ExtendedType.builder(new QName(URI.create("namespace"), "localName"),
-                Int16.getInstance(), absent, absent, SchemaPath.create(true, QName.create("/root")));
-
-        ExtendedType extType = extTypeBuilder.build();
-        Restrictions restrictions = BindingGeneratorUtil.getRestrictions(extType);
+        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(BaseTypes.int16Type(), ROOT_PATH).build();
+        Restrictions restrictions = BindingGeneratorUtil.getRestrictions(type);
 
         assertNotNull(restrictions);
         assertFalse(restrictions.isEmpty());
-        assertEquals(((IntegerTypeDefinition) extType.getBaseType()).getRangeConstraints(),
+        assertEquals(((IntegerTypeDefinition) type.getBaseType()).getRangeConstraints(),
                 restrictions.getRangeConstraints());
         assertTrue(restrictions.getLengthConstraints().isEmpty());
         assertTrue(restrictions.getPatternConstraints().isEmpty());
@@ -390,18 +367,12 @@ public class BindingGeneratorUtilTest {
 
     @Test
     public void getDefaultUnsignedIntegerRestrictionsTest() {
-
-        Optional<String> absent = Optional.absent();
-
-        Builder extTypeBuilder = ExtendedType.builder(new QName(URI.create("namespace"), "localName"),
-                Uint16.getInstance(), absent, absent, SchemaPath.create(true, QName.create("/root")));
-
-        ExtendedType extType = extTypeBuilder.build();
-        Restrictions restrictions = BindingGeneratorUtil.getRestrictions(extType);
+        final TypeDefinition<?> type = DerivedTypes.derivedTypeBuilder(BaseTypes.uint16Type(), ROOT_PATH).build();
+        Restrictions restrictions = BindingGeneratorUtil.getRestrictions(type);
 
         assertNotNull(restrictions);
         assertFalse(restrictions.isEmpty());
-        assertEquals(((UnsignedIntegerTypeDefinition) extType.getBaseType()).getRangeConstraints(),
+        assertEquals(((UnsignedIntegerTypeDefinition) type.getBaseType()).getRangeConstraints(),
                 restrictions.getRangeConstraints());
         assertTrue(restrictions.getLengthConstraints().isEmpty());
         assertTrue(restrictions.getPatternConstraints().isEmpty());
@@ -409,23 +380,12 @@ public class BindingGeneratorUtilTest {
 
     @Test
     public void getDefaultDecimalRestrictionsTest() {
+        final DecimalTypeDefinition type = BaseTypes.decimalTypeBuilder(ROOT_PATH).setFractionDigits(10).build();
 
-        Optional<String> absent = Optional.absent();
-        SchemaPath path = SchemaPath.create(true, QName.create("/root"));
-
-        Builder extTypeBuilder = ExtendedType.builder(new QName(URI.create("namespace"), "localName"),
-                Decimal64.create(path, 10), absent, absent, path);
-
-        ExtendedType extType = extTypeBuilder.build();
-        Restrictions restrictions = BindingGeneratorUtil.getRestrictions(extType);
-
+        Restrictions restrictions = BindingGeneratorUtil.getRestrictions(type);
         assertNotNull(restrictions);
         assertFalse(restrictions.isEmpty());
-        assertEquals(((DecimalTypeDefinition) extType.getBaseType()).getRangeConstraints(),
-                restrictions.getRangeConstraints());
         assertTrue(restrictions.getLengthConstraints().isEmpty());
         assertTrue(restrictions.getPatternConstraints().isEmpty());
-
     }
-
 }
