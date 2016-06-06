@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_359c9569",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/UnionTypeCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-06T12:41:14Z",
+      "side": 1,
+      "message": "Preconditions.checkNotNull() if this cannot be null",
+      "range": {
+        "startLine": 34,
+        "startChar": 29,
+        "endLine": 34,
+        "endChar": 32
+      },
+      "revId": "b2f31f0029bdc02d0768229ccb9273740d263523",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
