@@ -30,6 +30,7 @@
         <module>ietf</module>
         <module>l2-types</module>
         <module>general-entity</module>
+        <module>odl-external-reference</module>
     </modules>
 
     <properties>
