@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_a41d1069",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMRpcRouterTest.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-07T07:20:12Z",
+      "side": 1,
+      "message": "missing empty space, here and other places, copy\u0026paste issue?",
+      "range": {
+        "startLine": 53,
+        "startChar": 27,
+        "endLine": 53,
+        "endChar": 38
+      },
+      "revId": "a0a09e743ec463d05eb41f17dfec12c485f24011",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_841a8c6c",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/RoutedDOMRpcRoutingTableEntryTest.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-07T07:20:12Z",
+      "side": 1,
+      "message": "missing empty space",
+      "revId": "a0a09e743ec463d05eb41f17dfec12c485f24011",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_e426e8b9",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataWriteTransactionTest.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-07T07:20:12Z",
+      "side": 1,
+      "message": "//noop ?",
+      "revId": "a0a09e743ec463d05eb41f17dfec12c485f24011",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
