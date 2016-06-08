@@ -9,8 +9,9 @@ package org.opendaylight.yangtools.binding.data.codec.impl;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.BaseEncoding;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,18 +22,23 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
 final class UnionTypeCodec extends ReflectionBasedCodec {
+    private static final MethodType CONSTRUCTOR_LOOKUP_TYPE = MethodType.methodType(void.class, char[].class);
+    private static final MethodType CONSTRUCTOR_INVOKE_TYPE = MethodType.methodType(Object.class, char[].class);
 
     private final ImmutableSet<UnionValueOptionContext> typeCodecs;
-    private final Constructor<?> charConstructor;
+    private final MethodHandle charConstructor;
 
     private UnionTypeCodec(final Class<?> unionCls,final Set<UnionValueOptionContext> codecs) {
         super(unionCls);
+
         try {
-            charConstructor = unionCls.getConstructor(char[].class);
-            typeCodecs = ImmutableSet.copyOf(codecs);
-        } catch (NoSuchMethodException | SecurityException e) {
-           throw new IllegalStateException("Required constructor is not available.",e);
+            charConstructor = MethodHandles.publicLookup().findConstructor(unionCls, CONSTRUCTOR_LOOKUP_TYPE)
+                    .asType(CONSTRUCTOR_INVOKE_TYPE);
+        } catch (IllegalAccessException | NoSuchMethodException e) {
+            throw new IllegalStateException("Failed to instantiate handle for constructor", e);
         }
+
+        typeCodecs = ImmutableSet.copyOf(codecs);
     }
 
     static Callable<UnionTypeCodec> loader(final Class<?> unionCls, final UnionTypeDefinition unionType) {
@@ -40,12 +46,12 @@ final class UnionTypeCodec extends ReflectionBasedCodec {
             @Override
             public UnionTypeCodec call() throws NoSuchMethodException, SecurityException {
                 Set<UnionValueOptionContext> values = new HashSet<>();
-                for(TypeDefinition<?> subtype : unionType.getTypes()) {
+                for (TypeDefinition<?> subtype : unionType.getTypes()) {
                     String methodName = "get" + BindingMapping.getClassName(subtype.getQName());
                     Method valueGetter = unionCls.getMethod(methodName);
                     Class<?> valueType = valueGetter.getReturnType();
                     Codec<Object, Object> valueCodec = UnionTypeCodec.getCodecForType(valueType, subtype);
-                    values.add(new UnionValueOptionContext(valueType,valueGetter, valueCodec));
+                    values.add(new UnionValueOptionContext(valueType, valueGetter, valueCodec));
                 }
                 return new UnionTypeCodec(unionCls, values);
             }
@@ -57,7 +63,7 @@ final class UnionTypeCodec extends ReflectionBasedCodec {
             try {
                 return UnionTypeCodec.loader(valueType, (UnionTypeDefinition) subtype.getBaseType()).call();
             } catch (final Exception e) {
-                throw new IllegalStateException("Could not construct Union Type Codec");
+                throw new IllegalStateException("Could not construct Union Type Codec", e);
             }
         } else {
             return ValueTypeCodec.getCodecFor(valueType, subtype);
@@ -66,14 +72,11 @@ final class UnionTypeCodec extends ReflectionBasedCodec {
 
     @Override
     public Object deserialize(final Object input) {
+        final String str = input instanceof byte[] ? BaseEncoding.base64().encode((byte[]) input) : input.toString();
         try {
-            if (input instanceof byte[]) {
-                return charConstructor.newInstance(BaseEncoding.base64().encode((byte[]) input).toCharArray());
-            } else {
-                return charConstructor.newInstance((input.toString().toCharArray()));
-            }
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not construct instance",e);
+            return charConstructor.invokeExact(str.toCharArray());
+        } catch (Throwable e) {
+            throw new IllegalStateException("Could not construct instance", e);
         }
     }
 
@@ -89,5 +92,4 @@ final class UnionTypeCodec extends ReflectionBasedCodec {
         }
         return null;
     }
-
 }
