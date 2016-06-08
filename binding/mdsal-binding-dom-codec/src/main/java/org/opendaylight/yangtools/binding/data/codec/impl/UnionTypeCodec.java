@@ -11,6 +11,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.io.BaseEncoding;
 import com.google.common.util.concurrent.ExecutionError;
 import com.google.common.util.concurrent.UncheckedExecutionException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,25 +27,41 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
 final class UnionTypeCodec extends ReflectionBasedCodec {
+    private static final MethodType CONSTRUCTOR_LOOKUP_TYPE = MethodType.methodType(void.class, char[].class);
+    private static final MethodType CONSTRUCTOR_INVOKE_TYPE = MethodType.methodType(Object.class, char[].class);
 
-    private final Codec<Object, Object> identityrefCodec;
+    private final Codec<Object, Object> idRefCodec;
+    private final Constructor<?> idrefConstructor;
+
     private final ImmutableSet<UnionValueOptionContext> typeCodecs;
-    private final Constructor<?> charConstructor;
+    private final MethodHandle charConstructor;
 
     private UnionTypeCodec(final Class<?> unionCls,final Set<UnionValueOptionContext> codecs,
-                           @Nullable Codec<Object, Object> identityrefCodec) {
+                           @Nullable final Codec<Object, Object> identityrefCodec) {
         super(unionCls);
-        this.identityrefCodec = identityrefCodec;
-        try {
-            charConstructor = unionCls.getConstructor(char[].class);
-            typeCodecs = ImmutableSet.copyOf(codecs);
-        } catch (NoSuchMethodException | SecurityException e) {
-           throw new IllegalStateException("Required constructor is not available.",e);
+        this.idRefCodec = identityrefCodec;
+        if (idRefCodec != null) {
+            try {
+                idrefConstructor = typeClass.getConstructor(Class.class);
+            } catch (NoSuchMethodException | SecurityException e) {
+                throw new IllegalStateException("Failed to get identityref constructor", e);
+            }
+        } else {
+            idrefConstructor = null;
         }
+
+        try {
+            charConstructor = MethodHandles.publicLookup().findConstructor(unionCls, CONSTRUCTOR_LOOKUP_TYPE)
+                    .asType(CONSTRUCTOR_INVOKE_TYPE);
+        } catch (IllegalAccessException | NoSuchMethodException e) {
+            throw new IllegalStateException("Failed to instantiate handle for constructor", e);
+        }
+
+        typeCodecs = ImmutableSet.copyOf(codecs);
     }
 
     static Callable<UnionTypeCodec> loader(final Class<?> unionCls, final UnionTypeDefinition unionType,
-                                           BindingCodecContext bindingCodecContext) {
+                                           final BindingCodecContext bindingCodecContext) {
         return new Callable<UnionTypeCodec>() {
             @Override
             public UnionTypeCodec call() throws NoSuchMethodException, SecurityException {
@@ -65,27 +84,23 @@ final class UnionTypeCodec extends ReflectionBasedCodec {
 
     @Override
     public Object deserialize(final Object input) {
-        if (identityrefCodec != null) {
+        if (idRefCodec != null) {
             try {
-                Object identityref = identityrefCodec.deserialize(input);
-                return typeClass.getConstructor(Class.class).newInstance(identityref);
+                // FIXME: rework this in terms of a MethodHandle
+                Object identityref = idRefCodec.deserialize(input);
+                return idrefConstructor.newInstance(identityref);
             } catch (UncheckedExecutionException | ExecutionError e) {
                 // ignore this exception caused by deserialize()
-            } catch (NoSuchMethodException e) {
-                // caused by getContructor(). this case shouldn't happen.
-                throw new IllegalStateException("Could not construct instance", e);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 // ignore this exception caused by newInstance()
             }
         }
+
+        final String str = input instanceof byte[] ? BaseEncoding.base64().encode((byte[]) input) : input.toString();
         try {
-            if (input instanceof byte[]) {
-                return charConstructor.newInstance(BaseEncoding.base64().encode((byte[]) input).toCharArray());
-            } else {
-                return charConstructor.newInstance((input.toString().toCharArray()));
-            }
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalStateException("Could not construct instance",e);
+            return charConstructor.invokeExact(str.toCharArray());
+        } catch (Throwable e) {
+            throw new IllegalStateException("Could not construct instance", e);
         }
     }
 
@@ -101,5 +116,4 @@ final class UnionTypeCodec extends ReflectionBasedCodec {
         }
         return null;
     }
-
 }
