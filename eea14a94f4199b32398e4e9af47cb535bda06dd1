@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_092cc798",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/CursorAwareWriteTransaction.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-09T10:39:43Z",
+      "side": 1,
+      "message": "this should not be here",
+      "range": {
+        "startLine": 18,
+        "startChar": 92,
+        "endLine": 18,
+        "endChar": 112
+      },
+      "revId": "eea14a94f4199b32398e4e9af47cb535bda06dd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_29270bb8",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeCursorAwareTransaction.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-09T10:39:43Z",
+      "side": 1,
+      "message": "this looks problematic, some implementations may want a different identifier",
+      "range": {
+        "startLine": 17,
+        "startChar": 101,
+        "endLine": 17,
+        "endChar": 121
+      },
+      "revId": "eea14a94f4199b32398e4e9af47cb535bda06dd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
