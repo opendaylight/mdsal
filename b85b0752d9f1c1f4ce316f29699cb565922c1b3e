@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Filip Gregor <fgregor@cisco.com>
+Code-Review+2: Robert Varga <nite@hq.sk>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Thu, 09 Jun 2016 10:30:50 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/40093
+Project: mdsal
+Branch: refs/heads/master
