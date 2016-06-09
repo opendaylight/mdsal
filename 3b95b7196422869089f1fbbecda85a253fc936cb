@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_e94b5357",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/test/java/org/opendaylight/mdsal/dom/store/inmemory/TestUtils.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-09T10:46:31Z",
+      "side": 1,
+      "message": "Have this as an abstract class and extend it in your test classes.",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 19
+      },
+      "revId": "3b95b7196422869089f1fbbecda85a253fc936cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
