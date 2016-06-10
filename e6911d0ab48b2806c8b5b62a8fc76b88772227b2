@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_eca07cf6",
+        "filename": "binding/mdsal-binding-generator-api/src/main/java/org/opendaylight/yangtools/sal/binding/model/api/Enumeration.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-10T12:28:09Z",
+      "side": 1,
+      "message": "please add javadoc explaining the difference between this and getName()",
+      "range": {
+        "startLine": 59,
+        "startChar": 8,
+        "endLine": 59,
+        "endChar": 31
+      },
+      "revId": "e6911d0ab48b2806c8b5b62a8fc76b88772227b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_2cab94d9",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/yangtools/binding/generator/util/generated/type/builder/EnumerationBuilderImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-10T12:28:09Z",
+      "side": 1,
+      "message": "computing this is rather expensive, it should be cached",
+      "range": {
+        "startLine": 156,
+        "startChar": 19,
+        "endLine": 156,
+        "endChar": 53
+      },
+      "revId": "e6911d0ab48b2806c8b5b62a8fc76b88772227b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
