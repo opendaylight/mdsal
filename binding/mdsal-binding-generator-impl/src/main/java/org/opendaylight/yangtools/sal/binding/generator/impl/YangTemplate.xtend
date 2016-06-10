@@ -20,6 +20,7 @@ import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
 import org.opendaylight.yangtools.yang.model.api.Deviation
+import org.opendaylight.yangtools.yang.model.api.DeviateDefinition
 import org.opendaylight.yangtools.yang.model.api.ExtensionDefinition
 import org.opendaylight.yangtools.yang.model.api.FeatureDefinition
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition
