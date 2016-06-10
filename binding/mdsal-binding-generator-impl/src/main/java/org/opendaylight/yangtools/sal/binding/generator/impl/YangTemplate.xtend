@@ -20,6 +20,7 @@ import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
 import org.opendaylight.yangtools.yang.model.api.Deviation
+import org.opendaylight.yangtools.yang.model.api.DeviateDefinition
 import org.opendaylight.yangtools.yang.model.api.ExtensionDefinition
 import org.opendaylight.yangtools.yang.model.api.FeatureDefinition
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition
@@ -488,9 +489,11 @@ class YangTemplate {
                     reference
                         "«deviation.reference»";
                 «ENDIF»
-                «IF deviation.deviate != null && !deviation.deviate.name.nullOrEmpty»
-                    deviation «deviation.deviate.name»;
-                «ENDIF»
+                «FOR deviateDef : deviation.deviates»
+                    «IF deviateDef.deviateType != null && !deviateDef.deviateType.name.nullOrEmpty»
+                        deviate «deviateDef.deviateType.name»;
+                    «ENDIF»
+                «ENDFOR»
             }
         '''
     }
