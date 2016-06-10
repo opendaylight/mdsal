@@ -13,12 +13,10 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import com.google.common.base.Optional;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -27,7 +25,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -56,14 +53,15 @@ import org.opendaylight.yangtools.yang.model.util.ExtendedType.Builder;
 import org.opendaylight.yangtools.yang.model.util.Int16;
 import org.opendaylight.yangtools.yang.model.util.StringType;
 import org.opendaylight.yangtools.yang.model.util.Uint16;
-import org.opendaylight.yangtools.yang.parser.builder.impl.ModuleBuilder;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class BindingGeneratorUtilTest {
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
-    private static List<File> loadTestResources(String testFile) {
+    private static List<File> loadTestResources(final String testFile) {
         final List<File> testModels = new ArrayList<File>();
         File listModelFile;
         try {
@@ -156,17 +154,13 @@ public class BindingGeneratorUtilTest {
         assertNotEquals(computedSUID, computedSUID2);
 
         // test of exception part of the method moduleNamespaceToPackageName()
-        ModuleBuilder moduleBuilder = new ModuleBuilder("module-withut-revision", null);
-        moduleBuilder.setSource("");
-        Module moduleWithoutRevision = moduleBuilder.build();
-        boolean passedSuccesfully = false;
+        Module moduleWithoutRevision = mock(Module.class);
+        doReturn(null).when(moduleWithoutRevision).getQNameModule();
         try {
             BindingGeneratorUtil.moduleNamespaceToPackageName(moduleWithoutRevision);
-            passedSuccesfully = true;
+            fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
         }
-        assertFalse("Exception 'IllegalArgumentException' wasn't raised", passedSuccesfully);
-
     }
 
     /**

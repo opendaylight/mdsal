@@ -12,14 +12,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -40,17 +39,10 @@ import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.type.IdentityrefTypeBuilder;
-import org.opendaylight.yangtools.yang.parser.builder.impl.IdentitySchemaNodeBuilder;
 import org.opendaylight.yangtools.yang.parser.builder.impl.LeafSchemaNodeBuilder;
-import org.opendaylight.yangtools.yang.parser.builder.impl.ModuleBuilder;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 
 public class TypeProviderImplTest {
-
-    @Rule
-    public ExpectedException expException = ExpectedException.none();
 
     @Test (expected = YangValidationException.class)
     public void testLeafRefRelativeSelfReference() throws Exception {
@@ -81,7 +73,7 @@ public class TypeProviderImplTest {
     }
 
     @Test
-    public void testLeafRefRelativeAndAbsoluteValidReference() throws URISyntaxException, SourceException, FileNotFoundException, ReactorException {
+    public void testLeafRefRelativeAndAbsoluteValidReference() throws Exception {
         File valid = new File(getClass().getResource("/leafref/leafref-valid.yang").toURI());
 
         final SchemaContext schemaContext = RetestUtils.parseYangSources(valid);
@@ -104,7 +96,7 @@ public class TypeProviderImplTest {
     }
 
     @Test
-    public void testMethodsOfTypeProviderImpl() throws URISyntaxException, SourceException, FileNotFoundException, ReactorException {
+    public void testMethodsOfTypeProviderImpl() throws Exception {
         final File abstractTopology = new File(getClass().getResource("/base-yang-types.yang")
                 .toURI());
 
@@ -165,20 +157,19 @@ public class TypeProviderImplTest {
         assertEquals("new java.lang.Boolean(\"default value\")", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
 
         // enum type
-        expException.expect(NoSuchElementException.class);
         final EnumTypeDefinition enumType =  BaseTypes.enumerationTypeBuilder(refTypePath).build();
         leafSchemaNodeBuilder = new LeafSchemaNodeBuilder("test-module", 111, QName.create("Cont1"), SchemaPath.ROOT);
         leafSchemaNodeBuilder.setType(enumType);
         leafSchemaNode = leafSchemaNodeBuilder.build();
-        assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
+        try {
+            assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
+            fail("Expected NoSuchElementException");
+        } catch (Exception e) {
+            assertTrue( e instanceof NoSuchElementException);
+        }
 
         // identityref type
-        expException.expect(UnsupportedOperationException.class);
-        expException.expectMessage("Cannot get default construction for identityref type");
-
-        final ModuleBuilder testModBuilder = new ModuleBuilder("test-module", "/test");
-        final IdentitySchemaNodeBuilder identityNodeBuilder = testModBuilder.addIdentity(QName.create("IdentityRefTest"), 111, SchemaPath.ROOT);
-        final IdentitySchemaNode identitySchemaNode = identityNodeBuilder.build();
+        final IdentitySchemaNode identitySchemaNode = mock(IdentitySchemaNode.class);
 
         final IdentityrefTypeBuilder identityRefBuilder = BaseTypes.identityrefTypeBuilder(refTypePath);
         identityRefBuilder.setIdentity(identitySchemaNode);
@@ -186,8 +177,13 @@ public class TypeProviderImplTest {
         leafSchemaNodeBuilder = new LeafSchemaNodeBuilder("test-module", 111, QName.create("Cont1"), SchemaPath.ROOT);
         leafSchemaNodeBuilder.setType(identityRef);
 
-        leafSchemaNodeBuilder.setParent(identityNodeBuilder);
         leafSchemaNode = leafSchemaNodeBuilder.build();
-        assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
+        try {
+            assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
+            fail("Expected UnsupportedOperationException");
+        } catch (Exception e) {
+            assertTrue(e instanceof UnsupportedOperationException);
+            assertEquals("Cannot get default construction for identityref type", e.getMessage());
+        }
     }
 }
