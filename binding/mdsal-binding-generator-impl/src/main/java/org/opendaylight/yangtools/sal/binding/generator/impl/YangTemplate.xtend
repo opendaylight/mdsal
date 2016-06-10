@@ -82,11 +82,11 @@ class YangTemplate {
             «ENDIF»
         '''
     }
-    
+
     def static String generateYangSnipet(Set<? extends SchemaNode> nodes) {
         if (nodes.nullOrEmpty)
             return ''
-        
+
         '''
             «FOR node : nodes»
                 «IF node instanceof NotificationDefinition»
