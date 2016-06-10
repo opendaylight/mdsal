@@ -11,6 +11,7 @@ package org.opendaylight.yangtools.sal.binding.yang.types;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 
 import java.util.List;
 import java.util.Set;
@@ -389,6 +390,7 @@ public class TypeProviderTest {
         LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(testTypeProviderModule, "bar", "leafref-value");
         TypeDefinition<?> leafType = leaf.getType();
         assertTrue(leafType instanceof LeafrefTypeDefinition);
+        doReturn(null).when(schemaNode).getPath();
         provider.provideTypeForLeafref((LeafrefTypeDefinition) leafType, schemaNode);
     }
 
