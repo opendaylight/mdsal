@@ -32,7 +32,7 @@ public class GenEnumResolvingTest {
                 .toURI());
         File ianaIfTypeModel = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
 
-        final SchemaContext context =  RetestUtils.parseYangSources(ietfInterfaces, ianaIfTypeModel);
+        final SchemaContext context =  TestUtils.parseYangSources(ietfInterfaces, ianaIfTypeModel);
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -94,7 +94,7 @@ public class GenEnumResolvingTest {
     @Test
     public void testTypedefEnumResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         File ianaIfType = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
-        final SchemaContext context =  RetestUtils.parseYangSources(ianaIfType);
+        final SchemaContext context =  TestUtils.parseYangSources(ianaIfType);
         assertTrue(context != null);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
         final List<Type> genTypes = bindingGen.generateTypes(context);
@@ -116,7 +116,7 @@ public class GenEnumResolvingTest {
                 .toURI());
         File ianaIfType = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
 
-        final SchemaContext context =  RetestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+        final SchemaContext context =  TestUtils.parseYangSources(abstractTopology, ietfInterfaces,
                 ianaIfType);
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

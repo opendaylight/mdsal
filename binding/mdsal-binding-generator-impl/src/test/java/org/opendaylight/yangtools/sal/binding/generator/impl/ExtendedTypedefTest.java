@@ -28,7 +28,7 @@ public class ExtendedTypedefTest {
         File abstractTopology = new File(getClass().getResource("/typedef-of-typedef/typedef_of_typedef.yang").toURI());
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
 
-        final SchemaContext context =  RetestUtils.parseYangSources(abstractTopology, ietfInetTypes);
+        final SchemaContext context =  TestUtils.parseYangSources(abstractTopology, ietfInetTypes);
         assertNotNull("Schema Context is null", context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

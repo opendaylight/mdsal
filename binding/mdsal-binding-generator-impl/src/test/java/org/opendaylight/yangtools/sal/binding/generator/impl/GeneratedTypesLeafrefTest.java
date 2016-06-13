@@ -39,7 +39,7 @@ public class GeneratedTypesLeafrefTest {
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
         File ietfYangTypes = new File(getClass().getResource("/ietf/ietf-yang-types.yang").toURI());
 
-        final SchemaContext context =  RetestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+        final SchemaContext context =  TestUtils.parseYangSources(abstractTopology, ietfInterfaces,
                 ietfInetTypes, ietfYangTypes);
         assertNotNull(context);
         assertEquals(4, context.getModules().size());
@@ -221,7 +221,7 @@ public class GeneratedTypesLeafrefTest {
         final URI resource = getClass().getResource("/leafref-test-invalid-model/foo.yang").toURI();
         assertNotNull(resource);
 
-        final SchemaContext context =  RetestUtils.parseYangSources(new File(resource));
+        final SchemaContext context =  TestUtils.parseYangSources(new File(resource));
         assertNotNull(context);
         assertEquals(1, context.getModules().size());
 

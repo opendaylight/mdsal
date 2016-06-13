@@ -42,19 +42,19 @@ public class Bug532Test extends BaseCompilationTest {
         final File compiledOutputDir = new File(COMPILER_OUTPUT_PATH + FS + "bug532");
         assertTrue("Failed to create test file '" + compiledOutputDir + "'", compiledOutputDir.mkdir());
 
-        generateTestSources("/compilation/list-gen-retest", sourcesOutputDir);
+        generateTestSources("/compilation/list-gen-test", sourcesOutputDir);
 
         // Test if sources are compilable
         testCompilation(sourcesOutputDir, compiledOutputDir);
 
         ClassLoader loader = new URLClassLoader(new URL[] { compiledOutputDir.toURI().toURL() });
-        Class<?> linksKeyClass = Class.forName(BASE_PKG + ".urn.opendaylight.retest.rev131008.LinksKey", true, loader);
-        Class<?> linksClass = Class.forName(BASE_PKG + ".urn.opendaylight.retest.rev131008.Links", true, loader);
-        Class<?> linksBuilderClass = Class.forName(BASE_PKG + ".urn.opendaylight.retest.rev131008.LinksBuilder", true,
+        Class<?> linksKeyClass = Class.forName(BASE_PKG + ".urn.opendaylight.test.rev131008.LinksKey", true, loader);
+        Class<?> linksClass = Class.forName(BASE_PKG + ".urn.opendaylight.test.rev131008.Links", true, loader);
+        Class<?> linksBuilderClass = Class.forName(BASE_PKG + ".urn.opendaylight.test.rev131008.LinksBuilder", true,
                 loader);
-        Class<?> levelClass = Class.forName(BASE_PKG + ".urn.opendaylight.retest.rev131008.links.Level", true, loader);
-        Class<?> nodeClass = Class.forName(BASE_PKG + ".urn.opendaylight.retest.rev131008.links.Node", true, loader);
-        Class<?> nodeListClass = Class.forName(BASE_PKG + ".urn.opendaylight.retest.rev131008.links.NodeList", true,
+        Class<?> levelClass = Class.forName(BASE_PKG + ".urn.opendaylight.test.rev131008.links.Level", true, loader);
+        Class<?> nodeClass = Class.forName(BASE_PKG + ".urn.opendaylight.test.rev131008.links.Node", true, loader);
+        Class<?> nodeListClass = Class.forName(BASE_PKG + ".urn.opendaylight.test.rev131008.links.NodeList", true,
                 loader);
 
         // init default values

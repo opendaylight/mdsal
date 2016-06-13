@@ -26,7 +26,7 @@ public class GenerateInnerClassForBitsAndUnionInLeavesTest {
     public void testInnerClassCreationForBitsAndUnionsInLeafes() throws Exception {
         final URI yangTypesPath = getClass().getResource("/bit_and_union_in_leaf.yang").toURI();
 
-        final SchemaContext context = RetestUtils.parseYangSources(new File(yangTypesPath));
+        final SchemaContext context = TestUtils.parseYangSources(new File(yangTypesPath));
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

@@ -19,7 +19,7 @@ public class Bug4145Test {
         File resourceFile = new File(getClass().getResource(
                 "/bug-4145/foo.yang").toURI());
 
-        SchemaContext context = RetestUtils.parseYangSources(resourceFile);
+        SchemaContext context = TestUtils.parseYangSources(resourceFile);
 
         List<Type> generateTypes = new BindingGeneratorImpl(false)
                 .generateTypes(context);
