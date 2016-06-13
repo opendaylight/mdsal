@@ -44,6 +44,6 @@ final class TypeProviderModel {
     }
 
     public static SchemaContext createTestContext() throws SourceException, ReactorException {
-        return RetestUtils.parseYangStreams(provideTestModelStreams());
+        return TestUtils.parseYangStreams(provideTestModelStreams());
     }
 }

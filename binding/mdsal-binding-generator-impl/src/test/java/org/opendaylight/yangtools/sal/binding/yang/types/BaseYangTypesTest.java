@@ -65,7 +65,7 @@ public class BaseYangTypesTest {
     public static void setup() throws SourceException, ReactorException {
         final List<InputStream> modelsToParse = Collections
             .singletonList(BaseYangTypesTest.class.getResourceAsStream("/base-yang-types.yang"));
-        schemaContext = RetestUtils.parseYangStreams(modelsToParse);
+        schemaContext = TestUtils.parseYangStreams(modelsToParse);
         assertNotNull(schemaContext);
         initTypeDefinitionsFromSchemaContext();
     }

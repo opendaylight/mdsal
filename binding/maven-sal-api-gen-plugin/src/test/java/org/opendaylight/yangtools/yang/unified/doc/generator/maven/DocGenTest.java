@@ -47,7 +47,7 @@ public class DocGenTest {
     @Test
     public void testListGeneration() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/doc-gen");
-        final SchemaContext context = RetestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = TestUtils.parseYangSources(sourceFiles);
         final Set<Module> modules = context.getModules();
         final BasicCodeGenerator generator = new DocumentationGeneratorImpl();
         Collection<File> generatedFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, modules);

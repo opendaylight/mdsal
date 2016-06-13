@@ -23,9 +23,9 @@ import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementR
 import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
 import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
 
-public class RetestUtils {
+public class TestUtils {
 
-    private RetestUtils() {
+    private TestUtils() {
         throw new UnsupportedOperationException("Utility class");
     }
 

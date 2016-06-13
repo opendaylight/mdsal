@@ -65,7 +65,7 @@ public class BindingGeneratorImplTest {
         File resourceFile = new File(getClass().getResource(
                 "/binding-generator-impl-test/choice-test.yang").toURI());
 
-        SchemaContext context = RetestUtils.parseYangSources(resourceFile);
+        SchemaContext context = TestUtils.parseYangSources(resourceFile);
 
         List<Type> generateTypes = new BindingGeneratorImpl(false)
                 .generateTypes(context);
@@ -163,7 +163,7 @@ public class BindingGeneratorImplTest {
         File resourceFile = new File(getClass().getResource(
                 "/binding-generator-impl-test/notification-test.yang").toURI());
 
-        SchemaContext context = RetestUtils.parseYangSources(resourceFile);
+        SchemaContext context = TestUtils.parseYangSources(resourceFile);
 
         List<Type> generateTypes = new BindingGeneratorImpl(false)
                 .generateTypes(context);
