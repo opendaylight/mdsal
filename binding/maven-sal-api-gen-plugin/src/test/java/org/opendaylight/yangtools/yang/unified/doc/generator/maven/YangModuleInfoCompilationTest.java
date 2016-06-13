@@ -131,7 +131,7 @@ public class YangModuleInfoCompilationTest {
 
     private static void generateTestSources(final String resourceDirPath, final File sourcesOutputDir) throws Exception {
         final List<File> sourceFiles = getSourceFiles(resourceDirPath);
-        final SchemaContext context = RetestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = TestUtils.parseYangSources(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.generateSources(context, sourcesOutputDir, context.getModules());

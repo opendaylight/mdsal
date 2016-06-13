@@ -34,7 +34,7 @@ public class AugmentRelativeXPathTest extends AbstractTypesTest {
     @Test
     public void AugmentationWithRelativeXPathTest() throws IOException, SourceException, ReactorException {
 
-        final SchemaContext context = RetestUtils.parseYangSources(testModels);
+        final SchemaContext context = TestUtils.parseYangSources(testModels);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

@@ -31,7 +31,7 @@ public class GeneratedTypesTest {
         File abstractTopology = new File(getClass().getResource("/abstract-topology.yang").toURI());
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
 
-        final SchemaContext context = RetestUtils.parseYangSources(abstractTopology, ietfInetTypes);
+        final SchemaContext context = TestUtils.parseYangSources(abstractTopology, ietfInetTypes);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -44,7 +44,7 @@ public class GeneratedTypesTest {
     @Test
     public void testContainerResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         final File testFile = new File(getClass().getResource("/simple-container-demo.yang").toURI());
-        final SchemaContext context = RetestUtils.parseYangSources(testFile);
+        final SchemaContext context = TestUtils.parseYangSources(testFile);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -129,7 +129,7 @@ public class GeneratedTypesTest {
     @Test
     public void testLeafListResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         final File testFile = new File(getClass().getResource("/simple-leaf-list-demo.yang").toURI());
-        final SchemaContext context = RetestUtils.parseYangSources(testFile);
+        final SchemaContext context = TestUtils.parseYangSources(testFile);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -213,7 +213,7 @@ public class GeneratedTypesTest {
     @Test
     public void testListResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         final File testFile = new File(getClass().getResource("/simple-list-demo.yang").toURI());
-        final SchemaContext context = RetestUtils.parseYangSources(testFile);
+        final SchemaContext context = TestUtils.parseYangSources(testFile);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -336,7 +336,7 @@ public class GeneratedTypesTest {
     @Test
     public void testListCompositeKeyResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         final File testFile = new File(getClass().getResource("/list-composite-key.yang").toURI());
-        final SchemaContext context = RetestUtils.parseYangSources(testFile);
+        final SchemaContext context = TestUtils.parseYangSources(testFile);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -388,7 +388,7 @@ public class GeneratedTypesTest {
     @Test
     public void testGeneratedTypes() throws URISyntaxException, IOException, SourceException, ReactorException {
         final File testFile = new File(getClass().getResource("/demo-topology.yang").toURI());
-        final SchemaContext context = RetestUtils.parseYangSources(testFile);
+        final SchemaContext context = TestUtils.parseYangSources(testFile);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

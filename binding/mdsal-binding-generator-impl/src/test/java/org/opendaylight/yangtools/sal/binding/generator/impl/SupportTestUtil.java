@@ -35,7 +35,7 @@ public class SupportTestUtil {
             inputFiles.add(new File(yangFiles[i]));
         }
 
-        return RetestUtils.parseYangSources(inputFiles);
+        return TestUtils.parseYangSources(inputFiles);
     }
 
     public static void containsMethods(final GeneratedType genType, final NameTypePattern... searchedSignsWhat) {

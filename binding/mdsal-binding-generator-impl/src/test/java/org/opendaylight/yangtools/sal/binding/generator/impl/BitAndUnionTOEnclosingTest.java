@@ -36,7 +36,7 @@ public class BitAndUnionTOEnclosingTest {
 
     public static void parseResources() throws IOException, SourceException, ReactorException {
 
-        final SchemaContext context = RetestUtils.parseYangSources(testModels);
+        final SchemaContext context = TestUtils.parseYangSources(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

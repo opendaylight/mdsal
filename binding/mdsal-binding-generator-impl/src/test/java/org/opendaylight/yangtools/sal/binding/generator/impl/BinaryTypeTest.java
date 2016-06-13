@@ -42,7 +42,7 @@ public class BinaryTypeTest {
 
     @Test
     public void binaryTypeTest() throws IOException, SourceException, ReactorException {
-        final SchemaContext context = RetestUtils.parseYangSources(yangModels);
+        final SchemaContext context = TestUtils.parseYangSources(yangModels);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
