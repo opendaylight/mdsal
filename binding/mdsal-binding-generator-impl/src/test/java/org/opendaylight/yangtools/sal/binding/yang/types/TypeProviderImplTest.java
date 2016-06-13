@@ -48,7 +48,7 @@ public class TypeProviderImplTest {
     public void testLeafRefRelativeSelfReference() throws Exception {
         File relative = new File(getClass().getResource("/leafref/leafref-relative-invalid.yang").toURI());
 
-        final SchemaContext schemaContext = RetestUtils.parseYangSources(relative);
+        final SchemaContext schemaContext = TestUtils.parseYangSources(relative);
         final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrr")).iterator().next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
@@ -62,7 +62,7 @@ public class TypeProviderImplTest {
     public void testLeafRefAbsoluteSelfReference() throws Exception {
         File relative = new File(getClass().getResource("/leafref/leafref-absolute-invalid.yang").toURI());
 
-        final SchemaContext schemaContext = RetestUtils.parseYangSources(relative);
+        final SchemaContext schemaContext = TestUtils.parseYangSources(relative);
         final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lra")).iterator().next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
@@ -76,7 +76,7 @@ public class TypeProviderImplTest {
     public void testLeafRefRelativeAndAbsoluteValidReference() throws Exception {
         File valid = new File(getClass().getResource("/leafref/leafref-valid.yang").toURI());
 
-        final SchemaContext schemaContext = RetestUtils.parseYangSources(valid);
+        final SchemaContext schemaContext = TestUtils.parseYangSources(valid);
         final Module moduleValid = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrv")).iterator().next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
@@ -100,7 +100,7 @@ public class TypeProviderImplTest {
         final File abstractTopology = new File(getClass().getResource("/base-yang-types.yang")
                 .toURI());
 
-        final SchemaContext schemaContext = RetestUtils.parseYangSources(abstractTopology);
+        final SchemaContext schemaContext = TestUtils.parseYangSources(abstractTopology);
 
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 

@@ -5,22 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.yangtools.sal.binding.yang.types;
-
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 /**
  * Test Model Provider designated to load test resources and provide Schema Context
  * for testing of TypeProviderImpl
- *
- * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
 final class TypeProviderModel {
 
@@ -44,6 +40,6 @@ final class TypeProviderModel {
     }
 
     public static SchemaContext createTestContext() throws SourceException, ReactorException {
-        return RetestUtils.parseYangStreams(provideTestModelStreams());
+        return TestUtils.parseYangStreams(provideTestModelStreams());
     }
 }

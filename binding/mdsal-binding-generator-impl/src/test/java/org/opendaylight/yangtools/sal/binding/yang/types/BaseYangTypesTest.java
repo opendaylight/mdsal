@@ -5,12 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.yangtools.sal.binding.yang.types;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -38,8 +38,6 @@ import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 /**
  * Test class for testing BaseYangTypes class.
- *
- * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
 public class BaseYangTypesTest {
 
@@ -65,7 +63,7 @@ public class BaseYangTypesTest {
     public static void setup() throws SourceException, ReactorException {
         final List<InputStream> modelsToParse = Collections
             .singletonList(BaseYangTypesTest.class.getResourceAsStream("/base-yang-types.yang"));
-        schemaContext = RetestUtils.parseYangStreams(modelsToParse);
+        schemaContext = TestUtils.parseYangStreams(modelsToParse);
         assertNotNull(schemaContext);
         initTypeDefinitionsFromSchemaContext();
     }

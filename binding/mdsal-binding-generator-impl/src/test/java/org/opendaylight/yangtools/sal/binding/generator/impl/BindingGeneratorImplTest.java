@@ -12,12 +12,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.EffectiveSchemaContext;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -28,6 +22,12 @@ import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.EffectiveSchemaContext;
 
 public class BindingGeneratorImplTest {
 
@@ -65,7 +65,7 @@ public class BindingGeneratorImplTest {
         File resourceFile = new File(getClass().getResource(
                 "/binding-generator-impl-test/choice-test.yang").toURI());
 
-        SchemaContext context = RetestUtils.parseYangSources(resourceFile);
+        SchemaContext context = TestUtils.parseYangSources(resourceFile);
 
         List<Type> generateTypes = new BindingGeneratorImpl(false)
                 .generateTypes(context);
@@ -163,7 +163,7 @@ public class BindingGeneratorImplTest {
         File resourceFile = new File(getClass().getResource(
                 "/binding-generator-impl-test/notification-test.yang").toURI());
 
-        SchemaContext context = RetestUtils.parseYangSources(resourceFile);
+        SchemaContext context = TestUtils.parseYangSources(resourceFile);
 
         List<Type> generateTypes = new BindingGeneratorImpl(false)
                 .generateTypes(context);

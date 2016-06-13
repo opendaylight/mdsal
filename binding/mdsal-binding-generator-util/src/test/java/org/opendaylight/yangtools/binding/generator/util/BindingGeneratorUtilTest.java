@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+
 import com.google.common.base.Optional;
 import java.io.File;
 import java.io.IOException;
@@ -90,7 +91,7 @@ public class BindingGeneratorUtilTest {
     public void testBindingGeneratorUtilMethods() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/module.yang");
 
-        final Set<Module> modules = RetestUtils.parseYangSources(testModels).getModules();
+        final Set<Module> modules = TestUtils.parseYangSources(testModels).getModules();
         String packageName = "";
         Module module = null;
         for (Module m : modules) {

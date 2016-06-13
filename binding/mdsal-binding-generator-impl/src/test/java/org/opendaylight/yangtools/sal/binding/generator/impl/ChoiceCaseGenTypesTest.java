@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.opendaylight.yangtools.sal.binding.generator.impl.SupportTestUtil.containsInterface;
 import static org.opendaylight.yangtools.sal.binding.generator.impl.SupportTestUtil.containsMethods;
+
 import java.io.IOException;
 import java.util.List;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
 
     @Test
     public void choiceCaseResolvingTypeTest() throws IOException, SourceException, ReactorException {
-        final SchemaContext context = RetestUtils.parseYangSources(testModels);
+        final SchemaContext context = TestUtils.parseYangSources(testModels);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

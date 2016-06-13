@@ -8,8 +8,6 @@
 
 package org.opendaylight.yangtools.yang.unified.doc.generator.maven;
 
-import org.opendaylight.yangtools.yang.parser.util.NamedFileInputStream;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -22,10 +20,11 @@ import org.opendaylight.yangtools.yang.parser.spi.source.StatementStreamSource;
 import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
 import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
 import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
+import org.opendaylight.yangtools.yang.parser.util.NamedFileInputStream;
 
-public class RetestUtils {
+public class TestUtils {
 
-    private RetestUtils() {
+    private TestUtils() {
         throw new UnsupportedOperationException("Utility class");
     }
 
