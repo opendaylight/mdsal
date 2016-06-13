@@ -31,7 +31,7 @@ public class GenTypesSubSetTest {
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
         File ietfYangTypes = new File(getClass().getResource("/ietf/ietf-yang-types.yang").toURI());
 
-        final SchemaContext context = RetestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+        final SchemaContext context = TestUtils.parseYangSources(abstractTopology, ietfInterfaces,
                 ietfInetTypes, ietfYangTypes);
         Set<Module> modules = context.getModules();
 
@@ -63,7 +63,7 @@ public class GenTypesSubSetTest {
         File ietfYangTypes = new File(getClass().getResource("/ietf/ietf-yang-types.yang").toURI());
         File ianaIfType = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
 
-        final SchemaContext context = RetestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+        final SchemaContext context = TestUtils.parseYangSources(abstractTopology, ietfInterfaces,
                 ietfInetTypes, ietfYangTypes, ianaIfType);
         assertNotNull("Schema Context is null", context);
         final Set<Module> modules = context.getModules();

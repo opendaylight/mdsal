@@ -9,8 +9,7 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -23,6 +22,8 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class GeneratedTypesTest {
 
@@ -31,7 +32,7 @@ public class GeneratedTypesTest {
         File abstractTopology = new File(getClass().getResource("/abstract-topology.yang").toURI());
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
 
-        final SchemaContext context = RetestUtils.parseYangSources(abstractTopology, ietfInetTypes);
+        final SchemaContext context = TestUtils.parseYangSources(abstractTopology, ietfInetTypes);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -44,7 +45,7 @@ public class GeneratedTypesTest {
     @Test
     public void testContainerResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         final File testFile = new File(getClass().getResource("/simple-container-demo.yang").toURI());
-        final SchemaContext context = RetestUtils.parseYangSources(testFile);
+        final SchemaContext context = TestUtils.parseYangSources(testFile);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -129,7 +130,7 @@ public class GeneratedTypesTest {
     @Test
     public void testLeafListResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         final File testFile = new File(getClass().getResource("/simple-leaf-list-demo.yang").toURI());
-        final SchemaContext context = RetestUtils.parseYangSources(testFile);
+        final SchemaContext context = TestUtils.parseYangSources(testFile);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -213,7 +214,7 @@ public class GeneratedTypesTest {
     @Test
     public void testListResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         final File testFile = new File(getClass().getResource("/simple-list-demo.yang").toURI());
-        final SchemaContext context = RetestUtils.parseYangSources(testFile);
+        final SchemaContext context = TestUtils.parseYangSources(testFile);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -336,7 +337,7 @@ public class GeneratedTypesTest {
     @Test
     public void testListCompositeKeyResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         final File testFile = new File(getClass().getResource("/list-composite-key.yang").toURI());
-        final SchemaContext context = RetestUtils.parseYangSources(testFile);
+        final SchemaContext context = TestUtils.parseYangSources(testFile);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -388,7 +389,7 @@ public class GeneratedTypesTest {
     @Test
     public void testGeneratedTypes() throws URISyntaxException, IOException, SourceException, ReactorException {
         final File testFile = new File(getClass().getResource("/demo-topology.yang").toURI());
-        final SchemaContext context = RetestUtils.parseYangSources(testFile);
+        final SchemaContext context = TestUtils.parseYangSources(testFile);
         assertNotNull(context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

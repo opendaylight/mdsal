@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.List;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class ExtendedTypedefTest {
         File abstractTopology = new File(getClass().getResource("/typedef-of-typedef/typedef_of_typedef.yang").toURI());
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
 
-        final SchemaContext context =  RetestUtils.parseYangSources(abstractTopology, ietfInetTypes);
+        final SchemaContext context =  TestUtils.parseYangSources(abstractTopology, ietfInetTypes);
         assertNotNull("Schema Context is null", context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

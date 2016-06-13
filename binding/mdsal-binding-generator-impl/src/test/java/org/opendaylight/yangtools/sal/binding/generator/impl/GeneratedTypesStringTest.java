@@ -10,9 +10,6 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -26,6 +23,8 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class GeneratedTypesStringTest {
 
@@ -40,7 +39,7 @@ public class GeneratedTypesStringTest {
 
     @Test
     public void constantGenerationTest() throws IOException, SourceException, ReactorException {
-        final SchemaContext context =  RetestUtils.parseYangSources(testModels);
+        final SchemaContext context =  TestUtils.parseYangSources(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

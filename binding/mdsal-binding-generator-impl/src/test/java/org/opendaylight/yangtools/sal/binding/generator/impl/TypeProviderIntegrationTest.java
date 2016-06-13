@@ -36,7 +36,7 @@ public class TypeProviderIntegrationTest {
                 .toURI());
         File ietfInetTypes = new File(TypeProviderIntegrationTest.class.getResource("/ietf/ietf-inet-types.yang")
                 .toURI());
-        context = RetestUtils.parseYangSources(abstractTopology, ietfInetTypes);
+        context = TestUtils.parseYangSources(abstractTopology, ietfInetTypes);
         assertNotNull(context);
     }
 

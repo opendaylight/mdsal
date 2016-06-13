@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
@@ -131,7 +132,7 @@ public class YangModuleInfoCompilationTest {
 
     private static void generateTestSources(final String resourceDirPath, final File sourcesOutputDir) throws Exception {
         final List<File> sourceFiles = getSourceFiles(resourceDirPath);
-        final SchemaContext context = RetestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = TestUtils.parseYangSources(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.generateSources(context, sourcesOutputDir, context.getModules());

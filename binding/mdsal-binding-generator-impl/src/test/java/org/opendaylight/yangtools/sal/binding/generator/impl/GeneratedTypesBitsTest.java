@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.net.URI;
 import java.util.List;
@@ -31,7 +32,7 @@ public class GeneratedTypesBitsTest {
     public void testGeneretedTypesBitsTest() throws Exception {
         final URI yangTypesPath = getClass().getResource("/simple-bits-demo.yang").toURI();
 
-        final SchemaContext context =  RetestUtils.parseYangSources(new File(yangTypesPath));
+        final SchemaContext context =  TestUtils.parseYangSources(new File(yangTypesPath));
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

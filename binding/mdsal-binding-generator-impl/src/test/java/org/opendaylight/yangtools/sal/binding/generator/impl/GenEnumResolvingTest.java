@@ -10,8 +10,7 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -23,6 +22,8 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class GenEnumResolvingTest {
 
@@ -32,7 +33,7 @@ public class GenEnumResolvingTest {
                 .toURI());
         File ianaIfTypeModel = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
 
-        final SchemaContext context =  RetestUtils.parseYangSources(ietfInterfaces, ianaIfTypeModel);
+        final SchemaContext context =  TestUtils.parseYangSources(ietfInterfaces, ianaIfTypeModel);
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -94,7 +95,7 @@ public class GenEnumResolvingTest {
     @Test
     public void testTypedefEnumResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
         File ianaIfType = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
-        final SchemaContext context =  RetestUtils.parseYangSources(ianaIfType);
+        final SchemaContext context =  TestUtils.parseYangSources(ianaIfType);
         assertTrue(context != null);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
         final List<Type> genTypes = bindingGen.generateTypes(context);
@@ -116,7 +117,7 @@ public class GenEnumResolvingTest {
                 .toURI());
         File ianaIfType = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
 
-        final SchemaContext context =  RetestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+        final SchemaContext context =  TestUtils.parseYangSources(abstractTopology, ietfInterfaces,
                 ianaIfType);
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

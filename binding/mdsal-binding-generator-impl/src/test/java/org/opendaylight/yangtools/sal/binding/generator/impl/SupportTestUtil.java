@@ -10,9 +10,6 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -25,6 +22,8 @@ import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class SupportTestUtil {
 
@@ -35,7 +34,7 @@ public class SupportTestUtil {
             inputFiles.add(new File(yangFiles[i]));
         }
 
-        return RetestUtils.parseYangSources(inputFiles);
+        return TestUtils.parseYangSources(inputFiles);
     }
 
     public static void containsMethods(final GeneratedType genType, final NameTypePattern... searchedSignsWhat) {

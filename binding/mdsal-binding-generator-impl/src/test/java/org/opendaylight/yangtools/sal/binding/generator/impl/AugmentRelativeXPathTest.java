@@ -11,9 +11,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-
 import java.io.IOException;
 import java.util.List;
 import org.junit.Test;
@@ -24,6 +21,8 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class AugmentRelativeXPathTest extends AbstractTypesTest {
 
@@ -34,7 +33,7 @@ public class AugmentRelativeXPathTest extends AbstractTypesTest {
     @Test
     public void AugmentationWithRelativeXPathTest() throws IOException, SourceException, ReactorException {
 
-        final SchemaContext context = RetestUtils.parseYangSources(testModels);
+        final SchemaContext context = TestUtils.parseYangSources(testModels);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
