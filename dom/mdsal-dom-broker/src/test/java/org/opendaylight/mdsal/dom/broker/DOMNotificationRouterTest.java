@@ -78,14 +78,13 @@ public class DOMNotificationRouterTest extends TestUtils {
 
         assertNotNull(domNotificationRouter.offerNotification(domNotification));
 
-        Exception exception = null;
         try {
             assertNotNull(domNotificationRouter.offerNotification(domNotification, 1, TimeUnit.SECONDS));
             assertNotNull(domNotificationRouter.offerNotification(domNotification, 1, TimeUnit.SECONDS));
-        } catch (UnsupportedOperationException e) {
-            exception = e;
+        } catch (Exception e) {
+            assertTrue(e instanceof UnsupportedOperationException);
         }
-        assertNotNull(exception);
+
         assertNotNull(domNotificationRouter.putNotification(domNotification));
     }
 
