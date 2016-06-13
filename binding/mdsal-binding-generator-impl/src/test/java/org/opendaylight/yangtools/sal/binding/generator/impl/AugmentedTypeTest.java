@@ -37,7 +37,7 @@ public class AugmentedTypeTest {
         File ietfInterfaces = new File(getClass().getResource("/augment-test-models/ietf-interfaces@2012-11-15.yang")
                 .toURI());
 
-        final SchemaContext context = RetestUtils.parseYangSources(abstractTopology, augmentTopology,
+        final SchemaContext context = TestUtils.parseYangSources(abstractTopology, augmentTopology,
                 augmentNetworkLink, augmentTopologyTunnels, ietfInterfaces);
         assertNotNull("Schema Context is null", context);
 

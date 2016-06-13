@@ -9,11 +9,9 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.opendaylight.yangtools.sal.binding.generator.impl.SupportTestUtil.containsMethods;
 import static org.opendaylight.yangtools.sal.binding.generator.impl.SupportTestUtil.containsAttributes;
+import static org.opendaylight.yangtools.sal.binding.generator.impl.SupportTestUtil.containsMethods;
 
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -27,6 +25,8 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 public class BitAndUnionTOEnclosingTest {
 
@@ -36,7 +36,7 @@ public class BitAndUnionTOEnclosingTest {
 
     public static void parseResources() throws IOException, SourceException, ReactorException {
 
-        final SchemaContext context = RetestUtils.parseYangSources(testModels);
+        final SchemaContext context = TestUtils.parseYangSources(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
