@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ba51214e_f84506b4",
+        "filename": "binding/mdsal-binding-generator-impl/src/test/java/org/opendaylight/yangtools/sal/binding/yang/types/TypeProviderTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 3635
+      },
+      "writtenOn": "2016-06-14T14:37:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba51214e_184b9a5a",
+      "range": {
+        "startLine": 259,
+        "startChar": 7,
+        "endLine": 259,
+        "endChar": 55
+      },
+      "revId": "954d32bf5c30177a517a97f63a51bdeb2b6280ad",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba51214e_f847c649",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/EnumTemplate.xtend",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2016-06-14T13:37:59Z",
       "side": 1,
       "message": "add javadoc",
+      "range": {
+        "startLine": 81,
+        "startChar": 12,
+        "endLine": 81,
+        "endChar": 37
+      },
+      "revId": "954d32bf5c30177a517a97f63a51bdeb2b6280ad",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba51214e_581232b5",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/EnumTemplate.xtend",
+        "patchSetId": 5
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 3635
+      },
+      "writtenOn": "2016-06-14T14:37:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba51214e_f847c649",
       "range": {
         "startLine": 81,
         "startChar": 12,
