@@ -23,6 +23,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdent
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 
 final class TestUtils {
 
@@ -55,10 +56,12 @@ final class TestUtils {
     static final DOMDataTreeShardWriteTransaction DOM_DATA_TREE_SHARD_WRITE_TRANSACTION =
             mock(DOMDataTreeShardWriteTransaction.class);
 
+    static final DataTree DATA_TREE = mock(DataTree.class);
+
     static void resetMocks() {
         reset(WRITE_CURSOR_STRATEGY, DOM_DATA_TREE_WRITE_CURSOR, WRITEABLE_MODIFICATION_NODE, LISTENABLE_FUTURE,
                 DOM_STORE_THREE_PHASE_COMMIT_COHORT, NORMALIZED_NODE_CONTAINER, NORMALIZED_NODE, PATH_ARGUMENT,
-                DOM_DATA_TREE_SHARD_PRODUCER, DOM_DATA_TREE_SHARD_WRITE_TRANSACTION);
+                DOM_DATA_TREE_SHARD_PRODUCER, DOM_DATA_TREE_SHARD_WRITE_TRANSACTION, DATA_TREE);
     }
 
     private TestUtils() throws UnsupportedOperationException {

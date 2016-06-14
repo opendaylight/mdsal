@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -59,6 +60,8 @@ public class ShardDataModificationTest {
                 shardDataModification.getIdentifier());
 
         assertEquals(DOM_DATA_TREE_IDENTIFIER, shardDataModification.getPrefix());
+
+        assertNotNull(shardDataModification.getChildShards());
 
         DataTreeModification dataTreeModification = mock(DataTreeModification.class);
         doReturn(dataTreeModification).when(SHARD_ROOT_MODIFICATION_CONTEXT).ready();
