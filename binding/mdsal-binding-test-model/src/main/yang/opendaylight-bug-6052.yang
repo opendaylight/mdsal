@@ -1,0 +1,37 @@
+module zws-test {
+    namespace "urn:opendaylight:params:xml:ns:yang:yangtools:zws:test";
+    prefix test;
+    revision "2016-06-12" {
+        description
+        "Test model for testing union data types.";
+    }
+
+    container wrapper {
+        leaf-list simple {
+            type string;
+        }
+        leaf wrap {
+            type string;
+        }
+    }
+
+    container wrapper-second {
+        leaf-list simple {
+            type string;
+        }
+        leaf test-leaf-1 {
+            type string;
+        }
+        container tree {
+            leaf open {
+                type string;
+            }
+        }
+        leaf test-leaf-2 {
+            type string;
+        }
+        leaf wrap {
+            type string;
+        }
+    }
+}
