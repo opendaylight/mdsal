@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba51214e_f441830c",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/LazyDataObject.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-16T13:19:13Z",
+      "side": 1,
+      "message": "can we evaluate the performance impact? deepEquals() seems to imply a lot of instanceof checks. We have two cases for this: objects and byte[], where the latter is not as common.",
+      "range": {
+        "startLine": 90,
+        "startChar": 21,
+        "endLine": 90,
+        "endChar": 39
+      },
+      "revId": "65abe5e27eeee53d7282c0af8b7da590f4d7f0ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
