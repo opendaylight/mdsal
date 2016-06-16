@@ -1,0 +1,131 @@
+@*
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *@
+
+@**********************************************************
+* Twirl YangTemplate for generating yang snippets.        *
+* Twirl is transformed to Scala and compiled. Then,       *
+* it can be called from Java with particular input        *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode
+@import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.SchemaNode
+@import org.opendaylight.yangtools.yang.model.api.Status
+@import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode
+
+@(dataSchemaNode: DataSchemaNode)
+@if(dataSchemaNode.isInstanceOf[ContainerSchemaNode]) {
+    @writeContSchemaNode(dataSchemaNode.asInstanceOf[ContainerSchemaNode])
+}
+@if(dataSchemaNode.isInstanceOf[AnyXmlSchemaNode]) {
+    anyxml @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getQName().getLocalName()}
+    @if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() != Status.CURRENT) {
+        ;
+    } else {
+        {
+            status @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus()};
+        }
+    }
+}
+@if(dataSchemaNode.isInstanceOf[LeafSchemaNode]) {
+    leaf @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getQName().getLocalName()} {
+        type @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getType().getQName().getLocalName()};
+    }
+    @if(dataSchemaNode.asInstanceOf[LeafSchemaNode].getStatus() != Status.CURRENT) {
+        status @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getStatus()};
+    }
+}
+@if(dataSchemaNode.isInstanceOf[LeafListSchemaNode]) {
+    leaf-list @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getQName().getLocalName()} {
+        type @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getType().getQName().getLocalName()};
+    }
+    @if(dataSchemaNode.asInstanceOf[LeafListSchemaNode].getStatus() != Status.CURRENT) {
+        status @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getStatus()};
+    }
+}
+@if(dataSchemaNode.isInstanceOf[ChoiceCaseNode]) {
+    case @{dataSchemaNode.asInstanceOf[ChoiceCaseNode].getQName().getLocalName()} {
+        @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceCaseNode].getChildNodes()) {
+            @yangTemplateWriteDataSchemaNode(childNode)
+        }
+    }
+    @if(dataSchemaNode.asInstanceOf[ChoiceCaseNode].getStatus() != Status.CURRENT) {
+        status @{dataSchemaNode.asInstanceOf[ChoiceCaseNode].getStatus()};
+    }
+}
+@if(dataSchemaNode.isInstanceOf[ChoiceSchemaNode]) {
+    choice @{dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getQName().getLocalName()} {
+        @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getCases()) {
+            @yangTemplateWriteDataSchemaNode(childNode)
+        }
+    }
+    @if(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getStatus() != Status.CURRENT) {
+        status @{dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getStatus()};
+    }
+}
+@if(dataSchemaNode.isInstanceOf[ListSchemaNode]) {
+    @writeListSchemaNode(dataSchemaNode.asInstanceOf[ListSchemaNode])
+}
+
+@writeContSchemaNode(container: ContainerSchemaNode) = {
+    container @{container.getQName().getLocalName()} {
+        @if(container.getChildNodes() != null && !container.getChildNodes().isEmpty()) {
+            @yangTemplateWriteDataSchemaNodes(container.getChildNodes())
+        }
+        @if(container.getAvailableAugmentations() != null && !container.getAvailableAugmentations().isEmpty()) {
+            @yangTemplateWriteAugments(container.getAvailableAugmentations())
+        }
+        @if(container.getGroupings() != null && !container.getGroupings().isEmpty()) {
+            @yangTemplateWriteGroupingDefs(container.getGroupings())
+        }
+        @if(container.getUses() != null && !container.getUses().isEmpty()) {
+            @yangTemplateWriteUsesNodes(container.getUses())
+        }
+        @if(container.getStatus() != Status.CURRENT) {
+            status @{container.getStatus()};
+        }
+        @if(container.getUnknownSchemaNodes() != null && !container.getUnknownSchemaNodes().isEmpty()) {
+            @yangTemplateWriteUnknownSchemaNodes(container.getUnknownSchemaNodes())
+        }
+    }
+}
+
+@writeListSchemaNode(list: ListSchemaNode) = {
+    list @{list.getQName().getLocalName()} {
+        key "@for(listKey <- list.getKeyDefinition()) {
+            @{listKey.getLocalName()}
+        }"
+        @if(list.getChildNodes() != null && !list.getChildNodes().isEmpty()) {
+            @yangTemplateWriteDataSchemaNodes(list.getChildNodes())
+        }
+        @if(list.getAvailableAugmentations() != null && !list.getAvailableAugmentations().isEmpty()) {
+            @yangTemplateWriteAugments(list.getAvailableAugmentations())
+        }
+        @if(list.getGroupings() != null && !list.getGroupings().isEmpty()) {
+            @yangTemplateWriteGroupingDefs(list.getGroupings())
+        }
+        @if(list.getUses() != null && !list.getUses().isEmpty()) {
+            @yangTemplateWriteUsesNodes(list.getUses())
+        }
+        @if(list.getStatus() != Status.CURRENT) {
+            status @{list.getStatus()};
+        }
+        @if(list.getUnknownSchemaNodes() != null && !list.getUnknownSchemaNodes().isEmpty()) {
+            @yangTemplateWriteUnknownSchemaNodes(list.getUnknownSchemaNodes())
+        }
+    }
+}

@@ -1,0 +1,112 @@
+@*
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *@
+
+@**********************************************************
+* Twirl YangTemplate for generating yang snippets.        *
+* Twirl is transformed to Scala and compiled. Then,       *
+* it can be called from Java with particular input        *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.mdsal.binding2.generator.impl.util.YangTextTemplate
+@import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
+@import org.opendaylight.yangtools.yang.model.api.Module
+
+@(module: Module)
+@if(module != null) {
+    @generateYangSnippet(module)
+}
+
+@generateYangSnippet(module: Module) = {
+    module @{module.getName()} {
+        yang-version @module.getYangVersion();
+        namespace "@module.getNamespace().toString()";
+        prefix "@module.getPrefix()";
+
+        @if(module.getImports() != null && !module.getImports().isEmpty()) {
+            @for(moduleImport <- module.getImports()) {
+                @if(moduleImport != null && !moduleImport.getModuleName()) {
+                    import @{moduleImport.getModuleName()} { prefix "@{moduleImport.getPrefix()}"; }
+                }
+            }
+        }
+        @if(module.getRevision() != null) {
+            revision @{SimpleDateFormatUtil.getRevisionFormat().format(module.getRevision())} {
+                description "@{YangTextTemplate.formatToParagraph(module.getDescription(), 12)}";
+            }
+        }
+        @if(module.getChildNodes() != null) {
+            @yangTemplateWriteDataSchemaNodes(module.getChildNodes())
+        }
+        @if(module.getGroupings() != null && !module.getGroupings().isEmpty()) {
+            @yangTemplateWriteGroupingDefs(module.getGroupings())
+        }
+        @if(module.getAugmentations() != null && !module.getAugmentations().isEmpty()) {
+            @yangTemplateWriteAugments(module.getAugmentations())
+        }
+        @if(module.getDeviations() != null && !module.getDeviations().isEmpty()) {
+            @for(deviation <- module.getDeviations()) {
+                @if(deviation != null) {
+                    deviation @{deviation.getTargetPath()} {
+                        @if(deviation.getReference() != null && !deviation.getReference().isEmpty()) {
+                            reference "@{deviation.getReference()}";
+                        }
+                        @for(deviation <- deviation.getDeviates()) {
+                            @if(deviation != null && deviation.getDeviateType() != null ) {
+                                deviation @{deviation.getDeviateType().name()};
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        @if(module.getExtensionSchemaNodes() != null && !module.getExtensionSchemaNodes().isEmpty()) {
+            @for(extension <- module.getExtensionSchemaNodes()) {
+                @if(extension != null) {
+                    @yangTemplateWriteExtension(extension)
+                }
+            }
+        }
+        @if(module.getFeatures() != null && !module.getFeatures().isEmpty()) {
+            @for(feature <- module.getFeatures()) {
+                @if(feature != null) {
+                    @yangTemplateWriteFeature(feature)
+                }
+            }
+        }
+        @if(module.getIdentities() != null && !module.getIdentities().isEmpty()) {
+            @for(identity <- module.getIdentities()) {
+                @if(identity != null) {
+                    @yangTemplateWriteIdentity(identity)
+                }
+            }
+        }
+        @if(module.getNotifications() != null && !module.getNotifications().isEmpty()) {
+            @for(notification <- module.getNotifications()) {
+                @if(notification != null) {
+                    @yangTemplateWriteNotification(notification)
+                }
+            }
+        }
+        @if(module.getRpcs() != null && !module.getRpcs().isEmpty()) {
+            @for(rpc <- module.getRpcs()) {
+                @if(rpc != null) {
+                    @yangTemplateWriteRPC(rpc)
+                }
+            }
+        }
+        @if(module.getUnknownSchemaNodes() != null && !module.getUnknownSchemaNodes().isEmpty()) {
+            @yangTemplateWriteUnknownSchemaNodes(module.getUnknownSchemaNodes())
+        }
+        @if(module.getUses() != null && !module.getUses().isEmpty()) {
+            @yangTemplateWriteUsesNodes(module.getUses())
+        }
+    }
+}
