@@ -1,0 +1,36 @@
+@**********************************************************
+* Twirl YangTemplate for generating yang snippets.        *
+* Twirl is transformed to Scala and compiled. Then,       *
+* it can be called from Java with particular input        *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.yangtools.yang.model.api.NotificationDefinition
+@import org.opendaylight.yangtools.yang.model.api.Status
+
+@(notification: NotificationDefinition)
+notification @{notification.getQName().getLocalName()} {
+    @if(notification.getDescription() != null && !notification.getDescription().isEmpty()) {
+        description "@{notification.getDescription()}";
+    }
+    @if(notification.getChildNodes() != null && !notification.getChildNodes().isEmpty()) {
+        @yangTemplateWriteDataSchemaNodes(notification.getChildNodes())
+    }
+    @if(notification.getAvailableAugmentations() != null && !notification.getAvailableAugmentations().isEmpty()) {
+        @yangTemplateWriteAugments(notification.getAvailableAugmentations())
+    }
+    @if(notification.getGroupings() != null && !notification.getGroupings().isEmpty()) {
+        @yangTemplateWriteGroupingDefs(notification.getGroupings())
+    }
+    @if(notification.getUses() != null && !notification.getUses().isEmpty()) {
+        @yangTemplateWriteUsesNodes(notification.getUses())
+    }
+    @if(notification.getReference() != null && !notification.getReference().isEmpty()) {
+        reference "@{notification.getReference()}";
+    }
+    @if(notification.getStatus() == Status.DEPRECATED) {
+        status @{notification.getStatus()};
+    }
+}
