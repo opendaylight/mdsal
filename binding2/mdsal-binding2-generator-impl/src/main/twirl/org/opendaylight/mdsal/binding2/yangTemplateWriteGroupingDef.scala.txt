@@ -1,0 +1,27 @@
+@**********************************************************
+* Twirl YangTemplate for generating yang snippets.        *
+* Twirl is transformed to Scala and compiled. Then,       *
+* it can be called from Java with particular input        *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.yangtools.yang.model.api.GroupingDefinition
+@import org.opendaylight.yangtools.yang.model.api.Status
+
+@(groupingDef: GroupingDefinition)
+grouping @{groupingDef.getQName().getLocalName()} {
+    @if(groupingDef.getGroupings() != null && !groupingDef.getGroupings().isEmpty()) {
+        @yangTemplateWriteGroupingDefs(groupingDef.getGroupings())
+    }
+    @if(groupingDef.getChildNodes() != null && !groupingDef.getChildNodes().isEmpty()) {
+        @yangTemplateWriteDataSchemaNodes(groupingDef.getChildNodes())
+    }
+    @if(groupingDef.getStatus() == Status.DEPRECATED) {
+        status @{groupingDef.getStatus()};
+    }
+    @if(groupingDef.getUnknownSchemaNodes() != null && !groupingDef.getUnknownSchemaNodes().isEmpty()) {
+        @yangTemplateWriteUnknownSchemaNodes(groupingDef.getUnknownSchemaNodes())
+    }
+}
