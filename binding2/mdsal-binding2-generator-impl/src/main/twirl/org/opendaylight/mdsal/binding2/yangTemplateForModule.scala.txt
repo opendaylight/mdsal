@@ -1,0 +1,149 @@
+@**********************************************************
+* Twirl YangTemplate for generating yang snippets.        *
+* Twirl is transformed to Scala and compiled. Then,       *
+* it can be called from Java with particular input        *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.mdsal.binding2.generator.impl.util.YangTextTemplate
+@import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
+@import org.opendaylight.yangtools.yang.model.api.Deviation
+@import org.opendaylight.yangtools.yang.model.api.DeviateDefinition
+@import org.opendaylight.yangtools.yang.model.api.ExtensionDefinition
+@import org.opendaylight.yangtools.yang.model.api.FeatureDefinition
+@import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode
+@import org.opendaylight.yangtools.yang.model.api.Module
+@import org.opendaylight.yangtools.yang.model.api.ModuleImport
+@import org.opendaylight.yangtools.yang.model.api.NotificationDefinition
+@import org.opendaylight.yangtools.yang.model.api.RpcDefinition
+
+
+@(module: Module)
+@if(module != null) {
+    @generateYangSnippet(module)
+}
+
+@generateYangSnippet(module: Module) = {
+    module @{module.getName()} {
+        yang-version @module.getYangVersion();
+        namespace "@module.getNamespace().toString()";
+        prefix "@module.getPrefix()";
+
+        @if(module.getImports() != null && !module.getImports().isEmpty()) {
+            @writeModuleImports(module.getImports())
+        }
+        @if(module.getRevision() != null) {
+            @writeRevision(module.getRevision(), module.getDescription())
+        }
+        @if(module.getChildNodes() != null) {
+            @yangTemplateWriteDataSchemaNodes(module.getChildNodes())
+        }
+        @if(module.getGroupings() != null && !module.getGroupings().isEmpty()) {
+            @yangTemplateWriteGroupingDefs(module.getGroupings())
+        }
+        @if(module.getAugmentations() != null && !module.getAugmentations().isEmpty()) {
+            @yangTemplateWriteAugments(module.getAugmentations())
+        }
+        @if(module.getDeviations() != null && !module.getDeviations().isEmpty()) {
+            @writeDeviations(module.getDeviations())
+        }
+        @if(module.getExtensionSchemaNodes() != null && !module.getExtensionSchemaNodes().isEmpty()) {
+            @writeExtensions(module.getExtensionSchemaNodes())
+        }
+        @if(module.getFeatures() != null && !module.getFeatures().isEmpty()) {
+            @writeFeatures(module.getFeatures())
+        }
+        @if(module.getIdentities() != null && !module.getIdentities().isEmpty()) {
+            @writeIdentities(module.getIdentities())
+        }
+        @if(module.getNotifications() != null && !module.getNotifications().isEmpty()) {
+            @writeNotifications(module.getNotifications())
+        }
+        @if(module.getRpcs() != null && !module.getRpcs().isEmpty()) {
+            @writeRPCs(module.getRpcs())
+        }
+        @if(module.getUnknownSchemaNodes() != null && !module.getUnknownSchemaNodes().isEmpty()) {
+            @yangTemplateWriteUnknownSchemaNodes(module.getUnknownSchemaNodes())
+        }
+        @if(module.getUses() != null && !module.getUses().isEmpty()) {
+            @yangTemplateWriteUsesNodes(module.getUses())
+        }
+    }
+}
+
+@writeModuleImports(moduleImports: Set[_ <: ModuleImport]) = {
+    @for(moduleImport <- moduleImports) {
+        @if(moduleImport != null && !moduleImport.getModuleName()) {
+            import @{moduleImport.getModuleName()} { prefix "@{moduleImport.getPrefix()}"; }
+        }
+    }
+}
+
+@writeRevision(moduleRevision: Date, moduleDescription: String) = {
+    revision @{SimpleDateFormatUtil.getRevisionFormat().format(moduleRevision)} {
+        description "@{YangTextTemplate.formatToParagraph(moduleDescription, 12)}";
+    }
+}
+
+@writeDeviations(deviations: Set[_ <: Deviation]) = {
+    @for(deviation <- deviations) {
+        @if(deviation != null) {
+            @writeDeviation(deviation)
+        }
+    }
+}
+
+@writeDeviation(deviations: Deviation) = {
+    deviation @{deviations.getTargetPath()} {
+        @if(deviations.getReference() != null && !deviations.getReference().isEmpty()) {
+            reference "@{deviations.getReference()}";
+        }
+        @for(deviation <- deviations.getDeviates()) {
+            @if(deviation != null && deviation.getDeviateType() != null ) {
+                deviation @{deviation.getDeviateType().name()};
+            }
+        }
+    }
+}
+
+@writeExtensions(extensions: List[_ <: ExtensionDefinition]) = {
+    @for(extension <- extensions) {
+        @if(extension != null) {
+            @yangTemplateWriteExtension(extension)
+        }
+    }
+}
+
+@writeFeatures(features: Set[_ <: FeatureDefinition]) = {
+    @for(feature <- features) {
+        @if(feature != null) {
+            @yangTemplateWriteFeature(feature)
+        }
+    }
+}
+
+@writeIdentities(identities: Set[_ <: IdentitySchemaNode]) = {
+    @for(identity <- identities) {
+        @if(identity != null) {
+            @yangTemplateWriteIdentity(identity)
+        }
+    }
+}
+
+@writeNotifications(notifications: Set[_ <: NotificationDefinition]) = {
+    @for(notification <- notifications) {
+        @if(notification != null) {
+            @yangTemplateWriteNotification(notification)
+        }
+    }
+}
+
+@writeRPCs(rpcDefs: Set[_ <: RpcDefinition]) = {
+    @for(rpc <- rpcDefs) {
+        @if(rpc != null) {
+            @yangTemplateWriteRPC(rpc)
+        }
+    }
+}
