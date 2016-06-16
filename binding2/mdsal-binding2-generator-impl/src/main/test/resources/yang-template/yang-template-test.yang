@@ -1,0 +1,11 @@
+module yang-template-test {
+    yang-version 1;
+    namespace "org.opendaylight.yang.template";
+    prefix "ytemp";
+
+    container my-cont {
+        leaf my-leaf {
+            type string;
+        }
+    }
+}
