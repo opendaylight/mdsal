@@ -1,0 +1,51 @@
+@**********************************************************
+* Twirl YangTemplate for generating yang snippets.        *
+* Twirl is transformed to Scala and compiled. Then,       *
+* it can be called from Java with particular input        *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.SchemaNode
+@import org.opendaylight.yangtools.yang.model.api.SchemaPath
+@import org.opendaylight.yangtools.yang.model.api.UsesNode
+
+@(usesNodes: Set[_ <: UsesNode])
+@if(usesNodes != null) {
+    @writeUsesNodes(usesNodes)
+}
+
+@writeUsesNodes(usesNodes: Set[_ <: UsesNode]) = {
+    @for(usesNode <- usesNodes) {
+        @if(usesNode != null) {
+            @writeUsesNode(usesNode)
+        }
+    }
+}
+
+@writeUsesNode(usesNode: UsesNode) = {
+    uses @{usesNode.getGroupingPath().getLastComponent().getLocalName()}
+    @if(usesNode.getRefines().isEmpty()) {
+        ;
+    } else {
+        {
+            @writeRefines(usesNode.getRefines())
+        }
+    }
+}
+
+@writeRefines(refines: Map[_ <: SchemaPath, _ <: SchemaNode]) = {
+    @for(path <- refines.keySet()) {
+        @writeRefine(path, refines.get(path))
+    }
+}
+
+@writeRefine(path: SchemaPath, node: SchemaNode) = {
+    refine @{path.getLastComponent()} {
+    @if(node.isInstanceOf[DataSchemaNode]) {
+            @yangTemplateWriteDataSchemaNode(node.asInstanceOf[DataSchemaNode])
+        }
+    }
+}
