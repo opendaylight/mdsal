@@ -1,0 +1,32 @@
+@**********************************************************
+* Twirl YangTemplate for generating yang snippets.        *
+* Twirl is transformed to Scala and compiled. Then,       *
+* it can be called from Java with particular input        *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode
+
+@(identity: IdentitySchemaNode)
+identity @{identity.getQName().getLocalName()} {
+    @if(identity.getBaseIdentity() != null) {
+        base "(@writeIdentityNs(identity.getBaseIdentity()))@{identity.getBaseIdentity()}";
+    }
+    @if(identity.getDescription() != null && !identity.getDescription().isEmpty()) {
+        description "@{identity.getDescription()}";
+    }
+    @if(identity.getReference() != null && !identity.getReference().isEmpty()) {
+        reference "@{identity.getReference()}";
+    }
+    @if(identity.getStatus() != null) {
+        status @{identity.getStatus()};
+    }
+}
+
+@writeIdentityNs(identity: IdentitySchemaNode) = {
+    @if(identity.getQName().getNamespace() != null) {
+        @{identity.getQName().getNamespace()}:
+    }
+}
