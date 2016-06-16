@@ -87,7 +87,7 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
             for (final Method m : context.getHashCodeAndEqualsMethods()) {
                 final Object thisValue = getBindingData(m);
                 final Object otherValue = m.invoke(other);
-                if (!Objects.equals(thisValue, otherValue)) {
+                if (!Objects.deepEquals(thisValue, otherValue)) {
                     return false;
                 }
             }
