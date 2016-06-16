@@ -1,0 +1,511 @@
+@**********************************************************
+* Twirl YangTemplate for generating yang snippets.        *
+* Twirl is transformed to Scala and compiled. Then,       *
+* it can be called from Java with particular input        *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
+@import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.AugmentationSchema
+@import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode
+@import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.Deviation
+@import org.opendaylight.yangtools.yang.model.api.ExtensionDefinition
+@import org.opendaylight.yangtools.yang.model.api.FeatureDefinition
+@import org.opendaylight.yangtools.yang.model.api.GroupingDefinition
+@import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode
+@import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.Module
+@import org.opendaylight.yangtools.yang.model.api.ModuleImport
+@import org.opendaylight.yangtools.yang.model.api.NotificationDefinition
+@import org.opendaylight.yangtools.yang.model.api.RpcDefinition
+@import org.opendaylight.yangtools.yang.model.api.SchemaNode
+@import org.opendaylight.yangtools.yang.model.api.SchemaPath
+@import org.opendaylight.yangtools.yang.model.api.Status
+@import org.opendaylight.yangtools.yang.model.api.TypeDefinition
+@import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.UsesNode
+@import org.opendaylight.mdsal.binding2.generator.util.YangTextTemplate
+
+@(module: Module)
+@if(module != null) {
+    @generateYangSnippet(module)
+}
+
+@generateYangSnippet(module: Module) = {
+    module @{module.getName()} {
+        yang-version @module.getYangVersion();
+        namespace "@module.getNamespace().toString()";
+        prefix "@module.getPrefix()";
+
+        @if(module.getImports() != null && !module.getImports().isEmpty()) {
+            @writeModuleImports(module.getImports())
+        }
+        @if(module.getRevision() != null) {
+            @writeRevision(module.getRevision(), module.getDescription())
+        }
+        @if(module.getChildNodes() != null) {
+            @writeDataSchemaNodes(module.getChildNodes())
+        }
+        @if(module.getGroupings() != null && !module.getGroupings().isEmpty()) {
+            @writeGroupingDefs(module.getGroupings())
+        }
+        @if(module.getAugmentations() != null && !module.getAugmentations().isEmpty()) {
+            @writeAugments(module.getAugmentations())
+        }
+        @if(module.getDeviations() != null && !module.getDeviations().isEmpty()) {
+            @writeDeviations(module.getDeviations())
+        }
+        @if(module.getExtensionSchemaNodes() != null && !module.getExtensionSchemaNodes().isEmpty()) {
+            @writeExtensions(module.getExtensionSchemaNodes())
+        }
+        @if(module.getFeatures() != null && !module.getFeatures().isEmpty()) {
+            @writeFeatures(module.getFeatures())
+        }
+        @if(module.getIdentities() != null && !module.getIdentities().isEmpty()) {
+            @writeIdentities(module.getIdentities())
+        }
+        @if(module.getNotifications() != null && !module.getNotifications().isEmpty()) {
+            @writeNotifications(module.getNotifications())
+        }
+        @if(module.getRpcs() != null && !module.getRpcs().isEmpty()) {
+            @writeRPCs(module.getRpcs())
+        }
+        @if(module.getUnknownSchemaNodes() != null && !module.getUnknownSchemaNodes().isEmpty()) {
+            @writeUnknownSchemaNodes(module.getUnknownSchemaNodes())
+        }
+        @if(module.getUses() != null && !module.getUses().isEmpty()) {
+            @writeUsesNodes(module.getUses())
+        }
+    }
+}
+
+@writeModuleImports(moduleImports: Set[_ <: ModuleImport]) = {
+    @for(moduleImport <- moduleImports) {
+        @if(moduleImport != null && !moduleImport.getModuleName()) {
+            import @{moduleImport.getModuleName()} { prefix "@{moduleImport.getPrefix()}"; }
+        }
+    }
+}
+
+@writeRevision(moduleRevision: Date, moduleDescription: String) = {
+    revision @{SimpleDateFormatUtil.getRevisionFormat().format(moduleRevision)} {
+        description "@{YangTextTemplate.formatToParagraph(moduleDescription, 12)}";
+    }
+}
+
+@writeDataSchemaNodes(dataSchemaNodes: Collection[_ <: DataSchemaNode]) = {
+    @for(dataSchemaNode <- dataSchemaNodes) {
+        @writeDataSchemaNode(dataSchemaNode)
+    }
+}
+
+@writeAugments(augments: Set[_ <: AugmentationSchema]) = {
+    @for(augment <- augments) {
+        @if(augment != null) {
+            @writeAugment(augment)
+        }
+    }
+}
+
+@writeAugment(augment: AugmentationSchema) = {
+    augment @{YangTextTemplate.formatToAugmentPath(augment.getTargetPath().getPathFromRoot())} {
+        @if(augment.getWhenCondition() != null && !augment.getWhenCondition().toString().isEmpty()) {
+            when "@augment.getWhenCondition().toString()";
+        }
+        @if(augment.getDescription() != null && !augment.getDescription().isEmpty()) {
+            description "@augment.getDescription().toString()";
+        }
+        @if(augment.getReference() != null && !augment.getReference().isEmpty()) {
+            reference "@augment.getReference().toString()";
+        }
+        @if(augment.getStatus() != null) {
+            status "@augment.getStatus()";
+        }
+        @if(augment.getChildNodes() != null && !augment.getChildNodes().isEmpty()) {
+            @writeDataSchemaNodes(augment.getChildNodes())
+        }
+        @if(augment.getUses() != null && !augment.getUses().isEmpty()) {
+            @writeUsesNodes(augment.getUses())
+        }
+    }
+}
+
+@writeUsesNodes(usesNodes: Set[_ <: UsesNode]) = {
+    @for(usesNode <- usesNodes) {
+        @if(usesNode != null) {
+            @writeUsesNode(usesNode)
+        }
+    }
+}
+
+@writeUsesNode(usesNode: UsesNode) = {
+    uses @{usesNode.getGroupingPath().getLastComponent().getLocalName()}
+    @if(usesNode.getRefines().isEmpty()) {
+        ;
+    } else {
+        {
+            @writeRefines(usesNode.getRefines())
+        }
+    }
+}
+
+@writeRefines(refines: Map[_ <: SchemaPath, _ <: SchemaNode]) = {
+    @for(path <- refines.keySet()) {
+        @writeRefine(path, refines.get(path))
+    }
+}
+
+@writeRefine(path: SchemaPath, node: SchemaNode) = {
+    refine @{path.getLastComponent()} {
+    @if(node.isInstanceOf[DataSchemaNode]) {
+            @writeDataSchemaNode(node.asInstanceOf[DataSchemaNode])
+        }
+    }
+}
+
+@writeGroupingDefs(groupingDefs: Set[_ <: GroupingDefinition]) = {
+    @for(groupingDef <- groupingDefs) {
+        @if(groupingDef != null) {
+            @writeGroupingDef(groupingDef)
+        }
+    }
+}
+
+@writeGroupingDef(groupingDef: GroupingDefinition) = {
+    grouping @{groupingDef.getQName().getLocalName()} {
+        @if(groupingDef.getGroupings() != null && !groupingDef.getGroupings().isEmpty()) {
+            @writeGroupingDefs(groupingDef.getGroupings())
+        }
+        @if(groupingDef.getChildNodes() != null && !groupingDef.getChildNodes().isEmpty()) {
+            @writeDataSchemaNodes(groupingDef.getChildNodes())
+        }
+        @if(groupingDef.getStatus() == Status.DEPRECATED) {
+            status @{groupingDef.getStatus()};
+        }
+        @if(groupingDef.getUnknownSchemaNodes() != null && !groupingDef.getUnknownSchemaNodes().isEmpty()) {
+            @writeUnknownSchemaNodes(groupingDef.getUnknownSchemaNodes())
+        }
+    }
+}
+
+@writeUnknownSchemaNodes(unknownSchemaNodes: List[_ <: UnknownSchemaNode]) = {
+    @for(unknownSchemaNode <- unknownSchemaNodes) {
+        @if(unknownSchemaNode != null) {
+            @writeUnknownSchemaNode(unknownSchemaNode)
+        }
+    }
+}
+
+@writeUnknownSchemaNode(unknownSchemaNode: UnknownSchemaNode) = {
+    @* to do *@
+}
+
+@writeDeviations(deviations: Set[_ <: Deviation]) = {
+    @for(deviation <- deviations) {
+        @if(deviation != null) {
+            @writeDeviation(deviation)
+        }
+    }
+}
+
+@writeDeviation(deviation: Deviation) = {
+    deviation @{deviation.getTargetPath()} {
+        @if(deviation.getReference() != null && !deviation.getReference().isEmpty()) {
+            reference "@{deviation.getReference()}";
+        }
+        @if(deviation.getDeviate() != null && !deviation.getDeviate().name.isEmpty()) {
+            deviation @{deviation.getDeviate().name};
+        }
+    }
+}
+
+@writeExtensions(extensions: List[_ <: ExtensionDefinition]) = {
+    @for(extension <- extensions) {
+        @if(extension != null) {
+            @writeExtension(extension)
+        }
+    }
+}
+
+@writeExtension(extension: ExtensionDefinition) = {
+    extension @{extension.getQName().getLocalName()} {
+        @if(extension.getDescription() != null && !extension.getDescription().isEmpty()) {
+            description "@{extension.getDescription()}";
+        }
+        @if(extension.getArgument() != null && !extension.getArgument().isEmpty()) {
+            argument "@{extension.getArgument()}";
+        }
+        @if(extension.getReference() != null && !extension.getReference().isEmpty()) {
+            reference "@{extension.getReference()}";
+        }
+        @if(extension.getStatus() != null) {
+            status @{extension.getStatus()};
+        }
+    }
+}
+
+@writeFeatures(features: Set[_ <: FeatureDefinition]) = {
+    @for(feature <- features) {
+        @if(feature != null) {
+            @writeFeature(feature)
+        }
+    }
+}
+
+@writeFeature(feature: FeatureDefinition) = {
+    feature @{feature.getQName().getLocalName()} {
+        @if(feature.getDescription() != null && !feature.getDescription().isEmpty()) {
+            description "@{feature.getDescription()}";
+        }
+        @if(feature.getReference() != null && !feature.getReference().isEmpty()) {
+            reference "@{feature.getReference()}";
+        }
+        @if(feature.getStatus() != null) {
+            status @{feature.getStatus()};
+        }
+    }
+}
+
+@writeIdentities(identities: Set[_ <: IdentitySchemaNode]) = {
+    @for(identity <- identities) {
+        @if(identity != null) {
+            @writeIdentity(identity)
+        }
+    }
+}
+
+@writeIdentity(identity: IdentitySchemaNode) = {
+    identity @{identity.getQName().getLocalName()} {
+        @if(identity.getBaseIdentity() != null) {
+            base "(@writeIdentityNs(identity.getBaseIdentity()))@{identity.getBaseIdentity()}";
+        }
+        @if(identity.getDescription() != null && !identity.getDescription().isEmpty()) {
+            description "@{identity.getDescription()}";
+        }
+        @if(identity.getReference() != null && !identity.getReference().isEmpty()) {
+            reference "@{identity.getReference()}";
+        }
+        @if(identity.getStatus() != null) {
+            status @{identity.getStatus()};
+        }
+    }
+}
+
+@writeIdentityNs(identity: IdentitySchemaNode) = {
+    @if(module != null && module.getNamespace().equals(identity.getQName().getNamespace())) {
+        @{identity.getQName().getNamespace()}:
+    }
+}
+
+@writeNotifications(notifications: Set[_ <: NotificationDefinition]) = {
+    @for(notification <- notifications) {
+        @if(notification != null) {
+            @writeNotification(notification)
+        }
+    }
+}
+
+@writeNotification(notification: NotificationDefinition) = {
+    notification @{notification.getQName().getLocalName()} {
+        @if(notification.getDescription() != null && !notification.getDescription().isEmpty()) {
+            description "@{notification.getDescription()}";
+        }
+        @if(notification.getChildNodes() != null && !notification.getChildNodes().isEmpty()) {
+            @writeDataSchemaNodes(notification.getChildNodes())
+        }
+        @if(notification.getAvailableAugmentations() != null && !notification.getAvailableAugmentations().isEmpty()) {
+            @writeAugments(notification.getAvailableAugmentations())
+        }
+        @if(notification.getGroupings() != null && !notification.getGroupings().isEmpty()) {
+            @writeGroupingDefs(notification.getGroupings())
+        }
+        @if(notification.getUses() != null && !notification.getUses().isEmpty()) {
+            @writeUsesNodes(notification.getUses())
+        }
+        @if(notification.getReference() != null && !notification.getReference().isEmpty()) {
+            reference "@{notification.getReference()}";
+        }
+        @if(notification.getStatus() == Status.DEPRECATED) {
+            status @{notification.getStatus()};
+        }
+    }
+}
+
+@writeRPCs(rpcDefs: Set[_ <: RpcDefinition]) = {
+    @for(rpc <- rpcDefs) {
+        @if(rpc != null) {
+            @writeRPC(rpc)
+        }
+    }
+}
+
+@writeRPC(rpc: RpcDefinition) = {
+    rpc @{rpc.getQName().getLocalName()} {
+        @if(rpc.getDescription() != null && !rpc.getDescription().isEmpty()) {
+            "@{rpc.getDescription()}";
+        }
+        @if(rpc.getGroupings() != null && !rpc.getGroupings().isEmpty()) {
+            @writeGroupingDefs(rpc.getGroupings())
+        }
+        @if(rpc.getInput() != null) {
+            @writeRpcInput(rpc.getInput())
+        }
+        @if(rpc.getOutput() != null) {
+            @writeRpcOutput(rpc.getOutput())
+        }
+        @if(rpc.getReference() != null && !rpc.getReference().isEmpty()) {
+            reference "@{rpc.getReference()}";
+        }
+        @if(rpc.getStatus() == Status.DEPRECATED) {
+            status @{rpc.getStatus()};
+        }
+    }
+}
+
+@writeRpcInput(input: ContainerSchemaNode) = {
+    input {
+        @if(input.getChildNodes != null && !input.getChildNodes().isEmpty()) {
+            @writeDataSchemaNodes(input.getChildNodes)
+        }
+    }
+}
+
+@writeRpcOutput(output: ContainerSchemaNode) = {
+    output {
+        @if(output.getChildNodes != null && !output.getChildNodes().isEmpty()) {
+            @writeDataSchemaNodes(output.getChildNodes)
+        }
+    }
+}
+
+@writeDataSchemaNode(dataSchemaNode: DataSchemaNode) = {
+    @if(dataSchemaNode.isInstanceOf[ContainerSchemaNode]) {
+        @writeContSchemaNode(dataSchemaNode.asInstanceOf[ContainerSchemaNode])
+    }
+    @if(dataSchemaNode.isInstanceOf[AnyXmlSchemaNode]) {
+        @writeAnyXmlSchemaNode(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode])
+    }
+    @if(dataSchemaNode.isInstanceOf[LeafSchemaNode]) {
+        @writeLeafSchemaNode(dataSchemaNode.asInstanceOf[LeafSchemaNode])
+    }
+    @if(dataSchemaNode.isInstanceOf[LeafListSchemaNode]) {
+        @writeLeafListSchemaNode(dataSchemaNode.asInstanceOf[LeafListSchemaNode])
+    }
+    @if(dataSchemaNode.isInstanceOf[ChoiceCaseNode]) {
+        @writeChoiceCaseNode(dataSchemaNode.asInstanceOf[ChoiceCaseNode])
+    }
+    @if(dataSchemaNode.isInstanceOf[ChoiceSchemaNode]) {
+        @writeChoiceNode(dataSchemaNode.asInstanceOf[ChoiceSchemaNode])
+    }
+    @if(dataSchemaNode.isInstanceOf[ListSchemaNode]) {
+        @writeListSchemaNode(dataSchemaNode.asInstanceOf[ListSchemaNode])
+    }
+}
+
+@writeContSchemaNode(container: ContainerSchemaNode) = {
+    container @{container.getQName().getLocalName()} {
+        @if(container.getChildNodes() != null && !container.getChildNodes().isEmpty()) {
+            @writeDataSchemaNodes(container.getChildNodes())
+        }
+        @if(container.getAvailableAugmentations() != null && !container.getAvailableAugmentations().isEmpty()) {
+            @writeAugments(container.getAvailableAugmentations())
+        }
+        @if(container.getGroupings() != null && !container.getGroupings().isEmpty()) {
+            @writeGroupingDefs(container.getGroupings())
+        }
+        @if(container.getUses() != null && !container.getUses().isEmpty()) {
+            @writeUsesNodes(container.getUses())
+        }
+        @if(container.getStatus() == Status.DEPRECATED) {
+            status @{container.getStatus()};
+        }
+        @if(container.getUnknownSchemaNodes() != null && !container.getUnknownSchemaNodes().isEmpty()) {
+            @writeUnknownSchemaNodes(container.getUnknownSchemaNodes())
+        }
+    }
+}
+
+@writeAnyXmlSchemaNode(anyXml: AnyXmlSchemaNode) = {
+    anyxml @{anyXml.getQName().getLocalName()}
+    @if(anyXml.getStatus() != Status.DEPRECATED) {
+        ;
+    } else {
+        {
+            status @{anyXml.getStatus()};
+        }
+    }
+}
+
+@writeLeafSchemaNode(leaf: LeafSchemaNode) = {
+    leaf @{leaf.getQName().getLocalName()} {
+        type @{leaf.getType().getQName().getLocalName()};
+    }
+    @if(leaf.getStatus() == Status.DEPRECATED) {
+        status @{leaf.getStatus()};
+    }
+}
+
+@writeLeafListSchemaNode(leafList: LeafListSchemaNode) = {
+    leaf-list @{leafList.getQName().getLocalName()} {
+        type @{leafList.getType().getQName().getLocalName()};
+    }
+    @if(leafList.getStatus() == Status.DEPRECATED) {
+        status @{leafList.getStatus()};
+    }
+}
+
+@writeChoiceCaseNode(choiceCase: ChoiceCaseNode) = {
+    case @{choiceCase.getQName().getLocalName()} {
+        @for(childNode <- choiceCase.getChildNodes()) {
+            @writeDataSchemaNode(childNode)
+        }
+    }
+    @if(choiceCase.getStatus() == Status.DEPRECATED) {
+        status @{choiceCase.getStatus()};
+    }
+}
+
+@writeChoiceNode(choice: ChoiceSchemaNode) = {
+    choice @{choice.getQName().getLocalName()} {
+        @for(childNode <- choice.getCases()) {
+            @writeDataSchemaNode(childNode)
+        }
+    }
+    @if(choice.getStatus() == Status.DEPRECATED) {
+        status @{choice.getStatus()};
+    }
+}
+
+@writeListSchemaNode(list: ListSchemaNode) = {
+    list @{list.getQName().getLocalName()} {
+        key "@for(listKey <- list.getKeyDefinition()) {
+            @{listKey.getLocalName()}
+        }"
+    }
+    @if(list.getChildNodes() != null && !list.getChildNodes().isEmpty()) {
+        @writeDataSchemaNodes(list.getChildNodes())
+    }
+    @if(list.getAvailableAugmentations() != null && !list.getAvailableAugmentations().isEmpty()) {
+        @writeAugments(list.getAvailableAugmentations())
+    }
+    @if(list.getGroupings() != null && !list.getGroupings().isEmpty()) {
+        @writeGroupingDefs(list.getGroupings())
+    }
+    @if(list.getUses() != null && !list.getUses().isEmpty()) {
+        @writeUsesNodes(list.getUses())
+    }
+    @if(list.getStatus() == Status.DEPRECATED) {
+        status @{list.getStatus()};
+    }
+    @if(list.getUnknownSchemaNodes() != null && !list.getUnknownSchemaNodes().isEmpty()) {
+        @writeUnknownSchemaNodes(list.getUnknownSchemaNodes())
+    }
+}

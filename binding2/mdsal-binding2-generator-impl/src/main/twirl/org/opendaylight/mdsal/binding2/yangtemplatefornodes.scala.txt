@@ -1,0 +1,23 @@
+@**********************************************************
+* Twirl YangTemplate for generating yang snippets.        *
+* Twirl is transformed to Scala and compiled. Then,       *
+* it can be called from Java with particular input        *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+
+@(nodes: Set[_ <: SchemaNode])
+@if(nodes != null) {
+    @generateYangSnippet(nodes)
+}
+
+@generateYangSnippet(nodes: Set[_ <: SchemaNode]) = {
+    @for(node <- nodes) {
+        @if(node != null) {
+            @{yangtemplatefornode(node)}
+        }
+    }
+}
