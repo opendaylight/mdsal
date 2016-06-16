@@ -1,0 +1,118 @@
+module yang-template-test {
+    yang-version 1;
+    namespace "org.opendaylight.yang.template";
+    prefix "ytemp";
+
+    revision 2016-01-01 {
+        description "Simple yang missing deviation statement";
+    }
+
+    import foo { prefix fo; revision-date 2016-01-01; }
+
+    typedef simple-typedef {
+        type string;
+        default "simple-typedef";
+    }
+
+    container simple-container {
+    }
+
+    leaf simple-leaf {
+        type string;
+    }
+
+    leaf-list simple-leaf-list  {
+        type string;
+    }
+
+    leaf-list simple-leaf-list-userordered  {
+        ordered-by user;
+        type string;
+    }
+
+    list simple-list  {
+    key "simple-list-leaf-1";
+    unique "simple-list-leaf-2";
+        leaf simple-list-leaf-1 {
+            type string;
+        }
+        leaf simple-list-leaf-2 {
+            type string;
+        }
+    }
+
+    list simple-list-userordered  {
+    ordered-by user;
+    key "simple-list-userordered-leaf-1";
+    unique "simple-list-userordered-leaf-2";
+        leaf simple-list-userordered-leaf-1 {
+            type string;
+        }
+        leaf simple-list-userordered-leaf-2 {
+            type string;
+        }
+    }
+
+    choice simple-choice {
+        case simple-case-1 {
+            leaf simple-case-1-leaf {
+                type string;
+            }
+        }
+        case simple-case-2 {
+            leaf simple-case-2-leaf {
+                type string;
+            }
+        }
+    }
+
+    anyxml simple-anyxml;
+
+    grouping simple-grouping {
+        leaf simple-grouping-leaf {
+            description "simple-grouping-leaf description";
+            type string;
+        }
+    }
+
+    container simple-container-uses {
+        uses simple-grouping {
+            refine simple-grouping-leaf {
+                description "refined simple-grouping-leaf description";
+            }
+        }
+    }
+
+    rpc simple-rpc {
+        input {
+            leaf rpc-input-leaf {
+                type string;
+            }
+        }
+    }
+
+    notification simple-notification {
+        leaf notification-leaf {
+            type string;
+        }
+    }
+
+    augment "/simple-container-uses" {
+        leaf augment-leaf {
+            type string;
+        }
+    }
+
+    identity simple-identity {
+        description "simple-identity";
+    }
+
+    extension simple-extension {
+        description "simple-extension";
+        argument "simple-extension-argument";
+    }
+
+    feature simple-feature {
+        description "simple-feature definex if device has some feature... hdd";
+    }
+}
