@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba51214e_77a72e50",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/AccessModifier.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-17T21:29:22Z",
+      "side": 1,
+      "message": "I assume this should be abstract and be implemented in the individual members of this enum",
+      "range": {
+        "startLine": 32,
+        "startChar": 3,
+        "endLine": 32,
+        "endChar": 42
+      },
+      "revId": "a57865bfd8af78bf68df37947cfe8b84210b7ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba51214e_d7639a18",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/AnnotationType.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-17T21:29:22Z",
+      "side": 1,
+      "message": "do we need ordering and/or well-defined hashCode/equals?",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 31,
+        "endChar": 8
+      },
+      "revId": "a57865bfd8af78bf68df37947cfe8b84210b7ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba51214e_b768a6f6",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/AnnotationType.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-17T21:29:22Z",
+      "side": 1,
+      "message": "it should be called getSingleName()",
+      "range": {
+        "startLine": 89,
+        "startChar": 28,
+        "endLine": 89,
+        "endChar": 51
+      },
+      "revId": "a57865bfd8af78bf68df37947cfe8b84210b7ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba51214e_176eb201",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/AnnotationType.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-17T21:29:22Z",
+      "side": 1,
+      "message": "Runtime exception: should not be declared, but documented via @throws.",
+      "range": {
+        "startLine": 95,
+        "startChar": 26,
+        "endLine": 95,
+        "endChar": 55
+      },
+      "revId": "a57865bfd8af78bf68df37947cfe8b84210b7ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba51214e_f7721ee4",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding2/model/api/AnnotationType.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-17T21:29:22Z",
+      "side": 1,
+      "message": "it is not clear which of the forms is expected to be primary. getValue() can could have a default implementation via getValues().get(0), or getValues() could have a default implementation of ImmutableList.of(getValue())...",
+      "range": {
+        "startLine": 95,
+        "startChar": 14,
+        "endLine": 95,
+        "endChar": 25
+      },
+      "revId": "a57865bfd8af78bf68df37947cfe8b84210b7ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba51214e_377496ce",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding2/spec/YangModuleInfo.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-06-17T21:29:22Z",
+      "side": 1,
+      "message": "this has implicit assumption of the text being YANG. Would it make sense to bind this to repo.api and implement this class in terms of SchemaSourceRepresentation?",
+      "range": {
+        "startLine": 63,
+        "startChar": 4,
+        "endLine": 63,
+        "endChar": 59
+      },
+      "revId": "a57865bfd8af78bf68df37947cfe8b84210b7ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
