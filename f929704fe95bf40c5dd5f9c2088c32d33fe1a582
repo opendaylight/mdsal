@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba51214e_f4b05cf6",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/impl/LazyDataObject.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-17T13:18:59Z",
+      "side": 1,
+      "message": "This is fine, but can you be more verbose in context of performance optimization? Cheers.",
+      "revId": "f929704fe95bf40c5dd5f9c2088c32d33fe1a582",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
