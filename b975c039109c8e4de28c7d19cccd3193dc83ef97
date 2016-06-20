@@ -1,0 +1,9 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Ryan Goulding <ryandgoulding@gmail.com>
+Code-Review+1: Tom Pantelis <tpanteli@brocade.com>
+Code-Review+2: Robert Varga <nite@hq.sk>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Mon, 20 Jun 2016 10:30:06 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/39734
+Project: mdsal
+Branch: refs/heads/master
