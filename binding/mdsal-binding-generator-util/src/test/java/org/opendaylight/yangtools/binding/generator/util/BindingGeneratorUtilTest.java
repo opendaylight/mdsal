@@ -51,9 +51,7 @@ import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.Decimal64;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType.Builder;
-import org.opendaylight.yangtools.yang.model.util.Int16;
-import org.opendaylight.yangtools.yang.model.util.StringType;
-import org.opendaylight.yangtools.yang.model.util.Uint16;
+import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
@@ -322,7 +320,7 @@ public class BindingGeneratorUtilTest {
         Optional<String> absent = Optional.absent();
 
         Builder extTypeBuilder = ExtendedType.builder(new QName(URI.create("namespace"), "localName"),
-                Int16.getInstance(), absent, absent, SchemaPath.create(true, QName.create("/root")));
+                BaseTypes.int16Type(), absent, absent, SchemaPath.create(true, QName.create("/root")));
 
         ArrayList<LengthConstraint> lenght = new ArrayList<LengthConstraint>();
         ArrayList<RangeConstraint> range = new ArrayList<RangeConstraint>();
@@ -359,7 +357,7 @@ public class BindingGeneratorUtilTest {
         Optional<String> absent = Optional.absent();
 
         Builder extTypeBuilder = ExtendedType.builder(new QName(URI.create("namespace"), "localName"),
-                StringType.getInstance(), absent, absent, SchemaPath.create(true, QName.create("/root")));
+                BaseTypes.stringType(), absent, absent, SchemaPath.create(true, QName.create("/root")));
 
         Restrictions restrictions = BindingGeneratorUtil.getRestrictions(extTypeBuilder.build());
 
@@ -374,7 +372,7 @@ public class BindingGeneratorUtilTest {
         Optional<String> absent = Optional.absent();
 
         Builder extTypeBuilder = ExtendedType.builder(new QName(URI.create("namespace"), "localName"),
-                Int16.getInstance(), absent, absent, SchemaPath.create(true, QName.create("/root")));
+                BaseTypes.int16Type(), absent, absent, SchemaPath.create(true, QName.create("/root")));
 
         ExtendedType extType = extTypeBuilder.build();
         Restrictions restrictions = BindingGeneratorUtil.getRestrictions(extType);
@@ -394,7 +392,7 @@ public class BindingGeneratorUtilTest {
         Optional<String> absent = Optional.absent();
 
         Builder extTypeBuilder = ExtendedType.builder(new QName(URI.create("namespace"), "localName"),
-                Uint16.getInstance(), absent, absent, SchemaPath.create(true, QName.create("/root")));
+                BaseTypes.uint16Type(), absent, absent, SchemaPath.create(true, QName.create("/root")));
 
         ExtendedType extType = extTypeBuilder.build();
         Restrictions restrictions = BindingGeneratorUtil.getRestrictions(extType);

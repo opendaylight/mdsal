@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.ExtendedType;
-import org.opendaylight.yangtools.yang.model.util.StringType;
+import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 
 public class UnionDependencySortTest {
 
@@ -33,7 +33,7 @@ public class UnionDependencySortTest {
         final UnionDependencySort unionDependencySort = new UnionDependencySort();
         final Set<TypeDefinition<?>> typeDefs = new HashSet<>();
 
-        final StringType stringType = StringType.getInstance();
+        final TypeDefinition<?> stringType = BaseTypes.stringType();
         final ExtendedType extendedType = ExtendedType.builder(QName.create("ExtendedType1"), stringType, Optional.<String> absent(), Optional.<String> absent(), SchemaPath.create(false, QName.create("Cont1"), QName.create("List1"))).build();
 
         typeDefs.add(stringType);
