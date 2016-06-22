@@ -1,4 +1,4 @@
-package org.opendaylight.mdsal.dom.broker.test;
+package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -29,9 +29,9 @@ import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
-import org.opendaylight.mdsal.dom.broker.ShardedDOMDataTree;
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardProducer;
 import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardWriteTransaction;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataTreeShard;
@@ -103,7 +103,9 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         rootShard.onGlobalContextUpdated(schemaContext);
 
         final ShardedDOMDataTree dataTree = new ShardedDOMDataTree();
-        rootShardReg = dataTree.registerDataTreeShard(ROOT_ID, rootShard);
+        final DOMDataTreeProducer shardRegProducer = dataTree.createProducer(Collections.singletonList(ROOT_ID));
+        rootShardReg = dataTree.registerDataTreeShard(ROOT_ID, rootShard, shardRegProducer);
+        shardRegProducer.close();
 
         dataTreeService = dataTree;
     }
@@ -212,7 +214,9 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 5000);
         innerShard.onGlobalContextUpdated(schemaContext);
-        innerShardReg = dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard);
+        final DOMDataTreeProducer shardRegProducer = dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
+        innerShardReg = dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, shardRegProducer);
+        shardRegProducer.close();
 
         dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(TEST_ID), true, Collections.emptyList());
 
@@ -262,7 +266,11 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
     @Test
     public void testMockedSubshards() throws Exception {
         final WriteableDOMDataTreeShard mockedInnerShard = Mockito.mock(WriteableDOMDataTreeShard.class);
-        dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, mockedInnerShard);
+        final ShardedDOMDataTreeProducer shardRegProducer = Mockito.mock(ShardedDOMDataTreeProducer.class);
+        doReturn(Collections.singleton(INNER_CONTAINER_ID)).when(shardRegProducer).getSubtrees();
+        doNothing().when(shardRegProducer).subshardAdded(anyMap());
+
+        dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, mockedInnerShard, shardRegProducer);
         final DOMDataTreeShardProducer mockedProducer = Mockito.mock(DOMDataTreeShardProducer.class);
         doReturn(mockedProducer).when(mockedInnerShard).createProducer(any(Collection.class));
 

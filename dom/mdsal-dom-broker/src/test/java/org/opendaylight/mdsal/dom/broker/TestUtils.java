@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -78,7 +78,7 @@ abstract class TestUtils {
 
         @Nonnull
         public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(
-                @Nonnull DOMRpcIdentifier rpc, @Nullable NormalizedNode<?, ?> input) {
+                @Nonnull final DOMRpcIdentifier rpc, @Nullable final NormalizedNode<?, ?> input) {
             return unknownRpc;
         }
     }

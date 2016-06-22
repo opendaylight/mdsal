@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.test;
+package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -13,29 +13,24 @@ import static org.junit.Assert.fail;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.mdsal.dom.spi.store.DOMStore;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
-import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
+import org.opendaylight.mdsal.dom.spi.store.DOMStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -47,26 +42,26 @@ public class DOMTransactionChainTest {
 
     @Before
     public void setupStore() throws Exception{
-        InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER", MoreExecutors.newDirectExecutorService());
-        InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG", MoreExecutors.newDirectExecutorService());
+        final InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER", MoreExecutors.newDirectExecutorService());
+        final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG", MoreExecutors.newDirectExecutorService());
         schemaContext = TestModel.createTestContext();
 
         operStore.onGlobalContextUpdated(schemaContext);
         configStore.onGlobalContextUpdated(schemaContext);
 
-        ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore> builder() //
+        final ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore> builder() //
                 .put(CONFIGURATION, configStore) //
                 .put(OPERATIONAL, operStore) //
                 .build();
 
-        ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+        final ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
         domBroker = new SerializedDOMDataBroker(stores, executor);
     }
 
     @Test
     public void testTransactionChainNoConflict() throws InterruptedException, ExecutionException, TimeoutException {
-        BlockingTransactionChainListener listener = new BlockingTransactionChainListener();
-        DOMTransactionChain txChain = domBroker.createTransactionChain(listener);
+        final BlockingTransactionChainListener listener = new BlockingTransactionChainListener();
+        final DOMTransactionChain txChain = domBroker.createTransactionChain(listener);
         assertNotNull(txChain);
 
         /**
@@ -74,18 +69,18 @@ public class DOMTransactionChainTest {
          *
          *
          */
-        DOMDataTreeWriteTransaction firstTx = allocateAndWrite(txChain);
+        final DOMDataTreeWriteTransaction firstTx = allocateAndWrite(txChain);
 
         /**
          * First transaction is marked as ready, we are able to allocate chained
          * transactions
          */
-        ListenableFuture<Void> firstWriteTxFuture = firstTx.submit();
+        final ListenableFuture<Void> firstWriteTxFuture = firstTx.submit();
 
         /**
          * We alocate chained transaction - read transaction.
          */
-        DOMDataTreeReadTransaction secondReadTx = txChain.newReadOnlyTransaction();
+        final DOMDataTreeReadTransaction secondReadTx = txChain.newReadOnlyTransaction();
 
         /**
          *
@@ -102,7 +97,7 @@ public class DOMTransactionChainTest {
          * is read-write.
          *
          */
-        DOMDataTreeWriteTransaction thirdDeleteTx = allocateAndDelete(txChain);
+        final DOMDataTreeWriteTransaction thirdDeleteTx = allocateAndDelete(txChain);
 
         /**
          * We commit first transaction
@@ -115,7 +110,7 @@ public class DOMTransactionChainTest {
          * Allocates transaction from data store.
          *
          */
-        DOMDataTreeReadTransaction storeReadTx = domBroker.newReadOnlyTransaction();
+        final DOMDataTreeReadTransaction storeReadTx = domBroker.newReadOnlyTransaction();
 
         /**
          * We verify transaction is commited to store, container should exists
@@ -126,7 +121,7 @@ public class DOMTransactionChainTest {
         /**
          * third transaction is sealed and commited
          */
-        ListenableFuture<Void> thirdDeleteTxFuture = thirdDeleteTx.submit();
+        final ListenableFuture<Void> thirdDeleteTxFuture = thirdDeleteTx.submit();
         assertCommitSuccessful(thirdDeleteTxFuture);
 
         /**
@@ -139,8 +134,8 @@ public class DOMTransactionChainTest {
 
     @Test
     public void testTransactionChainNotSealed() throws InterruptedException, ExecutionException, TimeoutException {
-        BlockingTransactionChainListener listener = new BlockingTransactionChainListener();
-        DOMTransactionChain txChain = domBroker.createTransactionChain(listener);
+        final BlockingTransactionChainListener listener = new BlockingTransactionChainListener();
+        final DOMTransactionChain txChain = domBroker.createTransactionChain(listener);
         assertNotNull(txChain);
 
         /**
@@ -158,14 +153,14 @@ public class DOMTransactionChainTest {
         try {
             txChain.newReadOnlyTransaction();
             fail("Allocation of secondReadTx should fail with IllegalStateException");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             assertTrue(e instanceof IllegalStateException);
         }
     }
 
     private static DOMDataTreeWriteTransaction allocateAndDelete(final DOMTransactionChain txChain)
             throws InterruptedException, ExecutionException {
-        DOMDataTreeWriteTransaction tx = txChain.newWriteOnlyTransaction();
+        final DOMDataTreeWriteTransaction tx = txChain.newWriteOnlyTransaction();
         /**
          * We delete node in third transaction
          */
@@ -175,7 +170,7 @@ public class DOMTransactionChainTest {
 
     private static DOMDataTreeWriteTransaction allocateAndWrite(final DOMTransactionChain txChain)
             throws InterruptedException, ExecutionException {
-        DOMDataTreeWriteTransaction tx = txChain.newWriteOnlyTransaction();
+        final DOMDataTreeWriteTransaction tx = txChain.newWriteOnlyTransaction();
         writeTestContainer(tx);
         return tx;
     }
@@ -187,8 +182,8 @@ public class DOMTransactionChainTest {
 
     private static void assertTestContainerExists(final DOMDataTreeReadTransaction readTx) throws InterruptedException,
             ExecutionException {
-        ListenableFuture<Optional<NormalizedNode<?, ?>>> readFuture = readTx.read(OPERATIONAL, TestModel.TEST_PATH);
-        Optional<NormalizedNode<?, ?>> readedData = readFuture.get();
+        final ListenableFuture<Optional<NormalizedNode<?, ?>>> readFuture = readTx.read(OPERATIONAL, TestModel.TEST_PATH);
+        final Optional<NormalizedNode<?, ?>> readedData = readFuture.get();
         assertTrue(readedData.isPresent());
     }
 

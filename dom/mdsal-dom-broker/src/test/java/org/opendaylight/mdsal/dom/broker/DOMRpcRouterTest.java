@@ -19,7 +19,7 @@ import java.util.concurrent.RejectedExecutionException;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -55,12 +55,12 @@ public class DOMRpcRouterTest extends TestUtils {
 
         final Field listenersField = DOMRpcRouter.class.getDeclaredField("listeners");
         listenersField.setAccessible(true);
-        Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> listenersOriginal =
+        final Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> listenersOriginal =
                 (Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>>) listenersField.get(rpcRouter);
 
         assertNotNull(rpcRouter.registerRpcListener(listener));
 
-        Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> listenersChanged =
+        final Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> listenersChanged =
                 (Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>>) listenersField.get(rpcRouter);
         assertNotEquals(listenersOriginal, listenersChanged);
         assertTrue(listenersOriginal.isEmpty());
