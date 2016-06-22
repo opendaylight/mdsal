@@ -5,13 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.test;
+package org.opendaylight.mdsal.dom.broker;
 
+import com.google.common.util.concurrent.SettableFuture;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.TransactionChain;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
-
-import com.google.common.util.concurrent.SettableFuture;
 
 /**
  * Simple implementation of {@link TransactionChainListener} for testing.

@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.test.util;
+package org.opendaylight.mdsal.dom.broker.util;
 
 import java.io.InputStream;
 import java.util.Collections;
@@ -60,10 +60,10 @@ public class TestModel {
         return TestModel.class.getResourceAsStream(DATASTORE_TEST_YANG);
     }
 
-    private static SchemaContext parseYangStreams(List<InputStream> streams)
+    private static SchemaContext parseYangStreams(final List<InputStream> streams)
             throws SourceException, ReactorException {
 
-        CrossSourceStatementReactor.BuildAction reactor = YangInferencePipeline.RFC6020_REACTOR
+        final CrossSourceStatementReactor.BuildAction reactor = YangInferencePipeline.RFC6020_REACTOR
                 .newBuild();
         return reactor.buildEffective(streams);
     }
