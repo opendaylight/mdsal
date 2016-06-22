@@ -5,7 +5,7 @@
  * Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.test;
+package org.opendaylight.mdsal.dom.broker;
 
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -16,14 +16,14 @@ class MockingUtilities {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    public static <T> T mock(Class<T> type, String toString) {
-        T mock = Mockito.mock(type);
+    public static <T> T mock(final Class<T> type, final String toString) {
+        final T mock = Mockito.mock(type);
         Mockito.doReturn(toString).when(mock).toString();
         return mock;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T, F extends T> ArgumentCaptor<F> captorFor(Class<T> rawClass) {
+    public static <T, F extends T> ArgumentCaptor<F> captorFor(final Class<T> rawClass) {
         return (ArgumentCaptor) ArgumentCaptor.forClass(rawClass);
     }
 }

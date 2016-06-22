@@ -13,6 +13,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableBiMap.Builder;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,13 +32,13 @@ import org.opendaylight.mdsal.dom.store.inmemory.WriteableDOMDataTreeShard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
+class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTreeProducer.class);
-    private final Map<DOMDataTreeIdentifier, DOMDataTreeShard> idToShard;
+    private Map<DOMDataTreeIdentifier, DOMDataTreeShard> idToShard;
+    private final Set<DOMDataTreeIdentifier> subtrees;
     private final ShardedDOMDataTree dataTree;
 
-    private final BiMap<DOMDataTreeShard, DOMDataTreeShardProducer> shardToProducer;
-    private final BiMap<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducer;
+    private BiMap<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducer = ImmutableBiMap.of();
 
     @GuardedBy("this")
     private DOMDataTreeCursorAwareTransaction openTx;
@@ -50,18 +51,46 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     private ShardedDOMDataTreeListenerContext<?> attachedListener;
 
     ShardedDOMDataTreeProducer(final ShardedDOMDataTree dataTree,
+                               final Collection<DOMDataTreeIdentifier> subtrees,
                                final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap,
                                final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToId) {
         this.dataTree = Preconditions.checkNotNull(dataTree);
+        if (!shardToId.isEmpty()) {
+            this.idToProducer = mapIdsToProducer(shardToId);
+        }
+        idToShard = ImmutableMap.copyOf(shardMap);
+        this.subtrees = ImmutableSet.copyOf(subtrees);
+    }
 
-        final Builder<DOMDataTreeShard, DOMDataTreeShardProducer> builder = ImmutableBiMap.builder();
+    static DOMDataTreeProducer create(final ShardedDOMDataTree dataTree,
+                                      final Collection<DOMDataTreeIdentifier> subtrees,
+                                      final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
+        final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToIdentifiers = ArrayListMultimap.create();
+        // map which identifier belongs to which shard
+        for (final Entry<DOMDataTreeIdentifier, DOMDataTreeShard> entry : shardMap.entrySet()) {
+            shardToIdentifiers.put(entry.getValue(), entry.getKey());
+        }
+
+        return new ShardedDOMDataTreeProducer(dataTree, subtrees, shardMap, shardToIdentifiers);
+    }
+
+    void subshardAdded(final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
+        Preconditions.checkState(openTx == null, "Transaction %s is still open", openTx);
+        final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToIdentifiers = ArrayListMultimap.create();
+        // map which identifier belongs to which shard
+        for (final Entry<DOMDataTreeIdentifier, DOMDataTreeShard> entry : shardMap.entrySet()) {
+            shardToIdentifiers.put(entry.getValue(), entry.getKey());
+        }
+        this.idToProducer = mapIdsToProducer(shardToIdentifiers);
+        idToShard = ImmutableMap.copyOf(shardMap);
+    }
+
+    private BiMap<DOMDataTreeIdentifier, DOMDataTreeShardProducer> mapIdsToProducer(final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToId) {
         final Builder<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducerBuilder = ImmutableBiMap.builder();
         for (final Entry<DOMDataTreeShard, Collection<DOMDataTreeIdentifier>> entry : shardToId.asMap().entrySet()) {
             if (entry.getKey() instanceof WriteableDOMDataTreeShard) {
                 //create a single producer for all prefixes in a single shard
                 final DOMDataTreeShardProducer producer = ((WriteableDOMDataTreeShard) entry.getKey()).createProducer(entry.getValue());
-                builder.put(entry.getKey(), producer);
-
                 // id mapped to producers
                 for (final DOMDataTreeIdentifier id : entry.getValue()) {
                     idToProducerBuilder.put(id, producer);
@@ -70,19 +99,8 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
                 LOG.error("Unable to create a producer for shard that's not a WriteableDOMDataTreeShard");
             }
         }
-        this.shardToProducer = builder.build();
-        this.idToProducer = idToProducerBuilder.build();
-        idToShard = ImmutableMap.copyOf(shardMap);
-    }
 
-    static DOMDataTreeProducer create(final ShardedDOMDataTree dataTree, final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
-        final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToIdetifiers = ArrayListMultimap.create();
-        // map which identifier belongs to which shard
-        for (final Entry<DOMDataTreeIdentifier, DOMDataTreeShard> entry : shardMap.entrySet()) {
-            shardToIdetifiers.put(entry.getValue(), entry.getKey());
-        }
-
-        return new ShardedDOMDataTreeProducer(dataTree, shardMap, shardToIdetifiers);
+        return idToProducerBuilder.build();
     }
 
     @Override
@@ -170,8 +188,8 @@ final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         }
     }
 
-    Set<DOMDataTreeIdentifier> getSubtrees() {
-        return idToShard.keySet();
+    protected Set<DOMDataTreeIdentifier> getSubtrees() {
+        return subtrees;
     }
 
     synchronized void cancelTransaction(final ShardedDOMDataTreeWriteTransaction transaction) {

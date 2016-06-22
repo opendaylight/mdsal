@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.test;
+package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -20,7 +20,7 @@ public enum TestCommitCohort implements DOMStoreThreePhaseCommitCohort {
 
 
 
-    private TestCommitCohort(boolean canCommit, boolean preCommit, boolean commit, boolean abort) {
+    private TestCommitCohort(final boolean canCommit, final boolean preCommit, final boolean commit, final boolean abort) {
         this.canCommit = Futures.immediateFuture(canCommit);
         this.preCommit = immediate(canCommit, new IllegalStateException());
         this.commit = immediate(commit, new IllegalStateException());
@@ -53,7 +53,7 @@ public enum TestCommitCohort implements DOMStoreThreePhaseCommitCohort {
         return commit;
     }
 
-    private static ListenableFuture<Void> immediate(boolean isSuccess, Exception e) {
+    private static ListenableFuture<Void> immediate(final boolean isSuccess, final Exception e) {
         return isSuccess ? Futures.<Void>immediateFuture(null) : Futures.<Void>immediateFailedFuture(e);
     }
 
