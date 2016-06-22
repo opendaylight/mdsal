@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.test;
+package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,9 +37,7 @@ import org.opendaylight.mdsal.common.api.TransactionCommitDeadlockException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
-import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
-import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.util.concurrent.DeadlockDetectingListeningExecutorService;
@@ -61,16 +59,16 @@ public class DOMBrokerTest {
 
     @Before
     public void setupStore() throws Exception {
-        InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
+        final InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
                 MoreExecutors.newDirectExecutorService());
-        InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
+        final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
                 MoreExecutors.newDirectExecutorService());
         schemaContext = TestModel.createTestContext();
 
         operStore.onGlobalContextUpdated(schemaContext);
         configStore.onGlobalContextUpdated(schemaContext);
 
-        ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore> builder()
+        final ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore> builder()
                 .put(CONFIGURATION, configStore)
                 .put(OPERATIONAL, operStore)
                 .build();
@@ -97,10 +95,10 @@ public class DOMBrokerTest {
     public void testTransactionIsolation() throws InterruptedException, ExecutionException {
         assertNotNull(domBroker);
 
-        DOMDataTreeReadTransaction readTx = domBroker.newReadOnlyTransaction();
+        final DOMDataTreeReadTransaction readTx = domBroker.newReadOnlyTransaction();
         assertNotNull(readTx);
 
-        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
 
         /**
@@ -115,14 +113,14 @@ public class DOMBrokerTest {
          * Reads /test from readTx Read should return Absent.
          *
          */
-        ListenableFuture<Optional<NormalizedNode<?, ?>>> readTxContainer = readTx
+        final ListenableFuture<Optional<NormalizedNode<?, ?>>> readTxContainer = readTx
                 .read(OPERATIONAL, TestModel.TEST_PATH);
         assertFalse(readTxContainer.get().isPresent());
     }
 
     @Test(timeout=10000)
     public void testTransactionCommit() throws InterruptedException, ExecutionException {
-        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
         /**
          *
@@ -133,7 +131,7 @@ public class DOMBrokerTest {
 
         writeTx.submit().get();
 
-        Optional<NormalizedNode<?, ?>> afterCommitRead = domBroker.newReadOnlyTransaction()
+        final Optional<NormalizedNode<?, ?>> afterCommitRead = domBroker.newReadOnlyTransaction()
                 .read(OPERATIONAL, TestModel.TEST_PATH).get();
         assertTrue(afterCommitRead.isPresent());
     }
@@ -149,7 +147,7 @@ public class DOMBrokerTest {
         Mockito.doReturn( true ).when( commitExecutor.delegate )
             .awaitTermination( Mockito.anyLong(), Mockito.any( TimeUnit.class ) );
 
-        DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
+        final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put( OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME) );
 
         writeTx.submit().checkedGet( 5, TimeUnit.SECONDS );
@@ -163,7 +161,7 @@ public class DOMBrokerTest {
 
                 try {
                     writeTx.submit();
-                } catch( Throwable e ) {
+                } catch( final Throwable e ) {
                     caughtEx.set( e );
                 }
             }
@@ -184,7 +182,7 @@ public class DOMBrokerTest {
                 .build();
 
         DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
-        DOMDataTreeReadTransaction readRx = domBroker.newReadOnlyTransaction();
+        final DOMDataTreeReadTransaction readRx = domBroker.newReadOnlyTransaction();
         assertNotNull(writeTx);
         assertNotNull(readRx);
 
@@ -223,7 +221,7 @@ public class DOMBrokerTest {
         domBroker.setCloseable(() -> { throw new Exception(TEST_EXCEPTION); });
         try{
             domBroker.close();
-        }catch(Exception e){
+        }catch(final Exception e){
             assertTrue(e.getMessage().contains(TEST_EXCEPTION));
         }
     }

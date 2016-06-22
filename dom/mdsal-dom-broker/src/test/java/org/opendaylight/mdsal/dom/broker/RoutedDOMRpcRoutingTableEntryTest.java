@@ -16,7 +16,7 @@ import static org.mockito.Mockito.mock;
 import java.util.HashMap;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -27,14 +27,14 @@ public class RoutedDOMRpcRoutingTableEntryTest extends TestUtils {
         final RpcDefinition rpcDefinition = mock(RpcDefinition.class);
         doReturn(SchemaPath.ROOT).when(rpcDefinition).getPath();
 
-        RoutedDOMRpcRoutingTableEntry routedDOMRpcRoutingTableEntry =
+        final RoutedDOMRpcRoutingTableEntry routedDOMRpcRoutingTableEntry =
                 new RoutedDOMRpcRoutingTableEntry(rpcDefinition, TestModel.TEST_PATH, new HashMap<>());
         assertNotNull(routedDOMRpcRoutingTableEntry.newInstance(new HashMap<>()));
 
         try {
             routedDOMRpcRoutingTableEntry.invokeRpc(TEST_CHILD).checkedGet();
             fail("Expected DOMRpcImplementationNotAvailableException");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             assertTrue(e instanceof DOMRpcImplementationNotAvailableException);
         }
     }

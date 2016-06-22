@@ -8,7 +8,9 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -59,7 +61,12 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     }
 
     @Override
-    public <T extends DOMDataTreeShard> ListenerRegistration<T> registerDataTreeShard(final DOMDataTreeIdentifier prefix, final T shard) throws DOMDataTreeShardingConflictException {
+    public <T extends DOMDataTreeShard> ListenerRegistration<T> registerDataTreeShard(final DOMDataTreeIdentifier prefix, final T shard, final DOMDataTreeProducer producer) throws DOMDataTreeShardingConflictException {
+
+        final DOMDataTreeIdentifier firstSubtree = Iterables.getOnlyElement(((ShardedDOMDataTreeProducer) producer).getSubtrees());
+        Preconditions.checkArgument(firstSubtree != null, "Producer that is used to verify namespace claim can only claim a single namespace");
+        Preconditions.checkArgument(prefix.equals(firstSubtree), "Trying to register shard to a different namespace than the producer has claimed");
+
         final ShardRegistration<T> reg;
         final ShardRegistration<?> parentReg;
 
@@ -86,7 +93,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
             shards.store(prefix, reg);
 
-            // FIXME: update any producers/registrations
+            ((ShardedDOMDataTreeProducer) producer).subshardAdded(Collections.singletonMap(prefix, shard));
         }
 
         // Notify the parent shard
@@ -100,7 +107,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     @GuardedBy("this")
     private DOMDataTreeProducer findProducer(final DOMDataTreeIdentifier subtree) {
 
-        DOMDataTreePrefixTableEntry<DOMDataTreeProducer> producerEntry = producers.lookup(subtree);
+        final DOMDataTreePrefixTableEntry<DOMDataTreeProducer> producerEntry = producers.lookup(subtree);
         if (producerEntry != null) {
             return producerEntry.getValue();
         }
@@ -114,11 +121,11 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     }
 
     @GuardedBy("this")
-    private DOMDataTreeProducer createProducer(final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
+    private DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees, final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         // Record the producer's attachment points
-        final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, shardMap);
-        for (final DOMDataTreeIdentifier s : shardMap.keySet()) {
-            producers.store(s, ret);
+        final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, subtrees, shardMap);
+        for (final DOMDataTreeIdentifier subtree : subtrees) {
+            producers.store(subtree, ret);
         }
 
         return ret;
@@ -134,10 +141,13 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
             final DOMDataTreeProducer producer = findProducer(subtree);
             Preconditions.checkArgument(producer == null, "Subtree %s is attached to producer %s", subtree, producer);
 
-            shardMap.put(subtree, shards.lookup(subtree).getValue().getInstance());
+            final DOMDataTreePrefixTableEntry<ShardRegistration<?>> possibleShardReg = shards.lookup(subtree);
+            if (possibleShardReg != null) {
+                shardMap.put(subtree, possibleShardReg.getValue().getInstance());
+            }
         }
 
-        return createProducer(shardMap);
+        return createProducer(subtrees, shardMap);
     }
 
     synchronized DOMDataTreeProducer createProducer(final ShardedDOMDataTreeProducer parent, final Collection<DOMDataTreeIdentifier> subtrees) {
@@ -148,7 +158,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
             shardMap.put(s, shards.lookup(s).getValue().getInstance());
         }
 
-        return createProducer(shardMap);
+        return createProducer(subtrees, shardMap);
     }
 
     @Override
@@ -161,16 +171,16 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
                 ShardedDOMDataTreeListenerContext.create(listener, subtrees, allowRxMerges);
         try {
             // FIXME: Add attachment of producers
-            for (DOMDataTreeProducer producer : producers) {
+            for (final DOMDataTreeProducer producer : producers) {
                 Preconditions.checkArgument(producer instanceof ShardedDOMDataTreeProducer);
-                ShardedDOMDataTreeProducer castedProducer = ((ShardedDOMDataTreeProducer) producer);
+                final ShardedDOMDataTreeProducer castedProducer = ((ShardedDOMDataTreeProducer) producer);
                 simpleLoopCheck(subtrees, castedProducer.getSubtrees());
                 // FIXME: We should also unbound listeners
                 castedProducer.boundToListener(listenerContext);
             }
 
-            for (DOMDataTreeIdentifier subtree : subtrees) {
-                DOMDataTreeShard shard = shards.lookup(subtree).getValue().getInstance();
+            for (final DOMDataTreeIdentifier subtree : subtrees) {
+                final DOMDataTreeShard shard = shards.lookup(subtree).getValue().getInstance();
                 // FIXME: What should we do if listener is wildcard? And shards are on per
                 // node basis?
                 Preconditions.checkArgument(shard instanceof DOMStoreTreeChangePublisher,
@@ -178,7 +188,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
                 listenerContext.register(subtree, (DOMStoreTreeChangePublisher) shard);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             listenerContext.close();
             throw e;
         }
@@ -190,10 +200,10 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         };
     }
 
-    private static void simpleLoopCheck(Collection<DOMDataTreeIdentifier> listen, Set<DOMDataTreeIdentifier> writes)
+    private static void simpleLoopCheck(final Collection<DOMDataTreeIdentifier> listen, final Set<DOMDataTreeIdentifier> writes)
             throws DOMDataTreeLoopException {
-        for(DOMDataTreeIdentifier listenPath : listen) {
-            for (DOMDataTreeIdentifier writePath : writes) {
+        for(final DOMDataTreeIdentifier listenPath : listen) {
+            for (final DOMDataTreeIdentifier writePath : writes) {
                 if (listenPath.contains(writePath)) {
                     throw new DOMDataTreeLoopException(String.format(
                             "Listener must not listen on parent (%s), and also writes child (%s)", listenPath,
@@ -207,7 +217,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         }
     }
 
-    void removeListener(ShardedDOMDataTreeListenerContext<?> listener) {
+    void removeListener(final ShardedDOMDataTreeListenerContext<?> listener) {
         // FIXME: detach producers
         listener.close();
     }
