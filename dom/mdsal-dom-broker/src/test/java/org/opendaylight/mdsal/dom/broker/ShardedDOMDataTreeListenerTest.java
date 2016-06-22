@@ -5,18 +5,19 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.test;
+package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.opendaylight.mdsal.dom.broker.test.MockingUtilities.captorFor;
+import static org.opendaylight.mdsal.dom.broker.MockingUtilities.captorFor;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -36,8 +37,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
-import org.opendaylight.mdsal.dom.broker.ShardedDOMDataTree;
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -74,6 +74,9 @@ public class ShardedDOMDataTreeListenerTest {
     private DOMDataTreeListener listener;
 
     @Mock
+    private ShardedDOMDataTreeProducer producer;
+
+    @Mock
     private ListenerRegistration<?> storeListenerReg;
 
     private DOMDataTreeService treeService;
@@ -83,8 +86,10 @@ public class ShardedDOMDataTreeListenerTest {
     public void setUp() throws DOMDataTreeShardingConflictException {
         MockitoAnnotations.initMocks(this);
         final ShardedDOMDataTree impl = new ShardedDOMDataTree();
+        doReturn(Collections.singleton(ROOT_ID)).when(producer).getSubtrees();
+        doNothing().when(producer).subshardAdded(anyMap());
         treeService = impl;
-        shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard);
+        shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard, producer);
         doReturn("rootShard").when(rootShard).toString();
         doReturn("childShard").when(childShard).toString();
 
@@ -115,7 +120,7 @@ public class ShardedDOMDataTreeListenerTest {
 
     @Test
     public void registerAndCloseListener() throws DOMDataTreeLoopException {
-        ListenerRegistration<DOMDataTreeListener> reg =
+        final ListenerRegistration<DOMDataTreeListener> reg =
                 treeService.registerListener(listener, SUBTREES_TEST, true,
                         Collections.<DOMDataTreeProducer>emptyList());
         reg.close();
@@ -124,31 +129,31 @@ public class ShardedDOMDataTreeListenerTest {
 
     @Test
     public void receiveChangeEvent() throws DOMDataTreeLoopException {
-        ArgumentCaptor<DOMDataTreeChangeListener> storeListener =
+        final ArgumentCaptor<DOMDataTreeChangeListener> storeListener =
                 ArgumentCaptor.forClass(DOMDataTreeChangeListener.class);
         treeService.registerListener(listener, SUBTREES_TEST, true, Collections.<DOMDataTreeProducer>emptyList());
         verify(rootShard, times(1)).registerTreeChangeListener(eq(TEST_ID.getRootIdentifier()),
                 storeListener.capture());
 
-        DataTreeCandidate sentStoreCandidate =
+        final DataTreeCandidate sentStoreCandidate =
                 DataTreeCandidates.fromNormalizedNode(TEST_ID.getRootIdentifier(), TEST_CONTAINER);
-        Collection<DataTreeCandidate> changes = Collections.singleton(sentStoreCandidate);
+        final Collection<DataTreeCandidate> changes = Collections.singleton(sentStoreCandidate);
 
         doNothing().when(listener).onDataTreeChanged(Mockito.<Collection<DataTreeCandidate>>any(), Mockito.anyMap());
         storeListener.getValue().onDataTreeChanged(changes);
 
-        ArgumentCaptor<Collection<DataTreeCandidate>> candidateCapture = captorFor(Collection.class);
-        ArgumentCaptor<Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>>> mapCapture = captorFor(Map.class);
+        final ArgumentCaptor<Collection<DataTreeCandidate>> candidateCapture = captorFor(Collection.class);
+        final ArgumentCaptor<Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>>> mapCapture = captorFor(Map.class);
         verify(listener, times(1)).onDataTreeChanged(candidateCapture.capture(), mapCapture.capture());
 
-        Collection<DataTreeCandidate> receivedCandidate = candidateCapture.getValue();
-        Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> receivedMap = mapCapture.getValue();
+        final Collection<DataTreeCandidate> receivedCandidate = candidateCapture.getValue();
+        final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> receivedMap = mapCapture.getValue();
 
         assertNotNull("receivedCandidate", receivedCandidate);
         assertNotNull("receivedMap", receivedMap);
         assertFalse("candidate collection must not be empty", receivedCandidate.isEmpty());
         assertEquals(1, receivedCandidate.size());
-        DataTreeCandidate firstItem = receivedCandidate.iterator().next();
+        final DataTreeCandidate firstItem = receivedCandidate.iterator().next();
         assertEquals(TEST_ID.getRootIdentifier(), firstItem.getRootPath());
         assertEquals(TEST_CONTAINER, receivedMap.get(TEST_ID));
     }

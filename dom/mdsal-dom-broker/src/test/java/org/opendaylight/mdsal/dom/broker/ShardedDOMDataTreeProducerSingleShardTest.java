@@ -5,10 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.test;
+package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 
@@ -27,8 +28,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
-import org.opendaylight.mdsal.dom.broker.ShardedDOMDataTree;
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardProducer;
@@ -68,6 +68,9 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     @Mock(name = "storeTxChain")
     private DOMStoreTransactionChain txChainMock;
 
+    @Mock
+    private ShardedDOMDataTreeProducer rootProducer;
+
     private DOMDataTreeService treeService;
     private ListenerRegistration<MockTestShard> shardReg;
     private DOMDataTreeProducer producer;
@@ -75,9 +78,11 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     @Before
     public void setUp() throws DOMDataTreeShardingConflictException {
         MockitoAnnotations.initMocks(this);
+        doReturn(Collections.singleton(ROOT_ID)).when(rootProducer).getSubtrees();
+        doNothing().when(rootProducer).subshardAdded(anyMap());
         final ShardedDOMDataTree impl = new ShardedDOMDataTree();
         treeService = impl;
-        shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard);
+        shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard, rootProducer);
 
         doReturn("rootShard").when(rootShard).toString();
         doReturn(producerMock).when(rootShard).createProducer(any(Collection.class));
@@ -101,7 +106,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
 
     @Test
     public void closeWithTxSubmitted() throws DOMDataTreeProducerException {
-        DOMDataTreeCursorAwareTransaction tx = producer.createTransaction(false);
+        final DOMDataTreeCursorAwareTransaction tx = producer.createTransaction(false);
         tx.submit();
         producer.close();
     }
@@ -122,15 +127,15 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     @Test
     public void allocateChildProducerWithTxSubmmited() {
         producer.createTransaction(false).submit();
-        DOMDataTreeProducer childProducer = producer.createProducer(SUBTREES_TEST);
+        final DOMDataTreeProducer childProducer = producer.createProducer(SUBTREES_TEST);
         assertNotNull(childProducer);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void writeChildProducerDataToParentTx() {
-        DOMDataTreeProducer childProducer = producer.createProducer(SUBTREES_TEST);
+        final DOMDataTreeProducer childProducer = producer.createProducer(SUBTREES_TEST);
         assertNotNull(childProducer);
-        DOMDataTreeCursorAwareTransaction parentTx = producer.createTransaction(true);
+        final DOMDataTreeCursorAwareTransaction parentTx = producer.createTransaction(true);
         parentTx.createCursor(TEST_ID);
     }
 
