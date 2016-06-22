@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.dom.broker.test;
+package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,9 +38,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
-import org.opendaylight.mdsal.dom.broker.AbstractDOMDataBroker;
-import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
-import org.opendaylight.mdsal.dom.broker.test.util.TestModel;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -86,24 +84,24 @@ public class DOMDataTreeListenerTest {
             .withChild(OUTER_LIST_2)
             .build();
 
-    private static DOMDataTreeIdentifier ROOT_DATA_TREE_ID = new DOMDataTreeIdentifier(
+    private static final DOMDataTreeIdentifier ROOT_DATA_TREE_ID = new DOMDataTreeIdentifier(
             LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
 
-    private static DOMDataTreeIdentifier OUTER_LIST_DATA_TREE_ID = new DOMDataTreeIdentifier(
+    private static final DOMDataTreeIdentifier OUTER_LIST_DATA_TREE_ID = new DOMDataTreeIdentifier(
             LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH);
 
     @Before
     public void setupStore() throws Exception {
-        InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
+        final InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
                 MoreExecutors.newDirectExecutorService());
-        InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
+        final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
                 MoreExecutors.newDirectExecutorService());
         schemaContext = TestModel.createTestContext();
 
         operStore.onGlobalContextUpdated(schemaContext);
         configStore.onGlobalContextUpdated(schemaContext);
 
-        ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
+        final ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
                 .put(CONFIGURATION, configStore)
                 .put(OPERATIONAL, operStore)
                 .build();
@@ -128,9 +126,9 @@ public class DOMDataTreeListenerTest {
 
     @Test
     public void writeContainerEmptyTreeTest() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
+        final CountDownLatch latch = new CountDownLatch(1);
 
-        DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
+        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
@@ -148,18 +146,18 @@ public class DOMDataTreeListenerTest {
         final Collection<DataTreeCandidate> changes = listener.getReceivedChanges().get(0);
         assertEquals(1, changes.size());
 
-        DataTreeCandidate candidate = changes.iterator().next();
+        final DataTreeCandidate candidate = changes.iterator().next();
         assertNotNull(candidate);
-        DataTreeCandidateNode candidateRoot = candidate.getRootNode();
+        final DataTreeCandidateNode candidateRoot = candidate.getRootNode();
         checkChange(null, TEST_CONTAINER, ModificationType.WRITE, candidateRoot);
         listenerReg.close();
     }
 
     @Test
     public void replaceContainerContainerInTreeTest() throws InterruptedException, TransactionCommitFailedException {
-        CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(2);
 
-        DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
+        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
@@ -197,9 +195,9 @@ public class DOMDataTreeListenerTest {
 
     @Test
     public void deleteContainerContainerInTreeTest() throws InterruptedException, TransactionCommitFailedException {
-        CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(2);
 
-        DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
+        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
@@ -238,9 +236,9 @@ public class DOMDataTreeListenerTest {
 
     @Test
     public void replaceChildListContainerInTreeTest() throws InterruptedException, TransactionCommitFailedException {
-        CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(2);
 
-        DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
+        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
@@ -283,9 +281,9 @@ public class DOMDataTreeListenerTest {
 
     @Test
     public void rootModificationChildListenerTest() throws InterruptedException, TransactionCommitFailedException {
-        CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(2);
 
-        DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
+        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
@@ -324,9 +322,9 @@ public class DOMDataTreeListenerTest {
 
     @Test
     public void listEntryChangeNonRootRegistrationTest() throws InterruptedException, TransactionCommitFailedException {
-        CountDownLatch latch = new CountDownLatch(2);
+        final CountDownLatch latch = new CountDownLatch(2);
 
-        DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
+        final DOMDataTreeChangeService dataTreeChangeService = getDOMDataTreeChangeService();
         assertNotNull("DOMDataTreeChangeService not found, cannot continue with test!",
                 dataTreeChangeService);
 
