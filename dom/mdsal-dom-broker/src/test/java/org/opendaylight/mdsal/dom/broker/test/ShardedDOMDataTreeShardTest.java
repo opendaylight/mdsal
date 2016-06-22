@@ -12,12 +12,14 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
@@ -40,15 +42,23 @@ public class ShardedDOMDataTreeShardTest {
     @Mock(name = "rootShard")
     private DOMDataTreeShard childShard;
 
+    @Mock
+    private DOMDataTreeProducer rootProducer;
+
+    @Mock
+    private DOMDataTreeProducer testProducer;
+
     private DOMDataTreeShardingService shardingService;
     private ListenerRegistration<DOMDataTreeShard> shardReg;
 
     @Before
     public void setUp() throws DOMDataTreeShardingConflictException {
         MockitoAnnotations.initMocks(this);
+        doReturn(Collections.singleton(ROOT_ID)).when(rootProducer).getSubtrees();
+        doReturn(Collections.singleton(TEST_ID)).when(testProducer).getSubtrees();
         final ShardedDOMDataTree impl = new ShardedDOMDataTree();
         shardingService = impl;
-        shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard);
+        shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard, rootProducer);
         doReturn("rootShard").when(rootShard).toString();
         doReturn("childShard").when(childShard).toString();
     }
@@ -56,14 +66,14 @@ public class ShardedDOMDataTreeShardTest {
     @Test
     public void attachChildShard() throws DOMDataTreeShardingConflictException {
         doNothing().when(rootShard).onChildAttached(TEST_ID, childShard);
-        shardingService.registerDataTreeShard(TEST_ID, childShard);
+        shardingService.registerDataTreeShard(TEST_ID, childShard, testProducer);
         verify(rootShard, times(1)).onChildAttached(TEST_ID, childShard);
     }
 
     @Test
     public void attachAndRemoveShard() throws DOMDataTreeShardingConflictException {
         doNothing().when(rootShard).onChildAttached(TEST_ID, childShard);
-        ListenerRegistration<DOMDataTreeShard> reg = shardingService.registerDataTreeShard(TEST_ID, childShard);
+        ListenerRegistration<DOMDataTreeShard> reg = shardingService.registerDataTreeShard(TEST_ID, childShard, testProducer);
         verify(rootShard, times(1)).onChildAttached(TEST_ID, childShard);
 
         doNothing().when(rootShard).onChildDetached(TEST_ID, childShard);

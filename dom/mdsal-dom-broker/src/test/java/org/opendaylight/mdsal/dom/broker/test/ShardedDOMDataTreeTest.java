@@ -90,7 +90,9 @@ public class ShardedDOMDataTreeTest {
         rootShard.onGlobalContextUpdated(schemaContext);
 
         final ShardedDOMDataTree dataTree = new ShardedDOMDataTree();
-        rootShardReg = dataTree.registerDataTreeShard(ROOT_ID, rootShard);
+        final DOMDataTreeProducer shardRegProducer = dataTree.createProducer(Collections.singletonList(ROOT_ID));
+        rootShardReg = dataTree.registerDataTreeShard(ROOT_ID, rootShard, shardRegProducer);
+        shardRegProducer.close();
 
         dataTreeService = dataTree;
     }
