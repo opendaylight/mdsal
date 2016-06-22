@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.dom.broker.osgi;
 
 import static com.google.common.base.Preconditions.checkState;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -26,7 +25,7 @@ import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
-import org.opendaylight.yangtools.yang.parser.repo.URLSchemaContextResolver;
+import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -42,7 +41,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     private static final Logger LOG = LoggerFactory.getLogger(OsgiBundleScanningSchemaService.class);
 
     private final ListenerRegistry<SchemaContextListener> listeners = new ListenerRegistry<>();
-    private final URLSchemaContextResolver contextResolver = URLSchemaContextResolver.create("global-bundle");
+    private final YangTextSchemaContextResolver contextResolver = YangTextSchemaContextResolver.create("global-bundle");
     private final BundleScanner scanner = new BundleScanner();
     private final BundleContext context;
 
