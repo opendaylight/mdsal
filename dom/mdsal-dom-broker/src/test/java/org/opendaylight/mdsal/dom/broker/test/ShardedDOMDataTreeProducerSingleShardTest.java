@@ -68,6 +68,9 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     @Mock(name = "storeTxChain")
     private DOMStoreTransactionChain txChainMock;
 
+    @Mock
+    private DOMDataTreeProducer rootProducer;
+
     private DOMDataTreeService treeService;
     private ListenerRegistration<MockTestShard> shardReg;
     private DOMDataTreeProducer producer;
@@ -75,9 +78,10 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     @Before
     public void setUp() throws DOMDataTreeShardingConflictException {
         MockitoAnnotations.initMocks(this);
+        doReturn(Collections.singleton(ROOT_ID)).when(rootProducer).getSubtrees();
         final ShardedDOMDataTree impl = new ShardedDOMDataTree();
         treeService = impl;
-        shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard);
+        shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard, rootProducer);
 
         doReturn("rootShard").when(rootShard).toString();
         doReturn(producerMock).when(rootShard).createProducer(any(Collection.class));

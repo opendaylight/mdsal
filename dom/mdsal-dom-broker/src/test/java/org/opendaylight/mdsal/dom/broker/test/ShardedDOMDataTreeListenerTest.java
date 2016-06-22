@@ -74,6 +74,9 @@ public class ShardedDOMDataTreeListenerTest {
     private DOMDataTreeListener listener;
 
     @Mock
+    private DOMDataTreeProducer producer;
+
+    @Mock
     private ListenerRegistration<?> storeListenerReg;
 
     private DOMDataTreeService treeService;
@@ -83,8 +86,9 @@ public class ShardedDOMDataTreeListenerTest {
     public void setUp() throws DOMDataTreeShardingConflictException {
         MockitoAnnotations.initMocks(this);
         final ShardedDOMDataTree impl = new ShardedDOMDataTree();
+        doReturn(Collections.singleton(ROOT_ID)).when(producer).getSubtrees();
         treeService = impl;
-        shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard);
+        shardReg = impl.registerDataTreeShard(ROOT_ID, rootShard, producer);
         doReturn("rootShard").when(rootShard).toString();
         doReturn("childShard").when(childShard).toString();
 

@@ -62,7 +62,9 @@ public class ShardedDOMDataWriteTransactionTest {
 
         final ShardedDOMDataTree shardedDOMDataTree =
                 new ShardedDOMDataTree();
-        shardedDOMDataTree.registerDataTreeShard(ROOT_ID, rootShard);
+        final DOMDataTreeProducer shardRegProducer = shardedDOMDataTree.createProducer(Collections.singletonList(ROOT_ID));
+        shardedDOMDataTree.registerDataTreeShard(ROOT_ID, rootShard, shardRegProducer);
+        shardRegProducer.close();
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("test"));
 
         final DOMDataTreeProducer producer = shardedDOMDataTree.createProducer(Collections.singletonList(ROOT_ID));
@@ -83,7 +85,7 @@ public class ShardedDOMDataWriteTransactionTest {
         try {
             producer.createTransaction(false);
             fail("Should have failed, there's still a tx open");
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             assertTrue(e.getMessage().contains("open"));
         }
 
@@ -98,17 +100,15 @@ public class ShardedDOMDataWriteTransactionTest {
         assertTrue(transaction.cancel());
         assertFalse(transaction.cancel());
 
-        assertTrue(((String) transaction.getIdentifier()).contains("0"));
-
         final DOMDataTreeCursorAwareTransaction newTx = producer.createTransaction(false);
-        assertTrue(((String) newTx.getIdentifier()).contains("1"));
+        assertNotNull(newTx);
     }
 
     private final class TestDOMShardWriteTransaction implements DOMDataTreeShardWriteTransaction {
 
         @Nonnull
         @Override
-        public DOMDataTreeWriteCursor createCursor(@Nonnull DOMDataTreeIdentifier prefix) {
+        public DOMDataTreeWriteCursor createCursor(@Nonnull final DOMDataTreeIdentifier prefix) {
             return new TestCursor();
         }
 
@@ -148,14 +148,14 @@ public class ShardedDOMDataWriteTransactionTest {
         private final Deque<PathArgument> stack = new ArrayDeque<>();
 
         @Override
-        public void delete(PathArgument child) {
+        public void delete(final PathArgument child) {
             final ArrayDeque<PathArgument> newPath = new ArrayDeque<>(stack);
             newPath.push(child);
             TEST_MAP.remove(YangInstanceIdentifier.create(newPath));
         }
 
         @Override
-        public void merge(PathArgument child, NormalizedNode<?, ?> data) {
+        public void merge(final PathArgument child, final NormalizedNode<?, ?> data) {
             final ArrayDeque<PathArgument> newPath = new ArrayDeque<>(stack);
             newPath.push(child);
             final List<NormalizedNode<?, ?>> dataList = TEST_MAP.get(YangInstanceIdentifier.create(newPath));
@@ -167,26 +167,26 @@ public class ShardedDOMDataWriteTransactionTest {
         }
 
         @Override
-        public void write(PathArgument child, NormalizedNode<?, ?> data) {
+        public void write(final PathArgument child, final NormalizedNode<?, ?> data) {
             final ArrayDeque<PathArgument> newPath = new ArrayDeque<>(stack);
             newPath.push(child);
             TEST_MAP.put(YangInstanceIdentifier.create(newPath), Lists.newArrayList(data));
         }
 
         @Override
-        public void enter(@Nonnull PathArgument child) {
+        public void enter(@Nonnull final PathArgument child) {
             stack.push(child);
         }
 
         @Override
-        public void enter(@Nonnull PathArgument... path) {
+        public void enter(@Nonnull final PathArgument... path) {
             for (final PathArgument pathArgument : path) {
                 stack.push(pathArgument);
             }
         }
 
         @Override
-        public void enter(@Nonnull Iterable<PathArgument> path) {
+        public void enter(@Nonnull final Iterable<PathArgument> path) {
             path.forEach(stack::push);
         }
 
@@ -196,7 +196,7 @@ public class ShardedDOMDataWriteTransactionTest {
         }
 
         @Override
-        public void exit(int depth) {
+        public void exit(final int depth) {
             stack.pop();
         }
 

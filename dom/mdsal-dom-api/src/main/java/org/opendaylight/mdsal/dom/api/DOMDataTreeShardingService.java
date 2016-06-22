@@ -30,8 +30,10 @@ public interface DOMDataTreeShardingService extends DOMService {
      *
      * @param prefix Data tree identifier, may not be null.
      * @param shard Responsible shard instance
+     * @param producer Producer instance to verify namespace claim
      * @return A registration. To remove the shard's binding, close the registration.
      * @throws DOMDataTreeShardingConflictException if the prefix is already bound
      */
-    @Nonnull <T extends DOMDataTreeShard> ListenerRegistration<T> registerDataTreeShard(@Nonnull DOMDataTreeIdentifier prefix, @Nonnull T shard) throws DOMDataTreeShardingConflictException;
+    @Nonnull <T extends DOMDataTreeShard> ListenerRegistration<T> registerDataTreeShard(
+            @Nonnull DOMDataTreeIdentifier prefix, @Nonnull T shard, @Nonnull DOMDataTreeProducer producer) throws DOMDataTreeShardingConflictException;
 }

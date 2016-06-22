@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 import java.util.Collection;
+import java.util.Set;
 import javax.annotation.Nonnull;
 
 /**
@@ -81,6 +82,13 @@ public interface DOMDataTreeProducer extends DOMDataTreeProducerFactory, AutoClo
      */
     @Override
     @Nonnull DOMDataTreeProducer createProducer(@Nonnull Collection<DOMDataTreeIdentifier> subtrees);
+
+    /**
+     * Return a collection of subtrees currently claimed by this producer
+     * @return Set of subtrees claimed by this producer at the moment of instantiation
+     */
+    @Nonnull
+    Set<DOMDataTreeIdentifier> getSubtrees();
 
     /**
      * {@inheritDoc}
