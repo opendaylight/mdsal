@@ -8,6 +8,9 @@
 package org.opendaylight.mdsal.common.api.clustering;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 /**
@@ -18,7 +21,7 @@ import org.junit.Test;
 public class EntityOwnershipChangeStateTest {
 
     @Test
-    public void testFromWithValid() {
+    public void testFromWithValid() throws Exception {
         assertEquals("from(false, true, true)", EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED,
                 EntityOwnershipChangeState.from(false, true, true));
         assertEquals("from(true, false, true)", EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NEW_OWNER,
@@ -44,5 +47,14 @@ public class EntityOwnershipChangeStateTest {
     @Test(expected=IllegalArgumentException.class)
     public void testFromWithInvalidTrueTrueTrue() {
         EntityOwnershipChangeState.from(true, true, true);
+    }
+
+    @Test
+    public void basicTest() throws Exception {
+        EntityOwnershipChangeState entityOwnershipChangeState = EntityOwnershipChangeState.from(false, true, true);
+        assertTrue(entityOwnershipChangeState.hasOwner());
+        assertTrue(entityOwnershipChangeState.isOwner());
+        assertFalse(entityOwnershipChangeState.wasOwner());
+        assertTrue(entityOwnershipChangeState.toString().matches(".*false.*true.*true.*"));
     }
 }
