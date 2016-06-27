@@ -5,10 +5,17 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.model.ietf.util;
 
+import java.util.regex.Pattern;
+import javax.annotation.RegEx;
+
 final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpClass, IpClass, IpClass> {
+
+    @RegEx
+    private static final String IP_V4_REGEX = "^\\d+\\.\\d+\\.\\d+\\.\\d+$";
+    private static final Pattern IP_V4_PATTERN = Pattern.compile(IP_V4_REGEX);
+
     IpUtil() {
         super(IpClass.class, IpClass.class, IpClass.class, IpClass.class);
     }
@@ -55,11 +62,11 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
 
     @Override
     protected IpClass maybeIpv4Address(IpClass addr) {
-        return addr;
+        return IP_V4_PATTERN.matcher(addr._value).matches() ? addr : null;
     }
 
     @Override
     protected IpClass maybeIpv6Address(IpClass addr) {
-        return addr;
+        return addr._value.indexOf(':') != -1 ? addr : null;
     }
 }
