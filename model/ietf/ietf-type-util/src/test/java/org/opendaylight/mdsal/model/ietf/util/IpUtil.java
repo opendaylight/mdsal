@@ -5,10 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.model.ietf.util;
 
 final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpClass, IpClass, IpClass> {
+
     IpUtil() {
         super(IpClass.class, IpClass.class, IpClass.class, IpClass.class);
     }
@@ -55,11 +55,13 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
 
     @Override
     protected IpClass maybeIpv4Address(IpClass addr) {
-        return addr;
+        if (addr._value.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$")) return addr;
+        return null;
     }
 
     @Override
     protected IpClass maybeIpv6Address(IpClass addr) {
-        return addr;
+        if (addr._value.contains(":")) return addr;
+        return null;
     }
 }
