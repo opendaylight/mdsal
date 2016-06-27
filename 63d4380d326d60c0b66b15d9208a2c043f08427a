@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_da72c148",
+        "filename": "dom/mdsal-dom-spi/src/test/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedWriteTransactionTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-06-27T08:09:07Z",
+      "side": 1,
+      "message": "A constant VALUE should be in uppercase",
+      "range": {
+        "startLine": 32,
+        "startChar": 42,
+        "endLine": 32,
+        "endChar": 58
+      },
+      "revId": "63d4380d326d60c0b66b15d9208a2c043f08427a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
