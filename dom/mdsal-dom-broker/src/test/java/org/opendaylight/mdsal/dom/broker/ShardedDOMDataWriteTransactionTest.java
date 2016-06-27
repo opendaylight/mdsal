@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -70,8 +71,9 @@ public class ShardedDOMDataWriteTransactionTest {
         assertTrue(shardedDOMDataWriteTransaction.cancel());
         assertFalse(shardedDOMDataWriteTransaction.cancel());
 
-        assertTrue(shardedDOMDataWriteTransaction.getIdentifier().contains("0"));
-        assertTrue(otherShardedDOMDataWriteTransaction.getIdentifier().contains("1"));
+        assertTrue(shardedDOMDataWriteTransaction.getIdentifier().matches("^SHARDED-DOM-\\d$"));
+        assertNotEquals(shardedDOMDataWriteTransaction.getIdentifier(),
+                otherShardedDOMDataWriteTransaction.getIdentifier());
     }
 
     private final class TestDOMStoreWriteTransaction implements DOMStoreWriteTransaction {
