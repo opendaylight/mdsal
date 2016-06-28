@@ -1,0 +1,344 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_94cf75b0",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/clustering/ClusterSingletonServiceProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"Marker\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_396822f5",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"Servicies\" -\u003e Services\n\"has\" -\u003e \"have\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_1981de8f",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"identificator\" -\u003e \"identifier\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_742c614b",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "So ClusterSingletonServices are registered with a ClusterSingletonServiceGroup. I assume a ClusterSingletonServiceGroup maintains all the services for a specific service group identifier. Given that, why is this method needed? In fact, why is the concept of a service group identifier needed at all? I envision an app would instantiate a ClusterSingletonServiceGroup instance and register the services it wants grouped together.",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_d4644de7",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"{@link ClusterSingletonServiceGroup} maintains a group of {@link ClusterSingletonService} instances.\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_d95da64a",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"All EntityOwnershipChange notifications have to applied to all registered services at the same time and in the same manner.\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_5931960a",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"So this interface represents a single cluster service group instance.\" - remove this sentence, it\u0027s redundant from the first sentence.\n\n\"All registered services have only one ...\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_59187684",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"...to initialize this group and register the relevant group entity candidate.\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_749bc1c9",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "How about we just call this method \"initialize\"?",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_f467d1e8",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"This method registers a service instance for this service group. If the local node has ownership of the service group, the {@link ClusterSingletonService#instantiateServiceInstance()} method is called. Otherwise, the method is called once the local node gains ownership.\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_f4951189",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "I\u0027m not clear on the method description. The method name indicates it unregisters the given ClusterSingletonService, i.e. the corollary to registerService. If so, is should be \"This method unregisters a service instance from this service group. This method is called by {@link ClusterSingletonServiceRegistration#close()} and thus shouldn\u0027t be called directly\".\n\nHowever, since this apparently is intended to be called via ClusterSingletonServiceRegistration#close, I don\u0027t think this should be part of the public interface. This method can be defined in the implementation  and called via the ClusterSingletonServiceRegistration implementation.",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_b4a55906",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "Rename to \"unregisterServiceProvider\"?",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_34902995",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"Closes this service group. All registered service providers are also closed.\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_b4f39909",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "How about \"close\"  and we implement AutoCloseable?",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_f9e18a9b",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"grouping servicies\" -\u003e \"group services\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_54d5dd41",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"service group identifier\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_39f30275",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"alowe\" -\u003e \"allows\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_14e4053a",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"instances for the same group\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_942bf52f",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "I\u0027m unclear as to the difference between this interface and ClusterSingletonServiceGroup. I think I understand the purpose of ClusterSingletonServiceGroup but not this one.",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_b4ca799f",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/clustering/DOMClusterSingletonServiceProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-28T17:50:49Z",
+      "side": 1,
+      "message": "\"Marker\"",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
