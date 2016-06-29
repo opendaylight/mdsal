@@ -1,0 +1,26 @@
+module odl-test-type-long {
+
+  namespace "urn:org:opendaylight:test:type:long";
+
+  prefix "tl";
+
+  description
+    "A simple model aimed to show a Bug in Java binding v1.";
+
+  revision 2016-06-29 {
+    description
+      "Initial revision.";
+  }
+
+  typedef long {
+    type int64;
+    description
+      "This type name can lead to a conflict with java.lang.Long:
+
+        public static Long getDefaultInstance(String defaultValue) {
+            return new Long(Long.valueOf(defaultValue));
+        }
+      ";
+  }
+
+}
