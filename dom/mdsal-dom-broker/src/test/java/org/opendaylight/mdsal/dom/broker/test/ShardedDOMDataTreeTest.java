@@ -86,7 +86,7 @@ public class ShardedDOMDataTreeTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        rootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 5000);
+        rootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1, 1);
         rootShard.onGlobalContextUpdated(schemaContext);
 
         final ShardedDOMDataTree dataTree = new ShardedDOMDataTree();

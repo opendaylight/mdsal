@@ -36,9 +36,9 @@ public class InMemoryDOMDataTreeShardTest {
 
     @Test
     public void basicTest() throws Exception {
-        InMemoryDOMDataTreeShard inMemoryDOMDataTreeShard =
+        final InMemoryDOMDataTreeShard inMemoryDOMDataTreeShard =
                 InMemoryDOMDataTreeShard.create(DOM_DATA_TREE_IDENTIFIER,
-                        MoreExecutors.newDirectExecutorService(), 1);
+                        MoreExecutors.newDirectExecutorService(), 1, 1);
 
         final DOMDataTreeIdentifier domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
@@ -76,7 +76,7 @@ public class InMemoryDOMDataTreeShardTest {
 
         final InMemoryDOMDataTreeShard inMemoryDOMDataTreeShard =
                 InMemoryDOMDataTreeShard.create(domDataTreeIdentifier,
-                        MoreExecutors.newDirectExecutorService(), 1);
+                        MoreExecutors.newDirectExecutorService(), 1 ,1);
 
         final InmemoryDOMDataTreeShardWriteTransaction inmemoryDOMDataTreeShardWriteTransaction =
                 mock(InmemoryDOMDataTreeShardWriteTransaction.class);
