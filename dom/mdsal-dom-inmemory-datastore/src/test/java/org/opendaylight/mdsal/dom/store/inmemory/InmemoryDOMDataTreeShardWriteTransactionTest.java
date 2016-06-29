@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.concurrent.Executors;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,29 +61,29 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
 
     @Before
     public void setUp() throws Exception {
-        DataTreeModification dataTreeModification = mock(DataTreeModification.class);
+        final DataTreeModification dataTreeModification = mock(DataTreeModification.class);
         doReturn("testDataTreeModification").when(dataTreeModification).toString();
         doReturn(dataTreeModification).when(SHARD_ROOT_MODIFICATION_CONTEXT).ready();
         doReturn(DOM_DATA_TREE_IDENTIFIER).when(SHARD_ROOT_MODIFICATION_CONTEXT).getIdentifier();
         shardDataModification = ShardDataModification.from(SHARD_ROOT_MODIFICATION_CONTEXT,
                 ImmutableMap.of(YANG_INSTANCE_IDENTIFIER, FOREIGN_SHARD_MODIFICATION_CONTEXT));
-        DataTreeModificationCursor dataTreeModificationCursor = mock(DataTreeModificationCursor.class);
+        final DataTreeModificationCursor dataTreeModificationCursor = mock(DataTreeModificationCursor.class);
         doReturn(DataTreeModificationCursorAdaptor.of( dataTreeModificationCursor))
                 .when(SHARD_ROOT_MODIFICATION_CONTEXT).cursor();
-        DataTreeCandidate dataTreeCandidate = mock(DataTreeCandidate.class);
-        DataTreeCandidateNode dataTreeCandidateNode = mock(DataTreeCandidateNode.class);
+        final DataTreeCandidate dataTreeCandidate = mock(DataTreeCandidate.class);
+        final DataTreeCandidateNode dataTreeCandidateNode = mock(DataTreeCandidateNode.class);
         doReturn(dataTreeCandidateNode).when(dataTreeCandidate).getRootNode();
         doReturn(ModificationType.WRITE).when(dataTreeCandidateNode).getModificationType();
         doReturn(YANG_INSTANCE_IDENTIFIER).when(dataTreeCandidate).getRootPath();
         doReturn("testDataTreeCandidate").when(dataTreeCandidate).toString();
         doReturn(dataTreeCandidate).when(DATA_TREE).prepare(any());
-        InMemoryDOMDataTreeShardChangePublisher inMemoryDOMDataTreeShardChangePublisher =
+        final InMemoryDOMDataTreeShardChangePublisher inMemoryDOMDataTreeShardChangePublisher =
                 new InMemoryDOMDataTreeShardChangePublisher(MoreExecutors.newDirectExecutorService(), 1, DATA_TREE,
                         YANG_INSTANCE_IDENTIFIER, CHILD_SHARDS);
 
         inmemoryDOMDataTreeShardWriteTransaction =
                 new InmemoryDOMDataTreeShardWriteTransaction(shardDataModification, DATA_TREE,
-                        inMemoryDOMDataTreeShardChangePublisher);
+                        inMemoryDOMDataTreeShardChangePublisher, MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor()));
     }
 
     @Test
