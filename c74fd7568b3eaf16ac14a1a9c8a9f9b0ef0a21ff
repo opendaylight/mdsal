@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_2ce45d3a",
+        "filename": "model/ietf/ietf-type-util/src/test/java/org/opendaylight/mdsal/model/ietf/util/IpUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-06-29T12:49:28Z",
+      "side": 1,
+      "message": "by Java conventions, class (static) variables should be declared first, then instance variables, constructors and methods.",
+      "range": {
+        "startLine": 60,
+        "startChar": 4,
+        "endLine": 61,
+        "endChar": 78
+      },
+      "revId": "c74fd7568b3eaf16ac14a1a9c8a9f9b0ef0a21ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
