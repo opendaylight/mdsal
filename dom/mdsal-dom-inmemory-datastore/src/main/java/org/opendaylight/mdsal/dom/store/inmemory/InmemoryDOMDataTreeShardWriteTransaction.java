@@ -13,11 +13,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.concurrent.Executors;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -77,24 +75,23 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         }
     }
 
-    private final ShardDataModification modification;
-    private DOMDataTreeWriteCursor cursor;
-    private final DataTree rootShardDataTree;
-    private DataTreeModification rootModification = null;
-
     private final ArrayList<DOMStoreThreePhaseCommitCohort> cohorts = new ArrayList<>();
     private final InMemoryDOMDataTreeShardChangePublisher changePublisher;
-    private boolean finished = false;
+    private final ShardDataModification modification;
+    private final ListeningExecutorService executor;
+    private final DataTree rootShardDataTree;
 
-    // FIXME inject into shard?
-    private final ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+    private DataTreeModification rootModification = null;
+    private DOMDataTreeWriteCursor cursor;
+    private boolean finished = false;
 
     InmemoryDOMDataTreeShardWriteTransaction(final ShardDataModification root,
                                              final DataTree rootShardDataTree,
-                                             final InMemoryDOMDataTreeShardChangePublisher changePublisher) {
+                                             final InMemoryDOMDataTreeShardChangePublisher changePublisher, final ListeningExecutorService executor) {
         this.modification = Preconditions.checkNotNull(root);
         this.rootShardDataTree = Preconditions.checkNotNull(rootShardDataTree);
         this.changePublisher = Preconditions.checkNotNull(changePublisher);
+        this.executor = executor;
     }
 
     private DOMDataTreeWriteCursor getCursor() {
