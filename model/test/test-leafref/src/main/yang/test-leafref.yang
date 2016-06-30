@@ -1,0 +1,24 @@
+module test-leafref {
+
+  namespace "odl:test:leafref";
+  prefix "tl";
+  revision 2015-04-09;
+
+  typedef my-enum {
+    type enumeration {
+      enum one {
+        value 1;
+      }
+    }
+  }
+
+  leaf my-leaf {
+    type my-enum;
+  }
+
+  leaf my-leafref {
+    type leafref {
+      path "/tl:my-leaf";
+    }
+  }
+}
