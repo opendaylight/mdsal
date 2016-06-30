@@ -142,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_d27293e4",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-30T13:47:00Z",
+      "side": 1,
+      "message": "I don\u0027t follow your reasoning here.  It sounds like you\u0027re using ClusterSingletonServiceGroup to house multiple groups of services, otherwise why would the ClusterSingletonService need to provide a service ID. Also it\u0027s sounds like it\u0027s used internally by another component to maintain service ID -\u003e services mappings. If so, why not have ClusterSingletonServiceGroup house only the services for a single group, as the name implies. The user would instantiate a ClusterSingletonServiceGroup (using a factory OSGi service) and add services to it. Then there\u0027s no need for a service ID concept. That seems logical to me unless I\u0027m missing something.",
+      "parentUuid": "9a561d44_f2b4f7f3",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_d4644de7",
         "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
         "patchSetId": 2
@@ -661,6 +679,24 @@
       "side": 1,
       "message": "Grouping is internal implementation for service registration. It isn\u0027t public interface and I\u0027ve used it for testing and clean internal architecture issue. This interface is public and nobody need to know how the implementation is realized inside.",
       "parentUuid": "9a561d44_942bf52f",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_12740bce",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-06-30T13:47:00Z",
+      "side": 1,
+      "message": "So it\u0027s not intended to be a public interface yet it\u0027s in a public interface package. I think if it\u0027s not intended to be public then it shouldn\u0027t be in a public package. When looking at the interfaces in the package, I was confused between ClusterSingletonServiceGroup and CommonClusterSingletonServiceProvider and wondering which one I would access from a user standpoint. \n\nIt seems an implementation of CommonClusterSingletonServiceProvider would use ClusterSingletonServiceGroup internally.But as I mentioned in another comment re: ClusterSingletonServiceGroup, it seems to me ClusterSingletonServiceGroup should/could be the public interface and you can eliminate CommonClusterSingletonServiceProvider and the service ID concept.",
+      "parentUuid": "9a561d44_b2955fe6",
       "revId": "578778ef693d73f186457a53f3ff645c97748d31",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
