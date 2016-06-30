@@ -116,6 +116,30 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_cf12f361",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InmemoryDOMDataTreeShardWriteTransaction.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 3127
+      },
+      "writtenOn": "2016-06-30T07:24:00Z",
+      "side": 1,
+      "message": "Read\u0027s are supposed to be done via dataChangeListeners, this will be used in the adapters to old api.",
+      "parentUuid": "9a561d44_ac9ead54",
+      "range": {
+        "startLine": 130,
+        "startChar": 8,
+        "endLine": 130,
+        "endChar": 32
+      },
+      "revId": "4752c19a77759bd2ed8071c6dc8e0c764d330b14",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_2c73bd4e",
         "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InmemoryDOMDataTreeShardWriteTransaction.java",
         "patchSetId": 7
