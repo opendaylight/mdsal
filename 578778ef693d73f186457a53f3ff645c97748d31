@@ -739,6 +739,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_76ef32b1",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-07-01T12:21:59Z",
+      "side": 1,
+      "message": "I missed the fact that ClusterSingletonServiceGroup is package scope. But if it\u0027s for implementation it really should\u0027t be in an API package/bundle.",
+      "parentUuid": "9a561d44_93c81876",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_b4ca799f",
         "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/clustering/DOMClusterSingletonServiceProvider.java",
         "patchSetId": 2
