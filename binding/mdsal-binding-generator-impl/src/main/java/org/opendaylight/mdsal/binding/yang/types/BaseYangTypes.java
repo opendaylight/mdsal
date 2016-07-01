@@ -152,7 +152,8 @@ public final class BaseYangTypes {
          *         returned.
          */
         @Override
-        public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode) {
+        public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
+                final boolean lenientRelativeLeafrefs) {
             if (type != null) {
                 return TYPE_MAP.get(type.getQName().getLocalName());
             }
@@ -162,7 +163,7 @@ public final class BaseYangTypes {
 
         @Override
         public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
-                final Restrictions restrictions) {
+                final Restrictions restrictions, final boolean lenientRelativeLeafrefs) {
             String typeName = type.getQName().getLocalName();
             switch (typeName) {
                 case "binary":
@@ -192,7 +193,7 @@ public final class BaseYangTypes {
                 case "union" :
                     return UNION_TYPE;
                 default:
-                    return javaTypeForSchemaDefinitionType(type, parentNode);
+                    return javaTypeForSchemaDefinitionType(type, parentNode, lenientRelativeLeafrefs);
             }
         }
 
