@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_5977bfd4",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 994
+      },
+      "writtenOn": "2016-07-01T15:57:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_133c08e2",
+      "revId": "beb8cd4349762136c290b0a636443adf009b99f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_3322ecb9",
         "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_39748bce",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 994
+      },
+      "writtenOn": "2016-07-01T15:57:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_3322ecb9",
+      "revId": "beb8cd4349762136c290b0a636443adf009b99f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_d318d086",
         "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2016-07-01T11:42:59Z",
       "side": 1,
       "message": "How would a user unregister a service?",
+      "revId": "beb8cd4349762136c290b0a636443adf009b99f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_b9689bf6",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 994
+      },
+      "writtenOn": "2016-07-01T15:57:04Z",
+      "side": 1,
+      "message": "ClusterSingletonServiceRegistration extends AutoClosable so user can use AutoClosable#close()",
+      "parentUuid": "9a561d44_d318d086",
       "revId": "beb8cd4349762136c290b0a636443adf009b99f8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
