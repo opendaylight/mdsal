@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_133c08e2",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-07-01T11:42:59Z",
+      "side": 1,
+      "message": "\"remove this sentence, it\u0027s redundant from the first sentence.\" - you pasted in my comment.",
+      "revId": "beb8cd4349762136c290b0a636443adf009b99f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_3322ecb9",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-07-01T11:42:59Z",
+      "side": 1,
+      "message": "should be \"closeClusterSingletonGroup\"",
+      "revId": "beb8cd4349762136c290b0a636443adf009b99f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_d318d086",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-07-01T11:42:59Z",
+      "side": 1,
+      "message": "How would a user unregister a service?",
+      "revId": "beb8cd4349762136c290b0a636443adf009b99f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
