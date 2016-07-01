@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.yang.types;
 
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
@@ -174,8 +175,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     @Override
-    public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode) {
-        return javaTypeForSchemaDefinitionType(typeDefinition, parentNode, null);
+    public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode,
+            final boolean lenientRelativeLeafrefs) {
+        return javaTypeForSchemaDefinitionType(typeDefinition, parentNode, null, lenientRelativeLeafrefs);
     }
 
     /**
@@ -193,7 +195,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     @Override
     public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode,
-            final Restrictions r) {
+            final Restrictions r, final boolean lenientRelativeLeafrefs) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         Preconditions.checkArgument(typeDefinition.getQName() != null,
                 "Type Definition cannot have non specified QName (QName cannot be NULL!)");
@@ -207,14 +209,14 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             // a base type which holds these constraints.
             if (typeDefinition instanceof DecimalTypeDefinition) {
                 final Type ret = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(typeDefinition,
-                    parentNode, r);
+                    parentNode, r, lenientRelativeLeafrefs);
                 if (ret != null) {
                     return ret;
                 }
             }
 
             // Deal with leafrefs/identityrefs
-            Type ret = javaTypeForLeafrefOrIdentityRef(typeDefinition, parentNode);
+            Type ret = javaTypeForLeafrefOrIdentityRef(typeDefinition, parentNode, lenientRelativeLeafrefs);
             if (ret != null) {
                 return ret;
             }
@@ -228,7 +230,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             return ret;
         }
 
-        Type returnType = javaTypeForExtendedType(typeDefinition);
+        Type returnType = javaTypeForExtendedType(typeDefinition, lenientRelativeLeafrefs);
         if (r != null && returnType instanceof GeneratedTransferObject) {
             final GeneratedTransferObject gto = (GeneratedTransferObject) returnType;
             final Module module = findParentModule(schemaContext, parentNode);
@@ -315,12 +317,13 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *            type definition which is converted to JAVA <code>Type</code>
      * @return JAVA <code>Type</code> instance for <code>typeDefinition</code>
      */
-    private Type javaTypeForLeafrefOrIdentityRef(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode) {
+    private Type javaTypeForLeafrefOrIdentityRef(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode,
+            final boolean inGrouping) {
         if (typeDefinition instanceof LeafrefTypeDefinition) {
             final LeafrefTypeDefinition leafref = (LeafrefTypeDefinition) typeDefinition;
             Preconditions.checkArgument(!isLeafRefSelfReference(leafref, parentNode),
                 "Leafref %s is referencing itself, incoming StackOverFlowError detected.", leafref);
-            return provideTypeForLeafref(leafref, parentNode);
+            return provideTypeForLeafref(leafref, parentNode, inGrouping);
         } else if (typeDefinition instanceof IdentityrefTypeDefinition) {
             return provideTypeForIdentityref((IdentityrefTypeDefinition) typeDefinition);
         }
@@ -336,10 +339,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *            type definition which is converted to JAVA <code>Type</code>
      * @return JAVA <code>Type</code> instance for <code>typeDefinition</code>
      */
-    private Type javaTypeForExtendedType(final TypeDefinition<?> typeDefinition) {
+    private Type javaTypeForExtendedType(final TypeDefinition<?> typeDefinition, final boolean lenient) {
         final String typedefName = typeDefinition.getQName().getLocalName();
         final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
-        Type returnType = javaTypeForLeafrefOrIdentityRef(baseTypeDef, typeDefinition);
+        Type returnType = javaTypeForLeafrefOrIdentityRef(baseTypeDef, typeDefinition, lenient);
         if (returnType == null) {
             if (baseTypeDef instanceof EnumTypeDefinition) {
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) baseTypeDef;
@@ -356,7 +359,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                     }
                     if (returnType == null) {
                         returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(
-                                baseTypeDef, typeDefinition, r);
+                                baseTypeDef, typeDefinition, r, lenient);
                     }
                 }
             }
@@ -518,8 +521,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      * The path of <code>leafrefType</code> is followed to find referenced node
      * and its <code>Type</code> is returned.
      *
-     * @param leafrefType
-     *            leafref type definition for which is the type sought
+     * @param leafrefType leafref type definition for which is the type sought
+     * @param parentNode parent node of the leaf being resolved
+     * @param inGrouping true if we are resolving the type within a grouping.
      * @return JAVA <code>Type</code> of data schema node which is referenced in
      *         <code>leafrefType</code>
      * @throws IllegalArgumentException
@@ -527,44 +531,71 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *             <li>if <code>leafrefType</code> equal null</li>
      *             <li>if path statement of <code>leafrefType</code> equal null</li>
      *             </ul>
-     *
      */
-    public Type provideTypeForLeafref(final LeafrefTypeDefinition leafrefType, final SchemaNode parentNode) {
-        Type returnType = null;
+    public Type provideTypeForLeafref(final LeafrefTypeDefinition leafrefType, final SchemaNode parentNode,
+            final boolean inGrouping) {
         Preconditions.checkArgument(leafrefType != null, "Leafref Type Definition reference cannot be NULL!");
 
         Preconditions.checkArgument(leafrefType.getPathStatement() != null,
                 "The Path Statement for Leafref Type Definition cannot be NULL!");
 
         final RevisionAwareXPath xpath = leafrefType.getPathStatement();
-        final String strXPath = xpath.toString();
+        final String strXPath = verifyNotNull(xpath.toString());
+        if (strXPath.indexOf('[') != -1) {
+            // XXX: why are we special-casing this?
+            return Types.objectType();
+        }
 
-        if (strXPath != null) {
-            if (strXPath.indexOf('[') == -1) {
-                final Module module = findParentModule(schemaContext, parentNode);
-                Preconditions.checkArgument(module != null, "Failed to find module for parent %s", parentNode);
+        final Module module = findParentModule(schemaContext, parentNode);
+        Preconditions.checkArgument(module != null, "Failed to find module for parent %s", parentNode);
 
-                final SchemaNode dataNode;
-                if (xpath.isAbsolute()) {
-                    dataNode = findDataSchemaNode(schemaContext, module, xpath);
-                } else {
-                    dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
-                }
-                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s)",
-                        strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule());
-
-                // FIXME: this block seems to be some weird magic hack. Analyze and refactor it.
-                if (leafContainsEnumDefinition(dataNode)) {
-                    returnType = referencedTypes.get(dataNode.getPath());
-                } else if (leafListContainsEnumDefinition(dataNode)) {
-                    returnType = Types.listTypeFor(referencedTypes.get(dataNode.getPath()));
-                }
-                if (returnType == null) {
-                    returnType = resolveTypeFromDataSchemaNode(dataNode);
-                }
-            } else {
-                returnType = Types.objectType();
+        final SchemaNode dataNode;
+        if (xpath.isAbsolute()) {
+            dataNode = findDataSchemaNode(schemaContext, module, xpath);
+        } else {
+            dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
+            if (dataNode == null && inGrouping) {
+                // Relative path within a grouping may end up being unresolvable because it may refer outside
+                // the grouping, in which case it is polymorphic based on instantiation, for example:
+                //
+                // grouping foo {
+                //     leaf foo {
+                //         type leafref {
+                //             path "../../bar";
+                //         }
+                //     }
+                // }
+                //
+                // container one {
+                //     leaf bar {
+                //         type string;
+                //     }
+                //     uses foo;
+                // }
+                //
+                // container two {
+                //     leaf bar {
+                //         type uint16;
+                //     }
+                //     uses foo;
+                // }
+                LOG.debug("Leafref type {} not found in parent {}, assuming polymorphic object", leafrefType,
+                    parentNode);
+                return Types.objectType();
             }
+        }
+        Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s)",
+                strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule());
+
+        // FIXME: this block seems to be some weird magic hack. Analyze and refactor it.
+        Type returnType = null;
+        if (leafContainsEnumDefinition(dataNode)) {
+            returnType = referencedTypes.get(dataNode.getPath());
+        } else if (leafListContainsEnumDefinition(dataNode)) {
+            returnType = Types.listTypeFor(referencedTypes.get(dataNode.getPath()));
+        }
+        if (returnType == null) {
+            returnType = resolveTypeFromDataSchemaNode(dataNode);
         }
         Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s (%s)",
                 strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule(), this);
