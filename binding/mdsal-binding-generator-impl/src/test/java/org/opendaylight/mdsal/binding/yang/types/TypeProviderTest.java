@@ -398,7 +398,7 @@ public class TypeProviderTest {
     public void provideTypeForLeafrefWithNullLeafrefTypeTest() {
         final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
 
-        provider.provideTypeForLeafref(null, null);
+        provider.provideTypeForLeafref(null, null, false);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -406,7 +406,7 @@ public class TypeProviderTest {
         final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
 
         final LeafrefTypeWithNullXpath leafrePath = new LeafrefTypeWithNullXpath();
-        provider.provideTypeForLeafref(leafrePath, this.schemaNode);
+        provider.provideTypeForLeafref(leafrePath, this.schemaNode, false);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -417,7 +417,7 @@ public class TypeProviderTest {
         final TypeDefinition<?> leafType = leaf.getType();
         assertTrue(leafType instanceof LeafrefTypeDefinition);
         doReturn(null).when(this.schemaNode).getPath();
-        provider.provideTypeForLeafref((LeafrefTypeDefinition) leafType, this.schemaNode);
+        provider.provideTypeForLeafref((LeafrefTypeDefinition) leafType, this.schemaNode, false);
     }
 
     @Test
