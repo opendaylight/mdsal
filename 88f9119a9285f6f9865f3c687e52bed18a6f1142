@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_36101a4e",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-07-01T11:46:51Z",
+      "side": 1,
+      "message": "This class is an implementation so it seems it should be in an impl package/bundle and not an api package, even though it\u0027s package scoped.",
+      "revId": "88f9119a9285f6f9865f3c687e52bed18a6f1142",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_56414e38",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-07-01T11:46:51Z",
+      "side": 1,
+      "message": "What is this for? Doesn\u0027t look like it\u0027s used.",
+      "revId": "88f9119a9285f6f9865f3c687e52bed18a6f1142",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
