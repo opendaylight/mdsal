@@ -160,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_13b528ee",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 994
+      },
+      "writtenOn": "2016-07-01T09:47:22Z",
+      "side": 1,
+      "message": "First new Service create new grup with service identifier. All next services with same ServiceID/GroupID have to be added here. Method is here for a better orientation inside implementation (exactly split work with Group and Service). It is my personal opinion for use it, because it is not public interface and again it help write junit tests quickly.",
+      "parentUuid": "9a561d44_d27293e4",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_d4644de7",
         "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonServiceGroup.java",
         "patchSetId": 2
@@ -697,6 +715,24 @@
       "side": 1,
       "message": "So it\u0027s not intended to be a public interface yet it\u0027s in a public interface package. I think if it\u0027s not intended to be public then it shouldn\u0027t be in a public package. When looking at the interfaces in the package, I was confused between ClusterSingletonServiceGroup and CommonClusterSingletonServiceProvider and wondering which one I would access from a user standpoint. \n\nIt seems an implementation of CommonClusterSingletonServiceProvider would use ClusterSingletonServiceGroup internally.But as I mentioned in another comment re: ClusterSingletonServiceGroup, it seems to me ClusterSingletonServiceGroup should/could be the public interface and you can eliminate CommonClusterSingletonServiceProvider and the service ID concept.",
       "parentUuid": "9a561d44_b2955fe6",
+      "revId": "578778ef693d73f186457a53f3ff645c97748d31",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_93c81876",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 994
+      },
+      "writtenOn": "2016-07-01T09:47:22Z",
+      "side": 1,
+      "message": "No clusterSingletonGroup has to stay as non public interface.",
+      "parentUuid": "9a561d44_12740bce",
       "revId": "578778ef693d73f186457a53f3ff645c97748d31",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
