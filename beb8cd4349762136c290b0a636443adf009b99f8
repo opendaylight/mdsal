@@ -104,6 +104,24 @@
       "revId": "beb8cd4349762136c290b0a636443adf009b99f8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_9c4b0559",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/CommonClusterSingletonServiceProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-07-01T16:01:46Z",
+      "side": 1,
+      "message": "right - forgot about that.",
+      "parentUuid": "9a561d44_b9689bf6",
+      "revId": "beb8cd4349762136c290b0a636443adf009b99f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
