@@ -140,6 +140,29 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_33d82cef",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InmemoryDOMDataTreeShardWriteTransaction.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-07-01T10:37:45Z",
+      "side": 1,
+      "message": "Could we throw UnsupportedOperationException(\"Not implemented yet.\"); instead of returning nulls?",
+      "range": {
+        "startLine": 131,
+        "startChar": 8,
+        "endLine": 131,
+        "endChar": 20
+      },
+      "revId": "4752c19a77759bd2ed8071c6dc8e0c764d330b14",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_2c73bd4e",
         "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InmemoryDOMDataTreeShardWriteTransaction.java",
         "patchSetId": 7
