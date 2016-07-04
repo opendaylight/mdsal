@@ -1,0 +1,42 @@
+@**********************************************************
+* Twirl InterfaceTemplate for generating Java interface   *
+* source code. Twirl is transformed to Scala and compiled.*
+* Then, it can be called from Java with particular input  *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import java.util.List
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.importedName
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.fieldName
+
+@(properties: List[GeneratedProperty])
+@if(properties != null) {
+    @@Override
+    public @{importedName(classOf[String])} toString() {
+        @{importedName(classOf[StringBuilder])} builder = new @{importedName(classOf[StringBuilder])}(@{importedName(classOf[GeneratedType])}
+        .class.getSimpleName()).append(" [");
+        boolean first = true;
+        @for(property <- properties) {
+            if (@{fieldName(property)} != null) {
+                if (first) {
+                    first = false;
+                } else {
+                    builder.append(", ");
+                }
+                builder.append("@{fieldName(property)}=");
+                builder.append(
+                @if(true) {
+                    @{importedName(classOf[Arrays])}.toString(@{fieldName(property)})
+                } else {
+                    @{fieldName(property)}
+                }
+                );
+            }
+        }
+    return builder.append(']').toString();
+    }
+}

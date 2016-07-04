@@ -39,19 +39,6 @@ import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 
 @Beta
 public final class Types {
-
-    public static final ConcreteType BOOLEAN = typeForClass(Boolean.class);
-    public static final ConcreteType RPC_CALLBACK = typeForClass(RpcCallback.class);
-    public static final ConcreteType STRING = typeForClass(String.class);
-    public static final ConcreteType VOID = typeForClass(Void.class);
-    public static final ConcreteType BYTE_ARRAY = primitiveType("byte[]", null);
-    public static final ConcreteType CHAR_ARRAY = primitiveType("char[]", null);
-
-    private static final Splitter DOT_SPLITTER = Splitter.on('.');
-    private static final Type SET_TYPE = typeForClass(Set.class);
-    private static final Type LIST_TYPE = typeForClass(List.class);
-    private static final Type MAP_TYPE = typeForClass(Map.class);
-
     private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
             new CacheLoader<Class<?>, ConcreteType>() {
 
@@ -64,6 +51,17 @@ public final class Types {
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
 
+    public static final ConcreteType BOOLEAN = typeForClass(Boolean.class);
+    public static final ConcreteType RPC_CALLBACK = typeForClass(RpcCallback.class);
+    public static final ConcreteType STRING = typeForClass(String.class);
+    public static final ConcreteType VOID = typeForClass(Void.class);
+    public static final ConcreteType BYTE_ARRAY = primitiveType("byte[]", null);
+    public static final ConcreteType CHAR_ARRAY = primitiveType("char[]", null);
+
+    private static final Splitter DOT_SPLITTER = Splitter.on('.');
+    private static final Type SET_TYPE = typeForClass(Set.class);
+    private static final Type LIST_TYPE = typeForClass(List.class);
+    private static final Type MAP_TYPE = typeForClass(Map.class);
 
     private Types() {
         throw new UnsupportedOperationException("Utility class");
