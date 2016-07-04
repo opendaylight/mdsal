@@ -1,0 +1,13 @@
+module slash-enum {
+
+  namespace "odl:test:slash-enum";
+  prefix "se";
+  revision 2016-07-04;
+
+  leaf dummy {
+    type enumeration {
+      enum a/b;
+    }
+  }
+
+}
