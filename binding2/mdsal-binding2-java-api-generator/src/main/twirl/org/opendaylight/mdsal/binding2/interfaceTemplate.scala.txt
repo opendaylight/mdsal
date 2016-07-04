@@ -1,0 +1,129 @@
+@**********************************************************
+* Twirl InterfaceTemplate for generating Java interface   *
+* source code. Twirl is transformed to Scala and compiled.*
+* Then, it can be called from Java with particular input  *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import java.util.List
+@import org.opendaylight.mdsal.binding2.model.api.Constant
+@import org.opendaylight.mdsal.binding2.model.api.Enumeration
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding2.model.api.AnnotationType
+@import org.opendaylight.mdsal.binding2.model.api.MethodSignature
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.asJavadoc
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.emitConstant
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.formatDataForJavaDoc
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.generateImports
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.generateParameters
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.importedName
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.wrapToDocumentation
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.PATTERN_CONSTANT_NAME
+
+@(genType: GeneratedType)
+@*
+ * Template method which generate the whole body of the interface.
+ *
+ * @return string with code for interface body in JAVA format
+ *@
+@if(genType != null) {
+        @{wrapToDocumentation(formatDataForJavaDoc(genType))}
+        @generateAnnotations(genType.getAnnotations())
+        public interface @{genType.getName()}
+            @superInterfaces(genType)
+        {
+            @generateInnerClasses(genType)
+            @@generateEnums(genType.getEnumerations())
+            @generateConstants(genType.getConstantDefinitions())
+            @generateMethods(genType.getMethodDefinitions())
+        }
+
+}
+
+@*
+ * Template method which generates the interface name declaration.
+ *
+ * @return string with the code for the interface declaration in JAVA format
+ *@
+@superInterfaces(genType: GeneratedType) = {
+    @if(!genType.getImplements().isEmpty()) {
+        extends @{generateImports(genType.getImplements())}
+    }
+}
+
+@generateAnnotations(annotations: List[AnnotationType]) = {
+    @if(annotations != null && !annotations.isEmpty()) {
+        @for(annotation <- annotations) {
+            @@@{importedName(annotation)}
+            @if(annotation.getParameters() != null && !annotation.getParameters().isEmpty()) {
+                (@{generateParameters(annotation.getParameters())})
+            }
+        }
+    }
+}
+
+@*
+ * Template method which generates inner classes inside this interface.
+ *
+ * @return string with the source code for inner classes in JAVA format
+ *@
+@generateInnerClasses(genType: GeneratedType) = {
+    @if(!genType.getEnclosedTypes().isEmpty()) {
+        @for(innerClass <- genType.getEnclosedTypes()) {
+            @if(innerClass.isInstanceOf[GeneratedTransferObject]) {
+                @if(innerClass.asInstanceOf[GeneratedTransferObject].isUnionType()) {
+                    @* generate union template add to import map *@
+                } else {
+                    @* generate class template add to import map *@
+                }
+            }
+        }
+    }
+}
+
+@*
+ * Template method which generates JAVA enum type.
+ *
+ * @return string with inner enum source code in JAVA format
+ *@
+@generateEnums(enumerations: List[Enumeration]) = {
+    @if(!enumerations.isEmpty()) {
+        @for(enumeration <- enumerations) {
+            @* generate enum template *@
+        }
+    }
+}
+
+@*
+ * Template method wich generates JAVA constants.
+ *
+ * @return string with constants in JAVA format
+ *@
+@generateConstants(constants: List[Constant]) = {
+    @if(!constants.isEmpty()) {
+        @for(constant <- constants) {
+            @if(constant.getName() != PATTERN_CONSTANT_NAME) {
+                @{emitConstant(constant)}
+            }
+        }
+    }
+}
+
+@*
+ * Template method which generates the declaration of the methods.
+ *
+ * @return string with the declaration of methods source code in JAVA format
+ *@
+@generateMethods(methodSignatures: List[MethodSignature]) = {
+    @if(!methodSignatures.isEmpty()) {
+        @for(methodSignature <- methodSignatures) {
+            @{asJavadoc(methodSignature.getComment())}
+            @generateAnnotations(methodSignature.getAnnotations())
+            @{importedName(methodSignature.getReturnType())} @{methodSignature.getName()}
+            (@{methodSignature.getParameters()});
+        }
+    }
+}
