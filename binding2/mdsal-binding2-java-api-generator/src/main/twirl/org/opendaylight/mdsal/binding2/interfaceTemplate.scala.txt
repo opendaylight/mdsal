@@ -1,0 +1,60 @@
+@*
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *@
+
+@**********************************************************
+* Twirl InterfaceTemplate for generating Java interface   *
+* source code. Twirl is transformed to Scala and compiled.*
+* Then, it can be called from Java with particular input  *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.formatDataForJavaDoc
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.wrapToDocumentation
+
+@(genType: GeneratedType, enums: String, annotations: String, generatedMethods: String, generatedImports: String,
+generatedConstants: String)
+@*
+ * Template method which generate the whole body of the interface.
+ *
+ * @return string with code for interface body in JAVA format
+ *@
+@if(genType != null) {
+@{wrapToDocumentation(formatDataForJavaDoc(genType))}
+@{annotations}
+public interface @{genType.getName}
+    @if(!generatedImports.isEmpty){extends @{generatedImports}}
+{
+    @generateInnerClasses(genType)
+    @{enums}
+    @{generatedConstants}
+    @{generatedMethods}
+}
+}
+
+@*
+ * Template method which generates inner classes inside this interface.
+ *
+ * @return string with the source code for inner classes in JAVA format
+ *@
+@generateInnerClasses(genType: GeneratedType) = {
+    @if(!genType.getEnclosedTypes.isEmpty) {
+        @for(innerClass <- genType.getEnclosedTypes) {
+            @if(innerClass.isInstanceOf[GeneratedTransferObject]) {
+                @if(innerClass.asInstanceOf[GeneratedTransferObject].isUnionType) {
+                    @* TO DO generate union template add to import map *@
+                } else {
+                    @* TO DO generate class template add to import map *@
+                }
+            }
+        }
+    }
+}
