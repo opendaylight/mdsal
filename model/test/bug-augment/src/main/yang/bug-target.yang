@@ -1,0 +1,11 @@
+module bug-target {
+
+  namespace "odl:test:bug-target";
+  prefix "bt";
+  revision 2016-07-04;
+
+  container target {
+    presence "Ready for data.";
+  }
+
+}

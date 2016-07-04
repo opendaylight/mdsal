@@ -1,0 +1,20 @@
+module good-augment {
+
+  namespace "odl:test:good-augment";
+  prefix "ga";
+  revision 2016-07-04;
+
+  import good-target {
+    prefix gt1;
+  }
+  import good-target {
+    prefix gt0;
+  }
+
+  augment "/gt0:target" {
+    leaf added-leaf {
+      type string;
+    }
+  }
+
+}

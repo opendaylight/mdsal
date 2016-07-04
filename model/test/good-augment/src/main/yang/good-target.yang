@@ -1,0 +1,11 @@
+module good-target {
+
+  namespace "odl:test:good-target";
+  prefix "gt";
+  revision 2016-07-04;
+
+  container target {
+    presence "Ready for data.";
+  }
+
+}

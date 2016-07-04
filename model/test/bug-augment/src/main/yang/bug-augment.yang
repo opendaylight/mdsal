@@ -1,0 +1,20 @@
+module bug-augment {
+
+  namespace "odl:test:bug-augment";
+  prefix "ba";
+  revision 2016-07-04;
+
+  import bug-target {
+    prefix bt0;
+  }
+  import bug-target {
+    prefix bt1;
+  }
+
+  augment "/bt0:target" {
+    leaf added-leaf {
+      type string;
+    }
+  }
+
+}
