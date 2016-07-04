@@ -108,7 +108,7 @@
                                     <configuration>
                                         <codeGenerators>
                                             <generator>
-                                                <codeGeneratorClass>org.opendaylight.mdsal.maven.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>
+                                                <codeGeneratorClass>org.opendaylight.mdsal.binding.javav2.maven.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>
                                                 <outputBaseDir>${salGeneratorPath}</outputBaseDir>
                                             </generator>
                                         </codeGenerators>
