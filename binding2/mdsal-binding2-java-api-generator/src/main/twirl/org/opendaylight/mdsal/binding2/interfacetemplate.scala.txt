@@ -1,0 +1,12 @@
+@**********************************************************
+* Twirl InterfaceTemplate for generating Java interface   *
+* source code. Twirl is transformed to Scala and compiled.*
+* Then, it can be called from Java with particular input  *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
+
+@(genType: GeneratedType)
