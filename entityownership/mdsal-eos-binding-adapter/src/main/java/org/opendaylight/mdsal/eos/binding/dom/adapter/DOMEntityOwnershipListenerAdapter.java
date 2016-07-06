@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.eos.binding.dom.adapter;
 
 import com.google.common.base.Preconditions;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipChange;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
@@ -21,11 +21,11 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
  * @author Thomas Pantelis
  */
 class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
-    private final BindingToNormalizedNodeCodec conversionCodec;
+    private final BindingNormalizedNodeSerializer conversionCodec;
     private final EntityOwnershipListener bindingListener;
 
     DOMEntityOwnershipListenerAdapter(final EntityOwnershipListener bindingListener,
-            final BindingToNormalizedNodeCodec conversionCodec) {
+            final BindingNormalizedNodeSerializer conversionCodec) {
         this.bindingListener = Preconditions.checkNotNull(bindingListener);
         this.conversionCodec = Preconditions.checkNotNull(conversionCodec);
     }
@@ -33,8 +33,8 @@ class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
     @Override
     public void ownershipChanged(final DOMEntityOwnershipChange ownershipChange) {
         try {
-            final Entity entity = new Entity(ownershipChange.getEntity().getType(), conversionCodec.toBinding(
-                    ownershipChange.getEntity().getIdentifier()).get());
+            final Entity entity = new Entity(ownershipChange.getEntity().getType(),
+                    conversionCodec.fromYangInstanceIdentifier(ownershipChange.getEntity().getIdentifier()));
             bindingListener.ownershipChanged(new EntityOwnershipChange(entity, ownershipChange.getState(),
                     ownershipChange.inJeopardy()));
         } catch (final Exception e) {

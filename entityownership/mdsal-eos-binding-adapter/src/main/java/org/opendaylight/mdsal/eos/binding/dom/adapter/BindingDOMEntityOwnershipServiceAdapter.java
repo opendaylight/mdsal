@@ -11,7 +11,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.lang.AutoCloseable;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
@@ -33,10 +33,10 @@ public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipS
     static final Logger LOG = LoggerFactory.getLogger(BindingDOMEntityOwnershipServiceAdapter.class);
 
     private final DOMEntityOwnershipService domService;
-    private final BindingToNormalizedNodeCodec conversionCodec;
+    private final BindingNormalizedNodeSerializer conversionCodec;
 
     public BindingDOMEntityOwnershipServiceAdapter(@Nonnull DOMEntityOwnershipService domService,
-            @Nonnull BindingToNormalizedNodeCodec conversionCodec) {
+            @Nonnull BindingNormalizedNodeSerializer conversionCodec) {
         this.domService = Preconditions.checkNotNull(domService);
         this.conversionCodec = Preconditions.checkNotNull(conversionCodec);
     }
@@ -64,7 +64,7 @@ public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipS
     }
 
     private DOMEntity toDOMEntity(Entity entity) {
-        return new DOMEntity(entity.getType(), conversionCodec.toNormalized(entity.getIdentifier()));
+        return new DOMEntity(entity.getType(), conversionCodec.toYangInstanceIdentifier(entity.getIdentifier()));
     }
 
     @Override
