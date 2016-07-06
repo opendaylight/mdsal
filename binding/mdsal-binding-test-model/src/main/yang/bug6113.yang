@@ -1,0 +1,37 @@
+module bug6113 {
+    yang-version 1;
+    namespace "bug6113";
+    prefix "bug6113";
+
+    revision "2016-01-01" {
+    }
+
+    grouping main-cont-grp {
+        container main-cont-grp {
+            uses other-grp {
+                augment "test-list" {
+                    uses other-grp-aug;
+                }
+            }
+        }
+    }
+
+    grouping other-grp {
+        list test-list {
+            key "test-list-leaf";
+            leaf test-list-leaf {
+                type string;
+            }
+        }
+    }
+
+    grouping other-grp-aug {
+        leaf test-leaf {
+            type string;
+        }
+    }
+
+    container root-cont {
+        uses main-cont-grp;
+    }
+}
