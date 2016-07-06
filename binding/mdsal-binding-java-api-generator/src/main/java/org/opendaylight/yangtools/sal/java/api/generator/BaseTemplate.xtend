@@ -25,6 +25,7 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature
 import org.opendaylight.yangtools.sal.binding.model.api.Restrictions
 import org.opendaylight.yangtools.sal.binding.model.api.Type
+import org.opendaylight.yangtools.sal.binding.model.api.TypeMember
 import org.opendaylight.yangtools.yang.common.QName
 
 abstract class BaseTemplate {
@@ -94,6 +95,10 @@ abstract class BaseTemplate {
             throw new IllegalArgumentException("Not a getter")
         }
         return getter.name.substring(prefix).toFirstLower;
+    }
+
+    final protected def isAccessor(MethodSignature maybeGetter) {
+        return maybeGetter.name.startsWith("is") || maybeGetter.name.startsWith("get");
     }
 
     /**
@@ -212,6 +217,16 @@ abstract class BaseTemplate {
         '''.toString
     }
 
+    def protected String formatDataForJavaDoc(TypeMember type) {
+        val typeDescription = type.getComment().encodeJavadocSymbols;
+
+        return '''
+            «IF !typeDescription.nullOrEmpty»
+            «typeDescription»
+            «ENDIF»
+        '''.toString
+    }
+
     private static final CharMatcher AMP_MATCHER = CharMatcher.is('&');
 
     def encodeJavadocSymbols(String description) {
@@ -229,6 +244,23 @@ abstract class BaseTemplate {
         val StringBuilder typeDescription = new StringBuilder();
         if (!type.description.nullOrEmpty) {
             typeDescription.append(type.description)
+            typeDescription.append(NEW_LINE)
+            typeDescription.append(NEW_LINE)
+            typeDescription.append(NEW_LINE)
+            typeDescription.append(additionalComment)
+        } else {
+            typeDescription.append(additionalComment)
+        }
+
+        return '''
+            «typeDescription.toString»
+        '''.toString
+    }
+
+    def protected String formatDataForJavaDoc(TypeMember type, String additionalComment) {
+        val StringBuilder typeDescription = new StringBuilder();
+        if (!type.comment.nullOrEmpty) {
+            typeDescription.append(type.comment)
             typeDescription.append(NEW_LINE)
             typeDescription.append(NEW_LINE)
             typeDescription.append(NEW_LINE)
