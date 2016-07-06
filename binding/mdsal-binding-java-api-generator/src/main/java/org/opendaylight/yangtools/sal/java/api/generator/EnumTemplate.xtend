@@ -59,7 +59,7 @@ class EnumTemplate extends BaseTemplate {
             «writeEnumeration(enums)»
 
 
-            String name;
+            java.lang.String name;
             int value;
             private static final java.util.Map<java.lang.Integer, «enums.name»> VALUE_MAP;
 
@@ -73,7 +73,7 @@ class EnumTemplate extends BaseTemplate {
                 VALUE_MAP = b.build();
             }
 
-            private «enums.name»(int value, String name) {
+            private «enums.name»(int value, java.lang.String name) {
                 this.value = value;
                 this.name = name;
             }
@@ -83,7 +83,7 @@ class EnumTemplate extends BaseTemplate {
              *
              * @return the name of the enumeration item as it is specified in the input yang
              */
-            public String getName() {
+            public java.lang.String getName() {
                 return name;
             }
 
