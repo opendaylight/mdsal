@@ -1,0 +1,11 @@
+module foo {
+    namespace "urn:test:foo";
+    prefix foo;
+
+    revision 2016-07-06 {
+    }
+
+    leaf bar {
+        type string;
+    }
+}

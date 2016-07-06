@@ -10,6 +10,7 @@ package org.opendaylight.yangtools.sal.java.api.generator
 import com.google.common.base.CharMatcher
 import com.google.common.base.Splitter
 import java.util.Arrays
+import java.util.Calendar
 import java.util.Collection
 import java.util.HashMap
 import java.util.List
@@ -45,11 +46,27 @@ abstract class BaseTemplate {
         this.importMap = new HashMap<String,String>()
     }
 
+    final protected def licenseInfo() {
+        var currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        return
+            '''
+                /*
+                 * Copyright © «currentYear» OpenDaylight Project and others.  All rights reserved.
+                 *
+                 * This program and the accompanying materials are made available under the
+                 * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+                 * and is available at http://www.eclipse.org/legal/epl-v10.html
+                 */
+             '''
+    }
+
     def packageDefinition() '''package «type.packageName»;'''
 
     final public def generate() {
         val _body = body()
         '''
+            «licenseInfo»
+
             «packageDefinition»
             «imports»
 
