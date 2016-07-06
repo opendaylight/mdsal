@@ -1,0 +1,21 @@
+module bug6165 {
+
+  namespace "odl:test:bug6165";
+  prefix "b";
+  revision 2016-07-06;
+
+  typedef String {
+    type string;
+  }
+
+  leaf bar {
+    type String;
+  }
+
+  leaf foo {
+    type enumeration {
+      enum only-one;
+    }
+  }
+
+}
