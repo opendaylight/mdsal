@@ -1,0 +1,16 @@
+module bug2360 {
+
+  namespace "odl:test:bug2360";
+  prefix "b";
+  revision 2016-07-06;
+
+  container foo {
+    leaf foo {
+      type union {
+        type int32;
+        type string;
+      }
+    }
+  }
+
+}
