@@ -41,7 +41,7 @@ public class RpcServiceInvokerTest {
         fail("Expected IllegalArgumentException");
     }
 
-    private void testMethod() throws Exception {
+    private void testMethod() {
         // NOOP
     }
 }

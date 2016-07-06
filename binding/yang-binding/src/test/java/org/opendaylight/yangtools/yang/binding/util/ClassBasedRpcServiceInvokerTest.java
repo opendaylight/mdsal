@@ -12,6 +12,8 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
+import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 
 public class ClassBasedRpcServiceInvokerTest {
@@ -21,6 +23,9 @@ public class ClassBasedRpcServiceInvokerTest {
         final ClassBasedRpcServiceInvoker classBasedRpcServiceInvoker =
                 new ClassBasedRpcServiceInvoker(ImmutableMap.of());
         assertNotNull(classBasedRpcServiceInvoker);
+        assertNotNull(ClassBasedRpcServiceInvoker.instanceFor(TestInterface.class));
         assertEquals("localName", classBasedRpcServiceInvoker.qnameToKey(QName.create("testNamespace", "localName")));
     }
+
+    interface TestInterface extends DataContainer, RpcService {}
 }

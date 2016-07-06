@@ -36,13 +36,6 @@ public class RpcMethodInvokerWithInputTest {
         RpcMethodInvokerWithInput rpcMethodInvokerWithInput = new RpcMethodInvokerWithInput(methodHandle);
         rpcMethodInvokerWithInput.invokeOn(testImplClass, null);
     }
-
-//    @Test
-//    public void fromTest() throws Exception {
-//        Method method = TestImplClassWithInput.class.getDeclaredMethod("testMethod", RpcService.class, DataObject.class);
-//        method.setAccessible(true);
-//        assertTrue(RpcMethodInvokerWithInput.from(method) instanceof RpcMethodInvokerWithInput);
-//    }
 }
 
 final class TestImplClassWithInput implements RpcService{
