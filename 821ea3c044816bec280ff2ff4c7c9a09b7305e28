@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_6b83bb04",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/clustering/ClusterSingletonService.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-07-06T14:28:55Z",
+      "side": 1,
+      "message": "should return a yangtools.concepts.Identifier or a subclass. We have AbstractStringIdentifier to help with implementations.\n\nThat really means that this class should implement Identifiable\u003cServiceGroupIdentifier\u003e and have a getIdentifier() method.",
+      "range": {
+        "startLine": 41,
+        "startChar": 4,
+        "endLine": 41,
+        "endChar": 10
+      },
+      "revId": "821ea3c044816bec280ff2ff4c7c9a09b7305e28",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
