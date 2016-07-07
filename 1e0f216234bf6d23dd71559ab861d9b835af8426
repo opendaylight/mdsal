@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_da1d6b68",
+        "filename": "binding/yang-binding/src/test/java/org/opendaylight/yangtools/yang/binding/util/BindingReflectionsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-07T11:18:18Z",
+      "side": 1,
+      "message": "if you want to logically group classes and use it only at particular place, please refactor it as a proper nested class with correct visibility.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 86,
+        "endChar": 1
+      },
+      "revId": "1e0f216234bf6d23dd71559ab861d9b835af8426",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_3a0f4732",
+        "filename": "binding/yang-binding/src/test/java/org/opendaylight/yangtools/yang/binding/util/RpcMethodInvokerWithInputTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-07T11:18:18Z",
+      "side": 1,
+      "message": "if you want to logically group classes and use it only at particular place, please refactor it as a proper nested class with correct visibility.",
+      "range": {
+        "startLine": 41,
+        "startChar": 1,
+        "endLine": 49,
+        "endChar": 1
+      },
+      "revId": "1e0f216234bf6d23dd71559ab861d9b835af8426",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_5a0afb21",
+        "filename": "binding/yang-binding/src/test/java/org/opendaylight/yangtools/yang/binding/util/RpcMethodInvokerWithoutInputTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-07T11:18:18Z",
+      "side": 1,
+      "message": "if you want to logically group classes and use it only at particular place, please refactor it as a proper nested class with correct visibility.",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 1
+      },
+      "revId": "1e0f216234bf6d23dd71559ab861d9b835af8426",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_fa04af16",
+        "filename": "binding/yang-binding/src/test/java/org/opendaylight/yangtools/yang/binding/util/StringValueObjectFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-07T11:18:18Z",
+      "side": 1,
+      "message": "if you want to logically group classes and use it only at particular place, please refactor it as a proper nested class with correct visibility.",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 1
+      },
+      "revId": "1e0f216234bf6d23dd71559ab861d9b835af8426",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
