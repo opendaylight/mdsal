@@ -1,0 +1,10 @@
+module bug6172 {
+
+  namespace "odl:test:bug6172";
+  prefix "b";
+  revision 2016-07-07;
+
+  container con {
+  }
+
+}
