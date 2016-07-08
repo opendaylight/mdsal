@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.opendaylight.mdsal</groupId>
-    <artifactId>mdsal-dom</artifactId>
+    <artifactId>mdsal-eos</artifactId>
     <version>2.1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>mdsal-dom-api</artifactId>
+
+  <artifactId>mdsal-eos-binding-api</artifactId>
   <packaging>bundle</packaging>
+
   <dependencies>
-    <!-- FIXME: Remove after moving DOM EOS API -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
       <artifactId>mdsal-eos-common-api</artifactId>
@@ -18,43 +30,38 @@
       <groupId>org.opendaylight.mdsal</groupId>
       <artifactId>mdsal-eos-common-spi</artifactId>
     </dependency>
-    <!-- End part for remove -->
+    <dependency>
+      <groupId>org.opendaylight.mdsal.model</groupId>
+      <artifactId>general-entity</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.yangtools</groupId>
+      <artifactId>concepts</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-common-api</artifactId>
+      <artifactId>yang-binding</artifactId>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.yangtools</groupId>
-      <artifactId>yang-data-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.yangtools</groupId>
-      <artifactId>yang-model-api</artifactId>
+      <artifactId>yang-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.yangtools</groupId>
-      <artifactId>yang-data-impl</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
   <scm>
     <connection>scm:git:http://git.opendaylight.org/gerrit/controller.git</connection>
     <developerConnection>scm:git:ssh://git.opendaylight.org:29418/controller.git</developerConnection>
