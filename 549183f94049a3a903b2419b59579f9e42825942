@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_42585132",
+        "filename": "binding/yang-binding/src/test/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifierTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-08T09:27:44Z",
+      "side": 1,
+      "message": "Do we need this ?",
+      "range": {
+        "startLine": 121,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 5
+      },
+      "revId": "549183f94049a3a903b2419b59579f9e42825942",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_8241c93b",
+        "filename": "binding/yang-binding/src/test/java/org/opendaylight/yangtools/yang/binding/util/BindingReflectionsTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-08T09:27:44Z",
+      "side": 1,
+      "message": "Does this need to be public and in upperace ?",
+      "range": {
+        "startLine": 77,
+        "startChar": 8,
+        "endLine": 77,
+        "endChar": 57
+      },
+      "revId": "549183f94049a3a903b2419b59579f9e42825942",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_c24bc157",
+        "filename": "binding/yang-binding/src/test/java/org/opendaylight/yangtools/yang/binding/util/DataObjectReadingUtilTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-08T09:27:44Z",
+      "side": 1,
+      "message": "Can this be final",
+      "range": {
+        "startLine": 58,
+        "startChar": 8,
+        "endLine": 58,
+        "endChar": 40
+      },
+      "revId": "549183f94049a3a903b2419b59579f9e42825942",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_0275b997",
+        "filename": "binding/yang-binding/src/test/java/org/opendaylight/yangtools/yang/binding/util/NotificationListenerInvokerTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-08T09:27:44Z",
+      "side": 1,
+      "message": "Can this be final?",
+      "range": {
+        "startLine": 43,
+        "startChar": 21,
+        "endLine": 43,
+        "endChar": 33
+      },
+      "revId": "549183f94049a3a903b2419b59579f9e42825942",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
