@@ -9,8 +9,8 @@ package org.opendaylight.mdsal.binding.api.clustering;
 
 import com.google.common.annotations.Beta;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.common.api.clustering.EntityOwnershipChangeState;
-import org.opendaylight.mdsal.common.api.clustering.GenericEntityOwnershipChange;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
+import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**

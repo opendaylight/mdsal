@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.api.clustering;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.common.api.clustering.GenericEntityOwnershipCandidateRegistration;
+import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 /**
