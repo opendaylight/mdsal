@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.clustering;
 import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.binding.api.clustering.Entity;
 import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipCandidateRegistration;
-import org.opendaylight.mdsal.dom.api.clustering.DOMEntityOwnershipCandidateRegistration;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipCandidateRegistration;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 
 /**
