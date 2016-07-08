@@ -95,6 +95,26 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>mdsal-dom-inmemory-datastore</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-eos-common-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-eos-common-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-eos-dom-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-eos-binding-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-eos-binding-adapter</artifactId>
+        </dependency>
 
         <!-- Binding MD-SAL & Java Binding -->
         <dependency>

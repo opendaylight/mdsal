@@ -11,6 +11,20 @@
   <packaging>bundle</packaging>
 
   <dependencies>
+    <!-- FIXME: Remove after moving Binding EOS DOM adapter -->
+    <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-eos-common-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-eos-common-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-eos-dom-api</artifactId>
+    </dependency>
+    <!-- End part for remove -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
