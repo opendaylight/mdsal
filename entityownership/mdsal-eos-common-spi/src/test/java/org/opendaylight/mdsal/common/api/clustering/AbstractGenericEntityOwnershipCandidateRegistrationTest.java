@@ -11,6 +11,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 
 public class AbstractGenericEntityOwnershipCandidateRegistrationTest
         extends AbstractGenericEntityOwnershipCandidateRegistration {

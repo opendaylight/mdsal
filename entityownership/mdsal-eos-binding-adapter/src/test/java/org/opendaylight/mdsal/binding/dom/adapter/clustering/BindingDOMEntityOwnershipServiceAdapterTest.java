@@ -27,15 +27,15 @@ import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipChange;
 import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipListener;
 import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
-import org.opendaylight.mdsal.common.api.clustering.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.common.api.clustering.EntityOwnershipChangeState;
-import org.opendaylight.mdsal.common.api.clustering.EntityOwnershipState;
 import org.opendaylight.mdsal.dom.api.clustering.DOMEntity;
 import org.opendaylight.mdsal.dom.api.clustering.DOMEntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.dom.api.clustering.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.dom.api.clustering.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.dom.api.clustering.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.dom.api.clustering.DOMEntityOwnershipService;
+import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.yangtools.binding.data.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.yangtools.sal.binding.generator.impl.GeneratedClassLoadingStrategy;
 
