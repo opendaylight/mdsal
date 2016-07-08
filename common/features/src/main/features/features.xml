@@ -76,11 +76,6 @@
         <feature version='${project.version}'>odl-mdsal-binding-api</feature>
         <feature version='${project.version}'>odl-mdsal-dom-api</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-dom-adapter/{{VERSION}}</bundle>
-        <!-- FIXME: Remove after Binding EOS Adapter moved -->
-        <feature version='${project.version}'>odl-mdsal-eos-dom</feature>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-binding-api/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-binding-adapter/{{VERSION}}</bundle>
-        <!-- end -->
     </feature>
 
     <feature name='odl-mdsal-eos-common' version='${project.version}' description='OpenDaylight :: MD-SAL :: EOS :: Common'>
