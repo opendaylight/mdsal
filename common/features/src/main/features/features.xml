@@ -33,6 +33,9 @@
         <feature version='${yangtools.version}'>odl-yangtools-yang-data</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{VERSION}}</bundle>
+        <!-- FIXME: Remove after DOM EOS API moved -->
+        <feature version='${project.version}'>odl-mdsal-eos-common</feature>
+        <!-- end -->
     </feature>
 
     <feature name='odl-mdsal-dom-broker' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
@@ -69,6 +72,9 @@
         <bundle>mvn:org.opendaylight.mdsal.model/general-entity/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-util/{{VERSION}}</bundle>
+        <!-- FIXME: Remove after Binding EOS API moved -->
+        <feature version='${project.version}'>odl-mdsal-eos-dom</feature>
+        <!-- end -->
     </feature>
 
     <feature name='odl-mdsal-binding-dom-adapter' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Generator'>
@@ -76,6 +82,28 @@
         <feature version='${project.version}'>odl-mdsal-binding-api</feature>
         <feature version='${project.version}'>odl-mdsal-dom-api</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-dom-adapter/{{VERSION}}</bundle>
+        <!-- FIXME: Remove after Binding EOS Adapter moved -->
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-binding-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-binding-adapter/{{VERSION}}</bundle>
+        <!-- end -->
+    </feature>
+
+    <feature name='odl-mdsal-eos-common' version='${project.version}' description='OpenDaylight :: MD-SAL :: EOS :: Common'>
+        <feature version='${yangtools.version}'>odl-yangtools-common</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-common-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-common-spi/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-eos-dom' version='${project.version}' description='OpenDaylight :: MD-SAL :: EOS :: Common'>
+        <feature version='${project.version}'>odl-mdsal-eos-common</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-dom-api/{{VERSION}}</bundle>
+    </feature>
+
+    <feature name='odl-mdsal-eos-binding' version='${project.version}' description='OpenDaylight :: MD-SAL :: EOS :: Common'>
+        <feature version='${project.version}'>odl-mdsal-eos-dom</feature>
+        <feature version='${project.version}'>odl-mdsal-binding-dom-adapter</feature>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-binding-api/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-binding-adapter/{{VERSION}}</bundle>
     </feature>
 
 </features>
