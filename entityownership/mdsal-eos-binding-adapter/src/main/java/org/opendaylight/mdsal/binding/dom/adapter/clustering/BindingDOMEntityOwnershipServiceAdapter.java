@@ -17,10 +17,10 @@ import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipListener;
 import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
-import org.opendaylight.mdsal.common.api.clustering.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.common.api.clustering.EntityOwnershipState;
 import org.opendaylight.mdsal.dom.api.clustering.DOMEntity;
 import org.opendaylight.mdsal.dom.api.clustering.DOMEntityOwnershipService;
+import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
