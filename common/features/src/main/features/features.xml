@@ -33,9 +33,6 @@
         <feature version='${yangtools.version}'>odl-yangtools-yang-data</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{VERSION}}</bundle>
-        <!-- FIXME: Remove after DOM EOS API moved -->
-        <feature version='${project.version}'>odl-mdsal-eos-common</feature>
-        <!-- end -->
     </feature>
 
     <feature name='odl-mdsal-dom-broker' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
