@@ -12,8 +12,8 @@ import org.opendaylight.mdsal.binding.api.clustering.Entity;
 import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipChange;
 import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipListener;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
-import org.opendaylight.mdsal.dom.api.clustering.DOMEntityOwnershipChange;
-import org.opendaylight.mdsal.dom.api.clustering.DOMEntityOwnershipListener;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 
 /**
  * Adapter that bridges between the binding and DOM EntityOwnershipListener interfaces.
