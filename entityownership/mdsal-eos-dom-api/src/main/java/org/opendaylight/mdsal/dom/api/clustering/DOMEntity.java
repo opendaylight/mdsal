@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.api.clustering;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.common.api.clustering.GenericEntity;
+import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 

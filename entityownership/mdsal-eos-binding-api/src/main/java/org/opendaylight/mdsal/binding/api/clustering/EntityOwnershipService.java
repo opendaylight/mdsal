@@ -10,9 +10,9 @@ package org.opendaylight.mdsal.binding.api.clustering;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.common.api.clustering.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.common.api.clustering.EntityOwnershipState;
-import org.opendaylight.mdsal.common.api.clustering.GenericEntityOwnershipService;
+import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
+import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
