@@ -8,10 +8,10 @@
 package org.opendaylight.mdsal.binding.dom.adapter.clustering;
 
 import com.google.common.base.Preconditions;
-import org.opendaylight.mdsal.binding.api.clustering.Entity;
-import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipChange;
-import org.opendaylight.mdsal.binding.api.clustering.EntityOwnershipListener;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.eos.binding.api.Entity;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipChange;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 
