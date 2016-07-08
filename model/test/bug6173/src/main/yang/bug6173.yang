@@ -1,0 +1,17 @@
+module bug6173 {
+
+  namespace "odl:test:bug6173";
+  prefix "b";
+  revision 2016-07-08;
+
+  grouping foo {
+    leaf bar {
+      type string;
+    }
+  }
+
+  uses foo {
+    refine "bar";
+  }
+
+}
