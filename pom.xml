@@ -36,6 +36,7 @@
       <module>binding</module>
       <module>binding2</module>
       <module>model</module>
+      <module>entityownership</module>
     </modules>
 
     <build>
