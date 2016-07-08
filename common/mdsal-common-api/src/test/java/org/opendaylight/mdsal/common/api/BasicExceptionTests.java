@@ -8,13 +8,9 @@
 package org.opendaylight.mdsal.common.api;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-
 import javax.annotation.Nonnull;
 import org.junit.Test;
-import org.opendaylight.mdsal.common.api.clustering.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.common.api.clustering.GenericEntity;
 import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.yang.common.RpcError;
 
@@ -77,20 +73,9 @@ public class BasicExceptionTests {
         throw dataValidationFailedException;
     }
 
-    @Test(expected = CandidateAlreadyRegisteredException.class)
-    public void candidateAlreadyRegisteredExceptionTest() throws Exception {
-        final GenericEntity genericEntity = mock(GenericEntity.class);
-        doReturn("testEntity").when(genericEntity).toString();
-        CandidateAlreadyRegisteredException candidateAlreadyRegisteredException =
-                new CandidateAlreadyRegisteredException(genericEntity);
-        assertEquals(genericEntity, candidateAlreadyRegisteredException.getEntity());
-
-        throw candidateAlreadyRegisteredException;
-    }
-
     private final class TestClass implements Path {
         @Override
-        public boolean contains(@Nonnull Path other) {
+        public boolean contains(@Nonnull final Path other) {
             return false;
         }
     }

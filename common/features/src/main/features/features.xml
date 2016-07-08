@@ -90,6 +90,7 @@
 
     <feature name='odl-mdsal-eos-common' version='${project.version}' description='OpenDaylight :: MD-SAL :: EOS :: Common'>
         <feature version='${yangtools.version}'>odl-yangtools-common</feature>
+        <feature version='${yangtools.version}'>odl-yangtools-yang-data</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-common-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-eos-common-spi/{{VERSION}}</bundle>
     </feature>
