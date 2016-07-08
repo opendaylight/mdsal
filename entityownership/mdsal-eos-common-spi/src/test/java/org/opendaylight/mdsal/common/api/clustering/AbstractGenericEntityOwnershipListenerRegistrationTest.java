@@ -11,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 
 public class AbstractGenericEntityOwnershipListenerRegistrationTest
         extends AbstractGenericEntityOwnershipListenerRegistration {

@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.common.api.clustering;
 
 import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
+import org.opendaylight.mdsal.eos.common.api.GenericEntity;
+import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.Path;
 
