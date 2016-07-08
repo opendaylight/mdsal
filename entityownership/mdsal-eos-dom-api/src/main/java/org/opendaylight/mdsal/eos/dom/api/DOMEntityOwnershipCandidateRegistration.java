@@ -5,24 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.api.clustering;
+package org.opendaylight.mdsal.eos.dom.api;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
+import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 /**
- * DOM interface for GenericEntityOwnershipListener.
+ * DOM version of {@link GenericEntityOwnershipCandidateRegistration}.
  *
  * @author Thomas Pantelis
  */
 @Beta
-public interface DOMEntityOwnershipListener extends
-        GenericEntityOwnershipListener<YangInstanceIdentifier, DOMEntityOwnershipChange> {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    void ownershipChanged(DOMEntityOwnershipChange ownershipChange);
+public interface DOMEntityOwnershipCandidateRegistration extends
+        GenericEntityOwnershipCandidateRegistration<YangInstanceIdentifier, DOMEntity> {
 }

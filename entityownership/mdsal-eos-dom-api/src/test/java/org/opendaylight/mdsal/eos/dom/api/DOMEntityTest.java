@@ -5,15 +5,15 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.api.clustering;
+package org.opendaylight.mdsal.eos.dom.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.opendaylight.mdsal.dom.api.clustering.DOMEntity.ENTITY;
-
+import static org.opendaylight.mdsal.eos.dom.api.DOMEntity.ENTITY;
 import java.util.List;
 import java.util.Map.Entry;
 import org.junit.Test;
+import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
