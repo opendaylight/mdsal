@@ -1,0 +1,7 @@
+module bug6184 {
+
+    namespace "http://bugs.opendaylight.org/bug6184/";
+    prefix "b";
+    revision 2016-07-11;
+
+}
