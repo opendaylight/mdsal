@@ -1,0 +1,26 @@
+module good6183 {
+
+    namespace "odl:test:good6183";
+    prefix "g";
+    revision 2016-07-11;
+
+    choice my-choice {
+        case explicit-case-container {
+            container explicit-case-container {
+            }
+        }
+    }
+
+    augment "/my-choice/explicit-case-container" {
+        leaf leaf-after-container {
+            type empty;
+        }
+    }
+
+    augment "/my-choice/explicit-case-container/explicit-case-container" {
+        leaf leaf-inside-container {
+            type empty;
+        }
+    }
+
+}
