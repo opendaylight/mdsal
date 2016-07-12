@@ -1,0 +1,10 @@
+module bug6189 {
+
+    namespace "urn:org:opendaylight:test:bug6189";
+    prefix "b";
+    revision 2016-07-12;
+
+    rpc while {
+    }
+
+}
