@@ -13,8 +13,10 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
 import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
@@ -128,5 +130,16 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
     public void testIsCandidateRegistered() {
         doReturn(true).when(mockDOMService).isCandidateRegistered(DOM_ENTITY);
         assertEquals("isCandidateRegistered", true, adapter.isCandidateRegistered(BINDING_ENTITY));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testOwnershipChangeWithException() throws Exception {
+        final DOMEntityOwnershipListenerAdapter domEntityOwnershipListenerAdapter =
+                new DOMEntityOwnershipListenerAdapter(mock(EntityOwnershipListener.class),
+                        new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
+                            mockCodecRegistry));
+        final DOMEntityOwnershipChange domOwnershipChange = mock(DOMEntityOwnershipChange.class);
+        doThrow(IllegalStateException.class).when(domOwnershipChange).getEntity();
+        domEntityOwnershipListenerAdapter.ownershipChanged(domOwnershipChange );
     }
 }
