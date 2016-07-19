@@ -488,9 +488,11 @@ class YangTemplate {
                     reference
                         "«deviation.reference»";
                 «ENDIF»
-                «IF deviation.deviate != null && !deviation.deviate.name.nullOrEmpty»
-                    deviation «deviation.deviate.name»;
-                «ENDIF»
+                «FOR dev : deviation.deviates»
+                    «IF dev != null && dev.deviateType != null»
+                        deviation «dev.deviateType.name»;
+                    «ENDIF»
+                «ENDFOR»
             }
         '''
     }
