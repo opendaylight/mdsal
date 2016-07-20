@@ -190,11 +190,6 @@
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-singleton-common-spi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-singleton-dom-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
