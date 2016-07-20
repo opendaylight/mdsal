@@ -100,7 +100,6 @@
     <feature name='odl-mdsal-singleton-common' version='${project.version}' description='OpenDaylight :: MD-SAL :: Singleton :: Common'>
         <feature version='${project.version}'>odl-mdsal-eos-common</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-common-api/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-common-spi/{{VERSION}}</bundle>
     </feature>
 
     <feature name='odl-mdsal-singleton-dom' version='${project.version}' description='OpenDaylight :: MD-SAL :: Singleton :: DOM'>
