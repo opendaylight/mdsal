@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.singleton.common.spi;
+package org.opendaylight.mdsal.singleton.dom.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -246,7 +246,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     }
 
     /*
-     * Help method to registerated DoubleCandidateEntity. It is first step
+     * Help method to registered DoubleCandidateEntity. It is first step
      * before the actual instance take Leadership.
      */
     private void tryToTakeOwnership() {
@@ -317,7 +317,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             final ListenableFuture<List<Void>> destroyFuture = Futures.allAsList(serviceCloseFutureList);
             Futures.addCallback(destroyFuture, newAsyncCloseCallback(clusterLock));
             /*
-             * We wish to stop all possible EOS activitis before we don't close
+             * We wish to stop all possible EOS activities before we don't close
              * a close candidate registration that acts as a guard. So we don't want
              * to release Semaphore (clusterLock) before we are not fully finished.
              * Semaphore lock release has to be realized as FutureCallback after a service
