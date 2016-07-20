@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.singleton.common.spi;
+package org.opendaylight.mdsal.singleton.dom.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -21,8 +21,8 @@ import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
  * ClusterSingletonServiceGroup list reference.
  *
  * Close {@link ClusterSingletonServiceRegistration} is prepared for a possible restart
- * service or application in osgi container. Any another servicies from group can not be
- * stoped.
+ * service or application in osgi container. Any another services from group can not be
+ * stopped.
  */
 class ClusterSingletonServiceRegistrationDelegator
         implements ClusterSingletonServiceRegistration, ClusterSingletonService {
