@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.singleton.common.spi;
+package org.opendaylight.mdsal.singleton.dom.impl;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -20,6 +20,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
+import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceGroup;
+import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceGroupImpl;
+import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceRegistrationDelegator;
 
 /**
  * Testing {@link ClusterSingletonServiceRegistrationDelegator}

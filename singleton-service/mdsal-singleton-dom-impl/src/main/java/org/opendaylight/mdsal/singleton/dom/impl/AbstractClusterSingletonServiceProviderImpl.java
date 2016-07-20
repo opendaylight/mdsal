@@ -6,8 +6,9 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.singleton.common.spi;
+package org.opendaylight.mdsal.singleton.dom.impl;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.FutureCallback;
@@ -45,7 +46,8 @@ import org.slf4j.LoggerFactory;
  * @param <S> the GenericEntityOwnershipService type
  * @param <R> the GenericEntityOwnershipListenerRegistration type
  */
-public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path<P>, E extends GenericEntity<P>,
+@VisibleForTesting
+abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path<P>, E extends GenericEntity<P>,
                                                                   C extends GenericEntityOwnershipChange<P, E>,
                                                                   G extends GenericEntityOwnershipListener<P, C>,
                                                                   S extends GenericEntityOwnershipService<P, E, G>,

@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.singleton.common.spi.util;
+package org.opendaylight.mdsal.singleton.dom.impl.util;
 
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
