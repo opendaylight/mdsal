@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0">
+
+  <!-- Binding EntityOwnershipService -->
+
+  <reference id="domEntityOwnershipService" interface="org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService"/>
+
+  <reference id="conversionCodec" interface="org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer"/>
+
+  <bean id="bindingEntityOwnershipService" class="org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter"
+          destroy-method="close">
+    <argument ref="domEntityOwnershipService"/>
+    <argument ref="conversionCodec"/>
+  </bean>
+
+  <service ref="bindingEntityOwnershipService" interface="org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService"
+        odl:type="default"/>
+</blueprint>
