@@ -206,4 +206,52 @@ public class InstanceIdentifierTest {
 
         assertEquals(instanceIdentifier, deserialized);
     }
+
+    @Test
+    public void equalsTest() {
+        final InstanceIdentifierBuilder<DataObject> builder1 =  InstanceIdentifier.create(DataObject.class).builder();
+        final InstanceIdentifierBuilder<DataObject> builder2 =  InstanceIdentifier.create(DataObject.class).builder();
+        final InstanceIdentifierBuilder<Nodes> builder3 =  InstanceIdentifier.create(Nodes.class).builder();
+        final InstanceIdentifierBuilder<Nodes> builder4 =  InstanceIdentifier.create(Nodes.class).builder();
+        final Object obj = new Object();
+
+        assertTrue(builder1.equals(builder2));
+        assertTrue(builder2.equals(builder1));
+        assertTrue(builder2.equals(builder2));
+        assertTrue(builder3.equals(builder4));
+        assertTrue(builder4.equals(builder4));
+        assertFalse(builder3.equals(builder1));
+        assertFalse(builder3.equals(null));
+        assertFalse(builder4.equals(null));
+        assertFalse(builder1.equals(obj));
+
+        builder3.child(Node.class, new NodeKey(10));
+        assertFalse(builder3.equals(builder4));
+        assertFalse(builder4.equals(builder3));
+
+        builder4.child(Node.class, new NodeKey(20));
+        assertFalse(builder3.equals(builder4));
+        assertFalse(builder4.equals(builder3));
+
+    }
+
+    @Test
+    public void hashCodeTest() {
+        final InstanceIdentifierBuilder<DataObject> builder1 =  InstanceIdentifier.create(DataObject.class).builder();
+        final InstanceIdentifierBuilder<DataObject> builder2 =  InstanceIdentifier.create(DataObject.class).builder();
+        final InstanceIdentifierBuilder<Nodes> builder3 =  InstanceIdentifier.create(Nodes.class).builder();
+        final InstanceIdentifierBuilder<Nodes> builder4 =  InstanceIdentifier.create(Nodes.class).builder();
+        final Object obj = new Object();
+
+        assertTrue(builder1.hashCode() == builder2.hashCode());
+        assertTrue(builder1.hashCode() != builder3.hashCode());
+        assertTrue(builder3.hashCode() == builder4.hashCode());
+        assertTrue(builder2.hashCode() != builder4.hashCode());
+        assertTrue(builder1.hashCode() != obj.hashCode());
+
+        builder3.child(Node.class, new NodeKey(10));
+
+        assertTrue(builder3.hashCode() != builder4.hashCode());
+    }
+
 }
