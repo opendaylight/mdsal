@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.singleton.common.spi;
+package org.opendaylight.mdsal.singleton.dom.impl;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -28,8 +28,10 @@ import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
-import org.opendaylight.mdsal.singleton.common.spi.util.TestEntity;
-import org.opendaylight.mdsal.singleton.common.spi.util.TestInstanceIdentifier;
+import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceGroup;
+import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceGroupImpl;
+import org.opendaylight.mdsal.singleton.dom.impl.util.TestEntity;
+import org.opendaylight.mdsal.singleton.dom.impl.util.TestInstanceIdentifier;
 
 /**
  * Testing {@link ClusterSingletonServiceGroupImpl}
