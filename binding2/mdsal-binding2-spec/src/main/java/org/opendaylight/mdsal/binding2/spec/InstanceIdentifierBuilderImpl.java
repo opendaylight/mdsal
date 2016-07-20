@@ -11,6 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import java.util.Objects;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.util.HashCodeBuilder;
 
@@ -38,6 +39,24 @@ final class InstanceIdentifierBuilderImpl<T extends TreeNode>
     @Override
     public int hashCode() {
         return hashBuilder.build();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        InstanceIdentifierBuilderImpl<T> otherBuilder = (InstanceIdentifierBuilderImpl<T>) obj;
+        return Objects.equals(basePath, otherBuilder.basePath) &&
+                Objects.equals(arg, otherBuilder.arg) &&
+                (wildcard == wildcard) &&
+                Objects.equals(hashBuilder.build(), otherBuilder.hashBuilder.build());
     }
 
     @SuppressWarnings("unchecked")

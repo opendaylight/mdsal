@@ -10,6 +10,7 @@ package org.opendaylight.yangtools.yang.binding;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import java.util.Objects;
 import org.opendaylight.yangtools.util.HashCodeBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
@@ -37,6 +38,24 @@ final class InstanceIdentifierBuilderImpl<T extends DataObject> implements Insta
     @Override
     public int hashCode() {
         return hashBuilder.build();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        InstanceIdentifierBuilderImpl<T> otherBuilder = (InstanceIdentifierBuilderImpl<T>) obj;
+        return Objects.equals(basePath, otherBuilder.basePath) &&
+                Objects.equals(arg, otherBuilder.arg) &&
+                (wildcard == wildcard) &&
+                Objects.equals(hashBuilder.build(), otherBuilder.hashBuilder.build());
     }
 
     @SuppressWarnings("unchecked")
