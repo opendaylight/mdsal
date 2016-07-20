@@ -15,6 +15,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableIt
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 
+import java.util.Objects;
+
 final class InstanceIdentifierBuilderImpl<T extends DataObject> implements InstanceIdentifier.InstanceIdentifierBuilder<T> {
     private final ImmutableList.Builder<PathArgument> pathBuilder = ImmutableList.builder();
     private final HashCodeBuilder<PathArgument> hashBuilder;
@@ -37,6 +39,24 @@ final class InstanceIdentifierBuilderImpl<T extends DataObject> implements Insta
     @Override
     public int hashCode() {
         return hashBuilder.build();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        InstanceIdentifierBuilderImpl<T> otherBuilder = (InstanceIdentifierBuilderImpl<T>) obj;
+        return Objects.equals(basePath, otherBuilder.basePath) &&
+                Objects.equals(arg, otherBuilder.arg) &&
+                (wildcard == wildcard) &&
+                Objects.equals(hashBuilder.build(), otherBuilder.hashBuilder.build());
     }
 
     @SuppressWarnings("unchecked")
