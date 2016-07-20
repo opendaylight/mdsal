@@ -110,11 +110,4 @@
         <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-dom-impl/{{VERSION}}</bundle>
     </feature>
 
-    <feature name='odl-mdsal-singleton-binding' version='${project.version}' description='OpenDaylight :: MD-SAL :: Singleton :: Binding'>
-        <feature version='${project.version}'>odl-mdsal-singleton-common</feature>
-        <feature version='${project.version}'>odl-mdsal-eos-binding</feature>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-binding-api/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-binding-impl/{{VERSION}}</bundle>
-    </feature>
-
 </features>

@@ -131,14 +131,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>mdsal-singleton-dom-impl</artifactId>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-singleton-binding-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-singleton-binding-impl</artifactId>
-        </dependency>
 
         <!-- Binding MD-SAL & Java Binding -->
         <dependency>
