@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_1c9b2368",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifierBuilderImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-07-20T14:05:05Z",
+      "side": 1,
+      "message": "final class: use instanceof check",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 53,
+        "endChar": 9
+      },
+      "revId": "a0861aa4c4671acbcebd285a2f1e7aa19fe2d595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_3c9f0752",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifierBuilderImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-07-20T14:05:05Z",
+      "side": 1,
+      "message": "order comparisons by complexity: simplest first",
+      "range": {
+        "startLine": 55,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 41
+      },
+      "revId": "a0861aa4c4671acbcebd285a2f1e7aa19fe2d595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_7ca97f7a",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifierBuilderImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-07-20T14:05:05Z",
+      "side": 1,
+      "message": "unneeded parentheses",
+      "range": {
+        "startLine": 57,
+        "startChar": 15,
+        "endLine": 57,
+        "endChar": 38
+      },
+      "revId": "a0861aa4c4671acbcebd285a2f1e7aa19fe2d595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
