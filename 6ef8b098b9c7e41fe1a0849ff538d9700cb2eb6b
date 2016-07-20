@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_615f1c42",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifierBuilderImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-20T12:43:27Z",
+      "side": 1,
+      "message": "please setup imports organization in your IDE ... there shouldn\u0027t be an empty line between import groups and imports are supposed to be sorted alphabetically",
+      "revId": "6ef8b098b9c7e41fe1a0849ff538d9700cb2eb6b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_415ad850",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding2/spec/InstanceIdentifierBuilderImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-20T12:43:27Z",
+      "side": 1,
+      "message": "please setup imports organization in your IDE ... there shouldn\u0027t be an empty line between import groups and imports are supposed to be sorted alphabetically",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 25
+      },
+      "revId": "6ef8b098b9c7e41fe1a0849ff538d9700cb2eb6b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
