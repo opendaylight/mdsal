@@ -4,81 +4,104 @@
 The existing OpenDaylight service deployment model assumes symmetric
 clusters, where all services are activated on all nodes in the cluster.
 However, many services require that there is a single active service
-instance per cluster. Examples are global MD-SAL RPC services, or
-services that use centralized data processing, or the OpenFlow Topology
-Manager, which needs to interact with all OF switches connected to a
-clustered controller and determine how the switches are interconnected.
-We call such services 'singleton services'.
+instance per cluster. We call such services 'singleton services'.
+Examples of singleton services are global MD-SAL RPC services, services
+that use centralized data processing, or the OpenFlow Topology Manager,
+which needs to interact with all OF switches connected to a clustered
+controller and determine how the switches are interconnected.
 
-A developer of a singleton service must create logic that determines
-the active service instance, manages service failovers and ensures that
-a service instance always runs in the surviving partition of a cluster.
-This logic would have to interact with the Entity Ownership Service (EOS)
-and it is not easy to get it right. Leaving it to individual services
-would mean that each service would design and implement essentially the
-same functionality, each with its own behavior, engineering and issues.
+Developers of singleton services must create logic that determines
+the active service instance, manages service failovers and ensures
+that a service instance always runs in the surviving partition of a
+cluster. This logic must interact with the Entity Ownership Service
+(EOS), and it is not easy to implement and debug. Moreover, each
+developer of an ODL-based singleton service has to design and implement
+essentially the same functionality, each with its own behavior,
+engineering and issues. The Cluster Singleton Service is intended to
+abstract this funtionality into a simple-to-use service that can be
+used by all developers of ODL-based singleton services.
 ----
 
-== General Cluster Singleton Service Approach
-The main idea represents a single cluster service instance. The Entity
-Ownership Service (EOS) represents the base Leadership choice for one
-Entity instance. So we are able to move candidate election to the EOS.
-Every Cluster Singleton service *type* must have its own Entity and every
-Cluster Singleton service *instance* must have its own Entity Candidate.
-Every registered Entity Candidate should be notified about its actual role
+== The General Cluster Singleton Service Approach
+One of the key elements in the design of the Cluster Singleton Service
+is the notion of a single cluster service instance, which corresponds to
+a single Entity instance in the Entity Ownership Service (EOS). The EOS
+represents the base Leadership choice for one Entity instance. Therefore,
+candidate elections can be moved ("outsourced") to the EOS. Every Cluster
+Singleton Service *type* must have its own Entity, and every Cluster
+Singleton service *instance* must have its own Entity Candidate. Every
+registered Entity Candidate must be notified about its actual role
 in the cluster.
 
 To ensure that there is only one active (i.e. fully instantiated) service
 instance in the cluster at any given time, we use the "double-candidate"
 approach: a service instance maintains not only a candidate registration
-for the ownership of the service's Entity in the cluster, but also an
-additonal (guard) ownership registration that ensures a full shutdown of
-the service instance before the overall ownership of the service is
-relinquished. To achieve the overall ownership of a singleton service,
-a service candidate must hold ownership of both these entities (see the
-sequence diagram below).
+for the ownership of the service's own Entity in the cluster, but also an
+additonal (guard) ownership registration that facilitates full & graceful
+shutdown of the service instance before the "leadership" of the service
+is relinquished (i.e. before a service instance is deactivated). To achieve
+"leadership" of a singleton service, a service candidate must hold ownership
+of both these entities (see the sequence diagram below).
 
 .Double Candidate Solution (Async. Close Guard)
 include::01_doubleCandidateSimpleSequence.plantuml[]
 
-The double-candidate approach prevents the shutdown of a service with
-outstanding asynchronous operations, such as unfinished MD-SAL Data
-Store transactions. The **main entity** candidate is focused on the
-actual role of the service in the cluster; the **close guard entity**
-candidate is a guard that tracks the outstanding asynchronous operations.
+The double-candidate approach prevents the shutdown of a service instance
+with outstanding asynchronous operations, such as unfinished MD-SAL Data
+Store transactions. The **main entity** candidate reflects the actual role
+of the service instance in the cluster; the **close guard entity**
+candidate is a guard that tracks outstanding asynchronous operations.
 Every new Leader must register its own **close guard entity** candidate.
 A Leader that wishes to relinquish its leadership must close its
 **close guard entity** candidate. This is typically done in the last
-step of the shutdown procedure. When the old Leader relinquishes its
-**close guard entity** ownership, the new Leader will take the leadership
-for the **close guard entity** candidate (it has to hold ownership for
-both candidate signatures). That is the marker to full start cluster
-node application instance and old leader stops successfully. Figure 1
+step of the service's shutdown procedure. When the old Leader relinquishes
+its **close guard entity** ownership, the new Leader will take the
+ownership for the **close guard entity** candidate (it has to hold ownership
+for both candidate signatures). That is the marker to full start cluster
+node application instance and the old leader stops successfully. Figure 1
 shows the entire sequence.
 
-IMPORTANT: Double candidate approach (async. close guard) prerequisite is "actual ownership doesn't change by new candidate registration".
+IMPORTANT: The double-candidate approach (with the asynchronous close
+guard entity) creates the following prerequisite: "the actual ownership
+doesn't change with the registration of a new candidate".
 
-=== Cluster Singleton Service
-Double candidate solution is relevant for all services and we don't need to implement same code for every instances. So we are able to hide whole EOS interaction for user and we can encapsulate it to some "ODL Cluster Singleton Service Provider" parent.
+=== The Cluster Singleton Service
+The double-candidate solution can be used for all ODL services. Developers
+of Singleton services no longer have to keep re-implement the same code
+for every new service. Moreover, the Cluster Singleton Service hides the
+interactions with the EOS service from its user. These interactions can
+be encapsulated in an "ODL Cluster Singleton Service Provider" parent
+component.
 
 .Class Diagram Cluster Singleton Service
 include::02_classClusterSingletonService.plantuml[]
 
 === Cluster Singleton Service Grouping
-Sometimes we wish to have couple of services to run on same Cluster Node. So Double candidate EOS interaction could by realized for a list of ClusterSingletonService instances.
+In some use cases, closely cooperating services should "share the same
+fate", i.e. they should always be instantiated on the same Cluster Node.
+In case of a failover, leaders for all services in the fate-sharing set
+should be instantiated on the same (surviving) Cluster Node. For best
+efficiency and performance, the shard leaders for shards owned by these
+services should also reside on the same Cluster Node as the services.
+In this case, interactions with the EOS are provided for the entire set
+of fate-sharing ClusterSingletonService instances by a single
+double-candidate Entity instance.
 
 .Class Diagram Cluster Singleton Service Group
 include::03_classClusterSingletonServiceGroup.plantuml[]
 
 
 === Cluster Singleton Service Provider
-Provider implementation is realized as stay alone service which has to be instantiated for every ClusterNode and it has to be available for every depend applications. So class diagram looks as next.
+The Provider implementation is realized as a standalone service which
+has to be instantiated for every ClusterNode and it has to be available
+for every dependent application. Its class diagram looks as follows.
 
 .Class Diagram Cluster Singleton Service Provider
 include::04_classClusterSingletonServiceProvider.plantuml[]
 
-=== Cluster Singleton Service RPC implementation sample
-We'd like to show a grouping RPC service sample. RPC services don't need be a part of same project.
+=== Example: Cluster Singleton Service RPC Implementation
+We'd like to show a grouping RPC service sample. RPC services don't need
+to be a part of the same project.
 
 [source,java]
 ----
@@ -159,28 +182,44 @@ public class SampleClusterSingletonServiceRPC_2 implements ClusterSingletonServi
 }
 ----
 
-Both RPCs are instantiated for some ClusterNode and RPCs have only one instance in whole Cluster.
+Both RPCs are instantiated for some ClusterNode and both RPCs have only
+one instance in the entire Cluster.
 
 === Cluster Singleton Application
-OSGi module application could be understand like service too. So we would like to focus for OSGi container like a application loader. Every OSGi app has own lifecycle which should be adapting to use EOS and only master could be loading fully. We wish to encapsulate EOS interaction in an ODL application Loader.
+Applications packaged as OSGi modules can be viewed as services too. The
+OSGI container can be viewed as an application loader. Every OSGi
+application has its own lifecycle that should be adapted to use EOS. Only
+the application instance that has become the "leader" should be fully 
+loaded and initialized. Basically, we would like to encapsulate 
+interactions with the EOS in a cluster-aware ODL application Loader.
 
 .Life cycle of plug-ins in OSGi
 include::05_pluginOsgiLifeCycle.plantuml[]
 
-==== Application Module instantiation
-Every "ODL app." has Provider class which is instantiated in __AbstractModule<ODL app>__ class. Module has method __createInstance()__ which start an application Provider. So application provider has to implement __ClusterSingletonService__ interface and the application provider initialization (or constructor) has to register itself to ClusterSingletonServiceProvider. The application Provider body will be initialized by leader ClusterNode election for master only.
+==== Application Module Instantiation
+Every "ODL application" contains the Provider class, which is instantiated
+in the __AbstractModule<ODL app>__ class. A Module has the method
+__createInstance()__, which starts an application Provider. So an application
+provider must implement the __ClusterSingletonService__ interface and the
+application provider initialization (or constructor) must register itself
+to the ClusterSingletonServiceProvider. The application Provider body will
+be initialized by the leader ClusterNode election for the master only.
 
 .Base Cluster-wide app instantiation
 include::06_baseAppSingleInstance.plantuml[]
 
-So we are able to hide whole EOS interaction for user and encapsulate inside "ClusterSingletonServiceProvider". Application/service needs only implement relevant interface and registrates itself to provider.
+So we are able to hide whole EOS interaction from the user and encapsulate
+it inside the "ClusterSingletonServiceProvider" implementation. An application
+or a service only needs to implement the relevant interface and register
+itself to the ??? provider.
 
-Simplified sequence diagram (without double candidate) is displayed in next picture:
+A simplified sequence diagram (without the double-candidate) is displayed 
+in the following figure:
 
 .Simply Cluster-wide app instantiation (without double candidate)
 include::07_processAppSingleInstSimply.plantuml[]
 
-Full sequence implementation diagram for __AbstractClusterProjectProvider__ is displayed in next picture:
+The full sequence implementation diagram for the __AbstractClusterProjectProvider__ ??? is displayed in the following figure:
 
 .Cluster-wide app instantiation
 include::08_processAppSingleInst.plantuml[]
