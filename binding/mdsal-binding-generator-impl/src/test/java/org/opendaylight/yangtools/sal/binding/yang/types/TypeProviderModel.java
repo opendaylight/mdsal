@@ -18,7 +18,7 @@ import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
  * Test Model Provider designated to load test resources and provide Schema Context
  * for testing of TypeProviderImpl
  */
-final class TypeProviderModel {
+public final class TypeProviderModel {
 
     public static final String TEST_TYPE_PROVIDER_MODULE_NAME = "test-type-provider";
 
