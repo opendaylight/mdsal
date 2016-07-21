@@ -22,12 +22,15 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
  *
  * @author Thomas Pantelis
  */
+@SuppressWarnings({"checkstyle:regexpsingleline","checkstyle:linelength"})
 public class TransactionCommitDeadlockException extends TransactionCommitFailedException {
     private static final long serialVersionUID = 1L;
     private static final String DEADLOCK_MESSAGE =
-            "An attempt to block on a ListenableFuture via a get method from a write " +
-            "transaction submit was detected that would result in deadlock. The commit " +
-            "result must be obtained asynchronously, e.g. via Futures#addCallback, to avoid deadlock.";
+            "An attempt to block on a ListenableFuture via a get method from a write " 
+                    +
+                    "transaction submit was detected that would result in deadlock. The commit " 
+                    +
+                    "result must be obtained asynchronously, e.g. via Futures#addCallback, to avoid deadlock.";
     private static final RpcError DEADLOCK_RPCERROR = RpcResultBuilder.newError(ErrorType.APPLICATION, "lock-denied", DEADLOCK_MESSAGE);
 
     public static final Supplier<Exception> DEADLOCK_EXCEPTION_SUPPLIER = new Supplier<Exception>() {

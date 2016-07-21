@@ -21,10 +21,10 @@ public class ReadFailedException extends OperationFailedException {
 
     public static final ExceptionMapper<ReadFailedException> MAPPER =
             new ExceptionMapper<ReadFailedException>("read", ReadFailedException.class) {
-                @Override
-                protected ReadFailedException newWithCause(String message, Throwable cause) {
-                    return new ReadFailedException(message, cause);
-                }
+        @Override
+        protected ReadFailedException newWithCause(String message, Throwable cause) {
+            return new ReadFailedException(message, cause);
+        }
     };
 
     public ReadFailedException(String message, RpcError... errors) {
