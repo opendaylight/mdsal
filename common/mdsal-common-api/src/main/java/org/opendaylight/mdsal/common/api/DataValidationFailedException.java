@@ -7,24 +7,22 @@
  */
 package org.opendaylight.mdsal.common.api;
 
+import com.google.common.base.Preconditions;
 import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
-import com.google.common.base.Preconditions;
 
 /**
- *
  * Failure of asynchronous transaction commit caused by invalid data.
- *
  * This exception is raised and returned when transaction commit
  * failed, because other data submitted via transactions
- *
  *  Clients usually are not able recover from this error condition by
  *  retrieving same transaction, since data introduced by this transaction
  *  are invalid.
  *
  */
+@SuppressWarnings("checkstyle:mutableexception")
 public class DataValidationFailedException extends TransactionCommitFailedException {
 
     private static final long serialVersionUID = 1L;

@@ -9,8 +9,8 @@ package org.opendaylight.mdsal.common.api;
 
 import org.opendaylight.yangtools.concepts.Path;
 
+
 /**
- *
  * Marker interface for stateful read view of the data tree.
  *
  * <p>
@@ -28,15 +28,11 @@ import org.opendaylight.yangtools.concepts.Path;
  * <pre>
  * txRead = broker.newReadOnlyTransaction(); // read Transaction is snapshot of data
  * txWrite = broker.newReadWriteTransactoin(); // concurrent write transaction
- * 
  * txRead.read(OPERATIONAL, PATH).get(); // will return Optional containing A
  * txWrite = broker.put(OPERATIONAL, PATH, B); // writes B to PATH
- * 
  * txRead.read(OPERATIONAL, PATH).get(); // still returns Optional containing A
- * 
  * txWrite.submit().get(); // data tree is updated, PATH contains B
  * txRead.read(OPERATIONAL, PATH).get(); // still returns Optional containing A
- * 
  * txAfterCommit = broker.newReadOnlyTransaction(); // read Transaction is snapshot of new state
  * txAfterCommit.read(OPERATIONAL, PATH).get(); // returns Optional containing B;
  * </pre>
@@ -46,7 +42,8 @@ import org.opendaylight.yangtools.concepts.Path;
  * after other asynchronous action. Use of blocking call
  * {@link com.google.common.util.concurrent.ListenableFuture#get()} is discouraged for most uses and
  * you should use
- * {@link com.google.common.util.concurrent.Futures#addCallback(com.google.common.util.concurrent.ListenableFuture, com.google.common.util.concurrent.FutureCallback)}
+ * {@link com.google.common.util.concurrent.Futures#addCallback(com.google.common.util.concurrent.
+ * ListenableFuture, com.google.common.util.concurrent.FutureCallback)}
  * or other functions from {@link com.google.common.util.concurrent.Futures} to register more
  * specific listeners.
  *
@@ -60,6 +57,7 @@ public interface AsyncReadTransaction<P extends Path<P>, D> extends AsyncTransac
      * Closes this transaction and releases all resources associated with it.
      *
      */
+    @SuppressWarnings("checkstyle:redundantmodifier")
     @Override
     public void close();
 }

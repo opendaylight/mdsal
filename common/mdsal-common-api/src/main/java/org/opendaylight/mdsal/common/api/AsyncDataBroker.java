@@ -6,10 +6,11 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 package org.opendaylight.mdsal.common.api;
-
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+//import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Path;
 
+
+@SuppressWarnings({"checkstyle:javadoctype", "checkstyle:methodlength"})
 /**
  *
  * Base interface that provides access to a conceptual data tree store and also provides the ability
@@ -50,14 +51,15 @@ public interface AsyncDataBroker<P extends Path<P>, D> extends
         AsyncDataTransactionFactory<P, D> {
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
+    @SuppressWarnings({"checkstyle:javadoctype","checkstyle:summaryjavadoc]"})
     @Override
     AsyncReadTransaction<P, D> newReadOnlyTransaction();
 
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     AsyncWriteTransaction<P, D> newWriteOnlyTransaction();
