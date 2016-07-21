@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_4096494d",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifierBuilderImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-07-21T17:29:52Z",
+      "side": 1,
+      "message": "instanceof implies a non-null check, hence\n\nif (!(obj instanceof InstanceIdentifierBuilderImpl)) {\n    return false;\n}\n\n// non-null and an instance of ...",
+      "range": {
+        "startLine": 48,
+        "startChar": 8,
+        "endLine": 51,
+        "endChar": 59
+      },
+      "revId": "5c6ce92b9301c0c14d0e81938366bdc1c5496da0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
