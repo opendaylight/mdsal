@@ -121,10 +121,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-singleton-dom-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>mdsal-singleton-dom-impl</artifactId>
         </dependency>
 

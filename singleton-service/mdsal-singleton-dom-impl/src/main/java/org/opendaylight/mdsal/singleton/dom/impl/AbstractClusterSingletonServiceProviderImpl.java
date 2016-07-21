@@ -27,14 +27,14 @@ import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListenerRegis
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
-import org.opendaylight.mdsal.singleton.common.api.CommonClusterSingletonServiceProvider;
+import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.concepts.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class {@link AbstractClusterSingletonServiceProviderImpl} represents implementations of
- * {@link CommonClusterSingletonServiceProvider} and it implements {@link GenericEntityOwnershipListener}
+ * {@link ClusterSingletonServiceProvider} and it implements {@link GenericEntityOwnershipListener}
  * for providing OwnershipChange for all registered {@link ClusterSingletonServiceGroup} entity
  * candidate.
  *
@@ -50,7 +50,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
                                                                   G extends GenericEntityOwnershipListener<P, C>,
                                                                   S extends GenericEntityOwnershipService<P, E, G>,
                                                                   R extends GenericEntityOwnershipListenerRegistration<P, G>>
-        implements CommonClusterSingletonServiceProvider, GenericEntityOwnershipListener<P, C> {
+        implements ClusterSingletonServiceProvider, GenericEntityOwnershipListener<P, C> {
 
     private static final Logger LOG = LoggerFactory
             .getLogger(AbstractClusterSingletonServiceProviderImpl.class.getName());

@@ -9,7 +9,7 @@
 package org.opendaylight.mdsal.singleton.common.api;
 
 /**
- * {@link CommonClusterSingletonServiceProvider} provides a functionality to register and group services
+ * {@link ClusterSingletonServiceProvider} provides a functionality to register and group services
  * {@link ClusterSingletonService} by service group identifier. Services could be Applications or RPCs.
  * Provider provides a functionality which allows to have only one fully instantiated service instance
  * in a cluster at one time and service group means to have all service instances for the same group
@@ -19,7 +19,7 @@ package org.opendaylight.mdsal.singleton.common.api;
  * closed prior to relinquishing service group ownership. To achieve ownership of the service group,
  * a service group candidate must hold ownership of both these entities.
  */
-public interface CommonClusterSingletonServiceProvider extends AutoCloseable {
+public interface ClusterSingletonServiceProvider extends AutoCloseable {
 
     /**
      * Method registers {@link ClusterSingletonService} to Provider.

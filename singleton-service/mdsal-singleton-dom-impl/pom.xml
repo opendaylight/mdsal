@@ -17,11 +17,11 @@
     </dependency>
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-singleton-common-api</artifactId>
+      <artifactId>mdsal-eos-dom-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-singleton-dom-api</artifactId>
+      <artifactId>mdsal-singleton-common-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.yangtools</groupId>
