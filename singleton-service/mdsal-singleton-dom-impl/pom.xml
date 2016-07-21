@@ -20,10 +20,6 @@
       <artifactId>mdsal-singleton-common-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-singleton-dom-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.opendaylight.yangtools</groupId>
       <artifactId>yang-data-api</artifactId>
     </dependency>

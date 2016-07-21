@@ -14,7 +14,7 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
-import org.opendaylight.mdsal.singleton.dom.api.DOMClusterSingletonServiceProvider;
+import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 
@@ -27,7 +27,7 @@ public final class DOMClusterSingletonServiceProviderImpl extends
                                                     DOMEntityOwnershipListener,
                                                     DOMEntityOwnershipService,
                                                     DOMEntityOwnershipListenerRegistration>
-        implements DOMClusterSingletonServiceProvider {
+        implements ClusterSingletonServiceProvider {
 
     /**
      * Initialization all needed class internal property for {@link DOMClusterSingletonServiceProviderImpl}

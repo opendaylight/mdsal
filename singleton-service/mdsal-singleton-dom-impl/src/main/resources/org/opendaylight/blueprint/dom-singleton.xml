@@ -6,11 +6,11 @@
 
   <reference id="domEntityOwnershipService" interface="org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService"/>
 
-  <bean id="domClusterSingletonService" class="org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl"
+  <bean id="clusterSingletonService" class="org.opendaylight.mdsal.singleton.dom.impl.DOMClusterSingletonServiceProviderImpl"
           init-method="initializeProvider" destroy-method="close">
     <argument ref="domEntityOwnershipService"/>
   </bean>
 
-  <service ref="domClusterSingletonService" interface="org.opendaylight.mdsal.singleton.dom.api.DOMClusterSingletonServiceProvider"
+  <service ref="clusterSingletonService" interface="org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider"
         odl:type="default"/>
 </blueprint>
