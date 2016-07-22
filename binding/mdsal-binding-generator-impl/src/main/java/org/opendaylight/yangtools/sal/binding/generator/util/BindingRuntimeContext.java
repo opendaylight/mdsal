@@ -287,10 +287,12 @@ public class BindingRuntimeContext implements Immutable {
 
     private Entry<GeneratedType, Object> getTypeWithSchema(final Type referencedType) {
         final Object schema = typeToDefiningSchema.get(referencedType);
+        Preconditions.checkNotNull(schema, "Failed to find schema for type %s", referencedType);
+
         final Type definedType = typeToDefiningSchema.inverse().get(schema);
-        Preconditions.checkNotNull(schema);
-        Preconditions.checkNotNull(definedType);
-        if(definedType instanceof GeneratedTypeBuilder) {
+        Preconditions.checkNotNull(definedType, "Failed to find defined type for %s schema %s", referencedType, schema);
+
+        if (definedType instanceof GeneratedTypeBuilder) {
             return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).toInstance(), schema);
         }
         Preconditions.checkArgument(definedType instanceof GeneratedType,"Type {} is not GeneratedType", referencedType);
@@ -410,7 +412,7 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     private static Type referencedType(final Type type) {
-        if(type instanceof ReferencedTypeImpl) {
+        if (type instanceof ReferencedTypeImpl) {
             return type;
         }
         return new ReferencedTypeImpl(type.getPackageName(), type.getName());
@@ -419,10 +421,10 @@ public class BindingRuntimeContext implements Immutable {
     private static Set<Type> collectAllContainerTypes(final GeneratedType type, final Set<Type> collection) {
         for (final MethodSignature definition : type.getMethodDefinitions()) {
             Type childType = definition.getReturnType();
-            if(childType instanceof ParameterizedType) {
+            if (childType instanceof ParameterizedType) {
                 childType = ((ParameterizedType) childType).getActualTypeArguments()[0];
             }
-            if(childType instanceof GeneratedType || childType instanceof GeneratedTypeBuilder) {
+            if (childType instanceof GeneratedType || childType instanceof GeneratedTypeBuilder) {
                 collection.add(referencedType(childType));
             }
         }
