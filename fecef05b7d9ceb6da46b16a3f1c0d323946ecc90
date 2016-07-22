@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_2a27afcb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-07-22T09:23:03Z",
+      "side": 1,
+      "message": "Please describe fixed issue also here.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 67
+      },
+      "revId": "fecef05b7d9ceb6da46b16a3f1c0d323946ecc90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_2a604f00",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-07-22T09:23:03Z",
+      "side": 1,
+      "message": "Please use «Boolean.importedName».valueOf(defaultValue);\n\nthis will handle imports correctly.",
+      "range": {
+        "startLine": 339,
+        "startChar": 44,
+        "endLine": 339,
+        "endChar": 70
+      },
+      "revId": "fecef05b7d9ceb6da46b16a3f1c0d323946ecc90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_6a56c72b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-07-22T09:23:03Z",
+      "side": 1,
+      "message": "Same as previous",
+      "range": {
+        "startLine": 341,
+        "startChar": 44,
+        "endLine": 341,
+        "endChar": 66
+      },
+      "revId": "fecef05b7d9ceb6da46b16a3f1c0d323946ecc90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_4a530339",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-07-22T09:23:03Z",
+      "side": 1,
+      "message": "Same as previous",
+      "range": {
+        "startLine": 343,
+        "startChar": 44,
+        "endLine": 343,
+        "endChar": 67
+      },
+      "revId": "fecef05b7d9ceb6da46b16a3f1c0d323946ecc90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_8a387bf0",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-07-22T09:23:03Z",
+      "side": 1,
+      "message": "Same as previous",
+      "range": {
+        "startLine": 345,
+        "startChar": 43,
+        "endLine": 345,
+        "endChar": 69
+      },
+      "revId": "fecef05b7d9ceb6da46b16a3f1c0d323946ecc90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_ea3937f3",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/ClassTemplate.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-07-22T09:23:03Z",
+      "side": 1,
+      "message": "Same as previous",
+      "range": {
+        "startLine": 347,
+        "startChar": 43,
+        "endLine": 347,
+        "endChar": 66
+      },
+      "revId": "fecef05b7d9ceb6da46b16a3f1c0d323946ecc90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
