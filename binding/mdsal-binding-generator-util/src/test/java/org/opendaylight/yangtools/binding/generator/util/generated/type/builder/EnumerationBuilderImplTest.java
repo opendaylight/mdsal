@@ -174,16 +174,6 @@ public class EnumerationBuilderImplTest {
         }
 
         @Override
-        public QName getQName() {
-            return qname;
-        }
-
-        @Override
-        public SchemaPath getPath() {
-            return path;
-        }
-
-        @Override
         public String getDescription() {
             return description;
         }
