@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_0a258b08",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/bug6125/ietf-routing.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-22T08:50:28Z",
+      "side": 1,
+      "message": "changed name",
+      "range": {
+        "startLine": 91,
+        "startChar": 25,
+        "endLine": 91,
+        "endChar": 42
+      },
+      "revId": "467d73a3995e40f474f2876134b060f8ba2121cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_6a1ec7bc",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/bug6125/ietf-routing.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-22T08:50:28Z",
+      "side": 1,
+      "message": "changed name",
+      "range": {
+        "startLine": 98,
+        "startChar": 23,
+        "endLine": 98,
+        "endChar": 40
+      },
+      "revId": "467d73a3995e40f474f2876134b060f8ba2121cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_4a1b03ca",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/bug6125/ietf-routing.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-22T08:50:28Z",
+      "side": 1,
+      "message": "changed name",
+      "range": {
+        "startLine": 104,
+        "startChar": 23,
+        "endLine": 104,
+        "endChar": 40
+      },
+      "revId": "467d73a3995e40f474f2876134b060f8ba2121cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_aa7bbff3",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/bug6125/ietf-routing.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-22T08:50:28Z",
+      "side": 1,
+      "message": "changed name",
+      "range": {
+        "startLine": 182,
+        "startChar": 23,
+        "endLine": 182,
+        "endChar": 31
+      },
+      "revId": "467d73a3995e40f474f2876134b060f8ba2121cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_8a807bc1",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/bug6125/ietf-routing.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-22T08:50:28Z",
+      "side": 1,
+      "message": "changed name",
+      "range": {
+        "startLine": 184,
+        "startChar": 27,
+        "endLine": 184,
+        "endChar": 44
+      },
+      "revId": "467d73a3995e40f474f2876134b060f8ba2121cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_ea8137c4",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/bug6125/ietf-routing.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-22T08:50:28Z",
+      "side": 1,
+      "message": "changed name",
+      "range": {
+        "startLine": 209,
+        "startChar": 25,
+        "endLine": 209,
+        "endChar": 33
+      },
+      "revId": "467d73a3995e40f474f2876134b060f8ba2121cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_ca86f3da",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/bug6125/ietf-routing.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 619,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-07-22T08:50:28Z",
+      "side": 1,
+      "message": "changed name",
+      "range": {
+        "startLine": 619,
+        "startChar": 34,
+        "endLine": 619,
+        "endChar": 42
+      },
+      "revId": "467d73a3995e40f474f2876134b060f8ba2121cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
