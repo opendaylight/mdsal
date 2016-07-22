@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_aa1a9f7a",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/EnumTemplate.xtend",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-07-22T09:25:39Z",
+      "side": 1,
+      "message": "Use «String.importedName» instead. This will handle imports correctly if conflict occurs.",
+      "range": {
+        "startLine": 62,
+        "startChar": 12,
+        "endLine": 62,
+        "endChar": 28
+      },
+      "revId": "9e1e0acf5e641dd48a07ccd28ddee718e5f02cb0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_ca15534a",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/EnumTemplate.xtend",
+        "patchSetId": 3
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-07-22T09:25:39Z",
+      "side": 1,
+      "message": "Use «String.importedName» instead. This will handle imports correctly if conflict occurs.",
+      "range": {
+        "startLine": 76,
+        "startChar": 44,
+        "endLine": 76,
+        "endChar": 60
+      },
+      "revId": "9e1e0acf5e641dd48a07ccd28ddee718e5f02cb0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_ea10175b",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/EnumTemplate.xtend",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 21
+      },
+      "writtenOn": "2016-07-22T09:25:39Z",
+      "side": 1,
+      "message": "Use «String.importedName» instead. This will handle imports correctly if conflict occurs.",
+      "range": {
+        "startLine": 86,
+        "startChar": 19,
+        "endLine": 86,
+        "endChar": 35
+      },
+      "revId": "9e1e0acf5e641dd48a07ccd28ddee718e5f02cb0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
