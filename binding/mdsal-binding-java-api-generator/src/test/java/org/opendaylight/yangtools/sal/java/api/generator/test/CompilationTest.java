@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.java.api.generator.GeneratorJavaFile;
@@ -566,6 +567,21 @@ public class CompilationTest extends BaseCompilationTest {
     }
 
     @Test
+    public void testBug6125() throws Exception {
+        final File sourcesOutputDir = new File(CompilationTestUtils.GENERATOR_OUTPUT_PATH + CompilationTestUtils.FS + "bug6125");
+        assertTrue("Failed to create test file '" + sourcesOutputDir + "'", sourcesOutputDir.mkdir());
+        final File compiledOutputDir = new File(CompilationTestUtils.COMPILER_OUTPUT_PATH + CompilationTestUtils.FS + "bug6125");
+        assertTrue("Failed to create test file '" + compiledOutputDir + "'", compiledOutputDir.mkdir());
+
+        generateTestSources("/compilation/bug6125", sourcesOutputDir);
+
+        // Test if sources are compilable
+        CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
+
+        CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+
+    @Test
     public void testBug5882() throws Exception {
         final File sourcesOutputDir = new File(CompilationTestUtils.GENERATOR_OUTPUT_PATH + CompilationTestUtils.FS + "bug5882");
         assertTrue("Failed to create test file '" + sourcesOutputDir + "'", sourcesOutputDir.mkdir());
@@ -675,7 +691,7 @@ public class CompilationTest extends BaseCompilationTest {
         java.lang.reflect.Type returnType;
         try {
             method = clazz.getMethod(methodName);
-            assertEquals(java.lang.Class.class, method.getReturnType());
+            assertEquals(Class.class, method.getReturnType());
             returnType = method.getGenericReturnType();
             assertTrue(returnType instanceof ParameterizedType);
             final ParameterizedType pt = (ParameterizedType) returnType;
