@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_bc1e5bb9",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifierBuilderImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-26T09:38:14Z",
+      "side": 1,
+      "message": "otherBuilder.wildcard ?",
+      "range": {
+        "startLine": 50,
+        "startChar": 19,
+        "endLine": 50,
+        "endChar": 40
+      },
+      "revId": "14f3c2f52f9a4b50d4fa4fad6f9ee4e43e134dd7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_3c824bc8",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding2/spec/InstanceIdentifierBuilderImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-26T09:38:14Z",
+      "side": 1,
+      "message": "otherBuilder.wildcard ?",
+      "range": {
+        "startLine": 51,
+        "startChar": 19,
+        "endLine": 51,
+        "endChar": 39
+      },
+      "revId": "14f3c2f52f9a4b50d4fa4fad6f9ee4e43e134dd7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
