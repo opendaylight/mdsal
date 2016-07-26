@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_bcabfb73",
+        "filename": "binding/mdsal-binding-dom-codec/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-26T09:07:50Z",
+      "side": 1,
+      "message": "try to use mockito-configuration from yangtools common, test scope",
+      "range": {
+        "startLine": 60,
+        "startChar": 6,
+        "endLine": 69,
+        "endChar": 21
+      },
+      "revId": "fe07f39dc220692b8030d989cc53521792884d57",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
