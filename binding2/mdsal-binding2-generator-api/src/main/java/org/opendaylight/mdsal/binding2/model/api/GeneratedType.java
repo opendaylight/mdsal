@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding2.model.api;
 import com.google.common.annotations.Beta;
 import java.util.Enumeration;
 import java.util.List;
-import sun.reflect.annotation.AnnotationType;
 
 /**
  * Every Java interface has to be specified with:

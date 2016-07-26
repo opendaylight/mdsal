@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding2.model.api.type.builder;
 
 import com.google.common.annotations.Beta;
 import java.util.List;
+import org.opendaylight.mdsal.binding2.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding2.model.api.Type;
-import sun.reflect.annotation.AnnotationType;
 
 /**
  * Annotation Type Builder Interface serves for creation and instantiation of

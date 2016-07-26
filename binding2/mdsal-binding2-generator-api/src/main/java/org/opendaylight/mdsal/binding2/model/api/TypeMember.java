@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding2.model.api;
 
 import com.google.common.annotations.Beta;
 import java.util.List;
-import sun.reflect.annotation.AnnotationType;
 
 /**
  *

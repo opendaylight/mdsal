@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding2.model.api;
 import com.google.common.annotations.Beta;
 import java.util.List;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
-import sun.reflect.annotation.AnnotationType;
 
 /**
  *
