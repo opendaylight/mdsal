@@ -100,5 +100,4 @@ public class LazyDOMRpcResultFutureTest {
             throw e.getCause();
         }
     }
-
 }
