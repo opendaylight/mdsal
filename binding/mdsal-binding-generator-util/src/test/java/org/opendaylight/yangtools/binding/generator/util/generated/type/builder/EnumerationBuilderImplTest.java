@@ -12,17 +12,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import com.google.common.collect.ImmutableList;
 import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
-import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.util.EnumPairImpl;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 
 public class EnumerationBuilderImplTest {
@@ -40,7 +39,7 @@ public class EnumerationBuilderImplTest {
     private final String valueDescription = "Value used for test";
     private final int value = 12;
     private Enumeration enumeration;
-    private final QName  qName = QName.create("TestQName", "10-10-2014", "TestLocalQName");
+    private final QName qName = QName.create("TestQName", "10-10-2014", "TestLocalQName");
 
 
     @Before
@@ -142,132 +141,8 @@ public class EnumerationBuilderImplTest {
     @Test
     public void testUpdateEnumPairsFromEnumTypeDef() {
         EnumTypeDefinition enumTypeDefinition = BaseTypes.enumerationTypeBuilder(SchemaPath.SAME)
-                .addEnum(EnumPairImpl.create(qName)).build();
+                .addEnum(new EnumPairImpl("SomeName", 42, "Some Other Description", "Some other reference",
+                    Status.CURRENT, ImmutableList.of())).build();
         enumerationBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDefinition);
-    }
-
-    /**
-     * Internal implementation of EnumPair.
-     */
-    private static class EnumPairImpl implements EnumTypeDefinition.EnumPair {
-        private final QName qname;
-        private final SchemaPath path;
-        private final String description;
-        private final String reference;
-        private final Status status;
-        private final List<UnknownSchemaNode> unknownNodes = Collections.emptyList();
-        private final String name;
-        private final Integer value;
-
-        private EnumPairImpl(final QName qName) {
-            qname = qName;
-            path = SchemaPath.SAME;
-            description = "Some Other Description";
-            reference = "Some other reference";
-            status = Status.CURRENT;
-            name = "SomeName";
-            value = 45;
-        }
-
-        public static EnumPairImpl create(final QName qName) {
-            return new EnumPairImpl(qName);
-        }
-
-        @Override
-        public String getDescription() {
-            return description;
-        }
-
-        @Override
-        public String getReference() {
-            return reference;
-        }
-
-        @Override
-        public Status getStatus() {
-            return status;
-        }
-
-        @Override
-        public List<UnknownSchemaNode> getUnknownSchemaNodes() {
-            return unknownNodes;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public Integer getValue() {
-            return value;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + Objects.hashCode(qname);
-            result = prime * result + Objects.hashCode(path);
-            result = prime * result + Objects.hashCode(unknownNodes);
-            result = prime * result + Objects.hashCode(name);
-            result = prime * result + Objects.hashCode(value);
-            return result;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            EnumPairImpl other = (EnumPairImpl) obj;
-            if (qname == null) {
-                if (other.qname != null) {
-                    return false;
-                }
-            } else if (!qname.equals(other.qname)) {
-                return false;
-            }
-            if (path == null) {
-                if (other.path != null) {
-                    return false;
-                }
-            } else if (!path.equals(other.path)) {
-                return false;
-            }
-            if (unknownNodes == null) {
-                if (other.unknownNodes != null) {
-                    return false;
-                }
-            } else if (!unknownNodes.equals(other.unknownNodes)) {
-                return false;
-            }
-            if (name == null) {
-                if (other.name != null) {
-                    return false;
-                }
-            } else if (!name.equals(other.name)) {
-                return false;
-            }
-            if (value == null) {
-                if (other.value != null) {
-                    return false;
-                }
-            } else if (!value.equals(other.value)) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return EnumTypeDefinition.EnumPair.class.getSimpleName() + "[name=" + name + ", value=" + value + "]";
-        }
     }
 }
