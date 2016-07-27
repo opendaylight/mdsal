@@ -40,7 +40,7 @@ public class EnumerationBuilderImplTest {
     private final String valueDescription = "Value used for test";
     private final int value = 12;
     private Enumeration enumeration;
-    private final QName  qName = QName.create("TestQName", "10-10-2014", "TestLocalQName");
+    private final QName qName = QName.create("TestQName", "10-10-2014", "TestLocalQName");
 
 
     @Before
@@ -142,7 +142,7 @@ public class EnumerationBuilderImplTest {
     @Test
     public void testUpdateEnumPairsFromEnumTypeDef() {
         EnumTypeDefinition enumTypeDefinition = BaseTypes.enumerationTypeBuilder(SchemaPath.SAME)
-                .addEnum(EnumPairImpl.create(qName)).build();
+                .addEnum(new EnumPairImpl()).build();
         enumerationBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDefinition);
     }
 
@@ -150,52 +150,23 @@ public class EnumerationBuilderImplTest {
      * Internal implementation of EnumPair.
      */
     private static class EnumPairImpl implements EnumTypeDefinition.EnumPair {
-        private final QName qname;
-        private final SchemaPath path;
-        private final String description;
-        private final String reference;
-        private final Status status;
         private final List<UnknownSchemaNode> unknownNodes = Collections.emptyList();
-        private final String name;
-        private final Integer value;
-
-        private EnumPairImpl(final QName qName) {
-            qname = qName;
-            path = SchemaPath.SAME;
-            description = "Some Other Description";
-            reference = "Some other reference";
-            status = Status.CURRENT;
-            name = "SomeName";
-            value = 45;
-        }
-
-        public static EnumPairImpl create(final QName qName) {
-            return new EnumPairImpl(qName);
-        }
-
-        @Override
-        public QName getQName() {
-            return qname;
-        }
-
-        @Override
-        public SchemaPath getPath() {
-            return path;
-        }
+        private final String name = "SomeName";
+        private final Integer value = 45;
 
         @Override
         public String getDescription() {
-            return description;
+            return "Some Other Description";
         }
 
         @Override
         public String getReference() {
-            return reference;
+            return "Some other reference";
         }
 
         @Override
         public Status getStatus() {
-            return status;
+            return Status.CURRENT;
         }
 
         @Override
@@ -217,8 +188,6 @@ public class EnumerationBuilderImplTest {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + Objects.hashCode(qname);
-            result = prime * result + Objects.hashCode(path);
             result = prime * result + Objects.hashCode(unknownNodes);
             result = prime * result + Objects.hashCode(name);
             result = prime * result + Objects.hashCode(value);
@@ -237,13 +206,6 @@ public class EnumerationBuilderImplTest {
                 return false;
             }
             EnumPairImpl other = (EnumPairImpl) obj;
-            if (qname == null) {
-                if (other.qname != null) {
-                    return false;
-                }
-            } else if (!qname.equals(other.qname)) {
-                return false;
-            }
             if (path == null) {
                 if (other.path != null) {
                     return false;
