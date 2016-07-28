@@ -62,9 +62,8 @@ public interface TransactionChain<P extends Path<P>, D> extends AutoCloseable,
      * @throws TransactionChainClosedException
      *             if the chain has been closed.
      */
-    @SuppressWarnings({"checkstyle:redundantmodifier","checkstyle:regexpsingleline"})
     @Override
-    public AsyncReadTransaction<P, D> newReadOnlyTransaction();
+    AsyncReadTransaction<P, D> newReadOnlyTransaction();
 
     /**
      * Create a new write-only transaction which will continue the chain.
@@ -92,9 +91,8 @@ public interface TransactionChain<P extends Path<P>, D> extends AutoCloseable,
      * @throws TransactionChainClosedException
      *             if the chain has been closed.
      */
-    @SuppressWarnings("checkstyle:redundantmodifier")
     @Override
-    public AsyncWriteTransaction<P, D> newWriteOnlyTransaction();
+    AsyncWriteTransaction<P, D> newWriteOnlyTransaction();
 
     @Override
     void close();
