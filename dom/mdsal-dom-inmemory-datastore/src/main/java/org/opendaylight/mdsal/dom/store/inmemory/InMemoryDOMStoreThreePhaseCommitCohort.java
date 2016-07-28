@@ -66,7 +66,7 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
 
             // For debugging purposes, allow dumping of the modification. Coupled with the above
             // precondition log, it should allow us to understand what went on.
-            LOG.trace("Store Tx: {} modifications: {} tree: {}", modification, store);
+            LOG.trace("Store Tx: {} modifications: {} tree: {}", getTransaction().getIdentifier(), modification, store);
 
             return Futures.immediateFailedFuture(new TransactionCommitFailedException("Data did not pass validation.", e));
         } catch (Exception e) {
