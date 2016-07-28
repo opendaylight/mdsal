@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.common.api;
 
 import org.opendaylight.yangtools.concepts.Path;
 
-@SuppressWarnings("checkstyle:regexpsingleline")
+
 /**
  * A factory which allocates new transactions to operate on the data tree.
  *
@@ -43,7 +43,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * example, implementations may optimize the transaction for reading if they know ahead of time that
  * you only need to read data - such as not keeping additional meta-data, which may be required for
  * write transactions.
- * 
+ *
  * <p>
  * <b>Implementation Note:</b> This interface is not intended to be implemented by users of MD-SAL,
  * but only to be consumed by them.
@@ -66,7 +66,6 @@ public interface AsyncDataTransactionFactory<P extends Path<P>, D> {
      *
      * @return new read-only transaction
      */
-    @SuppressWarnings("checkstyle:methodparampad")
     AsyncReadTransaction<P, D> newReadOnlyTransaction();
 
     /**
@@ -89,7 +88,6 @@ public interface AsyncDataTransactionFactory<P extends Path<P>, D> {
      *
      * @return new write-only transaction
      */
-    @SuppressWarnings("checkstyle:methodparampad")
     AsyncWriteTransaction<P, D> newWriteOnlyTransaction();
 
 }

@@ -22,14 +22,13 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
  *  are invalid.
  *
  */
-@SuppressWarnings("checkstyle:mutableexception")
 public class DataValidationFailedException extends TransactionCommitFailedException {
 
     private static final long serialVersionUID = 1L;
 
-    private Path<?> path;
+    private final Path<?> path;
 
-    private Class<? extends Path<?>> pathType;
+    private final Class<? extends Path<?>> pathType;
 
     public <P extends Path<P>> DataValidationFailedException(final Class<P> pathType,final P path,
                                                              final String message, final Throwable cause) {
