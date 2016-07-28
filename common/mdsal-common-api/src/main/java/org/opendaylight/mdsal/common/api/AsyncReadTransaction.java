@@ -57,7 +57,6 @@ public interface AsyncReadTransaction<P extends Path<P>, D> extends AsyncTransac
      * Closes this transaction and releases all resources associated with it.
      *
      */
-    @SuppressWarnings("checkstyle:redundantmodifier")
     @Override
-    public void close();
+    void close();
 }
