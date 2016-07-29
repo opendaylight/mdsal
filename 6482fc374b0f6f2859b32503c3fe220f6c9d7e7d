@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a561d44_e569418d",
+        "filename": "common/mdsal-common-api/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-07-29T14:50:54Z",
+      "side": 1,
+      "message": "indentation",
+      "revId": "6482fc374b0f6f2859b32503c3fe220f6c9d7e7d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_e2bbf70c",
         "filename": "common/mdsal-common-api/pom.xml",
         "patchSetId": 2
