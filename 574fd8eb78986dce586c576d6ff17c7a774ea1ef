@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_af6e082d",
+        "filename": "binding/mdsal-binding-dom-codec/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-29T11:33:36Z",
+      "side": 1,
+      "message": "have you thought about mockito-configuration dependency in test scope?",
+      "range": {
+        "startLine": 65,
+        "startChar": 8,
+        "endLine": 69,
+        "endChar": 21
+      },
+      "revId": "574fd8eb78986dce586c576d6ff17c7a774ea1ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
