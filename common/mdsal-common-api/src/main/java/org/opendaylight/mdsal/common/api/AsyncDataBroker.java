@@ -7,11 +7,10 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Path;
 
+
 /**
- *
  * Base interface that provides access to a conceptual data tree store and also provides the ability
  * to subscribe for changes to data under a given branch of the tree.
  *
@@ -50,14 +49,14 @@ public interface AsyncDataBroker<P extends Path<P>, D> extends
         AsyncDataTransactionFactory<P, D> {
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     AsyncReadTransaction<P, D> newReadOnlyTransaction();
 
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     AsyncWriteTransaction<P, D> newWriteOnlyTransaction();
