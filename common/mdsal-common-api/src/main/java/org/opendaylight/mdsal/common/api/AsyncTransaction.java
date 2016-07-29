@@ -12,9 +12,7 @@ import org.opendaylight.yangtools.concepts.Path;
 
 
 /**
- *
  * A common parent for all transactions which operate on a conceptual data tree.
- *
  * See derived transaction types for more concrete behavior:
  * <ul>
  * <li>{@link AsyncReadTransaction} - Read capabilities, user is able to read data from data tree</li>
