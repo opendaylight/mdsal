@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_e2bbf70c",
+        "filename": "common/mdsal-common-api/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-29T12:40:51Z",
+      "side": 1,
+      "message": "trailing white-space",
+      "revId": "6482fc374b0f6f2859b32503c3fe220f6c9d7e7d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_22396fa4",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/TransactionChain.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-29T12:40:51Z",
+      "side": 1,
+      "message": "trailing white-space",
+      "revId": "6482fc374b0f6f2859b32503c3fe220f6c9d7e7d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
