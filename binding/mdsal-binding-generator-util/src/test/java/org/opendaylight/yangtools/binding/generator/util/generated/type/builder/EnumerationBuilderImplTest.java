@@ -12,17 +12,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import com.google.common.collect.ImmutableList;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
-import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.EnumPairImpl;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
+import org.opendaylight.yangtools.yang.model.util.type.EnumPairBuilder;
 
 public class EnumerationBuilderImplTest {
 
@@ -141,8 +139,8 @@ public class EnumerationBuilderImplTest {
     @Test
     public void testUpdateEnumPairsFromEnumTypeDef() {
         EnumTypeDefinition enumTypeDefinition = BaseTypes.enumerationTypeBuilder(SchemaPath.SAME)
-                .addEnum(new EnumPairImpl("SomeName", 42, "Some Other Description", "Some other reference",
-                    Status.CURRENT, ImmutableList.of())).build();
+                .addEnum(EnumPairBuilder.create("SomeName", 42).setDescription("Some Other Description")
+                    .setReference("Some other reference").build()).build();
         enumerationBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDefinition);
     }
 }
