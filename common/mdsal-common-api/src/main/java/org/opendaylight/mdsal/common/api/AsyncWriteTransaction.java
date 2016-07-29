@@ -18,11 +18,13 @@ import org.opendaylight.yangtools.concepts.Path;
  * Initial state of write transaction is a stable snapshot of the current data tree.
  * The state is captured when the transaction is created and its state and underlying
  * data tree are not affected by other concurrently running transactions.
+ *
  * <p>
  * Write transactions are isolated from other concurrent write transactions. All
  * writes are local to the transaction and represent only a proposal of state
  * change for the data tree and it is not visible to any other concurrently running
  * transaction.
+ *
  * <p>
  * Applications make changes to the local data tree in the transaction by via the
  * <b>put</b>, <b>merge</b>, and <b>delete</b> operations.
@@ -31,6 +33,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * Stores a piece of data at a specified path. This acts as an add / replace
  * operation, which is to say that whole subtree will be replaced by the
  * specified data.
+ *
  * <p>
  * Performing the following put operations:
  *
@@ -38,7 +41,6 @@ import org.opendaylight.yangtools.concepts.Path;
  * 1) container { list [ a ] }
  * 2) container { list [ b ] }
  * </pre>
- *
  * will result in the following data being present:
  *
  * <pre>
@@ -48,6 +50,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * Merges a piece of data with the existing data at a specified path. Any pre-existing data
  * which is not explicitly overwritten will be preserved. This means that if you store a container,
  * its child lists will be merged.
+ *
  * <p>
  * Performing the following merge operations:
  *
@@ -55,26 +58,27 @@ import org.opendaylight.yangtools.concepts.Path;
  * 1) container { list [ a ] }
  * 2) container { list [ b ] }
  * </pre>
- *
  * will result in the following data being present:
  *
  * <pre>
  * container { list [ a, b ] }
  * </pre>
- *
  * This also means that storing the container will preserve any
  * augmentations which have been attached to it.
  *
  * <h2>Delete operation</h2>
  * Removes a piece of data from a specified path.
+ *
  * <p>
  * After applying changes to the local data tree, applications publish the changes proposed in the
  * transaction by calling {@link #submit} on the transaction. This seals the transaction
  * (preventing any further writes using this transaction) and submits it to be
  * processed and applied to global conceptual data tree.
+ *
  * <p>
  * The transaction commit may fail due to a concurrent transaction modifying and committing data in
  * an incompatible way. See {@link #submit} for more concrete commit failure examples.
+ *
  * <p>
  * <b>Implementation Note:</b> This interface is not intended to be implemented
  * by users of MD-SAL, but only to be consumed by them.
@@ -88,12 +92,9 @@ import org.opendaylight.yangtools.concepts.Path;
 public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransaction<P, D> {
     /**
      * Cancels the transaction.
-     *
      * Transactions can only be cancelled if it was not yet submited.
-     *
      * Invoking cancel() on failed or already canceled will have no effect, and transaction is
      * considered cancelled.
-     *
      * Invoking cancel() on finished transaction (future returned by {@link #submit()} already
      * successfully completed) will always fail (return false).
      *
@@ -116,42 +117,42 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
     /**
      * Submits this transaction to be asynchronously applied to update the logical data tree. The
      * returned CheckedFuture conveys the result of applying the data changes.
+     *
      * <p>
      * <b>Note:</b> It is strongly recommended to process the CheckedFuture result in an
      * asynchronous manner rather than using the blocking get() method. See example usage below.
+     *
      * <p>
      * This call logically seals the transaction, which prevents the client from further changing
      * data tree using this transaction. Any subsequent calls to
      * <code>put(LogicalDatastoreType, Path, Object)</code>,
      * <code>merge(LogicalDatastoreType, Path, Object)</code>,
      * <code>delete(LogicalDatastoreType, Path)</code> will fail with {@link IllegalStateException}.
-     *
      * The transaction is marked as submitted and enqueued into the data store back-end for
      * processing.
      *
      * <p>
      * Whether or not the commit is successful is determined by versioning of the data tree and
      * validation of registered commit participants if the transaction changes the data tree.
+     *
      * <p>
-     * The effects of a successful commit of data depends on listeners 
+     * The effects of a successful commit of data depends on listeners
      * and commit participants that are registered with the data
      * broker.
+     *
      * <p>
      * <h3>Example usage:</h3>
      *
      * <pre>
      *  private void doWrite( final int tries ) {
      *      WriteTransaction writeTx = dataBroker.newWriteOnlyTransaction();
-     * 
      *      MyDataObject data = ...;
      *      InstanceIdentifier&lt;MyDataObject&gt; path = ...;
      *      writeTx.put( LogicalDatastoreType.OPERATIONAL, path, data );
-     * 
      *      Futures.addCallback( writeTx.submit(), new FutureCallback&lt;Void&gt;() {
      *          public void onSuccess( Void result ) {
      *              // succeeded
      *          }
-     * 
      *          public void onFailure( Throwable t ) {
      *              if( t instanceof OptimisticLockFailedException ) {
      *                  if( ( tries - 1 ) &gt; 0 ) {
@@ -170,6 +171,7 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * </pre>
      *
      * <h2>Failure scenarios</h2>
+     *
      * <p>
      * Transaction may fail because of multiple reasons, such as
      * <ul>
@@ -188,13 +190,11 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * </ul>
      *
      * <h3>Change compatibility</h3>
-     *
      * There are several sets of changes which could be considered incompatible between two
      * transactions which are derived from same initial state. Rules for conflict detection applies
      * recursively for each subtree level.
      *
      * <h4>Change compatibility of leafs, leaf-list items</h4>
-     *
      * Following table shows state changes and failures between two concurrent transactions, which
      * are based on same initial state, Tx 1 completes successfully before Tx 2 is submitted.
      *
@@ -272,7 +272,6 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * </table>
      *
      * <h4>Change compatibility of subtrees</h4>
-     *
      * Following table shows state changes and failures between two concurrent transactions, which
      * are based on same initial state, Tx 1 completes successfully before Tx 2 is submitted.
      *
@@ -439,25 +438,20 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * <h3>Examples of failure scenarios</h3>
      *
      * <h4>Conflict of two transactions</h4>
-     *
      * This example illustrates two concurrent transactions, which derived from same initial state
      * of data tree and proposes conflicting modifications.
      *
      * <pre>
      * txA = broker.newWriteTransaction(); // allocates new transaction, data tree is empty
      * txB = broker.newWriteTransaction(); // allocates new transaction, data tree is empty
-     * 
      * txA.put(CONFIGURATION, PATH, A);    // writes to PATH value A
      * txB.put(CONFIGURATION, PATH, B)     // writes to PATH value B
-     * 
      * ListenableFuture futureA = txA.submit(); // transaction A is sealed and submitted
      * ListenebleFuture futureB = txB.submit(); // transaction B is sealed and submitted
      * </pre>
-     *
      * Commit of transaction A will be processed asynchronously and data tree will be updated to
      * contain value <code>A</code> for <code>PATH</code>. Returned {@link ListenableFuture} will
      * successfully complete once state is applied to data tree.
-     *
      * Commit of Transaction B will fail, because previous transaction also modified path in a
      * concurrent way. The state introduced by transaction B will not be applied. Returned
      * {@link ListenableFuture} object will fail with {@link OptimisticLockFailedException}

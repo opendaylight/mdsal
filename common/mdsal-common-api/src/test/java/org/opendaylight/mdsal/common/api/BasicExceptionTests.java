@@ -9,10 +9,13 @@ package org.opendaylight.mdsal.common.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+
 import javax.annotation.Nonnull;
+
 import org.junit.Test;
 import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.yang.common.RpcError;
+
 
 public class BasicExceptionTests {
 

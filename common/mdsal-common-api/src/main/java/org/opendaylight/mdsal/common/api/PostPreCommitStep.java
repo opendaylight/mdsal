@@ -12,7 +12,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
 /**
- *
  * User implementation of steps following pre-commit from Three-Phase Protocol.
  *
  */
@@ -22,7 +21,6 @@ public interface PostPreCommitStep extends ThreePhaseCommitStep {
     /**
      * No-op implementation of {@link #abort()} and {@link #commit()} method, which always success
      * calls.
-     *
      * This implementation is intended for users which may not need to implement commit and abort
      * method.
      *
@@ -45,12 +43,9 @@ public interface PostPreCommitStep extends ThreePhaseCommitStep {
     ListenableFuture<? extends PostPreCommitStep> NOOP_FUTURE = Futures.immediateFuture(NOOP);
 
     /**
-     *
      * Commits cohort transaction.
-     *
      * This callback is invoked by three-phase commit coordinator if associated data transaction
      * finished pre-commit phase and will be commited.
-     *
      * Implementation should make state, which were derived by implementation from associated data
      * visible.
      *
