@@ -36,7 +36,6 @@
       <module>mdsal-common-api</module>
     </modules>
 
-
   <!--
       Maven Site Configuration
 

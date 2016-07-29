@@ -12,7 +12,6 @@ public enum LogicalDatastoreType {
     /**
      * Logical atastore representing operational state of the system
      * and it's components
-     *
      * This datastore is used to describe operational state of
      * the system and it's operation related data.
      *
@@ -21,7 +20,6 @@ public enum LogicalDatastoreType {
     /**
      * Logical Datastore representing configuration state of the system
      * and it's components.
-     *
      * This datastore is used to describe intended state of
      * the system and intended operation mode.
      *
