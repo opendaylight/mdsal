@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_6f8190c2",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/osgi/OsgiBundleScanningSchemaServiceTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-07-29T11:29:50Z",
+      "side": 1,
+      "message": "Not very intuitive naming. One has to open source code and look up getSessionContext() method body. I would suggest something like sessionContextTest(), it doesn\u0027t matter that body throws exception only.",
+      "range": {
+        "startLine": 79,
+        "startChar": 16,
+        "endLine": 79,
+        "endChar": 35
+      },
+      "revId": "424366c4400f26f92a730e2c68942089a5215128",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
