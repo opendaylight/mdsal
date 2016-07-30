@@ -12,20 +12,20 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>bundle-parent</artifactId>
-        <version>1.6.3-SNAPSHOT</version>
+        <version>1.6.3-Beryllium-SR3</version>
         <relativePath/>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>binding-parent</artifactId>
-    <version>0.8.3-SNAPSHOT</version>
+    <version>0.8.3-Beryllium-SR3</version>
     <packaging>pom</packaging>
 
     <properties>
-        <yangtools.version>0.8.3-SNAPSHOT</yangtools.version>
-        <mdsal.version>2.0.3-SNAPSHOT</mdsal.version>
-        <mdsalmodel.version>0.8.3-SNAPSHOT</mdsalmodel.version>
+        <yangtools.version>0.8.3-Beryllium-SR3</yangtools.version>
+        <mdsal.version>2.0.3-Beryllium-SR3</mdsal.version>
+        <mdsalmodel.version>0.8.3-Beryllium-SR3</mdsalmodel.version>
         <salGeneratorPath>target/generated-sources/mdsal-binding</salGeneratorPath>
     </properties>
 
@@ -79,7 +79,7 @@
                                 <dependency>
                                     <groupId>org.opendaylight.mdsal</groupId>
                                     <artifactId>maven-sal-api-gen-plugin</artifactId>
-                                    <version>0.8.3-SNAPSHOT</version>
+                                    <version>0.8.3-Beryllium-SR3</version>
                                     <type>jar</type>
                                 </dependency>
                             </dependencies>
