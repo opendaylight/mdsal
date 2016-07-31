@@ -99,12 +99,10 @@ class YangTemplate {
     }
 
     def private static writeEnumPair(EnumPair pair) {
-        var boolean hasEnumPairValue = pair.value != null
         '''
-            enum «pair.name»«IF !hasEnumPairValue»;«ELSE»{
+            enum «pair.name» {
                 value «pair.value»;
             }
-            «ENDIF»
         '''
     }
 
