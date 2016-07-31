@@ -136,7 +136,6 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * The effects of a successful commit of data depends on listeners 
      * and commit participants that are registered with the data
      * broker.
-     * <p>
      * <h3>Example usage:</h3>
      *
      * <pre>
