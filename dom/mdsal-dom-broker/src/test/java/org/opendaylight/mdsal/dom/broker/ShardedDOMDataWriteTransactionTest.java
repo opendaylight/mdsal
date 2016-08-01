@@ -7,205 +7,85 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Nonnull;
+import com.google.common.util.concurrent.Futures;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
-import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardProducer;
-import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardWriteTransaction;
-import org.opendaylight.mdsal.dom.store.inmemory.WriteableDOMDataTreeShard;
-import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public class ShardedDOMDataWriteTransactionTest {
-    private static final Map<YangInstanceIdentifier, List<NormalizedNode<?, ?>>> TEST_MAP = new HashMap<>();
-
-    private static final DOMDataTreeIdentifier ROOT_ID =
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
 
     @Mock
-    private WriteableDOMDataTreeShard rootShard;
+    private DOMDataTreeService dataTreeService;
 
     @Mock
-    private DOMDataTreeShardProducer mockedProducer;
+    private DOMDataTreeProducer dataProducer;
+
+    @Mock
+    private DOMDataTreeCursorAwareTransaction cursorWriteTx;
+
+    @Mock
+    private DOMDataTreeWriteCursor writeCursor;
+
+    @Mock
+    private NormalizedNode<?, ?> data;
+
+    private ShardedDOMWriteTransactionAdapter writeTx;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        doReturn(dataProducer).when(dataTreeService).createProducer(any());
+        doReturn(cursorWriteTx).when(dataProducer).createTransaction(true);
+        doReturn(writeCursor).when(cursorWriteTx).createCursor(any());
+
+        writeTx = new ShardedDOMWriteTransactionAdapter("TEST-TX", dataTreeService);
+    }
 
     @Test
-    public void basicTests() throws Exception {
-
-        initMocks(this);
-
-        doReturn(new TestDOMShardWriteTransaction()).when(mockedProducer).createTransaction();
-        doReturn(mockedProducer).when(rootShard).createProducer(any(Collection.class));
-
-        final ShardedDOMDataTree shardedDOMDataTree =
-                new ShardedDOMDataTree();
-        final DOMDataTreeProducer shardRegProducer = shardedDOMDataTree.createProducer(Collections.singletonList(ROOT_ID));
-        shardedDOMDataTree.registerDataTreeShard(ROOT_ID, rootShard, shardRegProducer);
-        shardRegProducer.close();
-        final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("test"));
-
-        final DOMDataTreeProducer producer = shardedDOMDataTree.createProducer(Collections.singletonList(ROOT_ID));
-        final DOMDataTreeCursorAwareTransaction transaction = producer.createTransaction(false);
-        final DOMDataTreeWriteCursor cursor = transaction.createCursor(ROOT_ID);
-
-        assertNotNull(cursor);
-        assertFalse(TEST_MAP.containsKey(yangInstanceIdentifier));
-        cursor.write(yangInstanceIdentifier.getLastPathArgument(), TestUtils.TEST_CONTAINER);
-        assertTrue(TEST_MAP.containsKey(yangInstanceIdentifier));
-
-        cursor.delete(yangInstanceIdentifier.getLastPathArgument());
-        assertFalse(TEST_MAP.containsKey(yangInstanceIdentifier));
-
-        cursor.merge(yangInstanceIdentifier.getLastPathArgument(), TestUtils.TEST_CONTAINER);
-        assertTrue(TEST_MAP.get(yangInstanceIdentifier).contains(TestUtils.TEST_CONTAINER));
-
-        try {
-            producer.createTransaction(false);
-            fail("Should have failed, there's still a tx open");
-        } catch (final IllegalStateException e) {
-            assertTrue(e.getMessage().contains("open"));
-        }
-
-        cursor.close();
-        try {
-            transaction.createCursor(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.EMPTY));
-            fail("Should have failed, config ds not available to this tx");
-        } catch (final IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("not accessible"));
-        }
-
-        assertTrue(transaction.cancel());
-        assertFalse(transaction.cancel());
-
-        final DOMDataTreeCursorAwareTransaction newTx = producer.createTransaction(false);
-        assertTrue("Transaction identifier incorrect " + transaction.getIdentifier(), ((String) transaction.getIdentifier()).contains("SHARDED-DOM-"));
-        assertNotEquals(transaction.getIdentifier(),
-                newTx.getIdentifier());
+    public void testGetIdentifier() {
+        assertEquals(writeTx.getIdentifier(), "TEST-TX");
     }
 
-    private final class TestDOMShardWriteTransaction implements DOMDataTreeShardWriteTransaction {
+    @Test
+    public void testOperations() throws Exception {
+        doNothing().when(writeCursor).write(any(), any());
+        writeTx.put(LogicalDatastoreType.OPERATIONAL, TestModel.TEST_PATH, data);
 
-        @Nonnull
-        @Override
-        public DOMDataTreeWriteCursor createCursor(@Nonnull final DOMDataTreeIdentifier prefix) {
-            return new TestCursor();
-        }
+        verify(writeCursor).write(eq(TestModel.TEST_PATH.getLastPathArgument()), eq(data));
 
-        @Override
-        public void ready() {
+        doNothing().when(writeCursor).delete(any());
+        writeTx.delete(LogicalDatastoreType.OPERATIONAL, TestModel.TEST_PATH);
+        verify(writeCursor).delete(eq(TestModel.TEST_PATH.getLastPathArgument()));
+        // verify no new producers have been opened
+        verify(dataProducer, times(2)).createTransaction(true);
+        verify(cursorWriteTx, times(2)).createCursor(any());
 
-        }
+        doNothing().when(writeCursor).merge(any(), any());
+        writeTx.merge(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, data);
+        verify(writeCursor).merge(eq(TestModel.TEST_PATH.getLastPathArgument()), eq(data));
 
-        @Override
-        public void close() {
-
-        }
-
-        @Override
-        public ListenableFuture<Void> submit() {
-            return null;
-        }
-
-        @Override
-        public ListenableFuture<Boolean> validate() {
-            return null;
-        }
-
-        @Override
-        public ListenableFuture<Void> prepare() {
-            return null;
-        }
-
-        @Override
-        public ListenableFuture<Void> commit() {
-            return null;
-        }
-    }
-
-    private final class TestCursor implements DOMDataTreeWriteCursor {
-
-        private final Deque<PathArgument> stack = new ArrayDeque<>();
-
-        @Override
-        public void delete(final PathArgument child) {
-            final ArrayDeque<PathArgument> newPath = new ArrayDeque<>(stack);
-            newPath.push(child);
-            TEST_MAP.remove(YangInstanceIdentifier.create(newPath));
-        }
-
-        @Override
-        public void merge(final PathArgument child, final NormalizedNode<?, ?> data) {
-            final ArrayDeque<PathArgument> newPath = new ArrayDeque<>(stack);
-            newPath.push(child);
-            final List<NormalizedNode<?, ?>> dataList = TEST_MAP.get(YangInstanceIdentifier.create(newPath));
-            if (dataList != null) {
-                dataList.add(data);
-            } else {
-                TEST_MAP.put(YangInstanceIdentifier.create(newPath), Lists.newArrayList(data));
-            }
-        }
-
-        @Override
-        public void write(final PathArgument child, final NormalizedNode<?, ?> data) {
-            final ArrayDeque<PathArgument> newPath = new ArrayDeque<>(stack);
-            newPath.push(child);
-            TEST_MAP.put(YangInstanceIdentifier.create(newPath), Lists.newArrayList(data));
-        }
-
-        @Override
-        public void enter(@Nonnull final PathArgument child) {
-            stack.push(child);
-        }
-
-        @Override
-        public void enter(@Nonnull final PathArgument... path) {
-            for (final PathArgument pathArgument : path) {
-                stack.push(pathArgument);
-            }
-        }
-
-        @Override
-        public void enter(@Nonnull final Iterable<PathArgument> path) {
-            path.forEach(stack::push);
-        }
-
-        @Override
-        public void exit() {
-            stack.pop();
-        }
-
-        @Override
-        public void exit(final int depth) {
-            stack.pop();
-        }
-
-        @Override
-        public void close() {
-
-        }
+        doNothing().when(writeCursor).close();
+        doNothing().when(dataProducer).close();
+        doReturn(Futures.immediateCheckedFuture(null)).when(cursorWriteTx).submit();
+        writeTx.submit();
+        verify(cursorWriteTx, times(2)).submit();
+        verify(writeCursor, times(2)).close();
+        verify(dataProducer, times(2)).close();
     }
 }
