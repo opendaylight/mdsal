@@ -141,11 +141,11 @@ public class ShardedDOMDataTreeTest {
         cursor.close();
         tx.submit().checkedGet();
 
-        verify(mockedDataTreeListener, timeout(1000).times(2)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
+        verify(mockedDataTreeListener, timeout(1000).times(3)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
         final List<Collection<DataTreeCandidate>> capturedValue = captorForChanges.getAllValues();
-        assertTrue(capturedValue.size() == 2);
+        assertTrue(capturedValue.size() == 3);
 
-        final ContainerNode capturedChange = (ContainerNode) capturedValue.get(0).iterator().next().getRootNode().getDataAfter().get();
+        final ContainerNode capturedChange = (ContainerNode) capturedValue.get(1).iterator().next().getRootNode().getDataAfter().get();
         final ContainerNode innerContainerVerify = (ContainerNode) crossShardContainer.getChild(TestModel.INNER_CONTAINER_PATH.getLastPathArgument()).get();
         assertEquals(innerContainerVerify, capturedChange);
 

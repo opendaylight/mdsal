@@ -179,7 +179,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         transaction.ready();
         transaction.submit();
 
-        verify(mockedDataTreeListener, timeout(1000)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
+        verify(mockedDataTreeListener, timeout(1000).times(2)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
         final Collection<DataTreeCandidate> capturedValue = captorForChanges.getValue();
         assertTrue(capturedValue.size() == 1);
 
@@ -199,7 +199,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         final DOMDataTreeShardWriteTransaction transaction = producer.createTransaction();
         writeCrossShardContainer(transaction);
 
-        verify(mockedDataTreeListener, timeout(1000)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
+        verify(mockedDataTreeListener, timeout(1000).times(2)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
         final Collection<DataTreeCandidate> capturedValue = captorForChanges.getValue();
         assertTrue(capturedValue.size() == 1);
 
@@ -236,19 +236,19 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
                 .build();
 
         //verify listeners have been notified
-        verify(mockedDataTreeListener, timeout(1000).times(2)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
+        verify(mockedDataTreeListener, timeout(1000).times(4)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
         final List<Collection<DataTreeCandidate>> capturedChanges = captorForChanges.getAllValues();
         final List<Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>>> capturedSubtrees = captorForSubtrees.getAllValues();
-        final DataTreeCandidate firstNotificationCandidate = capturedChanges.get(0).iterator().next();
+        final DataTreeCandidate firstNotificationCandidate = capturedChanges.get(2).iterator().next();
 
-        assertTrue(capturedSubtrees.get(0).size() == 1);
+        assertTrue(capturedSubtrees.get(2).size() == 1);
         assertEquals(testContainerVerificationNode, firstNotificationCandidate.getRootNode().getDataAfter().get());
-        assertEquals(testContainerVerificationNode, capturedSubtrees.get(0).get(TEST_ID));
+        assertEquals(testContainerVerificationNode, capturedSubtrees.get(2).get(TEST_ID));
 
-        final DataTreeCandidate secondNotificationCandidate = capturedChanges.get(1).iterator().next();
-        assertTrue(capturedSubtrees.get(1).size() == 1);
+        final DataTreeCandidate secondNotificationCandidate = capturedChanges.get(3).iterator().next();
+        assertTrue(capturedSubtrees.get(3).size() == 1);
         assertEquals(crossShardContainer, secondNotificationCandidate.getRootNode().getDataAfter().get());
-        assertEquals(crossShardContainer, capturedSubtrees.get(1).get(TEST_ID));
+        assertEquals(crossShardContainer, capturedSubtrees.get(3).get(TEST_ID));
 
         verifyNoMoreInteractions(mockedDataTreeListener);
     }

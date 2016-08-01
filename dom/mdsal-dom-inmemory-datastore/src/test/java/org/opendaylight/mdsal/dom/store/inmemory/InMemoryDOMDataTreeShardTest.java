@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -62,6 +63,7 @@ public class InMemoryDOMDataTreeShardTest {
         final DOMDataTreeChangeListener domDataTreeChangeListener = mock(DOMDataTreeChangeListener.class);
         final ListenerRegistration listenerRegistration = mock(ListenerRegistration.class);
         doReturn(listenerRegistration).when(domDataTreeShard).registerTreeChangeListener(any(), any());
+        doNothing().when(domDataTreeChangeListener).onDataTreeChanged(any());
         inMemoryDOMDataTreeShard.registerTreeChangeListener(YangInstanceIdentifier.EMPTY, domDataTreeChangeListener);
         verify(domDataTreeShard, atLeastOnce()).registerTreeChangeListener(any(), any());
 

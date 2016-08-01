@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.mdsal.dom.spi.RegistrationTreeNode;
 import org.opendaylight.mdsal.dom.spi.store.AbstractDOMStoreTreeChangePublisher;
@@ -28,12 +29,14 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidates;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataValidationFailedException;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +44,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDOMShardTreeChangePublisher.class);
 
-    private YangInstanceIdentifier shardPath;
+    private final YangInstanceIdentifier shardPath;
     private final Map<DOMDataTreeIdentifier, ChildShardContext> childShards;
     private final DataTree dataTree;
 
@@ -66,7 +69,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
     private <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L> setupListenerContext(final YangInstanceIdentifier listenerPath, final L listener) {
         // we need to register the listener registration path based on the shards root
         // we have to strip the shard path from the listener path and then register
-        YangInstanceIdentifier strippedIdentifier =  listenerPath;
+        YangInstanceIdentifier strippedIdentifier = listenerPath;
         if (!shardPath.isEmpty()) {
             strippedIdentifier = YangInstanceIdentifier.create(stripShardPath(listenerPath));
         }
@@ -76,17 +79,34 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
 
         for (final ChildShardContext maybeAffected : childShards.values()) {
             if (listenerPath.contains(maybeAffected.getPrefix().getRootIdentifier())) {
-                // consumer has a subshard somewhere on lower level
+                // consumer has initialDataChangeEvent subshard somewhere on lower level
                 // register to the notification manager with snapshot and forward child notifications to parent
                 LOG.debug("Adding new subshard{{}} to listener at {}", maybeAffected.getPrefix(), listenerPath);
                 subshardListener.addSubshard(maybeAffected);
             } else if (maybeAffected.getPrefix().getRootIdentifier().contains(listenerPath)) {
                 // bind path is inside subshard
                 // TODO can this happen? seems like in ShardedDOMDataTree we are already registering to the lowest shard possible
-                throw new UnsupportedOperationException("Listener should be registered directly into a subshard");
+                throw new UnsupportedOperationException("Listener should be registered directly into initialDataChangeEvent subshard");
             }
         }
+
+        initialDataChangeEvent(listenerPath, listener);
+
         return reg;
+    }
+
+    private <L extends DOMDataTreeChangeListener> void initialDataChangeEvent(final YangInstanceIdentifier listenerPath, final L listener) {
+        // FIXME Add support for wildcard listeners
+        final Optional<NormalizedNode<?, ?>> preExistingData = dataTree.takeSnapshot().readNode(listenerPath);
+        final DataTreeCandidate initialCandidate;
+        if (preExistingData.isPresent()) {
+            initialCandidate = DataTreeCandidates.fromNormalizedNode(listenerPath, preExistingData.get());
+        } else {
+            initialCandidate = DataTreeCandidates.newDataTreeCandidate(listenerPath,
+                    new EmptyDataTreeCandidateNode(listenerPath.getLastPathArgument()));
+        }
+
+        listener.onDataTreeChanged(Collections.singleton(initialCandidate));
     }
 
     private <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L> setupContextWithoutSubshards(final YangInstanceIdentifier listenerPath, final DOMDataTreeListenerWithSubshards listener) {
@@ -156,7 +176,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
 
         void addSubshard(final ChildShardContext context) {
             Preconditions.checkState(context.getShard() instanceof DOMStoreTreeChangePublisher,
-                    "All subshards that are a part of ListenerContext need to be listenable");
+                    "All subshards that are initialDataChangeEvent part of ListenerContext need to be listenable");
 
             final DOMStoreTreeChangePublisher listenableShard = (DOMStoreTreeChangePublisher) context.getShard();
             // since this is going into subshard we want to listen for ALL changes in the subshard
@@ -181,7 +201,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
             modification.ready();
             try {
                 dataTree.validate(modification);
-            } catch (DataValidationFailedException e) {
+            } catch (final DataValidationFailedException e) {
                 LOG.error("Validation failed for built modification", e);
                 throw new RuntimeException("Notification validation failed", e);
             }
@@ -189,12 +209,61 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
             // strip nodes we dont need since this listener doesn't have to be registered at the root of the DataTree
             DataTreeCandidateNode modifiedChild = dataTree.prepare(modification).getRootNode();
             for (final PathArgument pathArgument : listenerPath.getPathArguments()) {
-                // there should be no null pointers since we wouldn't get a notification change
-                // if there was no node modified at the listener's location
                 modifiedChild = modifiedChild.getModifiedChild(pathArgument);
+            }
+
+            if (modifiedChild == null) {
+                modifiedChild = new EmptyDataTreeCandidateNode(listenerPath.getLastPathArgument());
             }
 
             return DataTreeCandidates.newDataTreeCandidate(listenerPath, modifiedChild);
         }
     }
+
+    private static final class EmptyDataTreeCandidateNode implements DataTreeCandidateNode {
+
+        private final PathArgument identifier;
+
+        EmptyDataTreeCandidateNode(final PathArgument identifier) {
+            Preconditions.checkNotNull(identifier, "Identifier should not be null");
+            this.identifier = identifier;
+        }
+
+        @Nonnull
+        @Override
+        public PathArgument getIdentifier() {
+            return identifier;
+        }
+
+        @Nonnull
+        @Override
+        public Collection<DataTreeCandidateNode> getChildNodes() {
+            return Collections.<DataTreeCandidateNode>emptySet();
+        }
+
+        @Nullable
+        @Override
+        public DataTreeCandidateNode getModifiedChild(final PathArgument identifier) {
+            return null;
+        }
+
+        @Nonnull
+        @Override
+        public ModificationType getModificationType() {
+            return ModificationType.UNMODIFIED;
+        }
+
+        @Nonnull
+        @Override
+        public Optional<NormalizedNode<?, ?>> getDataAfter() {
+            return Optional.absent();
+        }
+
+        @Nonnull
+        @Override
+        public Optional<NormalizedNode<?, ?>> getDataBefore() {
+            return Optional.absent();
+        }
+    }
+
 }
