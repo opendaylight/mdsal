@@ -33,6 +33,7 @@ import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTOBuilder;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
@@ -133,24 +134,28 @@ public class TypeProviderTest {
     }
 
     private static LeafSchemaNode provideLeafNodeFromTopLevelContainer(final Module module, final String containerName, final String leafNodeName) {
-        final DataSchemaNode rootNode = module.getDataChildByName(containerName);
+        final QName containerNode = QName.create(module.getQNameModule(), containerName);
+        final DataSchemaNode rootNode = module.getDataChildByName(containerNode);
         assertNotNull("Container foo is not present in root of module "+ module.getName(), rootNode);
         assertTrue(rootNode instanceof DataNodeContainer);
 
+        final QName leafNode = QName.create(module.getQNameModule(), leafNodeName);
         final DataNodeContainer rootContainer = (DataNodeContainer) rootNode;
-        final DataSchemaNode node = rootContainer.getDataChildByName(leafNodeName);
+        final DataSchemaNode node = rootContainer.getDataChildByName(leafNode);
         assertNotNull(node);
         assertTrue(node instanceof LeafSchemaNode);
         return (LeafSchemaNode) node;
     }
 
     private static LeafListSchemaNode provideLeafListNodeFromTopLevelContainer(final Module module, final String containerName, final String leafListNodeName) {
-        final DataSchemaNode rootNode = module.getDataChildByName(containerName);
+        final QName containerNode = QName.create(module.getQNameModule(), containerName);
+        final DataSchemaNode rootNode = module.getDataChildByName(containerNode);
         assertNotNull("Container foo is not present in root of module " + module.getName(), rootNode);
         assertTrue(rootNode instanceof DataNodeContainer);
 
         final DataNodeContainer rootContainer = (DataNodeContainer) rootNode;
-        final DataSchemaNode node = rootContainer.getDataChildByName(leafListNodeName);
+        final QName leafListNode = QName.create(module.getQNameModule(), leafListNodeName);
+        final DataSchemaNode node = rootContainer.getDataChildByName(leafListNode);
         assertNotNull(node);
         assertTrue(node instanceof LeafListSchemaNode);
         return (LeafListSchemaNode) node;
@@ -281,7 +286,8 @@ public class TypeProviderTest {
         assertTrue(leafrefResolvedType1 instanceof GeneratedTransferObject);
 
         final Module module = resolveModule("test-type-provider-b");
-        final DataSchemaNode rootNode = module.getDataChildByName("id");
+        final QName leafNode = QName.create(module.getQNameModule(), "id");
+        final DataSchemaNode rootNode = module.getDataChildByName(leafNode);
         assertNotNull("leaf id is not present in root of module "+ module.getName(), rootNode);
         assertTrue(rootNode instanceof LeafSchemaNode);
         leaf = (LeafSchemaNode) rootNode;
@@ -300,7 +306,8 @@ public class TypeProviderTest {
 
         final Module module = resolveModule("test-type-provider-b");
 
-        final DataSchemaNode enumNode = module.getDataChildByName("enum");
+        final QName leafNode = QName.create(module.getQNameModule(), "enum");
+        final DataSchemaNode enumNode = module.getDataChildByName(leafNode);
         assertNotNull("leaf enum is not present in root of module " + module.getName(), enumNode);
         assertTrue(enumNode instanceof LeafSchemaNode);
         LeafSchemaNode leaf = (LeafSchemaNode) enumNode;
@@ -310,7 +317,8 @@ public class TypeProviderTest {
         assertNotNull(leafrefResolvedType1);
         assertTrue(leafrefResolvedType1 instanceof ReferencedTypeImpl);
 
-        final DataSchemaNode enumListNode = module.getDataChildByName("enums");
+        final QName leafListNode = QName.create(module.getQNameModule(), "enums");
+        final DataSchemaNode enumListNode = module.getDataChildByName(leafListNode);
         assertNotNull("leaf-list enums is not present in root of module "+ module.getName(), enumNode);
         assertTrue(enumListNode instanceof LeafListSchemaNode);
         LeafListSchemaNode leafList = (LeafListSchemaNode) enumListNode;
@@ -344,7 +352,8 @@ public class TypeProviderTest {
         final TypeProvider provider = new TypeProviderImpl(schemaContext);
         final Module module = resolveModule("test-type-provider-b");
 
-        final DataSchemaNode condLeaf = module.getDataChildByName("conditional-leafref");
+        final QName leafrefNode = QName.create(module.getQNameModule(), "conditional-leafref");
+        final DataSchemaNode condLeaf = module.getDataChildByName(leafrefNode);
         assertNotNull("leaf conditional-leafref is not present in root of module "+ module.getName(), condLeaf);
         assertTrue(condLeaf instanceof LeafSchemaNode);
         LeafSchemaNode leaf = (LeafSchemaNode) condLeaf;
@@ -362,7 +371,8 @@ public class TypeProviderTest {
         final TypeProvider provider = new TypeProviderImpl(schemaContext);
         final Module module = resolveModule("test-type-provider-b");
 
-        final DataSchemaNode condLeaf = module.getDataChildByName("unreslovable-leafref");
+        final QName leafrefNode = QName.create(module.getQNameModule(), "unreslovable-leafref");
+        final DataSchemaNode condLeaf = module.getDataChildByName(leafrefNode);
         assertNotNull("leaf unreslovable-leafref is not present in root of module "+ module.getName(), condLeaf);
         assertTrue(condLeaf instanceof LeafSchemaNode);
         LeafSchemaNode leaf = (LeafSchemaNode) condLeaf;
@@ -884,7 +894,8 @@ public class TypeProviderTest {
             result);
 
         final Module module = resolveModule("test-type-provider");
-        DataSchemaNode rootNode = module.getDataChildByName("root-union-leaf");
+        final QName leafUnionNode = QName.create(module.getQNameModule(), "root-union-leaf");
+        DataSchemaNode rootNode = module.getDataChildByName(leafUnionNode);
         assertNotNull("leaf root-union-leaf is not present in root of module "+ module.getName(), rootNode);
         assertTrue(rootNode instanceof LeafSchemaNode);
         leaf = (LeafSchemaNode) rootNode;
@@ -901,7 +912,8 @@ public class TypeProviderTest {
         assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangBinary(new byte[] {-45, 23, -33, 125, -9, -33})",
             result);
 
-        rootNode = module.getDataChildByName("root-bits-leaf");
+        final QName leafBitsNode = QName.create(module.getQNameModule(), "root-bits-leaf");
+        rootNode = module.getDataChildByName(leafBitsNode);
         assertNotNull("leaf bits-leaf is not present in root of module "+ module.getName(), rootNode);
         assertTrue(rootNode instanceof LeafSchemaNode);
         leaf = (LeafSchemaNode) rootNode;

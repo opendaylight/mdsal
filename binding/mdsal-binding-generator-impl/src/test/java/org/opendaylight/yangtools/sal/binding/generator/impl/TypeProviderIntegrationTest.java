@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.yang.types.TypeProviderImpl;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -48,194 +49,229 @@ public class TypeProviderIntegrationTest {
 
     @Test
     public void testGetTypeDefaultConstructionBinary() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-binary");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-binary");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new byte[] {77, 97, 110}", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-binary");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-binary");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyBinary(new byte[] {77, 97, 110})", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionBits() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-bits");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-bits");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "TestData.LeafBits(false, false, true)", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-bits");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-bits");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyBits(false, false, true)", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionBoolean() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-boolean");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-boolean");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.lang.Boolean(\"true\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-boolean");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-boolean");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyBoolean(new java.lang.Boolean(\"true\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionDecimal() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-decimal64");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-decimal64");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.math.BigDecimal(\"3.14\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-decimal64");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-decimal64");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyDecimal64(new java.math.BigDecimal(\"3.14\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionEmpty() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-empty");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-empty");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.lang.Boolean(\"false\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-empty");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-empty");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyEmpty(new java.lang.Boolean(\"false\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionEnumeration() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-enumeration");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-enumeration");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.LeafEnumeration.Seven", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-enumeration");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-enumeration");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals(PKG + "MyEnumeration.Seven", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionInt8() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-int8");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int8");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.lang.Byte(\"11\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-int8");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-int8");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyInt8(new java.lang.Byte(\"11\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionInt16() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-int16");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int16");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.lang.Short(\"111\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-int16");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-int16");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyInt16(new java.lang.Short(\"111\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionInt32() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-int32");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int32");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.lang.Integer(\"1111\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-int32");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-int32");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyInt32(new java.lang.Integer(\"1111\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionInt64() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-int64");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int64");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.lang.Long(\"11111\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-int64");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-int64");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyInt64(new java.lang.Long(\"11111\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionLeafref1() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-leafref");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-leafref");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.math.BigDecimal(\"1.234\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-leafref");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-leafref");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.math.BigDecimal(\"1.234\")", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionLeafref2() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-leafref1");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-leafref1");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyBinary(new byte[] {77, 97, 110})", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-leafref1");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-leafref1");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyBinary(new byte[] {77, 97, 110})", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionString() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-string");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-string");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("\"name\"", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-string");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-string");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyString(\"name\")", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionUint8() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-uint8");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint8");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.lang.Short(\"11\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-uint8");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-uint8");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyUint8(new java.lang.Short(\"11\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionUint16() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-uint16");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint16");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.lang.Integer(\"111\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-uint16");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-uint16");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyUint16(new java.lang.Integer(\"111\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionUint32() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-uint32");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint32");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.lang.Long(\"1111\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-uint32");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-uint32");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyUint32(new java.lang.Long(\"1111\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstructionUint64() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-uint64");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint64");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new java.math.BigInteger(\"11111\")", actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-uint64");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-uint64");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         assertEquals("new " + PKG + "MyUint64(new java.math.BigInteger(\"11111\"))", actual);
     }
 
     @Test
     public void testGetTypeDefaultConstruction() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("ip-leaf");
+        final QName leafNode = QName.create(m.getQNameModule(), "ip-leaf");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode);
         String actual = provider.getTypeDefaultConstruction(leaf);
         String exp = "new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Ipv4Address(\"0.0.0.1\")";
         assertEquals(exp, actual);
@@ -243,12 +279,14 @@ public class TypeProviderIntegrationTest {
 
     @Test
     public void testGetTypeDefaultConstructionUnion() throws ParseException {
-        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName("leaf-union");
+        final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-union");
+        LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
         String expected = "new " + PKG + "TestData.LeafUnion(\"111\".toCharArray())";
         assertEquals(expected, actual);
 
-        leaf = (LeafSchemaNode) m.getDataChildByName("ext-union");
+        final QName leafNode2 = QName.create(m.getQNameModule(), "ext-union");
+        leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
         expected = "new " + PKG + "MyUnion(\"111\".toCharArray())";
         assertEquals(expected, actual);
@@ -256,10 +294,14 @@ public class TypeProviderIntegrationTest {
 
     @Test
     public void testGetTypeDefaultConstructionUnionNested() throws ParseException {
-        ContainerSchemaNode c1 = (ContainerSchemaNode) m.getDataChildByName("c1");
-        ContainerSchemaNode c2 = (ContainerSchemaNode) c1.getDataChildByName("c2");
-        ContainerSchemaNode c3 = (ContainerSchemaNode) c2.getDataChildByName("c3");
-        LeafSchemaNode leaf = (LeafSchemaNode) c3.getDataChildByName("id");
+        final QName containerNode1 = QName.create(m.getQNameModule(), "c1");
+        ContainerSchemaNode c1 = (ContainerSchemaNode) m.getDataChildByName(containerNode1);
+        final QName containerNode2 = QName.create(m.getQNameModule(), "c2");
+        ContainerSchemaNode c2 = (ContainerSchemaNode) c1.getDataChildByName(containerNode2);
+        final QName containerNode3 = QName.create(m.getQNameModule(), "c3");
+        ContainerSchemaNode c3 = (ContainerSchemaNode) c2.getDataChildByName(containerNode3);
+        final QName leafNode = QName.create(m.getQNameModule(), "id");
+        LeafSchemaNode leaf = (LeafSchemaNode) c3.getDataChildByName(leafNode);
 
         String actual = provider.getTypeDefaultConstruction(leaf);
         String expected = "new " + PKG + "NestedUnion(\"111\".toCharArray())";
