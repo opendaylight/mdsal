@@ -169,7 +169,6 @@ public final class BindingSchemaContextUtils {
 
         }
 
-        // TODO Auto-generated method stub
         return augmentations;
     }
 
@@ -179,10 +178,6 @@ public final class BindingSchemaContextUtils {
 
     public static Optional<ChoiceSchemaNode> findInstantiatedChoice(final DataNodeContainer ctxNode, final QName choiceName) {
         DataSchemaNode potential = ctxNode.getDataChildByName(choiceName);
-        if (potential == null) {
-            potential = ctxNode.getDataChildByName(choiceName.getLocalName());
-        }
-
         if (potential instanceof ChoiceSchemaNode) {
             return Optional.of((ChoiceSchemaNode) potential);
         }

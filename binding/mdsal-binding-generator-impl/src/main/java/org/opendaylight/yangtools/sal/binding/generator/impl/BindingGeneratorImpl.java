@@ -912,10 +912,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final GroupingDefinition grouping = (GroupingDefinition) targetGrouping;
         SchemaNode result = grouping;
         for (final QName node : targetPath.getPathFromRoot()) {
-            // finding by local name is valid, grouping cannot contain nodes
-            // with same name and different namespace
             if (result instanceof DataNodeContainer) {
-                result = ((DataNodeContainer) result).getDataChildByName(node.getLocalName());
+                final QName resultNode = QName.create(result.getQName().getModule(), node.getLocalName());
+                result = ((DataNodeContainer) result).getDataChildByName(resultNode);
             } else if (result instanceof ChoiceSchemaNode) {
                 result = ((ChoiceSchemaNode) result).getCaseNodeByName(node.getLocalName());
             }
