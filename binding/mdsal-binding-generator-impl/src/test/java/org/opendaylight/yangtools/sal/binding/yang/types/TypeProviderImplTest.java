@@ -52,7 +52,10 @@ public class TypeProviderImplTest {
         final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrr")).iterator().next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
-        DataSchemaNode leafref = ((ListSchemaNode) moduleRelative.getDataChildByName("neighbor")).getDataChildByName("neighbor-id");
+        final QName listNode = QName.create(moduleRelative.getQNameModule(), "neighbor");
+        final QName leafNode = QName.create(moduleRelative.getQNameModule(), "neighbor-id");
+        DataSchemaNode leafref = ((ListSchemaNode) moduleRelative.getDataChildByName(listNode)).getDataChildByName
+                (leafNode);
         LeafSchemaNode leaf = (LeafSchemaNode) leafref;
         TypeDefinition<?> leafType = leaf.getType();
         Type leafrefResolvedType = typeProvider.javaTypeForSchemaDefinitionType(leafType, leaf);
@@ -66,7 +69,10 @@ public class TypeProviderImplTest {
         final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lra")).iterator().next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
-        DataSchemaNode leafref = ((ListSchemaNode) moduleRelative.getDataChildByName("neighbor")).getDataChildByName("neighbor-id");
+        final QName listNode = QName.create(moduleRelative.getQNameModule(), "neighbor");
+        final QName leafNode = QName.create(moduleRelative.getQNameModule(), "neighbor-id");
+        DataSchemaNode leafref = ((ListSchemaNode) moduleRelative.getDataChildByName(listNode)).getDataChildByName
+                (leafNode);
         LeafSchemaNode leaf = (LeafSchemaNode) leafref;
         TypeDefinition<?> leafType = leaf.getType();
         Type leafrefResolvedType = typeProvider.javaTypeForSchemaDefinitionType(leafType, leaf);
@@ -80,15 +86,18 @@ public class TypeProviderImplTest {
         final Module moduleValid = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrv")).iterator().next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
-        DataSchemaNode leafrefRel = ((ListSchemaNode) moduleValid.getDataChildByName("neighbor")).getDataChildByName
-                ("neighbor-id");
+        final QName listNode = QName.create(moduleValid.getQNameModule(), "neighbor");
+        final QName leaf1Node = QName.create(moduleValid.getQNameModule(), "neighbor-id");
+        DataSchemaNode leafrefRel = ((ListSchemaNode) moduleValid.getDataChildByName(listNode)).getDataChildByName
+                (leaf1Node);
         LeafSchemaNode leafRel = (LeafSchemaNode) leafrefRel;
         TypeDefinition<?> leafTypeRel = leafRel.getType();
         Type leafrefRelResolvedType = typeProvider.javaTypeForSchemaDefinitionType(leafTypeRel, leafRel);
         assertNotNull(leafrefRelResolvedType);
 
-        DataSchemaNode leafrefAbs = ((ListSchemaNode) moduleValid.getDataChildByName("neighbor")).getDataChildByName
-                ("neighbor2-id");
+        final QName leaf2Node = QName.create(moduleValid.getQNameModule(), "neighbor2-id");
+        DataSchemaNode leafrefAbs = ((ListSchemaNode) moduleValid.getDataChildByName(listNode)).getDataChildByName
+                (leaf2Node);
         LeafSchemaNode leafAbs = (LeafSchemaNode) leafrefAbs;
         TypeDefinition<?> leafTypeAbs = leafAbs.getType();
         Type leafrefAbsResolvedType = typeProvider.javaTypeForSchemaDefinitionType(leafTypeAbs, leafAbs);

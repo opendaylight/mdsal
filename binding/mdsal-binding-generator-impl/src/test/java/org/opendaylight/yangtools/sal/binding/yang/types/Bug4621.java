@@ -7,6 +7,8 @@
  */
 package org.opendaylight.yangtools.sal.binding.yang.types;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,6 +16,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
@@ -43,10 +46,13 @@ public class Bug4621 {
 
         expectedEx.expect(IllegalArgumentException.class);
 
-        DataSchemaNode leafrefRel = ((ListSchemaNode) moduleValid.getDataChildByName("neighbor")).getDataChildByName
-                ("neighbor2-id");
+        final QName listNode = QName.create(moduleValid.getQNameModule(), "neighbor");
+        final QName leafrefNode = QName.create(moduleValid.getQNameModule(), "neighbor2-id");
+        DataSchemaNode leafrefRel = ((ListSchemaNode) moduleValid.getDataChildByName(listNode)).getDataChildByName
+                (leafrefNode);
         LeafSchemaNode leafRel = (LeafSchemaNode) leafrefRel;
         TypeDefinition<?> leafTypeRel = leafRel.getType();
         Type leafrefRelResolvedType = typeProvider.javaTypeForSchemaDefinitionType(leafTypeRel, leafRel);
+        assertNotNull(leafrefRelResolvedType);
     }
 }
