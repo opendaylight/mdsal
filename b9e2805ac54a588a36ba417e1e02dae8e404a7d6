@@ -22,6 +22,30 @@
       "revId": "b9e2805ac54a588a36ba417e1e02dae8e404a7d6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_ce9e7256",
+        "filename": "common/mdsal-common-api/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-04T18:02:56Z",
+      "side": 1,
+      "message": "Right now with violationSeverity\u003derror, all compiles fine. If we want change to warning, I can change it and upload the files.",
+      "parentUuid": "7a6b29fe_0ecb4a73",
+      "range": {
+        "startLine": 49,
+        "startChar": 20,
+        "endLine": 49,
+        "endChar": 93
+      },
+      "revId": "b9e2805ac54a588a36ba417e1e02dae8e404a7d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
