@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_0ecb4a73",
+        "filename": "common/mdsal-common-api/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-04T17:55:06Z",
+      "side": 1,
+      "message": "I do believe we want to keep this at warning",
+      "range": {
+        "startLine": 49,
+        "startChar": 20,
+        "endLine": 49,
+        "endChar": 93
+      },
+      "revId": "b9e2805ac54a588a36ba417e1e02dae8e404a7d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
