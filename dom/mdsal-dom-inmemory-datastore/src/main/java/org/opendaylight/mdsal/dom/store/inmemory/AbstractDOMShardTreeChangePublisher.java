@@ -29,6 +29,9 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
+import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
@@ -37,6 +40,9 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidates;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataValidationFailedException;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType;
+import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.NormalizedNodeBuilder;
+import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
+import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,16 +103,47 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
 
     private <L extends DOMDataTreeChangeListener> void initialDataChangeEvent(final YangInstanceIdentifier listenerPath, final L listener) {
         // FIXME Add support for wildcard listeners
-        final Optional<NormalizedNode<?, ?>> preExistingData = dataTree.takeSnapshot().readNode(listenerPath);
+        final Optional<NormalizedNode<?, ?>> preExistingData = dataTree.takeSnapshot()
+                .readNode(YangInstanceIdentifier.create(stripShardPath(listenerPath)));
         final DataTreeCandidate initialCandidate;
+
         if (preExistingData.isPresent()) {
-            initialCandidate = DataTreeCandidates.fromNormalizedNode(listenerPath, preExistingData.get());
+            final NormalizedNode<?, ?> data = preExistingData.get();
+            Preconditions.checkState(data instanceof DataContainerNode,
+                    "Expected DataContainer node, but was {}", data.getClass());
+            // if we are listening on root of some shard we still get
+            // empty normalized node, root is always present
+            if (((DataContainerNode) data).getValue().isEmpty()) {
+                initialCandidate = DataTreeCandidates.newDataTreeCandidate(listenerPath,
+                        new EmptyDataTreeCandidateNode(data.getIdentifier()));
+            } else {
+                initialCandidate = DataTreeCandidates.fromNormalizedNode(listenerPath,
+                        translateRootShardIdentifierToListenerPath(listenerPath, preExistingData.get()));
+            }
         } else {
             initialCandidate = DataTreeCandidates.newDataTreeCandidate(listenerPath,
                     new EmptyDataTreeCandidateNode(listenerPath.getLastPathArgument()));
         }
 
         listener.onDataTreeChanged(Collections.singleton(initialCandidate));
+    }
+
+    private NormalizedNode<?, ?> translateRootShardIdentifierToListenerPath(final YangInstanceIdentifier listenerPath,
+                                                                            final NormalizedNode<?, ?> node) {
+        if (listenerPath.isEmpty()) {
+            return node;
+        }
+
+        final NormalizedNodeBuilder nodeBuilder;
+        if (node instanceof ContainerNode) {
+            nodeBuilder = ImmutableContainerNodeBuilder.create().withValue(((ContainerNode) node).getValue());
+        } else if (node instanceof MapEntryNode) {
+            nodeBuilder = ImmutableMapEntryNodeBuilder.create().withValue(((MapEntryNode) node).getValue());
+        } else {
+            throw new IllegalArgumentException("Expected ContainerNode or MapEntryNode, but was " + node.getClass());
+        }
+        nodeBuilder.withNodeIdentifier(listenerPath.getLastPathArgument());
+        return nodeBuilder.build();
     }
 
     private <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L> setupContextWithoutSubshards(final YangInstanceIdentifier listenerPath, final DOMDataTreeListenerWithSubshards listener) {

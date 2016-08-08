@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -37,10 +36,12 @@ import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistrat
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType;
+import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 
 public class AbstractDOMShardTreeChangePublisherTest extends AbstractDOMShardTreeChangePublisher {
 
@@ -72,7 +73,10 @@ public class AbstractDOMShardTreeChangePublisherTest extends AbstractDOMShardTre
         final DOMDataTreeChangeListener domDataTreeChangeListener = mock(DOMDataTreeChangeListener.class);
         final ListenerRegistration listenerRegistration = mock(ListenerRegistration.class);
         final DataTreeSnapshot initialSnapshot = mock(DataTreeSnapshot.class);
-        final NormalizedNode<?, ?> initialData = mock(NormalizedNode.class);
+        final DataContainerNode initialData =
+                ImmutableContainerNodeBuilder.create()
+                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(QName.create("test")))
+                        .build();
         doReturn(initialSnapshot).when(DATA_TREE).takeSnapshot();
         doReturn(Optional.of(initialData)).when(initialSnapshot).readNode(any());
         doNothing().when(domDataTreeChangeListener).onDataTreeChanged(any());
@@ -92,7 +96,7 @@ public class AbstractDOMShardTreeChangePublisherTest extends AbstractDOMShardTre
         initialChange.forEach(dataTreeCandidate ->
                 assertEquals(dataTreeCandidate.getRootPath(), YANG_INSTANCE_IDENTIFIER));
         initialChange.forEach(dataTreeCandidate ->
-                assertSame(dataTreeCandidate.getRootNode().getDataAfter().get(), initialData));
+                assertEquals(dataTreeCandidate.getRootNode().getModificationType(), ModificationType.UNMODIFIED));
     }
 
     @Test(expected = UnsupportedOperationException.class)
