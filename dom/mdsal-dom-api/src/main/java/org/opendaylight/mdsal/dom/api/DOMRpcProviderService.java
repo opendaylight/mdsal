@@ -25,7 +25,8 @@ public interface DOMRpcProviderService extends DOMService {
      * @throws NullPointerException if implementation or types is null
      * @throws IllegalArgumentException if types is empty or contains a null element.
      */
-    @Nonnull <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(@Nonnull T implementation, @Nonnull DOMRpcIdentifier... rpcs);
+    @Nonnull <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T>
+        registerRpcImplementation(@Nonnull T implementation, @Nonnull DOMRpcIdentifier... rpcs);
 
     /**
      * Register an {@link DOMRpcImplementation} object with this service.
@@ -36,5 +37,6 @@ public interface DOMRpcProviderService extends DOMService {
      * @throws NullPointerException if implementation or types is null
      * @throws IllegalArgumentException if types is empty or contains a null element.
      */
-    @Nonnull <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(@Nonnull T implementation, @Nonnull Set<DOMRpcIdentifier> rpcs);
+    @Nonnull <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T>
+        registerRpcImplementation(@Nonnull T implementation, @Nonnull Set<DOMRpcIdentifier> rpcs);
 }

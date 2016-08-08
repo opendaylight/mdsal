@@ -11,12 +11,12 @@ package org.opendaylight.mdsal.dom.api;
 import java.util.Date;
 
 /**
- * Generic event interface
+ * Generic event interface.
  */
 public interface DOMEvent {
 
     /**
-     * Get the time of the event occurrence
+     * Get the time of the event occurrence.
      *
      * @return the event time
      */
