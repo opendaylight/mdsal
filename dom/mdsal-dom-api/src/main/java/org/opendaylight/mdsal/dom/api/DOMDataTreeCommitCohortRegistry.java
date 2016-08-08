@@ -9,9 +9,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 /**
- *
  * Commit Cohort registry for {@link DOMDataTreeWriteTransaction}.
- *
  * See {@link DOMDataTreeCommitCohort} for more details.
  *
  * @author Tony Tkacik &lt;ttkacik@cisco.com&gt;

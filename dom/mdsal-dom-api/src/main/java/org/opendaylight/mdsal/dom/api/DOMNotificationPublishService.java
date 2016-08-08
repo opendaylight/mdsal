@@ -7,11 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+
 
 /**
  * A {@link DOMService} which allows its user to send {@link DOMNotification}s. It
@@ -28,32 +30,27 @@ public interface DOMNotificationPublishService extends DOMService {
      * Well-known value indicating that the implementation is currently not
      * able to accept a notification.
      */
-    ListenableFuture<Object> REJECTED = Futures.immediateFailedFuture(new DOMNotificationRejectedException("Unacceptable blocking conditions encountered"));
+    ListenableFuture<Object> REJECTED = Futures.immediateFailedFuture(
+        new DOMNotificationRejectedException("Unacceptable blocking conditions encountered"));
 
     /**
      * Publish a notification. The result of this method is a {@link ListenableFuture} which will
      * complete once the notification has been delivered to all immediate registrants. The type of
      * the object resulting from the future is not defined and implementations may use it to convey
      * additional information related to the publishing process.
-     *
      * Abstract subclasses can refine the return type as returning a promise of a more specific
      * type, e.g.:
-     *
      * public interface DeliveryStatus { int getListenerCount(); } ListenableFuture&lt;? extends
      * DeliveryStatus&gt;[ putNotification(DOMNotification notification);
-     *
      * Once the Future succeeds, the resulting object can be queried for traits using instanceof,
      * e.g:
-     *
      * // Can block when (for example) the implemention's ThreadPool queue is full Object o =
      * service.putNotification(notif).get(); if (o instanceof DeliveryStatus) { DeliveryStatus ds =
      * (DeliveryStatus)o; LOG.debug("Notification was received by {} listeners",
      * ds.getListenerCount();); } }
-     *
      * In case an implementation is running out of resources, it can block the calling thread until
      * enough resources become available to accept the notification for processing, or it is
      * interrupted.
-     *
      * Caution: completion here means that the implementation has completed processing of the
      * notification. This does not mean that all existing registrants have seen the notification.
      * Most importantly, the delivery process at other cluster nodes may have not begun yet.
@@ -64,7 +61,8 @@ public interface DOMNotificationPublishService extends DOMService {
      * @throws InterruptedException if interrupted while waiting
      * @throws NullPointerException if notification is null.
      */
-    @Nonnull ListenableFuture<? extends Object> putNotification(@Nonnull DOMNotification notification) throws InterruptedException;
+    @Nonnull ListenableFuture<? extends Object> putNotification(@Nonnull DOMNotification notification)
+            throws InterruptedException;
 
     /**
      * Attempt to publish a notification. The result of this method is a {@link ListenableFuture}
