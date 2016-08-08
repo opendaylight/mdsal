@@ -8,13 +8,11 @@
 package org.opendaylight.mdsal.dom.api;
 
 import org.opendaylight.mdsal.common.api.TransactionChain;
-
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
  * A chain of DOM Data transactions.
- *
  * Transactions in a chain need to be committed in sequence and each
  * transaction should see the effects of previous transactions as if they happened. A chain
  * makes no guarantees of atomicity, in fact transactions are committed as soon as possible.

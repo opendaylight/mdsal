@@ -17,6 +17,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
  * A transaction that provides read access to a logical data store.
+ *
  * <p>
  * For more information on usage and examples, please see the documentation in {@link AsyncReadTransaction}.
  */
@@ -24,6 +25,7 @@ public interface DOMDataTreeReadTransaction extends AsyncReadTransaction<YangIns
 
     /**
      * Reads data from provided logical data store located at the provided path.
+     *
      *<p>
      * If the target is a subtree, then the whole subtree is read (and will be
      * accessible from the returned data object).
@@ -49,8 +51,8 @@ public interface DOMDataTreeReadTransaction extends AsyncReadTransaction<YangIns
 
     /**
      * Checks if data is available in the logical data store located at provided path.
-     * <p>
      *
+     * <p>
      * Note: a successful result from this method makes no guarantee that a subsequent call to {@link #read}
      * will succeed. It is possible that the data resides in a data store on a remote node and, if that
      * node goes down or a network failure occurs, a subsequent read would fail. Another scenario is if

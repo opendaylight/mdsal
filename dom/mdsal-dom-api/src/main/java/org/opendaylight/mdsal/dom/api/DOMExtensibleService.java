@@ -7,9 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+
+
 import com.google.common.annotations.Beta;
 import java.util.Map;
 import javax.annotation.Nonnull;
+
+
 
 /**
  * Marker interface for services which can support {@link DOMServiceExtension}. Aside for marking
@@ -19,7 +23,8 @@ import javax.annotation.Nonnull;
  * @param <E> Extension type
  */
 @Beta
-public interface DOMExtensibleService<T extends DOMExtensibleService<T, E>, E extends DOMServiceExtension<T, E>> extends DOMService {
+public interface DOMExtensibleService<T extends DOMExtensibleService<T, E>,
+    E extends DOMServiceExtension<T, E>> extends DOMService {
     /**
      * Return a map of currently-supported extensions, along with accessor services
      * which provide access to the specific functionality bound to this service.
