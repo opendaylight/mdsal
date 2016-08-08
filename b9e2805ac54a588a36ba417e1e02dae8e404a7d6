@@ -46,6 +46,30 @@
       "revId": "b9e2805ac54a588a36ba417e1e02dae8e404a7d6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_a165f946",
+        "filename": "common/mdsal-common-api/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-08T15:43:56Z",
+      "side": 1,
+      "message": "Robert, why?? If Brinda has fixed all current violations, then IMHO it would be A Good Thing to switch on enforcement for the future, no?\n\nBrinda, if you have not fixed all current violations, then you should simply completely remove this, because warning instead of error is the default.",
+      "parentUuid": "7a6b29fe_0ecb4a73",
+      "range": {
+        "startLine": 49,
+        "startChar": 20,
+        "endLine": 49,
+        "endChar": 93
+      },
+      "revId": "b9e2805ac54a588a36ba417e1e02dae8e404a7d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
