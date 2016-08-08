@@ -115,7 +115,7 @@ public class SourceCodeGeneratorFactoryTest {
     private boolean cleanup(File dir) {
         if (!dir.exists()) return true;
 
-        stream(dir.listFiles()).forEach(file -> file.delete());
+        stream(dir.listFiles()).forEach(File::delete);
         return dir.delete();
     }
 }
