@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.dom.api;
 import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
 
+
+
 /**
  * Exception indicating that no implementation of the requested RPC service is available.
  */
@@ -20,7 +22,8 @@ public class DOMRpcImplementationNotAvailableException extends DOMRpcException {
         super(String.format(format, args));
     }
 
-    public DOMRpcImplementationNotAvailableException(@Nonnull final Throwable cause, @Nonnull final String format, final Object... args) {
+    public DOMRpcImplementationNotAvailableException(@Nonnull final Throwable cause,
+            @Nonnull final String format, final Object... args) {
         super(String.format(format, args), Preconditions.checkNotNull(cause));
     }
 }
