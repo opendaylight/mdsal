@@ -7,9 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
-
 import javax.annotation.Nonnull;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
@@ -26,15 +25,15 @@ public interface DOMStoreTreeChangePublisher {
      * You are able to register for notifications  for any node or subtree
      * which can be represented using {@link YangInstanceIdentifier}.
      * <p>
-     *
      * You are able to register for data change notifications for a subtree or leaf
      * even if it does not exist. You will receive notification once that node is
      * created.
      * <p>
      * If there is any pre-existing data in data tree on path for which you are
      * registering, you will receive initial data change event, which will
-     * contain all pre-existing data, marked as created.
-     *
+     * contain all pre-existing data, marked as created. If the data at the supplied
+     * path does not exist, you will also receive initial data change event, which will
+     * contain empty data tree modification, marked as unmodified.
      * <p>
      * This method returns a {@link ListenerRegistration} object. To
      * "unregister" your listener for changes call the {@link ListenerRegistration#close()}
@@ -44,14 +43,13 @@ public interface DOMStoreTreeChangePublisher {
      * notifications. This is especially true in OSGi environments, where failure to
      * do so during bundle shutdown can lead to stale listeners being still registered.
      *
-     * @param treeId
-     *            Data tree identifier of the subtree which should be watched for
-     *            changes.
-     * @param listener
-     *            Listener instance which is being registered
+     * @param treeId   Data tree identifier of the subtree which should be watched for
+     *                 changes.
+     * @param listener Listener instance which is being registered
      * @return Listener registration object, which may be used to unregister
-     *         your listener using {@link ListenerRegistration#close()} to stop
-     *         delivery of change events.
+     * your listener using {@link ListenerRegistration#close()} to stop
+     * delivery of change events.
      */
-    @Nonnull <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(@Nonnull YangInstanceIdentifier treeId, @Nonnull L listener);
+    @Nonnull
+    <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(@Nonnull YangInstanceIdentifier treeId, @Nonnull L listener);
 }
