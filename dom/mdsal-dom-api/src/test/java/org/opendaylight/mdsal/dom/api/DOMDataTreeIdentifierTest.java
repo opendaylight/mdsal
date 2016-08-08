@@ -33,8 +33,8 @@ public class DOMDataTreeIdentifierTest {
             new YangInstanceIdentifier.NodeIdentifier(QName.create(TEST_MODULE, TEST_LISTS)));
     private static final DOMDataTreeIdentifier REF_TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
             REF_YII_IID);
-    private static final DOMDataTreeIdentifier TEST_DIFF_TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
-            TEST_YII_IID);
+    private static final DOMDataTreeIdentifier
+        TEST_DIFF_TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,TEST_YII_IID);
 
     @Test
     public void constructTest() {
@@ -62,7 +62,8 @@ public class DOMDataTreeIdentifierTest {
     public void equalsTest() {
         assertTrue("Equals same", REF_TREE.equals(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
                 REF_YII_IID)));
-        assertFalse("Different DataStoreType", REF_TREE.equals(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
+        assertFalse("Different DataStoreType", REF_TREE.equals(
+                new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
                 REF_YII_IID)));
         assertTrue("Equals same instance", REF_TREE.equals(REF_TREE));
         assertFalse("Different object", REF_TREE.equals(new Object()));
@@ -76,7 +77,8 @@ public class DOMDataTreeIdentifierTest {
         final YangInstanceIdentifier compareSecondIid = YangInstanceIdentifier.create(
                 new YangInstanceIdentifier.NodeIdentifier(QName.create(TEST_MODULE, COMPARE_SECOND_LISTS)));
 
-        assertEquals("Compare same to same", REF_TREE.compareTo(new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
+        assertEquals("Compare same to same", REF_TREE.compareTo(
+                new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,
                 REF_YII_IID)), 0);
         assertNotEquals("Compare same to same with different datastore", REF_TREE.compareTo(new DOMDataTreeIdentifier(
                 LogicalDatastoreType.CONFIGURATION, REF_YII_IID)), 0);

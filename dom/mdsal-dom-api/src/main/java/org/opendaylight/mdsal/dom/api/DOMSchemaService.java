@@ -14,15 +14,16 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 public interface DOMSchemaService extends DOMService {
 
     /**
-     * Returns session specific YANG schema context
-     * @return
+     * Returns session specific YANG schema context.
+     *
+     * @return schemaContext
      */
     SchemaContext getSessionContext();
 
     /**
-     * Returns global schema context
+     * Returns global schema context.
      *
-     * @return
+     * @return schemaContext
      */
     SchemaContext getGlobalContext();
 

@@ -27,5 +27,6 @@ public interface DOMRpcImplementation {
      *         or report a subclass of {@link DOMRpcException} reporting a transport
      *         error.
      */
-    @Nonnull CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(@Nonnull DOMRpcIdentifier rpc, @Nullable NormalizedNode<?, ?> input);
+    @Nonnull CheckedFuture<DOMRpcResult, DOMRpcException>
+        invokeRpc(@Nonnull DOMRpcIdentifier rpc, @Nullable NormalizedNode<?, ?> input);
 }

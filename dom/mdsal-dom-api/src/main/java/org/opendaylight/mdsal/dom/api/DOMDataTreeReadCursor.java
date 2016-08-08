@@ -27,8 +27,8 @@ public interface DOMDataTreeReadCursor extends DOMDataTreeCursor {
 
     /**
      * Checks if data is available in the logical data store located at provided path.
-     * <p>
      *
+     * <p>
      * Note: a successful result from this method makes no guarantee that a subsequent call to
      * {@link #readNode(PathArgument)} will succeed. It is possible that the data resides in a data store on a remote
      * node and, if that node goes down or a network failure occurs, a subsequent read would fail.
