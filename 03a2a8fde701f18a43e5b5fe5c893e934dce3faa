@@ -174,6 +174,24 @@
       "revId": "03a2a8fde701f18a43e5b5fe5c893e934dce3faa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f7ddf343",
+        "filename": "common/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-08T21:04:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_01130d67",
+      "revId": "03a2a8fde701f18a43e5b5fe5c893e934dce3faa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
