@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_8158bd57",
+        "filename": "common/mdsal-common-api/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-08T15:43:56Z",
+      "side": 1,
+      "message": "Brinda I\u0027ve just had a private email exchange with Robert Varga and figured out that his previous comment here was simply a misunderstanding.  He agrees that, if you have resolved all Checkstyle violations in this project, we do want it to be switched to enforcement.  Could you therefore re-replace the warning by error?  Sorry for the back and forth.  PS, just FYI for future: If you do not want it to fail, then you would not need this entire block, as warning is the default (but we do want it here, so just change warning to error again please).",
+      "revId": "03a2a8fde701f18a43e5b5fe5c893e934dce3faa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6155a11c",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/AsyncDataBroker.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-08T15:43:56Z",
+      "side": 1,
+      "message": "please just completely remove this useless JavaDoc.  Read https://github.com/sevntu-checkstyle/sevntu.checkstyle/issues/467 for full background about why.",
+      "revId": "03a2a8fde701f18a43e5b5fe5c893e934dce3faa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c131150d",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/AsyncDataBroker.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-08T15:43:56Z",
+      "side": 1,
+      "message": "please just completely remove this useless JavaDoc.  Read https://github.com/sevntu-checkstyle/sevntu.checkstyle/issues/467 for full background about why.",
+      "revId": "03a2a8fde701f18a43e5b5fe5c893e934dce3faa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_013cade1",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/TransactionCommitFailedException.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-08T15:43:56Z",
+      "side": 1,
+      "message": "doesn\u0027t this need a dot at the end of the phrase?",
+      "revId": "03a2a8fde701f18a43e5b5fe5c893e934dce3faa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_01130d67",
+        "filename": "common/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-08T15:43:56Z",
+      "side": 1,
+      "message": "I think this is useless, remove it? It\u0027s useless here because this artifact, mdsal-common-agreggator, is NOT the \u003cparent\u003e of e.g. mdsal-common-api as that is mdsal-parent, so this doesn\u0027t do anything and is only confusing, and should therefore be removed.",
+      "revId": "03a2a8fde701f18a43e5b5fe5c893e934dce3faa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
