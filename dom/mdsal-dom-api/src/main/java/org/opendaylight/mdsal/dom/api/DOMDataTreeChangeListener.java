@@ -9,7 +9,9 @@ package org.opendaylight.mdsal.dom.api;
 
 import java.util.Collection;
 import java.util.EventListener;
+
 import javax.annotation.Nonnull;
+
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 
 /**
@@ -31,7 +33,6 @@ public interface DOMDataTreeChangeListener extends EventListener {
      * and after compare as equal. Implementations of this interface are expected
      * to recover from such events. Event producers are expected to exert reasonable
      * effort to suppress such events.
-     *
      * In other words, it is completely acceptable to observe
      * a {@link org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode},
      * which reports a {@link org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType}

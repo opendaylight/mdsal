@@ -8,13 +8,14 @@
 
 package org.opendaylight.mdsal.dom.api;
 
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.util.Iterator;
 import javax.annotation.Nonnull;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -24,12 +25,14 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
  * A unique identifier for a particular subtree. It is composed of the logical
  * data store type and the instance identifier of the root node.
  */
-public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeIdentifier>, Serializable, Comparable<DOMDataTreeIdentifier> {
+public final class DOMDataTreeIdentifier implements Immutable,
+    Path<DOMDataTreeIdentifier>, Serializable, Comparable<DOMDataTreeIdentifier> {
     private static final long serialVersionUID = 1L;
     private final YangInstanceIdentifier rootIdentifier;
     private final LogicalDatastoreType datastoreType;
 
-    public DOMDataTreeIdentifier(final LogicalDatastoreType datastoreType, final YangInstanceIdentifier rootIdentifier) {
+    public DOMDataTreeIdentifier(final LogicalDatastoreType datastoreType,
+            final YangInstanceIdentifier rootIdentifier) {
         this.datastoreType = Preconditions.checkNotNull(datastoreType);
         this.rootIdentifier = Preconditions.checkNotNull(rootIdentifier);
     }
@@ -82,29 +85,29 @@ public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeI
     }
 
     @Override
-    public int compareTo(final DOMDataTreeIdentifier o) {
-        int i = datastoreType.compareTo(o.datastoreType);
-        if (i != 0) {
-            return i;
+    public int compareTo(final DOMDataTreeIdentifier domDataTreeIdentifier) {
+        int ind = datastoreType.compareTo(domDataTreeIdentifier.datastoreType);
+        if (ind != 0) {
+            return ind;
         }
 
         final Iterator<PathArgument> mi = rootIdentifier.getPathArguments().iterator();
-        final Iterator<PathArgument> oi = o.rootIdentifier.getPathArguments().iterator();
-
+        final Iterator<PathArgument> itr = domDataTreeIdentifier.rootIdentifier.getPathArguments().iterator();
+        int compVal = 0;
         while (mi.hasNext()) {
-            if (!oi.hasNext()) {
+            if (!itr.hasNext()) {
                 return 1;
             }
 
             final PathArgument ma = mi.next();
-            final PathArgument oa = oi.next();
-            i = ma.compareTo(oa);
-            if (i != 0) {
-                return i;
+            final PathArgument oa = itr.next();
+            compVal = ma.compareTo(oa);
+            if (compVal != 0) {
+                return compVal;
             }
         }
 
-        return oi.hasNext() ? -1 : 0;
+        return itr.hasNext() ? -1 : 0;
     }
 
     @Override
