@@ -68,6 +68,6 @@ public interface Enumeration extends GeneratedType {
          *
          * @return the value of the enumeration item.
          */
-        Integer getValue();
+        int getValue();
     }
 }

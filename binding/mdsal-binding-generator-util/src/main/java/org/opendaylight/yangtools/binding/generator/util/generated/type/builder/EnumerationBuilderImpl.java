@@ -78,7 +78,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
     }
 
     @Override
-    public void addValue(final String name, final Integer value, final String description) {
+    public void addValue(final String name, final int value, final String description) {
         final EnumPairImpl p = new EnumPairImpl(name, value, description);
         values = LazyCollections.lazyAdd(values, p);
         unmodifiableValues = Collections.unmodifiableList(values);
@@ -112,21 +112,9 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
     public void updateEnumPairsFromEnumTypeDef(final EnumTypeDefinition enumTypeDef) {
         final List<EnumPair> enums = enumTypeDef.getValues();
         if (enums != null) {
-            int listIndex = 0;
             for (final EnumPair enumPair : enums) {
                 if (enumPair != null) {
-                    final String enumPairName = enumPair.getName();
-                    Integer enumPairValue = enumPair.getValue();
-
-                    if (enumPairValue == null) {
-                        enumPairValue = listIndex;
-                    }
-                    else {
-                        listIndex = enumPairValue;
-                    }
-
-                    this.addValue(enumPairName, enumPairValue, enumPair.getDescription());
-                    listIndex++;
+                    this.addValue(enumPair.getName(), enumPair.getValue(), enumPair.getDescription());
                 }
             }
         }
@@ -137,10 +125,10 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
 
         private final String name;
         private final String mappedName;
-        private final Integer value;
+        private final int value;
         private final String description;
 
-        public EnumPairImpl(final String name, final Integer value, final String description) {
+        public EnumPairImpl(final String name, final int value, final String description) {
             super();
             this.name = name;
             this.mappedName = BindingMapping.getClassName(name);
@@ -159,7 +147,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         }
 
         @Override
-        public Integer getValue() {
+        public int getValue() {
             return value;
         }
 
@@ -362,7 +350,6 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
 
         @Override
         public List<MethodSignature> getMethodDefinitions() {
-            // TODO Auto-generated method stub
             return Collections.emptyList();
         }
 
