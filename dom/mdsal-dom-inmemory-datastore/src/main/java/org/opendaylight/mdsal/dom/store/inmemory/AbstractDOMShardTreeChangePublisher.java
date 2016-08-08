@@ -97,7 +97,8 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
 
     private <L extends DOMDataTreeChangeListener> void initialDataChangeEvent(final YangInstanceIdentifier listenerPath, final L listener) {
         // FIXME Add support for wildcard listeners
-        final Optional<NormalizedNode<?, ?>> preExistingData = dataTree.takeSnapshot().readNode(listenerPath);
+        final Optional<NormalizedNode<?, ?>> preExistingData = dataTree.takeSnapshot()
+                .readNode(YangInstanceIdentifier.create(stripShardPath(listenerPath)));
         final DataTreeCandidate initialCandidate;
         if (preExistingData.isPresent()) {
             initialCandidate = DataTreeCandidates.fromNormalizedNode(listenerPath, preExistingData.get());
