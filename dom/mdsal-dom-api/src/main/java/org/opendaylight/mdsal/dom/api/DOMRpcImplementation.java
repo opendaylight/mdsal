@@ -10,7 +10,10 @@ package org.opendaylight.mdsal.dom.api;
 import com.google.common.util.concurrent.CheckedFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+
+
 
 /**
  * Interface implemented by an individual RPC implementation. This API allows for dispatch
@@ -27,5 +30,6 @@ public interface DOMRpcImplementation {
      *         or report a subclass of {@link DOMRpcException} reporting a transport
      *         error.
      */
-    @Nonnull CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(@Nonnull DOMRpcIdentifier rpc, @Nullable NormalizedNode<?, ?> input);
+    @Nonnull CheckedFuture<DOMRpcResult, DOMRpcException>
+        invokeRpc(@Nonnull DOMRpcIdentifier rpc, @Nullable NormalizedNode<?, ?> input);
 }
