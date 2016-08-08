@@ -29,7 +29,7 @@ public class DOMExceptionsTest {
             TEST_YI_ID);
 
     @Test(expected = DOMDataTreeInaccessibleException.class)
-    public void DOMDataTreeInaccessibleExceptionTest() throws Exception {
+    public void testDomDataTreeInaccessibleExceptionTest() throws Exception {
         final DOMDataTreeInaccessibleException testExc = new DOMDataTreeInaccessibleException(TEST_TREE, TEST_MESSAGE);
         assertTrue(testExc.getMessage().contains(TEST_MESSAGE));
         assertNotNull(testExc.getTreeIdentifier());
@@ -39,7 +39,7 @@ public class DOMExceptionsTest {
     }
 
     @Test(expected = DOMDataTreeListeningException.class)
-    public void DOMDataTreeListeningExceptionTest() throws Exception {
+    public void testDomDataTreeListeningExceptionTest() throws Exception {
         final DOMDataTreeListeningException testExc = new DOMDataTreeListeningException(TEST_MESSAGE);
         assertTrue(testExc.getMessage().contains(TEST_MESSAGE));
 
@@ -47,7 +47,7 @@ public class DOMExceptionsTest {
     }
 
     @Test(expected = DOMDataTreeLoopException.class)
-    public void DOMDataTreeLoopExceptionTest() throws Exception {
+    public void testDomDataTreeLoopExceptionTest() throws Exception {
         final DOMDataTreeLoopException testExc = new DOMDataTreeLoopException(TEST_MESSAGE);
         assertTrue(testExc.getMessage().contains(TEST_MESSAGE));
 
@@ -55,7 +55,7 @@ public class DOMExceptionsTest {
     }
 
     @Test(expected = DOMDataTreeProducerBusyException.class)
-    public void DOMDataTreeProducerBusyExceptionTest() throws Exception {
+    public void testDomDataTreeProducerBusyExceptionTest() throws Exception {
         final DOMDataTreeProducerBusyException testExc = new DOMDataTreeProducerBusyException(TEST_MESSAGE);
         assertTrue(testExc.getMessage().contains(TEST_MESSAGE));
 
@@ -63,7 +63,7 @@ public class DOMExceptionsTest {
     }
 
     @Test(expected = DOMDataTreeProducerException.class)
-    public void DOMDataTreeProducerExceptionTest() throws Exception {
+    public void testDomDataTreeProducerExceptionTest() throws Exception {
         final DOMDataTreeProducerException testExc = new DOMDataTreeProducerException(TEST_MESSAGE);
         assertTrue(testExc.getMessage().contains(TEST_MESSAGE));
 
@@ -71,7 +71,7 @@ public class DOMExceptionsTest {
     }
 
     @Test(expected = DOMDataTreeShardingConflictException.class)
-    public void DOMDataTreeShardingConflictExceptionTest() throws Exception {
+    public void testDomDataTreeShardingConflictExceptionTest() throws Exception {
         final DOMDataTreeShardingConflictException testExc = new DOMDataTreeShardingConflictException(TEST_MESSAGE);
         assertTrue(testExc.getMessage().contains(TEST_MESSAGE));
 
@@ -79,7 +79,7 @@ public class DOMExceptionsTest {
     }
 
     @Test(expected = DOMNotificationRejectedException.class)
-    public void DOMNotificationRejectedExceptionTest() throws Exception {
+    public void testDomNotificationRejectedExceptionTest() throws Exception {
         final DOMNotificationRejectedException testExc = new DOMNotificationRejectedException(TEST_MESSAGE);
         assertTrue(testExc.getMessage().contains(TEST_MESSAGE));
 
@@ -87,9 +87,10 @@ public class DOMExceptionsTest {
     }
 
     @Test(expected = DOMRpcImplementationNotAvailableException.class)
-    public void DOMRpcImplementationNotAvailableExceptionTest() throws Exception {
-        final DOMRpcImplementationNotAvailableException testExc = new DOMRpcImplementationNotAvailableException(TEST_MESSAGE);
-        assertTrue(testExc.getMessage().contains(TEST_MESSAGE));
+    public void testDomRpcImplementationNotAvailableExceptionTest() throws Exception {
+        final DOMRpcImplementationNotAvailableException dompcImplementationNotAvailableException
+            = new DOMRpcImplementationNotAvailableException(TEST_MESSAGE);
+        assertTrue(dompcImplementationNotAvailableException.getMessage().contains(TEST_MESSAGE));
 
         throw new DOMRpcImplementationNotAvailableException(new Throwable(), TEST_MESSAGE, new Object());
     }

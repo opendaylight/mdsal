@@ -11,11 +11,15 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+
+
 
 /**
  * Identifier of a RPC context. This is an extension of the YANG RPC, which
@@ -25,7 +29,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
  */
 public abstract class DOMRpcIdentifier {
 
-    private static final YangInstanceIdentifier GLOBAL_CONTEXT = YangInstanceIdentifier.create(Collections.<PathArgument>emptySet());
+    private static final YangInstanceIdentifier GLOBAL_CONTEXT
+            = YangInstanceIdentifier.create(Collections.<PathArgument>emptySet());
 
     private static final class Global extends DOMRpcIdentifier {
         private Global(final @Nonnull SchemaPath type) {
@@ -75,7 +80,8 @@ public abstract class DOMRpcIdentifier {
      * @param contextReference Context reference, null means a global RPC identifier.
      * @return A global RPC identifier, guaranteed to be non-null.
      */
-    public static @Nonnull DOMRpcIdentifier create(final @Nonnull SchemaPath type, final @Nullable YangInstanceIdentifier contextReference) {
+    public static @Nonnull DOMRpcIdentifier create(final @Nonnull SchemaPath type,
+            final @Nullable YangInstanceIdentifier contextReference) {
         if (contextReference == null || GLOBAL_CONTEXT.equals(contextReference)) {
             return new Global(type);
         } else {
@@ -125,6 +131,7 @@ public abstract class DOMRpcIdentifier {
 
     @Override
     public final String toString() {
-        return MoreObjects.toStringHelper(this).omitNullValues().add("type", type).add("contextReference", getContextReference()).toString();
+        return MoreObjects.toStringHelper(this).omitNullValues().add("type", type).add("contextReference",
+                getContextReference()).toString();
     }
 }
