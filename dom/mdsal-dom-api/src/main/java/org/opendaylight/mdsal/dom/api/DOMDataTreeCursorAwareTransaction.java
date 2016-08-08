@@ -8,9 +8,12 @@
 
 package org.opendaylight.mdsal.dom.api;
 
+
 import com.google.common.util.concurrent.CheckedFuture;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
@@ -33,12 +36,9 @@ public interface DOMDataTreeCursorAwareTransaction extends DOMDataTreeCursorProv
 
     /**
      * Cancels the transaction.
-     *
      * Transactions can only be cancelled if it was not yet submited.
-     *
      * Invoking cancel() on failed or already canceled will have no effect, and transaction is
      * considered cancelled.
-     *
      * Invoking cancel() on finished transaction (future returned by {@link #submit()} already
      * successfully completed) will always fail (return false).
      *
@@ -51,15 +51,14 @@ public interface DOMDataTreeCursorAwareTransaction extends DOMDataTreeCursorProv
     /**
      * Submits this transaction to be asynchronously applied to update the logical data tree. The
      * returned CheckedFuture conveys the result of applying the data changes.
+     *
      * <p>
      * <b>Note:</b> It is strongly recommended to process the CheckedFuture result in an
      * asynchronous manner rather than using the blocking get() method.
-     *
      * This call logically seals the transaction, which prevents the client from further changing
      * data tree using this transaction's cursor. Any subsequent calls to
      * <code>createCursorCursor(DOMDataTreeIdentifier</code>
      * or any of the cursor's methods will fail with {@link IllegalStateException}.
-     *
      * The transaction is marked as submitted and enqueued into the shard back-end for
      * processing.
      *
