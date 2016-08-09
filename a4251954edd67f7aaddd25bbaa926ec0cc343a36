@@ -16,6 +16,24 @@
       "revId": "a4251954edd67f7aaddd25bbaa926ec0cc343a36",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_8b3e13b7",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/DOMExceptionsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-09T14:23:37Z",
+      "side": 1,
+      "message": "well, we are usually still following the naming convention, so I like the change -- except I would suggest removing the \u0027Test\u0027 suffix.",
+      "parentUuid": "7a6b29fe_ab303257",
+      "revId": "a4251954edd67f7aaddd25bbaa926ec0cc343a36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
