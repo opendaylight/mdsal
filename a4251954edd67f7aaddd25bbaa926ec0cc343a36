@@ -52,6 +52,24 @@
       "revId": "a4251954edd67f7aaddd25bbaa926ec0cc343a36",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_cebbf90c",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/DOMExceptionsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-09T16:08:12Z",
+      "side": 1,
+      "message": "You are right Michael, JUnit v4 does not need prefix test.\n\nbut public void DOMNotificationRejectedExceptionTest gives checkstyle error.\n\nbut public void domNotificationRejectedException works fine.\n\nplease confirm if I can change to domNotificationRejectedException  or testDomNotificationRejectedException ?",
+      "parentUuid": "7a6b29fe_8b3e13b7",
+      "revId": "a4251954edd67f7aaddd25bbaa926ec0cc343a36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
