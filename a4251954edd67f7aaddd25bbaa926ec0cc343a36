@@ -34,6 +34,24 @@
       "revId": "a4251954edd67f7aaddd25bbaa926ec0cc343a36",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_4b899bea",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/DOMExceptionsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-09T15:26:06Z",
+      "side": 1,
+      "message": "if I remove prefix test, it gives ceckstyle errors like\nsrc/test/java/org/opendaylight/mdsal/dom/api/DOMExceptionsTest.java:[82,17] (naming) MethodName: Method name \u0027DomNotificationRejectedExceptionTest\u0027 must match pattern \u0027^[a-z][a-zA-Z0-9_]*$\u0027.\nSo prefix test or get is needed. As per Roberts comments, I can remove post fix Test but keep prefix?. pl confirm.",
+      "parentUuid": "7a6b29fe_ab303257",
+      "revId": "a4251954edd67f7aaddd25bbaa926ec0cc343a36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
