@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_ab303257",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/DOMExceptionsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-09T09:12:28Z",
+      "side": 1,
+      "message": "Brinda in JUnit v4 a @Test method does not have to have the test* prefix as it used to in JUnit v3.   I find your changes in this Test make it less and not more readable, so I would undo the changes in this File if you could?  (I don\u0027t think Checkstyle requires this, right?)",
+      "revId": "a4251954edd67f7aaddd25bbaa926ec0cc343a36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
