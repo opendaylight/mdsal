@@ -18,14 +18,14 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class ShardCanCommitCoordinationTask implements Callable<Boolean> {
+public class ShardCanCommitCoordinationTask implements Callable<Boolean> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShardCanCommitCoordinationTask.class);
 
     private final DOMDataTreeIdentifier rootShardPrefix;
     private final Collection<DOMStoreThreePhaseCommitCohort> cohorts;
 
-    ShardCanCommitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
+    public ShardCanCommitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
                                        final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
         this.rootShardPrefix = rootShardPrefix;
         this.cohorts = cohorts;
@@ -39,7 +39,7 @@ class ShardCanCommitCoordinationTask implements Callable<Boolean> {
             canCommitBlocking();
 
             return true;
-        } catch (TransactionCommitFailedException e) {
+        } catch (final TransactionCommitFailedException e) {
             LOG.warn("Shard: {} Submit Error during phase CanCommit, starting Abort", rootShardPrefix, e);
             //FIXME abort here
             throw e;
