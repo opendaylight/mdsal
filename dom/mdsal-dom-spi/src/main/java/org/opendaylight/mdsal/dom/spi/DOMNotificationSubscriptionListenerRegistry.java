@@ -19,5 +19,4 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 public interface DOMNotificationSubscriptionListenerRegistry  {
 
     <L extends DOMNotificationSubscriptionListener> ListenerRegistration<L> registerSubscriptionListener(L listener);
-
 }

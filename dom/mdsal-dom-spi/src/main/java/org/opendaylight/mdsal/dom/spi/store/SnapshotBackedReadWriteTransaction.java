@@ -9,13 +9,12 @@ package org.opendaylight.mdsal.dom.spi.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
-
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
@@ -29,7 +28,8 @@ import org.slf4j.LoggerFactory;
  * @param <T> identifier type
  */
 @Beta
-public final class SnapshotBackedReadWriteTransaction<T> extends SnapshotBackedWriteTransaction<T> implements DOMStoreReadWriteTransaction {
+public final class SnapshotBackedReadWriteTransaction<T> extends
+        SnapshotBackedWriteTransaction<T> implements DOMStoreReadWriteTransaction {
     private static final Logger LOG = LoggerFactory.getLogger(SnapshotBackedReadWriteTransaction.class);
 
     SnapshotBackedReadWriteTransaction(final T identifier, final boolean debug,
@@ -37,12 +37,14 @@ public final class SnapshotBackedReadWriteTransaction<T> extends SnapshotBackedW
         super(identifier, debug, snapshot, readyImpl);
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public CheckedFuture<Optional<NormalizedNode<?,?>>, ReadFailedException> read(final YangInstanceIdentifier path) {
         LOG.debug("Tx: {} Read: {}", getIdentifier(), path);
         checkNotNull(path, "Path must not be null.");
 
         final Optional<NormalizedNode<?, ?>> result;
+
         try {
             result = readSnapshotNode(path);
         } catch (Exception e) {
@@ -57,11 +59,11 @@ public final class SnapshotBackedReadWriteTransaction<T> extends SnapshotBackedW
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public CheckedFuture<Boolean, ReadFailedException> exists(final YangInstanceIdentifier path) {
         try {
-            return Futures.immediateCheckedFuture(
-                read(path).checkedGet().isPresent());
+            return Futures.immediateCheckedFuture(read(path).checkedGet().isPresent());
         } catch (ReadFailedException e) {
             return Futures.immediateFailedCheckedFuture(e);
         }

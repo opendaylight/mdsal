@@ -21,7 +21,6 @@ public interface DOMStoreThreePhaseCommitCohort {
     /**
      * Sends transaction associated with this three phase commit instance to the participant,
      * participant votes on the transaction, if the transaction should be committed or aborted.
-     *
      * @return ListenableFuture with vote of the participant. Vote {@link ListenableFuture#get()} is
      *         following:
      *         <ul>
@@ -34,10 +33,8 @@ public interface DOMStoreThreePhaseCommitCohort {
 
     /**
      * Initiates a pre-commit phase of associated transaction on datastore.
-     *
      * This message is valid only and only if and only if the participant responded
      * on {@link #canCommit()} call with positive response.
-     *
      * @return ListenableFuture representing acknowledgment for participant
      *        that pre-commit message was received and processed.
      */
@@ -45,7 +42,6 @@ public interface DOMStoreThreePhaseCommitCohort {
 
     /**
      * Initiates a abort phase of associated transaction on data store.
-     *
      * @return ListenableFuture representing acknowledgment for participant
      *        that abort message was received.
      */
@@ -53,7 +49,6 @@ public interface DOMStoreThreePhaseCommitCohort {
 
     /**
      * Initiates a commit phase on of associated transaction on data store.
-     *
      * @return ListenableFuture representing acknowledgment for participant
      *        that commit message was received and commit of transaction was
      *        processed.
