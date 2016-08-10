@@ -18,7 +18,8 @@ import java.util.concurrent.locks.Lock;
  */
 public final class RegistrationTreeSnapshot<T> implements AutoCloseable {
     @SuppressWarnings("rawtypes")
-    private static final AtomicIntegerFieldUpdater<RegistrationTreeSnapshot> CLOSED_UPDATER = AtomicIntegerFieldUpdater.newUpdater(RegistrationTreeSnapshot.class, "closed");
+    private static final AtomicIntegerFieldUpdater<RegistrationTreeSnapshot> CLOSED_UPDATER =
+        AtomicIntegerFieldUpdater.newUpdater(RegistrationTreeSnapshot.class, "closed");
     private final RegistrationTreeNode<T> node;
     private final Lock lock;
 

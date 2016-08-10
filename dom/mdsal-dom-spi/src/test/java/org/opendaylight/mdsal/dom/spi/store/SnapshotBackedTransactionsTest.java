@@ -18,6 +18,7 @@ import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.Trans
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 
+
 public class SnapshotBackedTransactionsTest {
 
     @Test
@@ -34,6 +35,7 @@ public class SnapshotBackedTransactionsTest {
                 new Object(), false, dataTreeSnapshot, transactionReadyPrototype));
     }
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test(expected = UnsupportedOperationException.class)
     public void constructorTest() throws Throwable {
         Constructor<SnapshotBackedTransactions> constructor = SnapshotBackedTransactions.class.getDeclaredConstructor();
