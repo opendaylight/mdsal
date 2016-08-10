@@ -25,6 +25,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 
+@SuppressWarnings("checkstyle:IllegalCatch")
 public class SnapshotBackedReadTransactionTest {
 
     private static final DataTreeSnapshot DATA_TREE_SNAPSHOT = mock(DataTreeSnapshot.class);
@@ -40,7 +41,6 @@ public class SnapshotBackedReadTransactionTest {
         assertTrue((Boolean) snapshotBackedReadTransaction.exists(YangInstanceIdentifier.EMPTY).get());
 
         assertEquals(optional, snapshotBackedReadTransaction.read(YangInstanceIdentifier.EMPTY).get());
-
         final Field stableSnapshotField = SnapshotBackedReadTransaction.class.getDeclaredField("stableSnapshot");
         stableSnapshotField.setAccessible(true);
 
@@ -51,6 +51,7 @@ public class SnapshotBackedReadTransactionTest {
         assertNull(stableSnapshot);
     }
 
+    @SuppressWarnings("checkstyle:IllegalThrows")
     @Test(expected = ReadFailedException.class)
     public void readTestWithException() throws Throwable {
         snapshotBackedReadTransaction.close();
@@ -62,6 +63,7 @@ public class SnapshotBackedReadTransactionTest {
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalThrows")
     @Test(expected = ReadFailedException.class)
     public void readNodeTestWithException() throws Throwable {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_SNAPSHOT).readNode(any());
@@ -74,8 +76,9 @@ public class SnapshotBackedReadTransactionTest {
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalThrows")
     @Test(expected = ReadFailedException.class)
-    public void existsTestWithException() throws Throwable {
+    public void existsTestWithException() throws Throwable  {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_SNAPSHOT).readNode(any());
 
         try {

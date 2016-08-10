@@ -7,14 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import com.google.common.collect.ForwardingObject;
+import com.google.common.util.concurrent.CheckedFuture;
+import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-
-import com.google.common.collect.ForwardingObject;
-import com.google.common.util.concurrent.CheckedFuture;
-import javax.annotation.Nonnull;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
@@ -26,7 +25,8 @@ public abstract class ForwardingDOMRpcImplementation extends ForwardingObject im
     protected abstract @Nonnull DOMRpcImplementation delegate();
 
     @Override
-    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final DOMRpcIdentifier type, final NormalizedNode<?, ?> input) {
+    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(
+            final DOMRpcIdentifier type, final NormalizedNode<?, ?> input) {
         return delegate().invokeRpc(type, input);
     }
 }

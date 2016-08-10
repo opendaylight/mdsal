@@ -31,8 +31,8 @@ public class AbstractDOMRpcProviderServiceTest extends AbstractDOMRpcProviderSer
 
     @Nonnull
     @Override
-    public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation
-            (@Nonnull T implementation, @Nonnull Set<DOMRpcIdentifier> rpcs) {
+    public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
+            @Nonnull T implementation, @Nonnull Set<DOMRpcIdentifier> rpcs) {
         return domRpcImplementationRegistration;
     }
 }

@@ -7,23 +7,24 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import org.opendaylight.mdsal.dom.api.DOMNotification;
-import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
-
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
+import org.opendaylight.mdsal.dom.api.DOMNotification;
+import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 
 /**
  * Utility implementations of {@link DOMNotificationPublishService} which forwards
  * all requests to a delegate instance.
  */
-public abstract class ForwardingDOMNotificationPublishService extends ForwardingObject implements DOMNotificationPublishService {
+public abstract class ForwardingDOMNotificationPublishService extends
+            ForwardingObject implements DOMNotificationPublishService {
     @Override
     protected abstract DOMNotificationPublishService delegate();
 
     @Override
-    public ListenableFuture<? extends Object> putNotification(final DOMNotification notification) throws InterruptedException {
+    public ListenableFuture<? extends Object> putNotification(
+            final DOMNotification notification) throws InterruptedException {
         return delegate().putNotification(notification);
     }
 
@@ -33,7 +34,8 @@ public abstract class ForwardingDOMNotificationPublishService extends Forwarding
     }
 
     @Override
-    public ListenableFuture<? extends Object> offerNotification(final DOMNotification notification, final long timeout,
+    public ListenableFuture<? extends Object> offerNotification(
+            final DOMNotification notification, final long timeout,
             final TimeUnit unit) throws InterruptedException {
         return delegate().offerNotification(notification, timeout, unit);
     }
