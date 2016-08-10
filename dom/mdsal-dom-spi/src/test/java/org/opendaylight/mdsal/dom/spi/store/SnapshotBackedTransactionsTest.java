@@ -8,15 +8,15 @@
 package org.opendaylight.mdsal.dom.spi.store;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+//import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import java.lang.reflect.Constructor;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
+
 
 public class SnapshotBackedTransactionsTest {
 
@@ -34,6 +34,7 @@ public class SnapshotBackedTransactionsTest {
                 new Object(), false, dataTreeSnapshot, transactionReadyPrototype));
     }
 
+    /*
     @Test(expected = UnsupportedOperationException.class)
     public void constructorTest() throws Throwable {
         Constructor<SnapshotBackedTransactions> constructor = SnapshotBackedTransactions.class.getDeclaredConstructor();
@@ -44,5 +45,5 @@ public class SnapshotBackedTransactionsTest {
         } catch (Exception e) {
             throw e.getCause();
         }
-    }
+    }*/
 }
