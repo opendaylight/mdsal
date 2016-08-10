@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
@@ -17,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;

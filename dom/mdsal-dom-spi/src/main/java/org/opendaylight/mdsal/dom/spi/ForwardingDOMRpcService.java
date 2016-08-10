@@ -7,14 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import com.google.common.collect.ForwardingObject;
+import com.google.common.util.concurrent.CheckedFuture;
+import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-
-import com.google.common.collect.ForwardingObject;
-import com.google.common.util.concurrent.CheckedFuture;
-import javax.annotation.Nonnull;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -27,12 +26,14 @@ public abstract class ForwardingDOMRpcService extends ForwardingObject implement
     protected abstract @Nonnull DOMRpcService delegate();
 
     @Override
-    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
+    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(
+            final SchemaPath type, final NormalizedNode<?, ?> input) {
         return delegate().invokeRpc(type, input);
     }
 
     @Override
-    public <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(final T listener) {
+    public <T extends DOMRpcAvailabilityListener>
+        ListenerRegistration<T> registerRpcListener(final T listener) {
         return delegate().registerRpcListener(listener);
     }
 }
