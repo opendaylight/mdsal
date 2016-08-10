@@ -9,7 +9,9 @@ package org.opendaylight.mdsal.dom.spi;
 
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import javax.annotation.Nonnull;
+
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 /**
@@ -74,7 +76,8 @@ public abstract class AbstractRegistrationTree<T> {
      * @param node Tree node
      * @param registration Registration instance
      */
-    protected final void removeRegistration(@Nonnull final RegistrationTreeNode<T> node, @Nonnull final T registration) {
+    protected final void removeRegistration(@Nonnull final RegistrationTreeNode<T> node,
+            @Nonnull final T registration) {
         // Take the write lock
         rwLock.writeLock().lock();
         try {
