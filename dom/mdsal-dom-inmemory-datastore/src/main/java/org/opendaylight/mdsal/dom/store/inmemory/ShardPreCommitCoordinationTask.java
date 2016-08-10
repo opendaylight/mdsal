@@ -9,6 +9,8 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.concurrent.Callable;
@@ -19,17 +21,21 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class ShardPreCommitCoordinationTask implements Callable<Void>{
+/**
+ * Task that coordinates the PreCommit phase of the provided {@link DOMStoreThreePhaseCommitCohort}'s
+ */
+@Beta
+public class ShardPreCommitCoordinationTask implements Callable<Void>{
 
     private static final Logger LOG = LoggerFactory.getLogger(ShardPreCommitCoordinationTask.class);
 
     private final DOMDataTreeIdentifier rootShardPrefix;
     private final Collection<DOMStoreThreePhaseCommitCohort> cohorts;
 
-    ShardPreCommitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
+    public ShardPreCommitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
                                        final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
-        this.rootShardPrefix = rootShardPrefix;
-        this.cohorts = cohorts;
+        this.rootShardPrefix = Preconditions.checkNotNull(rootShardPrefix);
+        this.cohorts = Preconditions.checkNotNull(cohorts);
     }
 
     @Override
@@ -40,7 +46,7 @@ class ShardPreCommitCoordinationTask implements Callable<Void>{
             preCommitBlocking();
 
             return null;
-        } catch (TransactionCommitFailedException e) {
+        } catch (final TransactionCommitFailedException e) {
             LOG.warn("Shard: {} Submit Error during phase {}, starting Abort", rootShardPrefix, e);
             //FIXME abort here
             throw e;
