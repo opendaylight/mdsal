@@ -18,14 +18,14 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class ShardCommitCoordinationTask implements Callable<Void> {
+public class ShardCommitCoordinationTask implements Callable<Void> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShardCommitCoordinationTask.class);
 
     private final DOMDataTreeIdentifier rootShardPrefix;
     private final Collection<DOMStoreThreePhaseCommitCohort> cohorts;
 
-    ShardCommitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
+    public ShardCommitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
                                        final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
         this.rootShardPrefix = rootShardPrefix;
         this.cohorts = cohorts;
@@ -39,7 +39,7 @@ class ShardCommitCoordinationTask implements Callable<Void> {
             commitBlocking();
 
             return null;
-        } catch (TransactionCommitFailedException e) {
+        } catch (final TransactionCommitFailedException e) {
             LOG.warn("Shard: {} Submit Error during phase Commit, starting Abort", rootShardPrefix, e);
             //FIXME abort here
             throw e;
