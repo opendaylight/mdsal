@@ -99,6 +99,11 @@
             <artifactId>mdsal-dom-inmemory-datastore</artifactId>
             <!-- scope=compile to make test-jar work -->
         </dependency>
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
