@@ -22,6 +22,30 @@
       "revId": "1a198223e8ab2048e73f4133ce8c6fed67403ce4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6fe45c0d",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/yangtools/binding/generator/util/generated/type/builder/EnumerationBuilderImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-08-10T10:19:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cf62d0d7",
+      "range": {
+        "startLine": 117,
+        "startChar": 0,
+        "endLine": 118,
+        "endChar": 60
+      },
+      "revId": "1a198223e8ab2048e73f4133ce8c6fed67403ce4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
