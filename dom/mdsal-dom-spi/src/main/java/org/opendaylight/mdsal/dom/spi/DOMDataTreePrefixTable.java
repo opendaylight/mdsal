@@ -20,9 +20,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Prefix table indexed by {@link DOMDataTreeIdentifier}.
- *
  * Stores values in tree and provides lookup of closest ancestor
- *
  *
  * @param <V> Value type
  */
@@ -31,7 +29,8 @@ import org.slf4j.LoggerFactory;
 public final class DOMDataTreePrefixTable<V> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DOMDataTreePrefixTable.class);
-    private final Map<LogicalDatastoreType, DOMDataTreePrefixTableEntry<V>> roots = new EnumMap<>(LogicalDatastoreType.class);
+    private final Map<LogicalDatastoreType, DOMDataTreePrefixTableEntry<V>> roots =
+        new EnumMap<>(LogicalDatastoreType.class);
 
     private DOMDataTreePrefixTable() {
 
@@ -42,7 +41,6 @@ public final class DOMDataTreePrefixTable<V> {
     }
 
     /**
-     *
      * Lookups entry by provided {@link DOMDataTreeIdentifier}, if entry is not present returns
      * closest non-null entry towards root or null if no entry towards root exists.
      *
@@ -59,29 +57,28 @@ public final class DOMDataTreePrefixTable<V> {
     }
 
     /**
-     * Stores value associated to the prefix
+     * Stores value associated to the prefix.
      *
      * @param prefix DOM prefix of value
      * @param value Value to be stored
      * @throws IllegalStateException If value is already stored for provided prefix
      */
     public void store(@Nonnull final DOMDataTreeIdentifier prefix, @Nonnull final V value) {
-        DOMDataTreePrefixTableEntry<V> t = roots.get(prefix.getDatastoreType());
-        if (t == null) {
-            t = new DOMDataTreePrefixTableEntry<V>();
-            roots.put(prefix.getDatastoreType(), t);
+        DOMDataTreePrefixTableEntry<V> domDataTreePrefixTableEntry = roots.get(prefix.getDatastoreType());
+        if (domDataTreePrefixTableEntry == null) {
+            domDataTreePrefixTableEntry = new DOMDataTreePrefixTableEntry<V>();
+            roots.put(prefix.getDatastoreType(), domDataTreePrefixTableEntry);
         }
 
-        t.store(prefix.getRootIdentifier(), value);
+        domDataTreePrefixTableEntry.store(prefix.getRootIdentifier(), value);
     }
 
     /**
      * Removes value associated to the prefix.
-     *
      * Value is removed only and only if full prefix match for stored value. Removal of prefix does
      * not remove child prefixes.
      *
-     * @param prefix
+     * @param prefix to be removed
      */
     public void remove(@Nonnull final DOMDataTreeIdentifier prefix) {
         final DOMDataTreePrefixTableEntry<V> t = roots.get(prefix.getDatastoreType());

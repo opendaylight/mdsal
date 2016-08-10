@@ -10,18 +10,18 @@ package org.opendaylight.mdsal.dom.spi.store;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
- * DOM Data Store transaction
- *
+ * DOM Data Store transaction.
+ * 
+ * <p>
  * See {@link DOMStoreReadTransaction}, {@link DOMStoreWriteTransaction} and {@link DOMStoreReadWriteTransaction}
  * for specific transaction types.
- *
  */
 public interface DOMStoreTransaction extends AutoCloseable, Identifiable<Object> {
     /**
-     * Unique identifier of the transaction
+     * Unique identifier of the transaction.
      */
     @Override
-    public Object getIdentifier();
+    Object getIdentifier();
 
     @Override
     void close();

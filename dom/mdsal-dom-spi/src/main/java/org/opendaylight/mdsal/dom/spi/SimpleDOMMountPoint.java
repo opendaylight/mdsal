@@ -8,14 +8,13 @@
 
 package org.opendaylight.mdsal.dom.spi;
 
-import org.opendaylight.mdsal.dom.api.DOMMountPoint;
-import org.opendaylight.mdsal.dom.api.DOMService;
-
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import com.google.common.base.Optional;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
+import org.opendaylight.mdsal.dom.api.DOMMountPoint;
+import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public class SimpleDOMMountPoint implements DOMMountPoint {
 
@@ -23,10 +22,13 @@ public class SimpleDOMMountPoint implements DOMMountPoint {
     private final ClassToInstanceMap<DOMService> services;
     private final SchemaContext schemaContext;
 
-    public static final SimpleDOMMountPoint create(final YangInstanceIdentifier identifier, final ClassToInstanceMap<DOMService> services, final SchemaContext ctx) {
+    public static final SimpleDOMMountPoint create(final YangInstanceIdentifier identifier,
+            final ClassToInstanceMap<DOMService> services, final SchemaContext ctx) {
         return new SimpleDOMMountPoint(identifier, services, ctx);
     }
-    private SimpleDOMMountPoint(final YangInstanceIdentifier identifier, final ClassToInstanceMap<DOMService> services, final SchemaContext ctx) {
+
+    private SimpleDOMMountPoint(final YangInstanceIdentifier identifier,
+            final ClassToInstanceMap<DOMService> services, final SchemaContext ctx) {
         this.identifier = identifier;
         this.services = ImmutableClassToInstanceMap.copyOf(services);
         this.schemaContext = ctx;

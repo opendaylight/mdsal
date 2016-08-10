@@ -34,6 +34,7 @@ public class SnapshotBackedTransactionsTest {
                 new Object(), false, dataTreeSnapshot, transactionReadyPrototype));
     }
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test(expected = UnsupportedOperationException.class)
     public void constructorTest() throws Throwable {
         Constructor<SnapshotBackedTransactions> constructor = SnapshotBackedTransactions.class.getDeclaredConstructor();

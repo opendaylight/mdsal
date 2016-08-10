@@ -16,17 +16,14 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
  * Listener which is notified when subscriptions changes and
  * provides set of notification types for which currently
  * subscriptions are in place.
- *
  */
 @Beta
 public interface DOMNotificationSubscriptionListener extends EventListener {
 
     /**
-     * Invoked when notification subscription changed
-     *
-     * @param currentTypes Set of notification types
-     * for which listeners are registered.
+     * Invoked when notification subscription changed.
+     * 
+     * @param currentTypes Set of notification types for which listeners are registered.
      */
     void onSubscriptionChanged(Set<SchemaPath> currentTypes);
-
 }
