@@ -9,13 +9,13 @@ package org.opendaylight.mdsal.dom.spi;
 
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
-
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 
 /**
  * Abstract base class for {@link DOMRpcImplementationRegistration} implementations.
  */
-public abstract class AbstractDOMRpcImplementationRegistration<T extends DOMRpcImplementation> extends AbstractObjectRegistration<T> implements DOMRpcImplementationRegistration<T> {
+public abstract class AbstractDOMRpcImplementationRegistration<T extends DOMRpcImplementation> extends
+        AbstractObjectRegistration<T> implements DOMRpcImplementationRegistration<T> {
     protected AbstractDOMRpcImplementationRegistration(final T instance) {
         super(instance);
     }

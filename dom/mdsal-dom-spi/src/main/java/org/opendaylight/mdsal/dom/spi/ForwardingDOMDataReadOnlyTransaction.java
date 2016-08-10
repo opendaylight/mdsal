@@ -7,14 +7,16 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
-
-import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import com.google.common.base.Optional;
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.CheckedFuture;
 import javax.annotation.Nonnull;
+
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -22,18 +24,21 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * Utility {@link DOMDataTreeReadTransaction} implementation which forwards all interface
  * method invocation to a delegate instance.
  */
-public abstract class ForwardingDOMDataReadOnlyTransaction extends ForwardingObject implements DOMDataTreeReadTransaction {
+public abstract class ForwardingDOMDataReadOnlyTransaction extends ForwardingObject
+        implements DOMDataTreeReadTransaction {
     @Override
     @Nonnull
     protected abstract DOMDataTreeReadTransaction delegate();
 
     @Override
-    public CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> read(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
+    public CheckedFuture<Optional<NormalizedNode<?, ?>>,
+        ReadFailedException> read(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         return delegate().read(store, path);
     }
 
     @Override
-    public CheckedFuture<Boolean, ReadFailedException> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
+    public CheckedFuture<Boolean, ReadFailedException> exists(final LogicalDatastoreType store,
+            final YangInstanceIdentifier path) {
         return delegate().exists(store, path);
     }
 
