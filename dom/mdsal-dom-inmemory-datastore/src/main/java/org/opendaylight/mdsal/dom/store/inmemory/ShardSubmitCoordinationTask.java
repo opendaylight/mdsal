@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import com.google.common.annotations.Beta;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -16,7 +17,12 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class ShardSubmitCoordinationTask implements Callable<Void> {
+/**
+ * Task that coordinates all phases of transaction submit from the provided {@link DOMStoreThreePhaseCommitCohort}'s.
+ * Each phase will only be started once all cohorts have finished the previous phase.
+ */
+@Beta
+public class ShardSubmitCoordinationTask implements Callable<Void> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShardSubmitCoordinationTask.class);
 
@@ -26,7 +32,7 @@ class ShardSubmitCoordinationTask implements Callable<Void> {
     private final ShardCommitCoordinationTask commitCoordinationTask;
 
 
-    ShardSubmitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
+    public ShardSubmitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
                                        final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
         this.rootShardPrefix = rootShardPrefix;
 
