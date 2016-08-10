@@ -9,13 +9,12 @@ package org.opendaylight.mdsal.dom.spi.store;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import org.opendaylight.mdsal.common.api.ReadFailedException;
-
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
@@ -23,16 +22,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * Implementation of read-only transaction backed by {@link DataTreeSnapshot}
- *
  * Implementation of read-only transaction backed by {@link DataTreeSnapshot} which delegates most
  * of its calls to similar methods provided by underlying snapshot.
  *
  * @param <T> identifier type
  */
 @Beta
-public final class SnapshotBackedReadTransaction<T> extends AbstractDOMStoreTransaction<T> implements DOMStoreReadTransaction {
+public final class SnapshotBackedReadTransaction<T> extends
+        AbstractDOMStoreTransaction<T> implements DOMStoreReadTransaction {
+
     private static final Logger LOG = LoggerFactory.getLogger(SnapshotBackedReadTransaction.class);
     private volatile DataTreeSnapshot stableSnapshot;
 
@@ -55,6 +53,7 @@ public final class SnapshotBackedReadTransaction<T> extends AbstractDOMStoreTran
         stableSnapshot = null;
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public CheckedFuture<Optional<NormalizedNode<?,?>>, ReadFailedException> read(final YangInstanceIdentifier path) {
         LOG.debug("Tx: {} Read: {}", getIdentifier(), path);
@@ -67,9 +66,9 @@ public final class SnapshotBackedReadTransaction<T> extends AbstractDOMStoreTran
 
         try {
             return Futures.immediateCheckedFuture(snapshot.readNode(path));
-        } catch (final Exception e) {
+        } catch (Exception e) {
             LOG.error("Tx: {} Failed Read of {}", getIdentifier(), path, e);
-            return Futures.immediateFailedCheckedFuture(new ReadFailedException("Read failed",e));
+            return Futures.immediateFailedCheckedFuture(new ReadFailedException("Read failed", e));
         }
     }
 
@@ -80,7 +79,7 @@ public final class SnapshotBackedReadTransaction<T> extends AbstractDOMStoreTran
 
         try {
             return Futures.immediateCheckedFuture(read(path).checkedGet().isPresent());
-        } catch (final ReadFailedException e) {
+        } catch (ReadFailedException e) {
             return Futures.immediateFailedCheckedFuture(e);
         }
     }

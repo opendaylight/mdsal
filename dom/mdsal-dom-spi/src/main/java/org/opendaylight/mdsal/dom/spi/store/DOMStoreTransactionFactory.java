@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.spi.store;
 
 /**
- * Factory for DOM Store Transactions
+ * Factory for DOM Store Transactions.
  *
  * <p>
  * Factory provides method to construct read-only, read-write and write-only
@@ -28,24 +28,23 @@ package org.opendaylight.mdsal.dom.spi.store;
 public interface DOMStoreTransactionFactory {
 
     /**
-     *
-     * Creates a read only transaction
+     * Creates a read only transaction.
      *
      * <p>
      * Creates a new read-only transaction, which provides read access to
      * snapshot of current state.
      *
+     * <p>
      * See {@link DOMStoreReadTransaction} for more information.
      *
      * @return new {@link DOMStoreReadTransaction}
      * @throws IllegalStateException
      *             If state of factory prevents allocating new transaction.
-     *
      */
     DOMStoreReadTransaction newReadOnlyTransaction();
 
     /**
-     * Creates write only transaction
+     * Creates write only transaction.
      *
      * <p>
      * See {@link DOMStoreWriteTransaction} for more information.
@@ -56,7 +55,7 @@ public interface DOMStoreTransactionFactory {
     DOMStoreWriteTransaction newWriteOnlyTransaction();
 
     /**
-     * Creates Read-Write transaction
+     * Creates Read-Write transaction.
      *
      * <p>
      * See {@link DOMStoreReadWriteTransaction} for more information.

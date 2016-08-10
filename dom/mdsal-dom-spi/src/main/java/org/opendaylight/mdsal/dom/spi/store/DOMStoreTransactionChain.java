@@ -18,15 +18,12 @@ public interface DOMStoreTransactionChain extends DOMStoreTransactionFactory, Au
     /**
      * Create a new read only transaction which will continue the chain. The
      * previous write transaction has to be either READY or CANCELLED.
-     *
      * If previous write transaction was already commited to data store, new
      * read-only transaction is same as obtained via {@link DOMStore#newReadOnlyTransaction()}
      * and contains merged result of previous one and current state of data store.
-     *
      * Otherwise read-only transaction presents isolated view as if previous read-write
      * transaction was successful. State which was introduced by other transactions
      * outside this transaction chain after creation of previous transaction is not visible.
-     *
      * @return New transaction in the chain.
      * @throws IllegalStateException
      *             if the previous transaction was not READY or CANCELLED, or
@@ -39,10 +36,12 @@ public interface DOMStoreTransactionChain extends DOMStoreTransactionFactory, Au
      * Create a new read write transaction which will continue the chain. The
      * previous read-write transaction has to be either COMMITED or CANCELLED.
      *
+     * <p>
      * If previous write transaction was already commited to data store, new
      * read-write transaction is same as obtained via {@link DOMStore#newReadWriteTransaction()}
      * and contains merged result of previous one and current state of data store.
      *
+     * <p>
      * Otherwise read-write transaction presents isolated view as if previous read-write
      * transaction was successful. State which was introduced by other transactions
      * outside this transaction chain after creation of previous transaction is not visible.
@@ -59,7 +58,6 @@ public interface DOMStoreTransactionChain extends DOMStoreTransactionFactory, Au
      * Create a new write-only transaction which will continue the chain. The
      * previous read-write transaction has to be either READY or CANCELLED.
      *
-     *
      * @return New transaction in the chain.
      * @throws IllegalStateException
      *             if the previous transaction was not READY or CANCELLED, or
@@ -71,6 +69,7 @@ public interface DOMStoreTransactionChain extends DOMStoreTransactionFactory, Au
     /**
      * Closes Transaction Chain.
      *
+     * <p>
      * Close method of transaction chain does not guarantee that
      * last alocated transaction is ready or was submitted.
      *
