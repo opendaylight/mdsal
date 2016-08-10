@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -29,7 +30,7 @@ public class SnapshotBackedReadWriteTransactionTest {
 
     private static final DataTreeSnapshot DATA_TREE_SNAPSHOT = mock(DataTreeSnapshot.class);
     private static final DataTreeModification DATA_TREE_MODIFICATION = mock(DataTreeModification.class);
-    private static final TransactionReadyPrototype TRANSACTION_READY_PROTOTYPE =  mock(TransactionReadyPrototype.class);
+    private static final TransactionReadyPrototype TRANSACTION_READY_PROTOTYPE = mock(TransactionReadyPrototype.class);
     private SnapshotBackedReadWriteTransaction snapshotBackedReadWriteTransaction;
 
     @Before
@@ -49,6 +50,7 @@ public class SnapshotBackedReadWriteTransactionTest {
         assertEquals(optional, snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.EMPTY).get());
     }
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test(expected = ReadFailedException.class)
     public void readTestWithNullException() throws Throwable {
         doReturn(null).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.EMPTY);
@@ -60,6 +62,7 @@ public class SnapshotBackedReadWriteTransactionTest {
         }
     }
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test(expected = ReadFailedException.class)
     public void readNodeTestWithException() throws Throwable {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_MODIFICATION).readNode(any());
@@ -71,6 +74,7 @@ public class SnapshotBackedReadWriteTransactionTest {
         }
     }
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test(expected = ReadFailedException.class)
     public void existsTestWithException() throws Throwable {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_MODIFICATION).readNode(any());
