@@ -7,12 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import com.google.common.collect.ForwardingObject;
+import javax.annotation.Nonnull;
+
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-
-import com.google.common.collect.ForwardingObject;
-import javax.annotation.Nonnull;
 
 /**
  * Utility {@link DOMTransactionChain} implementation which forwards all interface

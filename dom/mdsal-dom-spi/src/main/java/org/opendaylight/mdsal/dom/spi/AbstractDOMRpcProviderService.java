@@ -7,19 +7,21 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import com.google.common.collect.ImmutableSet;
+
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Convenience abstract base class for {@link DOMRpcProviderService} implementations.
  */
 public abstract class AbstractDOMRpcProviderService implements DOMRpcProviderService {
     @Override
-    public final <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(final T implementation, final DOMRpcIdentifier... types) {
+    public final <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T>
+            registerRpcImplementation(final T implementation, final DOMRpcIdentifier... types) {
         return registerRpcImplementation(implementation, ImmutableSet.copyOf(types));
     }
 }
