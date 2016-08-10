@@ -7,12 +7,11 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-
 import com.google.common.collect.ForwardingObject;
 import com.google.common.util.concurrent.CheckedFuture;
 import javax.annotation.Nonnull;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -21,7 +20,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * Utility {@link DOMDataTreeWriteTransaction} implementation which forwards all interface
  * method invocation to a delegate instance.
  */
-public abstract class ForwardingDOMDataWriteTransaction extends ForwardingObject implements DOMDataTreeWriteTransaction {
+public abstract class ForwardingDOMDataWriteTransaction extends ForwardingObject
+                implements DOMDataTreeWriteTransaction {
     @Override
     protected abstract @Nonnull DOMDataTreeWriteTransaction delegate();
 
@@ -31,12 +31,14 @@ public abstract class ForwardingDOMDataWriteTransaction extends ForwardingObject
     }
 
     @Override
-    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    public void put(final LogicalDatastoreType store, final YangInstanceIdentifier path,
+                final NormalizedNode<?, ?> data) {
         delegate().put(store, path, data);
     }
 
     @Override
-    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    public void merge(final LogicalDatastoreType store, final YangInstanceIdentifier path,
+                final NormalizedNode<?, ?> data) {
         delegate().merge(store, path, data);
     }
 
