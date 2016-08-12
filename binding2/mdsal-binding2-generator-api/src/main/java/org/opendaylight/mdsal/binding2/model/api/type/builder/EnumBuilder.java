@@ -9,7 +9,7 @@
 package org.opendaylight.mdsal.binding2.model.api.type.builder;
 
 import com.google.common.annotations.Beta;
-import java.util.Enumeration;
+import org.opendaylight.mdsal.binding2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 
@@ -23,10 +23,10 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 public interface EnumBuilder extends Type {
     /**
      * The method creates new AnnotationTypeBuilder containing specified package
-     * name an annotation name. <br>
+     * name and annotation name. <br>
      * Neither the package name or annotation name can contain <code>null</code>
      * references. In case that any of parameters contains <code>null</code> the
-     * method SHOULD thrown {@link IllegalArgumentException}
+     * method SHOULD throw {@link IllegalArgumentException}
      *
      * @param packageName
      *            Package Name of Annotation Type
@@ -41,7 +41,7 @@ public interface EnumBuilder extends Type {
      * @param name
      * @param value
      */
-    void addValue(final String name, final Integer value, final String description);
+    void addValue(final String name, final int value, final String description);
 
     /**
      *
