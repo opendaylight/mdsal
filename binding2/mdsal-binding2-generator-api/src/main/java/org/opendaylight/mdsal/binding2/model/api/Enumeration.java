@@ -60,6 +60,13 @@ public interface Enumeration extends GeneratedType {
         String getName();
 
         /**
+         * Returns the binding representation for the name of the enumeration item.
+         *
+         * @return the binding representation for the name of the enumeration item.
+         */
+        String getMappedName();
+
+        /**
          * Returns value of the enumeration item.
          *
          * @return the value of the enumeration item.
