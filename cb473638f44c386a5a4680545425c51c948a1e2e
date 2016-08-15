@@ -1,0 +1,225 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_ca8748d6",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/AbstractRegistrationTree.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "If I correctly understand Gerrit, this is introducing new empty lines between import sections, right?  We do not want these.. and the Ctrl-Shift-O Format Import pre-configured in https://github.com/vorburger/opendaylight-eclipse-setup doesn\u0027t do this.",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2a6ebc2f",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/AbstractRegistrationTree.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "no empty line here plz",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6a78b4f2",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/DOMDataTreePrefixTable.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "no empty line here plz",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_8a64304a",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/DOMDataTreePrefixTable.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "Keep an empty line before @param etc. plz",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_ca5e2876",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/DOMDataTreePrefixTable.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "keep",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_4a4a18ad",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/ForwardingDOMStoreThreePhaseCommitCohort.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "newline here please, after class and before method",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_caec6892",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "OK for me in this particular case",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2a035c43",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "don\u0027t remove the , e) root cause - why would you do that??",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6afd543a",
+        "filename": "dom/mdsal-dom-spi/src/test/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransactionTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "do not comment out - just remove, if un-used",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_caa3c84d",
+        "filename": "dom/mdsal-dom-spi/src/test/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransactionTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "better only put this on individual @Test and not class (it\u0027s either/or, one place is enough, and fine-grained is better)",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_4af85849",
+        "filename": "dom/mdsal-dom-spi/src/test/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransactionTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "do not comment out; Checkstyle clean up should never lower test coverage",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_4c007501",
+        "filename": "dom/mdsal-dom-spi/src/test/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadWriteTransactionTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "do not comment out; Checkstyle clean up should never lower test coverage",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2c03790e",
+        "filename": "dom/mdsal-dom-spi/src/test/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedTransactionsTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:48:52Z",
+      "side": 1,
+      "message": "do not comment out; Checkstyle clean up should never lower test coverage",
+      "revId": "cb473638f44c386a5a4680545425c51c948a1e2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
