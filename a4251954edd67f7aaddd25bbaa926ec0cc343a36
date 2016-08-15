@@ -88,6 +88,24 @@
       "revId": "a4251954edd67f7aaddd25bbaa926ec0cc343a36",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_0acdc05d",
+        "filename": "dom/mdsal-dom-api/src/test/java/org/opendaylight/mdsal/dom/api/DOMExceptionsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:18:51Z",
+      "side": 1,
+      "message": "Brinda based on Robert\u0027s comment (\"like the change -- except I would suggest removing the \u0027Test\u0027 suffix\") I would use testDomNotificationRejectedException.",
+      "parentUuid": "7a6b29fe_cebbf90c",
+      "revId": "a4251954edd67f7aaddd25bbaa926ec0cc343a36",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
