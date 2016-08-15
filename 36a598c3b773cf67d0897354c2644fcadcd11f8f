@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_ea368451",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeCursorAwareTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-15T10:18:51Z",
+      "side": 0,
+      "message": "Robert FYI I think http://checkstyle.sourceforge.net/config_javadoc.html#JavadocParagraph should have caught that but didn\u0027t - looks like a bug in Checkstyle..",
+      "parentUuid": "7a6b29fe_27a9e07b",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 6
+      },
+      "revId": "36a598c3b773cf67d0897354c2644fcadcd11f8f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_14d0574f",
         "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeProducer.java",
         "patchSetId": 5
