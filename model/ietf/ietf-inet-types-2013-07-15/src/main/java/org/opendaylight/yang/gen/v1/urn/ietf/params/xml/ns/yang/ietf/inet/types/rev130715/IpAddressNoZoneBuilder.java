@@ -11,7 +11,6 @@ package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 /**
  */
 public class IpAddressNoZoneBuilder {
@@ -26,12 +25,6 @@ public class IpAddressNoZoneBuilder {
         final Matcher ipv4NoZoneMatcher = IPV4_NO_ZONE_PATTERN.matcher(defaultValue);
 
         if (ipv4NoZoneMatcher.matches()) {
-            if (IPV6_NO_ZONE_PATTERN1.matcher(defaultValue).matches()) {
-                throw new IllegalArgumentException(
-                    String.format("Cannot create IpNoZoneAddress from \"%s\", matches both %s and %s",
-                        defaultValue, Ipv4AddressNoZone.class.getSimpleName(), Ipv6AddressNoZone.class.getSimpleName()));
-
-            }
             return new IpAddressNoZone((new Ipv4AddressNoZone(defaultValue)));
         } else if (IPV6_NO_ZONE_PATTERN1.matcher(defaultValue).matches()) {
             return new IpAddressNoZone((new Ipv6AddressNoZone(defaultValue)));
@@ -39,5 +32,4 @@ public class IpAddressNoZoneBuilder {
             throw new IllegalArgumentException("Cannot create IpAddress from " + defaultValue);
         }
     }
-
 }
