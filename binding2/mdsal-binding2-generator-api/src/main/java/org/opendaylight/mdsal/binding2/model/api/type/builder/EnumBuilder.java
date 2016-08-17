@@ -11,6 +11,7 @@ package org.opendaylight.mdsal.binding2.model.api.type.builder;
 import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.binding2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding2.model.api.Type;
+import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 
 /**
@@ -39,14 +40,24 @@ public interface EnumBuilder extends Type {
     /**
      *
      * @param name
+     *          assigned name
      * @param value
+     *          as optionally defined in YANG model
+     * @param description
+     *          as optionally defined in YANG model
+     * @param reference
+     *          as optionally defined in YANG model
+     * @param status
+     *          as optionally defined in YANG model
      */
-    void addValue(final String name, final int value, final String description);
+    void addValue(final String name, final int value, final String description,
+                  final String reference, final Status status);
 
     /**
      *
      * @param definingType
-     * @return
+     *              Type
+     * @return Enumeration
      */
     Enumeration toInstance(final Type definingType);
 
