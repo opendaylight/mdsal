@@ -142,7 +142,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
             Preconditions.checkArgument(producer == null, "Subtree %s is attached to producer %s", subtree, producer);
 
             final DOMDataTreePrefixTableEntry<ShardRegistration<?>> possibleShardReg = shards.lookup(subtree);
-            if (possibleShardReg != null) {
+            if (possibleShardReg != null && possibleShardReg.getValue() != null) {
                 shardMap.put(subtree, possibleShardReg.getValue().getInstance());
             }
         }

@@ -100,6 +100,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     @Override
     public void onChildDetached(final DOMDataTreeIdentifier prefix, final DOMDataTreeShard child) {
         childShards.remove(prefix);
+        childShardsTable.remove(prefix);
     }
 
     @Override

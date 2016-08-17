@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -107,6 +108,38 @@ public class ShardedDOMDataTreeTest {
     public void testProducerPathContention() throws Exception {
         dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
         dataTreeService.createProducer(Collections.singletonList(TEST_ID));
+    }
+
+    @Test
+    public void testShardRegistrationClose() throws Exception {
+        rootShardReg.close();
+
+        final InMemoryDOMDataTreeShard newRootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1, 1);
+        newRootShard.onGlobalContextUpdated(schemaContext);
+        final DOMDataTreeProducer shardRegProducer = dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
+
+        ListenerRegistration<InMemoryDOMDataTreeShard> newRootShardReg =
+                dataTreeService.registerDataTreeShard(ROOT_ID, rootShard, shardRegProducer);
+        shardRegProducer.close();
+
+        final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1, 1);
+        innerShard.onGlobalContextUpdated(schemaContext);
+        final DOMDataTreeProducer shardRegProducer2 = dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
+        ListenerRegistration<InMemoryDOMDataTreeShard> innerShardReg = dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, shardRegProducer2);
+
+        innerShardReg.close();
+        // try to register the shard again
+        innerShardReg = dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, shardRegProducer2);
+        final DOMDataTreeCursorAwareTransaction tx = shardRegProducer2.createTransaction(false);
+        final DOMDataTreeWriteCursor cursor = tx.createCursor(INNER_CONTAINER_ID);
+        assertNotNull(cursor);
+
+        cursor.close();
+        tx.cancel();
+        shardRegProducer2.close();
+
+        innerShardReg.close();
+        newRootShardReg.close();
     }
 
     @Test
