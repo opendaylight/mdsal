@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_eb91559a",
+        "filename": "model/ietf/ietf-inet-types-2013-07-15/src/test/java/org/opendaylight/yang/gen/v1/urn/ietf/params/xml/ns/yang/ietf/inet/types/rev100924/IpAddressNoZoneBuilderTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-08-18T09:38:00Z",
+      "side": 1,
+      "message": "please try to test it also with hybrid forms (so called IPv4 compatible)",
+      "range": {
+        "startLine": 22,
+        "startChar": 7,
+        "endLine": 28,
+        "endChar": 5
+      },
+      "revId": "5bca80b4de42db7b7c38ad36ae8bed558c95226b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
