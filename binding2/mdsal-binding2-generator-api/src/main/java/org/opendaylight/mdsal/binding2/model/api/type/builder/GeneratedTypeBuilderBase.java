@@ -208,7 +208,7 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      * @param schemaPath
      *            a list of QNames which represent schema path in schema tree
      */
-    void setSchemaPath(Iterable<QName> schemaPath);
+    void setSchemaPath(List<QName> schemaPath);
 
     /**
      * Set a string that is used to specify a textual cross-reference to an
