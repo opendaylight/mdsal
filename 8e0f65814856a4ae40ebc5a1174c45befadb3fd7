@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_11a682c1",
+        "filename": "model/ietf/ietf-inet-types-2013-07-15/src/test/java/org/opendaylight/yang/gen/v1/urn/ietf/params/xml/ns/yang/ietf/inet/types/rev100924/IpAddressNoZoneBuilderTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-18T14:16:15Z",
+      "side": 1,
+      "message": "wrong revision ...",
+      "range": {
+        "startLine": 8,
+        "startChar": 81,
+        "endLine": 8,
+        "endChar": 90
+      },
+      "revId": "8e0f65814856a4ae40ebc5a1174c45befadb3fd7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
