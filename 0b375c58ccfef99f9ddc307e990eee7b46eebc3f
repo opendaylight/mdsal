@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_22aa47d4",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/AbstractBaseType.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-19T08:39:44Z",
+      "side": 1,
+      "message": "name indicates abstract class",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 12
+      },
+      "revId": "0b375c58ccfef99f9ddc307e990eee7b46eebc3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_029d8bbc",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/AbstractBaseType.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-19T08:39:44Z",
+      "side": 1,
+      "message": "this.packageName \u003d Preconditions.checkNotNull(packageName);",
+      "range": {
+        "startLine": 46,
+        "startChar": 8,
+        "endLine": 46,
+        "endChar": 34
+      },
+      "revId": "0b375c58ccfef99f9ddc307e990eee7b46eebc3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_82b07b44",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/AbstractBaseType.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-19T08:39:44Z",
+      "side": 1,
+      "message": "this is implied to be dead code by the fact that classes match and this class implements Type",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 9
+      },
+      "revId": "0b375c58ccfef99f9ddc307e990eee7b46eebc3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c2ba7322",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/AbstractBaseType.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-19T08:39:44Z",
+      "side": 1,
+      "message": "name and packageName are both non-null, straight equals is appropriate",
+      "range": {
+        "startLine": 70,
+        "startChar": 15,
+        "endLine": 70,
+        "endChar": 108
+      },
+      "revId": "0b375c58ccfef99f9ddc307e990eee7b46eebc3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_02846b5c",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/Binding2GeneratorUtil.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-19T08:39:44Z",
+      "side": 1,
+      "message": "ImmutableList.of() is better",
+      "range": {
+        "startLine": 43,
+        "startChar": 19,
+        "endLine": 43,
+        "endChar": 43
+      },
+      "revId": "0b375c58ccfef99f9ddc307e990eee7b46eebc3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2281a74a",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/Binding2GeneratorUtil.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-19T08:39:44Z",
+      "side": 1,
+      "message": "do not assume this is a property",
+      "range": {
+        "startLine": 94,
+        "startChar": 62,
+        "endLine": 94,
+        "endChar": 90
+      },
+      "revId": "0b375c58ccfef99f9ddc307e990eee7b46eebc3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c2bf13fa",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/Types.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-19T08:39:44Z",
+      "side": 1,
+      "message": "do we still need Future?",
+      "range": {
+        "startLine": 43,
+        "startChar": 59,
+        "endLine": 43,
+        "endChar": 71
+      },
+      "revId": "0b375c58ccfef99f9ddc307e990eee7b46eebc3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
