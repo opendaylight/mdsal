@@ -16,6 +16,24 @@
       "revId": "cf079c86e7924776fb170adab48f2f67f993b6c5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_19bb3d73",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/package-info.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-22T19:50:28Z",
+      "side": 0,
+      "message": "CheckStyle complains with errors:\n src/main/java/org/opendaylight/mdsal/dom/spi/store/package-info.java:[1] (regexp) RegexpMultiline: Line has Windows line delimiter.\n[ERROR] src/main/java/org/opendaylight/mdsal/dom/spi/store/package-info.java:[2] (regexp) RegexpMultiline: Line has Windows line delimiter.\n[ERROR] src/main/java/org/opendaylight/mdsal/dom/spi/store/package-info.java:[3] (regexp) RegexpMultiline: Line has Windows line delimiter.\n[ERROR] src/main/java/org/opendaylight/mdsal/dom/spi/store/package-info.java:[4] (regexp) RegexpMultiline: Line has Windows line delimiter.\n[ERROR] src/main/java/org/opendaylight/mdsal/dom/spi/store/package-info.java:[5] (regexp) RegexpMultiline: Line has Windows line delimiter.\n[ERROR] src/main/java/org/opendaylight/mdsal/dom/spi/store/package-info.java:[6] (regexp) RegexpMultiline: Line has Windows line delimiter.\n[ERROR] src/main/java/org/opendaylight/mdsal/dom/spi/store/package-info.java:[7] (regexp) RegexpMultiline: Line has Windows line delimiter.\n[ERROR] src/main/java/org/opendaylight/mdsal/dom/spi/store/package-info.java:[8] (javadoc) JavadocStyle: Missing a Javadoc comment.",
+      "parentUuid": "7a6b29fe_0afe6038",
+      "revId": "cf079c86e7924776fb170adab48f2f67f993b6c5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
