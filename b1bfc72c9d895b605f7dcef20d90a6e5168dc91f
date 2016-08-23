@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_8a8c0981",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/AbstractDOMRpcProviderService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-08-23T10:53:01Z",
+      "side": 1,
+      "message": "please set up your IDE to follow coding style rules. Thank you.",
+      "revId": "b1bfc72c9d895b605f7dcef20d90a6e5168dc91f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_eaeadd0d",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/DOMNotificationSubscriptionListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-08-23T10:53:01Z",
+      "side": 1,
+      "message": "please set up your IDE to follow coding style rules. Thank you.",
+      "revId": "b1bfc72c9d895b605f7dcef20d90a6e5168dc91f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_0af8f9e3",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/DefaultDOMRpcResult.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-08-23T10:53:01Z",
+      "side": 1,
+      "message": "please set up your IDE to follow coding style rules. Thank you.",
+      "revId": "b1bfc72c9d895b605f7dcef20d90a6e5168dc91f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_ead13d58",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/ForwardingDOMDataBroker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-08-23T10:53:01Z",
+      "side": 1,
+      "message": "please set up your IDE to follow coding style rules. Thank you.",
+      "revId": "b1bfc72c9d895b605f7dcef20d90a6e5168dc91f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_cad44149",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/ForwardingDOMDataReadOnlyTransaction.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-08-23T10:53:01Z",
+      "side": 1,
+      "message": "please set up your IDE to follow coding style rules. Thank you.",
+      "revId": "b1bfc72c9d895b605f7dcef20d90a6e5168dc91f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2accd5bb",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/ForwardingDOMDataWriteTransaction.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-08-23T10:53:01Z",
+      "side": 1,
+      "message": "please set up your IDE to follow coding style rules. Thank you.",
+      "revId": "b1bfc72c9d895b605f7dcef20d90a6e5168dc91f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
