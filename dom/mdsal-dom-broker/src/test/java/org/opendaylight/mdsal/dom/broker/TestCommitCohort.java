@@ -16,11 +16,10 @@ public enum TestCommitCohort implements DOMStoreThreePhaseCommitCohort {
 
     ALLWAYS_SUCCESS(true, true, true, true), CAN_COMMIT_FAILED(false, false, false, true), PRE_COMMIT_FAILED(true,
             false, false, true), COMMIT_FAILED(true, true, false, true);
-    ;
 
 
-
-    private TestCommitCohort(final boolean canCommit, final boolean preCommit, final boolean commit, final boolean abort) {
+    TestCommitCohort(final boolean canCommit, final boolean preCommit,
+            final boolean commit, final boolean abort) {
         this.canCommit = Futures.immediateFuture(canCommit);
         this.preCommit = immediate(canCommit, new IllegalStateException());
         this.commit = immediate(commit, new IllegalStateException());
@@ -53,8 +52,8 @@ public enum TestCommitCohort implements DOMStoreThreePhaseCommitCohort {
         return commit;
     }
 
-    private static ListenableFuture<Void> immediate(final boolean isSuccess, final Exception e) {
-        return isSuccess ? Futures.<Void>immediateFuture(null) : Futures.<Void>immediateFailedFuture(e);
+    private static ListenableFuture<Void> immediate(final boolean isSuccess, final Exception except) {
+        return isSuccess ? Futures.<Void>immediateFuture(null) : Futures.<Void>immediateFailedFuture(except);
     }
 
 

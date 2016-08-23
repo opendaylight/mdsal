@@ -22,6 +22,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class RoutedDOMRpcRoutingTableEntryTest extends TestUtils {
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test
     public void basicTest() throws Exception {
         final RpcDefinition rpcDefinition = mock(RpcDefinition.class);

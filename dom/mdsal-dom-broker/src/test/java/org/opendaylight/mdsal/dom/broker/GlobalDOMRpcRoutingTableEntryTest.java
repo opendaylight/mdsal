@@ -26,6 +26,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class GlobalDOMRpcRoutingTableEntryTest extends TestUtils {
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test
     public void basicTest() throws Exception {
         final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> rpcImplementations = new HashMap<>();
@@ -45,11 +46,11 @@ public class GlobalDOMRpcRoutingTableEntryTest extends TestUtils {
         assertTrue(globalDOMRpcRoutingTableEntry.newInstance(rpcImplementations).getImplementations().containsValue(
                 rpcImplementation));
 
-        try{
+        try {
             globalDOMRpcRoutingTableEntry.newInstance(rpcImplementations)
                     .invokeRpc(TEST_CONTAINER).checkedGet();
             fail("Expected DOMRpcImplementationNotAvailableException");
-        }catch(DOMRpcImplementationNotAvailableException e){
+        } catch (DOMRpcImplementationNotAvailableException e) {
             assertTrue(e.getMessage().contains(EXCEPTION_TEXT));
         }
     }

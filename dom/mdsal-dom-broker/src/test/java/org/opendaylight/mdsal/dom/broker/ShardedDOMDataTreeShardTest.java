@@ -74,7 +74,8 @@ public class ShardedDOMDataTreeShardTest {
     @Test
     public void attachAndRemoveShard() throws DOMDataTreeShardingConflictException {
         doNothing().when(rootShard).onChildAttached(TEST_ID, childShard);
-        final ListenerRegistration<DOMDataTreeShard> reg = shardingService.registerDataTreeShard(TEST_ID, childShard, testProducer);
+        final ListenerRegistration<DOMDataTreeShard> reg =
+                shardingService.registerDataTreeShard(TEST_ID, childShard, testProducer);
         verify(rootShard, times(1)).onChildAttached(TEST_ID, childShard);
 
         doNothing().when(rootShard).onChildDetached(TEST_ID, childShard);

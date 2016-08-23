@@ -63,7 +63,8 @@ public class ShardedDOMDataWriteTransactionTest {
 
         final ShardedDOMDataTree shardedDOMDataTree =
                 new ShardedDOMDataTree();
-        final DOMDataTreeProducer shardRegProducer = shardedDOMDataTree.createProducer(Collections.singletonList(ROOT_ID));
+        final DOMDataTreeProducer shardRegProducer = shardedDOMDataTree.createProducer(
+                Collections.singletonList(ROOT_ID));
         shardedDOMDataTree.registerDataTreeShard(ROOT_ID, rootShard, shardRegProducer);
         shardRegProducer.close();
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("test"));
@@ -92,7 +93,8 @@ public class ShardedDOMDataWriteTransactionTest {
 
         cursor.close();
         try {
-            transaction.createCursor(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.EMPTY));
+            transaction.createCursor(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
+                    YangInstanceIdentifier.EMPTY));
             fail("Should have failed, config ds not available to this tx");
         } catch (final IllegalArgumentException e) {
             assertTrue(e.getMessage().contains("not accessible"));
@@ -102,7 +104,8 @@ public class ShardedDOMDataWriteTransactionTest {
         assertFalse(transaction.cancel());
 
         final DOMDataTreeCursorAwareTransaction newTx = producer.createTransaction(false);
-        assertTrue("Transaction identifier incorrect " + transaction.getIdentifier(), ((String) transaction.getIdentifier()).contains("SHARDED-DOM-"));
+        assertTrue("Transaction identifier incorrect " + transaction.getIdentifier(), (
+                (String) transaction.getIdentifier()).contains("SHARDED-DOM-"));
         assertNotEquals(transaction.getIdentifier(),
                 newTx.getIdentifier());
     }

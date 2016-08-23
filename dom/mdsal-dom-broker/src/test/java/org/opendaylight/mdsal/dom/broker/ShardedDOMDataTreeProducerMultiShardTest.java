@@ -117,7 +117,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         dataTreeService = dataTree;
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void testTxReadyMultiples() throws Exception {
         final DOMDataTreeShardProducer producer = rootShard.createProducer(Collections.singletonList(TEST_ID));
         final DOMDataTreeShardWriteTransaction transaction = producer.createTransaction();
@@ -132,7 +132,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         transaction.ready();
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void testSubmitUnclosedCursor() throws Exception {
         final DOMDataTreeShardProducer producer = rootShard.createProducer(Collections.singletonList(TEST_ID));
         final DOMDataTreeShardWriteTransaction transaction = producer.createTransaction();
@@ -151,7 +151,8 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
-        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID), true, Collections.emptyList());
+        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID),
+                true, Collections.emptyList());
 
         final DOMDataTreeShardProducer producer = rootShard.createProducer(Collections.singletonList(TEST_ID));
         final DOMDataTreeShardWriteTransaction transaction = producer.createTransaction();
@@ -179,11 +180,13 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         transaction.ready();
         transaction.submit();
 
-        verify(mockedDataTreeListener, timeout(1000).times(2)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
+        verify(mockedDataTreeListener, timeout(1000).times(2)).onDataTreeChanged(
+                captorForChanges.capture(), captorForSubtrees.capture());
         final Collection<DataTreeCandidate> capturedValue = captorForChanges.getValue();
         assertTrue(capturedValue.size() == 1);
 
-        final ContainerNode dataAfter = (ContainerNode) capturedValue.iterator().next().getRootNode().getDataAfter().get();
+        final ContainerNode dataAfter =
+                (ContainerNode) capturedValue.iterator().next().getRootNode().getDataAfter().get();
         assertEquals(innerContainer, dataAfter);
         verifyNoMoreInteractions(mockedDataTreeListener);
     }
@@ -193,23 +196,28 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
-        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID), true, Collections.emptyList());
+        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID), true,
+                Collections.emptyList());
 
         final DOMDataTreeShardProducer producer = rootShard.createProducer(Collections.singletonList(TEST_ID));
         final DOMDataTreeShardWriteTransaction transaction = producer.createTransaction();
         writeCrossShardContainer(transaction);
 
-        verify(mockedDataTreeListener, timeout(1000).times(2)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
+        verify(mockedDataTreeListener, timeout(1000).times(2)).onDataTreeChanged(
+                captorForChanges.capture(), captorForSubtrees.capture());
         final Collection<DataTreeCandidate> capturedValue = captorForChanges.getValue();
         assertTrue(capturedValue.size() == 1);
 
-        final ContainerNode dataAfter = (ContainerNode) capturedValue.iterator().next().getRootNode().getDataAfter().get();
-        assertEquals(crossShardContainer.getChild(TestModel.INNER_CONTAINER_PATH.getLastPathArgument()).get(), dataAfter);
+        final ContainerNode dataAfter =
+                (ContainerNode) capturedValue.iterator().next().getRootNode().getDataAfter().get();
+        assertEquals(crossShardContainer.getChild(
+                TestModel.INNER_CONTAINER_PATH.getLastPathArgument()).get(), dataAfter);
 
         final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> capturedSubtrees = captorForSubtrees.getValue();
         assertTrue(capturedSubtrees.size() == 1);
         assertTrue(capturedSubtrees.containsKey(INNER_CONTAINER_ID));
-        assertEquals(crossShardContainer.getChild(TestModel.INNER_CONTAINER_PATH.getLastPathArgument()).get(), capturedSubtrees.get(INNER_CONTAINER_ID));
+        assertEquals(crossShardContainer.getChild(TestModel.INNER_CONTAINER_PATH.getLastPathArgument()).get(),
+                capturedSubtrees.get(INNER_CONTAINER_ID));
 
         verifyNoMoreInteractions(mockedDataTreeListener);
     }
@@ -221,11 +229,13 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
         innerShard.onGlobalContextUpdated(schemaContext);
-        final DOMDataTreeProducer shardRegProducer = dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
+        final DOMDataTreeProducer shardRegProducer =
+                dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
         innerShardReg = dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, shardRegProducer);
         shardRegProducer.close();
 
-        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(TEST_ID), true, Collections.emptyList());
+        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(TEST_ID),
+                true, Collections.emptyList());
 
         final DOMDataTreeShardProducer producer = rootShard.createProducer(Collections.singletonList(TEST_ID));
         final DOMDataTreeShardWriteTransaction transaction = producer.createTransaction();
@@ -236,9 +246,11 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
                 .build();
 
         //verify listeners have been notified
-        verify(mockedDataTreeListener, timeout(1000).times(4)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
+        verify(mockedDataTreeListener, timeout(1000).times(4)).onDataTreeChanged(
+                captorForChanges.capture(), captorForSubtrees.capture());
         final List<Collection<DataTreeCandidate>> capturedChanges = captorForChanges.getAllValues();
-        final List<Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>>> capturedSubtrees = captorForSubtrees.getAllValues();
+        final List<Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>>> capturedSubtrees =
+                captorForSubtrees.getAllValues();
         final DataTreeCandidate firstNotificationCandidate = capturedChanges.get(2).iterator().next();
 
         assertTrue(capturedSubtrees.get(2).size() == 1);
@@ -258,7 +270,8 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
-        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID), true, Collections.emptyList());
+        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID),
+                true, Collections.emptyList());
 
         final DOMDataTreeShardProducer producer = rootShard.createProducer(Collections.singletonList(TEST_ID));
         final DOMDataTreeShardWriteTransaction transaction = producer.createTransaction();
@@ -288,11 +301,14 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         cursor.enter(TestModel.TEST_PATH.getLastPathArgument());
 
         final LeafNode<String> shardedValue1 =
-                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(new NodeIdentifier(TestModel.SHARDED_VALUE_1)).withValue("sharded value 1").build();
+                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(
+                        new NodeIdentifier(TestModel.SHARDED_VALUE_1)).withValue("sharded value 1").build();
         final LeafNode<String> shardedValue2 =
-                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(new NodeIdentifier(TestModel.SHARDED_VALUE_2)).withValue("sharded value 2").build();
+                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(
+                        new NodeIdentifier(TestModel.SHARDED_VALUE_2)).withValue("sharded value 2").build();
 
-        final DataContainerNodeAttrBuilder<NodeIdentifier, ContainerNode> containerNodeBuilder = ImmutableContainerNodeBuilder.create();
+        final DataContainerNodeAttrBuilder<NodeIdentifier, ContainerNode> containerNodeBuilder =
+                ImmutableContainerNodeBuilder.create();
         final ContainerNode containerNode =
                 containerNodeBuilder
                         .withNodeIdentifier(new NodeIdentifier(TestModel.INNER_CONTAINER))
@@ -318,7 +334,8 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
         final ContainerNode lowerShardContainer = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new NodeIdentifier(TestModel.ANOTHER_SHARD_CONTAINER))
-                .withChild(ImmutableLeafNodeBuilder.create().withNodeIdentifier(new NodeIdentifier(TestModel.ANOTHER_SHARD_VALUE)).build())
+                .withChild(ImmutableLeafNodeBuilder.create().withNodeIdentifier(
+                        new NodeIdentifier(TestModel.ANOTHER_SHARD_VALUE)).build())
                 .build();
 
         cursor.write(TestModel.ANOTHER_SHARD_PATH.getLastPathArgument(), lowerShardContainer);
@@ -336,9 +353,11 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
     private ContainerNode createCrossShardContainer() {
         final LeafNode<String> shardedValue1 =
-                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(new NodeIdentifier(TestModel.SHARDED_VALUE_1)).withValue("sharded value 1").build();
+                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(
+                        new NodeIdentifier(TestModel.SHARDED_VALUE_1)).withValue("sharded value 1").build();
         final LeafNode<String> shardedValue2 =
-                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(new NodeIdentifier(TestModel.SHARDED_VALUE_2)).withValue("sharded value 2").build();
+                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(new NodeIdentifier(
+                        TestModel.SHARDED_VALUE_2)).withValue("sharded value 2").build();
 
 
         final ContainerNode lowerShardContainer = ImmutableContainerNodeBuilder.create()
@@ -365,7 +384,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         return testContainer;
     }
 
-    private void writeCrossShardContainer(final DOMDataTreeShardWriteTransaction transaction) throws Exception{
+    private void writeCrossShardContainer(final DOMDataTreeShardWriteTransaction transaction) throws Exception {
         final DOMDataTreeWriteCursor cursor = transaction.createCursor(ROOT_ID);
 
         cursor.write(TestModel.TEST_PATH.getLastPathArgument(), crossShardContainer);
