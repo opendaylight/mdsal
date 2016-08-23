@@ -7,10 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -20,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.opendaylight.mdsal.dom.api.DOMRpcException;
+import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
+import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -28,7 +27,8 @@ abstract class AbstractDOMRpcRoutingTableEntry {
     private final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls;
     private final SchemaPath schemaPath;
 
-    protected AbstractDOMRpcRoutingTableEntry(final SchemaPath schemaPath, final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
+    protected AbstractDOMRpcRoutingTableEntry(final SchemaPath schemaPath, final Map<YangInstanceIdentifier,
+            List<DOMRpcImplementation>> impls) {
         this.schemaPath = Preconditions.checkNotNull(schemaPath);
         this.impls = Preconditions.checkNotNull(impls);
     }
@@ -54,12 +54,14 @@ abstract class AbstractDOMRpcRoutingTableEntry {
     }
 
     /**
+     * It adds list of YangInstaceIdentifier to DOMRpcImplementation Object.
      *
-     * @param implementation
+     * @param DOMRpcImplementation object is used to add list of YangInstanceIdentifier objects to it
      * @param newRpcs List of new RPCs, must be mutable
-     * @return
+     * @return new instance of AbstractDOMRpcRoutingTableEntry object
      */
-    final AbstractDOMRpcRoutingTableEntry add(final DOMRpcImplementation implementation, final List<YangInstanceIdentifier> newRpcs) {
+    final AbstractDOMRpcRoutingTableEntry add(
+            final DOMRpcImplementation implementation, final List<YangInstanceIdentifier> newRpcs) {
         final Builder<YangInstanceIdentifier, List<DOMRpcImplementation>> vb = ImmutableMap.builder();
         for (final Entry<YangInstanceIdentifier, List<DOMRpcImplementation>> ve : impls.entrySet()) {
             if (newRpcs.remove(ve.getKey())) {
@@ -71,7 +73,7 @@ abstract class AbstractDOMRpcRoutingTableEntry {
                 vb.put(ve);
             }
         }
-        for(final YangInstanceIdentifier ii : newRpcs) {
+        for (final YangInstanceIdentifier ii : newRpcs) {
             final ArrayList<DOMRpcImplementation> impl = new ArrayList<>(1);
             impl.add(implementation);
             vb.put(ii,impl);
@@ -80,7 +82,8 @@ abstract class AbstractDOMRpcRoutingTableEntry {
         return newInstance(vb.build());
     }
 
-    final AbstractDOMRpcRoutingTableEntry remove(final DOMRpcImplementation implementation, final List<YangInstanceIdentifier> removed) {
+    final AbstractDOMRpcRoutingTableEntry remove(
+            final DOMRpcImplementation implementation, final List<YangInstanceIdentifier> removed) {
         final Builder<YangInstanceIdentifier, List<DOMRpcImplementation>> vb = ImmutableMap.builder();
         for (final Entry<YangInstanceIdentifier, List<DOMRpcImplementation>> ve : impls.entrySet()) {
             if (removed.remove(ve.getKey())) {
@@ -101,5 +104,7 @@ abstract class AbstractDOMRpcRoutingTableEntry {
     }
 
     protected abstract CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final NormalizedNode<?, ?> input);
-    protected abstract AbstractDOMRpcRoutingTableEntry newInstance(final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls);
+
+    protected abstract AbstractDOMRpcRoutingTableEntry newInstance(
+            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls);
 }

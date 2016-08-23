@@ -40,7 +40,7 @@ abstract class TestUtils {
     private static final QName TOP_LEVEL_LIST_QNAME = QName.create(TOP_QNAME, "top-level-list");
     private static final QName TOP_LEVEL_LIST_KEY_QNAME = QName.create(TOP_QNAME, "name");
 
-    private final static MapEntryNode topLevelListNormalized = ImmutableMapEntryNodeBuilder.create()
+    private static final MapEntryNode MAPENTRYNODE = ImmutableMapEntryNodeBuilder.create()
             .withNodeIdentifier(
                     new YangInstanceIdentifier.NodeIdentifierWithPredicates(
                             TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
@@ -49,7 +49,7 @@ abstract class TestUtils {
 
     private static final DataContainerChild<?, ?> CHILD_LIST = ImmutableNodes.mapNodeBuilder(TestModel.TEST_QNAME)
             .withNodeIdentifier(NodeIdentifier.create(TestModel.TEST_QNAME))
-            .withChild(topLevelListNormalized)
+            .withChild(MAPENTRYNODE)
             .build();
 
     static final NormalizedNode<?, ?> TEST_CONTAINER = Builders.containerBuilder()
@@ -64,7 +64,7 @@ abstract class TestUtils {
 
     static final String EXCEPTION_TEXT = "TestRpcImplementationException";
 
-    static TestRpcImplementation getTestRpcImplementation(){
+    static TestRpcImplementation getTestRpcImplementation() {
         return new TestRpcImplementation();
     }
 
