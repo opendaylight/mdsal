@@ -101,7 +101,8 @@ public class DOMDataTreeListenerTest {
         operStore.onGlobalContextUpdated(schemaContext);
         configStore.onGlobalContextUpdated(schemaContext);
 
-        final ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
+        final ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType,
+                DOMStore>builder()
                 .put(CONFIGURATION, configStore)
                 .put(OPERATIONAL, operStore)
                 .build();
@@ -428,7 +429,7 @@ public class DOMDataTreeListenerTest {
 
         ExecutorService delegate;
 
-        public CommitExecutorService(final ExecutorService delegate) {
+        CommitExecutorService(final ExecutorService delegate) {
             this.delegate = delegate;
         }
 
@@ -443,7 +444,7 @@ public class DOMDataTreeListenerTest {
         private final List<Collection<DataTreeCandidate>> receivedChanges = new ArrayList<>();
         private final CountDownLatch latch;
 
-        public TestDataTreeListener(final CountDownLatch latch) {
+        TestDataTreeListener(final CountDownLatch latch) {
             this.latch = latch;
         }
 

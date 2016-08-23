@@ -85,12 +85,14 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         idToShard = ImmutableMap.copyOf(shardMap);
     }
 
-    private BiMap<DOMDataTreeIdentifier, DOMDataTreeShardProducer> mapIdsToProducer(final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToId) {
+    private BiMap<DOMDataTreeIdentifier, DOMDataTreeShardProducer> mapIdsToProducer(final Multimap<DOMDataTreeShard,
+            DOMDataTreeIdentifier> shardToId) {
         final Builder<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducerBuilder = ImmutableBiMap.builder();
         for (final Entry<DOMDataTreeShard, Collection<DOMDataTreeIdentifier>> entry : shardToId.asMap().entrySet()) {
             if (entry.getKey() instanceof WriteableDOMDataTreeShard) {
                 //create a single producer for all prefixes in a single shard
-                final DOMDataTreeShardProducer producer = ((WriteableDOMDataTreeShard) entry.getKey()).createProducer(entry.getValue());
+                final DOMDataTreeShardProducer producer = ((
+                        WriteableDOMDataTreeShard) entry.getKey()).createProducer(entry.getValue());
                 // id mapped to producers
                 for (final DOMDataTreeIdentifier id : entry.getValue()) {
                     idToProducerBuilder.put(id, producer);
@@ -125,9 +127,9 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     }
 
     @GuardedBy("this")
-    private DOMDataTreeProducer lookupChild(final DOMDataTreeIdentifier s) {
+    private DOMDataTreeProducer lookupChild(final DOMDataTreeIdentifier domDataTreeIdentifier) {
         for (final Entry<DOMDataTreeIdentifier, DOMDataTreeProducer> e : children.entrySet()) {
-            if (e.getKey().contains(s)) {
+            if (e.getKey().contains(domDataTreeIdentifier)) {
                 return e.getValue();
             }
         }
@@ -150,7 +152,8 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
             // Check if part of the requested subtree is not delegated to a child.
             for (final DOMDataTreeIdentifier c : children.keySet()) {
                 if (s.contains(c)) {
-                    throw new IllegalArgumentException(String.format("Subtree %s cannot be delegated as it is superset of already-delegated %s", s, c));
+                    throw new IllegalArgumentException(String.format("Subtree %s cannot be delegated as it is"
+                            + " superset of already-delegated %s", s, c));
                 }
             }
         }

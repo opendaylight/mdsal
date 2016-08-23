@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.broker.osgi;
 
-import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import java.util.Hashtable;
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -22,7 +22,8 @@ public class SchemaServiceActivator implements BundleActivator {
     @Override
     public void start(final BundleContext context) {
         schemaService = OsgiBundleScanningSchemaService.createInstance(context);
-        schemaServiceReg = context.registerService(DOMSchemaService.class, schemaService, new Hashtable<String,String>());
+        schemaServiceReg = context.registerService(DOMSchemaService.class,
+                schemaService, new Hashtable<String,String>());
     }
 
     @Override

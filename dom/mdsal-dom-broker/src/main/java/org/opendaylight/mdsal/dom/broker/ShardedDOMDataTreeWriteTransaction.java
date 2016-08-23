@@ -59,7 +59,8 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
                                        final Map<DOMDataTreeIdentifier, DOMDataTreeProducer> childProducers) {
         this.producer = Preconditions.checkNotNull(producer);
         idToTransaction = new HashMap<>();
-        Preconditions.checkNotNull(idToProducer).forEach((id, prod) -> idToTransaction.put(id, prod.createTransaction()));
+        Preconditions.checkNotNull(idToProducer).forEach((id, prod) -> idToTransaction.put(
+                id, prod.createTransaction()));
         this.identifier = "SHARDED-DOM-" + COUNTER.getAndIncrement();
         childProducers.forEach((id, prod) -> childBoundaries.add(id.getRootIdentifier()));
     }
@@ -75,7 +76,8 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
                 return e.getValue();
             }
         }
-        throw new IllegalArgumentException(String.format("Path %s is not accessible from transaction %s", prefix, this));
+        throw new IllegalArgumentException(String.format("Path %s is not accessible from transaction %s",
+                prefix, this));
     }
 
     @Override
@@ -131,8 +133,8 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             }
 
             @Override
-            public void onFailure(final Throwable t) {
-                ret.setException(t);
+            public void onFailure(final Throwable exp) {
+                ret.setException(exp);
             }
         });
 
@@ -149,7 +151,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         private final DOMDataTreeWriteCursor delegate;
         private final Deque<PathArgument> path = new LinkedList<>();
 
-        public DelegatingCursor(final DOMDataTreeWriteCursor delegate, final DOMDataTreeIdentifier rootPosition) {
+        DelegatingCursor(final DOMDataTreeWriteCursor delegate, final DOMDataTreeIdentifier rootPosition) {
             this.delegate = delegate;
             path.addAll(rootPosition.getRootIdentifier().getPathArguments());
         }
@@ -219,7 +221,8 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             childBoundaries.forEach(id -> {
                 if (id.contains(yid)) {
                     path.removeLast();
-                    throw new IllegalArgumentException("Path {" + yid + "} is not available to this cursor since it's already claimed by a child producer");
+                    throw new IllegalArgumentException("Path {" + yid + "} is not available to this cursor"
+                            + " since it's already claimed by a child producer");
                 }
             });
             path.removeLast();

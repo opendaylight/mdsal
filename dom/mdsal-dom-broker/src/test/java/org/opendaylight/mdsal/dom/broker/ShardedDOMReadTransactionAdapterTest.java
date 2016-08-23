@@ -58,7 +58,7 @@ public class ShardedDOMReadTransactionAdapterTest {
         @Nonnull
         @Override
         public <T extends DOMDataTreeListener> ListenerRegistration<T>
-        registerListener(@Nonnull final T listener, @Nonnull final Collection<DOMDataTreeIdentifier> subtrees,
+            registerListener(@Nonnull final T listener, @Nonnull final Collection<DOMDataTreeIdentifier> subtrees,
                          final boolean allowRxMerges,
                          @Nonnull final Collection<DOMDataTreeProducer> producers) throws DOMDataTreeLoopException {
             final Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> subtree = Maps.newHashMap();
