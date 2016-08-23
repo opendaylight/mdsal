@@ -10,19 +10,21 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.Collection;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.SettableFuture;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -52,11 +54,14 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
 
     @GuardedBy("this")
     private DOMDataTreeWriteCursor openCursor;
+    private final ListeningExecutorService txExecutor;
 
     ShardedDOMDataTreeWriteTransaction(final ShardedDOMDataTreeProducer producer,
+                                       final ListeningExecutorService txExecutor,
                                        final Map<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducer,
                                        final Map<DOMDataTreeIdentifier, DOMDataTreeProducer> childProducers) {
         this.producer = Preconditions.checkNotNull(producer);
+        this.txExecutor = txExecutor;
         idToTransaction = new HashMap<>();
         Preconditions.checkNotNull(idToProducer).forEach((id, prod) -> idToTransaction.put(id, prod.createTransaction()));
         this.identifier = "SHARDED-DOM-" + COUNTER.getAndIncrement();
@@ -116,15 +121,27 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         Preconditions.checkState(openCursor == null, "Cannot submit transaction while there is a cursor open");
 
         final Set<DOMDataTreeShardWriteTransaction> txns = ImmutableSet.copyOf(idToTransaction.values());
-        for (final DOMDataTreeShardWriteTransaction tx : txns) {
-            tx.ready();
-        }
+        final ListenableFuture<List<Void>> listListenableFuture =
+                Futures.allAsList(txns.stream().map(tx -> {
+                    tx.ready();
+                    return tx.submit();
+                }).collect(Collectors.toList()));
+
+        final SettableFuture<Void> ret = SettableFuture.create();
+        Futures.addCallback(listListenableFuture, new FutureCallback<List<Void>>() {
+            @Override
+            public void onSuccess(final List<Void> result) {
+                ret.set(null);
+            }
+
+            @Override
+            public void onFailure(final Throwable t) {
+                ret.setException(t);
+            }
+        });
+
         producer.transactionSubmitted(this);
-        try {
-            return Futures.immediateCheckedFuture(new SubmitCoordinationTask(identifier, txns).call());
-        } catch (final TransactionCommitFailedException e) {
-            return Futures.immediateFailedCheckedFuture(e);
-        }
+        return Futures.makeChecked(ret, TransactionCommitFailedExceptionMapper.create("submit"));
     }
 
     synchronized void cursorClosed() {
@@ -210,54 +227,6 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
                 }
             });
             path.removeLast();
-        }
-    }
-
-    private static class SubmitCoordinationTask implements Callable<Void> {
-
-        private static final Logger LOG = LoggerFactory.getLogger(SubmitCoordinationTask.class);
-
-        private final String identifier;
-        private final Collection<DOMDataTreeShardWriteTransaction> transactions;
-
-        SubmitCoordinationTask(final String identifier,
-                                    final Collection<DOMDataTreeShardWriteTransaction> transactions) {
-            this.identifier = identifier;
-            this.transactions = transactions;
-        }
-
-        @Override
-        public Void call() throws TransactionCommitFailedException {
-
-            try {
-                LOG.debug("Producer {}, submit started", identifier);
-                submitBlocking();
-
-                return null;
-            } catch (final TransactionCommitFailedException e) {
-                LOG.warn("Failure while submitting transaction for producer {}", identifier, e);
-                //FIXME abort here
-                throw e;
-            }
-        }
-
-        void submitBlocking() throws TransactionCommitFailedException {
-            for (final ListenableFuture<?> commit : submitAll()) {
-                try {
-                    commit.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new TransactionCommitFailedException("Submit failed", e);
-                }
-            }
-        }
-
-        private ListenableFuture<?>[] submitAll() {
-            final ListenableFuture<?>[] ops = new ListenableFuture<?>[transactions.size()];
-            int i = 0;
-            for (final DOMDataTreeShardWriteTransaction tx : transactions) {
-                ops[i++] = tx.submit();
-            }
-            return ops;
         }
     }
 }

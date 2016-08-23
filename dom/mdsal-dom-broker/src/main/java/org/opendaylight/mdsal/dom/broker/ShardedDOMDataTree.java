@@ -9,11 +9,14 @@ package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
@@ -39,6 +42,10 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     @GuardedBy("this")
     private final DOMDataTreePrefixTable<DOMDataTreeProducer> producers = DOMDataTreePrefixTable.create();
 
+    private final ListeningExecutorService txExecutor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+
+    public ShardedDOMDataTree() {
+    }
 
     void removeShard(final ShardRegistration<?> reg) {
         final DOMDataTreeIdentifier prefix = reg.getPrefix();
@@ -123,7 +130,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     @GuardedBy("this")
     private DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees, final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         // Record the producer's attachment points
-        final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, subtrees, shardMap);
+        final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, txExecutor, subtrees, shardMap);
         for (final DOMDataTreeIdentifier subtree : subtrees) {
             producers.store(subtree, ret);
         }
