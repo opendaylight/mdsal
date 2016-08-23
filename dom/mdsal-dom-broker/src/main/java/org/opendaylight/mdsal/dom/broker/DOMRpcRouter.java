@@ -17,12 +17,12 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
@@ -35,25 +35,22 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcProviderService, SchemaContextListener {
-    private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat("DOMRpcRouter-listener-%s").setDaemon(true).build();
+    private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(
+            "DOMRpcRouter-listener-%s").setDaemon(true).build();
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
     @GuardedBy("this")
     private Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> listeners = Collections.emptyList();
     private volatile DOMRpcRoutingTable routingTable = DOMRpcRoutingTable.EMPTY;
 
-    @Override
-    public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(final T implementation, final DOMRpcIdentifier... rpcs) {
-        return registerRpcImplementation(implementation, ImmutableSet.copyOf(rpcs));
-    }
-
-    private static Collection<DOMRpcIdentifier> notPresentRpcs(final DOMRpcRoutingTable table, final Collection<DOMRpcIdentifier> candidates) {
+    private static Collection<DOMRpcIdentifier> notPresentRpcs(final DOMRpcRoutingTable table,
+            final Collection<DOMRpcIdentifier> candidates) {
         return ImmutableSet.copyOf(Collections2.filter(candidates, new Predicate<DOMRpcIdentifier>() {
             @Override
             public boolean apply(final DOMRpcIdentifier input) {
@@ -62,7 +59,8 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
         }));
     }
 
-    private synchronized void removeRpcImplementation(final DOMRpcImplementation implementation, final Set<DOMRpcIdentifier> rpcs) {
+    private synchronized void removeRpcImplementation(final DOMRpcImplementation implementation,
+            final Set<DOMRpcIdentifier> rpcs) {
         final DOMRpcRoutingTable oldTable = routingTable;
         final DOMRpcRoutingTable newTable = oldTable.remove(implementation, rpcs);
 
@@ -87,7 +85,14 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     }
 
     @Override
-    public synchronized <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(final T implementation, final Set<DOMRpcIdentifier> rpcs) {
+    public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
+            final T implementation, final DOMRpcIdentifier... rpcs) {
+        return registerRpcImplementation(implementation, ImmutableSet.copyOf(rpcs));
+    }
+
+    @Override
+    public synchronized <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T>
+            registerRpcImplementation(final T implementation, final Set<DOMRpcIdentifier> rpcs) {
         final DOMRpcRoutingTable oldTable = routingTable;
         final DOMRpcRoutingTable newTable = oldTable.add(implementation, rpcs);
 
@@ -120,7 +125,8 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     }
 
     @Override
-    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
+    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final SchemaPath type,
+            final NormalizedNode<?, ?> input) {
         return routingTable.invokeRpc(type, input);
     }
 
@@ -134,7 +140,8 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     }
 
     @Override
-    public synchronized <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(final T listener) {
+    public synchronized <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(
+            final T listener) {
         final ListenerRegistration<T> ret = new AbstractListenerRegistration<T>(listener) {
             @Override
             protected void removeRegistration() {
@@ -152,12 +159,13 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
             @Override
             public void run() {
                 for (final Entry<SchemaPath, Set<YangInstanceIdentifier>> e : capturedRpcs.entrySet()) {
-                    listener.onRpcAvailable(Collections2.transform(e.getValue(), new Function<YangInstanceIdentifier, DOMRpcIdentifier>() {
-                        @Override
-                        public DOMRpcIdentifier apply(final YangInstanceIdentifier input) {
-                            return DOMRpcIdentifier.create(e.getKey(), input);
-                        }
-                    }));
+                    listener.onRpcAvailable(Collections2.transform(e.getValue(),
+                            new Function<YangInstanceIdentifier, DOMRpcIdentifier>() {
+                            @Override
+                            public DOMRpcIdentifier apply(final YangInstanceIdentifier input) {
+                                return DOMRpcIdentifier.create(e.getKey(), input);
+                            }
+                        }));
                 }
             }
         });

@@ -62,6 +62,7 @@ public class SchemaServiceActivatorTest {
         verify(osgiBundle).close();
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @After
     @Before
     public void destroyInstance() throws Exception {

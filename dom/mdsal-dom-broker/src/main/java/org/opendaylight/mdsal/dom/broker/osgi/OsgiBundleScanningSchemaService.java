@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.broker.osgi;
 
 import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -37,7 +38,8 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OsgiBundleScanningSchemaService implements SchemaContextProvider, DOMSchemaService, ServiceTrackerCustomizer<SchemaContextListener, SchemaContextListener>, AutoCloseable {
+public class OsgiBundleScanningSchemaService implements SchemaContextProvider, DOMSchemaService,
+        ServiceTrackerCustomizer<SchemaContextListener, SchemaContextListener>, AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(OsgiBundleScanningSchemaService.class);
 
     private final ListenerRegistry<SchemaContextListener> listeners = new ListenerRegistry<>();
@@ -54,14 +56,14 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
         this.context = Preconditions.checkNotNull(context);
     }
 
-    public synchronized static OsgiBundleScanningSchemaService createInstance(final BundleContext ctx) {
+    public static synchronized OsgiBundleScanningSchemaService createInstance(final BundleContext ctx) {
         Preconditions.checkState(instance == null);
         instance = new OsgiBundleScanningSchemaService(ctx);
         instance.start();
         return instance;
     }
 
-    public synchronized static OsgiBundleScanningSchemaService getInstance() {
+    public static synchronized OsgiBundleScanningSchemaService getInstance() {
         Preconditions.checkState(instance != null, "Global Instance was not instantiated");
         return instance;
     }
@@ -83,8 +85,10 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
         checkState(context != null);
         LOG.debug("start() starting");
 
-        listenerTracker = new ServiceTracker<>(context, SchemaContextListener.class, OsgiBundleScanningSchemaService.this);
-        bundleTracker = new BundleTracker<>(context, Bundle.RESOLVED | Bundle.STARTING |
+        listenerTracker = new ServiceTracker<>(context, SchemaContextListener.class,
+                OsgiBundleScanningSchemaService.this);
+        bundleTracker = new BundleTracker<>(context, Bundle.RESOLVED | Bundle.STARTING
+                |
                 Bundle.STOPPING | Bundle.ACTIVE, scanner);
         bundleTracker.open();
 
@@ -113,9 +117,10 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     }
 
     @Override
-    public synchronized ListenerRegistration<SchemaContextListener> registerSchemaContextListener(final SchemaContextListener listener) {
+    public synchronized ListenerRegistration<SchemaContextListener>
+        registerSchemaContextListener(final SchemaContextListener listener) {
         final Optional<SchemaContext> potentialCtx = contextResolver.getSchemaContext();
-        if(potentialCtx.isPresent()) {
+        if (potentialCtx.isPresent()) {
             listener.onGlobalContextUpdated(potentialCtx.get());
         }
         return listeners.register(listener);
@@ -135,6 +140,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private synchronized void updateContext(final SchemaContext snapshot) {
         final Object[] services = listenerTracker.getServices();
         for (final ListenerRegistration<SchemaContextListener> listener : listeners) {
@@ -156,6 +162,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private class BundleScanner implements BundleTrackerCustomizer<Iterable<Registration>> {
         @Override
         public Iterable<Registration> addingBundle(final Bundle bundle, final BundleEvent event) {
@@ -198,9 +205,10 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
          * {@link #getYangStoreSnapshot()} will throw exception. There is no
          * rollback.
          */
-
+        @SuppressWarnings("checkstyle:IllegalCatch")
         @Override
-        public synchronized void removedBundle(final Bundle bundle, final BundleEvent event, final Iterable<Registration> urls) {
+        public synchronized void removedBundle(final Bundle bundle, final BundleEvent event,
+                final Iterable<Registration> urls) {
             for (final Registration url : urls) {
                 try {
                     url.close();
@@ -210,9 +218,10 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
             }
 
             final int numUrls = Iterables.size(urls);
-            if(numUrls > 0 ) {
-                if(LOG.isDebugEnabled()) {
-                    LOG.debug("removedBundle: {}, state: {}, # urls: {}", bundle.getSymbolicName(), bundle.getState(), numUrls);
+            if (numUrls > 0 ) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("removedBundle: {}, state: {}, # urls: {}", bundle.getSymbolicName(),
+                            bundle.getState(), numUrls);
                 }
 
                 tryToUpdateSchemaContext();
@@ -236,8 +245,8 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
             return;
         }
         final Optional<SchemaContext> schema = contextResolver.getSchemaContext();
-        if(schema.isPresent()) {
-            if(LOG.isDebugEnabled()) {
+        if (schema.isPresent()) {
+            if (LOG.isDebugEnabled()) {
                 LOG.debug("Got new SchemaContext: # of modules {}", schema.get().getAllModuleIdentifiers().size());
             }
 
@@ -246,12 +255,14 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     }
 
     @Override
-    public void modifiedService(final ServiceReference<SchemaContextListener> reference, final SchemaContextListener service) {
+    public void modifiedService(final ServiceReference<SchemaContextListener> reference,
+            final SchemaContextListener service) {
         // NOOP
     }
 
     @Override
-    public void removedService(final ServiceReference<SchemaContextListener> reference, final SchemaContextListener service) {
+    public void removedService(final ServiceReference<SchemaContextListener> reference,
+            final SchemaContextListener service) {
         context.ungetService(reference);
     }
 }
