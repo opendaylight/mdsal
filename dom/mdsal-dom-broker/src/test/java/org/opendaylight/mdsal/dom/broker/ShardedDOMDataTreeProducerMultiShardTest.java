@@ -106,7 +106,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        rootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1, 1);
+        rootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1);
         rootShard.onGlobalContextUpdated(schemaContext);
 
         final ShardedDOMDataTree dataTree = new ShardedDOMDataTree();
@@ -219,7 +219,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
         final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
-        final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1, 1);
+        final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
         innerShard.onGlobalContextUpdated(schemaContext);
         final DOMDataTreeProducer shardRegProducer = dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
         innerShardReg = dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, shardRegProducer);
