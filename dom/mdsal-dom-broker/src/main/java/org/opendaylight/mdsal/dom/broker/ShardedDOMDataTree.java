@@ -39,7 +39,6 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     @GuardedBy("this")
     private final DOMDataTreePrefixTable<DOMDataTreeProducer> producers = DOMDataTreePrefixTable.create();
 
-
     void removeShard(final ShardRegistration<?> reg) {
         final DOMDataTreeIdentifier prefix = reg.getPrefix();
         final ShardRegistration<?> parentReg;
