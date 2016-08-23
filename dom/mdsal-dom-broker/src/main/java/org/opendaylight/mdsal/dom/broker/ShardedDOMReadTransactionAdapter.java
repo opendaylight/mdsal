@@ -95,7 +95,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
             }
 
             @Override
-            public void onFailure(final Throwable t) {
+            public void onFailure(final Throwable thrObj) {
                 reg.close();
             }
         });
@@ -109,7 +109,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
         checkRunning();
         LOG.debug("{}: Invoking exists at {}:{}", txIdentifier, store, path);
         final Function<Optional<NormalizedNode<?, ?>>, Boolean> transform =
-                optionalNode -> optionalNode.isPresent() ? Boolean.TRUE : Boolean.FALSE;
+            optionalNode -> optionalNode.isPresent() ? Boolean.TRUE : Boolean.FALSE;
         final ListenableFuture<Boolean> existsResult = Futures.transform(read(store, path), transform);
         return Futures.makeChecked(existsResult, ReadFailedException.MAPPER);
     }
@@ -122,7 +122,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
 
         private final SettableFuture<Optional<NormalizedNode<?, ?>>> readResultFuture;
 
-        public ReadShardedListener(final SettableFuture<Optional<NormalizedNode<?, ?>>> future) {
+        ReadShardedListener(final SettableFuture<Optional<NormalizedNode<?, ?>>> future) {
             this.readResultFuture = Preconditions.checkNotNull(future);
         }
 
@@ -151,8 +151,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
 
             // We chain all exceptions and return aggregated one
             readResultFuture.setException(new DOMDataTreeListeningException("Aggregated DOMDataTreeListening exception",
-                    causes.stream().reduce((e1, e2) ->
-                    {
+                    causes.stream().reduce((e1, e2) -> {
                         e1.addSuppressed(e2);
                         return e1;
                     }).get()));

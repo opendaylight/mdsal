@@ -97,7 +97,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
             }
 
             @Override
-            public void onFailure(final Throwable t) {
+            public void onFailure(final Throwable thrObj) {
                 // We don't have to do nothing here,
                 // tx should take car of it
             }
@@ -161,7 +161,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         @Nonnull
         @Override
         public <T extends DOMDataTreeListener> ListenerRegistration<T>
-        registerListener(@Nonnull final T listener, @Nonnull final Collection<DOMDataTreeIdentifier> subtrees,
+            registerListener(@Nonnull final T listener, @Nonnull final Collection<DOMDataTreeIdentifier> subtrees,
                          final boolean allowRxMerges, @Nonnull final Collection<DOMDataTreeProducer> producers)
                 throws DOMDataTreeLoopException {
             return delegateTreeService.registerListener(listener, subtrees, allowRxMerges, producers);

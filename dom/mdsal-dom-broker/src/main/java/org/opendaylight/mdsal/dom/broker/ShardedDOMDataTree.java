@@ -61,11 +61,16 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     }
 
     @Override
-    public <T extends DOMDataTreeShard> ListenerRegistration<T> registerDataTreeShard(final DOMDataTreeIdentifier prefix, final T shard, final DOMDataTreeProducer producer) throws DOMDataTreeShardingConflictException {
+    public <T extends DOMDataTreeShard> ListenerRegistration<T> registerDataTreeShard(
+            final DOMDataTreeIdentifier prefix, final T shard, final DOMDataTreeProducer producer)
+                    throws DOMDataTreeShardingConflictException {
 
-        final DOMDataTreeIdentifier firstSubtree = Iterables.getOnlyElement(((ShardedDOMDataTreeProducer) producer).getSubtrees());
-        Preconditions.checkArgument(firstSubtree != null, "Producer that is used to verify namespace claim can only claim a single namespace");
-        Preconditions.checkArgument(prefix.equals(firstSubtree), "Trying to register shard to a different namespace than the producer has claimed");
+        final DOMDataTreeIdentifier firstSubtree = Iterables.getOnlyElement(((
+                ShardedDOMDataTreeProducer) producer).getSubtrees());
+        Preconditions.checkArgument(firstSubtree != null, "Producer that is used to verify namespace claim can"
+                + " only claim a single namespace");
+        Preconditions.checkArgument(prefix.equals(firstSubtree), "Trying to register shard to a different namespace"
+                + " than the producer has claimed");
 
         final ShardRegistration<T> reg;
         final ShardRegistration<?> parentReg;
@@ -121,7 +126,8 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     }
 
     @GuardedBy("this")
-    private DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees, final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
+    private DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees,
+            final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         // Record the producer's attachment points
         final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, subtrees, shardMap);
         for (final DOMDataTreeIdentifier subtree : subtrees) {
@@ -150,7 +156,8 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         return createProducer(subtrees, shardMap);
     }
 
-    synchronized DOMDataTreeProducer createProducer(final ShardedDOMDataTreeProducer parent, final Collection<DOMDataTreeIdentifier> subtrees) {
+    synchronized DOMDataTreeProducer createProducer(final ShardedDOMDataTreeProducer parent,
+            final Collection<DOMDataTreeIdentifier> subtrees) {
         Preconditions.checkNotNull(parent);
 
         final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap = new HashMap<>();
@@ -161,6 +168,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         return createProducer(subtrees, shardMap);
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public synchronized <T extends DOMDataTreeListener> ListenerRegistration<T> registerListener(final T listener,
             final Collection<DOMDataTreeIdentifier> subtrees, final boolean allowRxMerges,
@@ -200,9 +208,10 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         };
     }
 
-    private static void simpleLoopCheck(final Collection<DOMDataTreeIdentifier> listen, final Set<DOMDataTreeIdentifier> writes)
+    private static void simpleLoopCheck(final Collection<DOMDataTreeIdentifier> listen,
+            final Set<DOMDataTreeIdentifier> writes)
             throws DOMDataTreeLoopException {
-        for(final DOMDataTreeIdentifier listenPath : listen) {
+        for (final DOMDataTreeIdentifier listenPath : listen) {
             for (final DOMDataTreeIdentifier writePath : writes) {
                 if (listenPath.contains(writePath)) {
                     throw new DOMDataTreeLoopException(String.format(

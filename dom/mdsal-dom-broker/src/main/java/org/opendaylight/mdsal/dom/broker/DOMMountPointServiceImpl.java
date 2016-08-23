@@ -8,18 +8,17 @@
 
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.spi.SimpleDOMMountPoint;
-
-import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
-import org.opendaylight.mdsal.dom.api.DOMMountPoint;
-import org.opendaylight.mdsal.dom.api.DOMMountPointService;
-import org.opendaylight.mdsal.dom.api.DOMService;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 import java.util.HashMap;
 import java.util.Map;
+import org.opendaylight.mdsal.dom.api.DOMMountPoint;
+import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
+import org.opendaylight.mdsal.dom.api.DOMMountPointService;
+import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.mdsal.dom.spi.SimpleDOMMountPoint;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
@@ -65,7 +64,8 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
 
     public ObjectRegistration<DOMMountPoint> registerMountPoint(final DOMMountPoint mountPoint) {
         synchronized (mountPoints) {
-            Preconditions.checkState(!mountPoints.containsKey(mountPoint.getIdentifier()), "Mount point already exists");
+            Preconditions.checkState(!mountPoints.containsKey(mountPoint.getIdentifier()),
+                    "Mount point already exists");
             mountPoints.put(mountPoint.getIdentifier(), mountPoint);
         }
         notifyMountCreated(mountPoint.getIdentifier());
@@ -115,7 +115,7 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
     private final class MountRegistration implements ObjectRegistration<DOMMountPoint> {
         private final DOMMountPoint mountPoint;
 
-        public MountRegistration(final DOMMountPoint mountPoint) {
+        MountRegistration(final DOMMountPoint mountPoint) {
             this.mountPoint = mountPoint;
         }
 
