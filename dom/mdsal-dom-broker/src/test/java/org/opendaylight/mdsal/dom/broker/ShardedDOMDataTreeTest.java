@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -93,7 +92,7 @@ public class ShardedDOMDataTreeTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        rootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1, 1);
+        rootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1);
         rootShard.onGlobalContextUpdated(schemaContext);
 
         final ShardedDOMDataTree dataTree = new ShardedDOMDataTree();
@@ -114,15 +113,15 @@ public class ShardedDOMDataTreeTest {
     public void testShardRegistrationClose() throws Exception {
         rootShardReg.close();
 
-        final InMemoryDOMDataTreeShard newRootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1, 1);
+        final InMemoryDOMDataTreeShard newRootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1);
         newRootShard.onGlobalContextUpdated(schemaContext);
         final DOMDataTreeProducer shardRegProducer = dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
 
-        ListenerRegistration<InMemoryDOMDataTreeShard> newRootShardReg =
+        final ListenerRegistration<InMemoryDOMDataTreeShard> newRootShardReg =
                 dataTreeService.registerDataTreeShard(ROOT_ID, rootShard, shardRegProducer);
         shardRegProducer.close();
 
-        final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1, 1);
+        final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
         innerShard.onGlobalContextUpdated(schemaContext);
         final DOMDataTreeProducer shardRegProducer2 = dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
         ListenerRegistration<InMemoryDOMDataTreeShard> innerShardReg = dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, shardRegProducer2);
