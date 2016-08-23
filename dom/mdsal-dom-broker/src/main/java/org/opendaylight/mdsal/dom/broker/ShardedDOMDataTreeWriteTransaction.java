@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -52,11 +53,14 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
 
     @GuardedBy("this")
     private DOMDataTreeWriteCursor openCursor;
+    private final ListeningExecutorService txExecutor;
 
     ShardedDOMDataTreeWriteTransaction(final ShardedDOMDataTreeProducer producer,
+                                       final ListeningExecutorService txExecutor,
                                        final Map<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducer,
                                        final Map<DOMDataTreeIdentifier, DOMDataTreeProducer> childProducers) {
         this.producer = Preconditions.checkNotNull(producer);
+        this.txExecutor = txExecutor;
         idToTransaction = new HashMap<>();
         Preconditions.checkNotNull(idToProducer).forEach((id, prod) -> idToTransaction.put(id, prod.createTransaction()));
         this.identifier = "SHARDED-DOM-" + COUNTER.getAndIncrement();
@@ -120,11 +124,8 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             tx.ready();
         }
         producer.transactionSubmitted(this);
-        try {
-            return Futures.immediateCheckedFuture(new SubmitCoordinationTask(identifier, txns).call());
-        } catch (final TransactionCommitFailedException e) {
-            return Futures.immediateFailedCheckedFuture(e);
-        }
+        final ListenableFuture<Void> submit = txExecutor.submit(new SubmitCoordinationTask(identifier, txns));
+        return Futures.makeChecked(submit, TransactionCommitFailedExceptionMapper.create("submit"));
     }
 
     synchronized void cursorClosed() {

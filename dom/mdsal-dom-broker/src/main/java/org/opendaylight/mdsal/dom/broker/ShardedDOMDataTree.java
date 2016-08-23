@@ -9,6 +9,8 @@ package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,17 +30,29 @@ import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTableEntry;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTreeShardingService {
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTree.class);
+    private static final int DEFAULT_MAXIMUM_POOL_SIZE = 50;
+    private static final int DEFAULT_MAXIMUM_QUEUE_SIZE = 1000;
 
     @GuardedBy("this")
     private final DOMDataTreePrefixTable<ShardRegistration<?>> shards = DOMDataTreePrefixTable.create();
     @GuardedBy("this")
     private final DOMDataTreePrefixTable<DOMDataTreeProducer> producers = DOMDataTreePrefixTable.create();
 
+    private final ListeningExecutorService txExecutor;
+
+    public ShardedDOMDataTree() {
+        this(DEFAULT_MAXIMUM_POOL_SIZE, DEFAULT_MAXIMUM_QUEUE_SIZE);
+    }
+
+    public ShardedDOMDataTree(final int executorPoolSize, final int executorQueueSize) {
+        txExecutor = MoreExecutors.listeningDecorator(SpecialExecutors.newBlockingBoundedFastThreadPool(executorPoolSize, executorQueueSize, "DataTreeService-tx-executor"));
+    }
 
     void removeShard(final ShardRegistration<?> reg) {
         final DOMDataTreeIdentifier prefix = reg.getPrefix();
@@ -123,7 +137,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     @GuardedBy("this")
     private DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees, final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         // Record the producer's attachment points
-        final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, subtrees, shardMap);
+        final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, txExecutor, subtrees, shardMap);
         for (final DOMDataTreeIdentifier subtree : subtrees) {
             producers.store(subtree, ret);
         }

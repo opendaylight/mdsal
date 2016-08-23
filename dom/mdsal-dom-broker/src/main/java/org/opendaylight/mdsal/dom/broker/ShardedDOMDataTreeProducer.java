@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableBiMap.Builder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -49,12 +50,15 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
 
     @GuardedBy("this")
     private ShardedDOMDataTreeListenerContext<?> attachedListener;
+    private final ListeningExecutorService txExecutor;
 
     ShardedDOMDataTreeProducer(final ShardedDOMDataTree dataTree,
+                               final ListeningExecutorService txExecutor,
                                final Collection<DOMDataTreeIdentifier> subtrees,
                                final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap,
                                final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToId) {
         this.dataTree = Preconditions.checkNotNull(dataTree);
+        this.txExecutor = txExecutor;
         if (!shardToId.isEmpty()) {
             this.idToProducer = mapIdsToProducer(shardToId);
         }
@@ -63,6 +67,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     }
 
     static DOMDataTreeProducer create(final ShardedDOMDataTree dataTree,
+                                      final ListeningExecutorService txExecutor,
                                       final Collection<DOMDataTreeIdentifier> subtrees,
                                       final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToIdentifiers = ArrayListMultimap.create();
@@ -71,7 +76,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
             shardToIdentifiers.put(entry.getValue(), entry.getKey());
         }
 
-        return new ShardedDOMDataTreeProducer(dataTree, subtrees, shardMap, shardToIdentifiers);
+        return new ShardedDOMDataTreeProducer(dataTree, txExecutor, subtrees, shardMap, shardToIdentifiers);
     }
 
     void subshardAdded(final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
@@ -108,7 +113,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         Preconditions.checkState(!closed, "Producer is already closed");
         Preconditions.checkState(openTx == null, "Transaction %s is still open", openTx);
 
-        this.openTx = new ShardedDOMDataTreeWriteTransaction(this, idToProducer, children);
+        this.openTx = new ShardedDOMDataTreeWriteTransaction(this, txExecutor, idToProducer, children);
 
         return openTx;
     }
