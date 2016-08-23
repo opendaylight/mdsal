@@ -15,6 +15,7 @@ import org.opendaylight.mdsal.common.api.TransactionChainListener;
 /**
  * Simple implementation of {@link TransactionChainListener} for testing.
  *
+ *<p>
  * This transaction chain listener does not contain any logic, only update
  * futures ({@link #getFailFuture()} and {@link #getSuccessFuture()} when
  * transaction chain event is retrieved.

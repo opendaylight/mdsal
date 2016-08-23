@@ -34,6 +34,7 @@ public class DOMNotificationRouterTest extends TestUtils {
         assertNotNull(DOMNotificationRouter.create(1));
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
     public void complexTest() throws Exception {
         final DOMNotificationSubscriptionListener domNotificationSubscriptionListener =

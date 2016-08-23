@@ -40,7 +40,7 @@ public class TransactionChainReadTransaction implements DOMDataTreeReadTransacti
 
     @Override
     public CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> read(final LogicalDatastoreType store,
-                                                                                   final YangInstanceIdentifier path) {
+            final YangInstanceIdentifier path) {
         final SettableFuture<Optional<NormalizedNode<?, ?>>> readResult = SettableFuture.create();
 
         Futures.addCallback(previousWriteTxFuture, new FutureCallback<Void>() {
@@ -55,18 +55,18 @@ public class TransactionChainReadTransaction implements DOMDataTreeReadTransacti
                             }
 
                             @Override
-                            public void onFailure(final Throwable t) {
-                                txChain.transactionFailed(TransactionChainReadTransaction.this, t);
-                                readResult.setException(t);
+                            public void onFailure(final Throwable throwable) {
+                                txChain.transactionFailed(TransactionChainReadTransaction.this, throwable);
+                                readResult.setException(throwable);
                             }
                         });
             }
 
             @Override
-            public void onFailure(final Throwable t) {
+            public void onFailure(final Throwable throwable) {
                 // we don't have to notify txchain about this failure
                 // failed write transaction should do this
-                readResult.setException(t);
+                readResult.setException(throwable);
             }
         });
 
@@ -77,7 +77,7 @@ public class TransactionChainReadTransaction implements DOMDataTreeReadTransacti
     public CheckedFuture<Boolean, ReadFailedException> exists(final LogicalDatastoreType store,
                                                               final YangInstanceIdentifier path) {
         final Function<Optional<NormalizedNode<?, ?>>, Boolean> transform =
-                optionalNode -> optionalNode.isPresent() ? Boolean.TRUE : Boolean.FALSE;
+            optionalNode -> optionalNode.isPresent() ? Boolean.TRUE : Boolean.FALSE;
         final ListenableFuture<Boolean> existsResult = Futures.transform(read(store, path), transform);
         return Futures.makeChecked(existsResult, ReadFailedException.MAPPER);
     }

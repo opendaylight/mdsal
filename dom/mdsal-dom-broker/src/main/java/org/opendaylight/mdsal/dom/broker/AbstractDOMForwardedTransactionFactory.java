@@ -19,15 +19,14 @@ import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionFactory;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
 
 /**
- *
  * Abstract composite transaction factory.
  *
+ *<p>
  * Provides an convenience common implementation for composite DOM Transactions,
  * where subtransaction is identified by {@link LogicalDatastoreType} type and
  * implementation of subtransaction is provided by
@@ -53,7 +52,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
 
     /**
      * Implementations must return unique identifier for each and every call of
-     * this method;
+     * this method.
      *
      * @return new Unique transaction identifier.
      */
@@ -62,6 +61,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     /**
      * User-supplied implementation of {@link DOMDataTreeWriteTransaction#submit()} for transaction.
      *
+     *<p>
      * Callback invoked when {@link DOMDataTreeWriteTransaction#submit()} is invoked on transaction
      * created by this factory.
      *
@@ -72,20 +72,24 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      *         returned from the Future, On failure, the Future fails with a
      *         {@link TransactionCommitFailedException}.
      */
-    protected abstract CheckedFuture<Void,TransactionCommitFailedException> submit(final DOMDataTreeWriteTransaction transaction,
+    protected abstract CheckedFuture<Void,TransactionCommitFailedException> submit(
+            final DOMDataTreeWriteTransaction transaction,
             final Collection<DOMStoreThreePhaseCommitCohort> cohorts);
 
     /**
-     * Creates a new composite read-only transaction
+     * Creates a new composite read-only transaction.
      *
+     *<p>
      * Creates a new composite read-only transaction backed by one transaction per factory in
      * {@link #getTxFactories()}.
      *
+     *<p>
      * Subtransaction for reading is selected by supplied {@link LogicalDatastoreType} as parameter
      * for
-     * {@link DOMDataTreeReadTransaction#read(LogicalDatastoreType, org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
-     * .
+     * {@link DOMDataTreeReadTransaction#read(LogicalDatastoreType,
+     * org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
      *
+     *<p>
      * Id of returned transaction is retrieved via {@link #newTransactionIdentifier()}.
      *
      * @return New composite read-only transaction.
@@ -112,17 +116,24 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      *
      * <ul>
      * <li>
-     * {@link DOMDataTreeWriteTransaction#put(LogicalDatastoreType, org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
+     * {@link DOMDataTreeWriteTransaction#put(LogicalDatastoreType,
+     * org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier,
+     * org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
      * - backing subtransaction is selected by {@link LogicalDatastoreType},
-     * {@link DOMStoreWriteTransaction#write(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
+     * {@link DOMStoreWriteTransaction#write(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier,
+     * org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
      * is invoked on selected subtransaction.</li>
      * <li>
-     * {@link DOMDataTreeWriteTransaction#merge(LogicalDatastoreType, org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
+     * {@link DOMDataTreeWriteTransaction#merge(LogicalDatastoreType,
+     * org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier,
+     * org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
      * - backing subtransaction is selected by {@link LogicalDatastoreType},
-     * {@link DOMStoreWriteTransaction#merge(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier, org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
+     * {@link DOMStoreWriteTransaction#merge(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier,
+     * org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode)}
      * is invoked on selected subtransaction.</li>
      * <li>
-     * {@link DOMDataTreeWriteTransaction#delete(LogicalDatastoreType, org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
+     * {@link DOMDataTreeWriteTransaction#delete(LogicalDatastoreType,
+     * org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
      * - backing subtransaction is selected by {@link LogicalDatastoreType},
      * {@link DOMStoreWriteTransaction#delete(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
      * is invoked on selected subtransaction.
@@ -132,6 +143,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      * transaction which was commited and gathered results.</li>
      * </ul>
      *
+     * <p>
      * Id of returned transaction is generated via {@link #newTransactionIdentifier()}.
      *
      * @return New composite write-only transaction associated with this factory.

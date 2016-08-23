@@ -68,7 +68,7 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
 
         private final LogicalDatastoreType type;
 
-        public StoreListener(LogicalDatastoreType type) {
+        StoreListener(LogicalDatastoreType type) {
             this.type = type;
         }
 
