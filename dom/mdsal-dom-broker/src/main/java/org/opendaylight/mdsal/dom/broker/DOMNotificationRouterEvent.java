@@ -7,14 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.api.DOMNotification;
-import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
-
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.lmax.disruptor.EventFactory;
 import java.util.Collection;
+import org.opendaylight.mdsal.dom.api.DOMNotification;
+import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 /**
@@ -22,7 +21,8 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
  * so they do have mutable state.
  */
 final class DOMNotificationRouterEvent {
-    public static final EventFactory<DOMNotificationRouterEvent> FACTORY = new EventFactory<DOMNotificationRouterEvent>() {
+    public static final EventFactory<DOMNotificationRouterEvent> FACTORY =
+            new EventFactory<DOMNotificationRouterEvent>() {
         @Override
         public DOMNotificationRouterEvent newInstance() {
             return new DOMNotificationRouterEvent();
@@ -37,7 +37,8 @@ final class DOMNotificationRouterEvent {
         // Hidden on purpose, initialized in initialize()
     }
 
-    ListenableFuture<Void> initialize(final DOMNotification notification, final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
+    ListenableFuture<Void> initialize(final DOMNotification notification,
+            final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
         this.notification = Preconditions.checkNotNull(notification);
         this.subscribers = Preconditions.checkNotNull(subscribers);
         this.future = SettableFuture.create();

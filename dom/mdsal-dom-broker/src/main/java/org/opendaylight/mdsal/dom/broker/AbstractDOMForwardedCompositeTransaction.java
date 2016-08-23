@@ -8,18 +8,18 @@
 
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
-
-import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.Map;
+import org.opendaylight.mdsal.common.api.AsyncTransaction;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
  * Composite DOM Transaction backed by {@link DOMStoreTransaction}.
  *
+ *<p>
  * Abstract base for composite transaction, which provides access only to common
  * functionality as retrieval of subtransaction, close method and retrieval of
  * identifier.
@@ -36,7 +36,6 @@ abstract class AbstractDOMForwardedCompositeTransaction<K, T extends DOMStoreTra
     private final Object identifier;
 
     /**
-     *
      * Creates new composite Transactions.
      *
      * @param identifier
@@ -52,8 +51,8 @@ abstract class AbstractDOMForwardedCompositeTransaction<K, T extends DOMStoreTra
     /**
      * Returns subtransaction associated with supplied key.
      *
-     * @param key
-     * @return
+     * @param key is used to retrieve subtransaction object
+     * @return the subtransaction object
      * @throws NullPointerException
      *             if key is null
      * @throws IllegalArgumentException
@@ -80,6 +79,7 @@ abstract class AbstractDOMForwardedCompositeTransaction<K, T extends DOMStoreTra
         return identifier;
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     protected void closeSubtransactions() {
         /*
          * We share one exception for all failures, which are added

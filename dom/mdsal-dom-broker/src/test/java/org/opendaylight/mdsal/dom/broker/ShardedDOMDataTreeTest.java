@@ -123,8 +123,10 @@ public class ShardedDOMDataTreeTest {
 
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
         innerShard.onGlobalContextUpdated(schemaContext);
-        final DOMDataTreeProducer shardRegProducer2 = dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
-        ListenerRegistration<InMemoryDOMDataTreeShard> innerShardReg = dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, shardRegProducer2);
+        final DOMDataTreeProducer shardRegProducer2 =
+                dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
+        ListenerRegistration<InMemoryDOMDataTreeShard> innerShardReg =
+                dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, innerShard, shardRegProducer2);
 
         innerShardReg.close();
         // try to register the shard again
@@ -146,7 +148,8 @@ public class ShardedDOMDataTreeTest {
         final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
-        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID), true, Collections.emptyList());
+        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID),
+                true, Collections.emptyList());
 
         final DOMDataTreeProducer producer = dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
         DOMDataTreeCursorAwareTransaction tx = producer.createTransaction(false);
@@ -173,12 +176,15 @@ public class ShardedDOMDataTreeTest {
         cursor.close();
         tx.submit().checkedGet();
 
-        verify(mockedDataTreeListener, timeout(1000).times(3)).onDataTreeChanged(captorForChanges.capture(), captorForSubtrees.capture());
+        verify(mockedDataTreeListener, timeout(1000).times(3)).onDataTreeChanged(captorForChanges.capture(),
+                captorForSubtrees.capture());
         final List<Collection<DataTreeCandidate>> capturedValue = captorForChanges.getAllValues();
         assertTrue(capturedValue.size() == 3);
 
-        final ContainerNode capturedChange = (ContainerNode) capturedValue.get(1).iterator().next().getRootNode().getDataAfter().get();
-        final ContainerNode innerContainerVerify = (ContainerNode) crossShardContainer.getChild(TestModel.INNER_CONTAINER_PATH.getLastPathArgument()).get();
+        final ContainerNode capturedChange =
+                (ContainerNode) capturedValue.get(1).iterator().next().getRootNode().getDataAfter().get();
+        final ContainerNode innerContainerVerify = (ContainerNode) crossShardContainer.getChild(
+                TestModel.INNER_CONTAINER_PATH.getLastPathArgument()).get();
         assertEquals(innerContainerVerify, capturedChange);
 
         verifyNoMoreInteractions(mockedDataTreeListener);
@@ -203,7 +209,8 @@ public class ShardedDOMDataTreeTest {
 
         assertTrue(rootTx.cancel());
 
-        final DOMDataTreeProducer innerContainerProducer = rootProducer.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
+        final DOMDataTreeProducer innerContainerProducer = rootProducer.createProducer(
+                Collections.singletonList(INNER_CONTAINER_ID));
 
         rootTx = rootProducer.createTransaction(false);
         try {
@@ -239,9 +246,11 @@ public class ShardedDOMDataTreeTest {
 
     private ContainerNode createCrossShardContainer() {
         final LeafNode<String> shardedValue1 =
-                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(new NodeIdentifier(TestModel.SHARDED_VALUE_1)).withValue("sharded value 1").build();
+                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(new NodeIdentifier(
+                        TestModel.SHARDED_VALUE_1)).withValue("sharded value 1").build();
         final LeafNode<String> shardedValue2 =
-                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(new NodeIdentifier(TestModel.SHARDED_VALUE_2)).withValue("sharded value 2").build();
+                ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(new NodeIdentifier(
+                        TestModel.SHARDED_VALUE_2)).withValue("sharded value 2").build();
 
 
         final ContainerNode lowerShardContainer = ImmutableContainerNodeBuilder.create()

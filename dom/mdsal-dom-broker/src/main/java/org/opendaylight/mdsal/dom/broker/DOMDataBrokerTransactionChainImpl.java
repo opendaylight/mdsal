@@ -8,14 +8,6 @@
 
 package org.opendaylight.mdsal.dom.broker;
 
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
-
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionChainListener;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
-import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
@@ -25,6 +17,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionChainListener;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransactionFactory<DOMStoreTransactionChain>
         implements DOMTransactionChain {
-    private static enum State {
+    private enum State {
         RUNNING,
         CLOSING,
         CLOSED,
@@ -57,6 +56,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
     private volatile int counter = 0;
 
     /**
+     *Constructor with args.
      *
      * @param chainId
      *            ID of transaction chain
@@ -71,7 +71,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
      * @throws NullPointerException
      *             If any of arguments is null.
      */
-    public DOMDataBrokerTransactionChainImpl(final long chainId,
+    DOMDataBrokerTransactionChainImpl(final long chainId,
             final Map<LogicalDatastoreType, DOMStoreTransactionChain> chains,
             final AbstractDOMDataBroker broker, final TransactionChainListener listener) {
         super(chains);
@@ -105,8 +105,8 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
             }
 
             @Override
-            public void onFailure(final Throwable t) {
-                transactionFailed(transaction, t);
+            public void onFailure(final Throwable throwable) {
+                transactionFailed(transaction, throwable);
             }
         });
 

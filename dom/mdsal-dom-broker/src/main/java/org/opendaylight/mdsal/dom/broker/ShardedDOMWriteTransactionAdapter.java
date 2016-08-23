@@ -173,8 +173,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     }
 
     private void closeProducers() {
-        producerMap.values().forEach(domDataTreeProducer ->
-        {
+        producerMap.values().forEach(domDataTreeProducer -> {
             try {
                 domDataTreeProducer.close();
             } catch (final DOMDataTreeProducerException e) {

@@ -68,7 +68,8 @@ public class DOMBrokerTest {
         operStore.onGlobalContextUpdated(schemaContext);
         configStore.onGlobalContextUpdated(schemaContext);
 
-        final ImmutableMap<LogicalDatastoreType, DOMStore> stores = ImmutableMap.<LogicalDatastoreType, DOMStore> builder()
+        final ImmutableMap<LogicalDatastoreType, DOMStore> stores =
+                ImmutableMap.<LogicalDatastoreType, DOMStore>builder()
                 .put(CONFIGURATION, configStore)
                 .put(OPERATIONAL, operStore)
                 .build();
@@ -82,16 +83,16 @@ public class DOMBrokerTest {
 
     @After
     public void tearDown() {
-        if( executor != null ) {
+        if (executor != null ) {
             executor.shutdownNow();
         }
 
-        if(futureExecutor != null) {
+        if (futureExecutor != null) {
             futureExecutor.shutdownNow();
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testTransactionIsolation() throws InterruptedException, ExecutionException {
         assertNotNull(domBroker);
 
@@ -102,14 +103,12 @@ public class DOMBrokerTest {
         assertNotNull(writeTx);
 
         /**
-         *
-         * Writes /test in writeTx
+         * Writes /test in writeTx.
          *
          */
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
 
         /**
-         *
          * Reads /test from readTx Read should return Absent.
          *
          */
@@ -118,12 +117,11 @@ public class DOMBrokerTest {
         assertFalse(readTxContainer.get().isPresent());
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testTransactionCommit() throws InterruptedException, ExecutionException {
         final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         assertNotNull(writeTx);
         /**
-         *
          * Writes /test in writeTx
          *
          */
@@ -136,7 +134,7 @@ public class DOMBrokerTest {
         assertTrue(afterCommitRead.isPresent());
     }
 
-    @Test(expected=TransactionCommitFailedException.class)
+    @Test(expected = TransactionCommitFailedException.class)
     public void testRejectedCommit() throws Exception {
         commitExecutor.delegate = Mockito.mock( ExecutorService.class );
         Mockito.doThrow( new RejectedExecutionException( "mock" ) )
@@ -153,6 +151,7 @@ public class DOMBrokerTest {
         writeTx.submit().checkedGet( 5, TimeUnit.SECONDS );
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     AtomicReference<Throwable> submitTxAsync( final DOMDataTreeWriteTransaction writeTx ) {
         final AtomicReference<Throwable> caughtEx = new AtomicReference<>();
         new Thread() {
@@ -161,7 +160,7 @@ public class DOMBrokerTest {
 
                 try {
                     writeTx.submit();
-                } catch( final Throwable e ) {
+                } catch ( final Throwable e ) {
                     caughtEx.set( e );
                 }
             }
@@ -214,15 +213,19 @@ public class DOMBrokerTest {
         readRx.read(OPERATIONAL, TestModel.TEST_PATH).checkedGet();
     }
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test
     public void closeTest() throws Exception {
-        final String TEST_EXCEPTION = "TestException";
+        final String testException = "TestException";
 
-        domBroker.setCloseable(() -> { throw new Exception(TEST_EXCEPTION); });
-        try{
+        domBroker.setCloseable(() -> {
+            throw new Exception(testException);
+        });
+
+        try {
             domBroker.close();
-        }catch(final Exception e){
-            assertTrue(e.getMessage().contains(TEST_EXCEPTION));
+        } catch (final Exception e) {
+            assertTrue(e.getMessage().contains(testException));
         }
     }
 
@@ -230,7 +233,7 @@ public class DOMBrokerTest {
 
         ExecutorService delegate;
 
-        public CommitExecutorService( final ExecutorService delegate ) {
+        CommitExecutorService( final ExecutorService delegate ) {
             this.delegate = delegate;
         }
 

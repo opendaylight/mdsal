@@ -48,6 +48,7 @@ public class OsgiBundleScanningSchemaServiceTest {
         assertEquals(bundleContext, osgiService.getContext());
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @After
     public void destroyInstance() throws Exception {
         try {
