@@ -33,6 +33,8 @@ public class EntityOwnershipChangeStateTest {
                 EntityOwnershipChangeState.from(false, false, true));
         assertEquals("from(false, false, false)", EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER,
                 EntityOwnershipChangeState.from(false, false, false));
+        assertEquals("from(true, true, true)", EntityOwnershipChangeState.LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE,
+                EntityOwnershipChangeState.from(true, true, true));
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -43,11 +45,6 @@ public class EntityOwnershipChangeStateTest {
     @Test(expected=IllegalArgumentException.class)
     public void testFromWithInvalidTrueTrueFalse() {
         EntityOwnershipChangeState.from(true, true, false);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testFromWithInvalidTrueTrueTrue() {
-        EntityOwnershipChangeState.from(true, true, true);
     }
 
     @Test
