@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_3c97fc91",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStore.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_8dc9c07a",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_6dc4245f",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStore.java",
         "patchSetId": 9
@@ -47,6 +65,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "\u003cp\u003e?",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1c92009f",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStore.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6dc4245f",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_7c917498",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStore.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_8d1b801a",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_adbe3cd2",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreThreePhaseCommitCohort.java",
         "patchSetId": 9
@@ -81,6 +135,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "This blank comment line separates the sections for readability. Does CS complain about this? If not, please add back.",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_fcf464f3",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreThreePhaseCommitCohort.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_adbe3cd2",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_dcf7e8f3",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreThreePhaseCommitCohort.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_8df260d0",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_0db650fa",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreThreePhaseCommitCohort.java",
         "patchSetId": 9
@@ -115,6 +205,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Same as comment on line 24 above",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_3cdedc6d",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreThreePhaseCommitCohort.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_0db650fa",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -138,6 +246,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_1cd96083",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreThreePhaseCommitCohort.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_edb834e7",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_4dcfa87f",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreThreePhaseCommitCohort.java",
         "patchSetId": 9
@@ -155,6 +281,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_7ce85410",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreThreePhaseCommitCohort.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_4dcfa87f",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_cda298ad",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransaction.java",
         "patchSetId": 9
@@ -166,6 +310,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "\u003cp\u003e",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1c47a01e",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cda298ad",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -223,6 +385,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_3c737c81",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionChain.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_edaf9492",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_4d96884d",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionChain.java",
         "patchSetId": 9
@@ -234,6 +414,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "\u003cp\u003e",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_dc5c08f0",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionChain.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_4d96884d",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -257,6 +455,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fc5904ff",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionChain.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_2d918c52",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_8da0a0a0",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionChain.java",
         "patchSetId": 9
@@ -268,6 +484,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Keep 1 blank line for clarity.",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_bc5f8ce4",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionChain.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_8da0a0a0",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -291,6 +525,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_5c5118d7",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionChain.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6d9b8472",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_cd89f827",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionChain.java",
         "patchSetId": 9
@@ -302,6 +554,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Keep blank line for clarity.",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_7c5694d3",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionChain.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cd89f827",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -325,6 +595,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_7c6df497",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionFactory.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_0d84900a",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_ed867412",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionFactory.java",
         "patchSetId": 9
@@ -336,6 +624,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Keep blank line for clarity.",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5c68f886",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionFactory.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_ed867412",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -359,6 +665,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fc10e402",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionFactory.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_4d7de81b",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_2d786c2a",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionFactory.java",
         "patchSetId": 9
@@ -370,6 +694,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Keep blank line for clarity.",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_dc13680b",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreTransactionFactory.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_2d786c2a",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -393,6 +735,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fc274462",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_0d9bf067",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_2d9fcc51",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreWriteTransaction.java",
         "patchSetId": 9
@@ -404,6 +764,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Keep blank line for clarity.",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_9c30d09f",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_2d9fcc51",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -444,6 +822,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_bc2dcc48",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_8daee083",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_6da9c47a",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreWriteTransaction.java",
         "patchSetId": 9
@@ -455,6 +851,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Keep blank line for clarity.",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5cff58aa",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6da9c47a",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -478,6 +892,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_7c04d4bf",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/DOMStoreWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cdb738d7",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_edb4b4d2",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransaction.java",
         "patchSetId": 9
@@ -489,6 +921,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Keep blank line for clarity.",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_9cd45048",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_edb4b4d2",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -512,6 +962,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fccbc4a2",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_4dcb2853",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_2dc6ac49",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransaction.java",
         "patchSetId": 9
@@ -523,6 +991,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Why did you remove \u0027e\u0027? Should be kept as the cause.",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_dccec8b3",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_2dc6ac49",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -546,6 +1032,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_1cc0407b",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedTransactions.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cdde1811",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_ade11cd2",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedTransactions.java",
         "patchSetId": 9
@@ -557,6 +1061,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Keep blank line for clarity",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_3cc53c8e",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedTransactions.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_ade11cd2",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -580,6 +1102,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_5cbab80a",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6dd704ee",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_cd05787b",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedWriteTransaction.java",
         "patchSetId": 9
@@ -591,6 +1131,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "\u003cp\u003e",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_bc382ca1",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cd05787b",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -614,6 +1172,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_9c3bb09b",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_ad08fc91",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_0d001066",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedWriteTransaction.java",
         "patchSetId": 9
@@ -631,6 +1207,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fc42a40e",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_0d001066",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_ed02f46d",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedWriteTransaction.java",
         "patchSetId": 9
@@ -642,6 +1236,24 @@
       "writtenOn": "2016-08-24T06:00:43Z",
       "side": 0,
       "message": "Keep blank line for clarity",
+      "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_dc452818",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-25T00:02:45Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_ed02f46d",
       "revId": "39c0d06b2987b65ba978c4d85f4448895d3490bd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
