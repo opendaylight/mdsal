@@ -9,14 +9,13 @@ package org.opendaylight.controller.md.sal.dom.store.impl;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
@@ -54,13 +53,15 @@ public class SchemaUpdateForTransactionTest {
      * then triggering update of global schema context
      * and then performing write (according to new module).
      *
+     *<p>
      * If transaction between allocation and schema context was
      * unmodified, it is safe to change its schema context
      * to new one (e.g. it will be same as if allocated after
      * schema context update.)
      *
-     * @throws InterruptedException
-     * @throws ExecutionException
+     *<p>
+     * @throws InterruptedException when this condition met
+     * @throws ExecutionException when execution fails
      */
     @Ignore
     @Test

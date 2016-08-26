@@ -10,15 +10,14 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import org.opendaylight.mdsal.dom.spi.store.AbstractDOMStoreTransaction;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
-import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
-
-import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.mdsal.dom.spi.store.AbstractDOMStoreTransaction;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
+import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.ConflictingModificationAppliedException;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
@@ -35,7 +34,8 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
     private final InMemoryDOMDataStore store;
     private DataTreeCandidate candidate;
 
-    public InMemoryDOMStoreThreePhaseCommitCohort(final InMemoryDOMDataStore store, final SnapshotBackedWriteTransaction<String> writeTransaction, final DataTreeModification modification) {
+    InMemoryDOMStoreThreePhaseCommitCohort(final InMemoryDOMDataStore store,
+            final SnapshotBackedWriteTransaction<String> writeTransaction, final DataTreeModification modification) {
         this.transaction = Preconditions.checkNotNull(writeTransaction);
         this.modification = Preconditions.checkNotNull(modification);
         this.store = Preconditions.checkNotNull(store);
@@ -48,6 +48,7 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public final ListenableFuture<Boolean> canCommit() {
         try {
@@ -66,15 +67,18 @@ class InMemoryDOMStoreThreePhaseCommitCohort implements DOMStoreThreePhaseCommit
 
             // For debugging purposes, allow dumping of the modification. Coupled with the above
             // precondition log, it should allow us to understand what went on.
-            LOG.trace("Store Tx: {} modifications: {} tree: {}", getTransaction().getIdentifier(), modification, store);
+            LOG.trace("Store Tx: {} modifications: {} tree: {}", getTransaction().getIdentifier(),
+                    modification, store);
 
-            return Futures.immediateFailedFuture(new TransactionCommitFailedException("Data did not pass validation.", e));
+            return Futures.immediateFailedFuture(
+                    new TransactionCommitFailedException("Data did not pass validation.", e));
         } catch (Exception e) {
             LOG.warn("Unexpected failure in validation phase", e);
             return Futures.immediateFailedFuture(e);
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public final ListenableFuture<Void> preCommit() {
         try {

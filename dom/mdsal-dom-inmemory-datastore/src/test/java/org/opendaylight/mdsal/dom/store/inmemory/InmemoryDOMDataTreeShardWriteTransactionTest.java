@@ -83,7 +83,8 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
 
         inmemoryDOMDataTreeShardWriteTransaction =
                 new InmemoryDOMDataTreeShardWriteTransaction(shardDataModification, DATA_TREE,
-                        inMemoryDOMDataTreeShardChangePublisher, MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor()));
+                        inMemoryDOMDataTreeShardChangePublisher,
+                        MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor()));
     }
 
     @Test

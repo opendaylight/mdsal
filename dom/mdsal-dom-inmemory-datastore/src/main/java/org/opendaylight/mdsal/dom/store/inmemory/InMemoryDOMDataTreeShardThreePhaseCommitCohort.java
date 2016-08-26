@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.Collections;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
@@ -40,6 +39,7 @@ class InMemoryDOMDataTreeShardThreePhaseCommitCohort implements DOMStoreThreePha
         this.changePublisher = Preconditions.checkNotNull(changePublisher);
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public ListenableFuture<Boolean> canCommit() {
         try {
@@ -51,13 +51,15 @@ class InMemoryDOMDataTreeShardThreePhaseCommitCohort implements DOMStoreThreePha
             LOG.warn("Data validation failed for {}", modification);
             LOG.trace("dataTree : {}", dataTree);
 
-            return Futures.immediateFailedFuture(new TransactionCommitFailedException("Data did not pass validation.", e));
+            return Futures.immediateFailedFuture(new TransactionCommitFailedException(
+                    "Data did not pass validation.", e));
         } catch (Exception e) {
             LOG.warn("Unexpected failure in validation phase", e);
             return Futures.immediateFailedFuture(e);
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public ListenableFuture<Void> preCommit() {
         try {

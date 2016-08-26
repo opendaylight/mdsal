@@ -62,6 +62,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         verify(IN_MEMORY_DOM_DATA_STORE).validate(any());
     }
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test(expected = OptimisticLockFailedException.class)
     public void canCommitTestWithOptimisticLockFailedException() throws Throwable {
         doThrow(new ConflictingModificationAppliedException(YangInstanceIdentifier.EMPTY, "testException"))
@@ -75,6 +76,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         }
     }
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test(expected = TransactionCommitFailedException.class)
     public void canCommitTestWithTransactionCommitFailedException() throws Throwable {
         doThrow(new DataValidationFailedException(YangInstanceIdentifier.EMPTY, "testException"))
@@ -88,6 +90,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         }
     }
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test(expected = UnsupportedOperationException.class)
     public void canCommitTestWithUnknownException() throws Throwable {
         doThrow(new UnsupportedOperationException("testException"))
@@ -108,6 +111,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         verify(IN_MEMORY_DOM_DATA_STORE).prepare(any());
     }
 
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
     @Test(expected = UnsupportedOperationException.class)
     public void preCommitTestWithUnknownException() throws Throwable {
         doThrow(new UnsupportedOperationException("testException"))
