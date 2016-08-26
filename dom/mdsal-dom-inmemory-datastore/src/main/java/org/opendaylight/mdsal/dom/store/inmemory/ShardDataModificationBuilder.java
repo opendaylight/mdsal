@@ -21,7 +21,7 @@ class ShardDataModificationBuilder extends ModificationContextNodeBuilder<ShardD
     private final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards =
             new HashMap<>();
 
-    public ShardDataModificationBuilder(final ShardRootModificationContext root) {
+    ShardDataModificationBuilder(final ShardRootModificationContext root) {
         this.root = root;
     }
 

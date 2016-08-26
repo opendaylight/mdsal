@@ -87,7 +87,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     InmemoryDOMDataTreeShardWriteTransaction(final ShardDataModification root,
                                              final DataTree rootShardDataTree,
-                                             final InMemoryDOMDataTreeShardChangePublisher changePublisher, final ListeningExecutorService executor) {
+                                             final InMemoryDOMDataTreeShardChangePublisher changePublisher,
+                                             final ListeningExecutorService executor) {
         this.modification = Preconditions.checkNotNull(root);
         this.rootShardDataTree = Preconditions.checkNotNull(rootShardDataTree);
         this.changePublisher = Preconditions.checkNotNull(changePublisher);
@@ -159,8 +160,10 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         LOG.debug("Readying open transaction on shard {}", modification.getPrefix());
         rootModification = modification.seal();
 
-        cohorts.add(new InMemoryDOMDataTreeShardThreePhaseCommitCohort(rootShardDataTree, rootModification, changePublisher));
-        for (final Entry<DOMDataTreeIdentifier, ForeignShardModificationContext> entry : modification.getChildShards().entrySet()) {
+        cohorts.add(new InMemoryDOMDataTreeShardThreePhaseCommitCohort(
+                rootShardDataTree, rootModification, changePublisher));
+        for (final Entry<DOMDataTreeIdentifier, ForeignShardModificationContext> entry :
+                modification.getChildShards().entrySet()) {
             cohorts.add(new ForeignShardThreePhaseCommitCohort(entry.getKey(), entry.getValue()));
         }
         finished = true;
@@ -173,7 +176,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         Preconditions.checkNotNull(cohorts);
         Preconditions.checkState(!cohorts.isEmpty(), "Transaction was not readied yet.");
 
-        final ListenableFuture<Void> submit = executor.submit(new ShardSubmitCoordinationTask(modification.getPrefix(), cohorts));
+        final ListenableFuture<Void> submit = executor.submit(new ShardSubmitCoordinationTask(
+                modification.getPrefix(), cohorts));
 
         return submit;
     }
@@ -182,7 +186,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     public ListenableFuture<Boolean> validate() {
         LOG.debug("CanCommit on open transaction on shard {}", modification.getPrefix());
 
-        final ListenableFuture<Boolean> submit = executor.submit(new ShardCanCommitCoordinationTask(modification.getPrefix(), cohorts));
+        final ListenableFuture<Boolean> submit = executor.submit(new ShardCanCommitCoordinationTask(
+                modification.getPrefix(), cohorts));
         return submit;
     }
 
@@ -190,7 +195,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     public ListenableFuture<Void> prepare() {
         LOG.debug("PreCommit on open transaction on shard {}", modification.getPrefix());
 
-        final ListenableFuture<Void> submit = executor.submit(new ShardPreCommitCoordinationTask(modification.getPrefix(), cohorts));
+        final ListenableFuture<Void> submit = executor.submit(new ShardPreCommitCoordinationTask(
+                modification.getPrefix(), cohorts));
         return submit;
     }
 
@@ -198,7 +204,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     public ListenableFuture<Void> commit() {
         LOG.debug("Commit open transaction on shard {}", modification.getPrefix());
 
-        final ListenableFuture<Void> submit = executor.submit(new ShardCommitCoordinationTask(modification.getPrefix(), cohorts));
+        final ListenableFuture<Void> submit = executor.submit(new ShardCommitCoordinationTask(
+                modification.getPrefix(), cohorts));
         return submit;
     }
 

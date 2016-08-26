@@ -20,7 +20,7 @@ public class ShardSubmitCoordinationTaskTest {
 
     @Test
     public void basicTest() throws Exception {
-        ShardSubmitCoordinationTask shardSubmitCoordinationTask =
+        final ShardSubmitCoordinationTask shardSubmitCoordinationTask =
                 new ShardSubmitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, Collections.EMPTY_SET);
 
         final ShardCanCommitCoordinationTask canCommitCoordinationTask = mock(ShardCanCommitCoordinationTask.class);

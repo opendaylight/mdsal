@@ -30,15 +30,16 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
 
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataTreeShardChangePublisher.class);
 
-    private static final Invoker<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> MANAGER_INVOKER =
-            (listener, notification) -> {
-                final DOMDataTreeChangeListener inst = listener.getInstance();
-                if (inst != null) {
-                    inst.onDataTreeChanged(ImmutableList.of(notification));
-                }
-            };
+    private static final Invoker<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
+        MANAGER_INVOKER = (listener, notification) -> {
+            final DOMDataTreeChangeListener inst = listener.getInstance();
+            if (inst != null) {
+                inst.onDataTreeChanged(ImmutableList.of(notification));
+            }
+        };
 
-    private final QueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> notificationManager;
+    private final QueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>,
+        DataTreeCandidate> notificationManager;
 
     InMemoryDOMDataTreeShardChangePublisher(final ExecutorService executorService,
                                             final int maxQueueSize,
@@ -46,11 +47,13 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
                                             final YangInstanceIdentifier rootPath,
                                             final Map<DOMDataTreeIdentifier, ChildShardContext> childShards) {
         super(dataTree, rootPath, childShards);
-        notificationManager = new QueuedNotificationManager<>(executorService, MANAGER_INVOKER, maxQueueSize, "DataTreeChangeListenerQueueMgr");
+        notificationManager = new QueuedNotificationManager<>(
+                executorService, MANAGER_INVOKER, maxQueueSize, "DataTreeChangeListenerQueueMgr");
     }
 
     @Override
-    protected void notifyListeners(@Nonnull final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
+    protected void notifyListeners(
+            @Nonnull final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
                                    @Nonnull final YangInstanceIdentifier path,
                                    @Nonnull final DataTreeCandidateNode node) {
         final DataTreeCandidate candidate = DataTreeCandidates.newDataTreeCandidate(path, node);
@@ -67,7 +70,8 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
 
     }
 
-    public <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L> registerTreeChangeListener(YangInstanceIdentifier path, L listener) {
+    public <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L>
+            registerTreeChangeListener(YangInstanceIdentifier path, L listener) {
         return super.registerTreeChangeListener(path, listener);
     }
 

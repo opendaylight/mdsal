@@ -22,10 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Task that coordinates the PreCommit phase of the provided {@link DOMStoreThreePhaseCommitCohort}'s
+ * Task that coordinates the PreCommit phase of the provided {@link DOMStoreThreePhaseCommitCohort}'s.
  */
 @Beta
-public class ShardPreCommitCoordinationTask implements Callable<Void>{
+public class ShardPreCommitCoordinationTask implements Callable<Void> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShardPreCommitCoordinationTask.class);
 
@@ -65,9 +65,9 @@ public class ShardPreCommitCoordinationTask implements Callable<Void>{
 
     private ListenableFuture<?>[] preCommitAll() {
         final ListenableFuture<?>[] ops = new ListenableFuture<?>[cohorts.size()];
-        int i = 0;
+        int index = 0;
         for (final DOMStoreThreePhaseCommitCohort cohort : cohorts) {
-            ops[i++] = cohort.preCommit();
+            ops[index++] = cohort.preCommit();
         }
         return ops;
     }

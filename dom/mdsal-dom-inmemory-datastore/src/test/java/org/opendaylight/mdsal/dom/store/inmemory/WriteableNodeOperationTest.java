@@ -149,7 +149,7 @@ public class WriteableNodeOperationTest extends WriteableNodeOperation {
         resetMocks();
     }
 
-    public WriteableNodeOperationTest(){
+    public WriteableNodeOperationTest() {
         super(WRITEABLE_MODIFICATION_NODE, DOM_DATA_TREE_WRITE_CURSOR);
     }
 

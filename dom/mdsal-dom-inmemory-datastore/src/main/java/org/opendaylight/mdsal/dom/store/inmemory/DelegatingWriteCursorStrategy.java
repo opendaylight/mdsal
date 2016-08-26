@@ -67,6 +67,7 @@ abstract class DelegatingWriteCursorStrategy extends ForwardingObject implements
      * Operation performed to exit current logical level, default implementation calls
      * {@link DOMDataTreeWriteCursor#exit()} on underlaying cursor.
      *
+     *<p>
      * Subclasses may override this to customize exit strategy.
      *
      */

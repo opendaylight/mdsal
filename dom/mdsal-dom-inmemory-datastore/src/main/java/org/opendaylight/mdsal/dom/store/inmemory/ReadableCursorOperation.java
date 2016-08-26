@@ -14,6 +14,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 interface ReadableCursorOperation extends CursorStrategy {
 
-    abstract Optional<NormalizedNode<?, ?>> readNode(PathArgument arg);
+    Optional<NormalizedNode<?, ?>> readNode(PathArgument arg);
 
 }
