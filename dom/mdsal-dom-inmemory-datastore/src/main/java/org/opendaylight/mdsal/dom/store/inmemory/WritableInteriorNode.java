@@ -17,7 +17,7 @@ class WritableInteriorNode extends WriteableNodeWithSubshard {
 
     private final PathArgument identifier;
 
-    public WritableInteriorNode(PathArgument identifier, Map<PathArgument, WriteableModificationNode> children) {
+    WritableInteriorNode(PathArgument identifier, Map<PathArgument, WriteableModificationNode> children) {
         super(children);
         this.identifier = Preconditions.checkNotNull(identifier);
     }

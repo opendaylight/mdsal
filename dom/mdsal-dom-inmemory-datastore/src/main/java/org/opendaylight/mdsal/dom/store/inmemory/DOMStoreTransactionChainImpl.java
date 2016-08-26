@@ -7,11 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.dom.spi.store.AbstractSnapshotBackedTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
-
-import com.google.common.base.Preconditions;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 
@@ -23,7 +22,8 @@ final class DOMStoreTransactionChainImpl extends AbstractSnapshotBackedTransacti
     }
 
     @Override
-    protected DOMStoreThreePhaseCommitCohort createCohort(final SnapshotBackedWriteTransaction<String> tx, final DataTreeModification modification) {
+    protected DOMStoreThreePhaseCommitCohort createCohort(final SnapshotBackedWriteTransaction<String> tx,
+            final DataTreeModification modification) {
         return new ChainedTransactionCommitImpl(store, tx, modification, this);
     }
 
