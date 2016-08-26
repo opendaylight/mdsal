@@ -7,10 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import org.opendaylight.mdsal.dom.api.DOMSchemaService;
-
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 
 /**
