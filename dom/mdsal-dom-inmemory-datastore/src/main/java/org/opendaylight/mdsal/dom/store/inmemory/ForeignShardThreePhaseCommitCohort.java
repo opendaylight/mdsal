@@ -22,7 +22,8 @@ public class ForeignShardThreePhaseCommitCohort implements DOMStoreThreePhaseCom
     private final DOMDataTreeIdentifier prefix;
     private final ForeignShardModificationContext shard;
 
-    public ForeignShardThreePhaseCommitCohort(final DOMDataTreeIdentifier prefix, final ForeignShardModificationContext shard) {
+    public ForeignShardThreePhaseCommitCohort(final DOMDataTreeIdentifier prefix,
+            final ForeignShardModificationContext shard) {
         this.prefix = prefix;
         this.shard = shard;
     }

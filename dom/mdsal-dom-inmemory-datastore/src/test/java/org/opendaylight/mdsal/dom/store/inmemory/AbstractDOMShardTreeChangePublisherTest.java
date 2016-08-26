@@ -122,13 +122,15 @@ public class AbstractDOMShardTreeChangePublisherTest extends AbstractDOMShardTre
         super(DATA_TREE, YANG_INSTANCE_IDENTIFIER, CHILD_SHARDS);
     }
 
-    private AbstractDOMShardTreeChangePublisherTest(final Map<DOMDataTreeIdentifier, ChildShardContext> childShardContextMap) {
+    private AbstractDOMShardTreeChangePublisherTest(
+            final Map<DOMDataTreeIdentifier, ChildShardContext> childShardContextMap) {
         super(DATA_TREE, YANG_INSTANCE_IDENTIFIER, childShardContextMap);
     }
 
     @Override
-    protected void notifyListeners(@Nonnull final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
-                                   @Nonnull final YangInstanceIdentifier path, @Nonnull final DataTreeCandidateNode node) {
+    protected void notifyListeners(
+            @Nonnull final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
+                   @Nonnull final YangInstanceIdentifier path, @Nonnull final DataTreeCandidateNode node) {
         // NOOP
     }
 
