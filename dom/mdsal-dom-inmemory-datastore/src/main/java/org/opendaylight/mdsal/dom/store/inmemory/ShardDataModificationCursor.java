@@ -20,19 +20,20 @@ class ShardDataModificationCursor implements DOMDataTreeWriteCursor {
     private final Deque<WriteCursorStrategy> stack = new ArrayDeque<>();
     private final InmemoryDOMDataTreeShardWriteTransaction parent;
 
-    ShardDataModificationCursor(final ShardDataModification root, final InmemoryDOMDataTreeShardWriteTransaction parent) {
+    ShardDataModificationCursor(final ShardDataModification root,
+            final InmemoryDOMDataTreeShardWriteTransaction parent) {
         stack.push(root.createOperation(null));
         this.parent = Preconditions.checkNotNull(parent);
+    }
+
+    private WriteCursorStrategy getCurrent() {
+        return stack.peek();
     }
 
     @Override
     public void enter(final PathArgument child) {
         WriteCursorStrategy nextOp = getCurrent().enter(child);
         stack.push(nextOp);
-    }
-
-    private WriteCursorStrategy getCurrent() {
-        return stack.peek();
     }
 
     @Override

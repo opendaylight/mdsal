@@ -12,7 +12,7 @@ import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 
 /**
- * Marker interface for readable/writeable DOMDataTreeShard
+ * Marker interface for readable/writeable DOMDataTreeShard.
  */
 @Beta
 public interface ReadableWriteableDOMDataTreeShard extends DOMStoreTreeChangePublisher, WriteableDOMDataTreeShard {

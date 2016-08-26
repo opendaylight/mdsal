@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Task that coordinates the Commit phase of the provided {@link DOMStoreThreePhaseCommitCohort}'s
+ * Task that coordinates the Commit phase of the provided {@link DOMStoreThreePhaseCommitCohort}'s.
  */
 @Beta
 public class ShardCommitCoordinationTask implements Callable<Void> {
@@ -64,9 +64,9 @@ public class ShardCommitCoordinationTask implements Callable<Void> {
 
     private ListenableFuture<?>[] commitAll() {
         final ListenableFuture<?>[] ops = new ListenableFuture<?>[cohorts.size()];
-        int i = 0;
+        int index = 0;
         for (final DOMStoreThreePhaseCommitCohort cohort : cohorts) {
-            ops[i++] = cohort.commit();
+            ops[index++] = cohort.commit();
         }
         return ops;
     }

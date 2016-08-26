@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 /**
  * Holds configuration properties when creating an {@link InMemoryDOMDataStore} instance via the
- * {@link InMemoryDOMDataStoreFactory}
+ * {@link InMemoryDOMDataStoreFactory}.
  *
  * @author Thomas Pantelis
  * @see InMemoryDOMDataStoreFactory

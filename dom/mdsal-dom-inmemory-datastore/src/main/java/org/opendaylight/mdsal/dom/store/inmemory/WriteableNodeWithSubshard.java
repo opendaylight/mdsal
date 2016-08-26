@@ -17,7 +17,7 @@ abstract class WriteableNodeWithSubshard extends WriteableModificationNode {
 
     private final Map<PathArgument, WriteableModificationNode> children;
 
-    public WriteableNodeWithSubshard(Map<PathArgument, WriteableModificationNode> children) {
+    WriteableNodeWithSubshard(Map<PathArgument, WriteableModificationNode> children) {
         this.children = ImmutableMap.copyOf(children);
     }
 
