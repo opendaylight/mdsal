@@ -7,17 +7,17 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
-
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 
 final class ChainedTransactionCommitImpl extends InMemoryDOMStoreThreePhaseCommitCohort {
     private final DOMStoreTransactionChainImpl txChain;
 
-    ChainedTransactionCommitImpl(final InMemoryDOMDataStore store, final SnapshotBackedWriteTransaction<String> transaction,
-        final DataTreeModification modification, final DOMStoreTransactionChainImpl txChain) {
+    ChainedTransactionCommitImpl(final InMemoryDOMDataStore store,
+        final SnapshotBackedWriteTransaction<String> transaction,final DataTreeModification modification,
+            final DOMStoreTransactionChainImpl txChain) {
         super(store, transaction, modification);
         this.txChain = Preconditions.checkNotNull(txChain);
     }

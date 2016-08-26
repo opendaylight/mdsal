@@ -18,7 +18,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 abstract class WriteableModificationNode implements Identifiable<PathArgument> {
 
     /**
-     *
      * Gets child which is on path towards subshard.
      *
      * @return null if requested child is not subshard or enclosing node of any subshard.
@@ -28,7 +27,7 @@ abstract class WriteableModificationNode implements Identifiable<PathArgument> {
     abstract Map<PathArgument, WriteableModificationNode> getChildrenWithSubshards();
 
     /**
-     * Creates operation used to modify this node and its children
+     * Creates operation used to modify this node and its children.
      *
      * @param parentCursor Cursor associated with parent shard
      * @return WriteableOperation for this node.

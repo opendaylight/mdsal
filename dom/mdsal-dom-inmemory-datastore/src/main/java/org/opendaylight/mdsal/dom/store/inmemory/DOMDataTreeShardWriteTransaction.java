@@ -31,6 +31,7 @@ public interface DOMDataTreeShardWriteTransaction extends DOMDataTreeCursorProvi
     /**
      * Finish this transaction and submit it for processing.
      *
+     *<p>
      * FIXME: this method should accept a callback which will report success/failure. Let's not use a CheckedFuture
      *        due to overhead associated with attaching listeners to them.
      * @throws IllegalStateException if this transaction has an unclosed cursor.
