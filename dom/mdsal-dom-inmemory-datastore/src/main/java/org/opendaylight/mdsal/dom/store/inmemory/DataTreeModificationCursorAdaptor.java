@@ -28,7 +28,8 @@ final class DataTreeModificationCursorAdaptor extends ForwardingObject implement
         return new DataTreeModificationCursorAdaptor(dataTreeCursor);
     }
 
-    protected final DataTreeModificationCursor delegate() {
+    @Override
+    protected DataTreeModificationCursor delegate() {
         return delegate;
     }
 
@@ -43,6 +44,16 @@ final class DataTreeModificationCursorAdaptor extends ForwardingObject implement
     }
 
     @Override
+    public void enter(final Iterable<PathArgument> path) {
+        delegate.enter(path);
+    }
+
+    @Override
+    public void enter(final PathArgument... path) {
+        delegate.enter(path);
+    }
+
+    @Override
     public void merge(final PathArgument child, final NormalizedNode<?, ?> data) {
         delegate.merge(child, data);
     }
@@ -50,11 +61,6 @@ final class DataTreeModificationCursorAdaptor extends ForwardingObject implement
     @Override
     public void write(final PathArgument child, final NormalizedNode<?, ?> data) {
         delegate.write(child, data);
-    }
-
-    @Override
-    public void enter(final Iterable<PathArgument> path) {
-        delegate.enter(path);
     }
 
     @Override
@@ -76,8 +82,4 @@ final class DataTreeModificationCursorAdaptor extends ForwardingObject implement
         delegate.close();
     }
 
-    @Override
-    public void enter(final PathArgument... path) {
-        delegate.enter(path);
-    }
 }

@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Task that coordinates the CanCommit phase of the provided {@link DOMStoreThreePhaseCommitCohort}'s
+ * Task that coordinates the CanCommit phase of the provided {@link DOMStoreThreePhaseCommitCohort}'s.
  */
 @Beta
 public class ShardCanCommitCoordinationTask implements Callable<Boolean> {
@@ -67,9 +67,9 @@ public class ShardCanCommitCoordinationTask implements Callable<Boolean> {
 
     private ListenableFuture<?>[] canCommitAll() {
         final ListenableFuture<?>[] ops = new ListenableFuture<?>[cohorts.size()];
-        int i = 0;
+        int index = 0;
         for (final DOMStoreThreePhaseCommitCohort cohort : cohorts) {
-            ops[i++] = cohort.canCommit();
+            ops[index++] = cohort.canCommit();
         }
         return ops;
     }

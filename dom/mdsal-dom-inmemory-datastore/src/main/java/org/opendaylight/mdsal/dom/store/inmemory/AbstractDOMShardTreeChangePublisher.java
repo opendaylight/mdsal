@@ -46,7 +46,8 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeChangePublisher implements DOMStoreTreeChangePublisher {
+abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeChangePublisher
+        implements DOMStoreTreeChangePublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDOMShardTreeChangePublisher.class);
 
@@ -63,7 +64,8 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
     }
 
     @Override
-    public <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L> registerTreeChangeListener(final YangInstanceIdentifier path, final L listener) {
+    public <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L>
+            registerTreeChangeListener(final YangInstanceIdentifier path, final L listener) {
         takeLock();
         try {
             return setupListenerContext(path, listener);
@@ -72,7 +74,8 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         }
     }
 
-    private <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L> setupListenerContext(final YangInstanceIdentifier listenerPath, final L listener) {
+    private <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L>
+            setupListenerContext(final YangInstanceIdentifier listenerPath, final L listener) {
         // we need to register the listener registration path based on the shards root
         // we have to strip the shard path from the listener path and then register
         YangInstanceIdentifier strippedIdentifier = listenerPath;
@@ -80,8 +83,10 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
             strippedIdentifier = YangInstanceIdentifier.create(stripShardPath(listenerPath));
         }
 
-        final DOMDataTreeListenerWithSubshards subshardListener = new DOMDataTreeListenerWithSubshards(dataTree, strippedIdentifier, listener);
-        final AbstractDOMDataTreeChangeListenerRegistration<L> reg = setupContextWithoutSubshards(strippedIdentifier, subshardListener);
+        final DOMDataTreeListenerWithSubshards subshardListener =
+                new DOMDataTreeListenerWithSubshards(dataTree, strippedIdentifier, listener);
+        final AbstractDOMDataTreeChangeListenerRegistration<L> reg =
+                setupContextWithoutSubshards(strippedIdentifier, subshardListener);
 
         for (final ChildShardContext maybeAffected : childShards.values()) {
             if (listenerPath.contains(maybeAffected.getPrefix().getRootIdentifier())) {
@@ -91,8 +96,10 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
                 subshardListener.addSubshard(maybeAffected);
             } else if (maybeAffected.getPrefix().getRootIdentifier().contains(listenerPath)) {
                 // bind path is inside subshard
-                // TODO can this happen? seems like in ShardedDOMDataTree we are already registering to the lowest shard possible
-                throw new UnsupportedOperationException("Listener should be registered directly into initialDataChangeEvent subshard");
+                // TODO can this happen? seems like in ShardedDOMDataTree we are
+                // already registering to the lowest shard possible
+                throw new UnsupportedOperationException("Listener should be registered directly "
+                        + "into initialDataChangeEvent subshard");
             }
         }
 
@@ -101,7 +108,8 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         return reg;
     }
 
-    private <L extends DOMDataTreeChangeListener> void initialDataChangeEvent(final YangInstanceIdentifier listenerPath, final L listener) {
+    private <L extends DOMDataTreeChangeListener> void initialDataChangeEvent(
+            final YangInstanceIdentifier listenerPath, final L listener) {
         // FIXME Add support for wildcard listeners
         final Optional<NormalizedNode<?, ?>> preExistingData = dataTree.takeSnapshot()
                 .readNode(YangInstanceIdentifier.create(stripShardPath(listenerPath)));
@@ -146,10 +154,14 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         return nodeBuilder.build();
     }
 
-    private <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L> setupContextWithoutSubshards(final YangInstanceIdentifier listenerPath, final DOMDataTreeListenerWithSubshards listener) {
+    private <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L>
+            setupContextWithoutSubshards(final YangInstanceIdentifier listenerPath,
+                    final DOMDataTreeListenerWithSubshards listener) {
         LOG.debug("Registering root listener at {}", listenerPath);
-        final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> node = findNodeFor(listenerPath.getPathArguments());
-        final AbstractDOMDataTreeChangeListenerRegistration<L> registration = new AbstractDOMDataTreeChangeListenerRegistration<L>((L) listener) {
+        final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> node =
+                findNodeFor(listenerPath.getPathArguments());
+        final AbstractDOMDataTreeChangeListenerRegistration<L> registration =
+                new AbstractDOMDataTreeChangeListenerRegistration<L>((L) listener) {
             @Override
             protected void removeRegistration() {
                 listener.close();
@@ -218,8 +230,9 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
             final DOMStoreTreeChangePublisher listenableShard = (DOMStoreTreeChangePublisher) context.getShard();
             // since this is going into subshard we want to listen for ALL changes in the subshard
             registrations.put(context.getPrefix().getRootIdentifier(),
-                    listenableShard.registerTreeChangeListener(context.getPrefix().getRootIdentifier(),
-                            changes -> onDataTreeChanged(context.getPrefix().getRootIdentifier(), changes)));
+                listenableShard.registerTreeChangeListener(
+                        context.getPrefix().getRootIdentifier(), changes -> onDataTreeChanged(
+                                context.getPrefix().getRootIdentifier(), changes)));
         }
 
         void close() {

@@ -42,6 +42,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     private static final class SubshardProducerSpecification {
         private final Collection<DOMDataTreeIdentifier> prefixes = new ArrayList<>(1);
         private final ChildShardContext shard;
+
         SubshardProducerSpecification(final ChildShardContext subshard) {
             this.shard = Preconditions.checkNotNull(subshard);
         }
@@ -73,12 +74,13 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         final TreeType treeType = treeTypeFor(prefix.getDatastoreType());
         this.dataTree = InMemoryDataTreeFactory.getInstance().create(treeType, prefix.getRootIdentifier());
 
-        this.shardChangePublisher = new InMemoryDOMDataTreeShardChangePublisher(dataTreeChangeExecutor, maxDataChangeListenerQueueSize, dataTree, prefix.getRootIdentifier(), childShards);
+        this.shardChangePublisher = new InMemoryDOMDataTreeShardChangePublisher(dataTreeChangeExecutor,
+                maxDataChangeListenerQueueSize, dataTree, prefix.getRootIdentifier(), childShards);
         this.executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
     }
 
-    public static InMemoryDOMDataTreeShard create(final DOMDataTreeIdentifier id, final ExecutorService dataTreeChangeExecutor,
-                                                  final int maxDataChangeListenerQueueSize) {
+    public static InMemoryDOMDataTreeShard create(final DOMDataTreeIdentifier id,
+            final ExecutorService dataTreeChangeExecutor, final int maxDataChangeListenerQueueSize) {
         return new InMemoryDOMDataTreeShard(id, dataTreeChangeExecutor, maxDataChangeListenerQueueSize);
     }
 
@@ -111,7 +113,8 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
 
     @Nonnull
     @Override
-    public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(@Nonnull final YangInstanceIdentifier treeId, @Nonnull final L listener) {
+    public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(
+            @Nonnull final YangInstanceIdentifier treeId, @Nonnull final L listener) {
         return shardChangePublisher.registerTreeChangeListener(treeId, listener);
     }
 
@@ -122,7 +125,8 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     }
 
     private void reparentChildShards(final DOMDataTreeIdentifier newChildPrefix, final DOMDataTreeShard newChild) {
-        final Iterator<Entry<DOMDataTreeIdentifier, ChildShardContext>> actualChildren = childShards.entrySet().iterator();
+        final Iterator<Entry<DOMDataTreeIdentifier, ChildShardContext>> actualChildren =
+                childShards.entrySet().iterator();
         final Map<DOMDataTreeIdentifier, ChildShardContext> reparented = new HashMap<>();
         while (actualChildren.hasNext()) {
             final Entry<DOMDataTreeIdentifier, ChildShardContext> actualChild = actualChildren.next();
@@ -149,7 +153,8 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         throw new UnsupportedOperationException();
     }
 
-    private static ChildShardContext createContextFor(final DOMDataTreeIdentifier prefix, final DOMDataTreeShard child) {
+    private static ChildShardContext createContextFor(final DOMDataTreeIdentifier prefix,
+            final DOMDataTreeShard child) {
         Preconditions.checkArgument(child instanceof WriteableDOMDataTreeShard,
             "Child %s is not a writable shared", child);
         return new ChildShardContext(prefix, (WriteableDOMDataTreeShard) child);
@@ -175,7 +180,8 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         return ret;
     }
 
-    InmemoryDOMDataTreeShardWriteTransaction createTransaction(final InmemoryDOMDataTreeShardWriteTransaction previousTx) {
+    InmemoryDOMDataTreeShardWriteTransaction createTransaction(
+            final InmemoryDOMDataTreeShardWriteTransaction previousTx) {
         // FIXME: implement this
         throw new UnsupportedOperationException();
     }

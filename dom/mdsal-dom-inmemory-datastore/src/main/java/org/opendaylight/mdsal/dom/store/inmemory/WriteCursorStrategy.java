@@ -15,15 +15,15 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 interface WriteCursorStrategy extends CursorStrategy {
 
     @Override
-    abstract WriteCursorStrategy enter(PathArgument arg);
+    WriteCursorStrategy enter(PathArgument arg);
 
-    abstract void delete(PathArgument arg);
+    void delete(PathArgument arg);
 
-    abstract void merge(PathArgument arg, NormalizedNode<?, ?> data);
+    void merge(PathArgument arg, NormalizedNode<?, ?> data);
 
-    abstract void write(PathArgument arg, NormalizedNode<?, ?> data);
+    void write(PathArgument arg, NormalizedNode<?, ?> data);
 
-    abstract void mergeToCurrent(NormalizedNodeContainer<?, ?, ?> data);
+    void mergeToCurrent(NormalizedNodeContainer<?, ?, ?> data);
 
-    abstract void writeToCurrent(NormalizedNodeContainer<?, ?, ?> data);
+    void writeToCurrent(NormalizedNodeContainer<?, ?, ?> data);
 }
