@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_3bb1bb47",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_8dba6021",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_6db54430",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMDataBroker.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "Indent another 4 spaces to distinguish it from the method body.",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_dba887dd",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6db54430",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_7bb7b33a",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMRpcRoutingTableEntry.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cd83b854",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_8d91c09b",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMRpcRoutingTableEntry.java",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "@param implementation the DOMRpcImplementation instance to add",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5bb47734",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMRpcRoutingTableEntry.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_8d91c09b",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_bb84ab5e",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMRpcRoutingTableEntry.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6d8c2480",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_cdea980e",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMRpcRoutingTableEntry.java",
         "patchSetId": 2
@@ -98,6 +188,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "@return a new instance of AbstractDOMRpcRoutingTableEntry with the additions",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_9b89ef77",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMRpcRoutingTableEntry.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cdea980e",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_1b95df86",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/CommitCoordinationTask.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_aded9c27",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_0df5b0ed",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/CommitCoordinationTask.java",
         "patchSetId": 2
@@ -132,6 +258,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "indVal -\u003e index",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_3b989bbf",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/CommitCoordinationTask.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_0df5b0ed",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_db7fe764",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/CommitCoordinationTask.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_edf794f3",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_4dde886e",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/CommitCoordinationTask.java",
         "patchSetId": 2
@@ -166,6 +328,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "indVal -\u003e index",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_fb7aa375",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/CommitCoordinationTask.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_4dde886e",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -206,6 +386,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_9b7baf8b",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMDataBrokerTransactionChainImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "It needs minimum 3 letters, I can make as exp?",
+      "parentUuid": "7a6b29fe_6de38433",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_0dcc90bb",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMRpcRouter.java",
         "patchSetId": 2
@@ -217,6 +415,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "Indent 4 more spaces to distinguish from method body.",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5b8bd767",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMRpcRouter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_0dcc90bb",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -240,6 +456,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_bbeb0b12",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/SerializedDOMDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6dba640b",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_2dc06c7b",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/SerializedDOMDataBroker.java",
         "patchSetId": 2
@@ -251,6 +485,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "Remove blank line",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_9bf0cfff",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/SerializedDOMDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_2dc06c7b",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -274,6 +526,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fbf10302",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/SerializedDOMDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_8dbf00fb",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_cd38d8a2",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/SerializedDOMDataBroker.java",
         "patchSetId": 2
@@ -285,6 +555,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "This can be moved up to the previous line",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_dbf6c7f8",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/SerializedDOMDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cd38d8a2",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -308,6 +596,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_3bdffb6a",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataTree.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_ad3bdc9a",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_0d43f014",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataTreeProducer.java",
         "patchSetId": 2
@@ -319,6 +625,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "Split the line at \"createProducer...\" for better clarity",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1bdcbf72",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataTreeProducer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_0d43f014",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -342,6 +666,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_7be5f336",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataTreeWriteTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_ed45d417",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_4d4cc842",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadTransactionAdapter.java",
         "patchSetId": 2
@@ -353,6 +695,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "thrObj -\u003e ex?",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_fbc8e3a9",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadTransactionAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "made as exp, CS needs atleast 3 letters.",
+      "parentUuid": "7a6b29fe_4d4cc842",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -393,6 +753,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_3bc6db9a",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMTransactionChainAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6d51c4d7",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_cd5f38e4",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainReadTransaction.java",
         "patchSetId": 2
@@ -404,6 +782,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "Indent only 8 spaces here",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_7bbcd306",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainReadTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cd5f38e4",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -427,6 +823,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_5bb91714",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainReadTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_ad62bcaa",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_0d5ad0f2",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainReadTransaction.java",
         "patchSetId": 2
@@ -438,6 +852,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "thrObj -\u003e ex?",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1bc31f8a",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainReadTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "made as exp",
+      "parentUuid": "7a6b29fe_0d5ad0f2",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -461,6 +893,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_bb394ba6",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainWriteTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_ed5cb4ef",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_4d732880",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/osgi/OsgiBundleScanningSchemaService.java",
         "patchSetId": 2
@@ -472,6 +922,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "Indent 4 more spaces",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_9b3e0f8b",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/osgi/OsgiBundleScanningSchemaService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_4d732880",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -495,6 +963,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fb3f4385",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMTransactionChainTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_2d6eac96",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_8d6d409b",
         "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadTransactionAdapterTest.java",
         "patchSetId": 2
@@ -512,6 +998,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_db44071d",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadTransactionAdapterTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_8d6d409b",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_6d68a487",
         "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/TestUtils.java",
         "patchSetId": 2
@@ -523,6 +1027,24 @@
       "writtenOn": "2016-08-24T05:18:11Z",
       "side": 1,
       "message": "MAPENTRYNODE should have underscores and is too generic. How about TOP_LEVEL_LIST_NODE?",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1b4aff25",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/TestUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-08-27T00:20:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6d68a487",
       "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
