@@ -1,0 +1,276 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_70e06d96",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMDataBrokerTransactionChainImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "missing space and should be capital C",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_90e389a3",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMDataBrokerTransactionChainImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "just \"throwable\" (lower case) is typically better than \"thrObj\"",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b0f5e558",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadTransactionAdapter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "as stated earlier, just \"throwable\" instead of \"exp\" is best",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_10e779ad",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMTransactionChainAdapter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "again",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f0ebdd75",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainReadTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "again",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_50045149",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainReadTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "again",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_3001d538",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainWriteTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "again",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_70f7cd59",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMBrokerTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "OK",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d097c1ea",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMBrokerTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "OK here (exceptionally)",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_109e5907",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouterTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "This should not need checkstyle:IllegalThrows (because in @Test a \"throws Exception\" is already always allowed), just a @SuppressWarnings(\"checkstyle:IllegalCatch\") should be enough (because this particular test does that)",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_508bb1c2",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMTransactionChainTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "again IllegalCatch yes but IllegalThrows I doubt is really needed here",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_708eadd1",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/GlobalDOMRpcRoutingTableEntryTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "In this particular test, neither should really be needed AFAIK; I think you can probably completely remove this.  If it doesn\u0027t makes sense why, email me and I\u0027ll explain.",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d0bea164",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/RoutedDOMRpcRoutingTableEntryTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "again only IllegalCatch should be needed, not IllegalThrows",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b0c325ec",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/osgi/OsgiBundleScanningSchemaServiceTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "again",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_10b5b97d",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/osgi/SchemaServiceActivatorTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "again",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_50b29194",
+        "filename": "mdsal",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "Brinda what is this? It looks like you (or one of your tools for you?) have added a new Git submodule in here? Probably not intentional - remove?",
+      "revId": "fe43ba0aff9031df8e4c5f8525f28e91d70c2317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
