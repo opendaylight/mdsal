@@ -72,6 +72,23 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_30da75e8",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-08-29T13:38:36Z",
+      "side": 1,
+      "message": "FYI https://git.opendaylight.org/gerrit/#/c/44145/ \u0026 https://wiki.opendaylight.org/view/BestPractices/Coding_Guidelines#IllegalCatch",
+      "revId": "9d483ee756f6049ff18b374038072ba19f2e1045",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_cd83b854",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/AbstractDOMRpcRoutingTableEntry.java",
         "patchSetId": 2
