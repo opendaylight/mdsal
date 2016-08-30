@@ -24,29 +24,17 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public interface EntityOwnershipService extends
         GenericEntityOwnershipService<InstanceIdentifier<?>, Entity, EntityOwnershipListener> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     EntityOwnershipCandidateRegistration registerCandidate(@Nonnull Entity entity)
             throws CandidateAlreadyRegisteredException;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     EntityOwnershipListenerRegistration registerListener(@Nonnull String entityType,
             @Nonnull EntityOwnershipListener listener);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     Optional<EntityOwnershipState> getOwnershipState(@Nonnull Entity forEntity);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     boolean isCandidateRegistered(@Nonnull Entity forEntity);
 }

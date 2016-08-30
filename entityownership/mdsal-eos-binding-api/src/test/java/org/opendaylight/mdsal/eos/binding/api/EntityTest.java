@@ -8,11 +8,11 @@
 package org.opendaylight.mdsal.eos.binding.api;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
-import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifier;
@@ -24,6 +24,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Thomas Pantelis
  */
 public class EntityTest {
+
     static String ENTITY_TYPE1 = "type1";
     static String ENTITY_TYPE2 = "type2";
     static final InstanceIdentifier<TestDataObject1> ID1 = InstanceIdentifier.create(TestDataObject1.class);
@@ -63,9 +64,10 @@ public class EntityTest {
     public void testEntityNameConstructor() {
         Entity entity = new Entity(ENTITY_TYPE1, "foo");
 
-        Identifier<org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.
-        mdsal.core.general.entity.rev150930.Entity> keyID = entity.getIdentifier().firstKeyOf(
-                org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.Entity.class);
+        Identifier<org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang
+            .mdsal.core.general.entity.rev150930.Entity> keyID = entity.getIdentifier().firstKeyOf(
+                org.opendaylight.yang.gen.v1.urn
+                    .opendaylight.params.xml.ns.yang.mdsal.core.general.entity.rev150930.Entity.class);
         assertNotNull("List key not found", keyID);
     }
 

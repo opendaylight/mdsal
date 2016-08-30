@@ -20,9 +20,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public interface EntityOwnershipListener extends
         GenericEntityOwnershipListener<InstanceIdentifier<?>, EntityOwnershipChange> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     void ownershipChanged(EntityOwnershipChange ownershipChange);
 }

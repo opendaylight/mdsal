@@ -21,16 +21,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 @Beta
 public class EntityOwnershipChange extends GenericEntityOwnershipChange<InstanceIdentifier<?>, Entity> {
 
-    /**
-     * {@inheritDoc}
-     */
     public EntityOwnershipChange(@Nonnull final Entity entity, @Nonnull final EntityOwnershipChangeState state) {
         super(entity, state, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public EntityOwnershipChange(@Nonnull final Entity entity, @Nonnull final EntityOwnershipChangeState state,
             final boolean inJeopardy) {
         super(entity, state, inJeopardy);
