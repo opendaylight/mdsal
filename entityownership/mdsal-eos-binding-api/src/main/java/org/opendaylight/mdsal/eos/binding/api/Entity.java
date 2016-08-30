@@ -40,8 +40,8 @@ public class Entity extends GenericEntity<InstanceIdentifier<?>> {
      * @param entityName the name of the entity used to construct a general-entity InstanceIdentifier
      */
     public Entity(@Nonnull String type, @Nonnull String entityName) {
-        super(type, InstanceIdentifier.builder(org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.
-                mdsal.core.general.entity.rev150930.Entity.class,
+        super(type, InstanceIdentifier.builder(org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang
+                .mdsal.core.general.entity.rev150930.Entity.class,
                     new EntityKey(Preconditions.checkNotNull(entityName, "entityName should not be null"))).build());
     }
 }
