@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_5ccc6a6a",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding2/generator/impl/AugmentToGenType.java",
+        "patchSetId": 23
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-30T11:29:14Z",
+      "side": 1,
+      "message": "final",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 5
+      },
+      "revId": "62b602cbb3638896d3bb3380ddc8ca9fe59157cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_3cc9ae59",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding2/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 23
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-30T11:29:14Z",
+      "side": 1,
+      "message": "is there a reason for re-initilizing this map instead of .clear()?",
+      "range": {
+        "startLine": 114,
+        "startChar": 8,
+        "endLine": 114,
+        "endChar": 42
+      },
+      "revId": "62b602cbb3638896d3bb3380ddc8ca9fe59157cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_fcb3b6e6",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/twirl/org/opendaylight/mdsal/binding2/yangTemplateForModule.scala.txt",
+        "patchSetId": 23
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-30T11:29:14Z",
+      "side": 1,
+      "message": "missing copyright",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 60
+      },
+      "revId": "62b602cbb3638896d3bb3380ddc8ca9fe59157cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1caf927e",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/twirl/org/opendaylight/mdsal/binding2/yangTemplateForModule.scala.txt",
+        "patchSetId": 23
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-30T11:29:14Z",
+      "side": 1,
+      "message": "any particular reason for not inlining these? That would make the template copy the layout of output...",
+      "range": {
+        "startLine": 35,
+        "startChar": 12,
+        "endLine": 35,
+        "endChar": 31
+      },
+      "revId": "62b602cbb3638896d3bb3380ddc8ca9fe59157cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_bcbdbeb9",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/twirl/org/opendaylight/mdsal/binding2/yangTemplateForNode.scala.txt",
+        "patchSetId": 23
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-08-30T11:29:14Z",
+      "side": 1,
+      "message": "Does not handle status \u003d\u003d obsolete",
+      "range": {
+        "startLine": 64,
+        "startChar": 39,
+        "endLine": 64,
+        "endChar": 59
+      },
+      "revId": "62b602cbb3638896d3bb3380ddc8ca9fe59157cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
