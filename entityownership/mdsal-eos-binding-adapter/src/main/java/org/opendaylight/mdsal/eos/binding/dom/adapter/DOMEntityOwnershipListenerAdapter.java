@@ -30,6 +30,7 @@ class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
         this.conversionCodec = Preconditions.checkNotNull(conversionCodec);
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public void ownershipChanged(final DOMEntityOwnershipChange ownershipChange) {
         try {
@@ -38,8 +39,9 @@ class DOMEntityOwnershipListenerAdapter implements DOMEntityOwnershipListener {
             bindingListener.ownershipChanged(new EntityOwnershipChange(entity, ownershipChange.getState(),
                     ownershipChange.inJeopardy()));
         } catch (final Exception e) {
-            BindingDOMEntityOwnershipServiceAdapter.LOG.error("Error converting DOM entity ID {} to binding InstanceIdentifier",
-                    ownershipChange.getEntity().getIdentifier(), e);
+            BindingDOMEntityOwnershipServiceAdapter.LOG.error(
+                    "Error converting DOM entity ID {} to binding InstanceIdentifier",
+                        ownershipChange.getEntity().getIdentifier(), e);
         }
     }
 }
