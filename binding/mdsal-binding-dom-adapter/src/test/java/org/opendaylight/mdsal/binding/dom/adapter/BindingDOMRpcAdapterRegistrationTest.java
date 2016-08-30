@@ -24,5 +24,4 @@ public class BindingDOMRpcAdapterRegistrationTest {
         bindingDOMRpcAdapterRegistration.removeRegistration();
         verify(registration).close();
     }
-
 }
