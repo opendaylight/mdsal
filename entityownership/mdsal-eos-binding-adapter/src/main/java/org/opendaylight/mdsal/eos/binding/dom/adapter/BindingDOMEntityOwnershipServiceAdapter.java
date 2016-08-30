@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.eos.binding.dom.adapter;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import java.lang.AutoCloseable;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
@@ -44,13 +43,14 @@ public class BindingDOMEntityOwnershipServiceAdapter implements EntityOwnershipS
     @Override
     public EntityOwnershipCandidateRegistration registerCandidate(Entity entity)
             throws CandidateAlreadyRegisteredException {
-        return new BindingEntityOwnershipCandidateRegistration(domService.registerCandidate(toDOMEntity(entity)), entity);
+        return new BindingEntityOwnershipCandidateRegistration(
+                domService.registerCandidate(toDOMEntity(entity)), entity);
     }
 
     @Override
     public EntityOwnershipListenerRegistration registerListener(String entityType, EntityOwnershipListener listener) {
-        return new BindingEntityOwnershipListenerRegistration(entityType, listener, domService.
-                registerListener(entityType, new DOMEntityOwnershipListenerAdapter(listener, conversionCodec)));
+        return new BindingEntityOwnershipListenerRegistration(entityType, listener, domService
+                .registerListener(entityType, new DOMEntityOwnershipListenerAdapter(listener, conversionCodec)));
     }
 
     @Override
