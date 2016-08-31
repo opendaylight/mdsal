@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
@@ -28,6 +27,8 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTable;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.util.concurrent.CountingRejectedExecutionHandler;
+import org.opendaylight.yangtools.util.concurrent.FastThreadPoolExecutor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
@@ -38,6 +39,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 
 @Beta
 public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeShard, SchemaContextListener {
+
+    private static final int DEFAULT_SUBMIT_QUEUE_SIZE = 1000;
 
     private static final class SubshardProducerSpecification {
         private final Collection<DOMDataTreeIdentifier> prefixes = new ArrayList<>(1);
@@ -68,7 +71,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     private final ListeningExecutorService executor;
 
     private InMemoryDOMDataTreeShard(final DOMDataTreeIdentifier prefix, final ExecutorService dataTreeChangeExecutor,
-                                     final int maxDataChangeListenerQueueSize) {
+                                     final int maxDataChangeListenerQueueSize, final int submitQueueSize) {
         this.prefix = Preconditions.checkNotNull(prefix);
 
         final TreeType treeType = treeTypeFor(prefix.getDatastoreType());
@@ -76,12 +79,25 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
 
         this.shardChangePublisher = new InMemoryDOMDataTreeShardChangePublisher(dataTreeChangeExecutor,
                 maxDataChangeListenerQueueSize, dataTree, prefix.getRootIdentifier(), childShards);
-        this.executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+
+        final FastThreadPoolExecutor fte = new FastThreadPoolExecutor(1, submitQueueSize, "Shard[" + prefix + "]");
+        fte.setRejectedExecutionHandler(CountingRejectedExecutionHandler.newCallerWaitsPolicy());
+        this.executor = MoreExecutors.listeningDecorator(fte);
     }
 
     public static InMemoryDOMDataTreeShard create(final DOMDataTreeIdentifier id,
-            final ExecutorService dataTreeChangeExecutor, final int maxDataChangeListenerQueueSize) {
-        return new InMemoryDOMDataTreeShard(id, dataTreeChangeExecutor, maxDataChangeListenerQueueSize);
+                                                  final ExecutorService dataTreeChangeExecutor,
+                                                  final int maxDataChangeListenerQueueSize) {
+        return new InMemoryDOMDataTreeShard(id, dataTreeChangeExecutor,
+                maxDataChangeListenerQueueSize, DEFAULT_SUBMIT_QUEUE_SIZE);
+    }
+
+    public static InMemoryDOMDataTreeShard create(final DOMDataTreeIdentifier id,
+                                                  final ExecutorService dataTreeChangeExecutor,
+                                                  final int maxDataChangeListenerQueueSize,
+                                                  final int submitQueueSize) {
+        return new InMemoryDOMDataTreeShard(id, dataTreeChangeExecutor,
+                maxDataChangeListenerQueueSize, submitQueueSize);
     }
 
     @Override
