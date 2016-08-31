@@ -29,9 +29,9 @@ public enum EntityOwnershipState {
     NO_OWNER;
 
     public static EntityOwnershipState from(boolean isOwner, boolean hasOwner) {
-        if(isOwner) {
+        if (isOwner) {
             return IS_OWNER;
-        } else if(hasOwner) {
+        } else if (hasOwner) {
             return OWNED_BY_OTHER;
         } else {
             return NO_OWNER;
