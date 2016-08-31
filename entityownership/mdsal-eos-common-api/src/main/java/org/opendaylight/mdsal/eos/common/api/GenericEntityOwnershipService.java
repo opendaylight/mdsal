@@ -34,6 +34,7 @@ public interface GenericEntityOwnershipService<P extends Path<P>, E extends Gene
      * Registers a candidate for ownership of the given entity. Only one such request can be made per entity
      * per process. If multiple requests for registering a candidate for a given entity are received in the
      * current process a CandidateAlreadyRegisteredException will be thrown.
+     *
      * <p>
      * The registration is performed asynchronously and any registered entity ownership listener is
      * notified of ownership status changes for the entity.

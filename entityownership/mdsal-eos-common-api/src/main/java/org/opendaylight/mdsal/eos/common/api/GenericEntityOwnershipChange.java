@@ -63,6 +63,7 @@ public class GenericEntityOwnershipChange<P extends Path<P>, E extends GenericEn
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [entity=" + entity + ", state=" + state + ", inJeopardy=" + inJeopardy + "]";
+        return getClass().getSimpleName() + " [entity=" + entity + ", state=" + state
+                + ", inJeopardy=" + inJeopardy + "]";
     }
 }
