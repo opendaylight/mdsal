@@ -12,7 +12,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 
 /**
  * Unit tests for EntityOwnershipChangeState.
@@ -35,17 +34,17 @@ public class EntityOwnershipChangeStateTest {
                 EntityOwnershipChangeState.from(false, false, false));
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testFromWithInvalidFalseTrueFalse() {
         EntityOwnershipChangeState.from(false, true, false);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testFromWithInvalidTrueTrueFalse() {
         EntityOwnershipChangeState.from(true, true, false);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testFromWithInvalidTrueTrueTrue() {
         EntityOwnershipChangeState.from(true, true, true);
     }
