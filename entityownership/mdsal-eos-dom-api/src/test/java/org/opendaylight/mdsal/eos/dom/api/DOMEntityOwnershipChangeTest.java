@@ -11,8 +11,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 

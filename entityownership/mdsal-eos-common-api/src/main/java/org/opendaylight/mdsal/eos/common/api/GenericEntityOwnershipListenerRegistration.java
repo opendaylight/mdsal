@@ -21,16 +21,19 @@ import org.opendaylight.yangtools.concepts.Path;
  * @param <P> the instance identifier path type
  */
 public interface GenericEntityOwnershipListenerRegistration<P extends Path<P>,
-        L extends GenericEntityOwnershipListener<P, ? extends GenericEntityOwnershipChange<P, ? extends GenericEntity<P>>>>
-            extends ObjectRegistration<L> {
+        L extends GenericEntityOwnershipListener<P, ?
+                extends GenericEntityOwnershipChange<P, ? extends GenericEntity<P>>>>
+                    extends ObjectRegistration<L> {
 
     /**
+     * getEntityType method returns not null entity type.
+     *
      * @return the entity type that the listener was registered for
      */
     @Nonnull String getEntityType();
 
     /**
-     * Unregister the listener
+     * Unregister the listener.
      */
     @Override
     void close();

@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 
 import javax.annotation.Nonnull;
 import org.junit.Test;
-import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.yangtools.concepts.Path;
 
 public class GenericEntityTest {
