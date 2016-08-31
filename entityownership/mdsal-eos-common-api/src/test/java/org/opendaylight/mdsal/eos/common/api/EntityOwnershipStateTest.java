@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.eos.common.api;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 
 public class EntityOwnershipStateTest {
 
