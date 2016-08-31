@@ -23,8 +23,8 @@ public interface GenericEntityOwnershipCandidateRegistration<P extends Path<P>, 
         extends ObjectRegistration<E> {
 
    /**
-    * Unregister the candidate
+    * Unregister the candidate.
     */
-   @Override
-   void close();
+    @Override
+    void close();
 }

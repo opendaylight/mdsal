@@ -16,6 +16,7 @@ import org.opendaylight.yangtools.concepts.Path;
 /**
  * A clustered Entity is something which is shared by multiple applications across a cluster. An Entity has a type
  * and an identifier.
+ *
  * <p>
  * The type describes the type of the Entity where examples of a type maybe "openflow" or "netconf"
  * etc. An Entity type could be tied to how exactly an application shares and "owns" an entity. For example we may want
@@ -23,13 +24,16 @@ import org.opendaylight.yangtools.concepts.Path;
  * first served basis. On the other hand for netconf entity types we may want applications to gain ownership based on
  * a load balancing approach. While this mechanism of assigning a ownership acquisition strategy is not finalized the
  * intention is that the entity type will play a role in determining the strategy and thus should be put in place.
+ *
  * <p>
  * The identifier is an instance identifier path. The reason for the choice of instance identifier path is because it
  * can easily be used to represent a data node. For example an inventory node represents a shared entity and it is best
  * referenced by its instance identifier path if the inventory node is stored in the data store.
+ *
  * <p>
  * Note that an entity identifier must conform to a valid yang schema. If there is no existing yang schema to
  * represent an entity, the general-entity yang model can be used.
+ *
  * <p>
  *
  * @author Thomas Pantelis
@@ -48,6 +52,7 @@ public class GenericEntity<T extends Path<T>> implements Serializable, Identifia
     }
 
     /**
+     * getIdentifier immutable method.
      * @return the id of entity.
      */
     @Nonnull
@@ -57,25 +62,26 @@ public class GenericEntity<T extends Path<T>> implements Serializable, Identifia
     }
 
     /**
+     * getType immutable method.
      * @return the type of entity.
      */
     @Nonnull
-    public final String getType(){
+    public final String getType() {
         return type;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        GenericEntity<T> entity = (GenericEntity<T>) o;
+        GenericEntity<T> entity = (GenericEntity<T>) obj;
 
         if (!id.equals(entity.id)) {
             return false;

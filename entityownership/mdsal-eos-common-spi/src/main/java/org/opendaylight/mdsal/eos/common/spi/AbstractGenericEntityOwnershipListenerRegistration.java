@@ -18,12 +18,13 @@ import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.Path;
 
 /**
- * Abstract base class for an {@link GenericEntityOwnershipListenerRegistration}
+ * Abstract base class for an {@link GenericEntityOwnershipListenerRegistration}.
  *
  * @param <P> the instance identifier path type
  * @param <L> the GenericEntityOwnershipListener type
  */
-public abstract class AbstractGenericEntityOwnershipListenerRegistration<P extends Path<P>, L extends GenericEntityOwnershipListener<P, ? extends GenericEntityOwnershipChange<P, ? extends GenericEntity<P>>>>
+public abstract class AbstractGenericEntityOwnershipListenerRegistration<P extends Path<P>,
+    L extends GenericEntityOwnershipListener<P, ? extends GenericEntityOwnershipChange<P, ? extends GenericEntity<P>>>>
         extends AbstractObjectRegistration<L>
         implements GenericEntityOwnershipListenerRegistration<P, L> {
 

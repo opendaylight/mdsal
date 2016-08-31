@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
-import org.opendaylight.mdsal.eos.common.spi.AbstractGenericEntityOwnershipCandidateRegistration;
 
 public class AbstractGenericEntityOwnershipCandidateRegistrationTest
         extends AbstractGenericEntityOwnershipCandidateRegistration {
