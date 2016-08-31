@@ -34,23 +34,22 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
 public final class ModuleContext {
     private GeneratedTypeBuilder moduleNode;
-    private final List<GeneratedTOBuilder> genTOs = new ArrayList<GeneratedTOBuilder>();
-    private final Map<SchemaPath, Type> typedefs = new HashMap<SchemaPath, Type>();
-    private final Map<SchemaPath, GeneratedTypeBuilder> childNodes = new HashMap<SchemaPath, GeneratedTypeBuilder>();
-    private final Map<SchemaPath, GeneratedTypeBuilder> groupings = new HashMap<SchemaPath, GeneratedTypeBuilder>();
-    private final Map<SchemaPath, GeneratedTypeBuilder> cases = new HashMap<SchemaPath, GeneratedTypeBuilder>();
+    private final List<GeneratedTOBuilder> genTOs = new ArrayList<>();
+    private final Map<SchemaPath, Type> typedefs = new HashMap<>();
+    private final Map<SchemaPath, GeneratedTypeBuilder> childNodes = new HashMap<>();
+    private final Map<SchemaPath, GeneratedTypeBuilder> groupings = new HashMap<>();
+    private final Map<SchemaPath, GeneratedTypeBuilder> cases = new HashMap<>();
     private final Map<QName,GeneratedTOBuilder> identities = new HashMap<>();
-    private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<GeneratedTypeBuilder>();
-    private final List<GeneratedTypeBuilder> augmentations = new ArrayList<GeneratedTypeBuilder>();
-    private final BiMap<Type,AugmentationSchema> typeToAugmentation = HashBiMap.create();
+    private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<>();
+    private final List<GeneratedTypeBuilder> augmentations = new ArrayList<>();
+    private final BiMap<Type, AugmentationSchema> typeToAugmentation = HashBiMap.create();
 
     private final Map<Type,Object> typeToSchema = new HashMap<>();
 
 
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
-    private final BiMap<Type,ChoiceCaseNode> caseTypeToSchema = HashBiMap.create();
+    private final BiMap<Type, ChoiceCaseNode> caseTypeToSchema = HashBiMap.create();
 
-    private final Multimap<Type, Type> augmentableToAugmentations = HashMultimap.create();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
 
     List<Type> getGeneratedTypes() {
@@ -91,10 +90,6 @@ public final class ModuleContext {
 
     public Multimap<Type, Type> getChoiceToCases() {
         return Multimaps.unmodifiableMultimap(choiceToCases);
-    }
-
-    public Multimap<Type, Type> getAugmentableToAugmentations() {
-        return Multimaps.unmodifiableMultimap(augmentableToAugmentations);
     }
 
     public GeneratedTypeBuilder getModuleNode() {
@@ -183,12 +178,8 @@ public final class ModuleContext {
     }
 
     public void addTypeToAugmentation(final GeneratedTypeBuilder builder, final AugmentationSchema schema) {
-            typeToAugmentation.put(builder, schema);
-            typeToSchema.put(builder, schema);
-    }
-
-    public void addTargetToAugmentation(final Type target, final GeneratedTypeBuilder augmentation) {
-        augmentableToAugmentations.put(target,augmentation);
+        typeToAugmentation.put(builder, schema);
+        typeToSchema.put(builder, schema);
     }
 
     public void addChoiceToCaseMapping(final Type choiceType, final Type caseType, final ChoiceCaseNode schema) {
@@ -207,7 +198,7 @@ public final class ModuleContext {
      *
      * Valid values are only instances of {@link DataSchemaNode} or {@link AugmentationSchema}
      *
-     * @return
+     * @return Mapping from type to corresponding schema
      */
     public Map<Type, Object> getTypeToSchema() {
         return Collections.unmodifiableMap(typeToSchema);
