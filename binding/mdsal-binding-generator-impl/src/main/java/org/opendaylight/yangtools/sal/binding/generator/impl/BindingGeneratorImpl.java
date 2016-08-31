@@ -998,8 +998,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         augSchemaNodeToMethods(module, basePackageName, augTypeBuilder, augTypeBuilder, augSchema.getChildNodes());
         augmentBuilders.put(augTypeName, augTypeBuilder);
 
-        if(!augSchema.getChildNodes().isEmpty()) {
-            genCtx.get(module).addTargetToAugmentation(targetTypeRef, augTypeBuilder);
+        if (!augSchema.getChildNodes().isEmpty()) {
             genCtx.get(module).addTypeToAugmentation(augTypeBuilder, augSchema);
 
         }
