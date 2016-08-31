@@ -48,7 +48,7 @@ public enum EntityOwnershipChangeState {
     private static final Map<Key, EntityOwnershipChangeState> BY_KEY;
     static {
         Builder<Key, EntityOwnershipChangeState> builder = ImmutableMap.<Key, EntityOwnershipChangeState>builder();
-        for(EntityOwnershipChangeState e: values()) {
+        for (EntityOwnershipChangeState e: values()) {
             builder.put(new Key(e.wasOwner, e.isOwner, e.hasOwner), e);
         }
 
@@ -59,7 +59,7 @@ public enum EntityOwnershipChangeState {
     private final boolean isOwner;
     private final boolean hasOwner;
 
-    private EntityOwnershipChangeState(boolean wasOwner, boolean isOwner, boolean hasOwner) {
+    EntityOwnershipChangeState(boolean wasOwner, boolean isOwner, boolean hasOwner) {
         this.wasOwner = wasOwner;
         this.isOwner = isOwner;
         this.hasOwner = hasOwner;
