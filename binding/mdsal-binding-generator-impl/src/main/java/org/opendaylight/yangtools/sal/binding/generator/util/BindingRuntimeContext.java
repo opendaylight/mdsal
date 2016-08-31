@@ -81,7 +81,6 @@ public class BindingRuntimeContext implements Immutable {
 
     private final Map<Type, AugmentationSchema> augmentationToSchema = new HashMap<>();
     private final BiMap<Type, Object> typeToDefiningSchema = HashBiMap.create();
-    private final Multimap<Type, Type> augmentableToAugmentations = HashMultimap.create();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final Map<QName, Type> identities = new HashMap<>();
 
@@ -112,7 +111,6 @@ public class BindingRuntimeContext implements Immutable {
             typeToDefiningSchema.putAll(ctx.getTypeToSchema());
 
             ctx.getTypedefs();
-            augmentableToAugmentations.putAll(ctx.getAugmentableToAugmentations());
             choiceToCases.putAll(ctx.getChoiceToCases());
             identities.putAll(ctx.getIdentities());
         }
