@@ -24,29 +24,21 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 public interface DOMEntityOwnershipService extends
         GenericEntityOwnershipService<YangInstanceIdentifier, DOMEntity, DOMEntityOwnershipListener> {
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     DOMEntityOwnershipCandidateRegistration registerCandidate(@Nonnull DOMEntity entity)
             throws CandidateAlreadyRegisteredException;
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     DOMEntityOwnershipListenerRegistration registerListener(@Nonnull String entityType,
             @Nonnull DOMEntityOwnershipListener listener);
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     Optional<EntityOwnershipState> getOwnershipState(@Nonnull DOMEntity forEntity);
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     boolean isCandidateRegistered(@Nonnull DOMEntity forEntity);
 }

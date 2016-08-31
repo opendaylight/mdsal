@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
-import org.opendaylight.mdsal.eos.common.spi.AbstractGenericEntityOwnershipListenerRegistration;
 
 public class AbstractGenericEntityOwnershipListenerRegistrationTest
         extends AbstractGenericEntityOwnershipListenerRegistration {

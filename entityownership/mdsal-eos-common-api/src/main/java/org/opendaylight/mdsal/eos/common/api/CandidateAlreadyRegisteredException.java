@@ -28,7 +28,9 @@ public class CandidateAlreadyRegisteredException extends Exception {
     }
 
     /**
-     * @return the entity for which a Candidate has already been registered in the current process.
+     * Gets the entity for which a Candidate has already been registered in the current process.
+     *
+     * @return the entity.
      *
      * @param <T> the instance identifier path type
      */
