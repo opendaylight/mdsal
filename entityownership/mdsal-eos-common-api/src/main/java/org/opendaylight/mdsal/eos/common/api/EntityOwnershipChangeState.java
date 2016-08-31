@@ -52,8 +52,9 @@ public enum EntityOwnershipChangeState {
 
     private static final Map<Key, EntityOwnershipChangeState> BY_KEY;
     static {
-        final Builder<Key, EntityOwnershipChangeState> builder = ImmutableMap.<Key, EntityOwnershipChangeState>builder();
-        for(final EntityOwnershipChangeState e: values()) {
+        final Builder<Key, EntityOwnershipChangeState> builder
+                    = ImmutableMap.builder();
+        for (final EntityOwnershipChangeState e: values()) {
             builder.put(new Key(e.wasOwner, e.isOwner, e.hasOwner), e);
         }
 
@@ -64,7 +65,7 @@ public enum EntityOwnershipChangeState {
     private final boolean isOwner;
     private final boolean hasOwner;
 
-    private EntityOwnershipChangeState(final boolean wasOwner, final boolean isOwner, final boolean hasOwner) {
+    EntityOwnershipChangeState(final boolean wasOwner, final boolean isOwner, final boolean hasOwner) {
         this.wasOwner = wasOwner;
         this.isOwner = isOwner;
         this.hasOwner = hasOwner;
@@ -100,7 +101,8 @@ public enum EntityOwnershipChangeState {
         return name() + " [wasOwner=" + wasOwner + ", isOwner=" + isOwner + ", hasOwner=" + hasOwner + "]";
     }
 
-    public static EntityOwnershipChangeState from(final boolean wasOwner, final boolean isOwner, final boolean hasOwner) {
+    public static EntityOwnershipChangeState from(
+            final boolean wasOwner, final boolean isOwner, final boolean hasOwner) {
         final EntityOwnershipChangeState state = BY_KEY.get(new Key(wasOwner, isOwner, hasOwner));
         Preconditions.checkArgument(state != null, "Invalid combination of wasOwner: %s, isOwner: %s, hasOwner: %s",
                 wasOwner, isOwner, hasOwner);
