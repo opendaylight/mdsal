@@ -1,0 +1,234 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_895d1718",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/AbstractDOMShardTreeChangePublisher.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-01T10:44:06Z",
+      "side": 1,
+      "message": "should be on the previous line",
+      "range": {
+        "startLine": 234,
+        "startChar": 24,
+        "endLine": 234,
+        "endChar": 64
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_e99dabbd",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/AbstractDOMShardTreeChangePublisher.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-01T10:44:06Z",
+      "side": 1,
+      "message": "will fit on a single line",
+      "range": {
+        "startLine": 234,
+        "startChar": 65,
+        "endLine": 235,
+        "endChar": 84
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_69b19b46",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/ChainedTransactionCommitImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-01T10:44:06Z",
+      "side": 1,
+      "message": "should be on the previous line",
+      "range": {
+        "startLine": 20,
+        "startChar": 16,
+        "endLine": 20,
+        "endChar": 56
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_29a4c306",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/ChainedTransactionCommitImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-01T10:44:06Z",
+      "side": 1,
+      "message": "bad alignment",
+      "range": {
+        "startLine": 20,
+        "startChar": 12,
+        "endLine": 20,
+        "endChar": 16
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_89b4f735",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/DataTreeModificationCursorAdaptor.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-01T10:44:06Z",
+      "side": 1,
+      "message": "should have @Override",
+      "range": {
+        "startLine": 31,
+        "startChar": 41,
+        "endLine": 31,
+        "endChar": 51
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c989cf76",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataStore.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-01T10:44:06Z",
+      "side": 1,
+      "message": "should be on the previous line (also followers)",
+      "range": {
+        "startLine": 91,
+        "startChar": 16,
+        "endLine": 91,
+        "endChar": 34
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_0980e744",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShard.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-01T10:44:06Z",
+      "side": 1,
+      "message": "should be on the previous line",
+      "range": {
+        "startLine": 84,
+        "startChar": 18,
+        "endLine": 84,
+        "endChar": 58
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_a98e1377",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardChangePublisher.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-01T10:44:06Z",
+      "side": 1,
+      "message": "checkstyle is wrong here: it is better to have a long line than to split type and name declarations between lines",
+      "range": {
+        "startLine": 34,
+        "startChar": 9,
+        "endLine": 34,
+        "endChar": 25
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_69987bc0",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardChangePublisher.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-01T10:44:06Z",
+      "side": 1,
+      "message": "should be on the previous line",
+      "range": {
+        "startLine": 51,
+        "startChar": 16,
+        "endLine": 51,
+        "endChar": 62
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_898b5767",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InmemoryDOMDataTreeShardWriteTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-01T10:44:06Z",
+      "side": 1,
+      "message": "should be on the previous line",
+      "range": {
+        "startLine": 164,
+        "startChar": 16,
+        "endLine": 164,
+        "endChar": 51
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
