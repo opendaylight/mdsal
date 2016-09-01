@@ -186,6 +186,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_be9ac86b",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardChangePublisher.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-01T17:54:12Z",
+      "side": 1,
+      "message": "But if that\u0027s how Checkstyle currently works, then in order to move to enforcement, it\u0027s easiest to format it to move forward anyway IMHO.",
+      "parentUuid": "7a6b29fe_a98e1377",
+      "range": {
+        "startLine": 34,
+        "startChar": 9,
+        "endLine": 34,
+        "endChar": 25
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_69987bc0",
         "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardChangePublisher.java",
         "patchSetId": 4
