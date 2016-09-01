@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_312a692c",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/CandidateAlreadyRegisteredException.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:52:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_9b28bee3",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_db1eb6ba",
         "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/CandidateAlreadyRegisteredException.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-09-01T15:43:49Z",
       "side": 1,
       "message": "Then this can be shortened to \"@return the entity\"",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_91225d50",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/CandidateAlreadyRegisteredException.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:52:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_db1eb6ba",
       "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_b115d9e6",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:52:17Z",
+      "side": 1,
+      "message": "If you put back the private, you will see CS error as\n\"EntityOwnershipChangeState.java:[62,5] (modifier) RedundantModifier: Redundant \u0027private\u0027 modifier.\"",
+      "parentUuid": "7a6b29fe_5b346649",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_bb449ab7",
         "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntity.java",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2016-09-01T15:43:49Z",
       "side": 1,
       "message": "How about \"Gets the id of the entity\"",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_51dc4546",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:52:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_bb449ab7",
       "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_91e9bde8",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:52:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_1b15ce9b",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_bb72da0e",
         "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntityOwnershipCandidateRegistration.java",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2016-09-01T15:43:49Z",
       "side": 1,
       "message": "The javadoc should be indented one space as well",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_51b3a509",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntityOwnershipCandidateRegistration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:52:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_bb72da0e",
       "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_91d09d20",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntityOwnershipListenerRegistration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:52:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_5b59068d",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_3b5eca76",
         "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntityOwnershipListenerRegistration.java",
         "patchSetId": 1
@@ -138,6 +264,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_d1c69567",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntityOwnershipListenerRegistration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:52:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_3b5eca76",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_5bd0e6c8",
         "filename": "entityownership/mdsal-eos-dom-api/src/test/java/org/opendaylight/mdsal/eos/dom/api/DOMEntityTest.java",
         "patchSetId": 1
@@ -149,6 +293,24 @@
       "writtenOn": "2016-09-01T15:43:49Z",
       "side": 1,
       "message": "I usually say \"Unit tests for DOMEntity.\"",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d19df567",
+        "filename": "entityownership/mdsal-eos-dom-api/src/test/java/org/opendaylight/mdsal/eos/dom/api/DOMEntityTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:52:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_5bd0e6c8",
       "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
