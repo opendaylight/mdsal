@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_9b28bee3",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/CandidateAlreadyRegisteredException.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-01T15:43:49Z",
+      "side": 1,
+      "message": "How about moving the desc below here, i.e. \"Gets the entity for which a Candidate has already been registered in the current process.\"",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_db1eb6ba",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/CandidateAlreadyRegisteredException.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-01T15:43:49Z",
+      "side": 1,
+      "message": "Then this can be shortened to \"@return the entity\"",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5b346649",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-01T15:43:49Z",
+      "side": 1,
+      "message": "Why was private removed? This is an enum and thus can only be create by the JVM so the constructor shouldn\u0027t be package scoped.",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_bb449ab7",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-01T15:43:49Z",
+      "side": 1,
+      "message": "How about \"Gets the id of the entity\"",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1b15ce9b",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-01T15:43:49Z",
+      "side": 1,
+      "message": "\"Gets the type of the entity\"",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_bb72da0e",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntityOwnershipCandidateRegistration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-01T15:43:49Z",
+      "side": 1,
+      "message": "The javadoc should be indented one space as well",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5b59068d",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntityOwnershipListenerRegistration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-01T15:43:49Z",
+      "side": 1,
+      "message": "Make this \"Gets the entity type for which the listener was registered.\"  \"not null\" is implied by @Nonnull.",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_3b5eca76",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntityOwnershipListenerRegistration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-01T15:43:49Z",
+      "side": 1,
+      "message": "and this \"@return the entity type\"",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5bd0e6c8",
+        "filename": "entityownership/mdsal-eos-dom-api/src/test/java/org/opendaylight/mdsal/eos/dom/api/DOMEntityTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-01T15:43:49Z",
+      "side": 1,
+      "message": "I usually say \"Unit tests for DOMEntity.\"",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

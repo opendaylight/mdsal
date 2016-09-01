@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_7b53226b",
+        "filename": "entityownership/mdsal-eos-dom-api/src/main/java/org/opendaylight/mdsal/eos/dom/api/DOMEntityOwnershipChange.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-01T15:43:49Z",
+      "side": 0,
+      "message": "Why was this removed? It\u0027s valid javadoc tag. Same in other places.",
+      "revId": "f2910f31928b7f29c7e3593065ba35460052c38f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
