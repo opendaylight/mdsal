@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_d1bcd508",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/AbstractDOMShardTreeChangePublisher.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:24:27Z",
+      "side": 1,
+      "message": "We can not move to previous line, it exceeds 120 characters.",
+      "parentUuid": "7a6b29fe_895d1718",
+      "range": {
+        "startLine": 234,
+        "startChar": 24,
+        "endLine": 234,
+        "endChar": 64
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_e99dabbd",
         "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/AbstractDOMShardTreeChangePublisher.java",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2016-09-01T10:44:06Z",
       "side": 1,
       "message": "will fit on a single line",
+      "range": {
+        "startLine": 234,
+        "startChar": 65,
+        "endLine": 235,
+        "endChar": 84
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b1b95917",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/AbstractDOMShardTreeChangePublisher.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:24:27Z",
+      "side": 1,
+      "message": "No, it will not fit in single line. It exceeds 120 characters.",
+      "parentUuid": "7a6b29fe_e99dabbd",
       "range": {
         "startLine": 234,
         "startChar": 65,
@@ -94,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_f13e318b",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/ChainedTransactionCommitImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:24:27Z",
+      "side": 1,
+      "message": "It will not fit in previous line, it exceeds 120 characters.",
+      "parentUuid": "7a6b29fe_69b19b46",
+      "range": {
+        "startLine": 20,
+        "startChar": 16,
+        "endLine": 20,
+        "endChar": 56
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_89b4f735",
         "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/DataTreeModificationCursorAdaptor.java",
         "patchSetId": 4
@@ -105,6 +177,30 @@
       "writtenOn": "2016-09-01T10:44:06Z",
       "side": 1,
       "message": "should have @Override",
+      "range": {
+        "startLine": 31,
+        "startChar": 41,
+        "endLine": 31,
+        "endChar": 51
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5140c506",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/DataTreeModificationCursorAdaptor.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:24:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_89b4f735",
       "range": {
         "startLine": 31,
         "startChar": 41,
@@ -140,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_914d3d41",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataStore.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:24:27Z",
+      "side": 1,
+      "message": "It does not fit in previous line. It exceeds 120 characters.",
+      "parentUuid": "7a6b29fe_c989cf76",
+      "range": {
+        "startLine": 91,
+        "startChar": 16,
+        "endLine": 91,
+        "endChar": 34
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_0980e744",
         "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShard.java",
         "patchSetId": 4
@@ -151,6 +271,30 @@
       "writtenOn": "2016-09-01T10:44:06Z",
       "side": 1,
       "message": "should be on the previous line",
+      "range": {
+        "startLine": 84,
+        "startChar": 18,
+        "endLine": 84,
+        "endChar": 58
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b15039d5",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShard.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:24:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_0980e744",
       "range": {
         "startLine": 84,
         "startChar": 18,
@@ -233,6 +377,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_71718175",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InMemoryDOMDataTreeShardChangePublisher.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:24:27Z",
+      "side": 1,
+      "message": "It does not fit in previous line, it exceeds 120 characters, becomes 145 characters.",
+      "parentUuid": "7a6b29fe_69987bc0",
+      "range": {
+        "startLine": 51,
+        "startChar": 16,
+        "endLine": 51,
+        "endChar": 62
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_898b5767",
         "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InmemoryDOMDataTreeShardWriteTransaction.java",
         "patchSetId": 4
@@ -244,6 +412,30 @@
       "writtenOn": "2016-09-01T10:44:06Z",
       "side": 1,
       "message": "should be on the previous line",
+      "range": {
+        "startLine": 164,
+        "startChar": 16,
+        "endLine": 164,
+        "endChar": 51
+      },
+      "revId": "743726eb5fea4171ec7d67555c24c06a8f84c326",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f16591b5",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/InmemoryDOMDataTreeShardWriteTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-01T21:24:27Z",
+      "side": 1,
+      "message": "It does not fit in previous line. It becomes 127 characters.",
+      "parentUuid": "7a6b29fe_898b5767",
       "range": {
         "startLine": 164,
         "startChar": 16,
