@@ -16,6 +16,24 @@
       "revId": "f2910f31928b7f29c7e3593065ba35460052c38f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5eaa9485",
+        "filename": "entityownership/mdsal-eos-dom-api/src/main/java/org/opendaylight/mdsal/eos/dom/api/DOMEntityOwnershipChange.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-01T17:52:54Z",
+      "side": 0,
+      "message": "Tom, this is not necessary.. I\u0027ve just written up some blurb to clarify on https://wiki.opendaylight.org/view/BestPractices/Coding_Guidelines#.7B.40inheritDoc.7D_JavaDoc",
+      "parentUuid": "7a6b29fe_7b53226b",
+      "revId": "f2910f31928b7f29c7e3593065ba35460052c38f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
