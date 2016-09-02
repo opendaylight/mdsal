@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_5111e55b",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-02T01:41:49Z",
+      "side": 1,
+      "message": "Looks bogus to me. I assume if one tried to create an instance the compiler would fail but it doesn\u0027t mean I shouldn\u0027t be able to mark the constructor as private. We should disable this check/rule.",
+      "parentUuid": "7a6b29fe_b115d9e6",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_bb449ab7",
         "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntity.java",
         "patchSetId": 1
