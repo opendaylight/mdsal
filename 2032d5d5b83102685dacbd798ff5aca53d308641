@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_ca537ae0",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/DirectGetterRouteContextExtractorTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-02T13:24:45Z",
+      "side": 1,
+      "message": "let\u0027s put this on new line for better visibility. \n\nIn general, we should use 8 space indentation in case of more complex IF expressions (in this case, 4 space is OK)",
+      "range": {
+        "startLine": 41,
+        "startChar": 25,
+        "endLine": 41,
+        "endChar": 73
+      },
+      "revId": "2032d5d5b83102685dacbd798ff5aca53d308641",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
