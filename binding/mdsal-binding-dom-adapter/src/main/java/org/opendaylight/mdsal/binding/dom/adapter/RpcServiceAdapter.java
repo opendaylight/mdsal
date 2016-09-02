@@ -13,7 +13,6 @@ import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.CheckedFuture;
@@ -132,19 +131,16 @@ class RpcServiceAdapter implements InvocationHandler {
 
     private static ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
             final ListenableFuture<DOMRpcResult> domFuture, final BindingNormalizedNodeCodecRegistry codec) {
-        return Futures.transform(domFuture, new Function<DOMRpcResult, RpcResult<?>>() {
-            @Override
-            public RpcResult<?> apply(final DOMRpcResult input) {
-                final NormalizedNode<?, ?> domData = input.getResult();
-                final DataObject bindingResult;
-                if (domData != null) {
-                    final SchemaPath rpcOutput = rpc.createChild(QName.create(rpc.getLastComponent(), "output"));
-                    bindingResult = codec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
-                } else {
-                    bindingResult = null;
-                }
-                return RpcResult.class.cast(RpcResultBuilder.success(bindingResult).build());
+        return Futures.transform(domFuture, input -> {
+            final NormalizedNode<?, ?> domData = input.getResult();
+            final DataObject bindingResult;
+            if (domData != null) {
+                final SchemaPath rpcOutput = rpc.createChild(QName.create(rpc.getLastComponent(), "output"));
+                bindingResult = codec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
+            } else {
+                bindingResult = null;
             }
+            return RpcResult.class.cast(RpcResultBuilder.success(bindingResult).build());
         });
     }
 
