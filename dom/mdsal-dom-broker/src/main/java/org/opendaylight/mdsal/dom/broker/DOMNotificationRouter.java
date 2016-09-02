@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
@@ -122,16 +121,9 @@ public final class DOMNotificationRouter implements AutoCloseable, DOMNotificati
         final ListenerRegistration<T> reg = new AbstractListenerRegistration<T>(listener) {
             @Override
             protected void removeRegistration() {
-                final ListenerRegistration<T> me = this;
-
                 synchronized (DOMNotificationRouter.this) {
                     replaceListeners(ImmutableMultimap.copyOf(Multimaps.filterValues(listeners,
-                            new Predicate<ListenerRegistration<? extends DOMNotificationListener>>() {
-                            @Override
-                            public boolean apply(final ListenerRegistration<? extends DOMNotificationListener> input) {
-                                return input != me;
-                            }
-                        })));
+                        input -> input != this)));
                 }
             }
         };
@@ -172,16 +164,12 @@ public final class DOMNotificationRouter implements AutoCloseable, DOMNotificati
     private void notifyListenerTypesChanged(final Set<SchemaPath> typesAfter) {
         final List<ListenerRegistration<DOMNotificationSubscriptionListener>> listenersAfter =
                 ImmutableList.copyOf(subscriptionListeners.getListeners());
-        executor.submit(new Runnable() {
-
-            @Override
-            public void run() {
-                for (final ListenerRegistration<DOMNotificationSubscriptionListener> subListener : listenersAfter) {
-                    try {
-                        subListener.getInstance().onSubscriptionChanged(typesAfter);
-                    } catch (final Exception e) {
-                        LOG.warn("Uncaught exception during invoking listener {}", subListener.getInstance(), e);
-                    }
+        executor.submit(() -> {
+            for (final ListenerRegistration<DOMNotificationSubscriptionListener> subListener : listenersAfter) {
+                try {
+                    subListener.getInstance().onSubscriptionChanged(typesAfter);
+                } catch (final Exception e) {
+                    LOG.warn("Uncaught exception during invoking listener {}", subListener.getInstance(), e);
                 }
             }
         });
@@ -191,13 +179,7 @@ public final class DOMNotificationRouter implements AutoCloseable, DOMNotificati
     public <L extends DOMNotificationSubscriptionListener> ListenerRegistration<L> registerSubscriptionListener(
             final L listener) {
         final Set<SchemaPath> initialTypes = listeners.keySet();
-        executor.submit(new Runnable() {
-
-            @Override
-            public void run() {
-                listener.onSubscriptionChanged(initialTypes);
-            }
-        });
+        executor.submit(() -> listener.onSubscriptionChanged(initialTypes));
         return subscriptionListeners.registerWithType(listener);
     }
 

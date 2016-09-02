@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
@@ -51,12 +49,7 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
 
     private static Collection<DOMRpcIdentifier> notPresentRpcs(final DOMRpcRoutingTable table,
             final Collection<DOMRpcIdentifier> candidates) {
-        return ImmutableSet.copyOf(Collections2.filter(candidates, new Predicate<DOMRpcIdentifier>() {
-            @Override
-            public boolean apply(final DOMRpcIdentifier input) {
-                return !table.contains(input);
-            }
-        }));
+        return ImmutableSet.copyOf(Collections2.filter(candidates, input -> !table.contains(input)));
     }
 
     private synchronized void removeRpcImplementation(final DOMRpcImplementation implementation,
@@ -68,15 +61,12 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
         routingTable = newTable;
         if (!removedRpcs.isEmpty()) {
             final Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> capturedListeners = listeners;
-            listenerNotifier.execute(new Runnable() {
-                @Override
-                public void run() {
-                    for (final ListenerRegistration<? extends DOMRpcAvailabilityListener> l : capturedListeners) {
-                        // Need to ensure removed listeners do not get notified
-                        synchronized (DOMRpcRouter.this) {
-                            if (listeners.contains(l)) {
-                                l.getInstance().onRpcUnavailable(removedRpcs);
-                            }
+            listenerNotifier.execute(() -> {
+                for (final ListenerRegistration<? extends DOMRpcAvailabilityListener> l : capturedListeners) {
+                    // Need to ensure removed listeners do not get notified
+                    synchronized (DOMRpcRouter.this) {
+                        if (listeners.contains(l)) {
+                            l.getInstance().onRpcUnavailable(removedRpcs);
                         }
                     }
                 }
@@ -101,15 +91,12 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
 
         if (!addedRpcs.isEmpty()) {
             final Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> capturedListeners = listeners;
-            listenerNotifier.execute(new Runnable() {
-                @Override
-                public void run() {
-                    for (final ListenerRegistration<? extends DOMRpcAvailabilityListener> l : capturedListeners) {
-                        // Need to ensure removed listeners do not get notified
-                        synchronized (DOMRpcRouter.this) {
-                            if (listeners.contains(l)) {
-                                l.getInstance().onRpcAvailable(addedRpcs);
-                            }
+            listenerNotifier.execute(() -> {
+                for (final ListenerRegistration<? extends DOMRpcAvailabilityListener> l : capturedListeners) {
+                    // Need to ensure removed listeners do not get notified
+                    synchronized (DOMRpcRouter.this) {
+                        if (listeners.contains(l)) {
+                            l.getInstance().onRpcAvailable(addedRpcs);
                         }
                     }
                 }
@@ -131,12 +118,7 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     }
 
     private synchronized void removeListener(final ListenerRegistration<? extends DOMRpcAvailabilityListener> reg) {
-        listeners = ImmutableList.copyOf(Collections2.filter(listeners, new Predicate<Object>() {
-            @Override
-            public boolean apply(final Object input) {
-                return !reg.equals(input);
-            }
-        }));
+        listeners = ImmutableList.copyOf(Collections2.filter(listeners, input -> !reg.equals(input)));
     }
 
     @Override
@@ -155,18 +137,10 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
         listeners = b.build();
         final Map<SchemaPath, Set<YangInstanceIdentifier>> capturedRpcs = routingTable.getRpcs();
 
-        listenerNotifier.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (final Entry<SchemaPath, Set<YangInstanceIdentifier>> e : capturedRpcs.entrySet()) {
-                    listener.onRpcAvailable(Collections2.transform(e.getValue(),
-                            new Function<YangInstanceIdentifier, DOMRpcIdentifier>() {
-                            @Override
-                            public DOMRpcIdentifier apply(final YangInstanceIdentifier input) {
-                                return DOMRpcIdentifier.create(e.getKey(), input);
-                            }
-                        }));
-                }
+        listenerNotifier.execute(() -> {
+            for (final Entry<SchemaPath, Set<YangInstanceIdentifier>> e : capturedRpcs.entrySet()) {
+                listener.onRpcAvailable(Collections2.transform(e.getValue(),
+                    input -> DOMRpcIdentifier.create(e.getKey(), input)));
             }
         });
 
