@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -44,13 +43,7 @@ final class DOMRpcRoutingTable {
             "2013-07-09", "context-reference").intern();
 
     static final DOMRpcRoutingTable EMPTY = new DOMRpcRoutingTable();
-    private static final Function<AbstractDOMRpcRoutingTableEntry, Set<YangInstanceIdentifier>> EXTRACT_IDENTIFIERS =
-            new Function<AbstractDOMRpcRoutingTableEntry, Set<YangInstanceIdentifier>>() {
-        @Override
-        public Set<YangInstanceIdentifier> apply(final AbstractDOMRpcRoutingTableEntry input) {
-            return input.registeredIdentifiers();
-        }
-    };
+
     private final Map<SchemaPath, AbstractDOMRpcRoutingTableEntry> rpcs;
     private final SchemaContext schemaContext;
 
@@ -140,7 +133,7 @@ final class DOMRpcRoutingTable {
     }
 
     Map<SchemaPath, Set<YangInstanceIdentifier>> getRpcs() {
-        return Maps.transformValues(rpcs, EXTRACT_IDENTIFIERS);
+        return Maps.transformValues(rpcs, AbstractDOMRpcRoutingTableEntry::registeredIdentifiers);
     }
 
     private static RpcDefinition findRpcDefinition(final SchemaContext context, final SchemaPath schemaPath) {

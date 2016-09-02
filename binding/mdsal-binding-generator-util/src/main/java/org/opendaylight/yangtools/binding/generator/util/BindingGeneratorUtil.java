@@ -91,19 +91,11 @@ public final class BindingGeneratorUtil {
         }
     };
 
-    private static final Comparator<TypeMemberBuilder<?>> SUID_MEMBER_COMPARATOR = new Comparator<TypeMemberBuilder<?>>() {
-        @Override
-        public int compare(final TypeMemberBuilder<?> o1, final TypeMemberBuilder<?> o2) {
-            return o1.getName().compareTo(o2.getName());
-        }
-    };
+    private static final Comparator<TypeMemberBuilder<?>> SUID_MEMBER_COMPARATOR =
+        (o1, o2) -> o1.getName().compareTo(o2.getName());
 
-    private static final Comparator<Type> SUID_NAME_COMPARATOR = new Comparator<Type>() {
-        @Override
-        public int compare(final Type o1, final Type o2) {
-            return o1.getFullyQualifiedName().compareTo(o2.getFullyQualifiedName());
-        }
-    };
+    private static final Comparator<Type> SUID_NAME_COMPARATOR =
+        (o1, o2) -> o1.getFullyQualifiedName().compareTo(o2.getFullyQualifiedName());
 
     /**
      * Converts <code>parameterName</code> to valid JAVA parameter name.
