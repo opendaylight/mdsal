@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_7e478577",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMRpcImplementationAdapterTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-05T15:03:28Z",
+      "side": 1,
+      "message": "are we not going to cover more than just constructor call?",
+      "range": {
+        "startLine": 27,
+        "startChar": 16,
+        "endLine": 27,
+        "endChar": 28
+      },
+      "revId": "79e5890e0bd464f8b72e551b6aadd2978942a3db",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
