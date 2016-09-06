@@ -24,7 +24,7 @@ public class TestInstanceIdentifier implements Path<TestInstanceIdentifier> {
     private final ImmutableList<String> path;
 
     /**
-     * {@link TestInstanceIdentifier} constructor
+     * {@link TestInstanceIdentifier} constructor.
      *
      * @param path - path
      */

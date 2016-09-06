@@ -12,6 +12,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+
 import com.google.common.util.concurrent.Futures;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -28,13 +29,11 @@ import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
-import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceGroup;
-import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceGroupImpl;
 import org.opendaylight.mdsal.singleton.dom.impl.util.TestEntity;
 import org.opendaylight.mdsal.singleton.dom.impl.util.TestInstanceIdentifier;
 
 /**
- * Testing {@link ClusterSingletonServiceGroupImpl}
+ * Testing {@link ClusterSingletonServiceGroupImpl}.
  */
 public class ClusterSingletonServiceGroupImplTest {
 
@@ -52,54 +51,62 @@ public class ClusterSingletonServiceGroupImplTest {
     @Mock
     private GenericEntityOwnershipCandidateRegistration<?, ?> mockCloseEntityCandReg;
     @Mock
-    private GenericEntityOwnershipListener<TestInstanceIdentifier,GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>> mockEosListener;
+    private GenericEntityOwnershipListener<TestInstanceIdentifier,
+        GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>> mockEosListener;
 
     @Mock
-    private GenericEntityOwnershipService<TestInstanceIdentifier,TestEntity, GenericEntityOwnershipListener<TestInstanceIdentifier,GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>> mockEosService;
+    private GenericEntityOwnershipService<TestInstanceIdentifier,TestEntity,
+        GenericEntityOwnershipListener<TestInstanceIdentifier,
+            GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>> mockEosService;
 
-    private ClusterSingletonServiceGroupImpl<TestInstanceIdentifier,TestEntity,GenericEntityOwnershipChange<TestInstanceIdentifier,TestEntity>,
-                                         GenericEntityOwnershipListener<TestInstanceIdentifier, GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>,
-                                         GenericEntityOwnershipService<TestInstanceIdentifier, TestEntity, GenericEntityOwnershipListener<TestInstanceIdentifier,
-                                         GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>>> singletonServiceGroup;
+    private ClusterSingletonServiceGroupImpl<TestInstanceIdentifier,TestEntity,
+        GenericEntityOwnershipChange<TestInstanceIdentifier,TestEntity>,
+            GenericEntityOwnershipListener<TestInstanceIdentifier,
+                GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>,
+                    GenericEntityOwnershipService<TestInstanceIdentifier, TestEntity,
+                        GenericEntityOwnershipListener<TestInstanceIdentifier,
+                            GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>>> singletonServiceGroup;
 
     private final TestEntity mainEntity = new TestEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
     private final TestEntity closeEntity = new TestEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
     private final ConcurrentMap<String, ClusterSingletonServiceGroup<?, ?, ?>> map = new ConcurrentHashMap<>();
 
     /**
-     * Initialization functionality for every Tests in this suite
+     * Initialization functionality for every Tests in this suite.
      *
      * @throws Exception - unexpected exception
      */
-   @Before
-   public void setup() throws Exception {
-       MockitoAnnotations.initMocks(this);
+    @Before
+    public void setup() throws Exception {
+        MockitoAnnotations.initMocks(this);
 
-       doReturn(mockEntityCandReg).when(mockEosService).registerCandidate(mainEntity);
-       doReturn(mockCloseEntityCandReg).when(mockEosService).registerCandidate(closeEntity);
-       doNothing().when(mockEntityCandReg).close();
-       doNothing().when(mockCloseEntityCandReg).close();
-       doNothing().when(mockClusterSingletonService).instantiateServiceInstance();
-       doReturn(Futures.immediateFuture(null)).when(mockClusterSingletonService).closeServiceInstance();
+        doReturn(mockEntityCandReg).when(mockEosService).registerCandidate(mainEntity);
+        doReturn(mockCloseEntityCandReg).when(mockEosService).registerCandidate(closeEntity);
+        doNothing().when(mockEntityCandReg).close();
+        doNothing().when(mockCloseEntityCandReg).close();
+        doNothing().when(mockClusterSingletonService).instantiateServiceInstance();
+        doReturn(Futures.immediateFuture(null)).when(mockClusterSingletonService).closeServiceInstance();
 
         doReturn(SERVICE_GROUP_IDENT).when(mockClusterSingletonService).getIdentifier();
         doReturn(SERVICE_GROUP_IDENT).when(mockClusterSingletonServiceSecond).getIdentifier();
 
-       singletonServiceGroup = new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, mainEntity, closeEntity, mockEosService, map);
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
+            SERVICE_IDENTIFIER, mainEntity, closeEntity, mockEosService, map);
     }
 
     /**
-     * Test NULL ServiceIdent input for new ServiceGroup instance
+     * Test NULL ServiceIdent input for new ServiceGroup instance.
      *
      * @throws Exception - unexpected exception
      */
     @Test(expected = IllegalArgumentException.class)
     public void instantiationClusterSingletonServiceGroupNullIdentTest() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(null, mainEntity, closeEntity, mockEosService, map);
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
+                null, mainEntity, closeEntity, mockEosService, map);
     }
 
     /**
-     * Test empty ServiceIdent input for new ServiceGroup instance
+     * Test empty ServiceIdent input for new ServiceGroup instance.
      *
      * @throws Exception - unexpected exception
      */
@@ -109,47 +116,51 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test NULL MainEntity input for new ServiceGroup instance
+     * Test NULL MainEntity input for new ServiceGroup instance.
      *
      * @throws Exception - unexpected exception
      */
     @Test(expected = NullPointerException.class)
     public void instantiationClusterSingletonServiceGroupNullMainEntityTest() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, null, closeEntity, mockEosService, map);
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
+                SERVICE_IDENTIFIER, null, closeEntity, mockEosService, map);
     }
 
     /**
-     * Test NULL MainEntity input for new ServiceGroup instance
+     * Test NULL MainEntity input for new ServiceGroup instance.
      *
      * @throws Exception - unexpected exception
      */
     @Test(expected = NullPointerException.class)
     public void instantiationClusterSingletonServiceGroupNullCloseEntityTest() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, mainEntity, null, mockEosService, map);
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
+                SERVICE_IDENTIFIER, mainEntity, null, mockEosService, map);
     }
 
     /**
-     * Test NULL MainEntity input for new ServiceGroup instance
+     * Test NULL MainEntity input for new ServiceGroup instance.
      *
      * @throws Exception - unexpected exception
      */
     @Test(expected = NullPointerException.class)
     public void instantiationClusterSingletonServiceGroupNullEOS_Test() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, mainEntity, closeEntity, null, map);
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
+                SERVICE_IDENTIFIER, mainEntity, closeEntity, null, map);
     }
 
     /**
-     * Test NULL MainEntity input for new ServiceGroup instance
+     * Test NULL MainEntity input for new ServiceGroup instance.
      *
      * @throws Exception - unexpected exception
      */
     @Test(expected = NullPointerException.class)
     public void instantiationClusterSingletonServiceGroupNullMapRefTest() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, mainEntity, closeEntity, mockEosService, null);
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
+                SERVICE_IDENTIFIER, mainEntity, closeEntity, mockEosService, null);
     }
 
     /**
-     * Test GoldPath for initialization ServiceGroup
+     * Test GoldPath for initialization ServiceGroup.
      *
      * @throws Exception - unexpected exception
      */
@@ -160,7 +171,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test GoldPath for NO-TO-SLAVE entity Candidate role change
+     * Test GoldPath for NO-TO-SLAVE entity Candidate role change.
      *
      * @throws Exception - unexpected exception
      */
@@ -177,7 +188,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test GoldPath for NO-TO-SLAVE but without MASTER entity Candidate role change
+     * Test GoldPath for NO-TO-SLAVE but without MASTER entity Candidate role change.
      *
      * @throws Exception - unexpected exception
      */
@@ -194,7 +205,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test GoldPath for InJeopardy entity Candidate role change
+     * Test GoldPath for InJeopardy entity Candidate role change.
      *
      * @throws Exception - unexpected exception
      */
@@ -214,7 +225,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test GoldPath for registration SingletonService
+     * Test GoldPath for registration SingletonService.
      *
      * @throws Exception - unexpected exception
      */
@@ -228,7 +239,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test GoldPath for registration SingletonService
+     * Test GoldPath for registration SingletonService.
      *
      * @throws Exception - unexpected exception
      */
@@ -246,7 +257,7 @@ public class ClusterSingletonServiceGroupImplTest {
 
     /**
      * Test GoldPath for unregistration SingletonService don't call closeServiceInstance
-     * without mastership and don't remove ServiceGroup from map
+     * without mastership and don't remove ServiceGroup from map.
      *
      * @throws Exception - unexpected exception
      */
@@ -266,7 +277,7 @@ public class ClusterSingletonServiceGroupImplTest {
 
     /**
      * Test GoldPath for unregistration SingletonService don't call closeServiceInstance
-     * without mastership and don't remove ServiceGroup from map
+     *     without mastership and don't remove ServiceGroup from map.
      *
      * @throws Exception - unexpected exception
      */
@@ -288,7 +299,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test GoldPath get Slave role for registered main entity
+     * Test GoldPath get Slave role for registered main entity.
      *
      * @throws Exception - unexpected exception
      */
@@ -304,7 +315,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test GoldPath get Master role for registered main entity
+     * Test GoldPath get Master role for registered main entity.
      *
      * @throws Exception - unexpected exception
      */
@@ -321,7 +332,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test GoldPath get Master role for registered close entity
+     * Test GoldPath get Master role for registered close entity.
      *
      * @throws Exception - unexpected exception
      */
@@ -341,7 +352,7 @@ public class ClusterSingletonServiceGroupImplTest {
 
     /**
      * Test GoldPath get Master role for registered entity but initial Slave
-     * role for closeEntity
+     *     role for closeEntity.
      *
      * @throws Exception - unexpected exception
      */
@@ -364,7 +375,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test inJeopardy validation during wait phase for Master role for closeEntity
+     * Test inJeopardy validation during wait phase for Master role for closeEntity.
      *
      * @throws Exception - unexpected exception
      */
@@ -387,7 +398,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test inJeopardy validation during wait phase for Master role for closeEntity
+     * Test inJeopardy validation during wait phase for Master role for closeEntity.
      *
      * @throws Exception - unexpected exception
      */
@@ -413,7 +424,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test inJeopardy validation for holding leadership
+     * Test inJeopardy validation for holding leadership.
      *
      * @throws Exception - unexpected exception
      */
@@ -437,7 +448,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test GoldPath for SLAVE-TO-MASTER entity Candidate role change
+     * Test GoldPath for SLAVE-TO-MASTER entity Candidate role change.
      *
      * @throws Exception - unexpected exception
      */
@@ -459,8 +470,8 @@ public class ClusterSingletonServiceGroupImplTest {
 
     /**
      * Test checks validation Error processing for SLAVE-TO-MASTER entity Candidate role change.
-     * Not initialized provider has to close and remove all singletonServices from Group and
-     * Group itself remove too.
+     *     Not initialized provider has to close and remove all singletonServices from Group and
+     *     Group itself remove too.
      *
      * @throws Exception - unexpected exception
      */
@@ -475,7 +486,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test checks closing procesing for close {@link ClusterSingletonServiceRegistration}
+     * Test checks closing procesing for close {@link ClusterSingletonServiceRegistration}.
      *
      * @throws Exception - unexpected exception
      */
@@ -497,7 +508,7 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test checks validation Error processing for MASTER-TO-SLAVE closeEntity Candidate role change
+     * Test checks validation Error processing for MASTER-TO-SLAVE closeEntity Candidate role change.
      *
      * @throws Exception - unexpected exception
      */
@@ -522,7 +533,7 @@ public class ClusterSingletonServiceGroupImplTest {
 
     /**
      * Test checks validation Error processing for MASTER-TO-SLAVE closeEntity Candidate role change
-     * without closeEntity registration
+     *     without closeEntity registration.
      *
      * @throws Exception - unexpected exception
      */
@@ -568,7 +579,8 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     private GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToJeopardy() {
-        return new GenericEntityOwnershipChange<>(mainEntity, EntityOwnershipChangeState.from(false, false, false), true);
+        return new GenericEntityOwnershipChange<>(mainEntity,
+            EntityOwnershipChangeState.from(false, false, false), true);
     }
 
 }
