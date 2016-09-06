@@ -143,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_d1eb27da",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-06T10:55:58Z",
+      "side": 1,
+      "message": "I was curious about this, so researched it, and found https://github.com/checkstyle/checkstyle/issues/1242 - so they\u0027re saying that in Java enum constructors are implicitly private, always, and this is indeed redundant then? If you/we disagree with that, then I think the better solution to @SuppressWarnings(\"checkstyle:RedundantModifier\") or disable this check/rule would be to raise this as a Checkstyle bug - but unless proven otherwise, I\u0027ll assume that they are right.",
+      "parentUuid": "7a6b29fe_f4a29ffb",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_bb449ab7",
         "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntity.java",
         "patchSetId": 1
