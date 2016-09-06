@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link ClusterSingletonServiceGroup}
+ * Implementation of {@link ClusterSingletonServiceGroup}.
  *
  * @param <P> the instance identifier path type
  * @param <E> the GenericEntity type
@@ -73,12 +73,13 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     private GenericEntityOwnershipCandidateRegistration<P, E> asyncCloseEntityCandidateReg;
 
     /**
-     * Class constructor
+     * Class constructor.
      *
      * @param clusterSingletonServiceGroupIdentifier not empty string as identifier
-     * @param mainEntity
-     * @param closeEntity
-     * @param entityOwnershipService
+     * @param mainEntity as Entity instance
+     * @param closeEntity as Entity instance
+     * @param entityOwnershipService GenericEntityOwnershipService instance
+     * @param allServiceGroups concurrentMap of String and ClusterSingletonServiceGroup type
      */
     ClusterSingletonServiceGroupImpl(final String clusterSingletonServiceGroupIdentifier, final E mainEntity,
             final E closeEntity, final S entityOwnershipService,
@@ -92,15 +93,17 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         this.allServiceGroups = Preconditions.checkNotNull(allServiceGroups);
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public final ListenableFuture<List<Void>> closeClusterSingletonGroup() {
+    public ListenableFuture<List<Void>> closeClusterSingletonGroup() {
         LOG.debug("Close method for service Provider {}", clusterSingletonGroupIdentifier);
         boolean needReleaseLock = false;
         final ListenableFuture<List<Void>> destroyFuture;
         try {
             needReleaseLock = clusterLock.tryAcquire(10, TimeUnit.SECONDS);
         } catch (final Exception e) {
-            LOG.warn("Unexpected Exception for service Provider {} in closing phase.", clusterSingletonGroupIdentifier, e);
+            LOG.warn("Unexpected Exception for service Provider {} in closing phase.",
+                    clusterSingletonGroupIdentifier, e);
         } finally {
             if (serviceEntityCandidateReg != null) {
                 serviceEntityCandidateReg.close();
@@ -119,8 +122,9 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         return destroyFuture;
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public final void initializationClusterSingletonGroup() {
+    public void initializationClusterSingletonGroup() {
         LOG.debug("Initialization ClusterSingletonGroup {}", clusterSingletonGroupIdentifier);
         boolean needReleaseLock = false;
         boolean needCloseProviderInstance = false;
@@ -139,8 +143,9 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public final ClusterSingletonServiceRegistration registerService(final ClusterSingletonService service) {
+    public ClusterSingletonServiceRegistration registerService(final ClusterSingletonService service) {
         LOG.debug("RegisterService method call for ClusterSingletonServiceGroup {}", clusterSingletonGroupIdentifier);
         Verify.verify(clusterSingletonGroupIdentifier.equals(service.getIdentifier().getValue()));
         boolean needReleaseLock = false;
@@ -164,8 +169,9 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         return reg;
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public final void unregisterService(final ClusterSingletonService service) {
+    public void unregisterService(final ClusterSingletonService service) {
         LOG.debug("UnregisterService method call for ClusterSingletonServiceGroup {}", clusterSingletonGroupIdentifier);
         Verify.verify(clusterSingletonGroupIdentifier.equals(service.getIdentifier().getValue()));
         boolean needReleaseLock = false;
@@ -188,8 +194,9 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public final void ownershipChanged(final C ownershipChange) {
+    public void ownershipChanged(final C ownershipChange) {
         LOG.debug("Ownership change {} for ClusterSingletonServiceGrou {}", ownershipChange,
                 clusterSingletonGroupIdentifier);
         try {
@@ -239,7 +246,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             } else {
                 LOG.warn("Unexpected EntityOwnershipChangeEvent for entity {}", ownershipChange);
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             LOG.error("Unexpected Exception for service Provider {}", clusterSingletonGroupIdentifier, e);
             // TODO : think about close ... is it necessary?
         }
@@ -249,6 +256,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * Help method to registered DoubleCandidateEntity. It is first step
      * before the actual instance take Leadership.
      */
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private void tryToTakeOwnership() {
         LOG.debug("TryToTakeLeadership method for service Provider {}", clusterSingletonGroupIdentifier);
         boolean needReleaseLock = false;
@@ -259,7 +267,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             Verify.verify(serviceEntityCandidateReg != null);
             Verify.verify(asyncCloseEntityCandidateReg == null);
             asyncCloseEntityCandidateReg = entityOwnershipService.registerCandidate(doubleCandidateEntity);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             LOG.error("Unexpected exception state for service Provider {} in TryToTakeLeadership",
                     clusterSingletonGroupIdentifier, e);
             needCloseProviderInstance = true;
@@ -271,6 +279,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     /*
      * Help method calls setupService method for create single cluster-wide service instance.
      */
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private void takeOwnership() {
         LOG.debug("TakeLeadership method for service Provider {}", clusterSingletonGroupIdentifier);
         boolean needReleaseLock = false;
@@ -298,6 +307,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * The last async. step has to close DoubleCandidateRegistration reference what should initialize
      * new election for DoubleCandidateEntity.
      */
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private void lostOwnership() {
         LOG.debug("LostLeadership method for service Provider {}", clusterSingletonGroupIdentifier);
         boolean needReleaseLock = false;
@@ -350,8 +360,8 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
                 }
 
                 @Override
-                public void onFailure(final Throwable t) {
-                    removeThisGroupFromProvider(t);
+                public void onFailure(final Throwable throwable) {
+                    removeThisGroupFromProvider(throwable);
                 }
             });
         }
@@ -360,9 +370,9 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     /*
      * Help method for final ClusterSingletonGroup removing
      */
-    protected final void removeThisGroupFromProvider(@Nullable final Throwable t) {
+    protected void removeThisGroupFromProvider(@Nullable final Throwable throwable) {
         LOG.debug("Removing ClusterSingletonServiceGroup {}", clusterSingletonGroupIdentifier);
-        if (t != null) {
+        if (throwable != null) {
             LOG.warn("Unexpected problem by closingResources ClusterSingletonServiceGroup {}",
                     clusterSingletonGroupIdentifier);
         }
@@ -373,9 +383,9 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * Help method creates FutureCallback for suspend Future
      */
     private FutureCallback<List<Void>> newAsyncCloseCallback(@Nullable final Semaphore semaphore) {
-        final Consumer<Throwable> closeEntityCandidateRegistration = (@Nullable final Throwable t) -> {
-            if (t != null) {
-                LOG.warn("Unexpected error closing service instance {}", clusterSingletonGroupIdentifier, t);
+        final Consumer<Throwable> closeEntityCandidateRegistration = (@Nullable final Throwable throwable) -> {
+            if (throwable != null) {
+                LOG.warn("Unexpected error closing service instance {}", clusterSingletonGroupIdentifier, throwable);
             } else {
                 LOG.debug("Destroy service Instance {} is success", clusterSingletonGroupIdentifier);
             }
@@ -397,8 +407,8 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             }
 
             @Override
-            public void onFailure(final Throwable t) {
-                closeEntityCandidateRegistration.accept(t);
+            public void onFailure(final Throwable throwable) {
+                closeEntityCandidateRegistration.accept(throwable);
             }
         };
     }

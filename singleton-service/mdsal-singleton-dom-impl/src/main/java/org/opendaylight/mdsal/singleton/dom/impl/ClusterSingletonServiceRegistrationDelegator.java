@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
  * Close registration means remove {@link ClusterSingletonService} instance from internal
  * ClusterSingletonServiceGroup list reference.
  *
+ *<p>
  * Close {@link ClusterSingletonServiceRegistration} is prepared for a possible restart
  * service or application in osgi container. Any another services from group can not be
  * stopped.
