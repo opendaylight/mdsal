@@ -15,6 +15,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Method;
 import org.junit.After;
@@ -31,11 +32,11 @@ import org.osgi.framework.ServiceReference;
 public class OsgiBundleScanningSchemaServiceTest {
 
     private OsgiBundleScanningSchemaService osgiService;
+    private final BundleContext bundleContext = mock(BundleContext.class, "bundleContext");
 
     @Before
     public void setUp() throws Exception {
         destroyInstance();
-        final BundleContext bundleContext = mock(BundleContext.class, "bundleContext");
         doReturn(mock(Filter.class)).when(bundleContext).createFilter(any());
         doNothing().when(bundleContext).addBundleListener(any());
         doReturn(new Bundle[] {}).when(bundleContext).getBundles();
@@ -71,8 +72,16 @@ public class OsgiBundleScanningSchemaServiceTest {
         schemaContextUpdate.setAccessible(true);
         schemaContextUpdate.invoke(osgiService, schemaContext);
 
+        doReturn(schemaContextListener).when(bundleContext).getService(null);
+        assertEquals(schemaContextListener, osgiService.addingService(null));
+
         osgiService.registerSchemaContextListener(schemaContextListener);
         assertNull(osgiService.getSchemaContext());
+
+        doReturn(false).when(bundleContext).ungetService(null);
+        osgiService.removedService(null, null);
+        verify(bundleContext).ungetService(any());
+
         osgiService.close();
     }
 
