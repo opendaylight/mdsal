@@ -179,6 +179,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_6707f118",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-06T15:19:12Z",
+      "side": 1,
+      "message": "so I am removing @SuppressWarnings{\"checkstyle:RedudantModifier\"}",
+      "parentUuid": "7a6b29fe_71fcd372",
+      "revId": "37f068b37261e7ab6c8a7e0538eb5afbed357d44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_bb449ab7",
         "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntity.java",
         "patchSetId": 1
