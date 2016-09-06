@@ -184,6 +184,7 @@ public class DOMBrokerTest {
         final DOMDataTreeReadTransaction readRx = domBroker.newReadOnlyTransaction();
         assertNotNull(writeTx);
         assertNotNull(readRx);
+        assertNotNull(((SerializedDOMDataBroker)domBroker).getCommitStatsTracker());
 
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
         writeTx.submit().get();
