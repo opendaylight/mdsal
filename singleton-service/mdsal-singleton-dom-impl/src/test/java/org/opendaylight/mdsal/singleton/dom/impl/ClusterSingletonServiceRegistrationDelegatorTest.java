@@ -12,6 +12,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+
 import com.google.common.util.concurrent.Futures;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,12 +21,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
-import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceGroup;
-import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceGroupImpl;
-import org.opendaylight.mdsal.singleton.dom.impl.ClusterSingletonServiceRegistrationDelegator;
 
 /**
- * Testing {@link ClusterSingletonServiceRegistrationDelegator}
+ * Testing {@link ClusterSingletonServiceRegistrationDelegator}.
  */
 public class ClusterSingletonServiceRegistrationDelegatorTest {
 
@@ -41,7 +39,7 @@ public class ClusterSingletonServiceRegistrationDelegatorTest {
     private ClusterSingletonServiceRegistrationDelegator delegator;
 
     /**
-     * Initialization functionality for every Tests in this suite
+     * Initialization functionality for every Tests in this suite.
      *
      * @throws Exception - unexpected setup exception
      */
@@ -59,7 +57,7 @@ public class ClusterSingletonServiceRegistrationDelegatorTest {
     }
 
     /**
-     * Test create input with {@link ClusterSingletonService} as null
+     * Test create input with {@link ClusterSingletonService} as null.
      */
     @Test(expected = NullPointerException.class)
     public void testSetupNullService() {
@@ -67,7 +65,7 @@ public class ClusterSingletonServiceRegistrationDelegatorTest {
     }
 
     /**
-     * Test create input with {@link ClusterSingletonServiceGroupImpl} as null
+     * Test create input with {@link ClusterSingletonServiceGroupImpl} as null.
      */
     @Test(expected = NullPointerException.class)
     public void testSetupNullGroup() {
@@ -75,7 +73,7 @@ public class ClusterSingletonServiceRegistrationDelegatorTest {
     }
 
     /**
-     * Test a method delegation {@link ClusterSingletonService#instantiateServiceInstance()}
+     * Test a method delegation {@link ClusterSingletonService#instantiateServiceInstance()}.
      */
     @Test
     public void testInstatiateServiceDelegMethod() {
@@ -84,7 +82,7 @@ public class ClusterSingletonServiceRegistrationDelegatorTest {
     }
 
     /**
-     * Test a method delegation {@link ClusterSingletonService#instantiateServiceInstance()}
+     * Test a method delegation {@link ClusterSingletonService#instantiateServiceInstance()}.
      */
     @Test
     public void testCloseServiceDelegMethod() {
@@ -93,7 +91,7 @@ public class ClusterSingletonServiceRegistrationDelegatorTest {
     }
 
     /**
-     * Test a method delegation {@link ClusterSingletonService#getIdentifier()}
+     * Test a method delegation {@link ClusterSingletonService#getIdentifier()}.
      */
     @Test
     public void testGetServiceIdentifierDelegMethod() {
@@ -103,7 +101,8 @@ public class ClusterSingletonServiceRegistrationDelegatorTest {
     }
 
     /**
-     * Test a close method delegation to {@link ClusterSingletonServiceGroupImpl#unregisterService(ClusterSingletonService)}
+     * Test a close method delegation to
+     *     {@link ClusterSingletonServiceGroupImpl#unregisterService(ClusterSingletonService)}.
      *
      * @throws Exception is from AutoclosableInterface
      */

@@ -18,7 +18,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 
 /**
- * Binding version of {@link AbstractClusterSingletonServiceProviderImpl}
+ * Binding version of {@link AbstractClusterSingletonServiceProviderImpl}.
  */
 public final class DOMClusterSingletonServiceProviderImpl extends
         AbstractClusterSingletonServiceProviderImpl<YangInstanceIdentifier, DOMEntity,
@@ -29,7 +29,7 @@ public final class DOMClusterSingletonServiceProviderImpl extends
         implements DOMEntityOwnershipListener {
 
     /**
-     * Initialization all needed class internal property for {@link DOMClusterSingletonServiceProviderImpl}
+     * Initialization all needed class internal property for {@link DOMClusterSingletonServiceProviderImpl}.
      *
      * @param entityOwnershipService - we need only {@link GenericEntityOwnershipService}
      */
@@ -38,12 +38,12 @@ public final class DOMClusterSingletonServiceProviderImpl extends
     }
 
     @Override
-    protected final DOMEntity createEntity(final String type, final String ident) {
+    protected DOMEntity createEntity(final String type, final String ident) {
         return new DOMEntity(type, ident);
     }
 
     @Override
-    protected final DOMEntityOwnershipListenerRegistration registerListener(final String type,
+    protected DOMEntityOwnershipListenerRegistration registerListener(final String type,
             final DOMEntityOwnershipService eos) {
         return eos.registerListener(type, this);
     }

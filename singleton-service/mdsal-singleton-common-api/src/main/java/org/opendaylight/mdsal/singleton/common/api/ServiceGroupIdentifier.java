@@ -16,10 +16,10 @@ import org.opendaylight.yangtools.util.AbstractStringIdentifier;
 public class ServiceGroupIdentifier extends AbstractStringIdentifier<ServiceGroupIdentifier> {
 
     /**
-     * Method create immutable instance of {@link ServiceGroupIdentifier}
+     * Method create immutable instance of {@link ServiceGroupIdentifier}.
      *
-     * @param serviceGroupIdentifier
-     * @return {@link ServiceGroupIdentifier} instance
+     * @param serviceGroupIdentifier is passed to create new ServiceGroupIdentifier
+     * @return {@link ServiceGroupIdentifier} new instance
      */
     public static ServiceGroupIdentifier create(final String serviceGroupIdentifier) {
         return new ServiceGroupIdentifier(serviceGroupIdentifier);
