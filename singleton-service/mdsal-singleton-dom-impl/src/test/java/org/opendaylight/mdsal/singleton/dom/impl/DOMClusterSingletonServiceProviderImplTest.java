@@ -15,6 +15,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.junit.Assert;
@@ -34,7 +35,7 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegist
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 
 /**
- * Testing {@link DOMClusterSingletonServiceProviderImpl} implementation
+ * Testing {@link DOMClusterSingletonServiceProviderImpl} implementation.
  */
 public class DOMClusterSingletonServiceProviderImplTest {
 
@@ -61,9 +62,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     private final DOMEntity doubleEntity = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_NAME);
 
     /**
-     * Initialization functionality for every Tests in this suite
+     * Initialization functionality for every Tests in this suite.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Before
     public void setup() throws Exception {
@@ -93,9 +94,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks NullPointer for null {@link DOMEntityOwnershipService} input value
+     * Test checks NullPointer for null {@link DOMEntityOwnershipService} input value.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test(expected = NullPointerException.class)
     public void initializationClusterSingletonServiceProviderNullInputTest() throws Exception {
@@ -103,9 +104,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for close {@link DOMClusterSingletonServiceProviderImpl}
+     * Test GoldPath for close {@link DOMClusterSingletonServiceProviderImpl}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceProviderTest() throws Exception {
@@ -117,9 +118,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test parser ServiceIdentifier from Entity
+     * Test parser ServiceIdentifier from Entity.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void makeEntityClusterSingletonServiceProviderTest() throws Exception {
@@ -131,9 +132,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test parser ServiceIdentifier from Entity
+     * Test parser ServiceIdentifier from Entity.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void getIdentifierClusterSingletonServiceProviderTest() throws Exception {
@@ -144,9 +145,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for initialization {@link ClusterSingletonService}
+     * Test GoldPath for initialization {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void initializationClusterSingletonServiceTest() throws Exception {
@@ -158,9 +159,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for initialization with init ownership result SLAVE {@link ClusterSingletonService}
+     * Test GoldPath for initialization with init ownership result SLAVE {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void slaveInitClusterSingletonServiceTest() throws Exception {
@@ -174,9 +175,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for initialization with init ownership result SLAVE, but NO-MASTER {@link ClusterSingletonService}
+     * Test GoldPath for initialization with init ownership result SLAVE, but NO-MASTER {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void slaveInitNoMasterClusterSingletonServiceTest() throws Exception {
@@ -190,9 +191,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for initialization with init ownership result MASTER {@link ClusterSingletonService}
+     * Test GoldPath for initialization with init ownership result MASTER {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void masterInitClusterSingletonServiceTest() throws Exception {
@@ -206,9 +207,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for initialization with init ownership result MASTER {@link ClusterSingletonService}
+     * Test GoldPath for initialization with init ownership result MASTER {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void masterInitSlaveDoubleCandidateClusterSingletonServiceTest() throws Exception {
@@ -223,9 +224,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}
+     * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void takeLeadershipClusterSingletonServiceTest() throws Exception {
@@ -241,9 +242,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for initialization with init ownership result MASTER {@link ClusterSingletonService}
+     * Test GoldPath for initialization with init ownership result MASTER {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void masterInitClusterSingletonServiceTwoServicesTest() throws Exception {
@@ -261,9 +262,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}
+     * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void takeLeadershipClusterSingletonServiceTwoAddDuringWaitPhaseServicesTest() throws Exception {
@@ -284,9 +285,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}
+     * Test GoldPath for takeLeadership with ownership result MASTER {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void takeLeadershipClusterSingletonServiceTowServicesTest() throws Exception {
@@ -306,9 +307,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks CandidateAlreadyRegisteredException processing in initialization phase
+     * Test checks CandidateAlreadyRegisteredException processing in initialization phase.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void initializationClusterSingletonServiceCandidateAlreadyRegistredTest() throws Exception {
@@ -320,9 +321,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
 
     /**
      * Test GoldPath for lostLeadership during tryToTakeLeadership with ownership result MASTER
-     * {@link ClusterSingletonService}
+     *     {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void lostLeadershipDuringTryToTakeLeadershipClusterSingletonServiceTest() throws Exception {
@@ -340,9 +341,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test GoldPath for lostLeadership with ownership result MASTER-TO-SLAVE {@link ClusterSingletonService}
+     * Test GoldPath for lostLeadership with ownership result MASTER-TO-SLAVE {@link ClusterSingletonService}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void lostLeadershipClusterSingletonServiceTest() throws Exception {
@@ -362,9 +363,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks umexpected change for MASTER-TO-SLAVE double Candidate role change
+     * Test checks umexpected change for MASTER-TO-SLAVE double Candidate role change.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void unexpectedLostLeadershipDoubleCandidateTest() throws Exception {
@@ -387,9 +388,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks inJeopardy Cluster Node state for Master Instance
+     * Test checks inJeopardy Cluster Node state for Master Instance.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void inJeopardyMasterTest() throws Exception {
@@ -413,9 +414,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks inJeopardy Cluster Node state for Slave Instance
+     * Test checks inJeopardy Cluster Node state for Slave Instance.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void inJeopardySlaveTest() throws Exception {
@@ -435,9 +436,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}
+     * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationNoRoleTest() throws Exception {
@@ -455,9 +456,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}
+     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationNoRoleTwoServicesTest() throws Exception {
@@ -480,9 +481,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}
+     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationSlaveTest() throws Exception {
@@ -501,9 +502,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}
+     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationSlaveTwoServicesTest() throws Exception {
@@ -527,9 +528,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}
+     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationMasterTest() throws Exception {
@@ -551,9 +552,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}
+     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void closeClusterSingletonServiceRegistrationMasterTwoServicesTest() throws Exception {
@@ -581,9 +582,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks validation Error processing for SLAVE-TO-MASTER entity Candidate role change
+     * Test checks validation Error processing for SLAVE-TO-MASTER entity Candidate role change.
      *
-     * @throws Exception
+     * @throws Exception if the condition does not meet
      */
     @Test
     public void tryToTakeLeaderForClosedServiceRegistrationTest() throws Exception {
@@ -643,32 +644,32 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Base states for AbstractClusterProjectProvider
+     * Base states for AbstractClusterProjectProvider.
      */
-    static enum TestClusterSingletonServiceState {
+    enum TestClusterSingletonServiceState {
         /**
-         * State represents a correct Instantiated process
+         * State represents a correct Instantiated process.
          */
         STARTED,
         /**
-         * State represents a correct call abstract method instantiatingProject
+         * State represents a correct call abstract method instantiatingProject.
          */
         INITIALIZED,
         /**
-         * State represents a correct call abstract method destryingProject
+         * State represents a correct call abstract method destryingProject.
          */
         DESTROYED;
     }
 
     /**
-     * Test implementation of {@link ClusterSingletonService}
+     * Test implementation of {@link ClusterSingletonService}.
      */
     class TestClusterSingletonServiceInstance implements ClusterSingletonService {
 
-        private final ServiceGroupIdentifier SERVICE_IDENT = ServiceGroupIdentifier.create(SERVICE_NAME);
+        private final ServiceGroupIdentifier serviceIndent = ServiceGroupIdentifier.create(SERVICE_NAME);
         private TestClusterSingletonServiceState serviceState;
 
-        public TestClusterSingletonServiceInstance() {
+        TestClusterSingletonServiceInstance() {
             this.serviceState = TestClusterSingletonServiceState.INITIALIZED;
         }
 
@@ -689,7 +690,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
 
         @Override
         public ServiceGroupIdentifier getIdentifier() {
-            return SERVICE_IDENT;
+            return serviceIndent;
         }
     }
 }

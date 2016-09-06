@@ -26,8 +26,8 @@ import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
-import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceProvider;
+import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +46,10 @@ import org.slf4j.LoggerFactory;
  * @param <R> the GenericEntityOwnershipListenerRegistration type
  */
 public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path<P>, E extends GenericEntity<P>,
-                                                                  C extends GenericEntityOwnershipChange<P, E>,
-                                                                  G extends GenericEntityOwnershipListener<P, C>,
-                                                                  S extends GenericEntityOwnershipService<P, E, G>,
-                                                                  R extends GenericEntityOwnershipListenerRegistration<P, G>>
+        C extends GenericEntityOwnershipChange<P, E>,
+        G extends GenericEntityOwnershipListener<P, C>,
+        S extends GenericEntityOwnershipService<P, E, G>,
+        R extends GenericEntityOwnershipListenerRegistration<P, G>>
         implements ClusterSingletonServiceProvider, GenericEntityOwnershipListener<P, C> {
 
     private static final Logger LOG = LoggerFactory
@@ -59,14 +59,15 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
     private static final String CLOSE_SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.AsyncServiceCloseEntityType";
 
     private final S entityOwnershipService;
-    private final ConcurrentMap<String, ClusterSingletonServiceGroup<P, E, C>> serviceGroupMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ClusterSingletonServiceGroup<P, E, C>> serviceGroupMap =
+            new ConcurrentHashMap<>();
 
     /* EOS Entity Listeners Registration */
     private R serviceEntityListenerReg;
     private R asyncCloseEntityListenerReg;
 
     /**
-     * Class constructor
+     * Class constructor.
      *
      * @param entityOwnershipService relevant EOS
      */
@@ -130,8 +131,8 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
             }
 
             @Override
-            public void onFailure(final Throwable t) {
-                cleaningProvider(t);
+            public void onFailure(final Throwable throwable) {
+                cleaningProvider(throwable);
             }
         });
     }
@@ -170,7 +171,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
     /**
      * Method is responsible for parsing ServiceGroupIdentifier from E entity.
      *
-     * @param entity
+     * @param entity instance of GenericEntity type
      * @return ServiceGroupIdentifier parsed from entity key value.
      */
     protected abstract String getServiceIdentifierFromEntity(final E entity);
@@ -178,12 +179,13 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
     /**
      * Method is called async. from close method in end of Provider lifecycle.
      *
-     * @param t Throwable (needs for log)
+     * @param throwable Throwable (needs for log)
      */
-    protected final void cleaningProvider(@Nullable final Throwable t) {
+    protected final void cleaningProvider(@Nullable final Throwable throwable) {
         LOG.debug("Final cleaning ClusterSingletonServiceProvider {}", this.getClass().getName());
-        if (t != null) {
-            LOG.warn("Unexpected problem by closing ClusterSingletonServiceProvider {}", this.getClass().getName(), t);
+        if (throwable != null) {
+            LOG.warn("Unexpected problem by closing ClusterSingletonServiceProvider {}",
+                    this.getClass().getName(), throwable);
         }
         if (asyncCloseEntityListenerReg != null) {
             asyncCloseEntityListenerReg.close();
