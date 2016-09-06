@@ -79,6 +79,7 @@ public class DOMBrokerTest {
         executor = new DeadlockDetectingListeningExecutorService(commitExecutor,
                 TransactionCommitDeadlockException.DEADLOCK_EXCEPTION_SUPPLIER, futureExecutor);
         domBroker = new SerializedDOMDataBroker(stores, executor);
+
     }
 
     @After
@@ -184,6 +185,7 @@ public class DOMBrokerTest {
         final DOMDataTreeReadTransaction readRx = domBroker.newReadOnlyTransaction();
         assertNotNull(writeTx);
         assertNotNull(readRx);
+        assertNotNull(((SerializedDOMDataBroker)domBroker).getCommitStatsTracker());
 
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
         writeTx.submit().get();
