@@ -23,11 +23,6 @@ public class TestInstanceIdentifier implements Path<TestInstanceIdentifier> {
 
     private final ImmutableList<String> path;
 
-    /**
-     * {@link TestInstanceIdentifier} constructor
-     *
-     * @param path - path
-     */
     public TestInstanceIdentifier(final Iterable<? extends TestInstanceIdentifier> path) {
         Preconditions.checkArgument(path != null);
         final List<String> tiis = new LinkedList<>();
