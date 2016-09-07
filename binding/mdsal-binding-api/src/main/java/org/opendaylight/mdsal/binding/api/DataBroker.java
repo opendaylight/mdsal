@@ -8,17 +8,15 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.opendaylight.mdsal.common.api.AsyncDataBroker;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionChainFactory;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
-
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Provides access to a conceptual data tree store and also provides the ability to
  * subscribe for changes to data under a given branch of the tree.
+ *
  * <p>
  * For more information on usage, please see the documentation in {@link AsyncDataBroker}.
  *
@@ -26,22 +24,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @see TransactionChainFactory
  */
 public interface DataBroker extends  AsyncDataBroker<InstanceIdentifier<?>, DataObject>,
-    TransactionChainFactory<InstanceIdentifier<?>, DataObject>, TransactionFactory, BindingService, DataTreeChangeService {
-    /**
-     * {@inheritDoc}
-     */
+    TransactionChainFactory<InstanceIdentifier<?>, DataObject>, TransactionFactory, BindingService,
+        DataTreeChangeService {
+
     @Override
     ReadTransaction newReadOnlyTransaction();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     WriteTransaction newWriteOnlyTransaction();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     BindingTransactionChain createTransactionChain(TransactionChainListener listener);
 }

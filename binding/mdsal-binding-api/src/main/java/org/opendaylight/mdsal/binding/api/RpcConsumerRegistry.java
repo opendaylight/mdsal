@@ -14,6 +14,7 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 /**
  * Provides access to registered Remote Procedure Call (RPC) service implementations. The RPCs are
  * defined in YANG models.
+ *
  * <p>
  * RPC implementations are registered using the {@link RpcProviderService}.
  *
@@ -25,8 +26,8 @@ public interface RpcConsumerRegistry extends BindingService {
      * <p>
      * The returned instance is not an actual implementation of the RPC service interface, but a
      * proxy implementation of the interface that forwards to an actual implementation, if any.
-     * <p>
      *
+     * <p>
      * The following describes the behavior of the proxy when invoking RPC methods:
      * <ul>
      * <li>If an actual implementation is registered with the MD-SAL, all invocations are forwarded
@@ -38,6 +39,7 @@ public interface RpcConsumerRegistry extends BindingService {
      * </ul>
      *
      * The returned proxy is automatically updated with the most recent registered implementation.
+     *
      * <p>
      * The generated RPC method APIs require implementors to return a
      * {@link java.util.concurrent.Future Future} instance that wraps the
@@ -46,13 +48,14 @@ public interface RpcConsumerRegistry extends BindingService {
      * {@link java.util.concurrent.Future Future} result. Instead, it is recommended to use
      * {@link com.google.common.util.concurrent.JdkFutureAdapters#listenInPoolThread(java.util.concurrent.Future)}
      * or
-     * {@link com.google.common.util.concurrent.JdkFutureAdapters#listenInPoolThread(java.util.concurrent.Future, java.util.concurrent.Executor)}
-     * to listen for Rpc Result. This will asynchronously listen for future result in executor and
-     * will not block current thread.
+     * {@link com.google.common.util.concurrent.JdkFutureAdapters#listenInPoolThread(java.util.concurrent.Future,
+     * java.util.concurrent.Executor)} to listen for Rpc Result. This will asynchronously listen for future result
+     * in executor and will not block current thread.
      *
      * <pre>
      *   final Future&lt;RpcResult&lt;SomeRpcOutput&gt;&gt; future = someRpcService.someRpc( ... );
-     *   Futures.addCallback(JdkFutureAdapters.listenInThreadPool(future), new FutureCallback&lt;RpcResult&lt;SomeRpcOutput&gt;&gt;() {
+     *   Futures.addCallback(JdkFutureAdapters.listenInThreadPool(future), new FutureCallback&lt;RpcResult&lt;
+     *   SomeRpcOutput&gt;&gt;() {
      *
      *       public void onSuccess(RpcResult&lt;SomeRpcOutput&gt; result) {
      *          // process result ...

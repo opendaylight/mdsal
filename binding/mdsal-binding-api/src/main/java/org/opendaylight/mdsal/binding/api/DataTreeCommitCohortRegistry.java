@@ -12,9 +12,9 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
- *
  * Commit Cohort registry.
  *
+ * <p>
  * See {@link DataTreeCommitCohort} for more details.
  *
  * @author Tony Tkacik &lt;ttkacik@cisco.com&gt;

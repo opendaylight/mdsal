@@ -23,6 +23,7 @@ import org.opendaylight.yangtools.yang.binding.Notification;
  * - {@link #offerNotification(Notification, int, TimeUnit)}, which may block
  *   for specified time if resources are thin.
  *
+ *<p>
  * The actual delivery to listeners is asynchronous and implementation-specific.
  * Users of this interface should not make any assumptions as to whether the
  * notification has or has not been seen.
@@ -33,7 +34,8 @@ public interface NotificationPublishService extends BindingService {
      * Well-known value indicating that the binding-aware implementation is currently not
      * able to accept a notification.
      */
-    ListenableFuture<Object> REJECTED = Futures.immediateFailedFuture(new NotificationRejectedException("Rejected due to resource constraints."));
+    ListenableFuture<Object> REJECTED = Futures.immediateFailedFuture(
+            new NotificationRejectedException("Rejected due to resource constraints."));
 
     /**
      * Publishes a notification to subscribed listeners. This initiates
@@ -55,6 +57,7 @@ public interface NotificationPublishService extends BindingService {
      * notification, but delivery to the listeners can happen asynchronously, potentially after a
      * call to this method returns.
      *
+     * <p>
      * Still guaranteed not to block. Returns Listenable Future which will complete once.
      *
      * @param notification the notification to publish.
