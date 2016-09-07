@@ -33,6 +33,7 @@ public interface DataTreeChangeListener<T extends DataObject> extends EventListe
      * to recover from such events. Event producers are expected to exert reasonable
      * effort to suppress such events.
      *
+     *<p>
      * In other words, it is completely acceptable to observe
      * a {@link DataObjectModification}, while the state observed before and
      * after- data items compare as equal.

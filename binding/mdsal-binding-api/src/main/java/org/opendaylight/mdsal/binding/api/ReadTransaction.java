@@ -7,17 +7,18 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
 import org.opendaylight.mdsal.common.api.AsyncReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
 
 /**
  * A transaction that provides a stateful read-only view of the data tree.
+ *
  * <p>
  * For more information on usage and examples, please see the documentation in
  *  {@link org.opendaylight.mdsal.common.api.AsyncReadTransaction}.
@@ -26,6 +27,7 @@ public interface ReadTransaction extends AsyncReadTransaction<InstanceIdentifier
 
     /**
      * Reads data from the provided logical data store located at the provided path.
+     *
      *<p>
      * If the target is a subtree, then the whole subtree is read (and will be
      * accessible from the returned data object).

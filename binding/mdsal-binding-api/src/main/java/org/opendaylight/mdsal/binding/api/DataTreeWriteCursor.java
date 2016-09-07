@@ -13,8 +13,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.BackendFailedException;
 
 /**
- * {@inheritDoc}
+ * {@inheritDoc}.
  *
+ *<p>
  * In addition this cursor also provides write operations(delete, merge, write).
  */
 public interface DataTreeWriteCursor extends DataTreeCursor {
@@ -31,6 +32,7 @@ public interface DataTreeWriteCursor extends DataTreeCursor {
     /**
      * Merge the specified data with the currently-present data at specified path.
      *
+     * <p>
      * @param child Child identifier
      * @param data Data to be merged
      * @throws BackendFailedException when implementation-specific errors occurs while servicing the

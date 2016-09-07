@@ -8,13 +8,11 @@
 package org.opendaylight.mdsal.binding.api;
 
 /**
- * <p>
  * This exception indicates that given notification can not be processed by corresponding mechanism.
  * More info can be provided in message.
- * </p>
+ *
  * <p>
  * Expected use: {@link NotificationPublishService}
- * </p>
  */
 public class NotificationRejectedException extends Exception {
     private static final long serialVersionUID = 1L;
