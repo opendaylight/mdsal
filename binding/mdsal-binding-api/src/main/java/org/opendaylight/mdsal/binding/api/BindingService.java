@@ -9,9 +9,9 @@ package org.opendaylight.mdsal.binding.api;
 
 
 /**
- *
  * Marker interface for MD-SAL services which are available for users of MD-SAL.
  *
+ * <p>
  * BindingService is marker interface for infrastructure services provided by
  * the SAL. These services may be session-specific, and wrapped by custom
  * delegator patterns in order to introduce additional semantics / checks

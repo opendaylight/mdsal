@@ -13,7 +13,7 @@ import org.opendaylight.mdsal.common.api.AsyncDataTransactionFactory;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public interface TransactionFactory extends AsyncDataTransactionFactory<InstanceIdentifier<?>, DataObject>{
+public interface TransactionFactory extends AsyncDataTransactionFactory<InstanceIdentifier<?>, DataObject> {
 
     @Override
     ReadTransaction newReadOnlyTransaction();
