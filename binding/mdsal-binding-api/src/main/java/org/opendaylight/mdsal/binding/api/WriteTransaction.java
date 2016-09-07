@@ -15,6 +15,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * A transaction that provides mutation capabilities on a data tree.
+ *
  * <p>
  * For more information on usage and examples, please see the documentation in {@link AsyncWriteTransaction}.
  */
@@ -23,10 +24,12 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
     /**
      * Stores a piece of data at the specified path. This acts as an add / replace
      * operation, which is to say that whole subtree will be replaced by the specified data.
-     * * <p>
+     *
+     * <p>
      * This method does not automatically create missing parent nodes. It is equivalent to invoking
      * {@link #put(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)}
      * with <code>createMissingParents</code> set to false.
+     *
      * <p>
      * For more information on usage and examples, please see the documentation in {@link AsyncWriteTransaction}.
      * <p>
@@ -49,14 +52,17 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
      * Stores a piece of data at the specified path. This acts as an add /
      * replace operation, which is to say that whole subtree will be replaced by
      * the specified data.
+     *
      * <p>
      * For more information on usage and examples, please see the documentation
      * in {@link AsyncWriteTransaction}.
+     *
      * <p>
      * If you need to make sure that a parent object exists but you do not want
      * modify its pre-existing state by using put, consider using {@link #merge}
      * instead.
      *
+     * <p>
      * Note: Using <code>createMissingParents</code> with value true, may
      * introduce garbage in data store, or recreate nodes, which were deleted by
      * previous transaction.
@@ -80,12 +86,16 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data
      * which is not explicitly overwritten will be preserved. This means that if you store a container,
      * its child lists will be merged.
+     *
      * <p>
      * This method does not automatically create missing parent nodes. It is equivalent to invoking
      * {@link #merge(LogicalDatastoreType, InstanceIdentifier, DataObject, boolean)}
      * with <code>createMissingParents</code> set to false.
+     *
      * <p>
-     * For more information on usage and examples, please see the documentation in {@link AsyncWriteTransaction}.
+     * For more information on usage and examples, please see the documentation in
+     * {@link AsyncWriteTransaction}.
+     *
      *<p>
      * If you require an explicit replace operation, use {@link #put} instead.
      * @param store
@@ -103,9 +113,11 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
      * Merges a piece of data with the existing data at a specified path. Any
      * pre-existing data which is not explicitly overwritten will be preserved.
      * This means that if you store a container, its child lists will be merged.
+     *
      * <p>
      * For more information on usage and examples, please see the documentation
      * in {@link AsyncWriteTransaction}.
+     *
      * <p>
      * If you require an explicit replace operation, use {@link #put} instead.
      *

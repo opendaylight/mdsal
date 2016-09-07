@@ -21,12 +21,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 /**
  * Modified Data Object.
  *
+ *<p>
  * Represents modification of Data Object
- * .
+ *
+ *<p>
  * @param <T> Type of modified object
  *
  */
-public interface DataObjectModification<T extends DataObject> extends org.opendaylight.yangtools.concepts.Identifiable<PathArgument> {
+public interface DataObjectModification<T extends DataObject> extends
+        org.opendaylight.yangtools.concepts.Identifiable<PathArgument> {
 
     /**
      * Represents type of modification which has occured.
@@ -34,19 +37,16 @@ public interface DataObjectModification<T extends DataObject> extends org.openda
      */
     enum ModificationType {
         /**
-         *
          * Child node (direct or indirect) was modified.
          *
          */
         SUBTREE_MODIFIED,
         /**
-         *
          * Node was explicitly created / overwritten.
          *
          */
         WRITE,
         /**
-         *
          * Node was deleted.
          *
          */
@@ -64,8 +64,7 @@ public interface DataObjectModification<T extends DataObject> extends org.openda
     @Nonnull Class<T> getDataType();
 
     /**
-     *
-     * Returns type of modification
+     * Returns type of modification.
      *
      * @return type Type of performed modification.
      */
@@ -74,7 +73,6 @@ public interface DataObjectModification<T extends DataObject> extends org.openda
     /**
      * Returns before-state of top level container. Implementations are encouraged, but not required
      * to provide this state.
-     *
      *
      * @return State of object before modification. Null if subtree was not present, or the
      *         implementation cannot provide the state.
@@ -103,12 +101,14 @@ public interface DataObjectModification<T extends DataObject> extends org.openda
      * @throws IllegalArgumentException If supplied {@code childType} class is not valid child according
      *         to generated model.
      */
-    <C extends ChildOf<? super T>> Collection<DataObjectModification<C>> getModifiedChildren(@Nonnull Class<C> childType);
+    <C extends ChildOf<? super T>> Collection<DataObjectModification<C>> getModifiedChildren(
+            @Nonnull Class<C> childType);
 
     /**
      * Returns container child modification if {@code child} was modified by this
      * modification.
      *
+     *<p>
      * For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
      *
      * @param child Type of child - must be only container
@@ -116,12 +116,14 @@ public interface DataObjectModification<T extends DataObject> extends org.openda
      * @throws IllegalArgumentException If supplied {@code child} class is not valid child according
      *         to generated model.
      */
-    @Nullable <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(@Nonnull Class<C> child);
+    @Nullable <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(
+            @Nonnull Class<C> child);
 
     /**
      * Returns augmentation child modification if {@code augmentation} was modified by this
      * modification.
      *
+     *<p>
      * For accessing all modified list items consider iterating over {@link #getModifiedChildren()}.
      *
      * @param augmentation Type of augmentation - must be only container
@@ -129,7 +131,8 @@ public interface DataObjectModification<T extends DataObject> extends org.openda
      * @throws IllegalArgumentException If supplied {@code augmentation} class is not valid augmentation
      *         according to generated model.
      */
-    @Nullable <C extends Augmentation<T> & DataObject> DataObjectModification<C> getModifiedAugmentation(@Nonnull Class<C> augmentation);
+    @Nullable <C extends Augmentation<T> & DataObject> DataObjectModification<C> getModifiedAugmentation(
+            @Nonnull Class<C> augmentation);
 
 
     /**
@@ -141,8 +144,8 @@ public interface DataObjectModification<T extends DataObject> extends org.openda
      * @throws IllegalArgumentException If supplied {@code listItem} class is not valid child according
      *         to generated model.
      */
-    <C extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<C>> DataObjectModification<C> getModifiedChildListItem(
-            @Nonnull Class<C> listItem,@Nonnull  K listKey);
+    <C extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<C>> DataObjectModification<C>
+            getModifiedChildListItem(@Nonnull Class<C> listItem,@Nonnull  K listKey);
 
     /**
      * Returns a child modification if a node identified by {@code childArgument} was modified by

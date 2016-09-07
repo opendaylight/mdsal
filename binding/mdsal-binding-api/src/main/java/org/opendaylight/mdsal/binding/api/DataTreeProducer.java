@@ -16,19 +16,23 @@ import javax.annotation.Nonnull;
  * either submitted or cancelled before another one can be open. Once a transaction is submitted, it
  * will proceed to be committed asynchronously.
  *
+ *<p>
  * Each instance has an upper bound on the number of transactions which can be in-flight, once that
  * capacity is exceeded, an attempt to create a new transaction will block until some transactions
  * complete.
  *
+ *<p>
  * Each {@link DataTreeProducer} can be in two logical states, bound and unbound, which define the
  * lifecycle rules for when is it legal to create and submit transactions in relationship with
  * {@link DataTreeListener} callbacks.
  *
+ *<p>
  * When a producer is first created, it is unbound. In this state the producer can be accessed by
  * any application thread to allocate or submit transactions, as long as the 'single open
  * transaction' rule is maintained. The producer and any transaction object MUST NOT be accessed,
  * directly or indirectly, from a {@link DataTreeListener} callback.
  *
+ * <p>
  * When a producer is referenced in a call to
  * {@link DataTreeService#registerListener(DataTreeListener, java.util.Collection, boolean, java.util.Collection)}
  * , an attempt will be made to bind the producer to the specified {@link DataTreeListener}. Such an
@@ -59,17 +63,20 @@ public interface DataTreeProducer extends DataTreeProducerFactory, AutoCloseable
     CursorAwareWriteTransaction createTransaction(boolean isolated);
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      *
+     *<p>
      * When invoked on a {@link DataTreeProducer}, this method has additional restrictions. There
      * may not be an open transaction from this producer. The method needs to be invoked in
      * appropriate context, e.g. bound or unbound.
      *
+     *<p>
      * Specified subtrees must be accessible by this producer. Accessible means they are a subset of
      * the subtrees specified when the producer is instantiated. The set is further reduced as child
      * producers are instantiated -- if you create a producer for /a and then a child for /a/b, /a/b
      * is not accessible from the first producer.
      *
+     *<p>
      * Once this method returns successfully, this (parent) producer loses the ability to access the
      * specified paths until the resulting (child) producer is shut down.
      *
@@ -86,7 +93,7 @@ public interface DataTreeProducer extends DataTreeProducerFactory, AutoCloseable
     DataTreeProducer createProducer(@Nonnull Collection<DataTreeIdentifier<?>> subtrees);
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      *
      * @throws DataTreeProducerBusyException when there is an open transaction.
      */

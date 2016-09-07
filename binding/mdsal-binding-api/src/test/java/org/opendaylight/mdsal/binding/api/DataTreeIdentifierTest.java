@@ -40,8 +40,8 @@ public class DataTreeIdentifierTest {
 
     @Test
     public void hashCodeTest() {
-        assertEquals("hashCode", TEST_IDENTIFIER1.hashCode(), DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
-                InstanceIdentifier.create(TestDataObject1.class)).hashCode());
+        assertEquals("hashCode", TEST_IDENTIFIER1.hashCode(), DataTreeIdentifier.create(
+                LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(TestDataObject1.class)).hashCode());
         assertNotEquals("hashCode", TEST_IDENTIFIER1.hashCode(), TEST_IDENTIFIER2.hashCode());
     }
 
