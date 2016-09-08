@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_2cbf95ab",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMBrokerTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-08T13:47:35Z",
+      "side": 1,
+      "message": "is this commit noise necessary?",
+      "revId": "73e1d810e4edab74daa36b23bae8fd508cddea74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
