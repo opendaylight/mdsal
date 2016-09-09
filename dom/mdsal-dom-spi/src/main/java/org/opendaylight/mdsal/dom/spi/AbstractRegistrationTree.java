@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.StampedLock;
 import javax.annotation.Nonnull;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
@@ -18,18 +18,22 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
  * @param <T> Type of registered object
  */
 public abstract class AbstractRegistrationTree<T> {
-    private final ReadWriteLock rwLock = new ReentrantReadWriteLock(true);
     private final RegistrationTreeNode<T> rootNode = new RegistrationTreeNode<>(null, null);
+    private final Lock writeLock;
+    private final Lock readLock;
 
     protected AbstractRegistrationTree() {
-
+        final StampedLock lock = new StampedLock();
+        readLock = lock.asReadLock();
+        writeLock = lock.asWriteLock();
     }
 
     /**
-     * Acquire the read-write lock. This should be done before invoking {@link #findNodeFor(Iterable)}.
+     * Acquire the read-write lock. This should be done before invoking {@link #findNodeFor(Iterable)}. This method
+     * must not be called when the lock is already held by this thread.
      */
     protected final void takeLock() {
-        rwLock.writeLock().lock();
+        writeLock.lock();
     }
 
     /**
@@ -37,7 +41,7 @@ public abstract class AbstractRegistrationTree<T> {
      * and modification of the returned node. Note that callers should do so in a finally block.
      */
     protected final void releaseLock() {
-        rwLock.writeLock().unlock();
+        writeLock.unlock();
     }
 
     /**
@@ -77,12 +81,12 @@ public abstract class AbstractRegistrationTree<T> {
     protected final void removeRegistration(@Nonnull final RegistrationTreeNode<T> node,
             @Nonnull final T registration) {
         // Take the write lock
-        rwLock.writeLock().lock();
+        writeLock.lock();
         try {
             node.removeRegistration(registration);
         } finally {
             // Always release the lock
-            rwLock.writeLock().unlock();
+            writeLock.unlock();
         }
     }
 
@@ -94,8 +98,7 @@ public abstract class AbstractRegistrationTree<T> {
      * @return A snapshot instance.
      */
     @Nonnull public final RegistrationTreeSnapshot<T> takeSnapshot() {
-        final RegistrationTreeSnapshot<T> ret = new RegistrationTreeSnapshot<>(rwLock.readLock(), rootNode);
-        rwLock.readLock().lock();
-        return ret;
+        readLock.lock();
+        return new RegistrationTreeSnapshot<>(readLock, rootNode);
     }
 }
