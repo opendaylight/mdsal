@@ -79,4 +79,7 @@ final class ShardDataModification extends WriteableNodeWithSubshard {
         }
     }
 
+    void closeCursor() {
+        rootContext.closeCursor();
+    }
 }
