@@ -215,6 +215,9 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     @Override
     public DOMDataTreeWriteCursor createCursor(final DOMDataTreeIdentifier prefix) {
+        if (finished) {
+            int intel = 0;
+        }
         Preconditions.checkState(!finished, "Transaction is finished/closed already.");
         Preconditions.checkState(cursor == null, "Previous cursor wasn't closed");
         final DOMDataTreeWriteCursor ret = getCursor();
