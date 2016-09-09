@@ -25,17 +25,16 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
 
 /**
- *
  * Defines structural mapping of Normalized Node to Binding data
  * addressable by Instance Identifier.
  *
+ * <p>
  * Not all binding data are addressable by instance identifier
  * and there are some differences.
  *
+ * <p>
  * See {@link #NOT_ADDRESSABLE},{@link #INVISIBLE_CONTAINER},{@link #VISIBLE_CONTAINER}
  * for more details.
- *
- *
  */
 enum BindingStructuralType {
 
@@ -43,6 +42,7 @@ enum BindingStructuralType {
      * DOM Item is not addressable in Binding Instance Identifier,
      * data is not lost, but are available only via parent object.
      *
+     * <p>
      * Such types of data are leaf-lists, leafs, list without keys
      * or anyxml.
      *
@@ -52,8 +52,10 @@ enum BindingStructuralType {
      * Data container is addressable in NormalizedNode format,
      * but in Binding it is not represented in Instance Identifier.
      *
+     * <p>
      * This are choice / case nodes.
      *
+     * <p>
      * This data is still accessible using parent object and their
      * children are addressable.
      *
@@ -63,8 +65,10 @@ enum BindingStructuralType {
      * Data container is addressable in NormalizedNode format,
      * but in Binding it is not represented in Instance Identifier.
      *
+     * <p>
      * This are list nodes.
      *
+     * <p>
      * This data is still accessible using parent object and their
      * children are addressable.
      *
@@ -84,33 +88,33 @@ enum BindingStructuralType {
 
     static BindingStructuralType from(final DataTreeCandidateNode domChildNode) {
         final Optional<NormalizedNode<?, ?>> dataBased = domChildNode.getDataAfter().or(domChildNode.getDataBefore());
-        if(dataBased.isPresent()) {
+        if (dataBased.isPresent()) {
             return from(dataBased.get());
         }
         return from(domChildNode.getIdentifier());
     }
 
     private static BindingStructuralType from(final PathArgument identifier) {
-        if(identifier instanceof NodeIdentifierWithPredicates || identifier instanceof AugmentationIdentifier) {
+        if (identifier instanceof NodeIdentifierWithPredicates || identifier instanceof AugmentationIdentifier) {
             return VISIBLE_CONTAINER;
         }
-        if(identifier instanceof NodeWithValue) {
+        if (identifier instanceof NodeWithValue) {
             return NOT_ADDRESSABLE;
         }
         return UNKNOWN;
     }
 
     static BindingStructuralType from(final NormalizedNode<?, ?> data) {
-        if(isNotAddressable(data)) {
+        if (isNotAddressable(data)) {
             return NOT_ADDRESSABLE;
         }
-        if(data instanceof MapNode) {
+        if (data instanceof MapNode) {
             return INVISIBLE_LIST;
         }
-        if(data instanceof ChoiceNode) {
+        if (data instanceof ChoiceNode) {
             return INVISIBLE_CONTAINER;
         }
-        if(isVisibleContainer(data)) {
+        if (isVisibleContainer(data)) {
             return VISIBLE_CONTAINER;
         }
         return UNKNOWN;
@@ -120,11 +124,11 @@ enum BindingStructuralType {
         return data instanceof MapEntryNode || data instanceof ContainerNode || data instanceof AugmentationNode;
     }
 
-    private static boolean isNotAddressable(final NormalizedNode<?, ?> d) {
-        return d instanceof LeafNode
-                || d instanceof AnyXmlNode
-                || d instanceof LeafSetNode
-                || d instanceof LeafSetEntryNode;
+    private static boolean isNotAddressable(final NormalizedNode<?, ?> normalizedNode) {
+        return normalizedNode instanceof LeafNode
+                || normalizedNode instanceof AnyXmlNode
+                || normalizedNode instanceof LeafSetNode
+                || normalizedNode instanceof LeafSetEntryNode;
     }
 
 }

@@ -67,7 +67,8 @@ public class LazySerializedContainerNodeTest {
         assertTrue(lazySerializedContainerNode.getAttributes().isEmpty());
 
         assertTrue(lazySerializedContainerNode.getValue().isEmpty());
-        assertEquals(lazySerializedContainerNode.getIdentifier().getNodeType(), lazySerializedContainerNode.getNodeType());
+        assertEquals(lazySerializedContainerNode.getIdentifier().getNodeType(),
+                lazySerializedContainerNode.getNodeType());
         assertEquals(rpcName.getLastComponent(), lazySerializedContainerNode.getIdentifier().getNodeType());
         assertNull(lazySerializedContainerNode.getAttributeValue(null));
         assertEquals(dataObject, lazySerializedContainerNode.bindingData());

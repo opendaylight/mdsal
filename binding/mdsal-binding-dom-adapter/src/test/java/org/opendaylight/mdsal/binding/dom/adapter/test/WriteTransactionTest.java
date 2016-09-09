@@ -40,7 +40,8 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testPutCreateParentsSuccess() throws TransactionCommitFailedException, InterruptedException, ExecutionException {
+    public void testPutCreateParentsSuccess() throws TransactionCommitFailedException,
+            InterruptedException, ExecutionException {
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
@@ -54,7 +55,8 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testMergeCreateParentsSuccess() throws TransactionCommitFailedException, InterruptedException, ExecutionException {
+    public void testMergeCreateParentsSuccess() throws TransactionCommitFailedException,
+            InterruptedException, ExecutionException {
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.merge(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
