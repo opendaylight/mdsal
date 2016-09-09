@@ -262,10 +262,10 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         }
     }
 
-    void transactionSuccessful(final ShardedDOMDataTreeWriteTransaction tx, final Void result) {
+    void transactionSuccessful(final ShardedDOMDataTreeWriteTransaction tx) {
         LOG.debug("Transaction {} completed successfully", tx.getIdentifier());
 
-        tx.onTransactionSuccess(result);
+        tx.onTransactionSuccess(null);
         processNextTransaction(tx);
     }
 
@@ -283,7 +283,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         }
     }
 
-    private void processNextTransaction(final ShardedDOMDataTreeWriteTransaction tx) {
+    private synchronized void processNextTransaction(final ShardedDOMDataTreeWriteTransaction tx) {
         final boolean wasLast = LAST_UPDATER.compareAndSet(this, tx, null);
         if (wasLast) {
             processCurrentTransaction();

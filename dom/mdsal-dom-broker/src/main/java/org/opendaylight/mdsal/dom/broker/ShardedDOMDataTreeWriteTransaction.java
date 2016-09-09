@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
@@ -133,7 +134,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     }
 
     CheckedFuture<Void, TransactionCommitFailedException> doSubmit(
-            BiConsumer<ShardedDOMDataTreeWriteTransaction, Void> success,
+            Consumer<ShardedDOMDataTreeWriteTransaction> success,
             BiConsumer<ShardedDOMDataTreeWriteTransaction, Throwable> failure) {
 
         final Set<DOMDataTreeShardWriteTransaction> txns = ImmutableSet.copyOf(idToTransaction.values());
@@ -148,14 +149,14 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         Futures.addCallback(listListenableFuture, new FutureCallback<List<Void>>() {
             @Override
             public void onSuccess(final List<Void> result) {
+                success.accept(ShardedDOMDataTreeWriteTransaction.this);
                 ret.set(null);
-                success.accept(ShardedDOMDataTreeWriteTransaction.this, null);
             }
 
             @Override
             public void onFailure(final Throwable exp) {
-                ret.setException(exp);
                 failure.accept(ShardedDOMDataTreeWriteTransaction.this, exp);
+                ret.setException(exp);
             }
         });
 
