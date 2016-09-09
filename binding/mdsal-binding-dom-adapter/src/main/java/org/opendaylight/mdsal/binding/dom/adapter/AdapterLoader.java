@@ -18,9 +18,9 @@ public abstract class AdapterLoader<T, D> extends CacheLoader<Class<? extends T>
     public Optional<T> load(final Class<? extends T> key) {
 
         final AdapterBuilder<? extends T, D> builder = createBuilder(key);
-        for(final Class<? extends D> reqDeleg : builder.getRequiredDelegates()) {
+        for (final Class<? extends D> reqDeleg : builder.getRequiredDelegates()) {
             final D deleg = getDelegate(reqDeleg);
-            if(deleg != null) {
+            if (deleg != null) {
                 builder.addDelegate(reqDeleg,deleg);
             } else {
                 return Optional.absent();

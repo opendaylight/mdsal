@@ -32,12 +32,13 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * All transactions and listener registrations are wrapped by the DataBrokerImpl
  * to allow binding aware components to use the DataBroker transparently.
  *
+ * <p>
  * Besides this the DataBrokerImpl and it's collaborators also cache data that
  * is already transformed from the binding independent to binding aware format
- *
-
+ * 
  */
-public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker implements DataBroker, DataTreeChangeService {
+public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker implements
+        DataBroker, DataTreeChangeService {
 
 
     static final Factory<DataBroker> BUILDER_FACTORY = new BindingDOMAdapterBuilder.Factory<DataBroker>() {
@@ -52,8 +53,9 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
 
     public BindingDOMDataBrokerAdapter(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
         super(domDataBroker, codec);
-        final DOMDataTreeChangeService domTreeChange = (DOMDataTreeChangeService) domDataBroker.getSupportedExtensions().get(DOMDataTreeChangeService.class);
-        if(domTreeChange != null) {
+        final DOMDataTreeChangeService domTreeChange
+            = (DOMDataTreeChangeService) domDataBroker.getSupportedExtensions().get(DOMDataTreeChangeService.class);
+        if (domTreeChange != null) {
             treeChangeService = BindingDOMDataTreeChangeServiceAdapter.create(codec, domTreeChange);
         } else {
             treeChangeService = null;
@@ -92,9 +94,10 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
     }
 
     @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L> registerDataTreeChangeListener(
+    public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
+            registerDataTreeChangeListener(
             final DataTreeIdentifier<T> treeId, final L listener) {
-        if(treeChangeService == null) {
+        if (treeChangeService == null) {
             throw new UnsupportedOperationException("Underlying data broker does not expose DOMDataTreeChangeService.");
         }
         return treeChangeService.registerDataTreeChangeListener(treeId, listener);

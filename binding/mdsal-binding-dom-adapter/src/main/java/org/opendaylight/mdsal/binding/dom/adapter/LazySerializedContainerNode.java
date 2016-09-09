@@ -23,8 +23,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
- *
- * FIXME: Should this be moved to binding-data-codec?
+ * FIXME: Should this be moved to binding-data-codec.
  *
  */
 class LazySerializedContainerNode implements ContainerNode {

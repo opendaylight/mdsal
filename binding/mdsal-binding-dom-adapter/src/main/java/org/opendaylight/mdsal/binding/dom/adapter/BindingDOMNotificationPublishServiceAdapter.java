@@ -22,7 +22,8 @@ import org.opendaylight.yangtools.yang.binding.Notification;
 
 public class BindingDOMNotificationPublishServiceAdapter implements NotificationPublishService, AutoCloseable {
 
-    static final Factory<NotificationPublishService> BUILDER_FACTORY = new BindingDOMAdapterBuilder.Factory<NotificationPublishService>() {
+    static final Factory<NotificationPublishService> BUILDER_FACTORY
+            = new BindingDOMAdapterBuilder.Factory<NotificationPublishService>() {
 
         @Override
         public BindingDOMAdapterBuilder<NotificationPublishService> newBuilder() {
@@ -34,7 +35,8 @@ public class BindingDOMNotificationPublishServiceAdapter implements Notification
     private final BindingToNormalizedNodeCodec codecRegistry;
     private final DOMNotificationPublishService domPublishService;
 
-    public BindingDOMNotificationPublishServiceAdapter(final BindingToNormalizedNodeCodec codec, final DOMNotificationPublishService domPublishService) {
+    public BindingDOMNotificationPublishServiceAdapter(final BindingToNormalizedNodeCodec codec,
+            final DOMNotificationPublishService domPublishService) {
         this.codecRegistry = codec;
         this.domPublishService = domPublishService;
     }
@@ -61,8 +63,10 @@ public class BindingDOMNotificationPublishServiceAdapter implements Notification
     }
 
     @Override
-    public ListenableFuture<? extends Object> offerNotification(final Notification notification, final int timeout, final TimeUnit unit) throws InterruptedException {
-        ListenableFuture<?> offerResult = domPublishService.offerNotification(toDomNotification(notification), timeout, unit);
+    public ListenableFuture<? extends Object> offerNotification(final Notification notification,
+            final int timeout, final TimeUnit unit) throws InterruptedException {
+        ListenableFuture<?> offerResult = domPublishService.offerNotification(
+                toDomNotification(notification), timeout, unit);
         return DOMNotificationPublishService.REJECTED.equals(offerResult)
                 ? NotificationPublishService.REJECTED
                 : offerResult;
