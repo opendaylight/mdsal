@@ -8,8 +8,10 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
-
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMService;
@@ -21,23 +23,22 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableSet;
-import java.util.Set;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+
 
 /**
  * The DataBrokerImpl simply defers to the DOMDataBroker for all its operations.
  * All transactions and listener registrations are wrapped by the DataBrokerImpl
  * to allow binding aware components to use the DataBroker transparently.
  *
+ * <p>
  * Besides this the DataBrokerImpl and it's collaborators also cache data that
  * is already transformed from the binding independent to binding aware format
- *
-
+ * 
  */
-public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker implements DataBroker, DataTreeChangeService {
+public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker implements
+        DataBroker, DataTreeChangeService {
 
 
     static final Factory<DataBroker> BUILDER_FACTORY = new BindingDOMAdapterBuilder.Factory<DataBroker>() {
@@ -52,8 +53,9 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
 
     public BindingDOMDataBrokerAdapter(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
         super(domDataBroker, codec);
-        final DOMDataTreeChangeService domTreeChange = (DOMDataTreeChangeService) domDataBroker.getSupportedExtensions().get(DOMDataTreeChangeService.class);
-        if(domTreeChange != null) {
+        final DOMDataTreeChangeService domTreeChange
+            = (DOMDataTreeChangeService) domDataBroker.getSupportedExtensions().get(DOMDataTreeChangeService.class);
+        if (domTreeChange != null) {
             treeChangeService = BindingDOMDataTreeChangeServiceAdapter.create(codec, domTreeChange);
         } else {
             treeChangeService = null;
@@ -92,9 +94,10 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
     }
 
     @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L> registerDataTreeChangeListener(
+    public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
+            registerDataTreeChangeListener(
             final DataTreeIdentifier<T> treeId, final L listener) {
-        if(treeChangeService == null) {
+        if (treeChangeService == null) {
             throw new UnsupportedOperationException("Underlying data broker does not expose DOMDataTreeChangeService.");
         }
         return treeChangeService.registerDataTreeChangeListener(treeId, listener);

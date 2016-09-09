@@ -59,7 +59,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory, BindingNormalizedNodeSerializer, SchemaContextListener, AutoCloseable {
+public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
+        BindingNormalizedNodeSerializer, SchemaContextListener, AutoCloseable {
 
     private static final long WAIT_DURATION_SEC = 5;
     private static final Logger LOG = LoggerFactory.getLogger(BindingToNormalizedNodeCodec.class);
@@ -138,8 +139,9 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     }
 
     /**
-     * Converts Binding Map.Entry to DOM Map.Entry
+     * Converts Binding Map.Entry to DOM Map.Entry.
      *
+     * <p>
      * Same as {@link #toNormalizedNode(InstanceIdentifier, DataObject)}.
      *
      * @param binding Map Entry with InstanceIdentifier as key and DataObject as value.
@@ -184,10 +186,10 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     }
 
     /**
-     *
      * Returns a Binding-Aware instance identifier from normalized
      * instance-identifier if it is possible to create representation.
      *
+     * <p>
      * Returns Optional.absent for cases where target is mixin node except
      * augmentation.
      *
@@ -195,7 +197,8 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     public Optional<InstanceIdentifier<? extends DataObject>> toBinding(final YangInstanceIdentifier normalized)
                     throws DeserializationException {
         try {
-            return Optional.<InstanceIdentifier<? extends DataObject>>fromNullable(codecRegistry.fromYangInstanceIdentifier(normalized));
+            return Optional.<InstanceIdentifier<? extends DataObject>>fromNullable(
+                    codecRegistry.fromYangInstanceIdentifier(normalized));
         } catch (final IllegalArgumentException e) {
             return Optional.absent();
         }
@@ -206,8 +209,9 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
                     throws DeserializationException {
         try {
             /*
-             * This cast is required, due to generics behaviour in openjdk / oracle javac
+             * This cast is required, due to generics behaviour in openjdk / oracle javac.
              *
+             * <p>
              * InstanceIdentifier has definition InstanceIdentifier<T extends DataObject>,
              * this means '?' is always  <? extends DataObject>. Eclipse compiler
              * is able to determine this relationship and treats
@@ -215,11 +219,13 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
              * as assignable. However openjdk / oracle javac treats this two types
              * as incompatible and issues a compile error.
              *
+             * <p>
              * It is safe to  loose generic information and cast it to other generic signature.
              *
              */
             @SuppressWarnings("unchecked")
-            final Entry<InstanceIdentifier<? extends DataObject>, DataObject> binding = Entry.class.cast(codecRegistry.fromNormalizedNode(normalized.getKey(), normalized.getValue()));
+            final Entry<InstanceIdentifier<? extends DataObject>, DataObject> binding = Entry.class.cast(
+                    codecRegistry.fromNormalizedNode(normalized.getKey(), normalized.getValue()));
             return Optional.fromNullable(binding);
         } catch (final IllegalArgumentException e) {
             return Optional.absent();
@@ -230,12 +236,13 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     public void onGlobalContextUpdated(final SchemaContext arg0) {
         runtimeContext = BindingRuntimeContext.create(classLoadingStrategy, arg0);
         codecRegistry.onBindingRuntimeContextUpdated(runtimeContext);
-        if(futureSchema != null) {
+        if (futureSchema != null) {
             futureSchema.onRuntimeContextUpdated(runtimeContext);
         }
     }
 
-    public <T extends DataObject> Function<Optional<NormalizedNode<?, ?>>, Optional<T>>  deserializeFunction(final InstanceIdentifier<T> path) {
+    public <T extends DataObject> Function<Optional<NormalizedNode<?, ?>>, Optional<T>>
+            deserializeFunction(final InstanceIdentifier<T> path) {
         return codecRegistry.deserializeFunction(path);
     }
 
@@ -288,7 +295,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
         BindingRuntimeContext localRuntimeContext = runtimeContext;
         Module module = localRuntimeContext == null ? null :
             localRuntimeContext.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision);
-        if(module == null && futureSchema != null && futureSchema.waitForSchema(namespace,revision)) {
+        if (module == null && futureSchema != null && futureSchema.waitForSchema(namespace,revision)) {
             localRuntimeContext = runtimeContext;
             Preconditions.checkState(localRuntimeContext != null, "BindingRuntimeContext is not available.");
             module = localRuntimeContext.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision);
@@ -298,18 +305,20 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     }
 
     private void waitForSchema(final Collection<Class<?>> binding, final MissingSchemaException e) {
-        if(futureSchema != null) {
-            LOG.warn("Blocking thread to wait for schema convergence updates for {} {}",futureSchema.getDuration(), futureSchema.getUnit());
-            if(!futureSchema.waitForSchema(binding)) {
+        if (futureSchema != null) {
+            LOG.warn("Blocking thread to wait for schema convergence updates for {} {}",
+                    futureSchema.getDuration(), futureSchema.getUnit());
+            if (!futureSchema.waitForSchema(binding)) {
                 return;
             }
         }
         throw e;
     }
 
-    private Method findRpcMethod(final Class<? extends RpcService> key, final RpcDefinition rpcDef) throws NoSuchMethodException {
+    private Method findRpcMethod(final Class<? extends RpcService> key, final RpcDefinition rpcDef)
+            throws NoSuchMethodException {
         final String methodName = BindingMapping.getMethodName(rpcDef.getQName());
-        if(rpcDef.getInput() != null) {
+        if (rpcDef.getInput() != null) {
             final Class<?> inputClz = runtimeContext.getClassForSchema(rpcDef.getInput());
             return key.getMethod(methodName, inputClz);
         }
@@ -360,7 +369,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
 
     private static Collection<Class<?>> decompose(final InstanceIdentifier<?> path) {
         final Set<Class<?>> clazzes = new HashSet<>();
-        for(final InstanceIdentifier.PathArgument arg : path.getPathArguments()) {
+        for (final InstanceIdentifier.PathArgument arg : path.getPathArguments()) {
             clazzes.add(arg.getType());
         }
         return clazzes;

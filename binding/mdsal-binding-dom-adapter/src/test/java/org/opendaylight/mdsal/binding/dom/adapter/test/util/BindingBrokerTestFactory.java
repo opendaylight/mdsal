@@ -7,14 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.test.util;
 
-import java.util.concurrent.ExecutorService;
 
-import javassist.ClassPool;
-
-import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.concurrent.ExecutorService;
+import com.google.common.annotations.Beta;
+import javassist.ClassPool;
 
 @Beta
 public class BindingBrokerTestFactory {

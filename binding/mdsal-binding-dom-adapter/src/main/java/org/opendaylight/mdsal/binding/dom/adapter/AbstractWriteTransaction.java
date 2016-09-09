@@ -7,14 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
-import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import java.util.Map.Entry;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -22,9 +22,8 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 /**
- *
  * Abstract Base Transaction for transactions which are backed by
- * {@link DOMDataTreeWriteTransaction}
+ * {@link DOMDataTreeWriteTransaction}.
  */
 public abstract class AbstractWriteTransaction<T extends DOMDataTreeWriteTransaction> extends
         AbstractForwardedTransaction<T> {
@@ -62,7 +61,6 @@ public abstract class AbstractWriteTransaction<T extends DOMDataTreeWriteTransac
     }
 
     /**
-     *
      * Ensures list parent if item is list, otherwise noop.
      *
      * <p>
@@ -84,7 +82,7 @@ public abstract class AbstractWriteTransaction<T extends DOMDataTreeWriteTransac
      * put("/nodes/node/node[key]",domNode);
      * </pre>
      *
-     *
+     * <p>
      * In order to allow that to be inserted if necessary, if we know
      * item is list item, we will try to merge empty MapNode or OrderedNodeMap
      * to ensure list exists.
@@ -105,7 +103,7 @@ public abstract class AbstractWriteTransaction<T extends DOMDataTreeWriteTransac
     }
 
     /**
-     * @deprecated Use {@link YangInstanceIdentifier#getParent()} instead.
+     * Use {@link YangInstanceIdentifier#getParent()} instead.
      */
     @Deprecated
     protected static Optional<YangInstanceIdentifier> getParent(final YangInstanceIdentifier child) {
@@ -116,9 +114,9 @@ public abstract class AbstractWriteTransaction<T extends DOMDataTreeWriteTransac
      * Subclasses of this class are required to implement creation of parent nodes based on
      * behaviour of their underlying transaction.
      *
-     * @param store
-     * @param domPath
-     * @param path
+     * @param store an instance of LogicalDatastoreType
+     * @param domPath an instance of YangInstanceIdentifier
+     * @param path an instance of InstanceIdentifier
      */
     protected final void ensureParentsByMerge(final LogicalDatastoreType store, final YangInstanceIdentifier domPath,
             final InstanceIdentifier<?> path) {

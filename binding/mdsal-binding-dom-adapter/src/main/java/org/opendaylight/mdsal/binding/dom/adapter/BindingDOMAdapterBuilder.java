@@ -7,11 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.dom.api.DOMService;
-
-import org.opendaylight.mdsal.binding.api.BindingService;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
+import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.mdsal.binding.api.BindingService;
 
 abstract class BindingDOMAdapterBuilder<T extends BindingService> extends AdapterBuilder<T, DOMService> {
 

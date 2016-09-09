@@ -7,10 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
-import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-
-import org.opendaylight.mdsal.dom.spi.store.DOMStore;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -23,10 +19,13 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishS
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockSchemaService;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
+import org.opendaylight.mdsal.dom.spi.store.DOMStore;
+import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.binding.data.codec.gen.impl.DataObjectSerializerGenerator;
 import org.opendaylight.yangtools.binding.data.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.yangtools.binding.data.codec.impl.BindingNormalizedNodeCodecRegistry;

@@ -55,47 +55,48 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
-    private static final InstanceIdentifier<TinyIntContainer> TINY_INT_NODE_PATH = InstanceIdentifier.create
-            (TinyIntContainer.class);
-    private static final InstanceIdentifier<SmallIntContainer> SMALL_INT_NODE_PATH = InstanceIdentifier.create
-            (SmallIntContainer.class);
-    private static final InstanceIdentifier<NormalIntContainer> NORMAL_INT_NODE_PATH = InstanceIdentifier.create
-            (NormalIntContainer.class);
-    private static final InstanceIdentifier<BigIntContainer> BIG_INT_NODE_PATH = InstanceIdentifier.create
-            (BigIntContainer.class);
+    private static final InstanceIdentifier<TinyIntContainer> TINY_INT_NODE_PATH
+            = InstanceIdentifier.create(TinyIntContainer.class);
+    private static final InstanceIdentifier<SmallIntContainer> SMALL_INT_NODE_PATH
+            = InstanceIdentifier.create(SmallIntContainer.class);
+    private static final InstanceIdentifier<NormalIntContainer> NORMAL_INT_NODE_PATH
+            = InstanceIdentifier.create(NormalIntContainer.class);
+    private static final InstanceIdentifier<BigIntContainer> BIG_INT_NODE_PATH
+            = InstanceIdentifier.create(BigIntContainer.class);
 
-    private static final InstanceIdentifier<TinyUintContainer> TINY_UINT_NODE_PATH = InstanceIdentifier.create
-            (TinyUintContainer.class);
-    private static final InstanceIdentifier<SmallUintContainer> SMALL_UINT_NODE_PATH = InstanceIdentifier.create
-            (SmallUintContainer.class);
-    private static final InstanceIdentifier<NormalUintContainer> NORMAL_UINT_NODE_PATH = InstanceIdentifier.create
-            (NormalUintContainer.class);
-    private static final InstanceIdentifier<BigUintContainer> BIG_UINT_NODE_PATH = InstanceIdentifier.create
-            (BigUintContainer.class);
+    private static final InstanceIdentifier<TinyUintContainer> TINY_UINT_NODE_PATH
+            = InstanceIdentifier.create(TinyUintContainer.class);
+    private static final InstanceIdentifier<SmallUintContainer> SMALL_UINT_NODE_PATH
+            = InstanceIdentifier.create(SmallUintContainer.class);
+    private static final InstanceIdentifier<NormalUintContainer> NORMAL_UINT_NODE_PATH
+            = InstanceIdentifier.create(NormalUintContainer.class);
+    private static final InstanceIdentifier<BigUintContainer> BIG_UINT_NODE_PATH
+            = InstanceIdentifier.create(BigUintContainer.class);
 
-    private static final InstanceIdentifier<DecimalContainer> DECIMAL_NODE_PATH = InstanceIdentifier.create
-            (DecimalContainer.class);
+    private static final InstanceIdentifier<DecimalContainer> DECIMAL_NODE_PATH
+            = InstanceIdentifier.create(DecimalContainer.class);
 
-    private static final InstanceIdentifier<StringContainer> STRING_NODE_PATH = InstanceIdentifier.create
-            (StringContainer.class);
+    private static final InstanceIdentifier<StringContainer> STRING_NODE_PATH
+            = InstanceIdentifier.create(StringContainer.class);
 
-    private static final InstanceIdentifier<BooleanContainer> BOOLEAN_NODE_PATH = InstanceIdentifier.create
-            (BooleanContainer.class);
+    private static final InstanceIdentifier<BooleanContainer> BOOLEAN_NODE_PATH
+            = InstanceIdentifier.create(BooleanContainer.class);
 
-    private static final InstanceIdentifier<EnumContainer> ENUM_NODE_PATH = InstanceIdentifier.create(EnumContainer
-            .class);
+    private static final InstanceIdentifier<EnumContainer> ENUM_NODE_PATH
+            = InstanceIdentifier.create(EnumContainer.class);
 
-    private static final InstanceIdentifier<BitsContainer> BITS_NODE_PATH = InstanceIdentifier.create(BitsContainer
-            .class);
+    private static final InstanceIdentifier<BitsContainer> BITS_NODE_PATH
+            = InstanceIdentifier.create(BitsContainer.class);
 
-    private static final InstanceIdentifier<BinaryContainer> BINARY_NODE_PATH = InstanceIdentifier.create
-            (BinaryContainer.class);
+    private static final InstanceIdentifier<BinaryContainer> BINARY_NODE_PATH
+            = InstanceIdentifier.create(BinaryContainer.class);
 
-    private static final InstanceIdentifier<IdentityrefContainer> IDENTITYREF_NODE_PATH = InstanceIdentifier.create
-            (IdentityrefContainer.class);
+    private static final InstanceIdentifier<IdentityrefContainer> IDENTITYREF_NODE_PATH
+            = InstanceIdentifier.create(IdentityrefContainer.class);
 
     @Test
-    public void testTinyIntDefaultValue() throws ExecutionException, InterruptedException, TransactionCommitFailedException {
+    public void testTinyIntDefaultValue() throws ExecutionException, InterruptedException,
+            TransactionCommitFailedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, TINY_INT_NODE_PATH, new TinyIntContainerBuilder().build());
         writeTx.submit().checkedGet();
@@ -106,17 +107,18 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         assertTrue(tinyIntContainerNode.isPresent());
 
-        TinyIntContainer tIntCont = tinyIntContainerNode.get();
-        assertEquals(-18, tIntCont.getTinyIntLeaf().getValue().byteValue());
-        assertEquals(-18, tIntCont.getTinyIntLeaf2().getValue().byteValue());
-        assertEquals(-15, tIntCont.getTinyIntLeaf3().getValue().byteValue());
-        assertEquals(-18, tIntCont.getTinyIntLeaf4().getValue().byteValue());
-        assertEquals(-120, tIntCont.getTinyIntLeaf5().byteValue());
-        assertEquals(null, tIntCont.getTinyIntLeaf6());
+        TinyIntContainer tinyIntContainer = tinyIntContainerNode.get();
+        assertEquals(-18, tinyIntContainer.getTinyIntLeaf().getValue().byteValue());
+        assertEquals(-18, tinyIntContainer.getTinyIntLeaf2().getValue().byteValue());
+        assertEquals(-15, tinyIntContainer.getTinyIntLeaf3().getValue().byteValue());
+        assertEquals(-18, tinyIntContainer.getTinyIntLeaf4().getValue().byteValue());
+        assertEquals(-120, tinyIntContainer.getTinyIntLeaf5().byteValue());
+        assertEquals(null, tinyIntContainer.getTinyIntLeaf6());
     }
 
     @Test
-    public void testSmallIntDefaultValue() throws ExecutionException, InterruptedException, TransactionCommitFailedException {
+    public void testSmallIntDefaultValue() throws ExecutionException, InterruptedException,
+            TransactionCommitFailedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, SMALL_INT_NODE_PATH, new SmallIntContainerBuilder().build());
         writeTx.submit().checkedGet();
@@ -127,13 +129,13 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         assertTrue(smallIntContainerNode.isPresent());
 
-        SmallIntContainer sIntCont = smallIntContainerNode.get();
-        assertEquals(-20000, sIntCont.getSmallIntLeaf().getValue().shortValue());
-        assertEquals(-20000, sIntCont.getSmallIntLeaf2().getValue().shortValue());
-        assertEquals(-15000, sIntCont.getSmallIntLeaf3().getValue().shortValue());
-        assertEquals(-20000, sIntCont.getSmallIntLeaf4().getValue().shortValue());
-        assertEquals(-5000, sIntCont.getSmallIntLeaf5().shortValue());
-        assertEquals(null, sIntCont.getSmallIntLeaf6());
+        SmallIntContainer smallIntContainer = smallIntContainerNode.get();
+        assertEquals(-20000, smallIntContainer.getSmallIntLeaf().getValue().shortValue());
+        assertEquals(-20000, smallIntContainer.getSmallIntLeaf2().getValue().shortValue());
+        assertEquals(-15000, smallIntContainer.getSmallIntLeaf3().getValue().shortValue());
+        assertEquals(-20000, smallIntContainer.getSmallIntLeaf4().getValue().shortValue());
+        assertEquals(-5000, smallIntContainer.getSmallIntLeaf5().shortValue());
+        assertEquals(null, smallIntContainer.getSmallIntLeaf6());
     }
 
     @Test
@@ -149,13 +151,13 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         assertTrue(normalIntContainerNode.isPresent());
 
-        NormalIntContainer nIntCont = normalIntContainerNode.get();
-        assertEquals(-200000, nIntCont.getNormalIntLeaf().getValue().intValue());
-        assertEquals(-200000, nIntCont.getNormalIntLeaf2().getValue().intValue());
-        assertEquals(-130000, nIntCont.getNormalIntLeaf3().getValue().intValue());
-        assertEquals(-200000, nIntCont.getNormalIntLeaf4().getValue().intValue());
-        assertEquals(-95000, nIntCont.getNormalIntLeaf5().intValue());
-        assertEquals(null, nIntCont.getNormalIntLeaf6());
+        NormalIntContainer normalIntContainer = normalIntContainerNode.get();
+        assertEquals(-200000, normalIntContainer.getNormalIntLeaf().getValue().intValue());
+        assertEquals(-200000, normalIntContainer.getNormalIntLeaf2().getValue().intValue());
+        assertEquals(-130000, normalIntContainer.getNormalIntLeaf3().getValue().intValue());
+        assertEquals(-200000, normalIntContainer.getNormalIntLeaf4().getValue().intValue());
+        assertEquals(-95000, normalIntContainer.getNormalIntLeaf5().intValue());
+        assertEquals(null, normalIntContainer.getNormalIntLeaf6());
     }
 
     @Test
@@ -171,13 +173,13 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         assertTrue(bigIntContainerNode.isPresent());
 
-        BigIntContainer bIntCont = bigIntContainerNode.get();
-        assertEquals(-3300000000L, bIntCont.getBigIntLeaf().getValue().longValue());
-        assertEquals(-3300000000L, bIntCont.getBigIntLeaf2().getValue().longValue());
-        assertEquals(-2800000000L, bIntCont.getBigIntLeaf3().getValue().longValue());
-        assertEquals(-3300000000L, bIntCont.getBigIntLeaf4().getValue().longValue());
-        assertEquals(-2500000000L, bIntCont.getBigIntLeaf5().longValue());
-        assertEquals(null, bIntCont.getBigIntLeaf6());
+        BigIntContainer bigIntContainer = bigIntContainerNode.get();
+        assertEquals(-3300000000L, bigIntContainer.getBigIntLeaf().getValue().longValue());
+        assertEquals(-3300000000L, bigIntContainer.getBigIntLeaf2().getValue().longValue());
+        assertEquals(-2800000000L, bigIntContainer.getBigIntLeaf3().getValue().longValue());
+        assertEquals(-3300000000L, bigIntContainer.getBigIntLeaf4().getValue().longValue());
+        assertEquals(-2500000000L, bigIntContainer.getBigIntLeaf5().longValue());
+        assertEquals(null, bigIntContainer.getBigIntLeaf6());
     }
 
     @Test
@@ -193,13 +195,13 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         assertTrue(tinyUintContainerNode.isPresent());
 
-        TinyUintContainer tUintCont = tinyUintContainerNode.get();
-        assertEquals(150, tUintCont.getTinyUintLeaf().getValue().shortValue());
-        assertEquals(150, tUintCont.getTinyUintLeaf2().getValue().shortValue());
-        assertEquals(170, tUintCont.getTinyUintLeaf3().getValue().shortValue());
-        assertEquals(150, tUintCont.getTinyUintLeaf4().getValue().shortValue());
-        assertEquals(155, tUintCont.getTinyUintLeaf5().shortValue());
-        assertEquals(null, tUintCont.getTinyUintLeaf6());
+        TinyUintContainer tinyUintContainer = tinyUintContainerNode.get();
+        assertEquals(150, tinyUintContainer.getTinyUintLeaf().getValue().shortValue());
+        assertEquals(150, tinyUintContainer.getTinyUintLeaf2().getValue().shortValue());
+        assertEquals(170, tinyUintContainer.getTinyUintLeaf3().getValue().shortValue());
+        assertEquals(150, tinyUintContainer.getTinyUintLeaf4().getValue().shortValue());
+        assertEquals(155, tinyUintContainer.getTinyUintLeaf5().shortValue());
+        assertEquals(null, tinyUintContainer.getTinyUintLeaf6());
     }
 
     @Test
@@ -215,13 +217,13 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         assertTrue(smallUintContainerNode.isPresent());
 
-        SmallUintContainer sUintCont = smallUintContainerNode.get();
-        assertEquals(35000, sUintCont.getSmallUintLeaf().getValue().intValue());
-        assertEquals(35000, sUintCont.getSmallUintLeaf2().getValue().intValue());
-        assertEquals(45000, sUintCont.getSmallUintLeaf3().getValue().intValue());
-        assertEquals(35000, sUintCont.getSmallUintLeaf4().getValue().intValue());
-        assertEquals(62000, sUintCont.getSmallUintLeaf5().intValue());
-        assertEquals(null, sUintCont.getSmallUintLeaf6());
+        SmallUintContainer smallUintContainer = smallUintContainerNode.get();
+        assertEquals(35000, smallUintContainer.getSmallUintLeaf().getValue().intValue());
+        assertEquals(35000, smallUintContainer.getSmallUintLeaf2().getValue().intValue());
+        assertEquals(45000, smallUintContainer.getSmallUintLeaf3().getValue().intValue());
+        assertEquals(35000, smallUintContainer.getSmallUintLeaf4().getValue().intValue());
+        assertEquals(62000, smallUintContainer.getSmallUintLeaf5().intValue());
+        assertEquals(null, smallUintContainer.getSmallUintLeaf6());
     }
 
     @Test
@@ -237,13 +239,13 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         assertTrue(normalUintContainerNode.isPresent());
 
-        NormalUintContainer nUintCont = normalUintContainerNode.get();
-        assertEquals(100000, nUintCont.getNormalUintLeaf().getValue().longValue());
-        assertEquals(100000, nUintCont.getNormalUintLeaf2().getValue().longValue());
-        assertEquals(250000, nUintCont.getNormalUintLeaf3().getValue().longValue());
-        assertEquals(100000, nUintCont.getNormalUintLeaf4().getValue().longValue());
-        assertEquals(150000, nUintCont.getNormalUintLeaf5().longValue());
-        assertEquals(null, nUintCont.getNormalUintLeaf6());
+        NormalUintContainer normalUintContainer = normalUintContainerNode.get();
+        assertEquals(100000, normalUintContainer.getNormalUintLeaf().getValue().longValue());
+        assertEquals(100000, normalUintContainer.getNormalUintLeaf2().getValue().longValue());
+        assertEquals(250000, normalUintContainer.getNormalUintLeaf3().getValue().longValue());
+        assertEquals(100000, normalUintContainer.getNormalUintLeaf4().getValue().longValue());
+        assertEquals(150000, normalUintContainer.getNormalUintLeaf5().longValue());
+        assertEquals(null, normalUintContainer.getNormalUintLeaf6());
     }
 
     @Test
@@ -259,13 +261,13 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
 
         assertTrue(bigUintContainerNode.isPresent());
 
-        BigUintContainer bUintCont = bigUintContainerNode.get();
-        assertEquals(5000000000L, bUintCont.getBigUintLeaf().getValue().longValue());
-        assertEquals(5000000000L, bUintCont.getBigUintLeaf2().getValue().longValue());
-        assertEquals(5800000000L, bUintCont.getBigUintLeaf3().getValue().longValue());
-        assertEquals(5000000000L, bUintCont.getBigUintLeaf4().getValue().longValue());
-        assertEquals(6500000000L, bUintCont.getBigUintLeaf5().longValue());
-        assertEquals(null, bUintCont.getBigUintLeaf6());
+        BigUintContainer bigUintContainer = bigUintContainerNode.get();
+        assertEquals(5000000000L, bigUintContainer.getBigUintLeaf().getValue().longValue());
+        assertEquals(5000000000L, bigUintContainer.getBigUintLeaf2().getValue().longValue());
+        assertEquals(5800000000L, bigUintContainer.getBigUintLeaf3().getValue().longValue());
+        assertEquals(5000000000L, bigUintContainer.getBigUintLeaf4().getValue().longValue());
+        assertEquals(6500000000L, bigUintContainer.getBigUintLeaf5().longValue());
+        assertEquals(null, bigUintContainer.getBigUintLeaf6());
     }
 
     @Test

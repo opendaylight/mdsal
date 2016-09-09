@@ -7,15 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.dom.api.DOMMountPoint;
-import org.opendaylight.mdsal.dom.api.DOMService;
-
-import org.opendaylight.mdsal.binding.api.BindingService;
-import org.opendaylight.mdsal.binding.api.MountPoint;
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import org.opendaylight.mdsal.dom.api.DOMMountPoint;
+import org.opendaylight.mdsal.dom.api.DOMService;
+import org.opendaylight.mdsal.binding.api.MountPoint;
+import org.opendaylight.mdsal.binding.api.BindingService;
+import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+
 
 public class BindingMountPointAdapter implements MountPoint {
 
@@ -41,7 +42,7 @@ public class BindingMountPointAdapter implements MountPoint {
     @Override
     public <T extends BindingService> Optional<T> getService(Class<T> service) {
         Optional<BindingService> potential = services.getUnchecked(service);
-        if(potential.isPresent()) {
+        if (potential.isPresent()) {
             return Optional.of(service.cast(potential.get()));
         }
         return Optional.absent();
