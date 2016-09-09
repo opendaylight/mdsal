@@ -77,6 +77,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     private final ArrayList<DOMStoreThreePhaseCommitCohort> cohorts = new ArrayList<>();
     private final InMemoryDOMDataTreeShardChangePublisher changePublisher;
+    private final InMemoryDOMDataTreeShardProducer producer;
     private final ShardDataModification modification;
     private final ListeningExecutorService executor;
     private final DataTree rootShardDataTree;
@@ -85,10 +86,12 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     private DOMDataTreeWriteCursor cursor;
     private boolean finished = false;
 
-    InmemoryDOMDataTreeShardWriteTransaction(final ShardDataModification root,
+    InmemoryDOMDataTreeShardWriteTransaction(final InMemoryDOMDataTreeShardProducer producer,
+                                             final ShardDataModification root,
                                              final DataTree rootShardDataTree,
                                              final InMemoryDOMDataTreeShardChangePublisher changePublisher,
                                              final ListeningExecutorService executor) {
+        this.producer = producer;
         this.modification = Preconditions.checkNotNull(root);
         this.rootShardDataTree = Preconditions.checkNotNull(rootShardDataTree);
         this.changePublisher = Preconditions.checkNotNull(changePublisher);
@@ -177,6 +180,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         Preconditions.checkNotNull(cohorts);
         Preconditions.checkState(!cohorts.isEmpty(), "Transaction was not readied yet.");
 
+        producer.transactionSubmitted(this);
         final ListenableFuture<Void> submit = executor.submit(new ShardSubmitCoordinationTask(
                 modification.getPrefix(), cohorts));
 
@@ -208,6 +212,11 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         final ListenableFuture<Void> submit = executor.submit(new ShardCommitCoordinationTask(
                 modification.getPrefix(), cohorts));
         return submit;
+    }
+
+    DataTreeModification getRootModification() {
+        Preconditions.checkNotNull(rootModification, "Transaction wasn't sealed yet");
+        return rootModification;
     }
 
     @Override
