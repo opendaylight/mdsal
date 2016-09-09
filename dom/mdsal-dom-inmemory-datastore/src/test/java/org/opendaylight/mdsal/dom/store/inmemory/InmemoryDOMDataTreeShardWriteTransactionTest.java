@@ -58,6 +58,7 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
             new ChildShardContext(DOM_DATA_TREE_IDENTIFIER, READABLE_WRITEABLE_DOM_DATA_TREE_SHARD);
     private static final Map<DOMDataTreeIdentifier, ChildShardContext> CHILD_SHARDS =
             ImmutableMap.of(DOM_DATA_TREE_IDENTIFIER, CHILD_SHARD_CONTEXT);
+    private InMemoryDOMDataTreeShardProducer mockProducer;
 
     @Before
     public void setUp() throws Exception {
@@ -81,9 +82,11 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
         final InMemoryDOMDataTreeShardChangePublisher inMemoryDOMDataTreeShardChangePublisher =
                 new InMemoryDOMDataTreeShardChangePublisher(MoreExecutors.newDirectExecutorService(), 1, DATA_TREE,
                         YANG_INSTANCE_IDENTIFIER, CHILD_SHARDS);
+        mockProducer = mock(InMemoryDOMDataTreeShardProducer.class);
+        doNothing().when(mockProducer).transactionSubmitted(any());
 
         inmemoryDOMDataTreeShardWriteTransaction =
-                new InmemoryDOMDataTreeShardWriteTransaction(shardDataModification, DATA_TREE,
+                new InmemoryDOMDataTreeShardWriteTransaction(mockProducer, shardDataModification, DATA_TREE,
                         inMemoryDOMDataTreeShardChangePublisher,
                         MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor()));
     }
