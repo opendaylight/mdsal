@@ -7,13 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-
 import com.google.common.base.Preconditions;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
-class BindingDataTreeChangeListenerRegistration<L extends DataTreeChangeListener<?>> extends AbstractListenerRegistration<L> {
+class BindingDataTreeChangeListenerRegistration<L extends DataTreeChangeListener<?>>
+        extends AbstractListenerRegistration<L> {
 
     private final ListenerRegistration<?> domReg;
 

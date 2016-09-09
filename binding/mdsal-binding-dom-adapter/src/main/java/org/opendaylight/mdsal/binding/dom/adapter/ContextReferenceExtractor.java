@@ -54,10 +54,10 @@ abstract class ContextReferenceExtractor {
      * Binding DataObject.
      *
      * @param obj DataObject from which context reference
-     * should be extracted.
+     *     should be extracted.
      *
      * @return Instance Identifier representing context reference
-     * or null, if data object does not contain context reference.
+     *     or null, if data object does not contain context reference.
      */
     abstract @Nullable InstanceIdentifier<?> extract(DataObject obj);
 
@@ -88,7 +88,7 @@ abstract class ContextReferenceExtractor {
     private static Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
         try {
             final Method method = type.getMethod(GET_VALUE_NAME);
-            if(returnType.equals(method.getReturnType())) {
+            if (returnType.equals(method.getReturnType())) {
                 return method;
             }
         } catch (final NoSuchMethodException e) {
