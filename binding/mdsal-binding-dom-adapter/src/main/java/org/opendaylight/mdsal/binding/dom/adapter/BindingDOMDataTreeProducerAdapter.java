@@ -13,13 +13,11 @@ import org.opendaylight.mdsal.binding.api.CursorAwareWriteTransaction;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeProducer;
 import org.opendaylight.mdsal.binding.api.DataTreeProducerException;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 
 class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
 
