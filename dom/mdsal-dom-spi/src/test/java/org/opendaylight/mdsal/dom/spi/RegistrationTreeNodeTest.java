@@ -7,13 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-
 import java.util.Collections;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -43,7 +42,7 @@ public class RegistrationTreeNodeTest {
         assertNotNull(registrationTreeNode.ensureChild(pathArgument));
         assertNotNull(registrationTreeNode.getExactChild(pathArgument));
 
-        final NodeWithValue nodeWithValue = new NodeWithValue<>(QName.create("testNode"), new Object());
+        final NodeWithValue<?> nodeWithValue = new NodeWithValue<>(QName.create("testNode"), new Object());
         assertEquals(Collections.EMPTY_LIST, registrationTreeNode.getInexactChildren(nodeWithValue));
         assertEquals(Collections.EMPTY_LIST, registrationTreeNode.getInexactChildren(pathArgument));
 
