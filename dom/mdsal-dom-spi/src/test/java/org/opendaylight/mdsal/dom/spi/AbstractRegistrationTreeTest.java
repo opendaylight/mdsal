@@ -29,6 +29,7 @@ public class AbstractRegistrationTreeTest extends AbstractRegistrationTree<Objec
         this.takeLock();
         this.addRegistration(registrationTreeNode, registration);
         assertTrue(registrationTreeNode.getRegistrations().contains(registration));
+        this.releaseLock();
 
         this.removeRegistration(registrationTreeNode, registration);
         assertFalse(registrationTreeNode.getRegistrations().contains(registration));
