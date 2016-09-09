@@ -37,7 +37,8 @@ public class BindingDOMDataTreeWriteCursorAdapterTest {
     @Test
     public void basicTest() throws Exception {
         final DataTreeIdentifier identifier =
-                DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(DataObject.class));
+                DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
+                        InstanceIdentifier.create(DataObject.class));
         final DOMDataTreeWriteCursor delegate = mock(DOMDataTreeWriteCursor.class);
         final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
         final BindingToNormalizedNodeCodec codec =

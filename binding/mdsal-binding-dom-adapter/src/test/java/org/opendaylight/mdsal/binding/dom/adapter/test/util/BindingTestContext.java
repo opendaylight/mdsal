@@ -94,7 +94,8 @@ public class BindingTestContext implements AutoCloseable {
         return codec;
     }
 
-    protected BindingTestContext(final ListeningExecutorService executor, final ClassPool classPool, final boolean startWithSchema) {
+    protected BindingTestContext(final ListeningExecutorService executor,
+            final ClassPool classPool, final boolean startWithSchema) {
         this.executor = executor;
         this.classPool = classPool;
         this.startWithSchema = startWithSchema;
@@ -143,7 +144,8 @@ public class BindingTestContext implements AutoCloseable {
     public void startBindingToDomMappingService() {
         checkState(classPool != null, "ClassPool needs to be present");
 
-        final DataObjectSerializerGenerator generator = StreamWriterGenerator.create(JavassistUtils.forClassPool(classPool));
+        final DataObjectSerializerGenerator generator
+                = StreamWriterGenerator.create(JavassistUtils.forClassPool(classPool));
         final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry(generator);
         final GeneratedClassLoadingStrategy loading = GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
         codec = new BindingToNormalizedNodeCodec(loading,  codecRegistry);
