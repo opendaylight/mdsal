@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 
-final class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
+class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
 
     private final InMemoryDOMDataTreeShard parentShard;
     private final Collection<DOMDataTreeIdentifier> prefixes;
@@ -31,11 +31,16 @@ final class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer
     public InmemoryDOMDataTreeShardWriteTransaction createTransaction() {
         Preconditions.checkState(currentTx == null || currentTx.isFinished(), "Previous transaction not finished yet.");
         if (lastSubmittedTx != null) {
-            currentTx = parentShard.createTransaction(lastSubmittedTx);
+            currentTx = parentShard.createTransaction(this, prefixes, lastSubmittedTx);
         } else {
-            currentTx = parentShard.createTransaction(prefixes);
+            currentTx = parentShard.createTransaction(this, prefixes);
         }
         return currentTx;
+    }
+
+    void transactionSubmitted(final InmemoryDOMDataTreeShardWriteTransaction transaction) {
+        Preconditions.checkState(transaction.equals(currentTx));
+        lastSubmittedTx = transaction;
     }
 
     @Override
