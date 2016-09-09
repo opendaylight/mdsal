@@ -196,13 +196,21 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         return ret;
     }
 
-    InmemoryDOMDataTreeShardWriteTransaction createTransaction(
+    InmemoryDOMDataTreeShardWriteTransaction createTransaction(final InMemoryDOMDataTreeShardProducer producer,
+                                                               final Collection<DOMDataTreeIdentifier> prefixes,
             final InmemoryDOMDataTreeShardWriteTransaction previousTx) {
-        // FIXME: implement this
-        throw new UnsupportedOperationException();
+        return createTxForSnapshot(producer, prefixes, (CursorAwareDataTreeSnapshot) previousTx.getRootModification());
     }
 
-    InmemoryDOMDataTreeShardWriteTransaction createTransaction(final Collection<DOMDataTreeIdentifier> prefixes) {
+    InmemoryDOMDataTreeShardWriteTransaction createTransaction(final InMemoryDOMDataTreeShardProducer producer,
+                                                               final Collection<DOMDataTreeIdentifier> prefixes) {
+        return createTxForSnapshot(producer, prefixes, (CursorAwareDataTreeSnapshot) dataTree.takeSnapshot());
+    }
+
+    private InmemoryDOMDataTreeShardWriteTransaction createTxForSnapshot(
+            final InMemoryDOMDataTreeShardProducer producer,
+            final Collection<DOMDataTreeIdentifier> prefixes,
+            final CursorAwareDataTreeSnapshot snapshot) {
 
         final Map<DOMDataTreeIdentifier, SubshardProducerSpecification> affectedSubshards = new HashMap<>();
         for (final DOMDataTreeIdentifier producerPrefix : prefixes) {
@@ -226,8 +234,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
             }
         }
 
-        final ShardRootModificationContext rootContext = new ShardRootModificationContext(prefix,
-                (CursorAwareDataTreeSnapshot) dataTree.takeSnapshot());
+        final ShardRootModificationContext rootContext = new ShardRootModificationContext(prefix, snapshot);
         final ShardDataModificationBuilder builder = new ShardDataModificationBuilder(rootContext);
         for (final SubshardProducerSpecification spec : affectedSubshards.values()) {
             final ForeignShardModificationContext foreignContext =
@@ -236,6 +243,8 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
             builder.addSubshard(spec.getPrefix(), foreignContext);
         }
 
-        return new InmemoryDOMDataTreeShardWriteTransaction(builder.build(), dataTree, shardChangePublisher, executor);
+        return new InmemoryDOMDataTreeShardWriteTransaction(producer, builder.build(),
+                dataTree, shardChangePublisher, executor);
     }
+
 }
