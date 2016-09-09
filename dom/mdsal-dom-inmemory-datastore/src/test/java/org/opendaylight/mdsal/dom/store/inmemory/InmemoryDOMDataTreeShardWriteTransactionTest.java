@@ -70,6 +70,7 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
         final DataTreeModificationCursor dataTreeModificationCursor = mock(DataTreeModificationCursor.class);
         doReturn(DataTreeModificationCursorAdaptor.of( dataTreeModificationCursor))
                 .when(SHARD_ROOT_MODIFICATION_CONTEXT).cursor();
+        doNothing().when(SHARD_ROOT_MODIFICATION_CONTEXT).closeCursor();
         final DataTreeCandidate dataTreeCandidate = mock(DataTreeCandidate.class);
         final DataTreeCandidateNode dataTreeCandidateNode = mock(DataTreeCandidateNode.class);
         doReturn(dataTreeCandidateNode).when(dataTreeCandidate).getRootNode();

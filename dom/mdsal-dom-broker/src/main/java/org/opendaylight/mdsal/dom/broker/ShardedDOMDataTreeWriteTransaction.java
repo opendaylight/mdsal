@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
@@ -54,14 +55,23 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     @GuardedBy("this")
     private DOMDataTreeWriteCursor openCursor;
 
+    private final SettableFuture<Void> future = SettableFuture.create();
+    private final CheckedFuture<Void, TransactionCommitFailedException> submitFuture =
+            Futures.makeChecked(future, TransactionCommitFailedExceptionMapper.create("submit"));
+
+    private final boolean isolated;
+
     ShardedDOMDataTreeWriteTransaction(final ShardedDOMDataTreeProducer producer,
                                        final Map<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducer,
-                                       final Map<DOMDataTreeIdentifier, DOMDataTreeProducer> childProducers) {
+                                       final Map<DOMDataTreeIdentifier, DOMDataTreeProducer> childProducers,
+                                       final boolean isolated) {
+        this.isolated = isolated;
         this.producer = Preconditions.checkNotNull(producer);
         idToTransaction = new HashMap<>();
         Preconditions.checkNotNull(idToProducer).forEach((id, prod) -> idToTransaction.put(
                 id, prod.createTransaction()));
         this.identifier = "SHARDED-DOM-" + COUNTER.getAndIncrement();
+        LOG.debug("Created new transaction{}", identifier);
         childProducers.forEach((id, prod) -> childBoundaries.add(id.getRootIdentifier()));
     }
 
@@ -118,9 +128,18 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         Preconditions.checkState(!closed, "Transaction %s is already closed", identifier);
         Preconditions.checkState(openCursor == null, "Cannot submit transaction while there is a cursor open");
 
+        producer.processTransaction(this);
+        return submitFuture;
+    }
+
+    CheckedFuture<Void, TransactionCommitFailedException> doSubmit(
+            BiConsumer<ShardedDOMDataTreeWriteTransaction, Void> success,
+            BiConsumer<ShardedDOMDataTreeWriteTransaction, Throwable> failure) {
+
         final Set<DOMDataTreeShardWriteTransaction> txns = ImmutableSet.copyOf(idToTransaction.values());
         final ListenableFuture<List<Void>> listListenableFuture =
                 Futures.allAsList(txns.stream().map(tx -> {
+                    LOG.debug("Readying tx {}", identifier);
                     tx.ready();
                     return tx.submit();
                 }).collect(Collectors.toList()));
@@ -130,29 +149,44 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             @Override
             public void onSuccess(final List<Void> result) {
                 ret.set(null);
+                success.accept(ShardedDOMDataTreeWriteTransaction.this, null);
             }
 
             @Override
             public void onFailure(final Throwable exp) {
                 ret.setException(exp);
+                failure.accept(ShardedDOMDataTreeWriteTransaction.this, exp);
             }
         });
 
-        producer.transactionSubmitted(this);
         return Futures.makeChecked(ret, TransactionCommitFailedExceptionMapper.create("submit"));
+    }
+
+    void onTransactionSuccess(final Void result) {
+        future.set(result);
+    }
+
+    void onTransactionFailure(final Throwable throwable) {
+        future.setException(throwable);
     }
 
     synchronized void cursorClosed() {
         openCursor = null;
     }
 
+    boolean isIsolated() {
+        return isolated;
+    }
+
     private class DelegatingCursor implements DOMDataTreeWriteCursor {
 
         private final DOMDataTreeWriteCursor delegate;
+        private final DOMDataTreeIdentifier rootPosition;
         private final Deque<PathArgument> path = new LinkedList<>();
 
         DelegatingCursor(final DOMDataTreeWriteCursor delegate, final DOMDataTreeIdentifier rootPosition) {
-            this.delegate = delegate;
+            this.delegate = Preconditions.checkNotNull(delegate);
+            this.rootPosition = Preconditions.checkNotNull(rootPosition);
             path.addAll(rootPosition.getRootIdentifier().getPathArguments());
         }
 
@@ -193,6 +227,12 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
 
         @Override
         public void close() {
+            int depthEntered = path.size() - rootPosition.getRootIdentifier().getPathArguments().size();
+            if (depthEntered > 0) {
+                // clean up existing modification cursor in case this tx will be reused for batching
+                delegate.exit(depthEntered);
+            }
+
             delegate.close();
             cursorClosed();
         }
