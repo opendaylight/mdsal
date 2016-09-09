@@ -9,14 +9,14 @@ package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import static org.junit.Assert.assertTrue;
 
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
-import org.opendaylight.mdsal.binding.api.ReadTransaction;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import com.google.common.base.Optional;
 import java.util.concurrent.ExecutionException;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TopBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
@@ -40,7 +40,8 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testPutCreateParentsSuccess() throws TransactionCommitFailedException, InterruptedException, ExecutionException {
+    public void testPutCreateParentsSuccess() throws TransactionCommitFailedException,
+            InterruptedException, ExecutionException {
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
@@ -54,7 +55,8 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testMergeCreateParentsSuccess() throws TransactionCommitFailedException, InterruptedException, ExecutionException {
+    public void testMergeCreateParentsSuccess() throws TransactionCommitFailedException,
+            InterruptedException, ExecutionException {
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.merge(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);

@@ -26,6 +26,7 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 
 public class RpcServiceAdapterTest {
 
+    @SuppressWarnings("checkstyle:IllegalThrows")
     @Test
     public void invoke() throws Throwable {
         final BindingBrokerTestFactory bindingBrokerTestFactory = new BindingBrokerTestFactory();
@@ -64,6 +65,6 @@ public class RpcServiceAdapterTest {
 
         String toString();
         int hashCode();
-        boolean equals(Object o);
+        boolean equals(Object object);
     }
 }

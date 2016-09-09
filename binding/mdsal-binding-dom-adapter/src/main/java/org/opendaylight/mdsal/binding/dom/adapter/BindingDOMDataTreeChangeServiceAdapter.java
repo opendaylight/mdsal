@@ -7,25 +7,25 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import com.google.common.base.Preconditions;
 
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
-import com.google.common.base.Preconditions;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 
 /**
- *
  * Adapter exposing Binding {@link DataTreeChangeService} and wrapping
  * {@link DOMDataTreeChangeService} and is responsible for translation
  * and instantiation of {@link BindingDOMDataTreeChangeListenerAdapter}
  * adapters.
  *
+ * <p>
  * Each registered {@link DataTreeChangeListener} is wrapped using
  * adapter and registered directly to DOM service.
  */
@@ -46,11 +46,13 @@ final class BindingDOMDataTreeChangeServiceAdapter implements DataTreeChangeServ
     }
 
     @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L> registerDataTreeChangeListener(
-            final DataTreeIdentifier<T> treeId, final L listener) {
+    public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
+            registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId, final L listener) {
         final DOMDataTreeIdentifier domIdentifier = toDomTreeIdentifier(treeId);
-        final BindingDOMDataTreeChangeListenerAdapter<T> domListener = new BindingDOMDataTreeChangeListenerAdapter<>(codec,listener, treeId.getDatastoreType());
-        final ListenerRegistration<BindingDOMDataTreeChangeListenerAdapter<T>> domReg = dataTreeChangeService.registerDataTreeChangeListener(domIdentifier, domListener);
+        final BindingDOMDataTreeChangeListenerAdapter<T> domListener
+                = new BindingDOMDataTreeChangeListenerAdapter<>(codec,listener, treeId.getDatastoreType());
+        final ListenerRegistration<BindingDOMDataTreeChangeListenerAdapter<T>> domReg
+                = dataTreeChangeService.registerDataTreeChangeListener(domIdentifier, domListener);
         return new BindingDataTreeChangeListenerRegistration<>(listener,domReg);
     }
 

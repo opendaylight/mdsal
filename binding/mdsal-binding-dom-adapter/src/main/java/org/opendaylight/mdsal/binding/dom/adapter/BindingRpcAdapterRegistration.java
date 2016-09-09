@@ -8,15 +8,14 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
-
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
-class BindingRpcAdapterRegistration<T extends RpcService> extends AbstractObjectRegistration<T>{
+class BindingRpcAdapterRegistration<T extends RpcService> extends AbstractObjectRegistration<T> {
 
     private final DOMRpcImplementationRegistration<?> reg;
 
-    public BindingRpcAdapterRegistration(T instance, DOMRpcImplementationRegistration<?> reg) {
+    BindingRpcAdapterRegistration(T instance, DOMRpcImplementationRegistration<?> reg) {
         super(instance);
         this.reg = reg;
     }
