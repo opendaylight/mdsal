@@ -47,15 +47,15 @@ import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
 
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
-    private static final PathArgument TOP_ARGUMENT= TOP_PATH.getPathArguments().iterator().next();
+    private static final PathArgument TOP_ARGUMENT = TOP_PATH.getPathArguments().iterator().next();
     private static final InstanceIdentifier<TopLevelList> FOO_PATH = path(TOP_FOO_KEY);
     private static final PathArgument FOO_ARGUMENT = Iterables.getLast(FOO_PATH.getPathArguments());
     private static final TopLevelList FOO_DATA = topLevelList(TOP_FOO_KEY, complexUsesAugment(USES_ONE_KEY));
     private static final InstanceIdentifier<TopLevelList> BAR_PATH = path(TOP_BAR_KEY);
     private static final PathArgument BAR_ARGUMENT = Iterables.getLast(BAR_PATH.getPathArguments());
     private static final TopLevelList BAR_DATA = topLevelList(TOP_BAR_KEY);
-    private static final DataTreeIdentifier<Top> TOP_IDENTIFIER = DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
-            TOP_PATH);
+    private static final DataTreeIdentifier<Top> TOP_IDENTIFIER
+            = DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, TOP_PATH);
 
     private static final Top TOP_INITIAL_DATA = top(FOO_DATA);
 
@@ -100,16 +100,20 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         createAndVerifyTop(listener);
 
         putTx(BAR_PATH, BAR_DATA).submit().checkedGet();
-        final DataObjectModification<Top> afterBarPutEvent = Iterables.getOnlyElement(listener.nextEvent()).getRootNode();
+        final DataObjectModification<Top> afterBarPutEvent
+                = Iterables.getOnlyElement(listener.nextEvent()).getRootNode();
         verifyModification(afterBarPutEvent, TOP_ARGUMENT, ModificationType.SUBTREE_MODIFIED);
-        final DataObjectModification<TopLevelList> barPutMod = afterBarPutEvent.getModifiedChildListItem(TopLevelList.class, TOP_BAR_KEY);
+        final DataObjectModification<TopLevelList> barPutMod = afterBarPutEvent.getModifiedChildListItem(
+                TopLevelList.class, TOP_BAR_KEY);
         assertNotNull(barPutMod);
         verifyModification(barPutMod, BAR_ARGUMENT, ModificationType.WRITE);
 
         deleteTx(BAR_PATH).submit().checkedGet();
-        final DataObjectModification<Top> afterBarDeleteEvent = Iterables.getOnlyElement(listener.nextEvent()).getRootNode();
+        final DataObjectModification<Top> afterBarDeleteEvent
+                = Iterables.getOnlyElement(listener.nextEvent()).getRootNode();
         verifyModification(afterBarDeleteEvent, TOP_ARGUMENT, ModificationType.SUBTREE_MODIFIED);
-        final DataObjectModification<TopLevelList> barDeleteMod = afterBarDeleteEvent.getModifiedChildListItem(TopLevelList.class, TOP_BAR_KEY);
+        final DataObjectModification<TopLevelList> barDeleteMod = afterBarDeleteEvent.getModifiedChildListItem(
+                TopLevelList.class, TOP_BAR_KEY);
         verifyModification(barDeleteMod, BAR_ARGUMENT, ModificationType.DELETE);
 
         dataBrokerImpl.registerDataTreeChangeListener(TOP_IDENTIFIER, listener).close();
@@ -118,7 +122,8 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     @Test
     public void testWildcardedListListener() throws Exception {
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
-        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
+        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.create(
+                LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
         dataBrokerImpl.registerDataTreeChangeListener(wildcard, listener);
 
         putTx(TOP_PATH, TOP_INITIAL_DATA).submit().checkedGet();
@@ -151,8 +156,8 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         assertEquals(TOP_INITIAL_DATA, initialNode.getDataAfter());
     }
 
-    private void verifyModification(final DataObjectModification<? extends DataObject> barWrite, final PathArgument pathArg,
-            final ModificationType eventType) {
+    private void verifyModification(final DataObjectModification<? extends DataObject> barWrite,
+            final PathArgument pathArg, final ModificationType eventType) {
         assertEquals(pathArg.getType(), barWrite.getDataType());
         assertEquals(eventType,barWrite.getModificationType());
         assertEquals(pathArg, barWrite.getIdentifier());
