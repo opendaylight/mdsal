@@ -33,8 +33,10 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
     private static final TopLevelListKey TOP_FOO_KEY = new TopLevelListKey("foo");
     private static final InstanceIdentifier<TopLevelList> BA_TOP_LEVEL_LIST = InstanceIdentifier
             .builder(Top.class).child(TopLevelList.class, TOP_FOO_KEY).toInstance();
-    private static final InstanceIdentifier<TreeLeafOnlyAugment> BA_TREE_LEAF_ONLY = BA_TOP_LEVEL_LIST.augmentation(TreeLeafOnlyAugment.class);
-    private static final InstanceIdentifier<TreeComplexUsesAugment> BA_TREE_COMPLEX_USES = BA_TOP_LEVEL_LIST.augmentation(TreeComplexUsesAugment.class);
+    private static final InstanceIdentifier<TreeLeafOnlyAugment> BA_TREE_LEAF_ONLY
+            = BA_TOP_LEVEL_LIST.augmentation(TreeLeafOnlyAugment.class);
+    private static final InstanceIdentifier<TreeComplexUsesAugment> BA_TREE_COMPLEX_USES
+            = BA_TOP_LEVEL_LIST.augmentation(TreeComplexUsesAugment.class);
     private static final QName SIMPLE_VALUE_QNAME = QName.create(TreeComplexUsesAugment.QNAME, "simple-value");
 
 
@@ -42,7 +44,8 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
 
     @Override
     protected void setupWithSchema(final SchemaContext context) {
-        final DataObjectSerializerGenerator streamWriter = StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()));
+        final DataObjectSerializerGenerator streamWriter
+                = StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()));
         final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry(streamWriter);
         codec = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
         codec.onGlobalContextUpdated(context);

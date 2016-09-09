@@ -56,13 +56,15 @@ public class BindingDOMAdapterLoaderTest {
 
     @Test
     public void createChainTest() throws Exception {
-        bindingDOMDataBrokerAdapter = (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).get();
+        bindingDOMDataBrokerAdapter
+                = (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).get();
         assertNotNull(bindingDOMDataBrokerAdapter.createTransactionChain(null));
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void registerWithException() throws Exception {
-        bindingDOMDataBrokerAdapter = (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).get();
+        bindingDOMDataBrokerAdapter
+                = (BindingDOMDataBrokerAdapter) bindingDOMAdapterLoader.load(DataBroker.class).get();
         bindingDOMDataBrokerAdapter.registerDataTreeChangeListener(null,null);
     }
 }
