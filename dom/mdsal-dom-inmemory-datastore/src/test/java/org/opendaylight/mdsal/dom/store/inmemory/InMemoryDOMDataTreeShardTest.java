@@ -32,6 +32,8 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeModification;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
 
 public class InMemoryDOMDataTreeShardTest {
 
@@ -57,8 +59,10 @@ public class InMemoryDOMDataTreeShardTest {
         final Collection<DOMDataTreeIdentifier> prefixes = ImmutableList.of(DOM_DATA_TREE_IDENTIFIER);
         assertEquals(prefixes.toString(), inMemoryDOMDataTreeShard.createProducer(prefixes).getPrefixes().toString());
 
+        final InMemoryDOMDataTreeShardProducer mockProducer = mock(InMemoryDOMDataTreeShardProducer.class);
+
         inMemoryDOMDataTreeShard.onGlobalContextUpdated(createTestContext());
-        inMemoryDOMDataTreeShard.createTransaction(prefixes);
+        inMemoryDOMDataTreeShard.createTransaction("", mockProducer, prefixes, mock(CursorAwareDataTreeSnapshot.class));
 
         final DOMDataTreeChangeListener domDataTreeChangeListener = mock(DOMDataTreeChangeListener.class);
         final ListenerRegistration listenerRegistration = mock(ListenerRegistration.class);
@@ -71,7 +75,7 @@ public class InMemoryDOMDataTreeShardTest {
         assertFalse(inMemoryDOMDataTreeShard.getChildShards().containsKey(DOM_DATA_TREE_IDENTIFIER));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void createTransactionWithException() throws Exception {
         final DOMDataTreeIdentifier domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.EMPTY);
@@ -79,11 +83,15 @@ public class InMemoryDOMDataTreeShardTest {
         final InMemoryDOMDataTreeShard inMemoryDOMDataTreeShard =
                 InMemoryDOMDataTreeShard.create(domDataTreeIdentifier,
                         MoreExecutors.newDirectExecutorService(), 1);
+        final CursorAwareDataTreeModification dataTreeModification = mock(CursorAwareDataTreeModification.class);
 
         final InmemoryDOMDataTreeShardWriteTransaction inmemoryDOMDataTreeShardWriteTransaction =
                 mock(InmemoryDOMDataTreeShardWriteTransaction.class);
+        doReturn(dataTreeModification).when(inmemoryDOMDataTreeShardWriteTransaction).getRootModification();
+        final InMemoryDOMDataTreeShardProducer mockProducer = mock(InMemoryDOMDataTreeShardProducer.class);
+        final Collection<DOMDataTreeIdentifier> prefixes = ImmutableList.of(DOM_DATA_TREE_IDENTIFIER);
 
-        inMemoryDOMDataTreeShard.createTransaction(inmemoryDOMDataTreeShardWriteTransaction);
+        inMemoryDOMDataTreeShard.createTransaction("", mockProducer, prefixes, mock(CursorAwareDataTreeSnapshot.class));
     }
 
     @After
