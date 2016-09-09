@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -27,14 +28,16 @@ public class InMemoryDOMDataTreeShardProducerTest {
         final InmemoryDOMDataTreeShardWriteTransaction inmemoryDOMDataTreeShardWriteTransaction =
                 mock(InmemoryDOMDataTreeShardWriteTransaction.class);
         doReturn(inmemoryDOMDataTreeShardWriteTransaction).when(inMemoryDOMDataTreeShard)
-                .createTransaction(anyCollectionOf((DOMDataTreeIdentifier.class)));
+                .createTransaction(any(InMemoryDOMDataTreeShardProducer.class),
+                        anyCollectionOf((DOMDataTreeIdentifier.class)));
 
         final InMemoryDOMDataTreeShardProducer inMemoryDOMDataTreeShardProducer =
                 new InMemoryDOMDataTreeShardProducer(inMemoryDOMDataTreeShard,
                         ImmutableSet.of(DOM_DATA_TREE_IDENTIFIER));
 
         assertNotNull(inMemoryDOMDataTreeShardProducer.createTransaction());
-        verify(inMemoryDOMDataTreeShard).createTransaction(anyCollectionOf(DOMDataTreeIdentifier.class));
+        verify(inMemoryDOMDataTreeShard).createTransaction(any(InMemoryDOMDataTreeShardProducer.class),
+                anyCollectionOf(DOMDataTreeIdentifier.class));
         resetMocks();
     }
 }
