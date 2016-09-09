@@ -144,6 +144,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     void cursorClosed() {
         Preconditions.checkNotNull(cursor);
+        modification.closeCursor();
         cursor = null;
     }
 
@@ -207,10 +208,6 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         final ListenableFuture<Void> submit = executor.submit(new ShardCommitCoordinationTask(
                 modification.getPrefix(), cohorts));
         return submit;
-    }
-
-    public void followUp() {
-
     }
 
     @Override
