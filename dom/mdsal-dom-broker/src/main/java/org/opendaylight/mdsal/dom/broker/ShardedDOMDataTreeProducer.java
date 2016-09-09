@@ -15,11 +15,16 @@ import com.google.common.collect.ImmutableBiMap.Builder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -40,8 +45,23 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     private BiMap<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducer = ImmutableBiMap.of();
     private Map<DOMDataTreeIdentifier, DOMDataTreeShard> idToShard;
 
+
+    private static final AtomicReferenceFieldUpdater<ShardedDOMDataTreeProducer,
+            ShardedDOMDataTreeWriteTransaction> OPEN_UPDATER =
+            AtomicReferenceFieldUpdater
+                    .newUpdater(ShardedDOMDataTreeProducer.class, ShardedDOMDataTreeWriteTransaction.class, "openTx");
+    private volatile ShardedDOMDataTreeWriteTransaction openTx;
+
+    private static final AtomicReferenceFieldUpdater<ShardedDOMDataTreeProducer,
+            ShardedDOMDataTreeWriteTransaction> INFLIGHT_UPDATER =
+            AtomicReferenceFieldUpdater
+                    .newUpdater(ShardedDOMDataTreeProducer.class,
+                            ShardedDOMDataTreeWriteTransaction.class, "inFlightTx");
+    private volatile ShardedDOMDataTreeWriteTransaction inFlightTx;
+
     @GuardedBy("this")
-    private DOMDataTreeCursorAwareTransaction openTx;
+    private final Deque<ShardedDOMDataTreeWriteTransaction> txQueue = new ArrayDeque<>();
+
     @GuardedBy("this")
     private Map<DOMDataTreeIdentifier, DOMDataTreeProducer> children = Collections.emptyMap();
     @GuardedBy("this")
@@ -110,7 +130,36 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         Preconditions.checkState(!closed, "Producer is already closed");
         Preconditions.checkState(openTx == null, "Transaction %s is still open", openTx);
 
-        this.openTx = new ShardedDOMDataTreeWriteTransaction(this, idToProducer, children);
+        LOG.debug("Creating transaction from producer");
+        if (isolated) {
+            OPEN_UPDATER.compareAndSet(this, null,
+                    new ShardedDOMDataTreeWriteTransaction(this, idToProducer, children, isolated));
+            return openTx;
+        }
+
+        if (!txQueue.isEmpty()) {
+            final ShardedDOMDataTreeWriteTransaction last = txQueue.peekLast();
+            if (last.isIsolated()) {
+                OPEN_UPDATER.compareAndSet(this, null,
+                        new ShardedDOMDataTreeWriteTransaction(this, idToProducer, children, isolated));
+                return openTx;
+            }
+
+            if (inFlightTx == null) {
+                // we have a tx in queue and no inflight tx, process the oldest one and create new one for user
+                processTransaction(txQueue.removeFirst());
+
+                OPEN_UPDATER.compareAndSet(this, null,
+                        new ShardedDOMDataTreeWriteTransaction(this, idToProducer, children, isolated));
+            } else {
+                LOG.debug("Reusing previous transaction{} since there is still a transaction inflight, queue size: {}",
+                        last.getIdentifier(), txQueue.size());
+                OPEN_UPDATER.compareAndSet(this, null, last);
+            }
+        } else {
+            OPEN_UPDATER.compareAndSet(this, null,
+                    new ShardedDOMDataTreeWriteTransaction(this, idToProducer, children, isolated));
+        }
 
         return openTx;
     }
@@ -205,9 +254,63 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         openTx = null;
     }
 
-    synchronized void transactionSubmitted(final ShardedDOMDataTreeWriteTransaction transaction) {
-        Preconditions.checkState(openTx.equals(transaction));
-        openTx = null;
+    synchronized void processTransaction(final ShardedDOMDataTreeWriteTransaction transaction) {
+        if (OPEN_UPDATER.get(this) != null && OPEN_UPDATER.get(this).equals(transaction)) {
+            OPEN_UPDATER.set(this, null);
+        }
+
+        if (INFLIGHT_UPDATER.compareAndSet(this, null, transaction)) {
+            if (txQueue.contains(transaction)) {
+                // in case the tx is reused, the callback from success might attempt to process the
+                //same tx that the user will call submit() on.
+                txQueue.remove(transaction);
+            }
+            Futures.addCallback(inFlightTx.doSubmit(), new FutureCallback<Void>() {
+                @Override
+                public void onSuccess(final Void result) {
+                    transactionSuccessful(inFlightTx, result);
+                }
+
+                @Override
+                public void onFailure(final Throwable throwable) {
+                    transactionFailed(inFlightTx, throwable);
+                }
+            });
+        } else {
+            if (txQueue.isEmpty() || !txQueue.getLast().equals(transaction)) {
+                LOG.debug("Added tx{} into queue, queue size: {}", transaction.getIdentifier(), txQueue.size());
+                txQueue.add(transaction);
+            }
+        }
+    }
+
+    void transactionSuccessful(final ShardedDOMDataTreeWriteTransaction tx, final Void result) {
+        LOG.debug("Transaction {} completed successfully", tx.getIdentifier());
+        Preconditions.checkState(INFLIGHT_UPDATER.compareAndSet(this, tx, null));
+
+        tx.onTransactionSuccess(result);
+        processNextTransaction();
+    }
+
+    void transactionFailed(final ShardedDOMDataTreeWriteTransaction tx, final Throwable throwable) {
+        LOG.debug("Transaction {} failed", tx.getIdentifier(), throwable);
+        Preconditions.checkState(INFLIGHT_UPDATER.compareAndSet(this, tx, null));
+
+        tx.onTransactionFailure(throwable);
+        processNextTransaction();
+    }
+
+    private synchronized void processNextTransaction() {
+
+        if (txQueue.isEmpty()) {
+            LOG.debug("txQueue empty cannot process next, queue size{}", txQueue.size());
+            return;
+        } else if (txQueue.peek().equals(openTx)) {
+            LOG.debug("last tx is currently locked by user, not procesing next, queue size{}", txQueue.size());
+            return;
+        }
+
+        processTransaction(txQueue.remove());
     }
 
     synchronized void boundToListener(final ShardedDOMDataTreeListenerContext<?> listener) {
