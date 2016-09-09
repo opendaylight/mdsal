@@ -18,6 +18,8 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import com.google.common.util.concurrent.CheckedFuture;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +33,7 @@ import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
@@ -39,14 +42,20 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataTreeShard;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
+import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
+import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
+import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
+import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.slf4j.Logger;
@@ -188,6 +197,67 @@ public class ShardedDOMDataTreeTest {
         assertEquals(innerContainerVerify, capturedChange);
 
         verifyNoMoreInteractions(mockedDataTreeListener);
+    }
+
+    @Test
+    public void testMultipleWritesIntoSingleMapEntry() throws Exception {
+
+        final YangInstanceIdentifier oid1 = TestModel.OUTER_LIST_PATH.node(new NodeIdentifierWithPredicates(
+                TestModel.OUTER_LIST_QNAME, QName.create(TestModel.OUTER_LIST_QNAME, "id"), 0));
+        final DOMDataTreeIdentifier outerListPath = new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, oid1);
+
+        final DOMDataTreeProducer shardProducer = dataTreeService.createProducer(
+                Collections.singletonList(outerListPath));
+        final InMemoryDOMDataTreeShard outerListShard = InMemoryDOMDataTreeShard.create(outerListPath, executor, 1000);
+        outerListShard.onGlobalContextUpdated(schemaContext);
+
+        final ListenerRegistration<InMemoryDOMDataTreeShard> oid1ShardRegistration =
+                dataTreeService.registerDataTreeShard(outerListPath, outerListShard, shardProducer);
+
+        final DOMDataTreeCursorAwareTransaction tx = shardProducer.createTransaction(false);
+        final DOMDataTreeWriteCursor cursor =
+                tx.createCursor(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, oid1));
+        assertNotNull(cursor);
+
+        MapNode innerList = ImmutableMapNodeBuilder
+                .create()
+                .withNodeIdentifier(new NodeIdentifier(TestModel.INNER_LIST_QNAME))
+                .build();
+
+        cursor.write(new NodeIdentifier(TestModel.INNER_LIST_QNAME), innerList);
+        cursor.close();
+        tx.submit().checkedGet();
+
+        final ArrayList<CheckedFuture<Void, TransactionCommitFailedException>> futures = new ArrayList<>();
+        final Collection<MapEntryNode> innerListMapEntries = createInnerListMapEntries(1000, "run-1");
+        for (final MapEntryNode innerListMapEntry : innerListMapEntries) {
+            final DOMDataTreeCursorAwareTransaction tx1 = shardProducer.createTransaction(false);
+            final DOMDataTreeWriteCursor cursor1 = tx1.createCursor(
+                    new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
+                            oid1.node(new NodeIdentifier(TestModel.INNER_LIST_QNAME))));
+            cursor1.write(innerListMapEntry.getIdentifier(), innerListMapEntry);
+            cursor1.close();
+            futures.add(tx1.submit());
+        }
+
+        futures.get(futures.size() - 1).checkedGet();
+
+    }
+
+    private Collection<MapEntryNode> createInnerListMapEntries(int amount, String valuePrefix) {
+        final Collection<MapEntryNode> ret = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            ret.add(ImmutableNodes.mapEntryBuilder()
+                    .withNodeIdentifier(new NodeIdentifierWithPredicates(TestModel.INNER_LIST_QNAME,
+                            QName.create(TestModel.OUTER_LIST_QNAME, "name"), Integer.toString(i)))
+                    .withChild(ImmutableNodes
+                            .leafNode(QName.create(TestModel.INNER_LIST_QNAME, "name"), Integer.toString(i)))
+                    .withChild(ImmutableNodes
+                            .leafNode(QName.create(TestModel.INNER_LIST_QNAME, "value"), valuePrefix + "-" + i))
+                    .build());
+        }
+
+        return ret;
     }
 
     @Test
