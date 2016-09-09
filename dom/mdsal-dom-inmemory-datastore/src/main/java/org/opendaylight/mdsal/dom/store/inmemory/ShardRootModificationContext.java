@@ -65,4 +65,9 @@ class ShardRootModificationContext {
 
         return ret;
     }
+
+    void closeCursor() {
+        cursor.close();
+        cursor = null;
+    }
 }
