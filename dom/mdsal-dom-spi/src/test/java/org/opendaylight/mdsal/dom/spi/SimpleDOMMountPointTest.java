@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -26,8 +26,8 @@ public class SimpleDOMMountPointTest {
         final YangInstanceIdentifier yangInstanceIdentifier = mock(YangInstanceIdentifier.class);
         final SchemaContext schemaContext = mock(SchemaContext.class);
         final DOMService domService = mock(DOMService.class);
-        final ClassToInstanceMap classToInstanceMap =
-                ImmutableClassToInstanceMap.builder().put(DOMService.class, domService).build();
+        final ClassToInstanceMap<DOMService> classToInstanceMap =
+                ImmutableClassToInstanceMap.<DOMService>builder().put(DOMService.class, domService).build();
 
         final SimpleDOMMountPoint simpleDOMMountPoint =
                 SimpleDOMMountPoint.create(yangInstanceIdentifier, classToInstanceMap, schemaContext);
