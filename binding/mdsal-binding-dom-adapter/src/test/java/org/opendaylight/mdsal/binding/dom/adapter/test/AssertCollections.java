@@ -30,15 +30,15 @@ public class AssertCollections {
 
     }
 
-    public static void assertNotContains(final Collection<?> set, final Object... values) {
-        for (Object key : values) {
-            Assert.assertFalse(set.contains(key));
-        }
-    }
-
     public static void assertContains(final Map<?,?> map, final Object... values) {
         for (Object key : values) {
             Assert.assertTrue(map.containsKey(key));
+        }
+    }
+
+    public static void assertNotContains(final Collection<?> set, final Object... values) {
+        for (Object key : values) {
+            Assert.assertFalse(set.contains(key));
         }
     }
 
@@ -47,4 +47,7 @@ public class AssertCollections {
             Assert.assertFalse(map.containsKey(key));
         }
     }
+
+
+
 }

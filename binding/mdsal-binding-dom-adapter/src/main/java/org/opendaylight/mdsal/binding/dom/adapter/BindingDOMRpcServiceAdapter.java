@@ -7,11 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.mdsal.dom.api.DOMService;
-
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -19,8 +14,13 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
+import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
+
 
 public class BindingDOMRpcServiceAdapter implements RpcConsumerRegistry {
 
