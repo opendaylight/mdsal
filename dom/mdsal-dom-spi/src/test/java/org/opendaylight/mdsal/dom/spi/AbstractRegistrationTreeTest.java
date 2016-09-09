@@ -11,7 +11,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -29,6 +28,7 @@ public class AbstractRegistrationTreeTest extends AbstractRegistrationTree<Objec
         this.takeLock();
         this.addRegistration(registrationTreeNode, registration);
         assertTrue(registrationTreeNode.getRegistrations().contains(registration));
+        this.releaseLock();
 
         this.removeRegistration(registrationTreeNode, registration);
         assertFalse(registrationTreeNode.getRegistrations().contains(registration));
