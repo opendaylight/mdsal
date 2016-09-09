@@ -10,8 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
-import org.opendaylight.mdsal.binding.dom.adapter.ContextReferenceExtractor;
-
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInputBuilder;
@@ -73,4 +71,4 @@ public final class ContextExtractorTest {
         final InstanceIdentifier<?> extractedValue = extractor.extract(TEST_GROUPING);
         assertSame(TEST_ROUTE,extractedValue);
     }
- }
+}

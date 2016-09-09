@@ -35,8 +35,9 @@ public class Bug5845booleanKeyTest extends AbstractDataBrokerTest {
 
     @Test
     public void testBug5845() throws Exception {
-        final BindingToNormalizedNodeCodec mappingService = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                new BindingNormalizedNodeCodecRegistry(StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()))));
+        final BindingToNormalizedNodeCodec mappingService = new BindingToNormalizedNodeCodec(
+                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry(
+                        StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()))));
         final ModuleInfoBackedContext moduleInfoBackedContext = ModuleInfoBackedContext.create();
         moduleInfoBackedContext.registerModuleInfo(BindingReflections.getModuleInfo(BooleanContainer.class));
         mappingService.onGlobalContextUpdated(moduleInfoBackedContext.tryToCreateSchemaContext().get());
@@ -57,7 +58,8 @@ public class Bug5845booleanKeyTest extends AbstractDataBrokerTest {
                 .build();
 
         final BindingCodecTree codecContext = mappingService.getCodecFactory().getCodecContext();
-        final BindingCodecTreeNode<BooleanContainer> subtreeCodec = codecContext.getSubtreeCodec(InstanceIdentifier.create(BooleanContainer.class));
+        final BindingCodecTreeNode<BooleanContainer> subtreeCodec = codecContext.getSubtreeCodec(
+                InstanceIdentifier.create(BooleanContainer.class));
         final NormalizedNode<?, ?> serializedInt = subtreeCodec.serialize(booleanContainerInt);
         assertNotNull(serializedInt);
         final NormalizedNode<?, ?> serialized = subtreeCodec.serialize(booleanContainer);

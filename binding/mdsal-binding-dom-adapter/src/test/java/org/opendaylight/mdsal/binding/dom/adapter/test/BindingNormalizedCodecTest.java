@@ -9,9 +9,10 @@
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
 import static org.junit.Assert.assertTrue;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+
 import javassist.ClassPool;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeLeafOnlyAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
@@ -33,20 +34,23 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
     private static final TopLevelListKey TOP_FOO_KEY = new TopLevelListKey("foo");
     private static final InstanceIdentifier<TopLevelList> BA_TOP_LEVEL_LIST = InstanceIdentifier
             .builder(Top.class).child(TopLevelList.class, TOP_FOO_KEY).toInstance();
-    private static final InstanceIdentifier<TreeLeafOnlyAugment> BA_TREE_LEAF_ONLY = BA_TOP_LEVEL_LIST.augmentation(TreeLeafOnlyAugment.class);
-    private static final InstanceIdentifier<TreeComplexUsesAugment> BA_TREE_COMPLEX_USES = BA_TOP_LEVEL_LIST.augmentation(TreeComplexUsesAugment.class);
+    private static final InstanceIdentifier<TreeLeafOnlyAugment> BA_TREE_LEAF_ONLY
+            = BA_TOP_LEVEL_LIST.augmentation(TreeLeafOnlyAugment.class);
+    private static final InstanceIdentifier<TreeComplexUsesAugment> BA_TREE_COMPLEX_USES
+            = BA_TOP_LEVEL_LIST.augmentation(TreeComplexUsesAugment.class);
     private static final QName SIMPLE_VALUE_QNAME = QName.create(TreeComplexUsesAugment.QNAME, "simple-value");
 
 
-   private BindingToNormalizedNodeCodec codec;
+    private BindingToNormalizedNodeCodec codec;
 
     @Override
     protected void setupWithSchema(final SchemaContext context) {
-        final DataObjectSerializerGenerator streamWriter = StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()));
+        final DataObjectSerializerGenerator streamWriter
+                = StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()));
         final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry(streamWriter);
         codec = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
         codec.onGlobalContextUpdated(context);
-    };
+    }
 
     @Test
     public void testComplexAugmentationSerialization() {

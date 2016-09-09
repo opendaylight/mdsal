@@ -24,7 +24,8 @@ class BindingDOMDataTreeServiceAdapter implements DataTreeService {
     private final DOMDataTreeService delegate;
     private final BindingToNormalizedNodeCodec codec;
 
-    private BindingDOMDataTreeServiceAdapter(final DOMDataTreeService delegate, final BindingToNormalizedNodeCodec codec) {
+    private BindingDOMDataTreeServiceAdapter(final DOMDataTreeService delegate,
+            final BindingToNormalizedNodeCodec codec) {
         this.delegate = Preconditions.checkNotNull(delegate, "delegate");
         this.codec = Preconditions.checkNotNull(codec, "codec");
     }

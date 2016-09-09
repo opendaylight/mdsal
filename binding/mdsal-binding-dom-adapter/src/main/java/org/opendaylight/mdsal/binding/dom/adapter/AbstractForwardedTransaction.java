@@ -7,15 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.common.api.AsyncTransaction;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
-
-import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+import org.opendaylight.mdsal.common.api.AsyncTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.util.concurrent.MappingCheckedFuture;
@@ -30,7 +29,7 @@ abstract class AbstractForwardedTransaction<T extends AsyncTransaction<YangInsta
     private final T delegate;
     private final BindingToNormalizedNodeCodec codec;
 
-    public AbstractForwardedTransaction(final T delegateTx, final BindingToNormalizedNodeCodec codec) {
+    AbstractForwardedTransaction(final T delegateTx, final BindingToNormalizedNodeCodec codec) {
         this.delegate = Preconditions.checkNotNull(delegateTx, "Delegate must not be null");
         this.codec = Preconditions.checkNotNull(codec, "Codec must not be null");
     }
@@ -47,7 +46,8 @@ abstract class AbstractForwardedTransaction<T extends AsyncTransaction<YangInsta
     }
 
     @SuppressWarnings("unchecked")
-    protected final <S extends AsyncTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>>> S getDelegateChecked(final Class<S> txType) {
+    protected final <S extends AsyncTransaction<YangInstanceIdentifier, NormalizedNode<?, ?>>> S getDelegateChecked(
+            final Class<S> txType) {
         Preconditions.checkState(txType.isInstance(delegate));
         return (S) delegate;
     }
