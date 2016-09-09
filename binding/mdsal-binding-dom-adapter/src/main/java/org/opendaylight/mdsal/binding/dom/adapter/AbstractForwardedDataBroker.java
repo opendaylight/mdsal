@@ -51,7 +51,8 @@ public abstract class AbstractForwardedDataBroker implements Delegator<DOMDataBr
 
         for (final Map.Entry<YangInstanceIdentifier, ? extends NormalizedNode<?, ?>> entry : normalized.entrySet()) {
             try {
-                final Optional<Entry<InstanceIdentifier<? extends DataObject>, DataObject>> potential = getCodec().toBinding(entry);
+                final Optional<Entry<InstanceIdentifier<? extends DataObject>, DataObject>> potential
+                        = getCodec().toBinding(entry);
                 if (potential.isPresent()) {
                     final Entry<InstanceIdentifier<? extends DataObject>, DataObject> binding = potential.get();
                     newMap.put(binding.getKey(), binding.getValue());
@@ -68,11 +69,13 @@ public abstract class AbstractForwardedDataBroker implements Delegator<DOMDataBr
         final Set<InstanceIdentifier<?>> hashSet = new HashSet<>();
         for (final YangInstanceIdentifier normalizedPath : normalized) {
             try {
-                final Optional<InstanceIdentifier<? extends DataObject>> potential = getCodec().toBinding(normalizedPath);
+                final Optional<InstanceIdentifier<? extends DataObject>> potential
+                        = getCodec().toBinding(normalizedPath);
                 if (potential.isPresent()) {
                     final InstanceIdentifier<? extends DataObject> binding = potential.get();
                     hashSet.add(binding);
-                } else if (normalizedPath.getLastPathArgument() instanceof YangInstanceIdentifier.AugmentationIdentifier) {
+                } else if (normalizedPath.getLastPathArgument() instanceof
+                        YangInstanceIdentifier.AugmentationIdentifier) {
                     hashSet.add(path);
                 }
             } catch (final DeserializationException e) {
@@ -86,7 +89,8 @@ public abstract class AbstractForwardedDataBroker implements Delegator<DOMDataBr
         if (path.isWildcarded()) {
             return Optional.absent();
         }
-        return (Optional<DataObject>) getCodec().deserializeFunction(path).apply(Optional.<NormalizedNode<?, ?>> of(data));
+        return (Optional<DataObject>) getCodec().deserializeFunction(path).apply(
+                Optional.<NormalizedNode<?, ?>>of(data));
     }
 
     @Override

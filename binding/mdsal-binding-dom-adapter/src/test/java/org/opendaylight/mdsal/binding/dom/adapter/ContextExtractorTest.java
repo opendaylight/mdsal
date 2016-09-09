@@ -10,9 +10,8 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
-import org.opendaylight.mdsal.binding.dom.adapter.ContextReferenceExtractor;
-
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.dom.adapter.ContextReferenceExtractor;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.rpc.routing.rev140701.EncapsulatedRoute;

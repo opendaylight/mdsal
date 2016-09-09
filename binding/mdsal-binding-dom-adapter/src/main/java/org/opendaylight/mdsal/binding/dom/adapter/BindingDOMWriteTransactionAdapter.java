@@ -7,14 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import com.google.common.util.concurrent.CheckedFuture;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
-
-import com.google.common.util.concurrent.CheckedFuture;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+
 
 class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> extends
         AbstractWriteTransaction<T> implements WriteTransaction {
