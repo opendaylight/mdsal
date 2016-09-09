@@ -7,22 +7,22 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.dom.api.DOMService;
-
-import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import java.util.Map;
+import org.opendaylight.mdsal.dom.api.DOMService;
 
 public abstract class BindingDOMAdapterLoader extends AdapterLoader<BindingService, DOMService> {
 
 
-    private static final Map<Class<?>,BindingDOMAdapterBuilder.Factory<?>> FACTORIES = ImmutableMap.<Class<?>,BindingDOMAdapterBuilder.Factory<?>>builder()
+    private static final Map<Class<?>,BindingDOMAdapterBuilder.Factory<?>> FACTORIES = ImmutableMap.<Class<?>,
+                BindingDOMAdapterBuilder.Factory<?>>builder()
             .put(NotificationService.class,BindingDOMNotificationServiceAdapter.BUILDER_FACTORY)
             .put(NotificationPublishService.class,BindingDOMNotificationPublishServiceAdapter.BUILDER_FACTORY)
             .put(DataBroker.class,BindingDOMDataBrokerAdapter.BUILDER_FACTORY)
@@ -37,7 +37,8 @@ public abstract class BindingDOMAdapterLoader extends AdapterLoader<BindingServi
     }
 
     @Override
-    protected final AdapterBuilder<? extends BindingService, DOMService> createBuilder(final Class<? extends BindingService> key) {
+    protected final AdapterBuilder<? extends BindingService, DOMService> createBuilder(
+                final Class<? extends BindingService> key) {
         final Factory<?> factory = FACTORIES.get(key);
         Preconditions.checkArgument(factory != null, "Unsupported service type %s", key);
         final BindingDOMAdapterBuilder<?> builder = factory.newBuilder();

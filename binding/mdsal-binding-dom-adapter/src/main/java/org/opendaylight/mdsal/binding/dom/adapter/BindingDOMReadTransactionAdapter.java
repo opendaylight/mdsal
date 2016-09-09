@@ -7,15 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
-import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
 
 class BindingDOMReadTransactionAdapter extends AbstractForwardedTransaction<DOMDataTreeReadTransaction> implements
         ReadTransaction {

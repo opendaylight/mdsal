@@ -46,8 +46,9 @@ public class Bug5524augmentUses extends AbstractDataBrokerTest {
 
     @Test
     public void testBug5224() throws Exception {
-        final BindingToNormalizedNodeCodec mappingService = new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                new BindingNormalizedNodeCodecRegistry(StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()))));
+        final BindingToNormalizedNodeCodec mappingService = new BindingToNormalizedNodeCodec(
+                GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), new BindingNormalizedNodeCodecRegistry(
+                        StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()))));
         final ModuleInfoBackedContext moduleInfoBackedContext = ModuleInfoBackedContext.create();
         moduleInfoBackedContext.registerModuleInfo(BindingReflections.getModuleInfo(Module4Main.class));
         mappingService.onGlobalContextUpdated(moduleInfoBackedContext.tryToCreateSchemaContext().get());
@@ -56,26 +57,30 @@ public class Bug5524augmentUses extends AbstractDataBrokerTest {
                 new ContainerModule4Builder().setListModule11(Collections.singletonList(
                         new ListModule11Builder().setListModule12(Collections.singletonList(
                                 new ListModule12Builder().setContainerModule1(
-                                        new ContainerModule1Builder().addAugmentation(ContainerModule11.class, new ContainerModule11Builder().build()).build())
-                                        .build())).build())).build()).build();
+                                        new ContainerModule1Builder().addAugmentation(ContainerModule11.class,
+                                                new ContainerModule11Builder().build()).build())
+                                                    .build())).build())).build()).build();
 
         final Module4Main manualModule4Main = new Module4MainBuilder().setContainerModule4(
                 new ContainerModule4Builder().setManualListModule11(Collections.singletonList(
                         new ManualListModule11Builder().setManualListModule12(Collections.singletonList(
                                 new ManualListModule12Builder().setManualContainerModule1(
-                                        new ManualContainerModule1Builder().addAugmentation(ManualContainerModule11.class, new ManualContainerModule11Builder().build()).build())
-                                        .build())).build())).build()).build();
+                                        new ManualContainerModule1Builder().addAugmentation(
+                                                ManualContainerModule11.class, new ManualContainerModule11Builder()
+                                                    .build()).build()).build())).build())).build()).build();
 
         final Module4Main contManualModule4Main = new Module4MainBuilder().setContainerModule4(
                 new ContainerModule4Builder().setContainerManualListModule11(Collections.singletonList(
-                        new ContainerManualListModule11Builder().setContainerManualListModule12(Collections.singletonList(
+                        new ContainerManualListModule11Builder().setContainerManualListModule12(
+                                Collections.singletonList(
                                 new ContainerManualListModule12Builder().setContainerManualContainerModule1(
-                                        new ContainerManualContainerModule1Builder().setContainerManualContainerModule2
-                                                (new ContainerManualContainerModule2Builder().build()).build())
+                                        new ContainerManualContainerModule1Builder().setContainerManualContainerModule2(
+                                                new ContainerManualContainerModule2Builder().build()).build())
                                         .build())).build())).build()).build();
 
         final BindingCodecTree codecContext = mappingService.getCodecFactory().getCodecContext();
-        final BindingCodecTreeNode<Module4Main> subtreeCodec = codecContext.getSubtreeCodec(InstanceIdentifier.create(Module4Main.class));
+        final BindingCodecTreeNode<Module4Main> subtreeCodec = codecContext.getSubtreeCodec(
+                InstanceIdentifier.create(Module4Main.class));
         final NormalizedNode<?, ?> serialized = subtreeCodec.serialize(module4Main);
         final NormalizedNode<?, ?> manualSerialized = subtreeCodec.serialize(manualModule4Main);
         final NormalizedNode<?, ?> containerManualSerialized = subtreeCodec.serialize(contManualModule4Main);

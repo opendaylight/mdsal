@@ -24,12 +24,12 @@ public abstract class AdapterBuilder<T,D> implements Builder<T> {
     protected abstract T createInstance(ClassToInstanceMap<D> delegates);
 
     private void checkAllRequiredServices() {
-        for(final Class<? extends D> type : getRequiredDelegates()) {
+        for (final Class<? extends D> type : getRequiredDelegates()) {
             Preconditions.checkState(delegates.get(type) != null, "Requires service %s is not defined.",type);
         }
     }
 
-    public final <V extends D>void addDelegate(final Class<V> type,final D impl) {
+    public final <V extends D> void addDelegate(final Class<V> type,final D impl) {
         delegates.put(type,impl);
     }
 

@@ -7,34 +7,36 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import org.opendaylight.mdsal.dom.api.DOMNotification;
-import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
-import org.opendaylight.mdsal.dom.api.DOMService;
-
-import org.opendaylight.mdsal.binding.api.NotificationPublishService;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
+import org.opendaylight.mdsal.dom.api.DOMNotification;
+import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
+import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.Notification;
+
 
 public class BindingDOMNotificationPublishServiceAdapter implements NotificationPublishService, AutoCloseable {
 
-    static final Factory<NotificationPublishService> BUILDER_FACTORY = new BindingDOMAdapterBuilder.Factory<NotificationPublishService>() {
+    static final Factory<NotificationPublishService> BUILDER_FACTORY
+            = new BindingDOMAdapterBuilder.Factory<NotificationPublishService>() {
 
-        @Override
-        public BindingDOMAdapterBuilder<NotificationPublishService> newBuilder() {
-            return new Builder();
-        }
+                @Override
+                public BindingDOMAdapterBuilder<NotificationPublishService> newBuilder() {
+                    return new Builder();
+                }
 
-    };
+            };
 
     private final BindingToNormalizedNodeCodec codecRegistry;
     private final DOMNotificationPublishService domPublishService;
 
-    public BindingDOMNotificationPublishServiceAdapter(final BindingToNormalizedNodeCodec codec, final DOMNotificationPublishService domPublishService) {
+    public BindingDOMNotificationPublishServiceAdapter(final BindingToNormalizedNodeCodec codec,
+            final DOMNotificationPublishService domPublishService) {
         this.codecRegistry = codec;
         this.domPublishService = domPublishService;
     }
@@ -61,8 +63,10 @@ public class BindingDOMNotificationPublishServiceAdapter implements Notification
     }
 
     @Override
-    public ListenableFuture<? extends Object> offerNotification(final Notification notification, final int timeout, final TimeUnit unit) throws InterruptedException {
-        ListenableFuture<?> offerResult = domPublishService.offerNotification(toDomNotification(notification), timeout, unit);
+    public ListenableFuture<? extends Object> offerNotification(final Notification notification,
+            final int timeout, final TimeUnit unit) throws InterruptedException {
+        ListenableFuture<?> offerResult = domPublishService.offerNotification(
+                toDomNotification(notification), timeout, unit);
         return DOMNotificationPublishService.REJECTED.equals(offerResult)
                 ? NotificationPublishService.REJECTED
                 : offerResult;
