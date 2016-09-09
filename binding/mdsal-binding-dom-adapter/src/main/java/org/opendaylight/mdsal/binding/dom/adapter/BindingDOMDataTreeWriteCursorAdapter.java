@@ -27,7 +27,8 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
     private BindingToNormalizedNodeCodec codec;
     private final Deque<PathArgument> stack = new ArrayDeque<>();
 
-    public BindingDOMDataTreeWriteCursorAdapter(final DataTreeIdentifier<?> path, final T delegate, final BindingToNormalizedNodeCodec codec) {
+    public BindingDOMDataTreeWriteCursorAdapter(final DataTreeIdentifier<?> path, final T delegate,
+            final BindingToNormalizedNodeCodec codec) {
 
         this.delegate = delegate;
         this.codec = codec;
@@ -42,10 +43,12 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
         return ret.getLastPathArgument();
     }
 
-    private <T extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalized(final PathArgument child, final T data) {
+    private <T extends DataObject> Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> convertToNormalized(
+            final PathArgument child, final T data) {
         stack.push(child);
         final InstanceIdentifier<?> iid = InstanceIdentifier.create(stack);
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = codec.toNormalizedNode(new SimpleEntry<>(iid, data));
+        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry
+            = codec.toNormalizedNode(new SimpleEntry<>(iid, data));
         stack.pop();
         return entry;
     }
