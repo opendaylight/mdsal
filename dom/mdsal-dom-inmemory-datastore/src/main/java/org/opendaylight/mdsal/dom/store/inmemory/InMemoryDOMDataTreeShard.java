@@ -32,6 +32,7 @@ import org.opendaylight.yangtools.util.concurrent.FastThreadPoolExecutor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.TreeType;
 import org.opendaylight.yangtools.yang.data.impl.schema.tree.InMemoryDataTreeFactory;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -196,13 +197,22 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         return ret;
     }
 
-    InmemoryDOMDataTreeShardWriteTransaction createTransaction(
-            final InmemoryDOMDataTreeShardWriteTransaction previousTx) {
-        // FIXME: implement this
-        throw new UnsupportedOperationException();
+    DataTreeSnapshot takeSnapshot() {
+        return dataTree.takeSnapshot();
     }
 
-    InmemoryDOMDataTreeShardWriteTransaction createTransaction(final Collection<DOMDataTreeIdentifier> prefixes) {
+    InmemoryDOMDataTreeShardWriteTransaction createTransaction(final String transactionId,
+                                                               final InMemoryDOMDataTreeShardProducer producer,
+                                                               final Collection<DOMDataTreeIdentifier> prefixes,
+                                                               final DataTreeSnapshot snapshot) {
+
+        return createTxForSnapshot(producer, prefixes, (CursorAwareDataTreeSnapshot) snapshot);
+    }
+
+    private InmemoryDOMDataTreeShardWriteTransaction createTxForSnapshot(
+            final InMemoryDOMDataTreeShardProducer producer,
+            final Collection<DOMDataTreeIdentifier> prefixes,
+            final CursorAwareDataTreeSnapshot snapshot) {
 
         final Map<DOMDataTreeIdentifier, SubshardProducerSpecification> affectedSubshards = new HashMap<>();
         for (final DOMDataTreeIdentifier producerPrefix : prefixes) {
@@ -226,8 +236,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
             }
         }
 
-        final ShardRootModificationContext rootContext = new ShardRootModificationContext(prefix,
-                (CursorAwareDataTreeSnapshot) dataTree.takeSnapshot());
+        final ShardRootModificationContext rootContext = new ShardRootModificationContext(prefix, snapshot);
         final ShardDataModificationBuilder builder = new ShardDataModificationBuilder(rootContext);
         for (final SubshardProducerSpecification spec : affectedSubshards.values()) {
             final ForeignShardModificationContext foreignContext =
@@ -236,6 +245,8 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
             builder.addSubshard(spec.getPrefix(), foreignContext);
         }
 
-        return new InmemoryDOMDataTreeShardWriteTransaction(builder.build(), dataTree, shardChangePublisher, executor);
+        return new InmemoryDOMDataTreeShardWriteTransaction(producer, builder.build(),
+                dataTree, shardChangePublisher, executor);
     }
+
 }

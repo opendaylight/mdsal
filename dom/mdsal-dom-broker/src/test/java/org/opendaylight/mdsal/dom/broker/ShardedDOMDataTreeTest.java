@@ -229,15 +229,17 @@ public class ShardedDOMDataTreeTest {
         tx.submit().checkedGet();
 
         final ArrayList<CheckedFuture<Void, TransactionCommitFailedException>> futures = new ArrayList<>();
-        final Collection<MapEntryNode> innerListMapEntries = createInnerListMapEntries(1000, "run-1");
-        for (final MapEntryNode innerListMapEntry : innerListMapEntries) {
-            final DOMDataTreeCursorAwareTransaction tx1 = shardProducer.createTransaction(false);
-            final DOMDataTreeWriteCursor cursor1 = tx1.createCursor(
-                    new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
-                            oid1.node(new NodeIdentifier(TestModel.INNER_LIST_QNAME))));
-            cursor1.write(innerListMapEntry.getIdentifier(), innerListMapEntry);
-            cursor1.close();
-            futures.add(tx1.submit());
+        for (int i = 0; i < 1000; i++) {
+            final Collection<MapEntryNode> innerListMapEntries = createInnerListMapEntries(1000, "run-" + i);
+            for (final MapEntryNode innerListMapEntry : innerListMapEntries) {
+                final DOMDataTreeCursorAwareTransaction tx1 = shardProducer.createTransaction(false);
+                final DOMDataTreeWriteCursor cursor1 = tx1.createCursor(
+                        new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
+                                oid1.node(new NodeIdentifier(TestModel.INNER_LIST_QNAME))));
+                cursor1.write(innerListMapEntry.getIdentifier(), innerListMapEntry);
+                cursor1.close();
+                futures.add(tx1.submit());
+            }
         }
 
         futures.get(futures.size() - 1).checkedGet();
