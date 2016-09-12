@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_0e8e06d0",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/AbstractRegistrationTree.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-09-12T21:32:58Z",
+      "side": 1,
+      "message": "write?",
+      "range": {
+        "startLine": 49,
+        "startChar": 7,
+        "endLine": 49,
+        "endChar": 17
+      },
+      "revId": "caf86f4942f1cfd124393d662188b9e029a09189",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_ee78eac5",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/AbstractRegistrationTree.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-09-12T21:32:58Z",
+      "side": 1,
+      "message": "write?",
+      "range": {
+        "startLine": 75,
+        "startChar": 94,
+        "endLine": 75,
+        "endChar": 104
+      },
+      "revId": "caf86f4942f1cfd124393d662188b9e029a09189",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
