@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
@@ -17,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -49,9 +51,14 @@ public class ShardedDOMReadTransactionAdapterTest {
     public void testRead() throws Exception {
         final CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> readResult =
                 readTx.read(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
+        assertTrue(readTx.exists(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH).checkedGet());
         assertEquals(readResult.checkedGet().get(), TestUtils.TEST_CONTAINER);
     }
 
+    @After
+    public void close() throws Exception {
+        readTx.close();
+    }
 
     private static class TestTreeService implements DOMDataTreeService {
 
