@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_ae1c2f6b",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataTreeWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-13T15:49:06Z",
+      "side": 1,
+      "message": "Should be just a Consumer",
+      "range": {
+        "startLine": 136,
+        "startChar": 12,
+        "endLine": 136,
+        "endChar": 64
+      },
+      "revId": "74e9c0403c9cdb9005f7dd95301b7ddf479fc884",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_0e0c433a",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMDataTreeWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-09-13T15:49:06Z",
+      "side": 1,
+      "message": "looks like a constant",
+      "range": {
+        "startLine": 162,
+        "startChar": 40,
+        "endLine": 162,
+        "endChar": 95
+      },
+      "revId": "74e9c0403c9cdb9005f7dd95301b7ddf479fc884",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
