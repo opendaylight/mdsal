@@ -13,9 +13,9 @@ import java.net.URISyntaxException;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding2.txt.yangtemplateformodule;
-import org.opendaylight.mdsal.binding2.txt.yangtemplatefornode;
-import org.opendaylight.mdsal.binding2.txt.yangtemplatefornodes;
+import org.opendaylight.mdsal.binding2.txt.yangTemplateForModule;
+import org.opendaylight.mdsal.binding2.txt.yangTemplateForNode;
+import org.opendaylight.mdsal.binding2.txt.yangTemplateForNodes;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
@@ -40,17 +40,17 @@ public class YangTemplateTest {
              * 2. set of SchemaNode
              * 3. whole Module
              */
-            final String moduleBody = yangtemplateformodule.render(module).body();
+            final String moduleBody = yangTemplateForModule.render(module).body();
             //FIXME: don't do it this way, only for very first attempt to show results
             System.out.println("module ".concat(module.getName()).concat(":").concat(moduleBody));
 
             //TODO: finish following sections
             for (DataSchemaNode dataSchemaNode : module.getChildNodes()) {
-                final String nodeBody = yangtemplatefornode.render(dataSchemaNode).body();
+                final String nodeBody = yangTemplateForNode.render(dataSchemaNode).body();
             }
 
-            final String rpcsBody = yangtemplatefornodes.render(module.getRpcs()).body();
-            final String notificationsBody = yangtemplatefornodes.render(module.getNotifications()).body();
+            final String rpcsBody = yangTemplateForNodes.render(module.getRpcs()).body();
+            final String notificationsBody = yangTemplateForNodes.render(module.getNotifications()).body();
 
             //////////
         }

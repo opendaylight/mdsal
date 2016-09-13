@@ -8,10 +8,10 @@
 ***********************************************************@
 
 @import java.util.List
-@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
 @import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty
-@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.importedName
-@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.fieldName
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.fieldName
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.importedName
 
 @(properties: List[GeneratedProperty])
 @if(properties != null) {

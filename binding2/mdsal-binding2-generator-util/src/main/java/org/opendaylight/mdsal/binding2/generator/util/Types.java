@@ -38,14 +38,6 @@ import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 
 @Beta
 public final class Types {
-
-    public static final ConcreteType BOOLEAN = typeForClass(Boolean.class);
-    public static final ConcreteType FUTURE = typeForClass(Future.class);
-    public static final ConcreteType STRING = typeForClass(String.class);
-    public static final ConcreteType VOID = typeForClass(Void.class);
-    public static final ConcreteType BYTE_ARRAY = primitiveType("byte[]", null);
-    public static final ConcreteType CHAR_ARRAY = primitiveType("char[]", null);
-
     private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
             new CacheLoader<Class<?>, ConcreteType>() {
 
@@ -53,10 +45,18 @@ public final class Types {
                 public ConcreteType load(Class<?> key) throws Exception {
                     return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
                 }
-    };
+            };
 
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
+
+    public static final ConcreteType BOOLEAN = typeForClass(Boolean.class);
+    public static final ConcreteType FUTURE = typeForClass(Future.class);
+    public static final ConcreteType STRING = typeForClass(String.class);
+    public static final ConcreteType VOID = typeForClass(Void.class);
+    public static final ConcreteType BYTE_ARRAY = primitiveType("byte[]", null);
+
+    public static final ConcreteType CHAR_ARRAY = primitiveType("char[]", null);
 
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
     private static final Type SET_TYPE = typeForClass(Set.class);

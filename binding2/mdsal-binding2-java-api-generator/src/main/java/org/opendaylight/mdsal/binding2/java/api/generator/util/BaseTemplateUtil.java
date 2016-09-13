@@ -10,10 +10,16 @@ package org.opendaylight.mdsal.binding2.java.api.generator.util;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import java.beans.ConstructorProperties;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,16 +38,18 @@ import org.opendaylight.mdsal.binding2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding2.model.api.Type;
+import org.opendaylight.mdsal.binding2.model.api.TypeMember;
 import org.opendaylight.mdsal.binding2.model.api.WildcardType;
+import org.opendaylight.mdsal.binding2.spec.YangModuleInfo;
+import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.common.QName;
 
-public final class BaseTempalteUtil {
+public class BaseTemplateUtil {
     private GeneratedType type;
-    private Map<String, String> importMap;
+    private Map<String, String> importMap = new HashMap<String,String>();
     private Set<String> setOfImports;
 
     private static final CharMatcher NEWLINE_OR_TAB = CharMatcher.anyOf("\n\t");
-    private static final String DOT = ".";
     private static final String COMMA = ",";
     private static final String UNDERSCORE = "_";
     private static final String TO_STRING = ".toString";
@@ -52,17 +60,9 @@ public final class BaseTempalteUtil {
     private static final CharMatcher GT_MATCHER = CharMatcher.is('>');
     private static final CharMatcher LT_MATCHER = CharMatcher.is('<');
 
+    public static final String DOT = ".";
+//    used in interfaceTemplate
     public static final String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
-
-    private BaseTempalteUtil() {
-        throw new UnsupportedOperationException("Util class");
-    }
-
-    BaseTempalteUtil(GeneratedType type) {
-        this.type = Preconditions.checkNotNull(type);
-        /*i need to fill this somehow and save its current status*/
-        this.importMap = new HashMap<String, String>();
-    }
 
     /*
      needed order
@@ -77,6 +77,54 @@ public final class BaseTempalteUtil {
                 .append(type.getPackageName())
                 .append(";\n");
         return packageDefinition.toString();
+    }
+
+    public static String getImportedNameString() {
+        return importedName(String.class);
+    }
+
+    public static String getImportedNameArrays() {
+        return importedName(Arrays.class);
+    }
+
+    public static String getImportedNameForMap() {
+        return importedName(Map.class);
+    }
+
+    public static String getImportedNameObject() {
+        return importedName(Object.class);
+    }
+
+    public static String getImportedNameForCollections() {
+        return importedName(Collections.class);
+    }
+
+    public static String getImportedNameStringBuilder() {
+        return importedName(StringBuilder.class);
+    }
+
+    public static String getImportedNameHashMap() {
+        return importedName(HashMap.class);
+    }
+
+    public static String getImportedNameObjects() {
+        return importedName(Objects.class);
+    }
+
+    public static String getImportedNameForClass() {
+        return importedName(Class.class);
+    }
+
+    public static String getImportedNameUnsupportedOperationException() {
+        return BaseTemplateUtil.importedName(UnsupportedOperationException.class);
+    }
+
+    public static String YangModuleInfoGetName() {
+        return YangModuleInfo.class.getName();
+    }
+
+    public static String getImportedNameConstructorProperties() {
+        return BaseTemplateUtil.importedName(ConstructorProperties.class);
     }
 
     /**
@@ -105,6 +153,7 @@ public final class BaseTempalteUtil {
      * @return equals packages
      */
     private boolean hasSamePackage(String importedTypePackageName) {
+        // to do fix this is never initialized
         return type.getPackageName().equals(importedTypePackageName);
     }
 
@@ -125,7 +174,7 @@ public final class BaseTempalteUtil {
      * @param getter getter name
      * @return getter name without prefix
      */
-    public String propertyNameFromGetter(MethodSignature getter) {
+    public static String propertyNameFromGetter(MethodSignature getter) {
         final String name = Preconditions.checkNotNull(getter.getName());
         int prefix;
         if (name.startsWith("is")) {
@@ -144,7 +193,7 @@ public final class BaseTempalteUtil {
      * @param s getter name without prefix
      * @return getter name starting in LowerCase
      */
-    private String toFirstLower(String s) {
+    public static String toFirstLower(String s) {
         return s != null && s.length() != 0?(Character.isLowerCase(s.charAt(0))?s:(s.length() == 1?s.toLowerCase():s.substring(0, 1).toLowerCase() + s.substring(1))):s;
     }
 
@@ -154,7 +203,7 @@ public final class BaseTempalteUtil {
      * @param field generated property with data about field which is generated as the getter method
      * @return string with the getter method source code in JAVA format
      */
-    public String getterMethod(GeneratedProperty field) {
+    public static String getterMethod(GeneratedProperty field) {
         final StringBuilder getterMethod = new StringBuilder();
         final String fieldName = fieldName(field);
         final String importedName = Preconditions.checkNotNull(importedName(field.getReturnType()));
@@ -180,7 +229,7 @@ public final class BaseTempalteUtil {
      * @param field property name
      * @return getter for propery
      */
-    public String getterMethodName (GeneratedProperty field) {
+    public static String getterMethodName (GeneratedProperty field) {
         final Type type = Preconditions.checkNotNull(field.getReturnType());
         final String name = Preconditions.checkNotNull(field.getName());
         final String prefix = Types.BOOLEAN.equals(type) ? "is" : "get";
@@ -193,7 +242,7 @@ public final class BaseTempalteUtil {
      * @param s getter name without prefix
      * @return getter name starting in uppercase
      */
-    private String toFirstUpper(String s) {
+    public static String toFirstUpper(String s) {
         return s != null && s.length() != 0?(Character.isUpperCase(s.charAt(0))?s:(s.length() == 1?s.toUpperCase():s.substring(0, 1).toUpperCase() + s.substring(1))):s;
     }
 
@@ -227,9 +276,8 @@ public final class BaseTempalteUtil {
      * @return formated type
      */
     public static String importedName(Type intype) {
-    // to do
-    // putTypeIntoImports(type, intype, this.importMap);
-    // return getExplicitType(this.type, intype, this.importMap);
+//        putTypeIntoImports(type, intype, importMap);
+//        return getExplicitType(type, intype, importMap);
         return null;
     }
 
@@ -264,7 +312,7 @@ public final class BaseTempalteUtil {
      * @param parameters group of generated property instances which are transformed to the sequence of parameter names
      * @return string with the list of the parameter names
      */
-    private String asArguments(Iterable<GeneratedProperty> parameters) {
+    public static String asArguments(Iterable<GeneratedProperty> parameters) {
         final List<String> strings = new LinkedList<>();
         if (!isEmpty(parameters)) {
             for (GeneratedProperty parameter : parameters) {
@@ -275,7 +323,7 @@ public final class BaseTempalteUtil {
     }
 
     /**
-     * Template method which generates JAVA comments.
+     * Template method which generates JAVA comments. InterfaceTemplate
      *
      * @param comment comment string with the comment for whole JAVA class
      * @return string with comment in JAVA format
@@ -288,7 +336,7 @@ public final class BaseTempalteUtil {
     }
 
     /**
-     * Wraps text as documentation
+     * Wraps text as documentation, used in enum description
      *
      * @param text text for wrapping
      * @return wrapped text
@@ -301,12 +349,12 @@ public final class BaseTempalteUtil {
         sb.append(NEW_LINE);
         Iterable<String> lineSplitText = NL_SPLITTER.split(text);
         for (final String t : lineSplitText) {
-            sb.append(" *");
-            if (t.isEmpty()) {
+            if (!t.isEmpty()) {
+                sb.append(" *");
                 sb.append(" ");
                 sb.append(t);
+                sb.append(NEW_LINE);
             }
-            sb.append(NEW_LINE);
         }
         sb.append(" */");
         return sb.toString();
@@ -314,13 +362,12 @@ public final class BaseTempalteUtil {
 
     public static String formatDataForJavaDoc(GeneratedType type) {
         final String description = type.getDescription().isPresent() ? type.getDescription().get() : "";
-        final String javaDoc = encodeJavadocSymbols(description);
-        return javaDoc.concat(TO_STRING);
+        return encodeJavadocSymbols(description);
     }
 
     public static String formatDataForJavaDoc(GeneratedType type, String additionalComment) {
         StringBuilder javaDoc = new StringBuilder();
-        if (type.getDescription().isPresent()) {
+        if (!type.getDescription().isPresent()) {
             javaDoc.append(type.getDescription())
                     .append(NEW_LINE)
                     .append(NEW_LINE)
@@ -329,6 +376,36 @@ public final class BaseTempalteUtil {
         javaDoc.append(additionalComment)
                 .append(TO_STRING);
         return javaDoc.toString();
+    }
+
+    public static String formatDataForJavaDoc(TypeMember type, String additionalComment) {
+        StringBuilder javaDoc = new StringBuilder();
+        if (!(type.getComment() == null || type.getComment().isEmpty())) {
+            javaDoc.append(type.getComment())
+                    .append(NEW_LINE)
+                    .append(NEW_LINE)
+                    .append(NEW_LINE);
+        }
+        javaDoc.append(additionalComment)
+                .append(TO_STRING);
+        /*FIX ME base template 258*/
+        return javaDoc.toString();
+    }
+
+    public static String getJavaDocForInterface(MethodSignature methodSignature) {
+        StringBuilder javaDoc = new StringBuilder();
+        javaDoc.append("@return ")
+                .append(asCode(methodSignature.getReturnType().getFullyQualifiedName()))
+                .append(" ")
+                .append(asCode(propertyNameFromGetter(methodSignature)))
+                .append(", or ")
+                .append(asCode("null"))
+                .append(" if not present");
+        return formatDataForJavaDoc(methodSignature, javaDoc.toString());
+    }
+
+    private static String asCode(String text) {
+        return "<code>" + text + "</code>";
     }
 
     public String asLink(String text) {
@@ -399,16 +476,6 @@ public final class BaseTempalteUtil {
         return sb.append(lineBuilder).append('\n').toString();
     }
 
-    public static String generateImports(List<Type> parameters) {
-        final List<String> strings = new LinkedList<>();
-        if (!isEmpty(parameters)) {
-            for (Type parameter : parameters) {
-                strings.add(importedName(parameter));
-            }
-        }
-        return String.join(",", strings);
-    }
-
     private static boolean isEmpty(Iterable<?> iterable) {
         return iterable instanceof Collection ?((Collection)iterable).isEmpty():!iterable.iterator().hasNext();
     }
@@ -430,18 +497,19 @@ public final class BaseTempalteUtil {
 
     /**
      * Template method which generates method parameters with their types from <code>parameters</code>.
+     * InterfaceTemplate
      *
      * @param parameters list of parameter instances which are transformed to the method parameters
      * @return string with the list of the method parameters with their types in JAVA format
      */
-    public static String generateParameters(List<AnnotationType.Parameter> parameters) {
+    public static String generateParameters(List<MethodSignature.Parameter> parameters) {
         final List<String> strings = new LinkedList<>();
         if (!isEmpty(parameters)) {
-            for (AnnotationType.Parameter parameter : parameters) {
+            for (MethodSignature.Parameter parameter : parameters) {
                 final StringBuilder parameterWithType = new StringBuilder();
+                parameterWithType.append(importedName(parameter.getType()));
+                parameterWithType.append(" ");
                 parameterWithType.append(parameter.getName());
-                parameterWithType.append("=");
-                parameterWithType.append(parameter.getValues());
                 strings.add(parameterWithType.toString());
             }
         }
@@ -459,30 +527,6 @@ public final class BaseTempalteUtil {
             return findProperty(parent, name);
         }
         return null;
-    }
-
-    public static String emitConstant(Constant constant) {
-        final StringBuilder restriction = new StringBuilder();
-        final Object qname = constant.getValue();
-        restriction.append("public static final ")
-                .append(importedName(constant.getType()))
-                .append(" ")
-                .append(constant.getName())
-                .append(" = ");
-        if (qname instanceof QName) {
-            restriction.append(QName.class.getName())
-                    .append(".create(\"")
-                    .append(((QName) qname).getNamespace().toString())
-                    .append("\", \"")
-                    .append(((QName) qname).getFormattedRevision())
-                    .append("\", \"")
-                    .append(((QName) qname).getLocalName())
-                    .append("\").intern()");
-        } else {
-            restriction.append(qname);
-        }
-        restriction.append(";");
-        return restriction.toString();
     }
 
     public String addSeparator(List<Type> types) {
@@ -631,22 +675,31 @@ public final class BaseTempalteUtil {
         return builder.toString();
     }
 
+    public static String getSimpleNameForBuilder() {
+        return Builder.class.getSimpleName();
+    }
+
     public static String encodeJavadocSymbols(String description) {
         if (description == null || description.isEmpty()) {
             return description;
         }
-        String ret = description.replace("*/", "&#42;&#47;");
+        final String ret = description.replace("*/", "&#42;&#47;");
         return AMP_MATCHER.replaceFrom(ret, "&amp;");
     }
 
+
+    /**
+     * @param enumeration
+     * @return List of enumeration pairs with javadoc
+     */
     public static String writeEnumeration(final Enumeration enumeration) {
         final List<String> strings = new LinkedList<>();
         if (!isEmpty(enumeration.getValues())) {
             for (Enumeration.Pair pair : enumeration.getValues()) {
                 final StringBuilder parameterWithType = new StringBuilder();
                 parameterWithType.append(asJavadoc(encodeAngleBrackets(pair.getDescription())));
-                parameterWithType.append("\\n");
-//                parameterWithType.append(pair.getName()); we miss mapped name to do
+                parameterWithType.append("\n");
+                parameterWithType.append(pair.getMappedName());
                 parameterWithType.append("(");
                 parameterWithType.append(pair.getValue());
                 parameterWithType.append(", \"");
@@ -655,7 +708,7 @@ public final class BaseTempalteUtil {
                 strings.add(parameterWithType.toString());
             }
         }
-        return String.join(",\\n", strings).concat(";");
+        return String.join(",\n", strings).concat(";");
     }
 
     /**

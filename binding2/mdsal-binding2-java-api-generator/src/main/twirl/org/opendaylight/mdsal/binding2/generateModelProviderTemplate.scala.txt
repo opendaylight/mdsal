@@ -1,0 +1,27 @@
+@**********************************************************
+* Twirl InterfaceTemplate for generating Java interface   *
+* source code. Twirl is transformed to Scala and compiled.*
+* Then, it can be called from Java with particular input  *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import java.util.List
+@import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.MODEL_BINDING_PROVIDER_CLASS_NAME
+@import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.MODULE_INFO_CLASS_NAME
+@import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.getRootPackageName
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.YangModuleInfoGetName
+@import org.opendaylight.yangtools.yang.model.api.Module
+@import org.opendaylight.yangtools.yang.model.api.SchemaContext
+
+@(module: Module, ctx: SchemaContext)
+@*FIX ME below yangmodel statements inside xtend tags*@
+package @{getRootPackageName(module.getQNameModule())};
+
+public final class @{MODEL_BINDING_PROVIDER_CLASS_NAME} implements «YangModelBindingProvider.name» {
+
+    public @{YangModuleInfoGetName()} getModuleInfo() {
+        return @{MODULE_INFO_CLASS_NAME}.getInstance();
+    }
+}

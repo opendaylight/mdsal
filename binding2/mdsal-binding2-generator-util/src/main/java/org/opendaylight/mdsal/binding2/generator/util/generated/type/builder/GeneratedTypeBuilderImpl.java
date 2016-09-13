@@ -150,7 +150,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
 
         @Override
         public Optional<String> getDescription() {
-            return null;
+            return Optional.absent();
         }
 
         @Override

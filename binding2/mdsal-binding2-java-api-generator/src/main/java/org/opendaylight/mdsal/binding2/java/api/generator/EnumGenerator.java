@@ -9,11 +9,9 @@
 package org.opendaylight.mdsal.binding2.java.api.generator;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.binding2.java.api.generator.renderers.InterfaceRenderer;
+import org.opendaylight.mdsal.binding2.java.api.generator.renderers.EnumRenderer;
 import org.opendaylight.mdsal.binding2.model.api.CodeGenerator;
 import org.opendaylight.mdsal.binding2.model.api.Enumeration;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.UnitName;
 import org.opendaylight.yangtools.concepts.Identifier;
@@ -24,22 +22,20 @@ import org.opendaylight.yangtools.concepts.Identifier;
  * in Twirl (Scala based) language.
  */
 @Beta
-public final class InterfaceGenerator implements CodeGenerator {
+public class EnumGenerator implements CodeGenerator {
 
     @Override
     public String generate(Type type) {
-        if ((type instanceof GeneratedType) && !(type instanceof GeneratedTransferObject)) {
-            final GeneratedType genType = (GeneratedType) type;
-            return new InterfaceRenderer(genType).generateTemplate();
-        } else {
-            return "";
+        if (type instanceof Enumeration) {
+            final Enumeration enums = (Enumeration) type;
+            return new EnumRenderer(enums).generateTemplate();
         }
+        return "";
     }
 
     @Override
     public boolean isAcceptable(Type type) {
-        return type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)
-                && !(type instanceof Enumeration);
+        return type instanceof Enumeration;
     }
 
     @Override

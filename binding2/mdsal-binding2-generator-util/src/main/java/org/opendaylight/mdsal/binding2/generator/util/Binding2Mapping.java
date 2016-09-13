@@ -18,6 +18,7 @@ import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import java.util.Set;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 
 /**
  * Standard Util class that provides generated Java related functionality
@@ -36,6 +37,8 @@ public final class Binding2Mapping {
             "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient",
             "true", "try", "void", "volatile", "while");
 
+    public static final String MODEL_BINDING_PROVIDER_CLASS_NAME = "$YangModelBindingProvider";
+    public static final String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
     public static final String PACKAGE_PREFIX = "org.opendaylight.yang.gen.v2";
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
     private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
@@ -118,6 +121,15 @@ public final class Binding2Mapping {
             return s.toUpperCase();
         }
         return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+    public static String getRootPackageName(final QName module) {
+        return getRootPackageName(module.getModule());
+    }
+
+    public static String getRootPackageName(final QNameModule module) {
+        //FIX ME implement this
+        return null;
     }
 
     //TODO: further implementation of static util methods...
