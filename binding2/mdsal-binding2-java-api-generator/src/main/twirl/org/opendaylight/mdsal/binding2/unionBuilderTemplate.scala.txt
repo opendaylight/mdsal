@@ -1,0 +1,42 @@
+@**********************************************************
+* Twirl InterfaceTemplate for generating Java interface   *
+* source code. Twirl is transformed to Scala and compiled.*
+* Then, it can be called from Java with particular input  *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import java.util.List
+@import org.opendaylight.mdsal.binding2.model.api.AccessModifier
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.formatDataForJavaDoc
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.generateParameters
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.getImportedNameUnsupportedOperationException
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.importedName
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.wrapToDocumentation
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.getAccessModifier
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.getClarification
+
+@(genType: GeneratedType)
+@if(genType != null) {
+    @{wrapToDocumentation(formatDataForJavaDoc(genType, getClarification()))}
+    public class @{genType.getName()} {
+        @for(method <- genType.getMethodDefinitions()) {
+            @{getAccessModifier(method.getAccessModifier())}
+            @if(method.isStatic()) {static}
+            @if(method.isFinal()) { final}
+            @*FIX ME check correct call of imported method*@
+             @{importedName(method.getReturnType())}
+             @{method.getName()}
+            (
+            @{generateParameters(method.getParameters())}
+            ) {
+                throw new
+            @{getImportedNameUnsupportedOperationException()}
+            ("Not yet implemented");
+            }
+        }
+    }
+}

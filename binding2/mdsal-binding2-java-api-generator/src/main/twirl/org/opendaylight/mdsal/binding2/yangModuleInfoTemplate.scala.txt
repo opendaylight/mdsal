@@ -1,0 +1,178 @@
+@**********************************************************
+* Twirl InterfaceTemplate for generating Java interface   *
+* source code. Twirl is transformed to Scala and compiled.*
+* Then, it can be called from Java with particular input  *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import java.util.List
+@import org.opendaylight.mdsal.binding2.generator.util.Types
+@import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.getClassName
+@import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.getRootPackageName
+@import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.MODULE_INFO_CLASS_NAME
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getFormattedRevision
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getImportedNameCollections
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getImportedNameHashSet
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getImportedNameInputStream
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getImportedNameImmutableSet
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getImportedNameIOException
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getImportedNameSet
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getImportedNameString
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getImportedNameStringBuilder
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getImportedNameYangModuleInfo
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getImportMap
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getSortedQName
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.YangModuleInfoTemplateUtil.getSourcePath
+@import org.opendaylight.mdsal.binding2.model.api.ParameterizedType
+@import org.opendaylight.mdsal.binding2.model.api.Type
+@import org.opendaylight.mdsal.binding2.model.api.WildcardType
+@import org.opendaylight.mdsal.binding2.spec.YangModuleInfo
+@import org.opendaylight.yangtools.yang.model.api.Module
+@import org.opendaylight.yangtools.yang.model.api.SchemaContext
+
+@(module: Module, ctx: SchemaContext)
+@if(module != null && ctx != null) {
+    package @{getRootPackageName(module.getQNameModule())};
+
+    @*
+    FIX ME this need to be executed at last
+    «imports»
+    «body(module)»
+    *@
+    .toString
+}
+
+@body(module: Module) = {
+    public final class @{MODULE_INFO_CLASS_NAME} implements @{getImportedNameYangModuleInfo()} {
+
+        private static final @{getImportedNameYangModuleInfo()} INSTANCE = new @{MODULE_INFO_CLASS_NAME}();
+
+        private final @{getImportedNameString()} name = "@{module.getName()}";
+        private final @{getImportedNameString()} namespace = "@{module.getNamespace().toString()}";
+        private final @{getImportedNameString()} revision = "@{getFormattedRevision(module.getRevision())}";
+        private final @{getImportedNameString()} resourcePath = "@{getSourcePath(module)}";
+        private final @{getImportedNameSet()}<YangModuleInfo> importedModules;
+
+        public static @{getImportedNameYangModuleInfo()} getInstance() {
+            return INSTANCE;
+        }
+
+        @{classBody(module, MODULE_INFO_CLASS_NAME)}
+    }
+}
+
+@generateSubInfo(module: Module) = {
+    @for(submodule <- module.getSubmodules()) {
+        private static final class @{getClassName(submodule.getName())}Info implements @{getImportedNameYangModuleInfo()} {
+
+            private static final @{getImportedNameYangModuleInfo()} INSTANCE = new @{getClassName(submodule.getName())}Info();
+
+            private final @{getImportedNameString()} name = "@{submodule.getName()}";
+            private final @{getImportedNameString()} namespace = "@{submodule.getNamespace().toString()}";
+            private final @{getImportedNameString()} revision = "@{getFormattedRevision(submodule.getRevision())}";
+            private final @{getImportedNameString()} resourcePath = "/@{submodule.getModuleSourcePath().replace(java.io.File.separatorChar, '/')}";
+            private final @{getImportedNameSet()}<YangModuleInfo> importedModules;
+
+            public static @{getImportedNameYangModuleInfo()} getInstance() {
+                return INSTANCE;
+            }
+
+            @{classBody(submodule, getClassName(submodule.getName + "Info"))}
+        }
+    }
+}
+
+@imports() = {
+    @if(!getImportMap().isEmpty()) {
+        @for(entry <- getImportMap().entrySet()) {
+            @if(!getImportMap().isEmpty()) {
+                import @{entry.getValue()}.@{entry.getKey()};
+            }
+        }
+    }
+}
+
+@classBody(module: Module, className: String) = {
+    private @{className}() {
+        @if(!module.getImports().isEmpty() || !module.getSubmodules().isEmpty()) {
+            @{getImportedNameSet()}<@{getImportedNameYangModuleInfo()}> set = new @{getImportedNameHashSet()}<>();
+        }
+        @if(!module.getImports().isEmpty()) {
+            @for(moduleImport <- module.getImports()) {
+                @if(moduleImport.getRevision() == null) {
+                    set.add(@{getRootPackageName(getSortedQName(ctx.getModules(), moduleImport.getModuleName()))}
+                    .@{MODULE_INFO_CLASS_NAME}.getInstance());
+                } else {
+                    set.add(@{getRootPackageName(ctx.findModuleByName(moduleImport.getModuleName(), moduleImport.getRevision()).getQNameModule())}
+                    .@{MODULE_INFO_CLASS_NAME}.getInstance());
+                }
+            }
+        }
+        @if(!module.getSubmodules().isEmpty()) {
+            @for(submodule <- module.getSubmodules()) {
+                set.add(@{getClassName(submodule.getName())}Info.getInstance());
+            }
+        }
+        @if(!module.getImports().isEmpty() && !module.getSubmodules().isEmpty()) {
+            importedModules = @{getImportedNameCollections()}.emptySet();
+        } else {
+            importedModules = @{getImportedNameImmutableSet()}.copyOf(set);
+        }
+
+        @{getImportedNameInputStream} stream = @{MODULE_INFO_CLASS_NAME}.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new IllegalStateException("Resource '" + resourcePath + "' is missing");
+        }
+        try {
+            stream.close();
+        } catch (@{getImportedNameIOException()} e) {
+        // Resource leak, but there is nothing we can do
+        }
+    }
+
+    @@Override
+    public @{getImportedNameString()} getName() {
+        return name;
+    }
+
+    @@Override
+    public @{getImportedNameString()} getRevision() {
+        return revision;
+    }
+
+    @@Override
+    public @{getImportedNameString()} getNamespace() {
+        return namespace;
+    }
+
+    @@Override
+    public @{getImportedNameInputStream()} getModuleSourceStream() throws IOException {
+        @{getImportedNameInputStream()} stream = @{MODULE_INFO_CLASS_NAME}.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new @{getImportedNameIOException()}("Resource " + resourcePath + " is missing");
+        }
+        return stream;
+    }
+
+    @@Override
+    public @{getImportedNameSet()}<@{getImportedNameYangModuleInfo()}> getImportedModules() {
+        return importedModules;
+    }
+
+    @@Override
+    public @{getImportedNameString()} toString() {
+        @{getImportedNameStringBuilder()} sb = new @{getImportedNameStringBuilder()}(this.getClass().getCanonicalName());
+        sb.append("[");
+        sb.append("name = " + name);
+        sb.append(", namespace = " + namespace);
+        sb.append(", revision = " + revision);
+        sb.append(", resourcePath = " + resourcePath);
+        sb.append(", imports = " + importedModules);
+        sb.append("]");
+        return sb.toString();
+    }
+
+    @{generateSubInfo(module)}
+}

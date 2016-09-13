@@ -49,8 +49,10 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         this.parent = builder.getParent();
         this.comment = builder.getComment();
         this.annotations = toUnmodifiableAnnotations(builder.getAnnotations());
-        this.implementsTypes = makeUnmodifiable(builder.getImplementsTypes());
-        this.constants = makeUnmodifiable(builder.getConstants());
+//        this.implementsTypes = makeUnmodifiable(builder.getImplementsTypes());
+//        this.constants = makeUnmodifiable(builder.getConstants());
+        this.implementsTypes = makeUnmodifiable(new ArrayList<>(0));
+        this.constants = makeUnmodifiable(new ArrayList<>(0));
         this.enumerations = toUnmodifiableEnumerations(builder.getEnumerations());
         this.methodSignatures = toUnmodifiableMethods(builder.getMethodDefinitions());
         this.enclosedTypes = toUnmodifiableEnclosedTypes(builder.getEnclosedTypes(),
@@ -108,11 +110,11 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     }
 
     protected final List<MethodSignature> toUnmodifiableMethods(final List<MethodSignatureBuilder> methodBuilders) {
-        final List<MethodSignature> methods = new ArrayList<>(methodBuilders.size());
-        for (final MethodSignatureBuilder methodBuilder : methodBuilders) {
-            methods.add(methodBuilder.toInstance(this));
-        }
-        return makeUnmodifiable(methods);
+//        final List<MethodSignature> methods = new ArrayList<>(methodBuilders.size());
+//        for (final MethodSignatureBuilder methodBuilder : methodBuilders) {
+//            methods.add(methodBuilder.toInstance(this));
+//        }
+        return makeUnmodifiable(new ArrayList<>(0));
     }
 
     protected final List<Enumeration> toUnmodifiableEnumerations(final List<EnumBuilder> enumBuilders) {
@@ -124,11 +126,11 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     }
 
     protected final List<GeneratedProperty> toUnmodifiableProperties(final List<GeneratedPropertyBuilder> methodBuilders) {
-        final List<GeneratedProperty> methods = new ArrayList<>(methodBuilders.size());
-        for (final GeneratedPropertyBuilder methodBuilder : methodBuilders) {
-            methods.add(methodBuilder.toInstance(this));
-        }
-        return makeUnmodifiable(methods);
+//        final List<GeneratedProperty> methods = new ArrayList<>(methodBuilders.size());
+//        for (final GeneratedPropertyBuilder methodBuilder : methodBuilders) {
+//            methods.add(methodBuilder.toInstance(this));
+//        }
+        return makeUnmodifiable(new ArrayList<>(0));
     }
 
     @Override

@@ -59,7 +59,7 @@ public final class GeneratorJavaFile {
         generators.add(new InterfaceGenerator());
         //TODO: finish generators
 //        generators.add(new TOGenerator());
-//        generators.add(new EnumGenerator());
+        generators.add(new EnumGenerator());
 //        generators.add(new BuilderGenerator());
     }
 

@@ -1,0 +1,122 @@
+@**********************************************************
+* Twirl InterfaceTemplate for generating Java interface   *
+* source code. Twirl is transformed to Scala and compiled.*
+* Then, it can be called from Java with particular input  *
+* parameters to render desired output code.               *
+*                                                         *
+* Note: we should introduce our own format instead of txt *
+***********************************************************@
+
+@import java.util.List
+@import org.opendaylight.mdsal.binding2.model.api.AccessModifier
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.asArguments
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.fieldName
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.formatDataForJavaDoc
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.generateParameters
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.getImportedNameConstructorProperties
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.getImportedNameString
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.getterMethodName
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.importedName
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.wrapToDocumentation
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.generateField
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.generateGetterHelper
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.getAccessModifier
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.getClarification
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.getFinalProperties
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.getParentProperties
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.getProperties
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.isParentProperties
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.UnionTemplateUtil.isProperties
+
+@(genType: GeneratedType)
+@if(genType != null) {
+    @*
+        FIX ME check imported name call
+        we dont have constructors() here
+    *@
+    @copyConstructor(genType)
+}
+
+@copyConstructor(genType: GeneratedType) = {
+    /**
+     * Creates a copy from Source Object.
+     *
+     * @@param source Source object
+     */
+    public @{genType.getName()}
+    (
+    @{genType.getName()}
+     source) {
+    @if(!isParentProperties()) {super(source);}
+    @if(!isProperties()) {
+        @for(property <- getProperties()) {
+            @generateField(property)
+        }
+    }
+    }
+}
+
+@getterMethod(field: GeneratedProperty) = {
+    @*fix me check uniontempalte getter method*@
+    public char[] @{getterMethodName(field)}() {
+        if (@{fieldName(field)} == null) {
+            @{generateGetterHelper(field)}
+        }
+        return @{fieldName(field)} == null ? null : @{fieldName(field)}.clone();
+    }
+}
+
+@unionConstructorsParentProperties(genType: GeneratedType) = {
+    @for(property <- getParentProperties()) {
+        public @{genType.getName()}(@{importedName(property.getReturnType())} @{fieldName(property)}) {
+            super(@{fieldName(property)}));
+        }
+    }
+}
+
+@typeBuilder(genType: GeneratedType) = {
+    @*FIX ME this can be omited because we dont have inner classes*@
+    @{genType.getName}Builder
+}
+
+@unionConstructors(genType: GeneratedType) = {
+    @for(property <- getFinalProperties()) {
+        @if("char[]".equals(property.getReturnType().getName())) {
+        /**
+         * Constructor provided only for using in JMX. Don't use it for
+         * construction new object of this union type.
+         */
+        @@@{getImportedNameConstructorProperties()}("@{property.getName()}")
+        public @{genType.getName()}(@{importedName(property.getReturnType())} @{fieldName(property)}) {
+            @{getImportedNameString()} defVal = new @{getImportedNameString()}(@{fieldName(property)});
+            @{genType.getName()} defInst = @{typeBuilder(genType)}.getDefaultInstance(defVal);
+            @for(otherProperty <- getFinalProperties()) {
+                this.@{fieldName(otherProperty)} =
+                @if("value".equals(otherProperty.getName())) {
+                    @if(importedName(otherProperty.getReturnType()).contains("[]")) {
+                        @{fieldName(otherProperty)} == null ? null : @{fieldName(otherProperty)}.clone();
+                    } else {
+                        @{fieldName(otherProperty)};
+                    }
+                } else {
+                    defInst.@{fieldName(otherProperty)};
+                }
+            }
+        }
+        } else {
+            @*FIX ME parentProperties + #[property] as argument to method below see  unionTemplate 84 *@
+            public @{genType.getName()}() {
+                super(@{asArguments(getParentProperties())});
+                this.@{fieldName(property)} = @{fieldName(property)};
+                @for(otherProperty <- getFinalProperties()) {
+                    @if(property != otherProperty && !"value".equals(otherProperty.getName())) {
+                        this.@{fieldName(otherProperty)} = null;
+                    }
+                }
+            }
+        }
+    }
+}

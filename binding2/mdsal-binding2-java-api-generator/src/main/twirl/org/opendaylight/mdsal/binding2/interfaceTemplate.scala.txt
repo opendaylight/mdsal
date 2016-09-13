@@ -8,20 +8,23 @@
 ***********************************************************@
 
 @import java.util.List
+@import org.opendaylight.mdsal.binding2.model.api.AnnotationType
 @import org.opendaylight.mdsal.binding2.model.api.Constant
 @import org.opendaylight.mdsal.binding2.model.api.Enumeration
 @import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject
 @import org.opendaylight.mdsal.binding2.model.api.GeneratedType
-@import org.opendaylight.mdsal.binding2.model.api.AnnotationType
 @import org.opendaylight.mdsal.binding2.model.api.MethodSignature
-@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.asJavadoc
-@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.emitConstant
-@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.formatDataForJavaDoc
-@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.generateImports
-@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.generateParameters
-@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.importedName
-@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.wrapToDocumentation
-@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTempalteUtil.PATTERN_CONSTANT_NAME
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.asJavadoc
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.emitConstant
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.formatDataForJavaDoc
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.generateImports
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.generateParameters
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.generateParametersForAnnotation
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.getJavaDocForInterface
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.importedName
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.isAccessor
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.PATTERN_CONSTANT_NAME
+@import org.opendaylight.mdsal.binding2.java.api.generator.util.BaseTemplateUtil.wrapToDocumentation
 
 @(genType: GeneratedType)
 @*
@@ -30,17 +33,29 @@
  * @return string with code for interface body in JAVA format
  *@
 @if(genType != null) {
-        @{wrapToDocumentation(formatDataForJavaDoc(genType))}
-        @generateAnnotations(genType.getAnnotations())
-        public interface @{genType.getName()}
-            @superInterfaces(genType)
-        {
-            @generateInnerClasses(genType)
-            @@generateEnums(genType.getEnumerations())
-            @generateConstants(genType.getConstantDefinitions())
-            @generateMethods(genType.getMethodDefinitions())
-        }
+@{wrapToDocumentation(formatDataForJavaDoc(genType))}
+@generateAnnotations(genType.getAnnotations())
+public interface @{genType.getName()}
+    @superInterfaces(genType)
+{
+    @generateInnerClasses(genType)
+    @generateEnums(genType.getEnumerations())
+    @generateConstants(genType.getConstantDefinitions())
+    @generateMethods(genType.getMethodDefinitions())
+}
+}
 
+@generateAnnotations(annotations: List[AnnotationType]) = {
+    @if(annotations != null && !annotations.isEmpty()) {
+        @for(annotation <- annotations) {
+            @@@{importedName(annotation)}
+            @if(annotation.getParameters() != null && !annotation.getParameters().isEmpty()) {
+                (
+                @{generateParametersForAnnotation(annotation.getParameters())}
+                )
+            }
+        }
+    }
 }
 
 @*
@@ -51,17 +66,6 @@
 @superInterfaces(genType: GeneratedType) = {
     @if(!genType.getImplements().isEmpty()) {
         extends @{generateImports(genType.getImplements())}
-    }
-}
-
-@generateAnnotations(annotations: List[AnnotationType]) = {
-    @if(annotations != null && !annotations.isEmpty()) {
-        @for(annotation <- annotations) {
-            @@@{importedName(annotation)}
-            @if(annotation.getParameters() != null && !annotation.getParameters().isEmpty()) {
-                (@{generateParameters(annotation.getParameters())})
-            }
-        }
     }
 }
 
@@ -92,7 +96,7 @@
 @generateEnums(enumerations: List[Enumeration]) = {
     @if(!enumerations.isEmpty()) {
         @for(enumeration <- enumerations) {
-            @* generate enum template *@
+            @* generate enum template as inner class*@
         }
     }
 }
@@ -120,10 +124,14 @@
 @generateMethods(methodSignatures: List[MethodSignature]) = {
     @if(!methodSignatures.isEmpty()) {
         @for(methodSignature <- methodSignatures) {
-            @{asJavadoc(methodSignature.getComment())}
+            @if(!isAccessor(methodSignature)) {
+                @{asJavadoc(methodSignature.getComment())}
+            }else{
+            @{getJavaDocForInterface(methodSignature)}
+            }
             @generateAnnotations(methodSignature.getAnnotations())
             @{importedName(methodSignature.getReturnType())} @{methodSignature.getName()}
-            (@{methodSignature.getParameters()});
+            (@{generateParameters(methodSignature.getParameters())});
         }
     }
 }
