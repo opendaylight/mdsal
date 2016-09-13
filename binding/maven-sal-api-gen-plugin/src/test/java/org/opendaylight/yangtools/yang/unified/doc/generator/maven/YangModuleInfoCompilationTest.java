@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
@@ -20,12 +21,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
+import org.apache.maven.project.MavenProject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl;
@@ -136,6 +139,23 @@ public class YangModuleInfoCompilationTest {
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.generateSources(context, sourcesOutputDir, context.getModules());
+    }
+
+    @Test
+    public void generateTestSourcesWithAdditionalConfig() throws Exception {
+        final List<File> sourceFiles = getSourceFiles("/yang-module-info");
+        final SchemaContext context = TestUtils.parseYangSources(sourceFiles);
+        CodeGeneratorImpl codegen = new CodeGeneratorImpl();
+        codegen.setBuildContext(new DefaultBuildContext());
+        codegen.setResourceBaseDir(null);
+        codegen.setMavenProject(new MavenProject());
+        codegen.setAdditionalConfig(ImmutableMap.of("test", "test"));
+        Collection<File> files = codegen.generateSources(context, null, context.getModules());
+        assertFalse(files.isEmpty());
+        files.forEach((file -> {
+            deleteTestDir(file);
+            assertFalse(file.exists());
+        }));
     }
 
     private static void testCompilation(final File sourcesOutputDir, final File compiledOutputDir) {

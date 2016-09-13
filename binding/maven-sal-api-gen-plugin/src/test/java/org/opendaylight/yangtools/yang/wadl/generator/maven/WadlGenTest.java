@@ -8,6 +8,7 @@
 package org.opendaylight.yangtools.yang.wadl.generator.maven;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -27,7 +28,8 @@ import org.opendaylight.yangtools.yang.unified.doc.generator.maven.TestUtils;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
 
 public class WadlGenTest {
-    public static final String FS = File.separator;
+
+    private static final String FS = File.separator;
     private static final String TEST_PATH = "target" + FS + "test" + FS + "site";
     private static final File GENERATOR_OUTPUT_DIR = new File(TEST_PATH);
 
@@ -54,6 +56,21 @@ public class WadlGenTest {
         final BasicCodeGenerator generator = new WadlGenerator();
         Collection<File> generatedWadlFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, modules);
         assertEquals(3, generatedWadlFiles.size());
+        generatedWadlFiles.forEach((file -> assertTrue(file.exists())));
+    }
+
+    @Test
+    public void testListGenerationWithoutPath() throws Exception {
+        final List<File> sourceFiles = getSourceFiles("/wadl-gen");
+        final SchemaContext context = TestUtils.parseYangSources(sourceFiles);
+        final Set<Module> modules = context.getModules();
+        final BasicCodeGenerator generator = new WadlGenerator();
+        Collection<File> generatedWadlFiles = generator.generateSources(context, null, modules);
+        assertEquals(3, generatedWadlFiles.size());
+        generatedWadlFiles.forEach((file -> {
+            deleteTestDir(file);
+            assertFalse(file.exists());
+        }));
     }
 
     private static List<File> getSourceFiles(String path) throws Exception {
@@ -85,5 +102,4 @@ public class WadlGenTest {
             throw new RuntimeException("Failed to clean up after test");
         }
     }
-
 }
