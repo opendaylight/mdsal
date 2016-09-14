@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_e2a116f9",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/CandidateAlreadyRegisteredException.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-14T19:47:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_d8c85857",
+      "range": {
+        "startLine": 33,
+        "startChar": 1,
+        "endLine": 33,
+        "endChar": 26
+      },
+      "revId": "d5ce6ab93ff8c88d7ad643479d0ce5e2160abf3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_78b824c8",
         "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java",
         "patchSetId": 8
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_42a56a02",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-14T19:47:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_78b824c8",
+      "range": {
+        "startLine": 56,
+        "startChar": 35,
+        "endLine": 56,
+        "endChar": 68
+      },
+      "revId": "d5ce6ab93ff8c88d7ad643479d0ce5e2160abf3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_b8ae3c7f",
         "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java",
         "patchSetId": 8
@@ -59,6 +107,30 @@
       "writtenOn": "2016-09-12T08:57:10Z",
       "side": 1,
       "message": "this should remain private",
+      "range": {
+        "startLine": 68,
+        "startChar": 4,
+        "endLine": 68,
+        "endChar": 31
+      },
+      "revId": "d5ce6ab93ff8c88d7ad643479d0ce5e2160abf3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c24a1a54",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-14T19:47:47Z",
+      "side": 1,
+      "message": "Robert: we had this discussion earlier. If we keep the private for enum constructor, CS complains. \n\nPlease check previous discussion s by Michael Vorbuurger and Tom Pantelis  on this check in.\n\nHere is the error:\n\n src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java:[68,5] (modifier) RedundantModifier: Redundant \u0027private\u0027 modifier.",
+      "parentUuid": "7a6b29fe_b8ae3c7f",
       "range": {
         "startLine": 68,
         "startChar": 4,
