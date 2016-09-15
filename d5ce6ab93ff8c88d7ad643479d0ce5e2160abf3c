@@ -143,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_9d29a79d",
+        "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/EntityOwnershipChangeState.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-15T12:18:24Z",
+      "side": 1,
+      "message": "yes -  the only allowed scope for an enum constructor is private so technically it is redundant. The compiler allows you to leave off private b/c a missing scope means to use the default which of course is private for enums.",
+      "parentUuid": "7a6b29fe_c24a1a54",
+      "range": {
+        "startLine": 68,
+        "startChar": 4,
+        "endLine": 68,
+        "endChar": 31
+      },
+      "revId": "d5ce6ab93ff8c88d7ad643479d0ce5e2160abf3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_38c22c34",
         "filename": "entityownership/mdsal-eos-common-api/src/main/java/org/opendaylight/mdsal/eos/common/api/GenericEntityOwnershipCandidateRegistration.java",
         "patchSetId": 8
