@@ -7,21 +7,33 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_IDENTIFIER;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ShardSubmitCoordinationTaskTest {
 
+    private final InmemoryDOMDataTreeShardWriteTransaction tx = mock(InmemoryDOMDataTreeShardWriteTransaction.class);
+
+    @Before
+    public void setUp() throws Exception {
+        doReturn("TestTx").when(tx).getIdentifier();
+        doReturn("TestTx").when(tx).toString();
+        doNothing().when(tx).transactionCommited(any());
+    }
+
     @Test
     public void basicTest() throws Exception {
         final ShardSubmitCoordinationTask shardSubmitCoordinationTask =
-                new ShardSubmitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, Collections.EMPTY_SET);
+                new ShardSubmitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, Collections.EMPTY_SET, tx);
 
         final ShardCanCommitCoordinationTask canCommitCoordinationTask = mock(ShardCanCommitCoordinationTask.class);
         doNothing().when(canCommitCoordinationTask).canCommitBlocking();

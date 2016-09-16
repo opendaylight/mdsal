@@ -16,10 +16,12 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicLong;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
+import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -28,7 +30,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteTransaction {
+class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteTransaction, Identifiable<String> {
 
     private static final Logger LOG = LoggerFactory.getLogger(InmemoryDOMDataTreeShardWriteTransaction.class);
 
@@ -75,12 +77,15 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         }
     }
 
+    private static final AtomicLong COUNTER = new AtomicLong();
+
     private final ArrayList<DOMStoreThreePhaseCommitCohort> cohorts = new ArrayList<>();
     private final InMemoryDOMDataTreeShardChangePublisher changePublisher;
     private final InMemoryDOMDataTreeShardProducer producer;
     private final ShardDataModification modification;
     private final ListeningExecutorService executor;
     private final DataTree rootShardDataTree;
+    private final String identifier;
 
     private DataTreeModification rootModification = null;
     private DOMDataTreeWriteCursor cursor;
@@ -95,7 +100,14 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         this.modification = Preconditions.checkNotNull(root);
         this.rootShardDataTree = Preconditions.checkNotNull(rootShardDataTree);
         this.changePublisher = Preconditions.checkNotNull(changePublisher);
+        this.identifier = "INMEMORY-SHARD-TX-" + COUNTER.getAndIncrement();
+        LOG.debug("Shard transaction{} created", identifier);
         this.executor = executor;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return identifier;
     }
 
     private DOMDataTreeWriteCursor getCursor() {
@@ -142,6 +154,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         if (cursor != null) {
             cursor.close();
         }
+        producer.transactionAborted(this);
         finished = true;
     }
 
@@ -164,6 +177,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         LOG.debug("Readying open transaction on shard {}", modification.getPrefix());
         rootModification = modification.seal();
 
+        producer.transactionReady(this, rootModification);
         cohorts.add(new InMemoryDOMDataTreeShardThreePhaseCommitCohort(
                 rootShardDataTree, rootModification, changePublisher));
         for (final Entry<DOMDataTreeIdentifier, ForeignShardModificationContext> entry :
@@ -180,9 +194,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         Preconditions.checkNotNull(cohorts);
         Preconditions.checkState(!cohorts.isEmpty(), "Transaction was not readied yet.");
 
-        producer.transactionSubmitted(this);
         final ListenableFuture<Void> submit = executor.submit(new ShardSubmitCoordinationTask(
-                modification.getPrefix(), cohorts));
+                modification.getPrefix(), cohorts, this));
 
         return submit;
     }
@@ -210,13 +223,17 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         LOG.debug("Commit open transaction on shard {}", modification.getPrefix());
 
         final ListenableFuture<Void> submit = executor.submit(new ShardCommitCoordinationTask(
-                modification.getPrefix(), cohorts));
+                modification.getPrefix(), cohorts, this));
         return submit;
     }
 
     DataTreeModification getRootModification() {
         Preconditions.checkNotNull(rootModification, "Transaction wasn't sealed yet");
         return rootModification;
+    }
+
+    void transactionCommited(final InmemoryDOMDataTreeShardWriteTransaction tx) {
+        producer.onTransactionCommited(tx);
     }
 
     @Override

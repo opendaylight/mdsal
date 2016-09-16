@@ -30,11 +30,14 @@ public class ShardCommitCoordinationTask implements Callable<Void> {
 
     private final DOMDataTreeIdentifier rootShardPrefix;
     private final Collection<DOMStoreThreePhaseCommitCohort> cohorts;
+    private InmemoryDOMDataTreeShardWriteTransaction transaction;
 
     public ShardCommitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
-                                       final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
+                                       final Collection<DOMStoreThreePhaseCommitCohort> cohorts,
+                                       final InmemoryDOMDataTreeShardWriteTransaction transaction) {
         this.rootShardPrefix = Preconditions.checkNotNull(rootShardPrefix);
         this.cohorts = Preconditions.checkNotNull(cohorts);
+        this.transaction = Preconditions.checkNotNull(transaction);
     }
 
     @Override
@@ -43,6 +46,7 @@ public class ShardCommitCoordinationTask implements Callable<Void> {
         try {
             LOG.debug("Shard {}, commit started", rootShardPrefix);
             commitBlocking();
+            transaction.transactionCommited(transaction);
 
             return null;
         } catch (final TransactionCommitFailedException e) {

@@ -31,28 +31,33 @@ public class ShardSubmitCoordinationTask implements Callable<Void> {
     private final ShardCanCommitCoordinationTask canCommitCoordinationTask;
     private final ShardPreCommitCoordinationTask preCommitCoordinationTask;
     private final ShardCommitCoordinationTask commitCoordinationTask;
+    private final InmemoryDOMDataTreeShardWriteTransaction transaction;
 
 
     public ShardSubmitCoordinationTask(final DOMDataTreeIdentifier rootShardPrefix,
-                                       final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
+                                       final Collection<DOMStoreThreePhaseCommitCohort> cohorts,
+                                       final InmemoryDOMDataTreeShardWriteTransaction transaction) {
         this.rootShardPrefix = Preconditions.checkNotNull(rootShardPrefix);
+        this.transaction = transaction;
 
         canCommitCoordinationTask = new ShardCanCommitCoordinationTask(rootShardPrefix, cohorts);
         preCommitCoordinationTask = new ShardPreCommitCoordinationTask(rootShardPrefix, cohorts);
-        commitCoordinationTask = new ShardCommitCoordinationTask(rootShardPrefix, cohorts);
+        commitCoordinationTask = new ShardCommitCoordinationTask(rootShardPrefix, cohorts, transaction);
     }
 
     @Override
     public Void call() throws TransactionCommitFailedException {
 
-        LOG.debug("Shard {}, CanCommit started", rootShardPrefix);
+        LOG.debug("Shard {}, tx{} CanCommit started", transaction.getIdentifier(), rootShardPrefix);
         canCommitCoordinationTask.canCommitBlocking();
 
-        LOG.debug("Shard {}, PreCommit started", rootShardPrefix);
+        LOG.debug("Shard {}, tx{} PreCommit started", transaction.getIdentifier(), rootShardPrefix);
         preCommitCoordinationTask.preCommitBlocking();
 
-        LOG.debug("Shard {}, commit started", rootShardPrefix);
+        LOG.debug("Shard {}, tx{} commit started", transaction.getIdentifier(), rootShardPrefix);
         commitCoordinationTask.commitBlocking();
+
+        transaction.transactionCommited(transaction);
 
         return null;
     }

@@ -32,6 +32,7 @@ import org.opendaylight.yangtools.util.concurrent.FastThreadPoolExecutor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.TreeType;
 import org.opendaylight.yangtools.yang.data.impl.schema.tree.InMemoryDataTreeFactory;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -196,15 +197,16 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         return ret;
     }
 
-    InmemoryDOMDataTreeShardWriteTransaction createTransaction(final InMemoryDOMDataTreeShardProducer producer,
-                                                               final Collection<DOMDataTreeIdentifier> prefixes,
-            final InmemoryDOMDataTreeShardWriteTransaction previousTx) {
-        return createTxForSnapshot(producer, prefixes, (CursorAwareDataTreeSnapshot) previousTx.getRootModification());
+    DataTreeSnapshot takeSnapshot() {
+        return dataTree.takeSnapshot();
     }
 
-    InmemoryDOMDataTreeShardWriteTransaction createTransaction(final InMemoryDOMDataTreeShardProducer producer,
-                                                               final Collection<DOMDataTreeIdentifier> prefixes) {
-        return createTxForSnapshot(producer, prefixes, (CursorAwareDataTreeSnapshot) dataTree.takeSnapshot());
+    InmemoryDOMDataTreeShardWriteTransaction createTransaction(final String transactionId,
+                                                               final InMemoryDOMDataTreeShardProducer producer,
+                                                               final Collection<DOMDataTreeIdentifier> prefixes,
+                                                               final DataTreeSnapshot snapshot) {
+
+        return createTxForSnapshot(producer, prefixes, (CursorAwareDataTreeSnapshot) snapshot);
     }
 
     private InmemoryDOMDataTreeShardWriteTransaction createTxForSnapshot(

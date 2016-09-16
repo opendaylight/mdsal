@@ -19,6 +19,7 @@ import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
 
 public class InMemoryDOMDataTreeShardProducerTest {
 
@@ -27,17 +28,23 @@ public class InMemoryDOMDataTreeShardProducerTest {
         final InMemoryDOMDataTreeShard inMemoryDOMDataTreeShard = mock(InMemoryDOMDataTreeShard.class);
         final InmemoryDOMDataTreeShardWriteTransaction inmemoryDOMDataTreeShardWriteTransaction =
                 mock(InmemoryDOMDataTreeShardWriteTransaction.class);
+        final CursorAwareDataTreeSnapshot snapshot = mock(CursorAwareDataTreeSnapshot.class);
+        doReturn(snapshot).when(inMemoryDOMDataTreeShard).takeSnapshot();
+
         doReturn(inmemoryDOMDataTreeShardWriteTransaction).when(inMemoryDOMDataTreeShard)
-                .createTransaction(any(InMemoryDOMDataTreeShardProducer.class),
-                        anyCollectionOf((DOMDataTreeIdentifier.class)));
+                .createTransaction(any(String.class), any(InMemoryDOMDataTreeShardProducer.class),
+                        anyCollectionOf((DOMDataTreeIdentifier.class)), any(CursorAwareDataTreeSnapshot.class));
 
         final InMemoryDOMDataTreeShardProducer inMemoryDOMDataTreeShardProducer =
                 new InMemoryDOMDataTreeShardProducer(inMemoryDOMDataTreeShard,
                         ImmutableSet.of(DOM_DATA_TREE_IDENTIFIER));
 
         assertNotNull(inMemoryDOMDataTreeShardProducer.createTransaction());
-        verify(inMemoryDOMDataTreeShard).createTransaction(any(InMemoryDOMDataTreeShardProducer.class),
-                anyCollectionOf(DOMDataTreeIdentifier.class));
+        verify(inMemoryDOMDataTreeShard).createTransaction(
+                any(String.class),
+                any(InMemoryDOMDataTreeShardProducer.class),
+                anyCollectionOf(DOMDataTreeIdentifier.class),
+                any(CursorAwareDataTreeSnapshot.class));
         resetMocks();
     }
 }

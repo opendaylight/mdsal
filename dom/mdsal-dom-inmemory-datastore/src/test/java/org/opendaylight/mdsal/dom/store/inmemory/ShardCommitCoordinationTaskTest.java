@@ -7,8 +7,11 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.COHORTS;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_IDENTIFIER;
@@ -17,10 +20,19 @@ import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.LISTENABLE_FUT
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
 public class ShardCommitCoordinationTaskTest {
+
+    final InmemoryDOMDataTreeShardWriteTransaction mockTx = mock(InmemoryDOMDataTreeShardWriteTransaction.class);
+
+    @Before
+    public void setUp() throws Exception {
+        doReturn("MockedTx").when(mockTx).toString();
+        doNothing().when(mockTx).transactionCommited(any());
+    }
 
     @Test
     public void basicTest() throws Exception {
@@ -30,7 +42,7 @@ public class ShardCommitCoordinationTaskTest {
         COHORTS.add(DOM_STORE_THREE_PHASE_COMMIT_COHORT);
 
         ShardCommitCoordinationTask shardCommitCoordinationTask =
-                new ShardCommitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, COHORTS);
+                new ShardCommitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, COHORTS, mockTx);
 
         shardCommitCoordinationTask.call();
         verify(DOM_STORE_THREE_PHASE_COMMIT_COHORT).commit();
@@ -43,7 +55,7 @@ public class ShardCommitCoordinationTaskTest {
 
         COHORTS.add(DOM_STORE_THREE_PHASE_COMMIT_COHORT);
         ShardCommitCoordinationTask shardCommitCoordinationTask =
-                new ShardCommitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, COHORTS);
+                new ShardCommitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, COHORTS, mockTx);
         shardCommitCoordinationTask.call();
     }
 
