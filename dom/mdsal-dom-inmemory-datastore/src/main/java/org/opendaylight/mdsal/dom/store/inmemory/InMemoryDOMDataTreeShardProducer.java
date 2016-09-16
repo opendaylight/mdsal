@@ -10,9 +10,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -40,7 +38,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         }
 
         @Override
-        protected DataTreeSnapshot getSnapshot(Object transactionId) {
+        protected DataTreeSnapshot getSnapshot(final Object transactionId) {
             return producer.takeSnapshot();
         }
     }
@@ -58,12 +56,12 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
             this.transaction = Preconditions.checkNotNull(transaction);
         }
 
-        public InmemoryDOMDataTreeShardWriteTransaction getTransaction() {
+        InmemoryDOMDataTreeShardWriteTransaction getTransaction() {
             return transaction;
         }
 
         @Override
-        protected DataTreeSnapshot getSnapshot(Object transactionId) {
+        protected DataTreeSnapshot getSnapshot(final Object transactionId) {
             final DataTreeSnapshot ret = snapshot;
             Preconditions.checkState(ret != null,
                     "Could not get snapshot for transaction %s - previous transaction %s is not ready yet",
@@ -89,7 +87,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         }
 
         @Override
-        protected DataTreeSnapshot getSnapshot(Object transactionId) {
+        protected DataTreeSnapshot getSnapshot(final Object transactionId) {
             throw new IllegalStateException(message);
         }
     }
@@ -99,10 +97,10 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
 
     private final InMemoryDOMDataTreeShard parentShard;
     private final Collection<DOMDataTreeIdentifier> prefixes;
+    private final Idle idleState = new Idle(this);
 
     private static final AtomicReferenceFieldUpdater<InMemoryDOMDataTreeShardProducer, State> STATE_UPDATER =
             AtomicReferenceFieldUpdater.newUpdater(InMemoryDOMDataTreeShardProducer.class, State.class, "state");
-    private final Idle idleState = new Idle(this);
     private volatile State state;
 
     InMemoryDOMDataTreeShardProducer(final InMemoryDOMDataTreeShard parentShard,
@@ -113,21 +111,20 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
     }
 
     @Override
-    public synchronized InmemoryDOMDataTreeShardWriteTransaction createTransaction() {
-        Entry<State, DataTreeSnapshot> entry;
-        InmemoryDOMDataTreeShardWriteTransaction ret;
-        String transactionId = nextIdentifier();
+    public InmemoryDOMDataTreeShardWriteTransaction createTransaction() {
+        final String transactionId = nextIdentifier();
 
+        State localState;
+        InmemoryDOMDataTreeShardWriteTransaction ret;
         do {
-            entry = getSnapshot(transactionId);
-            ret = parentShard.createTransaction(transactionId, this, prefixes, entry.getValue());
-        } while (!recordTransaction(entry.getKey(), ret));
+            localState = state;
+            ret = parentShard.createTransaction(transactionId, this, prefixes, localState.getSnapshot(transactionId));
+        } while (!STATE_UPDATER.compareAndSet(this, localState, new Allocated(ret)));
 
         return ret;
     }
 
-    synchronized void transactionReady(final InmemoryDOMDataTreeShardWriteTransaction tx,
-                                       final DataTreeModification modification) {
+    void transactionReady(final InmemoryDOMDataTreeShardWriteTransaction tx, final DataTreeModification modification) {
         final State localState = state;
         LOG.debug("Transaction was readied {}, current state {}", tx.getIdentifier(), localState);
 
@@ -147,7 +144,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
      *
      * @param transaction Transaction which completed successfully.
      */
-    synchronized void onTransactionCommited(final InmemoryDOMDataTreeShardWriteTransaction transaction) {
+    void onTransactionCommited(final InmemoryDOMDataTreeShardWriteTransaction transaction) {
         // If the committed transaction was the one we allocated last,
         // we clear it and the ready snapshot, so the next transaction
         // allocated refers to the data tree directly.
@@ -174,7 +171,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         }
     }
 
-    synchronized void transactionAborted(final InmemoryDOMDataTreeShardWriteTransaction tx) {
+    void transactionAborted(final InmemoryDOMDataTreeShardWriteTransaction tx) {
         final State localState = state;
         if (localState instanceof Allocated) {
             final Allocated allocated = (Allocated)localState;
@@ -188,21 +185,8 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         }
     }
 
-
-    private Entry<State, DataTreeSnapshot> getSnapshot(String transactionId) {
-        final State localState = state;
-        return new SimpleEntry<>(localState, localState.getSnapshot(transactionId));
-    }
-
-    private boolean recordTransaction(final State expected,
-                                      final InmemoryDOMDataTreeShardWriteTransaction transaction) {
-        final State state = new Allocated(transaction);
-        return STATE_UPDATER.compareAndSet(this, expected, state);
-    }
-
-    private String nextIdentifier() {
+    private static String nextIdentifier() {
         return "INMEMORY-SHARD-TX-" + COUNTER.getAndIncrement();
-
     }
 
     DataTreeSnapshot takeSnapshot() {
