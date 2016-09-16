@@ -121,7 +121,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
                     "Expected DataContainer node, but was {}", data.getClass());
             // if we are listening on root of some shard we still get
             // empty normalized node, root is always present
-            if (((DataContainerNode) data).getValue().isEmpty()) {
+            if (((DataContainerNode<?>) data).getValue().isEmpty()) {
                 initialCandidate = DataTreeCandidates.newDataTreeCandidate(listenerPath,
                         new EmptyDataTreeCandidateNode(data.getIdentifier()));
             } else {
@@ -136,8 +136,8 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         listener.onDataTreeChanged(Collections.singleton(initialCandidate));
     }
 
-    private NormalizedNode<?, ?> translateRootShardIdentifierToListenerPath(final YangInstanceIdentifier listenerPath,
-                                                                            final NormalizedNode<?, ?> node) {
+    private static NormalizedNode<?, ?> translateRootShardIdentifierToListenerPath(
+            final YangInstanceIdentifier listenerPath, final NormalizedNode<?, ?> node) {
         if (listenerPath.isEmpty()) {
             return node;
         }
@@ -160,6 +160,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         LOG.debug("Registering root listener at {}", listenerPath);
         final RegistrationTreeNode<AbstractDOMDataTreeChangeListenerRegistration<?>> node =
                 findNodeFor(listenerPath.getPathArguments());
+        @SuppressWarnings("unchecked")
         final AbstractDOMDataTreeChangeListenerRegistration<L> registration =
                 new AbstractDOMDataTreeChangeListenerRegistration<L>((L) listener) {
             @Override
