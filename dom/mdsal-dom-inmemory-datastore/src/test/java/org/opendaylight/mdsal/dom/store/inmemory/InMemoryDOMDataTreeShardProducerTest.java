@@ -28,7 +28,7 @@ public class InMemoryDOMDataTreeShardProducerTest {
         final InmemoryDOMDataTreeShardWriteTransaction inmemoryDOMDataTreeShardWriteTransaction =
                 mock(InmemoryDOMDataTreeShardWriteTransaction.class);
         doReturn(inmemoryDOMDataTreeShardWriteTransaction).when(inMemoryDOMDataTreeShard)
-                .createTransaction(any(InMemoryDOMDataTreeShardProducer.class),
+                .createTransaction("", any(InMemoryDOMDataTreeShardProducer.class),
                         anyCollectionOf((DOMDataTreeIdentifier.class)));
 
         final InMemoryDOMDataTreeShardProducer inMemoryDOMDataTreeShardProducer =
@@ -36,7 +36,7 @@ public class InMemoryDOMDataTreeShardProducerTest {
                         ImmutableSet.of(DOM_DATA_TREE_IDENTIFIER));
 
         assertNotNull(inMemoryDOMDataTreeShardProducer.createTransaction());
-        verify(inMemoryDOMDataTreeShard).createTransaction(any(InMemoryDOMDataTreeShardProducer.class),
+        verify(inMemoryDOMDataTreeShard).createTransaction("", any(InMemoryDOMDataTreeShardProducer.class),
                 anyCollectionOf(DOMDataTreeIdentifier.class));
         resetMocks();
     }

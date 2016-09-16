@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.COHORTS;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_IDENTIFIER;
@@ -22,6 +23,8 @@ import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 
 public class ShardCommitCoordinationTaskTest {
 
+    final InmemoryDOMDataTreeShardWriteTransaction mockTx = mock(InmemoryDOMDataTreeShardWriteTransaction.class);
+
     @Test
     public void basicTest() throws Exception {
         doReturn(Void.TYPE).when(LISTENABLE_FUTURE).get();
@@ -30,7 +33,7 @@ public class ShardCommitCoordinationTaskTest {
         COHORTS.add(DOM_STORE_THREE_PHASE_COMMIT_COHORT);
 
         ShardCommitCoordinationTask shardCommitCoordinationTask =
-                new ShardCommitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, COHORTS);
+                new ShardCommitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, COHORTS, mockTx);
 
         shardCommitCoordinationTask.call();
         verify(DOM_STORE_THREE_PHASE_COMMIT_COHORT).commit();
@@ -43,7 +46,7 @@ public class ShardCommitCoordinationTaskTest {
 
         COHORTS.add(DOM_STORE_THREE_PHASE_COMMIT_COHORT);
         ShardCommitCoordinationTask shardCommitCoordinationTask =
-                new ShardCommitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, COHORTS);
+                new ShardCommitCoordinationTask(DOM_DATA_TREE_IDENTIFIER, COHORTS, mockTx);
         shardCommitCoordinationTask.call();
     }
 

@@ -61,7 +61,7 @@ public class InMemoryDOMDataTreeShardTest {
         final InMemoryDOMDataTreeShardProducer mockProducer = mock(InMemoryDOMDataTreeShardProducer.class);
 
         inMemoryDOMDataTreeShard.onGlobalContextUpdated(createTestContext());
-        inMemoryDOMDataTreeShard.createTransaction(mockProducer, prefixes);
+        inMemoryDOMDataTreeShard.createTransaction("", mockProducer, prefixes);
 
         final DOMDataTreeChangeListener domDataTreeChangeListener = mock(DOMDataTreeChangeListener.class);
         final ListenerRegistration listenerRegistration = mock(ListenerRegistration.class);
