@@ -139,7 +139,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         } else {
             // Non-isolated case, see if we can reuse the transaction
             if (current != null) {
-                LOG.debug("Reusing previous transaction {} since there is still a transaction inflight",
+                LOG.warn("Reusing previous transaction {} since there is still a transaction inflight",
                         current.getIdentifier());
                 ret = current;
             } else {

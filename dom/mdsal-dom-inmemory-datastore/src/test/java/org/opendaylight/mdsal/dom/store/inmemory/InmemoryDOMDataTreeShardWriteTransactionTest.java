@@ -83,7 +83,7 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
                 new InMemoryDOMDataTreeShardChangePublisher(MoreExecutors.newDirectExecutorService(), 1, DATA_TREE,
                         YANG_INSTANCE_IDENTIFIER, CHILD_SHARDS);
         mockProducer = mock(InMemoryDOMDataTreeShardProducer.class);
-        doNothing().when(mockProducer).transactionSubmitted(any());
+        doNothing().when(mockProducer).transactionReady(any(), any());
 
         inmemoryDOMDataTreeShardWriteTransaction =
                 new InmemoryDOMDataTreeShardWriteTransaction(mockProducer, shardDataModification, DATA_TREE,

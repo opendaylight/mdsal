@@ -19,6 +19,7 @@ import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
 
 public class InMemoryDOMDataTreeShardProducerTest {
 
@@ -28,16 +29,16 @@ public class InMemoryDOMDataTreeShardProducerTest {
         final InmemoryDOMDataTreeShardWriteTransaction inmemoryDOMDataTreeShardWriteTransaction =
                 mock(InmemoryDOMDataTreeShardWriteTransaction.class);
         doReturn(inmemoryDOMDataTreeShardWriteTransaction).when(inMemoryDOMDataTreeShard)
-                .createTransaction(any(InMemoryDOMDataTreeShardProducer.class),
-                        anyCollectionOf((DOMDataTreeIdentifier.class)));
+                .createTransaction("", any(InMemoryDOMDataTreeShardProducer.class),
+                        anyCollectionOf((DOMDataTreeIdentifier.class)), mock(CursorAwareDataTreeSnapshot.class));
 
         final InMemoryDOMDataTreeShardProducer inMemoryDOMDataTreeShardProducer =
                 new InMemoryDOMDataTreeShardProducer(inMemoryDOMDataTreeShard,
                         ImmutableSet.of(DOM_DATA_TREE_IDENTIFIER));
 
         assertNotNull(inMemoryDOMDataTreeShardProducer.createTransaction());
-        verify(inMemoryDOMDataTreeShard).createTransaction(any(InMemoryDOMDataTreeShardProducer.class),
-                anyCollectionOf(DOMDataTreeIdentifier.class));
+        verify(inMemoryDOMDataTreeShard).createTransaction("", any(InMemoryDOMDataTreeShardProducer.class),
+                anyCollectionOf(DOMDataTreeIdentifier.class), any(CursorAwareDataTreeSnapshot.class));
         resetMocks();
     }
 }
