@@ -129,7 +129,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         Preconditions.checkState(!closed, "Transaction %s is already closed", identifier);
         Preconditions.checkState(openCursor == null, "Cannot submit transaction while there is a cursor open");
 
-        producer.processTransaction(this);
+        producer.transactionSubmitted(this);
         return submitFuture;
     }
 
