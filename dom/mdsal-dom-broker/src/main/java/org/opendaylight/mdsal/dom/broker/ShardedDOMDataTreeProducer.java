@@ -11,13 +11,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.BiMap;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableBiMap.Builder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -31,6 +31,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardProducer;
 import org.opendaylight.mdsal.dom.store.inmemory.WriteableDOMDataTreeShard;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +61,9 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     private volatile ShardedDOMDataTreeWriteTransaction lastTx;
 
     @GuardedBy("this")
-    private Map<DOMDataTreeIdentifier, DOMDataTreeProducer> children = Collections.emptyMap();
+    private Map<DOMDataTreeIdentifier, DOMDataTreeProducer> children = ImmutableMap.of();
+    @GuardedBy("this")
+    private Set<YangInstanceIdentifier> childRoots = ImmutableSet.of();
     @GuardedBy("this")
     private boolean closed;
 
@@ -135,7 +138,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
             if (current != null) {
                 submitTransaction(current);
             }
-            ret = new ShardedDOMDataTreeWriteTransaction(this, idToProducer, children, true);
+            ret = new ShardedDOMDataTreeWriteTransaction(this, idToProducer, childRoots);
         } else {
             // Non-isolated case, see if we can reuse the transaction
             if (current != null) {
@@ -143,7 +146,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
                         current.getIdentifier());
                 ret = current;
             } else {
-                ret = new ShardedDOMDataTreeWriteTransaction(this, idToProducer, children, false);
+                ret = new ShardedDOMDataTreeWriteTransaction(this, idToProducer, childRoots);
             }
         }
 
@@ -209,6 +212,8 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         }
 
         children = cb.build();
+        childRoots = ImmutableSet.copyOf(Collections2.transform(children.keySet(),
+            DOMDataTreeIdentifier::getRootIdentifier));
         return ret;
     }
 
