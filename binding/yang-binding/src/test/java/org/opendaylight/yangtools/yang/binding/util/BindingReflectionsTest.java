@@ -83,5 +83,10 @@ public class BindingReflectionsTest {
         Future rpcMethodTest2() {
             return null;
         }
+
+        @Override
+        public Class<? extends Augmentation<TestImplementation>> getImplementedAugmentationInterface() {
+            return TestImplementation.class;
+        }
     }
 }

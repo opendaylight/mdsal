@@ -239,7 +239,7 @@ class BuilderTemplate extends BaseTemplate {
 
             private static final class «type.name»«IMPL» implements «type.name» {
 
-                «implementedInterfaceGetter»
+                «implementedInterfaceGetters»
 
                 «generateFields(true)»
 
@@ -482,6 +482,14 @@ class BuilderTemplate extends BaseTemplate {
                 }
 
                 this.«augmentField.name».put(augmentationType, augmentation);
+                return this;
+            }
+
+            public «type.name»«BUILDER» add«augmentField.name.toFirstUpper»(«augmentField.returnType.importedName» augmentation) {
+                if (augmentation == null) {
+                    throw new NullPointerException("augmentation == null");
+                }
+                this.add«augmentField.name.toFirstUpper»(augmentation.getImplementedAugmentationInterface(), augmentation);
                 return this;
             }
 
@@ -742,11 +750,21 @@ class BuilderTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
-    def implementedInterfaceGetter() '''
+    def implementedInterfaceGetters() '''
     public «Class.importedName»<«type.importedName»> getImplementedInterface() {
         return «type.importedName».class;
     }
+    «IF isAugmentation»
+
+    public «Class.importedName»<«type.importedName»> getImplementedAugmentationInterface() {
+        return «type.importedName».class;
+    }
+    «ENDIF»
     '''
+
+    private def isAugmentation() {
+        type.implements.findFirst[type | type.fullyQualifiedName == "org.opendaylight.yangtools.yang.binding.Augmentation"] != null
+    }
 
     private def createDescription(GeneratedType type) {
         return '''
