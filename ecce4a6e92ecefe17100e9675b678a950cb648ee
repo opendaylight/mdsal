@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_957fbb14",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-16T00:59:55Z",
+      "side": 1,
+      "message": "CheckStyle complains about final, if we want to keep, I can add checkStyle ignore.",
+      "parentUuid": "7a6b29fe_fd637b3f",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_9d71a70e",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-09-15T10:36:25Z",
       "side": 1,
       "message": "why are you removing \"final\" here? This changes the public API of this class, and unless this is intentional for a good reason, I wouldn\u0027t do that as part of a Checkstyle clean up.",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_35850707",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-16T00:59:55Z",
+      "side": 1,
+      "message": "CheckStyle complains about final, if we want to keep, I can add checkStyle ignore.",
+      "parentUuid": "7a6b29fe_9d71a70e",
       "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_55824300",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-16T00:59:55Z",
+      "side": 1,
+      "message": "CheckStyle complains about final, if we want to keep, I can add checkStyle ignore.",
+      "parentUuid": "7a6b29fe_bd762304",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_5d6b8f1d",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2016-09-15T10:36:25Z",
       "side": 1,
       "message": "why are you removing \"final\" here? This changes the public API of this class, and unless this is intentional for a good reason, I wouldn\u0027t do that as part of a Checkstyle clean up.",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f58eef2c",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-16T00:59:55Z",
+      "side": 1,
+      "message": "CheckStyle complains about final, if we want to keep, I can add checkStyle ignore.",
+      "parentUuid": "7a6b29fe_5d6b8f1d",
       "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_757adf24",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-16T00:59:55Z",
+      "side": 1,
+      "message": "CheckStyle complains about final, if we want to keep, I can add checkStyle ignore.",
+      "parentUuid": "7a6b29fe_7d700b0b",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_dd667f50",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 2
@@ -98,6 +188,24 @@
       "writtenOn": "2016-09-15T10:36:25Z",
       "side": 1,
       "message": "why are you removing \"final\" here? This changes the public API of this class, and unless this is intentional for a good reason, I wouldn\u0027t do that as part of a Checkstyle clean up.",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d575b332",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-16T00:59:55Z",
+      "side": 1,
+      "message": "CheckStyle complains about final, if we want to keep, I can add checkStyle ignore.",
+      "parentUuid": "7a6b29fe_dd667f50",
       "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -149,6 +257,24 @@
       "writtenOn": "2016-09-15T10:36:25Z",
       "side": 1,
       "message": "Brinda FYI I personally now just remove this kind of JavaDoc instead of fixing it up - it\u0027s fairly useless anyway (as in obviously this is a constructor; JavaDoc already knows that, and path is the path - duh).",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b570f740",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/test/java/org/opendaylight/mdsal/singleton/dom/impl/util/TestInstanceIdentifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-16T00:59:55Z",
+      "side": 1,
+      "message": "I can remove it.",
+      "parentUuid": "7a6b29fe_7d576b58",
       "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
