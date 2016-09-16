@@ -8,15 +8,15 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.Collection;
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,6 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardProducer;
 import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardWriteTransaction;
@@ -45,48 +44,45 @@ import org.slf4j.LoggerFactory;
 @NotThreadSafe
 final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAwareTransaction {
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTreeWriteTransaction.class);
+    private static final TransactionCommitFailedExceptionMapper SUBMIT_FAILED_MAPPER =
+            TransactionCommitFailedExceptionMapper.create("submit");
     private static final AtomicLong COUNTER = new AtomicLong();
+
     private final Map<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> idToTransaction;
+    private final Collection<YangInstanceIdentifier> childBoundaries;
     private final ShardedDOMDataTreeProducer producer;
     private final String identifier;
-    private final Set<YangInstanceIdentifier> childBoundaries = new HashSet<>();
+
+    private final SettableFuture<Void> future = SettableFuture.create();
+    private final CheckedFuture<Void, TransactionCommitFailedException> submitFuture =
+            Futures.makeChecked(future, SUBMIT_FAILED_MAPPER);
+
     @GuardedBy("this")
     private boolean closed =  false;
 
     @GuardedBy("this")
     private DOMDataTreeWriteCursor openCursor;
 
-    private final SettableFuture<Void> future = SettableFuture.create();
-    private final CheckedFuture<Void, TransactionCommitFailedException> submitFuture =
-            Futures.makeChecked(future, TransactionCommitFailedExceptionMapper.create("submit"));
-
-    private final boolean isolated;
-
     ShardedDOMDataTreeWriteTransaction(final ShardedDOMDataTreeProducer producer,
                                        final Map<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducer,
-                                       final Map<DOMDataTreeIdentifier, DOMDataTreeProducer> childProducers,
-                                       final boolean isolated) {
-        this.isolated = isolated;
+                                       final Set<YangInstanceIdentifier> childRoots) {
         this.producer = Preconditions.checkNotNull(producer);
-        idToTransaction = new HashMap<>();
-        Preconditions.checkNotNull(idToProducer).forEach((id, prod) -> idToTransaction.put(
-                id, prod.createTransaction()));
         this.identifier = "SHARDED-DOM-" + COUNTER.getAndIncrement();
-        LOG.debug("Created new transaction{}", identifier);
-        childProducers.forEach((id, prod) -> childBoundaries.add(id.getRootIdentifier()));
+        idToTransaction = ImmutableMap.copyOf(Maps.transformValues(idToProducer,
+            DOMDataTreeShardProducer::createTransaction));
+        childBoundaries = Preconditions.checkNotNull(childRoots);
+        LOG.debug("Created new transaction {}", identifier);
     }
 
-    // FIXME: use atomic operations
-    @GuardedBy("this")
     private DOMDataTreeShardWriteTransaction lookup(final DOMDataTreeIdentifier prefix) {
         for (final Entry<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> e : idToTransaction.entrySet()) {
             if (e.getKey().contains(prefix)) {
                 Preconditions.checkArgument(!producer.isDelegatedToChild(prefix),
-                        "Path %s is delegated to child producer.",
-                        prefix);
+                    "Path %s is delegated to child producer.", prefix);
                 return e.getValue();
             }
         }
+
         throw new IllegalArgumentException(String.format("Path %s is not accessible from transaction %s",
                 prefix, this));
     }
@@ -106,7 +102,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         if (openCursor != null) {
             openCursor.close();
         }
-        for (final DOMDataTreeShardWriteTransaction tx : ImmutableSet.copyOf(idToTransaction.values())) {
+        for (final DOMDataTreeShardWriteTransaction tx : idToTransaction.values()) {
             tx.close();
         }
 
@@ -134,16 +130,15 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     }
 
     CheckedFuture<Void, TransactionCommitFailedException> doSubmit(
-            Consumer<ShardedDOMDataTreeWriteTransaction> success,
-            BiConsumer<ShardedDOMDataTreeWriteTransaction, Throwable> failure) {
+            final Consumer<ShardedDOMDataTreeWriteTransaction> success,
+            final BiConsumer<ShardedDOMDataTreeWriteTransaction, Throwable> failure) {
 
-        final Set<DOMDataTreeShardWriteTransaction> txns = ImmutableSet.copyOf(idToTransaction.values());
-        final ListenableFuture<List<Void>> listListenableFuture =
-                Futures.allAsList(txns.stream().map(tx -> {
-                    LOG.debug("Readying tx {}", identifier);
-                    tx.ready();
-                    return tx.submit();
-                }).collect(Collectors.toList()));
+        final ListenableFuture<List<Void>> listListenableFuture = Futures.allAsList(
+            idToTransaction.values().stream().map(tx -> {
+                LOG.debug("Readying tx {}", identifier);
+                tx.ready();
+                return tx.submit();
+            }).collect(Collectors.toList()));
 
         final SettableFuture<Void> ret = SettableFuture.create();
         Futures.addCallback(listListenableFuture, new FutureCallback<List<Void>>() {
@@ -160,7 +155,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             }
         });
 
-        return Futures.makeChecked(ret, TransactionCommitFailedExceptionMapper.create("submit"));
+        return Futures.makeChecked(ret, SUBMIT_FAILED_MAPPER);
     }
 
     void onTransactionSuccess(final Void result) {
@@ -173,10 +168,6 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
 
     synchronized void cursorClosed() {
         openCursor = null;
-    }
-
-    boolean isIsolated() {
-        return isolated;
     }
 
     private class DelegatingCursor implements DOMDataTreeWriteCursor {
