@@ -152,6 +152,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         return ret;
     }
 
+    @GuardedBy("this")
     private void submitTransaction(final ShardedDOMDataTreeWriteTransaction current) {
         lastTx = current;
         current.doSubmit(this::transactionSuccessful, this::transactionFailed);
@@ -246,47 +247,59 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         }
     }
 
-    void processTransaction(final ShardedDOMDataTreeWriteTransaction transaction) {
+    // Called when the user submits a transaction
+    void transactionSubmitted(final ShardedDOMDataTreeWriteTransaction transaction) {
         final boolean wasOpen = OPEN_UPDATER.compareAndSet(this, transaction, null);
-        Verify.verify(wasOpen);
+        Preconditions.checkState(wasOpen, "Attempted to submit non-open transaction %s", transaction);
 
-        if (lastTx != null) {
-            final boolean success = CURRENT_UPDATER.compareAndSet(this, null, transaction);
-            Verify.verify(success);
-            if (lastTx == null) {
-                // Dispatch after requeue
-                processCurrentTransaction();
+        if (lastTx == null) {
+            // No transaction outstanding, we need to submit it now
+            synchronized (this) {
+                submitTransaction(transaction);
             }
-        } else {
-            submitTransaction(transaction);
+
+            return;
+        }
+
+        // There is a potentially-racing submitted transaction. Publish the new one, which may end up being
+        // picked up by processNextTransaction.
+        final boolean success = CURRENT_UPDATER.compareAndSet(this, null, transaction);
+        Verify.verify(success);
+
+        // Now a quick check: if the racing transaction completed in between, it may have missed the current
+        // transaction, hence we need to re-check
+        if (lastTx == null) {
+            submitCurrentTransaction();
         }
     }
 
-    void transactionSuccessful(final ShardedDOMDataTreeWriteTransaction tx) {
+    private void submitCurrentTransaction() {
+        final ShardedDOMDataTreeWriteTransaction current = CURRENT_UPDATER.getAndSet(this, null);
+        if (current != null) {
+            synchronized (this) {
+                submitTransaction(current);
+            }
+        }
+    }
+
+    private void transactionSuccessful(final ShardedDOMDataTreeWriteTransaction tx) {
         LOG.debug("Transaction {} completed successfully", tx.getIdentifier());
 
         tx.onTransactionSuccess(null);
-        processNextTransaction(tx);
+        transactionCompleted(tx);
     }
 
-    void transactionFailed(final ShardedDOMDataTreeWriteTransaction tx, final Throwable throwable) {
+    private void transactionFailed(final ShardedDOMDataTreeWriteTransaction tx, final Throwable throwable) {
         LOG.debug("Transaction {} failed", tx.getIdentifier(), throwable);
 
         tx.onTransactionFailure(throwable);
-        processNextTransaction(tx);
+        transactionCompleted(tx);
     }
 
-    private void processCurrentTransaction() {
-        final ShardedDOMDataTreeWriteTransaction current = CURRENT_UPDATER.getAndSet(this, null);
-        if (current != null) {
-            submitTransaction(current);
-        }
-    }
-
-    private synchronized void processNextTransaction(final ShardedDOMDataTreeWriteTransaction tx) {
+    private void transactionCompleted(final ShardedDOMDataTreeWriteTransaction tx) {
         final boolean wasLast = LAST_UPDATER.compareAndSet(this, tx, null);
         if (wasLast) {
-            processCurrentTransaction();
+            submitCurrentTransaction();
         }
     }
 
