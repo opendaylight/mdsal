@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_e46bdb82",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-09-17T13:09:37Z",
+      "side": 1,
+      "message": "The bug ID should be prepended to the first line short summary/title, i.e.:\n\nBug 6733: Augmentable Builder addAugmentation ...",
+      "revId": "06bca110987ef2a4e491add88e24a90224206a78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
