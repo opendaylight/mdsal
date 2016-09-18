@@ -183,7 +183,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
                 final ShardedDOMDataTreeProducer castedProducer = ((ShardedDOMDataTreeProducer) producer);
                 simpleLoopCheck(subtrees, castedProducer.getSubtrees());
                 // FIXME: We should also unbound listeners
-                castedProducer.boundToListener(listenerContext);
+                castedProducer.bindToListener(listenerContext);
             }
 
             for (final DOMDataTreeIdentifier subtree : subtrees) {
