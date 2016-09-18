@@ -246,7 +246,7 @@ public class ShardedDOMDataTreeTest {
 
     }
 
-    private Collection<MapEntryNode> createInnerListMapEntries(int amount, String valuePrefix) {
+    private static Collection<MapEntryNode> createInnerListMapEntries(final int amount, final String valuePrefix) {
         final Collection<MapEntryNode> ret = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             ret.add(ImmutableNodes.mapEntryBuilder()
@@ -316,7 +316,7 @@ public class ShardedDOMDataTreeTest {
         assertNotNull(innerShardCursor);
     }
 
-    private ContainerNode createCrossShardContainer() {
+    private static ContainerNode createCrossShardContainer() {
         final LeafNode<String> shardedValue1 =
                 ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(new NodeIdentifier(
                         TestModel.SHARDED_VALUE_1)).withValue("sharded value 1").build();
