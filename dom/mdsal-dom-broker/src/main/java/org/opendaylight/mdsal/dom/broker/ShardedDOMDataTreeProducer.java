@@ -9,17 +9,9 @@ package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableBiMap.Builder;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
@@ -30,20 +22,14 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
-import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardProducer;
-import org.opendaylight.mdsal.dom.store.inmemory.WriteableDOMDataTreeShard;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
-    private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTreeProducer.class);
+    static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTreeProducer.class);
 
     private final Set<DOMDataTreeIdentifier> subtrees;
     private final ShardedDOMDataTree dataTree;
-
-    private BiMap<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducer = ImmutableBiMap.of();
-    private Map<DOMDataTreeIdentifier, DOMDataTreeShard> idToShard;
 
     private static final AtomicReferenceFieldUpdater<ShardedDOMDataTreeProducer, ShardedDOMDataTreeWriteTransaction>
         CURRENT_UPDATER = AtomicReferenceFieldUpdater.newUpdater(ShardedDOMDataTreeProducer.class,
@@ -64,56 +50,21 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
             AtomicIntegerFieldUpdater.newUpdater(ShardedDOMDataTreeProducer.class, "closed");
     private volatile int closed;
 
-    @GuardedBy("this")
-    private Map<DOMDataTreeIdentifier, DOMDataTreeProducer> children = ImmutableMap.of();
-    @GuardedBy("this")
-    private Set<YangInstanceIdentifier> childRoots = ImmutableSet.of();
+    private volatile ShardedDOMDataTreeListenerContext<?> attachedListener;
+    private volatile ProducerLayout layout;
 
-    @GuardedBy("this")
-    private ShardedDOMDataTreeListenerContext<?> attachedListener;
-
-    ShardedDOMDataTreeProducer(final ShardedDOMDataTree dataTree,
+    private ShardedDOMDataTreeProducer(final ShardedDOMDataTree dataTree,
                                final Collection<DOMDataTreeIdentifier> subtrees,
-                               final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap,
-                               final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToId) {
+                               final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         this.dataTree = Preconditions.checkNotNull(dataTree);
-        if (!shardToId.isEmpty()) {
-            this.idToProducer = mapIdsToProducer(shardToId);
-        }
-        idToShard = ImmutableMap.copyOf(shardMap);
         this.subtrees = ImmutableSet.copyOf(subtrees);
+        this.layout = ProducerLayout.create(shardMap);
     }
 
     static DOMDataTreeProducer create(final ShardedDOMDataTree dataTree,
                                       final Collection<DOMDataTreeIdentifier> subtrees,
                                       final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
-        final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToIdentifiers = ArrayListMultimap.create();
-        // map which identifier belongs to which shard
-        for (final Entry<DOMDataTreeIdentifier, DOMDataTreeShard> entry : shardMap.entrySet()) {
-            shardToIdentifiers.put(entry.getValue(), entry.getKey());
-        }
-
-        return new ShardedDOMDataTreeProducer(dataTree, subtrees, shardMap, shardToIdentifiers);
-    }
-
-    private static BiMap<DOMDataTreeIdentifier, DOMDataTreeShardProducer> mapIdsToProducer(
-            final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToId) {
-        final Builder<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducerBuilder = ImmutableBiMap.builder();
-        for (final Entry<DOMDataTreeShard, Collection<DOMDataTreeIdentifier>> entry : shardToId.asMap().entrySet()) {
-            if (entry.getKey() instanceof WriteableDOMDataTreeShard) {
-                //create a single producer for all prefixes in a single shard
-                final DOMDataTreeShardProducer producer = ((WriteableDOMDataTreeShard) entry.getKey())
-                        .createProducer(entry.getValue());
-                // id mapped to producers
-                for (final DOMDataTreeIdentifier id : entry.getValue()) {
-                    idToProducerBuilder.put(id, producer);
-                }
-            } else {
-                LOG.error("Unable to create a producer for shard that's not a WriteableDOMDataTreeShard");
-            }
-        }
-
-        return idToProducerBuilder.build();
+        return new ShardedDOMDataTreeProducer(dataTree, subtrees, shardMap);
     }
 
     private void checkNotClosed() {
@@ -127,13 +78,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     void subshardAdded(final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         checkIdle();
 
-        final Multimap<DOMDataTreeShard, DOMDataTreeIdentifier> shardToIdentifiers = ArrayListMultimap.create();
-        // map which identifier belongs to which shard
-        for (final Entry<DOMDataTreeIdentifier, DOMDataTreeShard> entry : shardMap.entrySet()) {
-            shardToIdentifiers.put(entry.getValue(), entry.getKey());
-        }
-        this.idToProducer = mapIdsToProducer(shardToIdentifiers);
-        idToShard = ImmutableMap.copyOf(shardMap);
+        layout = layout.reshard(shardMap);
     }
 
     @Override
@@ -141,29 +86,14 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         checkNotClosed();
         checkIdle();
 
-        final ShardedDOMDataTreeWriteTransaction ret;
         LOG.debug("Creating transaction from producer {}", this);
 
         final ShardedDOMDataTreeWriteTransaction current = CURRENT_UPDATER.getAndSet(this, null);
+        final ShardedDOMDataTreeWriteTransaction ret;
         if (isolated) {
-            // Isolated case. If we have a previous transaction, submit it before returning this one.
-            synchronized (this) {
-                if (current != null) {
-                    submitTransaction(current);
-                }
-                ret = new ShardedDOMDataTreeWriteTransaction(this, idToProducer, childRoots);
-            }
+            ret = createIsolatedTransaction(layout, current);
         } else {
-            // Non-isolated case, see if we can reuse the transaction
-            if (current != null) {
-                LOG.debug("Reusing previous transaction {} since there is still a transaction inflight",
-                    current.getIdentifier());
-                ret = current;
-            } else {
-                synchronized (this) {
-                    ret = new ShardedDOMDataTreeWriteTransaction(this, idToProducer, childRoots);
-                }
-            }
+            ret = createReusedTransaction(layout, current);
         }
 
         final boolean success = OPEN_UPDATER.compareAndSet(this, null, ret);
@@ -171,32 +101,51 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         return ret;
     }
 
-    @GuardedBy("this")
-    private void submitTransaction(final ShardedDOMDataTreeWriteTransaction current) {
-        lastTx = current;
-        current.doSubmit(this::transactionSuccessful, this::transactionFailed);
+    // Isolated case. If we have a previous transaction, submit it before returning this one.
+    private synchronized ShardedDOMDataTreeWriteTransaction createIsolatedTransaction(
+            final ProducerLayout local, final ShardedDOMDataTreeWriteTransaction current) {
+        if (current != null) {
+            submitTransaction(current);
+        }
+
+        return createTransaction(local);
     }
 
-    @GuardedBy("this")
-    private boolean haveSubtree(final DOMDataTreeIdentifier subtree) {
-        for (final DOMDataTreeIdentifier i : idToShard.keySet()) {
-            if (i.contains(subtree)) {
-                return true;
+    private ShardedDOMDataTreeWriteTransaction createReusedTransaction(final ProducerLayout local,
+            final ShardedDOMDataTreeWriteTransaction current) {
+        if (current != null) {
+            // Lock-free fast path
+            if (local.equals(current.getLayout())) {
+                LOG.debug("Reusing previous transaction {} since there is still a transaction inflight",
+                    current.getIdentifier());
+                return current;
+            }
+
+            synchronized (this) {
+                submitTransaction(current);
+                return createTransaction(local);
             }
         }
 
-        return false;
+        // Null indicates we have not seen a previous transaction -- which does not mean it is ready, as it may have
+        // been stolen and in is process of being submitted.
+        synchronized (this) {
+            return createTransaction(local);
+        }
+    }
+
+    // This may look weird, but this has side-effects on local's producers, hence it needs to be properly synchronized
+    // so that it happens-after submitTransaction() which may have been stolen by a callback.
+    @GuardedBy("this")
+    private ShardedDOMDataTreeWriteTransaction createTransaction(final ProducerLayout local) {
+        return new ShardedDOMDataTreeWriteTransaction(this, local.createTransactions(), local);
+
     }
 
     @GuardedBy("this")
-    private DOMDataTreeProducer lookupChild(final DOMDataTreeIdentifier domDataTreeIdentifier) {
-        for (final Entry<DOMDataTreeIdentifier, DOMDataTreeProducer> e : children.entrySet()) {
-            if (e.getKey().contains(domDataTreeIdentifier)) {
-                return e.getValue();
-            }
-        }
-
-        return null;
+    private void submitTransaction(final ShardedDOMDataTreeWriteTransaction tx) {
+        lastTx = tx;
+        tx.doSubmit(this::transactionSuccessful, this::transactionFailed);
     }
 
     @Override
@@ -204,44 +153,35 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         checkNotClosed();
         checkIdle();
 
+        final ProducerLayout local = layout;
+
         for (final DOMDataTreeIdentifier s : subtrees) {
             // Check if the subtree was visible at any time
-            Preconditions.checkArgument(haveSubtree(s), "Subtree %s was never available in producer %s", s, this);
+            Preconditions.checkArgument(local.haveSubtree(s), "Subtree %s was never available in producer %s", s, this);
             // Check if the subtree has not been delegated to a child
-            final DOMDataTreeProducer child = lookupChild(s);
+            final DOMDataTreeProducer child = local.lookupChild(s);
             Preconditions.checkArgument(child == null, "Subtree %s is delegated to child producer %s", s, child);
 
             // Check if part of the requested subtree is not delegated to a child.
-            for (final DOMDataTreeIdentifier c : children.keySet()) {
+            for (final DOMDataTreeIdentifier c : local.getChildTrees()) {
                 Preconditions.checkArgument(!s.contains(c),
                     "Subtree %s cannot be delegated as it is a superset of already-delegated %s", s, c);
             }
         }
 
-        synchronized (this) {
-            final DOMDataTreeProducer ret = dataTree.createProducer(this, subtrees);
-            final ImmutableMap.Builder<DOMDataTreeIdentifier, DOMDataTreeProducer> cb = ImmutableMap.builder();
-            cb.putAll(children);
-            for (final DOMDataTreeIdentifier s : subtrees) {
-                cb.put(s, ret);
-            }
 
-            children = cb.build();
-            childRoots = ImmutableSet.copyOf(Collections2.transform(children.keySet(),
-                DOMDataTreeIdentifier::getRootIdentifier));
-            return ret;
+        final DOMDataTreeProducer ret;
+        synchronized (this) {
+            ret = dataTree.createProducer(this, subtrees);
         }
+
+        layout = local.addChild(ret, subtrees);
+        return ret;
     }
 
     boolean isDelegatedToChild(final DOMDataTreeIdentifier path) {
-        for (final DOMDataTreeIdentifier c : children.keySet()) {
-            if (c.contains(path)) {
-                return true;
-            }
-        }
-        return false;
+        return layout.lookupChild(path) != null;
     }
-
 
     @Override
     public void close() throws DOMDataTreeProducerException {
@@ -317,6 +257,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         LOG.debug("Transaction {} failed", tx.getIdentifier(), throwable);
 
         tx.onTransactionFailure(throwable);
+        // FIXME: transaction failure should result in a hard error
         transactionCompleted(tx);
     }
 
@@ -327,10 +268,15 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         }
     }
 
-    synchronized void boundToListener(final ShardedDOMDataTreeListenerContext<?> listener) {
-        // FIXME: Add option to detach
-        Preconditions.checkState(this.attachedListener == null, "Producer %s is already attached to other listener.",
-                listener.getListener());
+    void bindToListener(final ShardedDOMDataTreeListenerContext<?> listener) {
+        Preconditions.checkNotNull(listener);
+
+        final ShardedDOMDataTreeListenerContext<?> local = attachedListener;
+        if (local != null) {
+            throw new IllegalStateException(String.format("Producer %s is already attached to listener %s", this,
+                local.getListener()));
+        }
+
         this.attachedListener = listener;
     }
 }
