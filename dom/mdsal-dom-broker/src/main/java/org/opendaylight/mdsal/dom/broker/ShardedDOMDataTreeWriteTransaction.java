@@ -9,19 +9,16 @@ package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import java.util.Collection;
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -33,7 +30,6 @@ import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
-import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardProducer;
 import org.opendaylight.mdsal.dom.store.inmemory.DOMDataTreeShardWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -48,9 +44,9 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             TransactionCommitFailedExceptionMapper.create("submit");
     private static final AtomicLong COUNTER = new AtomicLong();
 
-    private final Map<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> idToTransaction;
-    private final Collection<YangInstanceIdentifier> childBoundaries;
+    private final Map<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> transactions;
     private final ShardedDOMDataTreeProducer producer;
+    private final ProducerLayout layout;
     private final String identifier;
 
     private final SettableFuture<Void> future = SettableFuture.create();
@@ -64,18 +60,16 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     private DOMDataTreeWriteCursor openCursor;
 
     ShardedDOMDataTreeWriteTransaction(final ShardedDOMDataTreeProducer producer,
-                                       final Map<DOMDataTreeIdentifier, DOMDataTreeShardProducer> idToProducer,
-                                       final Set<YangInstanceIdentifier> childRoots) {
+        final Map<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> transactions, final ProducerLayout layout) {
         this.producer = Preconditions.checkNotNull(producer);
+        this.transactions = ImmutableMap.copyOf(transactions);
+        this.layout = Preconditions.checkNotNull(layout);
         this.identifier = "SHARDED-DOM-" + COUNTER.getAndIncrement();
-        idToTransaction = ImmutableMap.copyOf(Maps.transformValues(idToProducer,
-            DOMDataTreeShardProducer::createTransaction));
-        childBoundaries = Preconditions.checkNotNull(childRoots);
         LOG.debug("Created new transaction {}", identifier);
     }
 
     private DOMDataTreeShardWriteTransaction lookup(final DOMDataTreeIdentifier prefix) {
-        for (final Entry<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> e : idToTransaction.entrySet()) {
+        for (final Entry<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> e : transactions.entrySet()) {
             if (e.getKey().contains(prefix)) {
                 Preconditions.checkArgument(!producer.isDelegatedToChild(prefix),
                     "Path %s is delegated to child producer.", prefix);
@@ -102,7 +96,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         if (openCursor != null) {
             openCursor.close();
         }
-        for (final DOMDataTreeShardWriteTransaction tx : idToTransaction.values()) {
+        for (final DOMDataTreeShardWriteTransaction tx : transactions.values()) {
             tx.close();
         }
 
@@ -134,7 +128,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             final BiConsumer<ShardedDOMDataTreeWriteTransaction, Throwable> failure) {
 
         final ListenableFuture<List<Void>> listListenableFuture = Futures.allAsList(
-            idToTransaction.values().stream().map(tx -> {
+            transactions.values().stream().map(tx -> {
                 LOG.debug("Readying tx {}", identifier);
                 tx.ready();
                 return tx.submit();
@@ -171,10 +165,9 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     }
 
     private class DelegatingCursor implements DOMDataTreeWriteCursor {
-
+        private final Deque<PathArgument> path = new ArrayDeque<>();
         private final DOMDataTreeWriteCursor delegate;
         private final DOMDataTreeIdentifier rootPosition;
-        private final Deque<PathArgument> path = new LinkedList<>();
 
         DelegatingCursor(final DOMDataTreeWriteCursor delegate, final DOMDataTreeIdentifier rootPosition) {
             this.delegate = Preconditions.checkNotNull(delegate);
@@ -248,16 +241,11 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         }
 
         void checkAvailable(final PathArgument child) {
-            path.add(child);
-            final YangInstanceIdentifier yid = YangInstanceIdentifier.create(path);
-            childBoundaries.forEach(id -> {
-                if (id.contains(yid)) {
-                    path.removeLast();
-                    throw new IllegalArgumentException("Path {" + yid + "} is not available to this cursor"
-                            + " since it's already claimed by a child producer");
-                }
-            });
-            path.removeLast();
+            layout.checkAvailable(YangInstanceIdentifier.create(path).node(child));
         }
+    }
+
+    ProducerLayout getLayout() {
+        return layout;
     }
 }
