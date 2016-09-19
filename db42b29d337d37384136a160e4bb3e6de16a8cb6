@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_3f3dddc4",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/AbstractRegistrationTree.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-19T13:41:16Z",
+      "side": 1,
+      "message": "I wonder if we should polish this to \n\"possibly blocks waiting for exclusive access\" as official documentation says...",
+      "range": {
+        "startLine": 32,
+        "startChar": 19,
+        "endLine": 32,
+        "endChar": 30
+      },
+      "revId": "db42b29d337d37384136a160e4bb3e6de16a8cb6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1f38e1d1",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/AbstractRegistrationTree.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-19T13:41:16Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 40,
+        "startChar": 19,
+        "endLine": 40,
+        "endChar": 29
+      },
+      "revId": "db42b29d337d37384136a160e4bb3e6de16a8cb6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
