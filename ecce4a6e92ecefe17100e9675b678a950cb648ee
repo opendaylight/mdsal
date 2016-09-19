@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_420f1c37",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-19T21:18:46Z",
+      "side": 1,
+      "message": "I didn\u0027t understand why this leads to a \"Redundant Modifier: Redundant \u0027final\u0027 modifier.\" at first, so I\u0027ve tried it out, and re-read http://checkstyle.sourceforge.net/config_modifier.html#RedundantModifier, and then understand that\u0027s because this class is already final anyway! Fine then. Sorry \u0026 thanks for insisting - learnt something.",
+      "parentUuid": "7a6b29fe_957fbb14",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_9d71a70e",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 2
@@ -275,6 +293,24 @@
       "side": 1,
       "message": "I can remove it.",
       "parentUuid": "7a6b29fe_7d576b58",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_a21ef06d",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/test/java/org/opendaylight/mdsal/singleton/dom/impl/util/TestInstanceIdentifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-19T21:18:46Z",
+      "side": 1,
+      "message": "please do! Here and elsewhere.  FYI Not everyone else may agree with this personal position of mine I\u0027m voicing here on this matter.",
+      "parentUuid": "7a6b29fe_b570f740",
       "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
