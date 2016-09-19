@@ -225,6 +225,4 @@ public class BindingTestContext implements AutoCloseable {
     public DataBroker getDataBroker() {
         return dataBroker;
     }
-
-
 }
