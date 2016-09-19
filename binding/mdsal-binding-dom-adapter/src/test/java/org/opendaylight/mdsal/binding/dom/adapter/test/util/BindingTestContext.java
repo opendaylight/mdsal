@@ -226,5 +226,7 @@ public class BindingTestContext implements AutoCloseable {
         return dataBroker;
     }
 
-
+    public DOMDataBroker getDOMDataBroker() {
+        return newDOMDataBroker;
+    }
 }
