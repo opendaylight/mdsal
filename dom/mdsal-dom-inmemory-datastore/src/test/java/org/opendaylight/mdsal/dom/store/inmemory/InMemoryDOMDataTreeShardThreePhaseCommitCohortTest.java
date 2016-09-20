@@ -40,7 +40,7 @@ public class InMemoryDOMDataTreeShardThreePhaseCommitCohortTest {
     private static final DataTreeCandidateNode DATA_TREE_CANDIDATE_NODE = mock(DataTreeCandidateNode.class);
     private static final DataTreeModification DATA_TREE_MODIFICATION = mock(DataTreeModification.class);
     private static final InMemoryDOMDataTreeShardChangePublisher IN_MEMORY_DOM_DATA_TREE_SHARD_CHANGE_PUBLISHER =
-            new InMemoryDOMDataTreeShardChangePublisher(MoreExecutors.newDirectExecutorService(), 1, DATA_TREE,
+            new InMemoryDOMDataTreeShardChangePublisher(MoreExecutors.directExecutor(), 1, DATA_TREE,
                     YangInstanceIdentifier.of(QName.create("test")), ImmutableMap.of());
     private static final InMemoryDOMDataTreeShardThreePhaseCommitCohort
             IN_MEMORY_DOM_DATA_TREE_SHARD_THREE_PHASE_COMMIT_COHORT =

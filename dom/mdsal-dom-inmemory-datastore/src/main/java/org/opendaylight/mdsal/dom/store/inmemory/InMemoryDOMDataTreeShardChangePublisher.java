@@ -11,7 +11,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -41,14 +41,14 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
     private final QueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>,
         DataTreeCandidate> notificationManager;
 
-    InMemoryDOMDataTreeShardChangePublisher(final ExecutorService executorService,
+    InMemoryDOMDataTreeShardChangePublisher(final Executor executor,
                                             final int maxQueueSize,
                                             final DataTree dataTree,
                                             final YangInstanceIdentifier rootPath,
                                             final Map<DOMDataTreeIdentifier, ChildShardContext> childShards) {
         super(dataTree, rootPath, childShards);
         notificationManager = new QueuedNotificationManager<>(
-                executorService, MANAGER_INVOKER, maxQueueSize, "DataTreeChangeListenerQueueMgr");
+                executor, MANAGER_INVOKER, maxQueueSize, "DataTreeChangeListenerQueueMgr");
     }
 
     @Override
@@ -65,13 +65,14 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
     }
 
     @Override
-    protected void registrationRemoved(@Nonnull AbstractDOMDataTreeChangeListenerRegistration<?> registration) {
+    protected void registrationRemoved(@Nonnull final AbstractDOMDataTreeChangeListenerRegistration<?> registration) {
         LOG.debug("Closing registration {}", registration);
 
     }
 
+    @Override
     public <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L>
-            registerTreeChangeListener(YangInstanceIdentifier path, L listener) {
+            registerTreeChangeListener(final YangInstanceIdentifier path, final L listener) {
         return super.registerTreeChangeListener(path, listener);
     }
 
