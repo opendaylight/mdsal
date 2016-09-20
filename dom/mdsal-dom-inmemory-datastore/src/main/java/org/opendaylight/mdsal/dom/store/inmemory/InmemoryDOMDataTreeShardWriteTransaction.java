@@ -232,8 +232,8 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     public DOMDataTreeWriteCursor createCursor(final DOMDataTreeIdentifier prefix) {
         Preconditions.checkState(!finished, "Transaction is finished/closed already.");
         Preconditions.checkState(cursor == null, "Previous cursor wasn't closed");
-        final DOMDataTreeWriteCursor ret = getCursor();
         final YangInstanceIdentifier relativePath = toRelative(prefix.getRootIdentifier());
+        final DOMDataTreeWriteCursor ret = getCursor();
         ret.enter(relativePath.getPathArguments());
         return ret;
     }
