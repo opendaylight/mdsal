@@ -76,8 +76,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             }
         }
 
-        throw new IllegalArgumentException(String.format("Path %s is not accessible from transaction %s",
-                prefix, this));
+        return null;
     }
 
     @Override
@@ -108,7 +107,10 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     public synchronized DOMDataTreeWriteCursor createCursor(final DOMDataTreeIdentifier prefix) {
         Preconditions.checkState(!closed, "Transaction is closed already");
         Preconditions.checkState(openCursor == null, "There is still a cursor open");
+
         final DOMDataTreeShardWriteTransaction lookup = lookup(prefix);
+        Preconditions.checkArgument(lookup != null, "Path %s is not accessible from transaction %s", prefix, this);
+
         openCursor = new DelegatingCursor(lookup.createCursor(prefix), prefix);
         return openCursor;
     }
