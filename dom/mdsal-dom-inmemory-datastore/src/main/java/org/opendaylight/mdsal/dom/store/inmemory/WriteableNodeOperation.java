@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import java.util.Map.Entry;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -101,8 +100,7 @@ abstract class WriteableNodeOperation implements WriteCursorStrategy {
             write(writtenChild.getIdentifier(), writtenChild);
         }
         // Delete step - remove subshard data that was written into current shard
-        for (Entry<PathArgument, WriteableModificationNode> shardChild : node.getChildrenWithSubshards().entrySet()) {
-            PathArgument childId = shardChild.getKey();
+        for (PathArgument childId : node.getChildrenWithSubshards().keySet()) {
             @SuppressWarnings("unchecked")
             Optional<NormalizedNode<?, ?>> writtenValue = ((NormalizedNodeContainer) data).getChild(childId);
             if (writtenValue.isPresent()) {
