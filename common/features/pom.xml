@@ -155,10 +155,6 @@
             <artifactId>mdsal-binding-dom-adapter</artifactId>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-binding-util</artifactId>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}.model</groupId>
             <artifactId>yang-ext</artifactId>
         </dependency>
