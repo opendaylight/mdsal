@@ -60,12 +60,13 @@ public class InMemoryDOMDataTreeShardTest {
         assertEquals(prefixes.toString(), inMemoryDOMDataTreeShard.createProducer(prefixes).getPrefixes().toString());
 
         final InMemoryDOMDataTreeShardProducer mockProducer = mock(InMemoryDOMDataTreeShardProducer.class);
+        doReturn(prefixes).when(mockProducer).getPrefixes();
 
         inMemoryDOMDataTreeShard.onGlobalContextUpdated(createTestContext());
-        inMemoryDOMDataTreeShard.createTransaction("", mockProducer, prefixes, mock(CursorAwareDataTreeSnapshot.class));
+        inMemoryDOMDataTreeShard.createTransaction("", mockProducer, mock(CursorAwareDataTreeSnapshot.class));
 
         final DOMDataTreeChangeListener domDataTreeChangeListener = mock(DOMDataTreeChangeListener.class);
-        final ListenerRegistration listenerRegistration = mock(ListenerRegistration.class);
+        final ListenerRegistration<?> listenerRegistration = mock(ListenerRegistration.class);
         doReturn(listenerRegistration).when(domDataTreeShard).registerTreeChangeListener(any(), any());
         doNothing().when(domDataTreeChangeListener).onDataTreeChanged(any());
         inMemoryDOMDataTreeShard.registerTreeChangeListener(YangInstanceIdentifier.EMPTY, domDataTreeChangeListener);
@@ -88,10 +89,11 @@ public class InMemoryDOMDataTreeShardTest {
         final InmemoryDOMDataTreeShardWriteTransaction inmemoryDOMDataTreeShardWriteTransaction =
                 mock(InmemoryDOMDataTreeShardWriteTransaction.class);
         doReturn(dataTreeModification).when(inmemoryDOMDataTreeShardWriteTransaction).getRootModification();
-        final InMemoryDOMDataTreeShardProducer mockProducer = mock(InMemoryDOMDataTreeShardProducer.class);
         final Collection<DOMDataTreeIdentifier> prefixes = ImmutableList.of(DOM_DATA_TREE_IDENTIFIER);
+        final InMemoryDOMDataTreeShardProducer mockProducer = mock(InMemoryDOMDataTreeShardProducer.class);
+        doReturn(prefixes).when(mockProducer).getPrefixes();
 
-        inMemoryDOMDataTreeShard.createTransaction("", mockProducer, prefixes, mock(CursorAwareDataTreeSnapshot.class));
+        inMemoryDOMDataTreeShard.createTransaction("", mockProducer, mock(CursorAwareDataTreeSnapshot.class));
     }
 
     @After

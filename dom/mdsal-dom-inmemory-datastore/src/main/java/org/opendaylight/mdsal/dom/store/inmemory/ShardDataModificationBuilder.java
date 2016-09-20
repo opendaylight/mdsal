@@ -17,36 +17,37 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 
 class ShardDataModificationBuilder extends ModificationContextNodeBuilder<ShardDataModification> {
 
+    private final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards = new HashMap<>();
     private final ShardRootModificationContext root;
-    private final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards =
-            new HashMap<>();
 
     ShardDataModificationBuilder(final ShardRootModificationContext root) {
         this.root = root;
     }
 
-    public void addSubshard(final ForeignShardModificationContext value) {
+    void addSubshard(final ForeignShardModificationContext value) {
         WriteableSubshardBoundaryNode leafNode = WriteableSubshardBoundaryNode.from(value);
         putNode(value.getIdentifier().getRootIdentifier(), leafNode);
     }
 
-    public void addSubshard(final DOMDataTreeIdentifier prefix, final ForeignShardModificationContext value) {
+    void addSubshard(final DOMDataTreeIdentifier prefix, final ForeignShardModificationContext value) {
         childShards.put(prefix, value);
     }
 
     private void putNode(final YangInstanceIdentifier key, final WriteableSubshardBoundaryNode subshardNode) {
-        ModificationContextNodeBuilder<?> current = this;
-        Iterator<PathArgument> toBoundary = toRelative(key).getPathArguments().iterator();
-        while (toBoundary.hasNext()) {
-            PathArgument nextArg = toBoundary.next();
-            if (toBoundary.hasNext()) {
+        final Iterator<PathArgument> toBoundary = toRelative(key).getPathArguments().iterator();
+        if (toBoundary.hasNext()) {
+            ModificationContextNodeBuilder<?> current = this;
+            while (true) {
+                final PathArgument nextArg = toBoundary.next();
+                if (!toBoundary.hasNext()) {
+                    current.addBoundary(nextArg, subshardNode);
+                    break;
+                }
+
                 current = getInterior(nextArg);
-            } else {
-                current.addBoundary(nextArg, subshardNode);
             }
         }
     }
-
 
     @Override
     ShardDataModification build(final Map<PathArgument, WriteableModificationNode> children) {

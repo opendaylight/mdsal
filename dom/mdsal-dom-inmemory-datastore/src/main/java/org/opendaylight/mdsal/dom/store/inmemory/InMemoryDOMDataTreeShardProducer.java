@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicLong;
@@ -103,10 +104,14 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
             AtomicReferenceFieldUpdater.newUpdater(InMemoryDOMDataTreeShardProducer.class, State.class, "state");
     private volatile State state;
 
+    private final Collection<SubshardProducerSpecification> affectedSubshards;
+
     InMemoryDOMDataTreeShardProducer(final InMemoryDOMDataTreeShard parentShard,
-            final Collection<DOMDataTreeIdentifier> prefixes) {
+        final Collection<DOMDataTreeIdentifier> prefixes,
+        final Collection<SubshardProducerSpecification> affectedSubshards) {
         this.parentShard = Preconditions.checkNotNull(parentShard);
         this.prefixes = ImmutableSet.copyOf(prefixes);
+        this.affectedSubshards = ImmutableList.copyOf(affectedSubshards);
         state = idleState;
     }
 
@@ -118,7 +123,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         InmemoryDOMDataTreeShardWriteTransaction ret;
         do {
             localState = state;
-            ret = parentShard.createTransaction(transactionId, this, prefixes, localState.getSnapshot(transactionId));
+            ret = parentShard.createTransaction(transactionId, this, localState.getSnapshot(transactionId));
         } while (!STATE_UPDATER.compareAndSet(this, localState, new Allocated(ret)));
 
         return ret;
@@ -196,5 +201,14 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
     @Override
     public Collection<DOMDataTreeIdentifier> getPrefixes() {
         return prefixes;
+    }
+
+    void setAffectedSubshards(Collection<SubshardProducerSpecification> affectedSubshards) {
+        affectedSubshards = ImmutableList.copyOf(affectedSubshards);
+    }
+
+    Collection<SubshardProducerSpecification> getAffectedSubshards() {
+        // TODO Auto-generated method stub
+        return affectedSubshards;
     }
 }
