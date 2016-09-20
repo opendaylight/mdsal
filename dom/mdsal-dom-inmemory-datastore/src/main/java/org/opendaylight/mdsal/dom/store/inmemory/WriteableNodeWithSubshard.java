@@ -10,14 +10,13 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 abstract class WriteableNodeWithSubshard extends WriteableModificationNode {
 
     private final Map<PathArgument, WriteableModificationNode> children;
 
-    WriteableNodeWithSubshard(Map<PathArgument, WriteableModificationNode> children) {
+    WriteableNodeWithSubshard(final Map<PathArgument, WriteableModificationNode> children) {
         this.children = ImmutableMap.copyOf(children);
     }
 
@@ -27,14 +26,14 @@ abstract class WriteableNodeWithSubshard extends WriteableModificationNode {
     }
 
     @Override
-    WriteableModificationNode getChild(PathArgument node) {
+    WriteableModificationNode getChild(final PathArgument node) {
         return children.get(node);
     }
 
     @Override
     void markDeleted() {
-        for (Entry<PathArgument, WriteableModificationNode> child : children.entrySet()) {
-            child.getValue().markDeleted();
+        for (WriteableModificationNode child : children.values()) {
+            child.markDeleted();
         }
     }
 }
