@@ -129,8 +129,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         return submitFuture;
     }
 
-    CheckedFuture<Void, TransactionCommitFailedException> doSubmit(
-            final Consumer<ShardedDOMDataTreeWriteTransaction> success,
+    void doSubmit(final Consumer<ShardedDOMDataTreeWriteTransaction> success,
             final BiConsumer<ShardedDOMDataTreeWriteTransaction, Throwable> failure) {
 
         final ListenableFuture<List<Void>> listListenableFuture = Futures.allAsList(
@@ -140,22 +139,17 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
                 return tx.submit();
             }).collect(Collectors.toList()));
 
-        final SettableFuture<Void> ret = SettableFuture.create();
         Futures.addCallback(listListenableFuture, new FutureCallback<List<Void>>() {
             @Override
             public void onSuccess(final List<Void> result) {
                 success.accept(ShardedDOMDataTreeWriteTransaction.this);
-                ret.set(null);
             }
 
             @Override
             public void onFailure(final Throwable exp) {
                 failure.accept(ShardedDOMDataTreeWriteTransaction.this, exp);
-                ret.setException(exp);
             }
         });
-
-        return Futures.makeChecked(ret, SUBMIT_FAILED_MAPPER);
     }
 
     void onTransactionSuccess(final Void result) {
