@@ -9,7 +9,7 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Preconditions;
-import java.util.Collections;
+import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -69,6 +69,6 @@ final class WriteableSubshardBoundaryNode extends WriteableModificationNode {
 
     @Override
     Map<PathArgument, WriteableModificationNode> getChildrenWithSubshards() {
-        return Collections.emptyMap();
+        return ImmutableMap.of();
     }
 }
