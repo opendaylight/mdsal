@@ -10,12 +10,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <artifactId>model-iana</artifactId>
-        <groupId>org.opendaylight.mdsal.model</groupId>
+        <groupId>org.opendaylight.mdsal</groupId>
+        <artifactId>binding-parent</artifactId>
         <version>0.10.0-SNAPSHOT</version>
+        <relativePath>../../../binding/binding-parent</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>iana-if-type-2014-05-08</artifactId>
     <version>2014.05.08.10-SNAPSHOT</version>
     <name>${project.artifactId}</name>
@@ -28,7 +30,6 @@
             <artifactId>ietf-interfaces</artifactId>
         </dependency>
     </dependencies>
-
 
   <!--
       Maven Site Configuration

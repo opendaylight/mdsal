@@ -19,6 +19,7 @@
     <artifactId>yang-binding2</artifactId>
     <name>${project.artifactId}</name>
     <description>Java binding for YANG</description>
+    <packaging>bundle</packaging>
 
     <dependencies>
         <dependency>
