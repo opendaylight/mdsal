@@ -43,7 +43,7 @@ public class ShardDataModificationTest {
     @Before
     public void setUp() throws Exception {
         doReturn(DOM_DATA_TREE_IDENTIFIER).when(SHARD_ROOT_MODIFICATION_CONTEXT).getIdentifier();
-        shardDataModification = ShardDataModification.from(SHARD_ROOT_MODIFICATION_CONTEXT,
+        shardDataModification = TestUtils.createModification(SHARD_ROOT_MODIFICATION_CONTEXT,
                 ImmutableMap.of(YangInstanceIdentifier.of(QName.create("test")), FOREIGN_SHARD_MODIFICATION_CONTEXT));
 
         final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> children =

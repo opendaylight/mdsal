@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 
@@ -43,16 +42,6 @@ final class ShardDataModification extends WriteableNodeWithSubshard {
     @Override
     public PathArgument getIdentifier() {
         return rootContext.getIdentifier().getRootIdentifier().getLastPathArgument();
-    }
-
-    static ShardDataModification from(final ShardRootModificationContext root,
-            final Map<YangInstanceIdentifier, ForeignShardModificationContext> shards) {
-
-        ShardDataModificationBuilder builder = new ShardDataModificationBuilder(root);
-        for (ForeignShardModificationContext subshard : shards.values()) {
-            builder.addSubshard(subshard);
-        }
-        return builder.build();
     }
 
     DOMDataTreeIdentifier getPrefix() {

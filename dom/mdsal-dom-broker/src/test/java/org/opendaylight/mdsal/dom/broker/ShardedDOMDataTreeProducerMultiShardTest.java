@@ -286,13 +286,13 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
     @Test
     public void testMockedSubshards() throws Exception {
         final WriteableDOMDataTreeShard mockedInnerShard = Mockito.mock(WriteableDOMDataTreeShard.class);
+        final DOMDataTreeShardProducer mockedProducer = Mockito.mock(DOMDataTreeShardProducer.class);
+        doReturn(mockedProducer).when(mockedInnerShard).createProducer(anyCollection());
         final ShardedDOMDataTreeProducer shardRegProducer = Mockito.mock(ShardedDOMDataTreeProducer.class);
         doReturn(Collections.singleton(INNER_CONTAINER_ID)).when(shardRegProducer).getSubtrees();
         doNothing().when(shardRegProducer).subshardAdded(anyMap());
 
         dataTreeService.registerDataTreeShard(INNER_CONTAINER_ID, mockedInnerShard, shardRegProducer);
-        final DOMDataTreeShardProducer mockedProducer = Mockito.mock(DOMDataTreeShardProducer.class);
-        doReturn(mockedProducer).when(mockedInnerShard).createProducer(any(Collection.class));
 
         final DOMDataTreeShardProducer producer = rootShard.createProducer(Collections.singletonList(TEST_ID));
 
@@ -351,7 +351,7 @@ public class ShardedDOMDataTreeProducerMultiShardTest {
 
     }
 
-    private ContainerNode createCrossShardContainer() {
+    private static ContainerNode createCrossShardContainer() {
         final LeafNode<String> shardedValue1 =
                 ImmutableLeafNodeBuilder.<String>create().withNodeIdentifier(
                         new NodeIdentifier(TestModel.SHARDED_VALUE_1)).withValue("sharded value 1").build();
