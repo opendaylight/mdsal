@@ -165,13 +165,15 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
 
     private class DelegatingCursor implements DOMDataTreeWriteCursor {
         private final Deque<PathArgument> path = new ArrayDeque<>();
-        private final DOMDataTreeWriteCursor delegate;
         private final DOMDataTreeIdentifier rootPosition;
+        private final DOMDataTreeWriteCursor delegate;
 
         DelegatingCursor(final DOMDataTreeWriteCursor delegate, final DOMDataTreeIdentifier rootPosition) {
             this.delegate = Preconditions.checkNotNull(delegate);
             this.rootPosition = Preconditions.checkNotNull(rootPosition);
-            path.addAll(rootPosition.getRootIdentifier().getPathArguments());
+
+            // ArrayDeque has an efficient addFirst and YangInstanceIdentifier is more eficient in reverse direction
+            rootPosition.getRootIdentifier().getReversePathArguments().forEach(path::addFirst);
         }
 
         @Override
