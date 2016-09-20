@@ -91,7 +91,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     public static InMemoryDOMDataTreeShard create(final DOMDataTreeIdentifier id,
                                                   final Executor dataTreeChangeExecutor,
                                                   final int maxDataChangeListenerQueueSize) {
-        return new InMemoryDOMDataTreeShard(id, dataTreeChangeExecutor,
+        return new InMemoryDOMDataTreeShard(id.toOptimized(), dataTreeChangeExecutor,
                 maxDataChangeListenerQueueSize, DEFAULT_SUBMIT_QUEUE_SIZE);
     }
 
@@ -99,7 +99,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
                                                   final Executor dataTreeChangeExecutor,
                                                   final int maxDataChangeListenerQueueSize,
                                                   final int submitQueueSize) {
-        return new InMemoryDOMDataTreeShard(id, dataTreeChangeExecutor,
+        return new InMemoryDOMDataTreeShard(id.toOptimized(), dataTreeChangeExecutor,
                 maxDataChangeListenerQueueSize, submitQueueSize);
     }
 
