@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -50,8 +49,8 @@ final class ShardDataModification extends WriteableNodeWithSubshard {
             final Map<YangInstanceIdentifier, ForeignShardModificationContext> shards) {
 
         ShardDataModificationBuilder builder = new ShardDataModificationBuilder(root);
-        for (Entry<YangInstanceIdentifier, ForeignShardModificationContext> subshard : shards.entrySet()) {
-            builder.addSubshard(subshard.getValue());
+        for (ForeignShardModificationContext subshard : shards.values()) {
+            builder.addSubshard(subshard);
         }
         return builder.build();
     }
