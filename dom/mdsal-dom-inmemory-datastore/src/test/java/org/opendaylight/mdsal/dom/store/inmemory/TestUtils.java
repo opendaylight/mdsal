@@ -34,7 +34,7 @@ final class TestUtils {
 
     static final NodeIdentifier NODE_IDENTIFIER = NodeIdentifier.create(QName.create("test"));
 
-    static final NormalizedNode NORMALIZED_NODE = mock(NormalizedNode.class);
+    static final NormalizedNode<?, ?> NORMALIZED_NODE = mock(NormalizedNode.class);
 
     static final NormalizedNodeContainer NORMALIZED_NODE_CONTAINER = mock(NormalizedNodeContainer.class);
 
@@ -43,7 +43,7 @@ final class TestUtils {
 
     static final Collection<DOMStoreThreePhaseCommitCohort> COHORTS = new HashSet<>();
 
-    static final ListenableFuture LISTENABLE_FUTURE = mock(ListenableFuture.class);
+    static final ListenableFuture<?> LISTENABLE_FUTURE = mock(ListenableFuture.class);
 
     static final WriteableModificationNode WRITEABLE_MODIFICATION_NODE = mock(WriteableModificationNode.class);
 
