@@ -68,7 +68,6 @@
         <feature version='${project.version}'>odl-mdsal-binding-base</feature>
         <bundle>mvn:org.opendaylight.mdsal.model/general-entity/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-api/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-util/{{VERSION}}</bundle>
     </feature>
 
     <feature name='odl-mdsal-binding-dom-adapter' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Generator'>
