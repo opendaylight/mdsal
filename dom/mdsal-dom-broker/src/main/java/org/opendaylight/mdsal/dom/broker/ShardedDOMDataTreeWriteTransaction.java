@@ -175,8 +175,8 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         @Override
         public void enter(@Nonnull final PathArgument child) {
             checkAvailable(child);
-            path.push(child);
             delegate.enter(child);
+            path.push(child);
         }
 
         @Override
@@ -195,16 +195,16 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
 
         @Override
         public void exit() {
-            path.pop();
             delegate.exit();
+            path.pop();
         }
 
         @Override
         public void exit(final int depth) {
+            delegate.exit(depth);
             for (int i = 0; i < depth; i++) {
                 path.pop();
             }
-            delegate.exit(depth);
         }
 
         @Override
