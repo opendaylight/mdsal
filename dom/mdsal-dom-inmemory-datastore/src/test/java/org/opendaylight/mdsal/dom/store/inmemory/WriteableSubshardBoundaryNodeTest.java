@@ -21,7 +21,7 @@ import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_WRITE_CURSOR;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
 
-import java.util.Collections;
+import com.google.common.collect.ImmutableMap;
 import org.junit.After;
 import org.junit.Test;
 
@@ -62,7 +62,7 @@ public class WriteableSubshardBoundaryNodeTest {
                 WriteableSubshardBoundaryNode.from(FOREIGN_SHARD_MODIFICATION_CONTEXT);
 
         assertNotNull(writeableSubshardBoundaryNode.getChildrenWithSubshards());
-        assertSame(Collections.emptyMap(),writeableSubshardBoundaryNode.getChildrenWithSubshards());
+        assertSame(ImmutableMap.of(), writeableSubshardBoundaryNode.getChildrenWithSubshards());
         assertEquals(DOM_DATA_TREE_IDENTIFIER.getRootIdentifier().getLastPathArgument(),
                 writeableSubshardBoundaryNode.getIdentifier());
         assertNull(writeableSubshardBoundaryNode.getChild(null));
