@@ -130,6 +130,8 @@ final class ProducerLayout {
     }
 
     Map<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> createTransactions() {
+        Preconditions.checkState(!idToProducer.isEmpty(),
+                "Cannot create transaction since the producer is not mapped to any shard");
         return Maps.transformValues(idToProducer, DOMDataTreeShardProducer::createTransaction);
     }
 }
