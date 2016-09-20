@@ -11,6 +11,8 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
@@ -71,7 +73,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     private final InMemoryDOMDataTreeShardChangePublisher shardChangePublisher;
     private final ListeningExecutorService executor;
 
-    private InMemoryDOMDataTreeShard(final DOMDataTreeIdentifier prefix, final ExecutorService dataTreeChangeExecutor,
+    private InMemoryDOMDataTreeShard(final DOMDataTreeIdentifier prefix, final Executor dataTreeChangeExecutor,
                                      final int maxDataChangeListenerQueueSize, final int submitQueueSize) {
         this.prefix = Preconditions.checkNotNull(prefix);
 
@@ -87,14 +89,14 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     }
 
     public static InMemoryDOMDataTreeShard create(final DOMDataTreeIdentifier id,
-                                                  final ExecutorService dataTreeChangeExecutor,
+                                                  final Executor dataTreeChangeExecutor,
                                                   final int maxDataChangeListenerQueueSize) {
         return new InMemoryDOMDataTreeShard(id, dataTreeChangeExecutor,
                 maxDataChangeListenerQueueSize, DEFAULT_SUBMIT_QUEUE_SIZE);
     }
 
     public static InMemoryDOMDataTreeShard create(final DOMDataTreeIdentifier id,
-                                                  final ExecutorService dataTreeChangeExecutor,
+                                                  final Executor dataTreeChangeExecutor,
                                                   final int maxDataChangeListenerQueueSize,
                                                   final int submitQueueSize) {
         return new InMemoryDOMDataTreeShard(id, dataTreeChangeExecutor,
@@ -190,11 +192,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
 
     @VisibleForTesting
     Map<DOMDataTreeIdentifier, DOMDataTreeShard> getChildShards() {
-        final Map<DOMDataTreeIdentifier, DOMDataTreeShard> ret = new HashMap<>();
-        for (final Entry<DOMDataTreeIdentifier, ChildShardContext> entry : childShards.entrySet()) {
-            ret.put(entry.getKey(), entry.getValue().getShard());
-        }
-        return ret;
+        return ImmutableMap.copyOf(Maps.transformValues(childShards, ChildShardContext::getShard));
     }
 
     DataTreeSnapshot takeSnapshot() {
