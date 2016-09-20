@@ -63,16 +63,20 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
                 final NormalizedNode<?, ?> data) {
             int enterCount = 0;
             final Iterator<PathArgument> it = path.getPathArguments().iterator();
-            while (it.hasNext()) {
-                final PathArgument currentArg = it.next();
-                if (it.hasNext()) {
+            if (it.hasNext()) {
+                while (true) {
+                    final PathArgument currentArg = it.next();
+                    if (!it.hasNext()) {
+                        applyOnLeaf(cursor, currentArg, data);
+                        break;
+                    }
+
                     // We need to enter one level deeper, we are not at leaf (modified) node
                     cursor.enter(currentArg);
                     enterCount++;
-                } else {
-                    applyOnLeaf(cursor, currentArg, data);
                 }
             }
+
             cursor.exit(enterCount);
         }
     }
@@ -194,37 +198,25 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         Preconditions.checkNotNull(cohorts);
         Preconditions.checkState(!cohorts.isEmpty(), "Transaction was not readied yet.");
 
-        final ListenableFuture<Void> submit = executor.submit(new ShardSubmitCoordinationTask(
-                modification.getPrefix(), cohorts, this));
-
-        return submit;
+        return executor.submit(new ShardSubmitCoordinationTask(modification.getPrefix(), cohorts, this));
     }
 
     @Override
     public ListenableFuture<Boolean> validate() {
         LOG.debug("CanCommit on open transaction on shard {}", modification.getPrefix());
-
-        final ListenableFuture<Boolean> submit = executor.submit(new ShardCanCommitCoordinationTask(
-                modification.getPrefix(), cohorts));
-        return submit;
+        return executor.submit(new ShardCanCommitCoordinationTask(modification.getPrefix(), cohorts));
     }
 
     @Override
     public ListenableFuture<Void> prepare() {
         LOG.debug("PreCommit on open transaction on shard {}", modification.getPrefix());
-
-        final ListenableFuture<Void> submit = executor.submit(new ShardPreCommitCoordinationTask(
-                modification.getPrefix(), cohorts));
-        return submit;
+        return executor.submit(new ShardPreCommitCoordinationTask(modification.getPrefix(), cohorts));
     }
 
     @Override
     public ListenableFuture<Void> commit() {
         LOG.debug("Commit open transaction on shard {}", modification.getPrefix());
-
-        final ListenableFuture<Void> submit = executor.submit(new ShardCommitCoordinationTask(
-                modification.getPrefix(), cohorts, this));
-        return submit;
+        return executor.submit(new ShardCommitCoordinationTask(modification.getPrefix(), cohorts, this));
     }
 
     DataTreeModification getRootModification() {
