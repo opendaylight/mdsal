@@ -80,7 +80,7 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
         doReturn("testDataTreeCandidate").when(dataTreeCandidate).toString();
         doReturn(dataTreeCandidate).when(DATA_TREE).prepare(any());
         final InMemoryDOMDataTreeShardChangePublisher inMemoryDOMDataTreeShardChangePublisher =
-                new InMemoryDOMDataTreeShardChangePublisher(MoreExecutors.newDirectExecutorService(), 1, DATA_TREE,
+                new InMemoryDOMDataTreeShardChangePublisher(MoreExecutors.directExecutor(), 1, DATA_TREE,
                         YANG_INSTANCE_IDENTIFIER, CHILD_SHARDS);
         mockProducer = mock(InMemoryDOMDataTreeShardProducer.class);
         doNothing().when(mockProducer).transactionReady(any(), any());
