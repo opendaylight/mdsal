@@ -19,6 +19,7 @@ import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.WRITE_CURSOR_S
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Field;
 import java.util.Deque;
 import java.util.HashMap;
@@ -38,8 +39,9 @@ public class ShardDataModificationCursorTest {
         final ShardRootModificationContext shardRootModificationContext = mock(ShardRootModificationContext.class);
         final Map<PathArgument, WriteableModificationNode> children = new HashMap<>();
         children.put(PATH_ARGUMENT, WRITEABLE_MODIFICATION_NODE);
-        final ShardDataModification root =
-                new ShardDataModificationBuilder(shardRootModificationContext).build(children);
+        final ShardDataModification root =  new ShardDataModification(shardRootModificationContext, children,
+            ImmutableMap.of());
+
         doReturn(dataTreeModificationCursorAdaptor).when(shardRootModificationContext).cursor();
         InmemoryDOMDataTreeShardWriteTransaction inmemoryDOMDataTreeShardWriteTransaction =
                 mock(InmemoryDOMDataTreeShardWriteTransaction.class);
