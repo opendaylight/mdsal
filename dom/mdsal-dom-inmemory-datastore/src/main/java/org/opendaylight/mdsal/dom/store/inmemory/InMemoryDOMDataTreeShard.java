@@ -18,6 +18,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,12 +40,11 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.TreeType;
 import org.opendaylight.yangtools.yang.data.impl.schema.tree.InMemoryDataTreeFactory;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Beta
 public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeShard, SchemaContextListener {
-
-    private static final int DEFAULT_SUBMIT_QUEUE_SIZE = 1000;
-
     private static final class SubshardProducerSpecification {
         private final Collection<DOMDataTreeIdentifier> prefixes = new ArrayList<>(1);
         private final ChildShardContext shard;
@@ -61,17 +61,21 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
             return shard.getShard().createProducer(prefixes);
         }
 
-        public DOMDataTreeIdentifier getPrefix() {
+        DOMDataTreeIdentifier getPrefix() {
             return shard.getPrefix();
         }
     }
 
+    private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataTreeShard.class);
+    private static final int DEFAULT_SUBMIT_QUEUE_SIZE = 1000;
+
     private final DOMDataTreePrefixTable<ChildShardContext> childShardsTable = DOMDataTreePrefixTable.create();
     private final Map<DOMDataTreeIdentifier, ChildShardContext> childShards = new HashMap<>();
-    private final DOMDataTreeIdentifier prefix;
-    private final DataTree dataTree;
+    private final Collection<InMemoryDOMDataTreeShardProducer> producers = new HashSet<>();
     private final InMemoryDOMDataTreeShardChangePublisher shardChangePublisher;
     private final ListeningExecutorService executor;
+    private final DOMDataTreeIdentifier prefix;
+    private final DataTree dataTree;
 
     private InMemoryDOMDataTreeShard(final DOMDataTreeIdentifier prefix, final Executor dataTreeChangeExecutor,
                                      final int maxDataChangeListenerQueueSize, final int submitQueueSize) {
@@ -112,13 +116,60 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     public void onChildAttached(final DOMDataTreeIdentifier prefix, final DOMDataTreeShard child) {
         Preconditions.checkArgument(child != this, "Attempted to attach child %s onto self", this);
         reparentChildShards(prefix, child);
-        addChildShard(prefix, child);
+
+        final ChildShardContext context = createContextFor(prefix, child);
+        childShards.put(prefix, context);
+        childShardsTable.store(prefix, context);
+        updateProducers();
     }
 
     @Override
     public void onChildDetached(final DOMDataTreeIdentifier prefix, final DOMDataTreeShard child) {
         childShards.remove(prefix);
         childShardsTable.remove(prefix);
+        updateProducers();
+    }
+
+    private void updateProducers() {
+        final Collection<ChildShardContext> children = childShards.values();
+        for (InMemoryDOMDataTreeShardProducer p : producers) {
+            p.setModificationFactory(createModificationFactory(prefix, children, p.getPrefixes()));
+        }
+    }
+
+    private static ShardDataModificationFactory createModificationFactory(final DOMDataTreeIdentifier root,
+            final Collection<ChildShardContext> children, final Collection<DOMDataTreeIdentifier> prefixes) {
+        final Map<DOMDataTreeIdentifier, SubshardProducerSpecification> affected = new HashMap<>();
+        for (final DOMDataTreeIdentifier producerPrefix : prefixes) {
+            for (final ChildShardContext child : children) {
+                final DOMDataTreeIdentifier bindPath;
+                if (producerPrefix.contains(child.getPrefix())) {
+                    bindPath = child.getPrefix();
+                } else if (child.getPrefix().contains(producerPrefix)) {
+                    // Bound path is inside subshard
+                    bindPath = producerPrefix;
+                } else {
+                    continue;
+                }
+
+                SubshardProducerSpecification spec = affected.get(child.getPrefix());
+                if (spec == null) {
+                    spec = new SubshardProducerSpecification(child);
+                    affected.put(child.getPrefix(), spec);
+                }
+                spec.addPrefix(bindPath);
+            }
+        }
+
+        final ShardDataModificationFactoryBuilder builder = new ShardDataModificationFactoryBuilder(root);
+        for (final SubshardProducerSpecification spec : affected.values()) {
+            final ForeignShardModificationContext foreignContext =
+                    new ForeignShardModificationContext(spec.getPrefix(), spec.createProducer());
+            builder.addSubshard(foreignContext);
+            builder.addSubshard(spec.getPrefix(), foreignContext);
+        }
+
+        return builder.build();
     }
 
     @Override
@@ -127,7 +178,17 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
             Preconditions.checkArgument(prefix.contains(prodPrefix), "Prefix %s is not contained under shart root",
                 prodPrefix, prefix);
         }
-        return new InMemoryDOMDataTreeShardProducer(this, prefixes);
+
+        final InMemoryDOMDataTreeShardProducer ret = new InMemoryDOMDataTreeShardProducer(this, prefixes,
+            createModificationFactory(prefix, childShards.values(), prefixes));
+        producers.add(ret);
+        return ret;
+    }
+
+    void closeProducer(final InMemoryDOMDataTreeShardProducer producer) {
+        if (!producers.remove(producer)) {
+            LOG.warn("Producer {} not found in shard {}", producer, this);
+        }
     }
 
     @Nonnull
@@ -135,12 +196,6 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(
             @Nonnull final YangInstanceIdentifier treeId, @Nonnull final L listener) {
         return shardChangePublisher.registerTreeChangeListener(treeId, listener);
-    }
-
-    private void addChildShard(final DOMDataTreeIdentifier prefix, final DOMDataTreeShard child) {
-        final ChildShardContext context = createContextFor(prefix, child);
-        childShards.put(prefix, context);
-        childShardsTable.store(prefix, context);
     }
 
     private void reparentChildShards(final DOMDataTreeIdentifier newChildPrefix, final DOMDataTreeShard newChild) {
@@ -200,51 +255,11 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     }
 
     InmemoryDOMDataTreeShardWriteTransaction createTransaction(final String transactionId,
-                                                               final InMemoryDOMDataTreeShardProducer producer,
-                                                               final Collection<DOMDataTreeIdentifier> prefixes,
-                                                               final DataTreeSnapshot snapshot) {
+            final InMemoryDOMDataTreeShardProducer producer, final DataTreeSnapshot snapshot) {
+        Preconditions.checkArgument(snapshot instanceof CursorAwareDataTreeSnapshot);
 
-        return createTxForSnapshot(producer, prefixes, (CursorAwareDataTreeSnapshot) snapshot);
+        return new InmemoryDOMDataTreeShardWriteTransaction(producer,
+            producer.getModificationFactory().createModification((CursorAwareDataTreeSnapshot)snapshot), dataTree,
+            shardChangePublisher, executor);
     }
-
-    private InmemoryDOMDataTreeShardWriteTransaction createTxForSnapshot(
-            final InMemoryDOMDataTreeShardProducer producer,
-            final Collection<DOMDataTreeIdentifier> prefixes,
-            final CursorAwareDataTreeSnapshot snapshot) {
-
-        final Map<DOMDataTreeIdentifier, SubshardProducerSpecification> affectedSubshards = new HashMap<>();
-        for (final DOMDataTreeIdentifier producerPrefix : prefixes) {
-            for (final ChildShardContext maybeAffected : childShards.values()) {
-                final DOMDataTreeIdentifier bindPath;
-                if (producerPrefix.contains(maybeAffected.getPrefix())) {
-                    bindPath = maybeAffected.getPrefix();
-                } else if (maybeAffected.getPrefix().contains(producerPrefix)) {
-                    // Bound path is inside subshard
-                    bindPath = producerPrefix;
-                } else {
-                    continue;
-                }
-
-                SubshardProducerSpecification spec = affectedSubshards.get(maybeAffected.getPrefix());
-                if (spec == null) {
-                    spec = new SubshardProducerSpecification(maybeAffected);
-                    affectedSubshards.put(maybeAffected.getPrefix(), spec);
-                }
-                spec.addPrefix(bindPath);
-            }
-        }
-
-        final ShardRootModificationContext rootContext = new ShardRootModificationContext(prefix, snapshot);
-        final ShardDataModificationBuilder builder = new ShardDataModificationBuilder(rootContext);
-        for (final SubshardProducerSpecification spec : affectedSubshards.values()) {
-            final ForeignShardModificationContext foreignContext =
-                    new ForeignShardModificationContext(spec.getPrefix(), spec.createProducer());
-            builder.addSubshard(foreignContext);
-            builder.addSubshard(spec.getPrefix(), foreignContext);
-        }
-
-        return new InmemoryDOMDataTreeShardWriteTransaction(producer, builder.build(),
-                dataTree, shardChangePublisher, executor);
-    }
-
 }
