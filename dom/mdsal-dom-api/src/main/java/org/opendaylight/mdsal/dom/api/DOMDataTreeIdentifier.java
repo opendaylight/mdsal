@@ -22,9 +22,10 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
  * A unique identifier for a particular subtree. It is composed of the logical
  * data store type and the instance identifier of the root node.
  */
-public final class DOMDataTreeIdentifier implements Immutable,
-    Path<DOMDataTreeIdentifier>, Serializable, Comparable<DOMDataTreeIdentifier> {
+public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeIdentifier>, Serializable,
+        Comparable<DOMDataTreeIdentifier> {
     private static final long serialVersionUID = 1L;
+
     private final YangInstanceIdentifier rootIdentifier;
     private final LogicalDatastoreType datastoreType;
 
@@ -55,6 +56,11 @@ public final class DOMDataTreeIdentifier implements Immutable,
     @Override
     public boolean contains(final DOMDataTreeIdentifier other) {
         return datastoreType == other.datastoreType && rootIdentifier.contains(other.rootIdentifier);
+    }
+
+    public DOMDataTreeIdentifier toOptimized() {
+        final YangInstanceIdentifier opt = rootIdentifier.toOptimized();
+        return opt == rootIdentifier ? this : new DOMDataTreeIdentifier(datastoreType, opt);
     }
 
     @Override

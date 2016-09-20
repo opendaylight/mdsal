@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
 abstract class ModificationContextNodeBuilder<T extends WriteableModificationNode> {
@@ -32,10 +31,9 @@ abstract class ModificationContextNodeBuilder<T extends WriteableModificationNod
     }
 
     final T build() {
-        HashMap<PathArgument, WriteableModificationNode> builtChildren =
-                new HashMap<PathArgument, WriteableModificationNode>(boundaryChildren);
-        for (Entry<PathArgument, InteriorNodeBuilder> interiorNode : interiorChildren.entrySet()) {
-            WriteableModificationNode builded = interiorNode.getValue().build();
+        final Map<PathArgument, WriteableModificationNode> builtChildren = new HashMap<>(boundaryChildren);
+        for (InteriorNodeBuilder interiorNode : interiorChildren.values()) {
+            WriteableModificationNode builded = interiorNode.build();
             builtChildren.put(builded.getIdentifier(), builded);
         }
 
