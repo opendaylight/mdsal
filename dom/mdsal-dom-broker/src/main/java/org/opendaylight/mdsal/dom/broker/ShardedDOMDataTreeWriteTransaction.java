@@ -15,9 +15,9 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -172,14 +172,16 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
 
     private class DelegatingCursor implements DOMDataTreeWriteCursor {
 
-        private final DOMDataTreeWriteCursor delegate;
+        private final Deque<PathArgument> path = new ArrayDeque<>();
         private final DOMDataTreeIdentifier rootPosition;
-        private final Deque<PathArgument> path = new LinkedList<>();
+        private final DOMDataTreeWriteCursor delegate;
 
         DelegatingCursor(final DOMDataTreeWriteCursor delegate, final DOMDataTreeIdentifier rootPosition) {
             this.delegate = Preconditions.checkNotNull(delegate);
             this.rootPosition = Preconditions.checkNotNull(rootPosition);
-            path.addAll(rootPosition.getRootIdentifier().getPathArguments());
+
+            // ArrayDeque has an efficient addFirst and YangInstanceIdentifier is more eficient in reverse direction
+            rootPosition.getRootIdentifier().getReversePathArguments().forEach(path::addFirst);
         }
 
         @Override
