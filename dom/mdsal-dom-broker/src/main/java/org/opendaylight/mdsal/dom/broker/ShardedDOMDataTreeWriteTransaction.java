@@ -68,10 +68,14 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     }
 
     private DOMDataTreeShardWriteTransaction lookup(final DOMDataTreeIdentifier prefix) {
+        final DOMDataTreeShardWriteTransaction fast = transactions.get(prefix);
+        if (fast != null) {
+            return fast;
+        }
+
+        LOG.debug("Prefix {} not found in available subtrees {}, fallback to slow path", prefix, transactions.keySet());
         for (final Entry<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> e : transactions.entrySet()) {
             if (e.getKey().contains(prefix)) {
-                Preconditions.checkArgument(!producer.isDelegatedToChild(prefix),
-                    "Path %s is delegated to child producer.", prefix);
                 return e.getValue();
             }
         }
@@ -107,6 +111,8 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     public synchronized DOMDataTreeWriteCursor createCursor(final DOMDataTreeIdentifier prefix) {
         Preconditions.checkState(!closed, "Transaction is closed already");
         Preconditions.checkState(openCursor == null, "There is still a cursor open");
+        Preconditions.checkArgument(!producer.isDelegatedToChild(prefix), "Path %s is delegated to child producer.",
+            prefix);
 
         final DOMDataTreeShardWriteTransaction lookup = lookup(prefix);
         Preconditions.checkArgument(lookup != null, "Path %s is not accessible from transaction %s", prefix, this);
