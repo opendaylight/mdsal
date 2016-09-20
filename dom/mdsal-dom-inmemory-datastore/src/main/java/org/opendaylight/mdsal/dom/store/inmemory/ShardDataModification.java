@@ -23,16 +23,16 @@ final class ShardDataModification extends WriteableNodeWithSubshard {
     private final ShardRootModificationContext rootContext;
     private final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards;
 
-    ShardDataModification(ShardRootModificationContext boundary,
-            Map<PathArgument, WriteableModificationNode> subshards,
-            Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards) {
+    ShardDataModification(final ShardRootModificationContext boundary,
+            final Map<PathArgument, WriteableModificationNode> subshards,
+            final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards) {
         super(subshards);
         this.rootContext = Preconditions.checkNotNull(boundary);
         this.childShards = ImmutableMap.copyOf(childShards);
     }
 
     @Override
-    WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor) {
+    WriteCursorStrategy createOperation(final DOMDataTreeWriteCursor parentCursor) {
         return new WriteableNodeOperation(this, rootContext.cursor()) {
             @Override
             public void exit() {
@@ -46,8 +46,8 @@ final class ShardDataModification extends WriteableNodeWithSubshard {
         return rootContext.getIdentifier().getRootIdentifier().getLastPathArgument();
     }
 
-    static ShardDataModification from(ShardRootModificationContext root,
-            Map<YangInstanceIdentifier, ForeignShardModificationContext> shards) {
+    static ShardDataModification from(final ShardRootModificationContext root,
+            final Map<YangInstanceIdentifier, ForeignShardModificationContext> shards) {
 
         ShardDataModificationBuilder builder = new ShardDataModificationBuilder(root);
         for (Entry<YangInstanceIdentifier, ForeignShardModificationContext> subshard : shards.entrySet()) {
@@ -56,15 +56,15 @@ final class ShardDataModification extends WriteableNodeWithSubshard {
         return builder.build();
     }
 
-    public DOMDataTreeIdentifier getPrefix() {
+    DOMDataTreeIdentifier getPrefix() {
         return rootContext.getIdentifier();
     }
 
-    public Map<DOMDataTreeIdentifier, ForeignShardModificationContext> getChildShards() {
+    Map<DOMDataTreeIdentifier, ForeignShardModificationContext> getChildShards() {
         return childShards;
     }
 
-    public DataTreeModification seal() {
+    DataTreeModification seal() {
         final DataTreeModification rootModification = rootContext.ready();
         for (ForeignShardModificationContext childShard : childShards.values()) {
             childShard.ready();
@@ -73,7 +73,7 @@ final class ShardDataModification extends WriteableNodeWithSubshard {
         return rootModification;
     }
 
-    public void closeTransactions() {
+    void closeTransactions() {
         for (final ForeignShardModificationContext childShard : childShards.values()) {
             childShard.closeForeignTransaction();
         }
