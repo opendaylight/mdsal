@@ -13,6 +13,7 @@ import static org.mockito.Mockito.reset;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -67,4 +68,18 @@ final class TestUtils {
     private TestUtils() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
     }
+
+    static ShardDataModification createModification(final ShardRootModificationContext root,
+            final Map<YangInstanceIdentifier, ForeignShardModificationContext> shards) {
+
+        final ShardDataModificationFactoryBuilder builder = new ShardDataModificationFactoryBuilder(
+            root.getIdentifier());
+        for (ForeignShardModificationContext subshard : shards.values()) {
+            builder.addSubshard(subshard);
+        }
+
+        final ShardDataModificationFactory factory = builder.build();
+        return new ShardDataModification(root, factory.getChildren(), factory.getChildShards());
+    }
+
 }
