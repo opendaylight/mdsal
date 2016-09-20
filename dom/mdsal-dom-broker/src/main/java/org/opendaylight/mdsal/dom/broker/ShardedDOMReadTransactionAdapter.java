@@ -139,7 +139,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
                 }
             }
 
-            for (final NormalizedNode initialState : subtrees.values()) {
+            for (final NormalizedNode<?, ?> initialState : subtrees.values()) {
                 readResultFuture.set(Optional.of(initialState));
             }
         }
