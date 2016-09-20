@@ -152,6 +152,13 @@ public class ShardedDOMDataTreeTest {
         newRootShardReg.close();
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testEmptyShardMapProducer() throws Exception {
+        final ShardedDOMDataTree dataTree = new ShardedDOMDataTree();
+        final DOMDataTreeProducer producer = dataTree.createProducer(Collections.singletonList(ROOT_ID));
+        producer.createTransaction(false);
+    }
+
     @Test
     public void testSingleShardWrite() throws Exception {
         final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
