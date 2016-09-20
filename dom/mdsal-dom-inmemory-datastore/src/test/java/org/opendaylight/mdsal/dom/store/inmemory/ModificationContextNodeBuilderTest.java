@@ -7,14 +7,11 @@
  */
 package org.opendaylight.mdsal.dom.store.inmemory;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_IDENTIFIER;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_SHARD_PRODUCER;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.PATH_ARGUMENT;
-import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.WRITEABLE_MODIFICATION_NODE;
 
-import java.util.Map;
 import org.junit.Test;
 
 public class ModificationContextNodeBuilderTest extends ModificationContextNodeBuilder {
@@ -28,11 +25,5 @@ public class ModificationContextNodeBuilderTest extends ModificationContextNodeB
         super.addBoundary(PATH_ARGUMENT, writeableSubshardBoundaryNode);
 
         assertNotNull(super.getInterior(PATH_ARGUMENT));
-        assertEquals(WRITEABLE_MODIFICATION_NODE, super.build());
-    }
-
-    @Override
-    WriteableModificationNode build(Map children) {
-        return WRITEABLE_MODIFICATION_NODE;
     }
 }

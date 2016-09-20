@@ -8,16 +8,17 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
-abstract class ModificationContextNodeBuilder<T extends WriteableModificationNode> {
+abstract class ModificationContextNodeBuilder {
 
     private final Map<PathArgument, InteriorNodeBuilder> interiorChildren = new HashMap<>();
     private final Map<PathArgument, WriteableSubshardBoundaryNode> boundaryChildren = new HashMap<>();
 
-    protected InteriorNodeBuilder getInterior(final PathArgument arg) {
+    protected ModificationContextNodeBuilder getInterior(final PathArgument arg) {
         InteriorNodeBuilder potential = interiorChildren.get(arg);
         if (potential == null) {
             potential = new InteriorNodeBuilder(arg);
@@ -30,30 +31,25 @@ abstract class ModificationContextNodeBuilder<T extends WriteableModificationNod
         boundaryChildren.put(arg, subshardNode);
     }
 
-    final T build() {
+    final Map<PathArgument, WriteableModificationNode> buildChildren() {
         final Map<PathArgument, WriteableModificationNode> builtChildren = new HashMap<>(boundaryChildren);
         for (InteriorNodeBuilder interiorNode : interiorChildren.values()) {
             WriteableModificationNode builded = interiorNode.build();
             builtChildren.put(builded.getIdentifier(), builded);
         }
 
-        return build(builtChildren);
+        return builtChildren;
     }
 
-    abstract T build(Map<PathArgument, WriteableModificationNode> children);
-
-    private static class InteriorNodeBuilder extends ModificationContextNodeBuilder<WritableInteriorNode> {
-
+    private static final class InteriorNodeBuilder extends ModificationContextNodeBuilder {
         private final PathArgument arg;
 
         InteriorNodeBuilder(final PathArgument arg) {
-            this.arg = arg;
+            this.arg = Preconditions.checkNotNull(arg);
         }
 
-        @Override
-        WritableInteriorNode build(final Map<PathArgument, WriteableModificationNode> children) {
-            return new WritableInteriorNode(arg, children);
+        WritableInteriorNode build() {
+            return new WritableInteriorNode(arg, buildChildren());
         }
     }
-
 }

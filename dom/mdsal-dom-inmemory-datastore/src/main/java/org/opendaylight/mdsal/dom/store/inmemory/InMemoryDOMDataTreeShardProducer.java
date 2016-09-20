@@ -103,10 +103,13 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
             AtomicReferenceFieldUpdater.newUpdater(InMemoryDOMDataTreeShardProducer.class, State.class, "state");
     private volatile State state;
 
+    private ShardDataModificationFactory modificationFactory;
+
     InMemoryDOMDataTreeShardProducer(final InMemoryDOMDataTreeShard parentShard,
-            final Collection<DOMDataTreeIdentifier> prefixes) {
+        final Collection<DOMDataTreeIdentifier> prefixes, final ShardDataModificationFactory modificationFactory) {
         this.parentShard = Preconditions.checkNotNull(parentShard);
         this.prefixes = ImmutableSet.copyOf(prefixes);
+        this.modificationFactory = Preconditions.checkNotNull(modificationFactory);
         state = idleState;
     }
 
@@ -118,7 +121,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         InmemoryDOMDataTreeShardWriteTransaction ret;
         do {
             localState = state;
-            ret = parentShard.createTransaction(transactionId, this, prefixes, localState.getSnapshot(transactionId));
+            ret = parentShard.createTransaction(transactionId, this, localState.getSnapshot(transactionId));
         } while (!STATE_UPDATER.compareAndSet(this, localState, new Allocated(ret)));
 
         return ret;
@@ -196,5 +199,13 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
     @Override
     public Collection<DOMDataTreeIdentifier> getPrefixes() {
         return prefixes;
+    }
+
+    ShardDataModificationFactory getModificationFactory() {
+        return modificationFactory;
+    }
+
+    void setModificationFactory(final ShardDataModificationFactory modificationFactory) {
+        this.modificationFactory = Preconditions.checkNotNull(modificationFactory);
     }
 }
