@@ -16,6 +16,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>maven-sal-api-gen-plugin</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -60,29 +61,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-Name>${project.groupId}.${project.artifactId}</Bundle-Name>
-                        <Import-Package>
-                            !org.apache.maven.plugin.logging,
-                            !org.apache.maven.project
-                            *
-                        </Import-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.eclipse.xtend</groupId>
                 <artifactId>xtend-maven-plugin</artifactId>
