@@ -17,6 +17,7 @@ import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
 
 import org.junit.After;
 import org.junit.Test;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModificationCursor;
 
 public class DataTreeModificationCursorAdaptorTest {
@@ -26,7 +27,7 @@ public class DataTreeModificationCursorAdaptorTest {
         final DataTreeModificationCursor dataTreeModificationCursor = mock(DataTreeModificationCursor.class);
         final DataTreeModificationCursorAdaptor dataTreeModificationCursorAdaptor =
                 DataTreeModificationCursorAdaptor.of(dataTreeModificationCursor);
-        final Iterable iterable = mock(Iterable.class);
+        final Iterable<PathArgument> iterable = mock(Iterable.class);
         doReturn("test").when(PATH_ARGUMENT).toString();
 
         assertEquals(dataTreeModificationCursorAdaptor.delegate(), dataTreeModificationCursor);
