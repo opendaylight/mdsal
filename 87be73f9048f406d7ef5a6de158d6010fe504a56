@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_4d16244d",
+        "filename": "binding2/mdsal-binding2-java-api-generator/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-21T13:16:58Z",
+      "side": 1,
+      "message": "\u003c!-- Scala -\u003e compile Scala files generated from Twirl --\u003e",
+      "range": {
+        "startLine": 126,
+        "startChar": 12,
+        "endLine": 126,
+        "endChar": 87
+      },
+      "revId": "87be73f9048f406d7ef5a6de158d6010fe504a56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_8d1cbc6b",
+        "filename": "binding2/mdsal-binding2-maven-api-gen-plugin/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-21T13:16:58Z",
+      "side": 1,
+      "message": "\u003c!-- Scala -\u003e compile Scala files generated from Twirl --\u003e",
+      "range": {
+        "startLine": 104,
+        "startChar": 12,
+        "endLine": 104,
+        "endChar": 87
+      },
+      "revId": "87be73f9048f406d7ef5a6de158d6010fe504a56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
