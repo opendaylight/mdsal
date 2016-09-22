@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_ccb22fe4",
+        "filename": "singleton-service/mdsal-singleton-common-api/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-22T18:45:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_cb6fc7fa",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_2b7abbbc",
         "filename": "singleton-service/mdsal-singleton-common-api/src/main/java/org/opendaylight/mdsal/singleton/common/api/ServiceGroupIdentifier.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-09-20T11:25:50Z",
       "side": 1,
       "message": "\"Method to create immutable instances of ...\"",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_8cbcb7bc",
+        "filename": "singleton-service/mdsal-singleton-common-api/src/main/java/org/opendaylight/mdsal/singleton/common/api/ServiceGroupIdentifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-22T18:45:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_2b7abbbc",
       "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_acb9b3cd",
+        "filename": "singleton-service/mdsal-singleton-common-api/src/main/java/org/opendaylight/mdsal/singleton/common/api/ServiceGroupIdentifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-22T18:45:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6b80338b",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_4b7bb7bd",
         "filename": "singleton-service/mdsal-singleton-dom-impl/pom.xml",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2016-09-20T11:25:50Z",
       "side": 1,
       "message": "Can you indent this properly?",
+      "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_ec98cb6b",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-22T18:45:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_4b7bb7bd",
       "revId": "ecce4a6e92ecefe17100e9675b678a950cb648ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
