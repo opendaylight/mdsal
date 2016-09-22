@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_7853dd16",
+        "filename": "binding/maven-sal-api-gen-plugin/src/test/java/org/opendaylight/yangtools/yang/unified/doc/generator/maven/YangModuleInfoCompilationTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5994
+      },
+      "writtenOn": "2016-09-22T07:39:04Z",
+      "side": 1,
+      "message": "As I said before, TempFolder will delete files after each test thanks to @After annotation in it\u0027s implementation but will not check if attempt was sucessfull or not... so using TempFolder is not worth to try for these purposes and will overcomplicate things... KISS principle: keep it stupid simple...",
+      "parentUuid": "7a6b29fe_d014964e",
+      "range": {
+        "startLine": 156,
+        "startChar": 12,
+        "endLine": 156,
+        "endChar": 32
+      },
+      "revId": "b04b7c85fed90ed0057c740c9ae02b1939897514",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_fcc9b3ac",
         "filename": "binding/maven-sal-api-gen-plugin/src/test/java/org/opendaylight/yangtools/yang/wadl/generator/maven/WadlGenTest.java",
         "patchSetId": 1
