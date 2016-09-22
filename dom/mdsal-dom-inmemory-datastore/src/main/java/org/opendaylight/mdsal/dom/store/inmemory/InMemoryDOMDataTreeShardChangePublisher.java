@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
 import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
-import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager.Invoker;
+import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager.BatchedInvoker;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
@@ -30,11 +30,11 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
 
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataTreeShardChangePublisher.class);
 
-    private static final Invoker<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
-        MANAGER_INVOKER = (listener, notification) -> {
+    private static final BatchedInvoker<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
+        MANAGER_INVOKER = (listener, notifications) -> {
             final DOMDataTreeChangeListener inst = listener.getInstance();
             if (inst != null) {
-                inst.onDataTreeChanged(ImmutableList.of(notification));
+                inst.onDataTreeChanged(ImmutableList.copyOf(notifications));
             }
         };
 
@@ -47,7 +47,7 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
                                             final YangInstanceIdentifier rootPath,
                                             final Map<DOMDataTreeIdentifier, ChildShardContext> childShards) {
         super(dataTree, rootPath, childShards);
-        notificationManager = new QueuedNotificationManager<>(
+        notificationManager = QueuedNotificationManager.create(
                 executor, MANAGER_INVOKER, maxQueueSize, "DataTreeChangeListenerQueueMgr");
     }
 
