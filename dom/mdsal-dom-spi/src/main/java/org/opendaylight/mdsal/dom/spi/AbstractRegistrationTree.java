@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import java.util.Collection;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.StampedLock;
 import javax.annotation.Nonnull;
@@ -82,6 +83,26 @@ public abstract class AbstractRegistrationTree<T> {
         writeLock.lock();
         try {
             node.removeRegistration(registration);
+        } finally {
+            // Always release the lock
+            writeLock.unlock();
+        }
+    }
+
+    /**
+     * Remove a registration from a set of nodes. This method must not be called while the lock is held.
+     *
+     * @param nodes Tree nodes
+     * @param registration Registration instance
+     */
+    protected final void removeRegistrations(@Nonnull final Collection<RegistrationTreeNode<T>> nodes,
+            @Nonnull final T registration) {
+        // Take the write lock
+        writeLock.lock();
+        try {
+            for (RegistrationTreeNode<T> node : nodes) {
+                node.removeRegistration(registration);
+            }
         } finally {
             // Always release the lock
             writeLock.unlock();
