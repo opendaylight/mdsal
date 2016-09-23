@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_27577c59",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/AbstractBaseType.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-23T06:38:22Z",
+      "side": 1,
+      "message": "this looks like you\u0027re not re-based properly",
+      "range": {
+        "startLine": 60,
+        "startChar": 6,
+        "endLine": 64,
+        "endChar": 108
+      },
+      "revId": "573daac4b6372ddf5d4d86a615d3a00dd312e43d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c75cc87f",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/Types.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-23T06:38:22Z",
+      "side": 1,
+      "message": "you shouldn\u0027t change ordering of already merged class members",
+      "range": {
+        "startLine": 54,
+        "startChar": 4,
+        "endLine": 64,
+        "endChar": 65
+      },
+      "revId": "573daac4b6372ddf5d4d86a615d3a00dd312e43d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_07524066",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/util/BaseTempalteUtil.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-23T06:38:22Z",
+      "side": 1,
+      "message": "this typo is still here?",
+      "range": {
+        "startLine": 38,
+        "startChar": 19,
+        "endLine": 38,
+        "endChar": 35
+      },
+      "revId": "573daac4b6372ddf5d4d86a615d3a00dd312e43d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_674df4c3",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding2/builderContructorHelperTemplate.scala.txt",
+        "patchSetId": 22
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-23T06:38:22Z",
+      "side": 1,
+      "message": "either delete this comment or edit it. This is not InterfaceTemplate. Check all other twirl files please.\n\nCorrect typo in name of this file",
+      "range": {
+        "startLine": 10,
+        "startChar": 2,
+        "endLine": 10,
+        "endChar": 25
+      },
+      "revId": "573daac4b6372ddf5d4d86a615d3a00dd312e43d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_a7ca6c18",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/test/java/org/opendaylight/mdsal/binding2/java/api/generator/BuilderGeneratorTest.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-09-23T06:38:22Z",
+      "side": 1,
+      "message": "are you able to add some first assertions? Here and to other tests?",
+      "range": {
+        "startLine": 26,
+        "startChar": 3,
+        "endLine": 30,
+        "endChar": 5
+      },
+      "revId": "573daac4b6372ddf5d4d86a615d3a00dd312e43d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
