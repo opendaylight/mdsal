@@ -53,10 +53,6 @@ public interface DOMStoreTreeChangePublisher {
      *            changes.
      * @param listener
      *            Listener instance which is being registered
-     *
-     * @param treeId   Data tree identifier of the subtree which should be watched for
-     *                 changes.
-     * @param listener Listener instance which is being registered
      * @return Listener registration object, which may be used to unregister
      *      your listener using {@link ListenerRegistration#close()} to stop
      *      delivery of change events.
