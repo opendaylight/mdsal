@@ -9,11 +9,11 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
+import org.opendaylight.mdsal.dom.spi.store.DOMDataTreeChangePublisher;
 
 /**
  * Marker interface for readable/writeable DOMDataTreeShard.
  */
 @Beta
-public interface ReadableWriteableDOMDataTreeShard extends DOMStoreTreeChangePublisher, WriteableDOMDataTreeShard {
+public interface ReadableWriteableDOMDataTreeShard extends DOMDataTreeChangePublisher, WriteableDOMDataTreeShard {
 }

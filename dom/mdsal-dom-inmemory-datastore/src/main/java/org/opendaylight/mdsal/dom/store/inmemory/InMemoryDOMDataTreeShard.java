@@ -192,9 +192,9 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
 
     @Nonnull
     @Override
-    public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(
-            @Nonnull final YangInstanceIdentifier treeId, @Nonnull final L listener) {
-        return shardChangePublisher.registerTreeChangeListener(treeId, listener);
+    public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerTreeChangeListener(final L listener,
+            final Collection<YangInstanceIdentifier> trees) {
+        return shardChangePublisher.registerTreeChangeListener(listener, trees);
     }
 
     private void reparentChildShards(final DOMDataTreeIdentifier newChildPrefix, final DOMDataTreeShard newChild) {

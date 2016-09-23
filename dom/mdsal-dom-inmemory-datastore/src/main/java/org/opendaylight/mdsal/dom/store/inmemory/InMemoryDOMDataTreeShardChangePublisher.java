@@ -8,11 +8,17 @@
 
 package org.opendaylight.mdsal.dom.store.inmemory;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Executor;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
@@ -41,6 +47,9 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
     private final QueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>,
         DataTreeCandidate> notificationManager;
 
+    @GuardedBy("this")
+    private Multimap< AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> notifications;
+
     InMemoryDOMDataTreeShardChangePublisher(final Executor executor,
                                             final int maxQueueSize,
                                             final DataTree dataTree,
@@ -51,16 +60,24 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
                 executor, MANAGER_INVOKER, maxQueueSize, "DataTreeChangeListenerQueueMgr");
     }
 
+    // Guard guaranteed by superclass contract and publishChange() being synchronized
+    @GuardedBy("this")
     @Override
     protected void notifyListeners(
             @Nonnull final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
                                    @Nonnull final YangInstanceIdentifier path,
                                    @Nonnull final DataTreeCandidateNode node) {
+        Verify.verifyNotNull(notifications);
+
         final DataTreeCandidate candidate = DataTreeCandidates.newDataTreeCandidate(path, node);
 
         for (final AbstractDOMDataTreeChangeListenerRegistration<?> reg : registrations) {
-            LOG.debug("Enqueueing candidate {} to registration {}", candidate, registrations);
-            notificationManager.submitNotification(reg, candidate);
+            final DOMDataTreeChangeListener listener = reg.getInstance();
+            if (listener != null) {
+                notifications.put(reg, candidate);
+            } else {
+                LOG.debug("Skipped candidate for closed registration {}", candidate, reg);
+            }
         }
     }
 
@@ -77,6 +94,18 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
     }
 
     synchronized void publishChange(@Nonnull final DataTreeCandidate candidate) {
-        processCandidateTree(candidate);
+        Preconditions.checkState(notifications == null);
+        notifications = MultimapBuilder.hashKeys().arrayListValues().build();
+        try {
+            processCandidateTree(candidate);
+
+            for (Entry< AbstractDOMDataTreeChangeListenerRegistration<?>, Collection<DataTreeCandidate>> e :
+                notifications.asMap().entrySet()) {
+                LOG.debug("Enqueueing candidates {} to listener {}", e.getValue(), e.getKey());
+                notificationManager.submitNotifications(e.getKey(), e.getValue());
+            }
+        } finally {
+            notifications = null;
+        }
     }
 }

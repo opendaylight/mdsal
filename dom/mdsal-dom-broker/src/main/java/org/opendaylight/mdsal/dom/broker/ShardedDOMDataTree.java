@@ -9,10 +9,13 @@ package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -25,7 +28,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingConflictException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShardingService;
 import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTable;
 import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTableEntry;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
+import org.opendaylight.mdsal.dom.spi.store.DOMDataTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.slf4j.Logger;
@@ -93,7 +96,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
             // FIXME: wrap the shard in a proper adaptor based on implemented interface
 
-            reg = new ShardRegistration<T>(this, prefix, shard);
+            reg = new ShardRegistration<>(this, prefix, shard);
 
             shards.store(prefix, reg);
 
@@ -186,15 +189,23 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
                 castedProducer.bindToListener(listenerContext);
             }
 
+            final Multimap<DOMDataTreeChangePublisher, DOMDataTreeIdentifier> shardMap = MultimapBuilder.hashKeys()
+                    .arrayListValues().build();
             for (final DOMDataTreeIdentifier subtree : subtrees) {
                 final DOMDataTreeShard shard = shards.lookup(subtree).getValue().getInstance();
                 // FIXME: What should we do if listener is wildcard? And shards are on per
                 // node basis?
-                Preconditions.checkArgument(shard instanceof DOMStoreTreeChangePublisher,
+                Preconditions.checkArgument(shard instanceof DOMDataTreeChangePublisher,
                         "Subtree %s does not point to listenable subtree.", subtree);
 
-                listenerContext.register(subtree, (DOMStoreTreeChangePublisher) shard);
+                shardMap.put((DOMDataTreeChangePublisher) shard, subtree);
             }
+
+            for (Entry<DOMDataTreeChangePublisher, Collection<DOMDataTreeIdentifier>> e : shardMap.asMap().entrySet()) {
+                listenerContext.register(e.getKey(), e.getValue());
+            }
+
+
         } catch (final Exception e) {
             listenerContext.close();
             throw e;

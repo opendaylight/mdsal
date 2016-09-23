@@ -71,7 +71,8 @@ public class InMemoryDOMDataTreeShardTest {
         final ListenerRegistration<?> listenerRegistration = mock(ListenerRegistration.class);
         doReturn(listenerRegistration).when(domDataTreeShard).registerTreeChangeListener(any(), any());
         doNothing().when(domDataTreeChangeListener).onDataTreeChanged(any());
-        inMemoryDOMDataTreeShard.registerTreeChangeListener(YangInstanceIdentifier.EMPTY, domDataTreeChangeListener);
+        inMemoryDOMDataTreeShard.registerTreeChangeListener(domDataTreeChangeListener,
+            ImmutableList.of(YangInstanceIdentifier.EMPTY));
         verify(domDataTreeShard, atLeastOnce()).registerTreeChangeListener(any(), any());
 
         inMemoryDOMDataTreeShard.onChildDetached(DOM_DATA_TREE_IDENTIFIER, domDataTreeShard);

@@ -9,6 +9,8 @@ package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +21,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
-import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
+import org.opendaylight.mdsal.dom.spi.store.DOMDataTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.MapAdaptor;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -38,8 +40,8 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
     @GuardedBy("this")
     private Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> currentData = Collections.emptyMap();
 
-    private ShardedDOMDataTreeListenerContext(T listener, Collection<DOMDataTreeIdentifier> subtrees,
-            boolean allowRxMerges) {
+    private ShardedDOMDataTreeListenerContext(final T listener, final Collection<DOMDataTreeIdentifier> subtrees,
+            final boolean allowRxMerges) {
         for (LogicalDatastoreType type : LogicalDatastoreType.values()) {
             storeListeners.put(type, new StoreListener(type));
         }
@@ -57,10 +59,16 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
         listener.onDataTreeChanged(changesToNotify, currentData);
     }
 
-    void register(DOMDataTreeIdentifier subtree, DOMStoreTreeChangePublisher shard) {
+    void register(final DOMDataTreeChangePublisher shard, final Collection<DOMDataTreeIdentifier> subtrees) {
+        if (subtrees.isEmpty()) {
+            return;
+        }
+
+        final StoreListener listener = storeListeners.get(Iterables.get(subtrees, 0));
+
         ListenerRegistration<?> storeReg =
-                shard.registerTreeChangeListener(subtree.getRootIdentifier(),
-                        storeListeners.get(subtree.getDatastoreType()));
+                shard.registerTreeChangeListener(listener,
+                    Collections2.transform(subtrees, DOMDataTreeIdentifier::getRootIdentifier));
         registrations.add(storeReg);
     }
 
@@ -68,12 +76,12 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
 
         private final LogicalDatastoreType type;
 
-        StoreListener(LogicalDatastoreType type) {
+        StoreListener(final LogicalDatastoreType type) {
             this.type = type;
         }
 
         @Override
-        public void onDataTreeChanged(Collection<DataTreeCandidate> changes) {
+        public void onDataTreeChanged(final Collection<DataTreeCandidate> changes) {
             receivedDataTreeChanges(type, changes);
             scheduleNotification();
         }
@@ -82,7 +90,7 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
 
     // FIXME: Should be able to run parallel to notifyListener and should honor
     // allowRxMerges
-    synchronized void receivedDataTreeChanges(LogicalDatastoreType type, Collection<DataTreeCandidate> changes) {
+    synchronized void receivedDataTreeChanges(final LogicalDatastoreType type, final Collection<DataTreeCandidate> changes) {
         Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> updatedData =
                 MapAdaptor.getDefaultInstance().takeSnapshot(currentData);
         for (DataTreeCandidate change : changes) {
