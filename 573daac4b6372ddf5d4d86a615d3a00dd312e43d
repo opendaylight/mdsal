@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_87f4905b",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/AbstractBaseType.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-09-23T10:50:21Z",
+      "side": 1,
+      "message": "patch is properly rebased, this change is intentional due to stack overflow exception on the previous solution",
+      "parentUuid": "7a6b29fe_27577c59",
+      "range": {
+        "startLine": 60,
+        "startChar": 6,
+        "endLine": 64,
+        "endChar": 108
+      },
+      "revId": "573daac4b6372ddf5d4d86a615d3a00dd312e43d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_c75cc87f",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/Types.java",
         "patchSetId": 22
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_67e4d4ab",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/Types.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-09-23T10:50:21Z",
+      "side": 1,
+      "message": "This must come after TYPE_LOADER initialization in order to work properly due to typeForClass call",
+      "parentUuid": "7a6b29fe_c75cc87f",
+      "range": {
+        "startLine": 54,
+        "startChar": 4,
+        "endLine": 64,
+        "endChar": 65
+      },
+      "revId": "573daac4b6372ddf5d4d86a615d3a00dd312e43d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_07524066",
         "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/util/BaseTempalteUtil.java",
         "patchSetId": 22
@@ -59,6 +107,30 @@
       "writtenOn": "2016-09-23T06:38:22Z",
       "side": 1,
       "message": "this typo is still here?",
+      "range": {
+        "startLine": 38,
+        "startChar": 19,
+        "endLine": 38,
+        "endChar": 35
+      },
+      "revId": "573daac4b6372ddf5d4d86a615d3a00dd312e43d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_e7e744aa",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/util/BaseTempalteUtil.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-09-23T10:50:21Z",
+      "side": 1,
+      "message": "this whole class is going to be removed shortly due to new solution implementation.",
+      "parentUuid": "7a6b29fe_07524066",
       "range": {
         "startLine": 38,
         "startChar": 19,
