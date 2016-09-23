@@ -213,7 +213,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
 
         @Override
         public void onDataTreeChanged(@Nonnull final Collection<DataTreeCandidate> changes) {
-            LOG.debug("Received data changed {}", changes.iterator().next());
+            LOG.debug("Received data changed {}", changes);
             delegate.onDataTreeChanged(changes);
         }
 
@@ -276,8 +276,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         private final PathArgument identifier;
 
         EmptyDataTreeCandidateNode(final PathArgument identifier) {
-            Preconditions.checkNotNull(identifier, "Identifier should not be null");
-            this.identifier = identifier;
+            this.identifier = Preconditions.checkNotNull(identifier, "Identifier should not be null");
         }
 
         @Nonnull
@@ -289,7 +288,7 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
         @Nonnull
         @Override
         public Collection<DataTreeCandidateNode> getChildNodes() {
-            return Collections.<DataTreeCandidateNode>emptySet();
+            return Collections.emptySet();
         }
 
         @Nullable
