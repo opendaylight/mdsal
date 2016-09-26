@@ -66,14 +66,15 @@ interface ClusterSingletonServiceGroup<P extends Path<P>, E extends GenericEntit
     void unregisterService(ClusterSingletonService service);
 
     /**
-     * Method implementation has to apply ownershipChange for all registred services.
+     * Method implementation has to apply ownershipChange for all registered services.
      *
      * @param ownershipChange change role for ClusterSingletonServiceGroup
      */
     void ownershipChanged(final C ownershipChange);
 
     /**
-     * Closes this service group. All registered service providers are also closed.
+     * Closes this service group. All registered service providers are also closed. Please be careful
+     * and use this method without active EOS listener only.
      *
      * @return {@link ListenableFuture} in list for all Future from closing {@link ClusterSingletonService}
      */
