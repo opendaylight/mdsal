@@ -219,7 +219,7 @@ public class ClusterSingletonServiceGroupImplTest {
         Assert.assertNotNull(reg);
         singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
         final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNull(serviceGroup);
+        Assert.assertNotNull(serviceGroup);
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(closeEntity);
     }
@@ -394,7 +394,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockClusterSingletonService, never()).closeServiceInstance();
         final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNull(serviceGroup);
+        Assert.assertNotNull(serviceGroup);
     }
 
     /**
@@ -420,7 +420,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockClusterSingletonService, never()).closeServiceInstance();
         final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNull(serviceGroup);
+        Assert.assertNotNull(serviceGroup);
     }
 
     /**
@@ -444,7 +444,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
         verify(mockClusterSingletonService).closeServiceInstance();
         final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNull(serviceGroup);
+        Assert.assertNotNull(serviceGroup);
     }
 
     /**
@@ -505,6 +505,8 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockClusterSingletonService).instantiateServiceInstance();
         reg.close();
         verify(mockClusterSingletonService).closeServiceInstance();
+        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
+        Assert.assertNull(serviceGroup);
     }
 
     /**
@@ -528,7 +530,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());
         verify(mockClusterSingletonService).closeServiceInstance();
         final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNull(serviceGroup);
+        Assert.assertNotNull(serviceGroup);
     }
 
     /**
@@ -551,7 +553,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());
         verify(mockClusterSingletonService, never()).closeServiceInstance();
         final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNull(serviceGroup);
+        Assert.assertNotNull(serviceGroup);
     }
 
     private GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToMaster() {
