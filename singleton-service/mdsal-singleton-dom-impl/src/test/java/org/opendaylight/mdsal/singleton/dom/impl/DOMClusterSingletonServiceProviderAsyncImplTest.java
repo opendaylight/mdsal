@@ -16,10 +16,14 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+import java.util.Timer;
+import java.util.TimerTask;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -36,9 +40,9 @@ import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegist
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 
 /**
- * Testing {@link DOMClusterSingletonServiceProviderImpl} implementation.
+ * Testing {@link DOMClusterSingletonServiceProviderImpl} implementation
  */
-public class DOMClusterSingletonServiceProviderImplTest {
+public final class DOMClusterSingletonServiceProviderAsyncImplTest {
 
     private static final String SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.ServiceEntityType";
     private static final String CLOSE_SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.AsyncServiceCloseEntityType";
@@ -56,11 +60,24 @@ public class DOMClusterSingletonServiceProviderImplTest {
     private DOMEntityOwnershipListenerRegistration mockEosDoubleEntityListReg;
 
     private DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
-    private TestClusterSingletonServiceInstance clusterSingletonService;
-    private TestClusterSingletonServiceInstance clusterSingletonService2;
+    private TestClusterSingletonAsyncServiceInstance clusterSingletonService;
+    private TestClusterSingletonAsyncServiceInstance clusterSingletonService2;
 
     private final DOMEntity entity = new DOMEntity(SERVICE_ENTITY_TYPE, SERVICE_NAME);
     private final DOMEntity doubleEntity = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_NAME);
+
+    protected static Timer timer;
+    protected static long ASYNC_TIME_DELAY_SEC = 100L;
+
+    @BeforeClass
+    public static void asyncInitTest() {
+        timer = new Timer();
+    }
+
+    @AfterClass
+    public static void cleanTest() {
+        timer = null;
+    }
 
     /**
      * Initialization functionality for every Tests in this suite.
@@ -87,8 +104,8 @@ public class DOMClusterSingletonServiceProviderImplTest {
         verify(mockEos).registerListener(SERVICE_ENTITY_TYPE, clusterSingletonServiceProvider);
         verify(mockEos).registerListener(CLOSE_SERVICE_ENTITY_TYPE, clusterSingletonServiceProvider);
 
-        clusterSingletonService = new TestClusterSingletonServiceInstance();
-        clusterSingletonService2 = new TestClusterSingletonServiceInstance();
+        clusterSingletonService = new TestClusterSingletonAsyncServiceInstance();
+        clusterSingletonService2 = new TestClusterSingletonAsyncServiceInstance();
 
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService2.getServiceState());
@@ -322,7 +339,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
 
     /**
      * Test GoldPath for lostLeadership during tryToTakeLeadership with ownership result MASTER
-     *     {@link ClusterSingletonService}.
+     * {@link ClusterSingletonService}.
      *
      * @throws Exception if the condition does not meet
      */
@@ -383,6 +400,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToSlave());
         Assert.assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
+        Thread.sleep(ASYNC_TIME_DELAY_SEC * 2);
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, never()).close();
         verify(mockDoubleEntityCandReg).close();
@@ -408,6 +426,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getEntityToJeopardy());
         Assert.assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
+        Thread.sleep(ASYNC_TIME_DELAY_SEC * 2);
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, never()).close();
@@ -457,7 +476,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}.
+     * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
      *
      * @throws Exception if the condition does not meet
      */
@@ -482,7 +501,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}.
+     * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
      *
      * @throws Exception if the condition does not meet
      */
@@ -503,7 +522,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}.
+     * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
      *
      * @throws Exception if the condition does not meet
      */
@@ -529,7 +548,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
     }
 
     /**
-     * Test checks close procesing for {@link ClusterSingletonServiceRegistration}.
+     * Test checks close processing for {@link ClusterSingletonServiceRegistration}.
      *
      * @throws Exception if the condition does not meet
      */
@@ -545,12 +564,13 @@ public class DOMClusterSingletonServiceProviderImplTest {
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         reg.close();
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
+        Assert.assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
+        Thread.sleep(ASYNC_TIME_DELAY_SEC * 2);
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg).close();
         verify(mockDoubleEntityCandReg).close();
-        Assert.assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
+        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
     }
 
     /**
@@ -570,6 +590,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         reg.close();
+        Thread.sleep(ASYNC_TIME_DELAY_SEC * 2);
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg).close();
@@ -596,6 +617,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         reg.close();
         reg.close();
+        Thread.sleep(ASYNC_TIME_DELAY_SEC * 2);
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, new Times(1)).close();
@@ -696,36 +718,34 @@ public class DOMClusterSingletonServiceProviderImplTest {
         return new DOMEntityOwnershipChange(entity, EntityOwnershipChangeState.from(false, false, false), true);
     }
 
-    /**
-     * Base states for AbstractClusterProjectProvider.
+    /*
+     * Base states for AbstractClusterProjectProvider
      */
     enum TestClusterSingletonServiceState {
-
-        /**
-         * State represents a correct Instantiated process.
+        /*
+         * State represents a correct Instantiated process
          */
-
         STARTED,
-        /**
-         * State represents a correct call abstract method instantiatingProject.
+        /*
+         * State represents a correct call abstract method instantiatingProject
          */
         INITIALIZED,
-
-        /**
-         * State represents a correct call abstract method destryingProject.
+        /*
+         * State represents a correct call abstract method destryingProject
          */
         DESTROYED;
     }
 
     /**
-     * Test implementation of {@link ClusterSingletonService}.
+     * Test implementation of {@link ClusterSingletonService}
      */
-    class TestClusterSingletonServiceInstance implements ClusterSingletonService {
+    class TestClusterSingletonAsyncServiceInstance implements ClusterSingletonService {
 
-        private final ServiceGroupIdentifier serviceIndent = ServiceGroupIdentifier.create(SERVICE_NAME);
+        private final ServiceGroupIdentifier serviceId = ServiceGroupIdentifier.create(SERVICE_NAME);
         private TestClusterSingletonServiceState serviceState;
+        protected SettableFuture<Void> future;
 
-        TestClusterSingletonServiceInstance() {
+        TestClusterSingletonAsyncServiceInstance() {
             this.serviceState = TestClusterSingletonServiceState.INITIALIZED;
         }
 
@@ -737,7 +757,15 @@ public class DOMClusterSingletonServiceProviderImplTest {
         @Override
         public ListenableFuture<Void> closeServiceInstance() {
             this.serviceState = TestClusterSingletonServiceState.DESTROYED;
-            return Futures.immediateFuture(null);
+            future = SettableFuture.create();
+            timer.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                    future.set(null);
+                }
+            }, ASYNC_TIME_DELAY_SEC);
+            return future;
         }
 
         public TestClusterSingletonServiceState getServiceState() {
@@ -746,7 +774,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
 
         @Override
         public ServiceGroupIdentifier getIdentifier() {
-            return serviceIndent;
+            return serviceId;
         }
     }
 }
