@@ -66,7 +66,7 @@ interface ClusterSingletonServiceGroup<P extends Path<P>, E extends GenericEntit
     void unregisterService(ClusterSingletonService service);
 
     /**
-     * Method implementation has to apply ownershipChange for all registred services.
+     * Method implementation has to apply ownershipChange for all registered services.
      *
      * @param ownershipChange change role for ClusterSingletonServiceGroup
      */

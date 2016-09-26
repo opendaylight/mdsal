@@ -56,12 +56,18 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
     private final S entityOwnershipService;
     private final String clusterSingletonGroupIdentifier;
-    private final Semaphore clusterLock = new Semaphore(1);
+    private final Semaphore clusterLock = new Semaphore(1, true);
 
     /* Entity instances */
     private final E serviceEntity;
     private final E doubleCandidateEntity;
 
+    // TODO :it needs to rewrite for StateMachine (INITIALIZED, TRY_TO_TAKE_LEADERSHIP, LEADER, FOLLOWER, TERMINATED)
+    // INITIALIZED : we have registered baseCandidate and we are waiting for first EOS response (!do we really need it?)
+    // FOLLOWER : baseCandidate is registered correctly
+    // TRY_TO_TAKE_LEADERSHIP : guardCandidate is registered correctly
+    // LEADER : both candidate have mastership from EOS
+    // TERMINATED : service go down
     @GuardedBy("clusterLock")
     private boolean hasOwnership = false;
     @GuardedBy("clusterLock")
@@ -100,26 +106,31 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         boolean needReleaseLock = false;
         final ListenableFuture<List<Void>> destroyFuture;
         try {
-            needReleaseLock = clusterLock.tryAcquire(10, TimeUnit.SECONDS);
+            needReleaseLock = clusterLock.tryAcquire(2, TimeUnit.SECONDS);
         } catch (final Exception e) {
             LOG.warn("Unexpected Exception for service Provider {} in closing phase.",
                     clusterSingletonGroupIdentifier, e);
         } finally {
-            if (serviceEntityCandidateReg != null) {
-                serviceEntityCandidateReg.close();
-                serviceEntityCandidateReg = null;
-            }
-            final List<ListenableFuture<Void>> serviceCloseFutureList = new ArrayList<>();
-            if (hasOwnership) {
-                for (final ClusterSingletonServiceRegistrationDelegator service : serviceGroup) {
-                    serviceCloseFutureList.add(service.closeServiceInstance());
-                }
-            }
-            destroyFuture = Futures.allAsList(serviceCloseFutureList);
+            destroyFuture = closeClusterGroup();
             final Semaphore finalRelease = needReleaseLock ? clusterLock : null;
-            Futures.addCallback(destroyFuture, newAsyncCloseCallback(finalRelease));
+            Futures.addCallback(destroyFuture, newAsyncCloseCallback(null));
+            Futures.addCallback(destroyFuture, newAsyncRemoveCallback(finalRelease));
         }
         return destroyFuture;
+    }
+
+    @GuardedBy("clusterLock")
+    private ListenableFuture<List<Void>> closeClusterGroup() {
+        final List<ListenableFuture<Void>> serviceCloseFutureList = new ArrayList<>();
+        if (hasOwnership) {
+            for (final ClusterSingletonServiceRegistrationDelegator service : serviceGroup) {
+                serviceCloseFutureList.add(service.closeServiceInstance());
+            }
+            hasOwnership = false;
+        }
+        final ListenableFuture<List<Void>> returnFuture = Futures.allAsList(serviceCloseFutureList);
+        Futures.addCallback(returnFuture, newAsyncEntityCandidateCloseCallback());
+        return returnFuture;
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
@@ -179,25 +190,31 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         try {
             clusterLock.acquire();
             needReleaseLock = true;
-            serviceGroup.remove(service);
-            if (hasOwnership) {
-                service.closeServiceInstance();
+            if (serviceGroup.size() > 1) {
+                if (hasOwnership) {
+                    service.closeServiceInstance();
+                }
+                serviceGroup.remove(service);
+                LOG.debug("Service {} was removed from group.", service.getIdentifier().getValue());
+            } else {
+                final ListenableFuture<List<Void>> destroyFuture = closeClusterGroup();
+
+                Futures.addCallback(destroyFuture, newAsyncCloseCallback(null));
+                Futures.addCallback(destroyFuture, newAsyncRemoveCallback(clusterLock));
+                needReleaseLock = false;
             }
         } catch (final Exception e) {
             LOG.debug("Unexpected error by registration service Provider {}", clusterSingletonGroupIdentifier, e);
             needCloseProviderInstance = true;
         } finally {
             closeResources(needReleaseLock, needCloseProviderInstance);
-            if (serviceGroup.isEmpty()) {
-                this.closeClusterSingletonGroup();
-            }
         }
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public void ownershipChanged(final C ownershipChange) {
-        LOG.debug("Ownership change {} for ClusterSingletonServiceGrou {}", ownershipChange,
+        LOG.debug("Ownership change {} for ClusterSingletonServiceGroup {}", ownershipChange,
                 clusterSingletonGroupIdentifier);
         try {
             if (ownershipChange.inJeopardy()) {
@@ -246,7 +263,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             } else {
                 LOG.warn("Unexpected EntityOwnershipChangeEvent for entity {}", ownershipChange);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Unexpected Exception for service Provider {}", clusterSingletonGroupIdentifier, e);
             // TODO : think about close ... is it necessary?
         }
@@ -264,10 +281,13 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         try {
             clusterLock.acquire();
             needReleaseLock = true;
-            Verify.verify(serviceEntityCandidateReg != null);
-            Verify.verify(asyncCloseEntityCandidateReg == null);
-            asyncCloseEntityCandidateReg = entityOwnershipService.registerCandidate(doubleCandidateEntity);
-        } catch (Exception e) {
+            if (serviceEntityCandidateReg != null) {
+                Verify.verify(asyncCloseEntityCandidateReg == null);
+                asyncCloseEntityCandidateReg = entityOwnershipService.registerCandidate(doubleCandidateEntity);
+            } else {
+                LOG.debug("Service {} is closed, so don't to tryTakeLeadership", clusterSingletonGroupIdentifier);
+            }
+        } catch (final Exception e) {
             LOG.error("Unexpected exception state for service Provider {} in TryToTakeLeadership",
                     clusterSingletonGroupIdentifier, e);
             needCloseProviderInstance = true;
@@ -287,12 +307,15 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         try {
             clusterLock.acquire();
             needReleaseLock = true;
-            Verify.verify(serviceEntityCandidateReg != null);
-            Verify.verify(asyncCloseEntityCandidateReg != null);
-            for (final ClusterSingletonServiceRegistrationDelegator service : serviceGroup) {
-                service.instantiateServiceInstance();
+            if (serviceEntityCandidateReg != null) {
+                Verify.verify(asyncCloseEntityCandidateReg != null);
+                for (final ClusterSingletonServiceRegistrationDelegator service : serviceGroup) {
+                    service.instantiateServiceInstance();
+                }
+                hasOwnership = true;
+            } else {
+                LOG.debug("Service {} is closed, so don't take leadership", clusterSingletonGroupIdentifier);
             }
-            hasOwnership = true;
         } catch (final Exception e) {
             LOG.error("Unexpected exception state for service Provider {} in TakeLeadership",
                     clusterSingletonGroupIdentifier, e);
@@ -315,17 +338,22 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         try {
             clusterLock.acquire();
             needReleaseLock = true;
-            Verify.verify(serviceEntityCandidateReg != null);
             final List<ListenableFuture<Void>> serviceCloseFutureList = new ArrayList<>();
             if (hasOwnership) {
                 Verify.verify(asyncCloseEntityCandidateReg != null);
                 for (final ClusterSingletonServiceRegistrationDelegator service : serviceGroup) {
                     serviceCloseFutureList.add(service.closeServiceInstance());
                 }
+                hasOwnership = false;
             }
 
             final ListenableFuture<List<Void>> destroyFuture = Futures.allAsList(serviceCloseFutureList);
-            Futures.addCallback(destroyFuture, newAsyncCloseCallback(clusterLock));
+            if (serviceEntityCandidateReg != null) {
+                Futures.addCallback(destroyFuture, newAsyncCloseCallback(clusterLock));
+            } else {
+                Futures.addCallback(destroyFuture, newAsyncCloseCallback(null));
+                Futures.addCallback(destroyFuture, newAsyncRemoveCallback(clusterLock));
+            }
             /*
              * We wish to stop all possible EOS activities before we don't close
              * a close candidate registration that acts as a guard. So we don't want
@@ -351,32 +379,68 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             clusterLock.release();
         }
         if (needCloseProvider) {
-            final ListenableFuture<List<Void>> closeFutureList = this.closeClusterSingletonGroup();
-            Futures.addCallback(closeFutureList, new FutureCallback<List<Void>>() {
-
-                @Override
-                public void onSuccess(final List<Void> result) {
-                    removeThisGroupFromProvider(null);
-                }
-
-                @Override
-                public void onFailure(final Throwable throwable) {
-                    removeThisGroupFromProvider(throwable);
-                }
-            });
+            this.closeClusterSingletonGroup();
         }
     }
 
     /*
-     * Help method for final ClusterSingletonGroup removing
+     * Help method creates FutureCallback for suspend Future
      */
-    protected void removeThisGroupFromProvider(@Nullable final Throwable throwable) {
-        LOG.debug("Removing ClusterSingletonServiceGroup {}", clusterSingletonGroupIdentifier);
-        if (throwable != null) {
-            LOG.warn("Unexpected problem by closingResources ClusterSingletonServiceGroup {}",
-                    clusterSingletonGroupIdentifier);
-        }
-        allServiceGroups.remove(clusterSingletonGroupIdentifier, this);
+    private FutureCallback<List<Void>> newAsyncEntityCandidateCloseCallback() {
+        final Consumer<Throwable> closeMainEntity = (@Nullable final Throwable throwable) -> {
+            if (throwable != null) {
+                LOG.warn("Unexpected error by before closing service instance {}", clusterSingletonGroupIdentifier, throwable);
+            } else {
+                LOG.debug("Destroy service before closing MainEntity {} is success", clusterSingletonGroupIdentifier);
+            }
+            if (serviceEntityCandidateReg != null) {
+                serviceEntityCandidateReg.close();
+                serviceEntityCandidateReg = null;
+            }
+        };
+
+        return new FutureCallback<List<Void>>() {
+
+            @Override
+            public void onSuccess(final List<Void> result) {
+                closeMainEntity.accept(null);
+            }
+
+            @Override
+            public void onFailure(final Throwable throwable) {
+                closeMainEntity.accept(throwable);
+            }
+        };
+    }
+
+    /*
+     * Help method creates FutureCallback for suspend Future
+     */
+    private FutureCallback<List<Void>> newAsyncRemoveCallback(@Nullable final Semaphore semaphore) {
+        final Consumer<Throwable> removeActualGroupFromProvider = (@Nullable final Throwable throwable) -> {
+            if (throwable != null) {
+                LOG.warn("Unexpected error by closing service instance {}", clusterSingletonGroupIdentifier, throwable);
+            } else {
+                LOG.debug("Destroy service before remove Instance {} is success", clusterSingletonGroupIdentifier);
+            }
+            allServiceGroups.remove(clusterSingletonGroupIdentifier, this);
+            if (semaphore != null) {
+                semaphore.release();
+            }
+        };
+
+        return new FutureCallback<List<Void>>() {
+
+            @Override
+            public void onSuccess(final List<Void> result) {
+                removeActualGroupFromProvider.accept(null);
+            }
+
+            @Override
+            public void onFailure(final Throwable throwable) {
+                removeActualGroupFromProvider.accept(throwable);
+            }
+        };
     }
 
     /*
@@ -396,7 +460,6 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             if (semaphore != null) {
                 semaphore.release();
             }
-            allServiceGroups.remove(clusterSingletonGroupIdentifier, this);
         };
 
         return new FutureCallback<List<Void>>() {
