@@ -23,6 +23,13 @@ public interface ClusterSingletonServiceProvider extends AutoCloseable {
 
     /**
      * Method registers {@link ClusterSingletonService} to Provider.
+     * Method returns {@link java.lang.RuntimeException} for unexpected state, so be careful with implementation.
+     * Note: RuntimeException is implemented as a notification about some problems with registration and client
+     * has to implement some strategy for handling this issue.
+     * TODO: RuntimeException is not a transparent contract for handling unexpected state and it needs to be
+     * replaced with a specific documented Exception or it needs to add another contract definition for a client
+     * notification about the unexpected state reason in {@link ClusterSingletonService}.
+     * RuntimeException implementation is a hotfix for an unwanted API contract changes in boron release only.
      *
      * @param service ClusterSingletonService instance
      * @return {@link AutoCloseable} registration
