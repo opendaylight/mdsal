@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_4005380f",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/RpcServiceAdapterTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-27T06:27:34Z",
+      "side": 1,
+      "message": "can this \"throws Throwable\" be changed to \"throws Exception\"? Because then you can avoid the @SuppressWarnings.",
+      "revId": "33173fda192faf5cd33e69bed84fc0d7e38a71cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

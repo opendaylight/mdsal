@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_6002f40a",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/LazyDataObjectModification.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-27T06:27:34Z",
+      "side": 0,
+      "message": "removing  case UNKNOWN: here seems wrong, as that will change the current behaviour  (fallthrough to result.add), I doubt this is intentional?",
+      "revId": "104afbbc04792df68ee001c14fb02171d640f889",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
