@@ -38,7 +38,8 @@ public class ChoiceDispatchSerializer implements DataObjectSerializerImplementat
 
     @SuppressWarnings("unchecked")
     @Override
-    public void serialize(final DataObjectSerializerRegistry reg, final DataObject obj, final BindingStreamEventWriter stream) throws IOException {
+    public void serialize(final DataObjectSerializerRegistry reg, final DataObject obj,
+            final BindingStreamEventWriter stream) throws IOException {
         @SuppressWarnings("rawtypes")
         Class cazeClass = obj.getImplementedInterface();
         stream.startChoiceNode(choiceClass, BindingStreamEventWriter.UNKNOWN_SIZE);

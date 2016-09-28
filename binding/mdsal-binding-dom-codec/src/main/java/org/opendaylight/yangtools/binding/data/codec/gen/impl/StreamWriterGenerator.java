@@ -26,6 +26,7 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
  * which in runtime generates classes implementing {@link DataObjectSerializerImplementation}
  * interface and are used to serialize Binding {@link DataObject}.
  *
+ * <p>
  * Actual implementation of codecs is done via static methods, which allows
  * for static wiring of codecs. Choice codec and Augmentable codecs
  * are static properties of parent codec and stateless implementations
@@ -44,7 +45,7 @@ public class StreamWriterGenerator extends AbstractStreamWriterGenerator {
 
     /**
      * Deprecated, use {@link #create(JavassistUtils)} instead.
-     * @param utils
+     * @param utils object of JavassistUtils
      */
     @Deprecated
     public StreamWriterGenerator(final JavassistUtils utils) {
@@ -67,7 +68,8 @@ public class StreamWriterGenerator extends AbstractStreamWriterGenerator {
 
 
     @Override
-    protected DataObjectSerializerSource generateContainerSerializer(final GeneratedType type, final ContainerSchemaNode node) {
+    protected DataObjectSerializerSource generateContainerSerializer(
+            final GeneratedType type, final ContainerSchemaNode node) {
 
         return new AugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
@@ -78,7 +80,8 @@ public class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected DataObjectSerializerSource generateNotificationSerializer(final GeneratedType type, final NotificationDefinition node) {
+    protected DataObjectSerializerSource generateNotificationSerializer(
+            final GeneratedType type, final NotificationDefinition node) {
 
         return new AugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
@@ -99,7 +102,8 @@ public class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected DataObjectSerializerSource generateUnkeyedListEntrySerializer(final GeneratedType type, final ListSchemaNode node) {
+    protected DataObjectSerializerSource generateUnkeyedListEntrySerializer(
+            final GeneratedType type, final ListSchemaNode node) {
         return new AugmentableDataNodeContainerEmitterSource(this, type, node) {
 
             @Override
@@ -121,7 +125,8 @@ public class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected DataObjectSerializerSource generateMapEntrySerializer(final GeneratedType type, final ListSchemaNode node) {
+    protected DataObjectSerializerSource generateMapEntrySerializer(
+            final GeneratedType type, final ListSchemaNode node) {
         return new AugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
             public CharSequence emitStartEvent() {

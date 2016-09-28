@@ -13,6 +13,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 
 /**
+ * It is a deprecated class.
  *
  * @deprecated Use {@link org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory}
  *             instead.
@@ -21,7 +22,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 public interface BindingCodecTreeFactory {
 
     /**
-     *
      * Creates Binding Codec Tree for specified Binding runtime context.
      *
      * @param context
@@ -32,7 +32,6 @@ public interface BindingCodecTreeFactory {
     BindingCodecTree create(BindingRuntimeContext context);
 
     /**
-     *
      * Creates Binding Codec Tree for specified Binding runtime context.
      *
      * @param context

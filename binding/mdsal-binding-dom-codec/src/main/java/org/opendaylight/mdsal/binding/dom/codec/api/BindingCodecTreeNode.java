@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStre
 
 /**
  * Subtree codec specific to model subtree between Java Binding and
- * NormalizedNode.
+ *     NormalizedNode.
  *
  */
 @Beta
@@ -29,12 +29,12 @@ public interface BindingCodecTreeNode<T extends DataObject> extends BindingNorma
         org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeNode<T> {
 
     /**
-     *
      * Returns binding class of interface which represents API of current
-     * schema node.
+     *     schema node.
      *
+     * <p>
      * The result is same as invoking {@link DataObject#getImplementedInterface()}
-     * on instance of data.
+     *     on instance of data.
      *
      * @return interface which defines API of binding representation of data.
      */
@@ -43,7 +43,6 @@ public interface BindingCodecTreeNode<T extends DataObject> extends BindingNorma
     Class<T> getBindingClass();
 
     /**
-     *
      * Returns child context as if it was walked by
      * {@link BindingStreamEventWriter}. This means that to enter case, one must
      * issue getChild(ChoiceClass).getChild(CaseClass).
@@ -58,26 +57,27 @@ public interface BindingCodecTreeNode<T extends DataObject> extends BindingNorma
     <E extends DataObject> BindingCodecTreeNode<E> streamChild(@Nonnull Class<E> childClass);
 
     /**
-     *
      * Returns child context as if it was walked by
      * {@link BindingStreamEventWriter}. This means that to enter case, one must
      * issue getChild(ChoiceClass).getChild(CaseClass).
      *
+     * <p>
      * This method differs from {@link #streamChild(Class)}, that is less
      * stricter for interfaces representing augmentation and cases, that
      * may return {@link BindingCodecTreeNode} even if augmentation interface
      * containing same data was supplied and does not represent augmentation
      * of this node.
      *
-     * @param childClass
+     * @param childClass object of Class
      * @return Context of child or Optional absent is supplied class is not
      *         applicable in context.
      */
     @Override
-    <E extends DataObject> Optional<? extends BindingCodecTreeNode<E>> possibleStreamChild(@Nonnull Class<E> childClass);
+    <E extends DataObject> Optional<? extends BindingCodecTreeNode<E>> possibleStreamChild(
+            @Nonnull Class<E> childClass);
 
     /**
-     * Returns nested node context using supplied YANG Instance Identifier
+     * Returns nested node context using supplied YANG Instance Identifier.
      *
      * @param child
      *            Yang Instance Identifier Argument
@@ -108,12 +108,11 @@ public interface BindingCodecTreeNode<T extends DataObject> extends BindingNorma
             @Nullable List<YangInstanceIdentifier.PathArgument> builder);
 
     /**
+     * Returns codec which uses caches serialization / deserialization results.
      *
-     * Returns codec which uses caches serialization / deserialization results
-     *
+     * <p>
      * Caching may introduce performance penalty to serialization / deserialization
      * but may decrease use of heap for repetitive objects.
-     *
      *
      * @param cacheSpecifier Set of objects, for which cache may be in place
      * @return Codec whihc uses cache for serialization / deserialization.
@@ -151,7 +150,8 @@ public interface BindingCodecTreeNode<T extends DataObject> extends BindingNorma
      */
     @Override
     @Beta
-    @Nullable InstanceIdentifier.PathArgument deserializePathArgument(@Nullable YangInstanceIdentifier.PathArgument arg);
+    @Nullable InstanceIdentifier.PathArgument deserializePathArgument(
+            @Nullable YangInstanceIdentifier.PathArgument arg);
 
     @Override
     Object getSchema();

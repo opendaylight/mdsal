@@ -26,10 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * Dispatch serializer, which emits {@link BindingStreamEventWriter#startAugmentationNode(Class)}
  * events for supplied augmentation node.
- *
  */
 public class AugmentableDispatchSerializer implements DataObjectSerializerImplementation {
 
@@ -69,7 +67,7 @@ public class AugmentableDispatchSerializer implements DataObjectSerializerImplem
          * value, which effectively could be used to remove augmentation
          * from builder / DTO.
          */
-        if(value == null) {
+        if (value == null) {
             return;
         }
         Preconditions.checkArgument(value instanceof DataObject);

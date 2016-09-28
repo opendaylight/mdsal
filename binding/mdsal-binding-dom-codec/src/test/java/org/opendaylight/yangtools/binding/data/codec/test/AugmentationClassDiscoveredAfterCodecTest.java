@@ -40,8 +40,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  * augmentations, but backing class loading strategy is not aware of some of the classes, and
  * becames aware of them after codec was used.
  *
+ * <p>
  * Idea of this suite is to test that codecs will work even if situation like this happens.
- *
  */
 public class AugmentationClassDiscoveredAfterCodecTest {
 
@@ -132,5 +132,5 @@ public class AugmentationClassDiscoveredAfterCodecTest {
             }
             return delegate.loadClass(fullyQualifiedName);
         }
-    };
+    }
 }

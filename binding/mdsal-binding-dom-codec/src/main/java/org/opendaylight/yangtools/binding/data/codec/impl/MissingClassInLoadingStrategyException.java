@@ -10,11 +10,9 @@ package org.opendaylight.yangtools.binding.data.codec.impl;
 import org.opendaylight.yangtools.sal.binding.generator.api.ClassLoadingStrategy;
 
 /**
- *
  * Thrown when user schema for supplied binding class is available in present schema context, but
  * binding class itself is not known to codecs because backing class loading strategy did not
  * provided it.
- *
  */
 public class MissingClassInLoadingStrategyException extends MissingSchemaException {
 

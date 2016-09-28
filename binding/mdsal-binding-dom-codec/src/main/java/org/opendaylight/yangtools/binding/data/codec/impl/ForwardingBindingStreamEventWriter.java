@@ -27,12 +27,14 @@ abstract class ForwardingBindingStreamEventWriter implements BindingStreamEventW
 
 
     @Override
-    public void startLeafSet(final String localName, final int childSizeHint) throws IOException, IllegalArgumentException {
+    public void startLeafSet(final String localName, final int childSizeHint)
+            throws IOException, IllegalArgumentException {
         delegate().startLeafSet(localName, childSizeHint);
     }
 
     @Override
-    public void startOrderedLeafSet(final String localName, final int childSizeHint) throws IOException, IllegalArgumentException {
+    public void startOrderedLeafSet(final String localName, final int childSizeHint)
+            throws IOException, IllegalArgumentException {
         delegate().startOrderedLeafSet(localName, childSizeHint);
     }
 
@@ -43,15 +45,15 @@ abstract class ForwardingBindingStreamEventWriter implements BindingStreamEventW
 
 
     @Override
-    public void startContainerNode(final Class<? extends DataObject> container, final int childSizeHint) throws IOException,
-            IllegalArgumentException {
+    public void startContainerNode(final Class<? extends DataObject> container, final int childSizeHint)
+                throws IOException, IllegalArgumentException {
         delegate().startContainerNode(container, childSizeHint);
     }
 
 
     @Override
-    public void startUnkeyedList(final Class<? extends DataObject> localName, final int childSizeHint) throws IOException,
-            IllegalArgumentException {
+    public void startUnkeyedList(final Class<? extends DataObject> localName, final int childSizeHint)
+            throws IOException, IllegalArgumentException {
         delegate().startUnkeyedList(localName, childSizeHint);
     }
 
@@ -63,15 +65,15 @@ abstract class ForwardingBindingStreamEventWriter implements BindingStreamEventW
 
 
     @Override
-    public <T extends DataObject & Identifiable<?>> void startMapNode(final Class<T> mapEntryType, final int childSizeHint)
-            throws IOException, IllegalArgumentException {
+    public <T extends DataObject & Identifiable<?>> void startMapNode(final Class<T> mapEntryType,
+            final int childSizeHint) throws IOException, IllegalArgumentException {
         delegate().startMapNode(mapEntryType, childSizeHint);
     }
 
 
     @Override
-    public <T extends DataObject & Identifiable<?>> void startOrderedMapNode(final Class<T> mapEntryType, final int childSizeHint)
-            throws IOException, IllegalArgumentException {
+    public <T extends DataObject & Identifiable<?>> void startOrderedMapNode(final Class<T> mapEntryType,
+            final int childSizeHint) throws IOException, IllegalArgumentException {
         delegate().startOrderedMapNode(mapEntryType, childSizeHint);
     }
 
@@ -84,8 +86,8 @@ abstract class ForwardingBindingStreamEventWriter implements BindingStreamEventW
 
 
     @Override
-    public void startChoiceNode(final Class<? extends DataContainer> choice, final int childSizeHint) throws IOException,
-            IllegalArgumentException {
+    public void startChoiceNode(final Class<? extends DataContainer> choice, final int childSizeHint)
+            throws IOException, IllegalArgumentException {
         delegate().startChoiceNode(choice, childSizeHint);
     }
 

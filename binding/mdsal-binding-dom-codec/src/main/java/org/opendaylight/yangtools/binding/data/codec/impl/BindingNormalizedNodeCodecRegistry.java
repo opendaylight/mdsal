@@ -93,13 +93,15 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
     }
 
     @Override
-    public <T extends DataObject> Entry<YangInstanceIdentifier,NormalizedNode<?,?>> toNormalizedNode(final InstanceIdentifier<T> path, final T data) {
+    public <T extends DataObject> Entry<YangInstanceIdentifier,NormalizedNode<?,?>> toNormalizedNode(
+            final InstanceIdentifier<T> path, final T data) {
         final NormalizedNodeResult result = new NormalizedNodeResult();
         // We create DOM stream writer which produces normalized nodes
         final NormalizedNodeStreamWriter domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
 
         // We create Binding Stream Writer which translates from Binding to Normalized Nodes
-        final Entry<YangInstanceIdentifier, BindingStreamEventWriter> writeCtx = codecContext.newWriter(path, domWriter);
+        final Entry<YangInstanceIdentifier, BindingStreamEventWriter> writeCtx =
+                codecContext.newWriter(path, domWriter);
 
         // We get serializer which reads binding data and uses Binding To Normalized Node writer to write result
         try {
@@ -159,7 +161,7 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         if (data instanceof LeafSetNode) {
             return false;
         }
-        if( data instanceof LeafSetEntryNode<?>) {
+        if ( data instanceof LeafSetEntryNode<?>) {
             return false;
         }
         if (data instanceof MapNode) {
@@ -173,7 +175,8 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
     }
 
     @Override
-    public Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
+    public Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(
+            final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
         if (!isBindingRepresentable(data)) {
             return null;
         }
@@ -182,7 +185,8 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         final NodeCodecContext<?> codec = codecContext.getCodecContextNode(path, builder);
         if (codec == null) {
             if (data != null) {
-                LOG.warn("Path {} does not have a binding equivalent, should have been caught earlier ({})", path, data.getClass());
+                LOG.warn("Path {} does not have a binding equivalent, should have been caught earlier ({})",
+                        path, data.getClass());
             }
             return null;
         }
@@ -204,13 +208,15 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         return codec.deserialize(data);
     }
 
-   @Override
-    public Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriterAndIdentifier(final InstanceIdentifier<?> path, final NormalizedNodeStreamWriter domWriter) {
+    @Override
+    public Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriterAndIdentifier(
+            final InstanceIdentifier<?> path, final NormalizedNodeStreamWriter domWriter) {
         return codecContext.newWriter(path, domWriter);
     }
 
     @Override
-    public BindingStreamEventWriter newWriter(final InstanceIdentifier<?> path, final NormalizedNodeStreamWriter domWriter) {
+    public BindingStreamEventWriter newWriter(final InstanceIdentifier<?> path,
+            final NormalizedNodeStreamWriter domWriter) {
         return codecContext.newWriterWithoutIdentifier(path, domWriter);
     }
 
@@ -226,8 +232,10 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         return codecContext.newRpcWriter(rpcInputOrOutput,streamWriter);
     }
 
-    public <T extends DataObject> Function<Optional<NormalizedNode<?, ?>>, Optional<T>>  deserializeFunction(final InstanceIdentifier<T> path) {
-        final DataObjectCodecContext<?,?> ctx = (DataObjectCodecContext<?,?>) codecContext.getCodecContextNode(path, null);
+    public <T extends DataObject> Function<Optional<NormalizedNode<?, ?>>, Optional<T>>  deserializeFunction(
+            final InstanceIdentifier<T> path) {
+        final DataObjectCodecContext<?,?> ctx =
+                (DataObjectCodecContext<?,?>) codecContext.getCodecContextNode(path, null);
         return new DeserializeFunction<T>(ctx);
     }
 
@@ -236,6 +244,7 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         return new BindingCodecContext(context, this);
     }
 
+    @SuppressWarnings("IllegalCatch")
     @Override
     public BindingCodecContext create(final SchemaContext context, final Class<?>... bindingClasses) {
         final ModuleInfoBackedContext strategy = ModuleInfoBackedContext.create();
@@ -253,7 +262,8 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
     }
 
 
-    private static final class DeserializeFunction<T> implements Function<Optional<NormalizedNode<?, ?>>, Optional<T>> {
+    private static final class DeserializeFunction<T> implements
+            Function<Optional<NormalizedNode<?, ?>>, Optional<T>> {
         private final DataObjectCodecContext<?,?> ctx;
 
         DeserializeFunction(final DataObjectCodecContext<?,?> ctx) {
@@ -278,7 +288,8 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
         }
     }
 
-    private final class DataObjectSerializerProxy implements DataObjectSerializer, Delegator<DataObjectSerializerImplementation> {
+    private final class DataObjectSerializerProxy
+            implements DataObjectSerializer, Delegator<DataObjectSerializerImplementation> {
         private final DataObjectSerializerImplementation delegate;
 
         DataObjectSerializerProxy(final DataObjectSerializerImplementation delegate) {

@@ -63,8 +63,8 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                 }
             });
 
-    private final LoadingCache<QName, DataContainerCodecContext<?,?>> childrenByQName = CacheBuilder.newBuilder().build(
-            new CacheLoader<QName, DataContainerCodecContext<?,?>>() {
+    private final LoadingCache<QName, DataContainerCodecContext<?,?>> childrenByQName =
+            CacheBuilder.newBuilder().build(new CacheLoader<QName, DataContainerCodecContext<?,?>>() {
                 @SuppressWarnings("unchecked")
                 @Override
                 public DataContainerCodecContext<?,?> load(final QName qname) {
@@ -80,17 +80,19 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                 }
             });
 
-    private final LoadingCache<SchemaPath, ContainerNodeCodecContext<?>> rpcDataByPath = CacheBuilder.newBuilder().build(
+    private final LoadingCache<SchemaPath, ContainerNodeCodecContext<?>> rpcDataByPath =
+                CacheBuilder.newBuilder().build(
             new CacheLoader<SchemaPath, ContainerNodeCodecContext<?>>() {
 
-                @SuppressWarnings({ "rawtypes", "unchecked" })
-                @Override
-                public ContainerNodeCodecContext load(final SchemaPath key) {
-                    final ContainerSchemaNode schema = SchemaContextUtil.getRpcDataSchema(getSchema(), key);
-                    final Class cls = factory().getRuntimeContext().getClassForSchema(schema);
-                    return getRpc(cls);
-                }
-            });
+                        @SuppressWarnings({ "rawtypes", "unchecked" })
+                        @Override
+                        public ContainerNodeCodecContext load(final SchemaPath key) {
+                            final ContainerSchemaNode schema = SchemaContextUtil.getRpcDataSchema(getSchema(), key);
+                            final Class cls = factory().getRuntimeContext().getClassForSchema(schema);
+                            return getRpc(cls);
+                        }
+                    }
+        );
 
     private final LoadingCache<SchemaPath, NotificationCodecContext<?>> notificationsByPath = CacheBuilder.newBuilder()
             .build(new CacheLoader<SchemaPath, NotificationCodecContext<?>>() {
@@ -113,7 +115,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
      *
      * @param factory
      *            CodecContextFactory
-     * @return
+     * @return new SchemaRootCodecContext object
      */
     static SchemaRootCodecContext<?> create(final CodecContextFactory factory) {
         final DataContainerCodecPrototype<SchemaContext> prototype = DataContainerCodecPrototype.rootPrototype(factory);
@@ -123,7 +125,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
 
     @SuppressWarnings("unchecked")
     @Override
-    public <DV extends DataObject> DataContainerCodecContext<DV, ?> streamChild(final Class<DV> childClass)
+    public <D extends DataObject> DataContainerCodecContext<D, ?> streamChild(final Class<D> childClass)
             throws IllegalArgumentException {
         /* FIXME: This is still not solved for RPCs
          * TODO: Probably performance wise RPC, Data and Notification loading cache
@@ -131,13 +133,14 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
          *       determine which is faster (keeping them separate or in same cache).
          */
         if (Notification.class.isAssignableFrom(childClass)) {
-            return (DataContainerCodecContext<DV, ?>) getNotification((Class<? extends Notification>)childClass);
+            return (DataContainerCodecContext<D, ?>) getNotification((Class<? extends Notification>)childClass);
         }
-        return (DataContainerCodecContext<DV, ?>) getOrRethrow(childrenByClass,childClass);
+        return (DataContainerCodecContext<D, ?>) getOrRethrow(childrenByClass,childClass);
     }
 
     @Override
-    public <E extends DataObject> Optional<DataContainerCodecContext<E,?>> possibleStreamChild(final Class<E> childClass) {
+    public <E extends DataObject> Optional<DataContainerCodecContext<E,?>> possibleStreamChild(
+            final Class<E> childClass) {
         throw new UnsupportedOperationException("Not supported");
     }
 
@@ -152,11 +155,6 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                 "Could not create Binding data representation for root");
     }
 
-
-    ContainerNodeCodecContext<?> getRpc(final Class<? extends DataContainer> rpcInputOrOutput) {
-        return getOrRethrow(rpcDataByClass, rpcInputOrOutput);
-    }
-
     NotificationCodecContext<?> getNotification(final Class<? extends Notification> notification) {
         return getOrRethrow(notificationsByClass, notification);
     }
@@ -165,13 +163,18 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         return getOrRethrow(notificationsByPath, notification);
     }
 
+    ContainerNodeCodecContext<?> getRpc(final Class<? extends DataContainer> rpcInputOrOutput) {
+        return getOrRethrow(rpcDataByClass, rpcInputOrOutput);
+    }
+
     ContainerNodeCodecContext<?> getRpc(final SchemaPath notification) {
         return getOrRethrow(rpcDataByPath, notification);
     }
 
     private DataContainerCodecContext<?,?> createDataTreeChildContext(final Class<?> key) {
         final QName qname = BindingReflections.findQName(key);
-        final DataSchemaNode childSchema = childNonNull(getSchema().getDataChildByName(qname),key,"%s is not top-level item.",key);
+        final DataSchemaNode childSchema =
+                childNonNull(getSchema().getDataChildByName(qname),key,"%s is not top-level item.",key);
         return DataContainerCodecPrototype.from(key, childSchema, factory()).get();
     }
 
@@ -183,7 +186,6 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         for (final RpcDefinition potential : getSchema().getOperations()) {
             final QName potentialQName = potential.getQName();
             /*
-             *
              * Check if rpc and class represents data from same module and then
              * checks if rpc local name produces same class name as class name
              * appended with Input/Output based on QName associated with bidning
@@ -242,7 +244,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
             return cache.getUnchecked(key);
         } catch (final UncheckedExecutionException e) {
             final Throwable cause = e.getCause();
-            if(cause != null) {
+            if (cause != null) {
                 Throwables.propagateIfPossible(cause);
             }
             throw e;

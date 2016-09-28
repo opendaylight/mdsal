@@ -66,8 +66,7 @@ final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<
                     return qnameDomValueFromString(codec, schema, (String) defaultValue, schemaContext);
                 }
                 return domValueFromString(codec, type, defaultValue);
-            }
-            else {
+            } else {
                 while (type.getBaseType() != null && type.getDefaultValue() == null) {
                     type = type.getBaseType();
                 }
@@ -103,7 +102,8 @@ final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<
                     if (moduleImport.getPrefix().equals(defaultValuePrefix)) {
                         Module importedModule = schemaContext.findModuleByName(moduleImport.getModuleName(),
                                 moduleImport.getRevision());
-                        qname = QName.create(importedModule.getQNameModule(), defaultValue.substring(prefixEndIndex + 1));
+                        qname = QName.create(importedModule.getQNameModule(),
+                                defaultValue.substring(prefixEndIndex + 1));
                         return codec.deserialize(qname);
                     }
                 }
@@ -116,7 +116,7 @@ final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<
     }
 
     private static Object domValueFromString(final Codec<Object, Object> codec, final TypeDefinition<?> type,
-    Object defaultValue) {
+            Object defaultValue) {
         TypeDefinitionAwareCodec<?, ?> typeDefAwareCodec = TypeDefinitionAwareCodec.from(type);
         if (typeDefAwareCodec != null) {
             Object castedDefaultValue = typeDefAwareCodec.deserialize((String) defaultValue);
@@ -146,7 +146,7 @@ final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<
         return this;
     }
 
-    final Method getGetter() {
+    Method getGetter() {
         return getter;
     }
 
