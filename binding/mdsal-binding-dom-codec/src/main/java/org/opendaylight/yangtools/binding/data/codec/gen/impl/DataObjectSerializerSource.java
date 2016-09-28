@@ -30,6 +30,8 @@ abstract class DataObjectSerializerSource extends AbstractSource {
     private final AbstractGenerator generator;
 
     /**
+     * Constructor with arg generator.
+     *
      * @param generator Parent generator
      */
     DataObjectSerializerSource(final AbstractGenerator generator) {

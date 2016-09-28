@@ -13,6 +13,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 /**
  * Caching variant of Binding to Normalized Node codec.
  *
+ * <p>
  * Caching may introduce performance penalty to serialization / deserialization
  * but may decrease use of heap for repetitive objects.
  *
@@ -22,10 +23,12 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 public interface BindingNormalizedNodeCachingCodec<T extends DataObject> extends
         org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeCachingCodec<T>,
         BindingNormalizedNodeCodec<T>, AutoCloseable {
+    
     /**
      * Invoking close will invalidate this codec and any of its child
      * codecs and will invalidate cache.
      *
+     * <p>
      * Any subsequent calls to this codec will fail with {@link IllegalStateException}
      * thrown.
      */

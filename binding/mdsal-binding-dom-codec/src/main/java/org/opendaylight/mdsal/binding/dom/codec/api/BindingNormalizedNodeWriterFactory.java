@@ -17,7 +17,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 
 /**
- *
  * Factory for {@link BindingStreamEventWriter}, which provides stream writers
  * which translates data and delegates calls to
  * {@link NormalizedNodeStreamWriter}.
@@ -27,14 +26,15 @@ public interface BindingNormalizedNodeWriterFactory extends
         org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeWriterFactory {
 
     /**
-     *
      * Creates a {@link BindingStreamEventWriter} for data tree path which will
      * translate to NormalizedNode model and invoke proper events on supplied
      * {@link NormalizedNodeStreamWriter}.
+     *
      * <p>
      * Also provides translation of supplied Instance Identifier to
      * {@link YangInstanceIdentifier} so client code, does not need to translate
      * that separately.
+     *
      * <p>
      * If {@link YangInstanceIdentifier} is not needed, please use
      * {@link #newWriter(InstanceIdentifier, NormalizedNodeStreamWriter)}
@@ -54,12 +54,11 @@ public interface BindingNormalizedNodeWriterFactory extends
             @Nonnull NormalizedNodeStreamWriter domWriter);
 
     /**
-     *
      * Creates a {@link BindingStreamEventWriter} for data tree path which will
      * translate to NormalizedNode model and invoke proper events on supplied
      * {@link NormalizedNodeStreamWriter}.
-     * <p>
      *
+     * <p>
      * This variation does not provide YANG instance identifier and is useful
      * for use-cases, where {@link InstanceIdentifier} translation is done
      * in other way, or YANG instance identifier is unnecessary (e.g. notifications, RPCs).
@@ -77,7 +76,6 @@ public interface BindingNormalizedNodeWriterFactory extends
             @Nonnull NormalizedNodeStreamWriter domWriter);
 
     /**
-     *
      * Creates a {@link BindingStreamEventWriter} for rpc data which will
      * translate to NormalizedNode model and invoke proper events on supplied
      * {@link NormalizedNodeStreamWriter}.
@@ -95,7 +93,6 @@ public interface BindingNormalizedNodeWriterFactory extends
             @Nonnull NormalizedNodeStreamWriter domWriter);
 
     /**
-     *
      * Creates a {@link BindingStreamEventWriter} for notification which will
      * translate to NormalizedNode model and invoke proper events on supplied
      * {@link NormalizedNodeStreamWriter}.
