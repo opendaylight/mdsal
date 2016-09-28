@@ -54,7 +54,8 @@ import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeContainer> extends DataContainerCodecContext<D,T> {
+abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeContainer>
+        extends DataContainerCodecContext<D,T> {
     private static final Logger LOG = LoggerFactory.getLogger(DataObjectCodecContext.class);
     private static final MethodType CONSTRUCTOR_TYPE = MethodType.methodType(void.class, InvocationHandler.class);
     private static final MethodType DATAOBJECT_TYPE = MethodType.methodType(DataObject.class, InvocationHandler.class);
@@ -98,7 +99,7 @@ abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeCon
             byYangBuilder.put(childProto.getYangArg(), childProto);
             if (childProto.isChoice()) {
                 final ChoiceNodeCodecContext<?> choice = (ChoiceNodeCodecContext<?>) childProto.get();
-                for(final Class<?> cazeChild : choice.getCaseChildrenClasses()) {
+                for (final Class<?> cazeChild : choice.getCaseChildrenClasses()) {
                     byBindingArgClassBuilder.put(cazeChild, childProto);
                 }
             }
@@ -117,7 +118,8 @@ abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeCon
         }
         reloadAllAugmentations();
 
-        final Class<?> proxyClass = Proxy.getProxyClass(getBindingClass().getClassLoader(),  new Class[] { getBindingClass(), AugmentationHolder.class });
+        final Class<?> proxyClass = Proxy.getProxyClass(getBindingClass().getClassLoader(),
+                new Class[] { getBindingClass(), AugmentationHolder.class });
         try {
             proxyConstructor = MethodHandles.publicLookup().findConstructor(proxyClass, CONSTRUCTOR_TYPE)
                     .asType(DATAOBJECT_TYPE);
@@ -138,13 +140,13 @@ abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeCon
 
     @SuppressWarnings("unchecked")
     @Override
-    public <DV extends DataObject> DataContainerCodecContext<DV, ?> streamChild(final Class<DV> childClass) {
+    public <D extends DataObject> DataContainerCodecContext<D, ?> streamChild(final Class<D> childClass) {
         final DataContainerCodecPrototype<?> childProto = streamChildPrototype(childClass);
-        return (DataContainerCodecContext<DV, ?>) childNonNull(childProto, childClass, " Child %s is not valid child.",
+        return (DataContainerCodecContext<D, ?>) childNonNull(childProto, childClass, " Child %s is not valid child.",
                 childClass).get();
     }
 
-    private final DataContainerCodecPrototype<?> streamChildPrototype(final Class<?> childClass) {
+    private DataContainerCodecPrototype<?> streamChildPrototype(final Class<?> childClass) {
         final DataContainerCodecPrototype<?> childProto = byStreamClass.get(childClass);
         if (childProto != null) {
             return childProto;
@@ -157,11 +159,11 @@ abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeCon
 
     @SuppressWarnings("unchecked")
     @Override
-    public <DV extends DataObject> Optional<DataContainerCodecContext<DV, ?>> possibleStreamChild(
+    public <D extends DataObject> Optional<DataContainerCodecContext<D, ?>> possibleStreamChild(
             final Class<DV> childClass) {
         final DataContainerCodecPrototype<?> childProto = streamChildPrototype(childClass);
         if (childProto != null) {
-            return Optional.<DataContainerCodecContext<DV,?>>of((DataContainerCodecContext<DV,?>) childProto.get());
+            return Optional.<DataContainerCodecContext<D,?>>of((DataContainerCodecContext<D,?>) childProto.get());
         }
         return Optional.absent();
     }
@@ -272,7 +274,8 @@ abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeCon
     }
 
     @Nullable
-    private final DataContainerCodecPrototype<?> augmentationByClassOrEquivalentClass(@Nonnull final Class<?> childClass) {
+    final DataContainerCodecPrototype<?> augmentationByClassOrEquivalentClass(
+            @Nonnull final Class<?> childClass) {
         final DataContainerCodecPrototype<?> childProto = byStreamAugmented.get(childClass);
         if (childProto != null) {
             return childProto;
@@ -329,6 +332,7 @@ abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeCon
         }
     }
 
+    @SuppressWarnings( "IllegalCatch" )
     protected final D createBindingProxy(final NormalizedNodeContainer<?, ?, ?> node) {
         try {
             return (D) proxyConstructor.invokeExact((InvocationHandler)new LazyDataObject<>(this, node));
