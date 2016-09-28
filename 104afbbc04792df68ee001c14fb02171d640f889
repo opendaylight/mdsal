@@ -16,6 +16,24 @@
       "revId": "104afbbc04792df68ee001c14fb02171d640f889",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6902df0a",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/LazyDataObjectModification.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-28T04:25:16Z",
+      "side": 0,
+      "message": "putting it back. It was not intentional.",
+      "parentUuid": "7a6b29fe_6002f40a",
+      "revId": "104afbbc04792df68ee001c14fb02171d640f889",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }

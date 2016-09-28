@@ -16,6 +16,24 @@
       "revId": "33173fda192faf5cd33e69bed84fc0d7e38a71cb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c6096032",
+        "filename": "binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/RpcServiceAdapterTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 4533
+      },
+      "writtenOn": "2016-09-28T04:25:16Z",
+      "side": 1,
+      "message": "If we change from \"throws Throwable\" to \"throws Exception\" , it gives compilation error as: unreported exception java.lang.Throwable; must be caught or declared to be thrown",
+      "parentUuid": "7a6b29fe_4005380f",
+      "revId": "33173fda192faf5cd33e69bed84fc0d7e38a71cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
