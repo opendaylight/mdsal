@@ -10,8 +10,8 @@ package org.opendaylight.yangtools.binding.data.codec.gen.spi;
 import com.google.common.base.Preconditions;
 
 /**
+ * Definition of static property for generated class.
  *
- * Definition of static property for generated class
  * <p>
  * This definition consists of
  * <ul>
