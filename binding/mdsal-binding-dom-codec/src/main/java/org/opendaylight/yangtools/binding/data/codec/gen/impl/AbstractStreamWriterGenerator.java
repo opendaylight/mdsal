@@ -61,15 +61,15 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
          * fix the static declared fields to final once we initialize them. If we
          * cannot get access, that's fine, too.
          */
-        Field f = null;
+        Field field = null;
         try {
-            f = Field.class.getDeclaredField("modifiers");
-            f.setAccessible(true);
+            field = Field.class.getDeclaredField("modifiers");
+            field.setAccessible(true);
         } catch (NoSuchFieldException | SecurityException e) {
             LOG.warn("Could not get Field modifiers field, serializers run at decreased efficiency", e);
         }
 
-        FIELD_MODIFIERS = f;
+        FIELD_MODIFIERS = field;
     }
 
     protected AbstractStreamWriterGenerator(final JavassistUtils utils) {
@@ -99,7 +99,8 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
         return implementations.getUnchecked(cls).getClass().getName();
     }
 
-    private final class SerializerImplementationLoader extends CacheLoader<Class<?>, DataObjectSerializerImplementation> {
+    private final class SerializerImplementationLoader extends CacheLoader<Class<?>,
+            DataObjectSerializerImplementation> {
 
         private static final String GETINSTANCE_METHOD_NAME = "getInstance";
         private static final String SERIALIZER_SUFFIX = "$StreamWriter";
@@ -112,7 +113,8 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
         @SuppressWarnings("unchecked")
         public DataObjectSerializerImplementation load(final Class<?> type) throws Exception {
             Preconditions.checkArgument(BindingReflections.isBindingClass(type));
-            Preconditions.checkArgument(DataContainer.class.isAssignableFrom(type),"DataContainer is not assingnable from %s from classloader %s.",type,type.getClassLoader());
+            Preconditions.checkArgument(DataContainer.class.isAssignableFrom(type),
+                    "DataContainer is not assingnable from %s from classloader %s.",type,type.getClassLoader());
 
             final String serializerName = getSerializerName(type);
 
@@ -131,11 +133,14 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
         }
 
         private Class<? extends DataObjectSerializerImplementation> generateSerializer(final Class<?> type,
-                final String serializerName) throws CannotCompileException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException {
+                final String serializerName) throws CannotCompileException, IllegalAccessException,
+                    IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException,
+                        NoSuchFieldException {
             final DataObjectSerializerSource source = generateEmitterSource(type, serializerName);
             final CtClass poolClass = generateEmitter0(type, source, serializerName);
             @SuppressWarnings("unchecked")
-            final Class<? extends DataObjectSerializerImplementation> cls = poolClass.toClass(type.getClassLoader(), type.getProtectionDomain());
+            final Class<? extends DataObjectSerializerImplementation> cls =
+                        poolClass.toClass(type.getClassLoader(), type.getProtectionDomain());
 
             /*
              * Due to OSGi class loader rules we cannot initialize the fields during
@@ -167,18 +172,18 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
         final DataObjectSerializerSource source;
         if (schema instanceof ContainerSchemaNode) {
             source = generateContainerSerializer(generatedType, (ContainerSchemaNode) schema);
-        } else if (schema instanceof ListSchemaNode){
+        } else if (schema instanceof ListSchemaNode) {
             final ListSchemaNode casted = (ListSchemaNode) schema;
             if (casted.getKeyDefinition().isEmpty()) {
                 source = generateUnkeyedListEntrySerializer(generatedType, casted);
             } else {
                 source = generateMapEntrySerializer(generatedType, casted);
             }
-        } else if(schema instanceof AugmentationSchema) {
+        } else if (schema instanceof AugmentationSchema) {
             source = generateSerializer(generatedType,(AugmentationSchema) schema);
-        } else if(schema instanceof ChoiceCaseNode) {
+        } else if (schema instanceof ChoiceCaseNode) {
             source = generateCaseSerializer(generatedType,(ChoiceCaseNode) schema);
-        } else if(schema instanceof NotificationDefinition) {
+        } else if (schema instanceof NotificationDefinition) {
             source = generateNotificationSerializer(generatedType,(NotificationDefinition) schema);
         } else {
             throw new UnsupportedOperationException("Schema type " + schema.getClass() + " is not supported");
@@ -186,13 +191,15 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
         return source;
     }
 
-    private CtClass generateEmitter0(final Class<?> type, final DataObjectSerializerSource source, final String serializerName) {
+    private CtClass generateEmitter0(final Class<?> type, final DataObjectSerializerSource source,
+            final String serializerName) {
         final CtClass product;
 
         /*
          * getSerializerBody() has side effects, such as loading classes and codecs, it should be run in model class
          * loader in order to correctly reference load child classes.
          *
+         * <p>
          * Furthermore the fact that getSerializedBody() can trigger other code generation to happen, we need to take
          * care of this before calling instantiatePrototype(), as that will call our customizer with the lock held,
          * hence any code generation will end up being blocked on the javassist lock.
@@ -206,24 +213,27 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
         );
 
         try {
-            product = javassist.instantiatePrototype(DataObjectSerializerPrototype.class.getName(), serializerName, new ClassCustomizer() {
-                @Override
-                public void customizeClass(final CtClass cls) throws CannotCompileException, NotFoundException {
-                    // Generate any static fields
-                    for (final StaticConstantDefinition def : source.getStaticConstants()) {
-                        final CtField field = new CtField(javassist.asCtClass(def.getType()), def.getName(), cls);
-                        field.setModifiers(Modifier.PRIVATE + Modifier.STATIC);
-                        cls.addField(field);
-                    }
+            product = javassist.instantiatePrototype(DataObjectSerializerPrototype.class.getName(),
+                    serializerName, new ClassCustomizer() {
+                        @Override
+                        public void customizeClass(final CtClass cls) throws CannotCompileException, NotFoundException {
+                            // Generate any static fields
+                            for (final StaticConstantDefinition def : source.getStaticConstants()) {
+                                final CtField field =
+                                        new CtField(javassist.asCtClass(def.getType()), def.getName(), cls);
+                                field.setModifiers(Modifier.PRIVATE + Modifier.STATIC);
+                                cls.addField(field);
+                            }
 
-                    // Replace serialize() -- may reference static fields
-                    final CtMethod serializeTo = cls.getDeclaredMethod(SERIALIZE_METHOD_NAME, serializeArguments);
-                    serializeTo.setBody(body);
+                            // Replace serialize() -- may reference static fields
+                            final CtMethod serializeTo =
+                                    cls.getDeclaredMethod(SERIALIZE_METHOD_NAME, serializeArguments);
+                            serializeTo.setBody(body);
 
-                    // The prototype is not visible, so we need to take care of that
-                    cls.setModifiers(Modifier.setPublic(cls.getModifiers()));
-                }
-            });
+                            // The prototype is not visible, so we need to take care of that
+                            cls.setModifiers(Modifier.setPublic(cls.getModifiers()));
+                        }
+                    });
         } catch (final NotFoundException e) {
             LOG.error("Failed to instatiate serializer {}", source, e);
             throw new LinkageError("Unexpected instantation problem: serializer prototype not found", e);
@@ -235,6 +245,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * Generates serializer source code for supplied container node,
      * which will read supplied binding type and invoke proper methods
      * on supplied {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events
      * for all reachable binding objects.
@@ -243,12 +254,14 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * @param node Schema of container
      * @return Source for container node writer
      */
-    protected abstract DataObjectSerializerSource generateContainerSerializer(GeneratedType type, ContainerSchemaNode node);
+    protected abstract DataObjectSerializerSource generateContainerSerializer(
+            GeneratedType type, ContainerSchemaNode node);
 
     /**
      * Generates serializer source for supplied case node,
      * which will read supplied binding type and invoke proper methods
      * on supplied {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events
      * for all reachable binding objects.
@@ -263,6 +276,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * Generates serializer source for supplied list node,
      * which will read supplied binding type and invoke proper methods
      * on supplied {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events
      * for all reachable binding objects.
@@ -277,6 +291,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * Generates serializer source for supplied list node,
      * which will read supplied binding type and invoke proper methods
      * on supplied {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events
      * for all reachable binding objects.
@@ -285,12 +300,14 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * @param node Schema of list
      * @return Source for list node writer
      */
-    protected abstract DataObjectSerializerSource generateUnkeyedListEntrySerializer(GeneratedType type, ListSchemaNode node);
+    protected abstract DataObjectSerializerSource generateUnkeyedListEntrySerializer(
+            GeneratedType type, ListSchemaNode node);
 
     /**
      * Generates serializer source for supplied augmentation node,
      * which will read supplied binding type and invoke proper methods
      * on supplied {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events
      * for all reachable binding objects.
@@ -305,6 +322,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * Generates serializer source for notification node,
      * which will read supplied binding type and invoke proper methods
      * on supplied {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events
      * for all reachable binding objects.
@@ -313,6 +331,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * @param node Schema of notification
      * @return Source for notification node writer
      */
-    protected abstract DataObjectSerializerSource generateNotificationSerializer(GeneratedType type, NotificationDefinition node);
+    protected abstract DataObjectSerializerSource generateNotificationSerializer(
+            GeneratedType type, NotificationDefinition node);
 
 }

@@ -69,6 +69,7 @@ final class BitsCodec extends ReflectionBasedCodec implements SchemaUnawareCodec
         };
     }
 
+    @SuppressWarnings("IllegalCatch")
     @Override
     public Object deserialize(final Object input) {
         Preconditions.checkArgument(input instanceof Set);
@@ -79,10 +80,11 @@ final class BitsCodec extends ReflectionBasedCodec implements SchemaUnawareCodec
          * We can do this walk based on field set sorted by name,
          * since constructor arguments in Java Binding are sorted by name.
          *
+         * <p>
          * This means we will construct correct array for construction
          * of bits object.
          */
-        final Boolean args[] = new Boolean[ctorArgs.size()];
+        final Boolean[] args = new Boolean[ctorArgs.size()];
         int currentArg = 0;
         for (String value : ctorArgs) {
             args[currentArg++] = casted.contains(value);
@@ -101,7 +103,7 @@ final class BitsCodec extends ReflectionBasedCodec implements SchemaUnawareCodec
         for (Entry<String, Method> valueGet : getters.entrySet()) {
             final Boolean value;
             try {
-                 value = (Boolean) valueGet.getValue().invoke(input);
+                value = (Boolean) valueGet.getValue().invoke(input);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new IllegalArgumentException("Failed to get bit " + valueGet.getKey(), e);
             }

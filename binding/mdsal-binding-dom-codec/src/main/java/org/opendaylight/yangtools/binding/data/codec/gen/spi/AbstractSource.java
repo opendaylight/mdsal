@@ -54,7 +54,7 @@ public abstract class AbstractSource {
 
     protected final CharSequence assign(final String type, final String var, final CharSequence value) {
         StringBuilder builder = new StringBuilder();
-        if(type != null) {
+        if (type != null) {
             builder.append(type);
             builder.append(' ');
         }
@@ -68,22 +68,23 @@ public abstract class AbstractSource {
         return assign(type.getFullyQualifiedName(), var, value);
     }
 
-    protected final CharSequence cast(final Type type, final CharSequence value) {
-        return cast(type.getFullyQualifiedName(), value);
-    }
-
-    protected final CharSequence forEach(final String iterable,final String iteratorName, final String valueType,final String valueName, final CharSequence body) {
-        StringBuilder b = new StringBuilder();
-        b.append(statement(assign(java.util.Iterator.class.getName(), iteratorName,invoke(iterable, "iterator"))));
-        b.append("while (").append(invoke(iteratorName, "hasNext")).append(") {\n");
-        b.append(statement(assign(valueType, valueName,cast(valueType, invoke(iteratorName, "next")))));
-        b.append(body);
-        b.append("\n}\n");
+    protected final CharSequence forEach(final String iterable,final String iteratorName, final String valueType,
+            final String valueName, final CharSequence body) {
+        StringBuilder build = new StringBuilder();
+        build.append(statement(assign(java.util.Iterator.class.getName(), iteratorName,invoke(iterable, "iterator"))));
+        build.append("while (").append(invoke(iteratorName, "hasNext")).append(") {\n");
+        build.append(statement(assign(valueType, valueName,cast(valueType, invoke(iteratorName, "next")))));
+        build.append(body);
+        build.append("\n}\n");
         return b;
     }
 
     protected final CharSequence statement(final CharSequence statement) {
         return new StringBuilder().append(statement).append(";\n");
+    }
+
+    protected final CharSequence cast(final Type type, final CharSequence value) {
+        return cast(type.getFullyQualifiedName(), value);
     }
 
     protected final CharSequence cast(final String type, final CharSequence value) {
