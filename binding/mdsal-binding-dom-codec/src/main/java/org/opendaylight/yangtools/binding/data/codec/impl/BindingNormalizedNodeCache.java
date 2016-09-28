@@ -35,6 +35,7 @@ final class BindingNormalizedNodeCache extends CacheLoader<DataObject, Normalize
     /**
      * Returns cached NormalizedNode representation of DataObject.
      *
+     * <p>
      * If representation is not cached, serializes DataObject and updates cache with representation.
      *
      * @param obj Binding object to be deserialized

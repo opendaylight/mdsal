@@ -117,7 +117,8 @@ abstract class DataContainerCodecContext<D extends DataObject,T> extends NodeCod
      * @throws IllegalArgumentException If supplied child class is not valid in specified context.
      */
     @Override
-    public abstract @Nullable <DV extends DataObject> DataContainerCodecContext<DV,?> streamChild(final Class<DV> childClass) throws IllegalArgumentException;
+    public abstract @Nullable <DV extends DataObject> DataContainerCodecContext<DV,?> streamChild(
+            final Class<DV> childClass) throws IllegalArgumentException;
 
     /**
      *
@@ -129,7 +130,8 @@ abstract class DataContainerCodecContext<D extends DataObject,T> extends NodeCod
      * @return Context of child or Optional absent is supplied class is not applicable in context.
      */
     @Override
-    public abstract <DV extends DataObject> Optional<DataContainerCodecContext<DV,?>> possibleStreamChild(final Class<DV> childClass);
+    public abstract <DV extends DataObject> Optional<DataContainerCodecContext<DV,?>>
+            possibleStreamChild(final Class<DV> childClass);
 
     @Override
     public String toString() {

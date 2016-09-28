@@ -148,7 +148,8 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         ListNodeCodecContext<?> currentList = null;
 
         for (final YangInstanceIdentifier.PathArgument domArg : dom.getPathArguments()) {
-            Preconditions.checkArgument(currentNode instanceof DataContainerCodecContext<?,?>, "Unexpected child of non-container node %s", currentNode);
+            Preconditions.checkArgument(currentNode instanceof DataContainerCodecContext<?,?>,
+                    "Unexpected child of non-container node %s", currentNode);
             final DataContainerCodecContext<?,?> previous = (DataContainerCodecContext<?,?>) currentNode;
             final NodeCodecContext<?> nextNode = previous.yangPathArgumentChild(domArg);
 
@@ -161,7 +162,8 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
              * Identifier as Item or IdentifiableItem
              */
             if (currentList != null) {
-                Preconditions.checkArgument(currentList == nextNode, "List should be referenced two times in YANG Instance Identifier %s", dom);
+                Preconditions.checkArgument(currentList == nextNode,
+                        "List should be referenced two times in YANG Instance Identifier %s", dom);
 
                 // We entered list, so now we have all information to emit
                 // list path using second list argument.
@@ -293,6 +295,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         return ValueTypeCodec.NOOP_CODEC;
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private Codec<Object, Object> getCodecForBindingClass(final Class<?> valueType, final TypeDefinition<?> typeDef) {
         if (typeDef instanceof IdentityrefTypeDefinition) {
             return ValueTypeCodec.encapsulatedValueCodecFor(valueType, identityCodec);

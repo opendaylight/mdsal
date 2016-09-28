@@ -79,6 +79,7 @@ final class BitsCodec extends ReflectionBasedCodec implements SchemaUnawareCodec
          * We can do this walk based on field set sorted by name,
          * since constructor arguments in Java Binding are sorted by name.
          *
+         * <p>
          * This means we will construct correct array for construction
          * of bits object.
          */
