@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
  */
 abstract class ValueTypeCodec implements Codec<Object, Object> {
 
-    private static final Cache<Class<?>, SchemaUnawareCodec> staticCodecs = CacheBuilder.newBuilder().weakKeys()
+    private static final Cache<Class<?>, SchemaUnawareCodec> STATIC_CODECS = CacheBuilder.newBuilder().weakKeys()
             .build();
 
 
@@ -41,11 +41,8 @@ abstract class ValueTypeCodec implements Codec<Object, Object> {
 
 
     /**
-     *
      * No-op Codec, Java YANG Binding uses same types as NormalizedNode model
      * for base YANG types, representing numbers, binary and strings.
-     *
-     *
      */
     public static final SchemaUnawareCodec NOOP_CODEC = new SchemaUnawareCodec() {
 
@@ -96,15 +93,17 @@ abstract class ValueTypeCodec implements Codec<Object, Object> {
         return def instanceof EmptyTypeDefinition ? EMPTY_CODEC : NOOP_CODEC;
     }
 
-    private static SchemaUnawareCodec getCachedSchemaUnawareCodec(final Class<?> typeClz, final Callable<? extends SchemaUnawareCodec> loader) {
+    private static SchemaUnawareCodec getCachedSchemaUnawareCodec(
+            final Class<?> typeClz, final Callable<? extends SchemaUnawareCodec> loader) {
         try {
-            return staticCodecs.get(typeClz, loader);
+            return STATIC_CODECS.get(typeClz, loader);
         } catch (ExecutionException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private static Callable<? extends SchemaUnawareCodec> getCodecLoader(final Class<?> typeClz, final TypeDefinition<?> def) {
+    private static Callable<? extends SchemaUnawareCodec> getCodecLoader(
+            final Class<?> typeClz, final TypeDefinition<?> def) {
 
         TypeDefinition<?> rootType = def;
         while (rootType.getBaseType() != null) {
