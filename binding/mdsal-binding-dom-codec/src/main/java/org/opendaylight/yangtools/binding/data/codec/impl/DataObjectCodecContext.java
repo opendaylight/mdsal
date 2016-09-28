@@ -54,7 +54,8 @@ import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeContainer> extends DataContainerCodecContext<D,T> {
+abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeContainer>
+        extends DataContainerCodecContext<D,T> {
     private static final Logger LOG = LoggerFactory.getLogger(DataObjectCodecContext.class);
     private static final MethodType CONSTRUCTOR_TYPE = MethodType.methodType(void.class, InvocationHandler.class);
     private static final MethodType DATAOBJECT_TYPE = MethodType.methodType(DataObject.class, InvocationHandler.class);
@@ -117,7 +118,8 @@ abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeCon
         }
         reloadAllAugmentations();
 
-        final Class<?> proxyClass = Proxy.getProxyClass(getBindingClass().getClassLoader(),  new Class[] { getBindingClass(), AugmentationHolder.class });
+        final Class<?> proxyClass = Proxy.getProxyClass(getBindingClass().getClassLoader(),
+                new Class[] { getBindingClass(), AugmentationHolder.class });
         try {
             proxyConstructor = MethodHandles.publicLookup().findConstructor(proxyClass, CONSTRUCTOR_TYPE)
                     .asType(DATAOBJECT_TYPE);
@@ -272,7 +274,8 @@ abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeCon
     }
 
     @Nullable
-    private final DataContainerCodecPrototype<?> augmentationByClassOrEquivalentClass(@Nonnull final Class<?> childClass) {
+    private final DataContainerCodecPrototype<?> augmentationByClassOrEquivalentClass(
+            @Nonnull final Class<?> childClass) {
         final DataContainerCodecPrototype<?> childProto = byStreamAugmented.get(childClass);
         if (childProto != null) {
             return childProto;

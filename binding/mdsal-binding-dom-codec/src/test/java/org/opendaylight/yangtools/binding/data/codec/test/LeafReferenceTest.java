@@ -54,8 +54,10 @@ public class LeafReferenceTest extends AbstractBindingRuntimeTest {
             .setSchemaUnawareUnion(new Int32StringUnion("foo"))
             .setSchemaUnawareUnionRef(new Int32StringUnion(10))
         .build();
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> dom = registry.toNormalizedNode(BA_TOP_LEVEL_LIST, binding);
-        final Entry<InstanceIdentifier<?>, DataObject> readed = registry.fromNormalizedNode(dom.getKey(),dom.getValue());
+        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> dom =
+                registry.toNormalizedNode(BA_TOP_LEVEL_LIST, binding);
+        final Entry<InstanceIdentifier<?>, DataObject> readed =
+                registry.fromNormalizedNode(dom.getKey(),dom.getValue());
         final TreeComplexLeaves readedAugment = ((TreeComplexLeaves) readed.getValue());
 
         assertEquals(binding,readedAugment);

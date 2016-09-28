@@ -18,10 +18,8 @@ import java.util.concurrent.Callable;
 import org.opendaylight.yangtools.binding.data.codec.impl.ValueTypeCodec.SchemaUnawareCodec;
 
 /**
- *
  * Derived YANG types are just immutable value holders for simple value
  * types, which are same as in NormalizedNode model.
- *
  */
 final class EncapsulatedValueCodec extends ReflectionBasedCodec implements SchemaUnawareCodec {
     private static final Lookup LOOKUP = MethodHandles.publicLookup();

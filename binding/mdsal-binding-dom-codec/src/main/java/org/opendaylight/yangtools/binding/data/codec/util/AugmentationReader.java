@@ -16,6 +16,7 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
  * to obtain augmentations from proxy implementations of {@link org.opendaylight.yangtools.yang.binding.Augmentable}
  * object.
  *
+ * <p>
  * If implemented proxy does not implement this interface, its augmentations are not
  * properly serialized / deserialized.
  */

@@ -38,8 +38,8 @@ final class DataContainerCodecPrototype<T> implements NodeContextSupplier {
     private volatile DataContainerCodecContext<?,T> instance = null;
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private DataContainerCodecPrototype(final Class<?> cls, final YangInstanceIdentifier.PathArgument arg, final T nodeSchema,
-            final CodecContextFactory factory) {
+    private DataContainerCodecPrototype(final Class<?> cls, final YangInstanceIdentifier.PathArgument arg,
+            final T nodeSchema, final CodecContextFactory factory) {
         super();
         this.bindingClass = cls;
         this.yangArg = arg;
@@ -48,7 +48,8 @@ final class DataContainerCodecPrototype<T> implements NodeContextSupplier {
         this.bindingArg = new InstanceIdentifier.Item(bindingClass);
 
         if (arg instanceof AugmentationIdentifier) {
-            this.namespace = Iterables.getFirst(((AugmentationIdentifier) arg).getPossibleChildNames(), null).getModule();
+            this.namespace =
+                    Iterables.getFirst(((AugmentationIdentifier) arg).getPossibleChildNames(), null).getModule();
         } else {
             this.namespace = arg.getNodeType().getModule();
         }
@@ -73,7 +74,8 @@ final class DataContainerCodecPrototype<T> implements NodeContextSupplier {
         return new DataContainerCodecPrototype(augClass, arg, schema, factory);
     }
 
-    static DataContainerCodecPrototype<NotificationDefinition> from(final Class<?> augClass, final NotificationDefinition schema, final CodecContextFactory factory) {
+    static DataContainerCodecPrototype<NotificationDefinition> from(final Class<?> augClass,
+            final NotificationDefinition schema, final CodecContextFactory factory) {
         final PathArgument arg = NodeIdentifier.create(schema.getQName());
         return new DataContainerCodecPrototype<NotificationDefinition>(augClass,arg, schema, factory);
     }

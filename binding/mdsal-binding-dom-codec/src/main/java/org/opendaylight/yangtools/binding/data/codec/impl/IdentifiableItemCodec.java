@@ -63,13 +63,16 @@ final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPredicates,
          * in alphabetic order. We play a couple of tricks here to optimize CPU/memory
          * trade-offs.
          *
+         * <p>
          * We do not have to perform a sort if the source collection has less than two
          * elements.
-
+         *
+         * <p>
          * We always perform an ImmutableList.copyOf(), as that will turn into a no-op
          * if the source is already immutable. It will also produce optimized implementations
          * for empty and singleton collections.
          *
+         * <p>
          * BUG-2755: remove this if order is made declaration-order-dependent
          */
         final List<QName> unsortedKeys = schema.getKeyDefinition();

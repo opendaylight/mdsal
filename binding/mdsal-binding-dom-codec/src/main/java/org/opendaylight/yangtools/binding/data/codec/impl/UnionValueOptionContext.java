@@ -26,7 +26,8 @@ final class UnionValueOptionContext {
     private final MethodHandle getter;
     private final MethodHandle unionCtor;
 
-    UnionValueOptionContext(final Class<?> unionType, final Class<?> valueType, final Method getter, final Codec<Object, Object> codec) {
+    UnionValueOptionContext(final Class<?> unionType, final Class<?> valueType, final Method getter,
+            final Codec<Object, Object> codec) {
         this.bindingType = Preconditions.checkNotNull(valueType);
         this.codec = Preconditions.checkNotNull(codec);
 

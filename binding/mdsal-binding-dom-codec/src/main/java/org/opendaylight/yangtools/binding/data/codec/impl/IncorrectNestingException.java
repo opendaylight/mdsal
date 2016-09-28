@@ -11,10 +11,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- *
  * Thrown where incorrect nesting of data structures was detected
  * and was caused by user.
- *
  */
 public class IncorrectNestingException extends IllegalArgumentException {
 

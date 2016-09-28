@@ -37,7 +37,8 @@ final class KeyedListNodeCodecContext<D extends DataObject & Identifiable<?>> ex
     }
 
     @Override
-    protected void addYangPathArgument(final InstanceIdentifier.PathArgument arg, final List<YangInstanceIdentifier.PathArgument> builder) {
+    protected void addYangPathArgument(final InstanceIdentifier.PathArgument arg,
+            final List<YangInstanceIdentifier.PathArgument> builder) {
         /*
          * DOM Instance Identifier for list is always represent by two
          * entries one for map and one for children. This is also true for
@@ -68,7 +69,8 @@ final class KeyedListNodeCodecContext<D extends DataObject & Identifiable<?>> ex
     }
 
     @Override
-    protected InstanceIdentifier.PathArgument getBindingPathArgument(final org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument domArg) {
+    protected InstanceIdentifier.PathArgument getBindingPathArgument(
+            final org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument domArg) {
         if (domArg instanceof NodeIdentifierWithPredicates) {
             return codec.deserialize((NodeIdentifierWithPredicates) domArg);
         }

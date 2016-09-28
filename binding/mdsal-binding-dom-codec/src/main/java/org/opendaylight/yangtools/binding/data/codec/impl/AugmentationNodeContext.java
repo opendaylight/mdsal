@@ -14,7 +14,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 
-final class AugmentationNodeContext<D extends DataObject & Augmentation<?>> extends DataObjectCodecContext<D,AugmentationSchema> {
+final class AugmentationNodeContext<D extends DataObject & Augmentation<?>>
+        extends DataObjectCodecContext<D,AugmentationSchema> {
 
     public AugmentationNodeContext(final DataContainerCodecPrototype<AugmentationSchema> prototype) {
         super(prototype);

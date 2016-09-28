@@ -48,7 +48,8 @@ public class InstanceIdentifierSerializeDeserializeTest extends AbstractBindingR
     public static final YangInstanceIdentifier BI_TOP_PATH = YangInstanceIdentifier.builder().node(TOP_QNAME).build();
     public static final YangInstanceIdentifier BI_TOP_LEVEL_LIST_PATH = BI_TOP_PATH.node(TOP_LEVEL_LIST_QNAME);
     public static final YangInstanceIdentifier BI_TOP_LEVEL_LIST_1_PATH = BI_TOP_LEVEL_LIST_PATH
-            .node(new YangInstanceIdentifier.NodeIdentifierWithPredicates(TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY, TOP_LEVEL_LIST_KEY_VALUE));
+            .node(new YangInstanceIdentifier.NodeIdentifierWithPredicates(
+                    TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY, TOP_LEVEL_LIST_KEY_VALUE));
 
     private BindingNormalizedNodeCodecRegistry registry;
 
@@ -109,20 +110,24 @@ public class InstanceIdentifierSerializeDeserializeTest extends AbstractBindingR
                 InstanceIdentifier.create(Top.class).child(TopLevelList.class, TOP_FOO_KEY));
         final YangInstanceIdentifier.PathArgument lastPathArgument = yangInstanceIdentifier.getLastPathArgument();
         assertTrue(lastPathArgument instanceof YangInstanceIdentifier.NodeIdentifierWithPredicates);
-        assertTrue(((YangInstanceIdentifier.NodeIdentifierWithPredicates) lastPathArgument).getKeyValues().containsValue(TOP_LEVEL_LIST_KEY_VALUE));
+        assertTrue(((YangInstanceIdentifier.NodeIdentifierWithPredicates) lastPathArgument).getKeyValues().
+                containsValue(TOP_LEVEL_LIST_KEY_VALUE));
         assertEquals(TopLevelList.QNAME, lastPathArgument.getNodeType());
     }
 
     @Test
     public void testBindingAwareIIToYangIIAugmentation() {
-        final YangInstanceIdentifier.PathArgument lastArg = registry.toYangInstanceIdentifier(BA_TREE_COMPLEX_USES).getLastPathArgument();
+        final YangInstanceIdentifier.PathArgument lastArg =
+                registry.toYangInstanceIdentifier(BA_TREE_COMPLEX_USES).getLastPathArgument();
         assertTrue(lastArg instanceof YangInstanceIdentifier.AugmentationIdentifier);
     }
 
     @Test
     public void testBindingAwareIIToYangIILeafOnlyAugmentation() {
-        final YangInstanceIdentifier.PathArgument leafOnlyLastArg = registry.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY).getLastPathArgument();
+        final YangInstanceIdentifier.PathArgument leafOnlyLastArg =
+                registry.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY).getLastPathArgument();
         assertTrue(leafOnlyLastArg instanceof YangInstanceIdentifier.AugmentationIdentifier);
-        assertTrue(((YangInstanceIdentifier.AugmentationIdentifier) leafOnlyLastArg).getPossibleChildNames().contains(SIMPLE_VALUE_QNAME));
+        assertTrue(((YangInstanceIdentifier.AugmentationIdentifier) leafOnlyLastArg).getPossibleChildNames().
+                contains(SIMPLE_VALUE_QNAME));
     }
 }

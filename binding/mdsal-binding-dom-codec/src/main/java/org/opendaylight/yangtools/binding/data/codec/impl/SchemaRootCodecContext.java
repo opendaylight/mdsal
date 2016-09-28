@@ -63,8 +63,8 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                 }
             });
 
-    private final LoadingCache<QName, DataContainerCodecContext<?,?>> childrenByQName = CacheBuilder.newBuilder().build(
-            new CacheLoader<QName, DataContainerCodecContext<?,?>>() {
+    private final LoadingCache<QName, DataContainerCodecContext<?,?>> childrenByQName =
+            CacheBuilder.newBuilder().build(new CacheLoader<QName, DataContainerCodecContext<?,?>>() {
                 @SuppressWarnings("unchecked")
                 @Override
                 public DataContainerCodecContext<?,?> load(final QName qname) {
@@ -80,7 +80,8 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
                 }
             });
 
-    private final LoadingCache<SchemaPath, ContainerNodeCodecContext<?>> rpcDataByPath = CacheBuilder.newBuilder().build(
+    private final LoadingCache<SchemaPath, ContainerNodeCodecContext<?>> rpcDataByPath =
+                CacheBuilder.newBuilder().build(
             new CacheLoader<SchemaPath, ContainerNodeCodecContext<?>>() {
 
                 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -171,7 +172,8 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
 
     private DataContainerCodecContext<?,?> createDataTreeChildContext(final Class<?> key) {
         final QName qname = BindingReflections.findQName(key);
-        final DataSchemaNode childSchema = childNonNull(getSchema().getDataChildByName(qname),key,"%s is not top-level item.",key);
+        final DataSchemaNode childSchema =
+                childNonNull(getSchema().getDataChildByName(qname),key,"%s is not top-level item.",key);
         return DataContainerCodecPrototype.from(key, childSchema, factory()).get();
     }
 
@@ -183,7 +185,6 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         for (final RpcDefinition potential : getSchema().getOperations()) {
             final QName potentialQName = potential.getQName();
             /*
-             *
              * Check if rpc and class represents data from same module and then
              * checks if rpc local name produces same class name as class name
              * appended with Input/Output based on QName associated with bidning

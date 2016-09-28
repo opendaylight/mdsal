@@ -94,7 +94,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
     public static final QName TOP_LEVEL_LIST_QNAME = QName.create(TOP_QNAME, "top-level-list");
     public static final QName TOP_LEVEL_LIST_KEY_QNAME = QName.create(TOP_QNAME, "name");
     public static final QName TOP_LEVEL_LEAF_LIST_QNAME = QName.create(TOP_QNAME, "top-level-leaf-list");
-    public static final QName TOP_LEVEL_ORDERED_LEAF_LIST_QNAME = QName.create(TOP_QNAME, "top-level-ordered-leaf-list");
+    public static final QName TOP_LEVEL_ORDERED_LEAF_LIST_QNAME =
+            QName.create(TOP_QNAME, "top-level-ordered-leaf-list");
     public static final QName NESTED_LIST_QNAME = QName.create(TOP_QNAME, "nested-list");
     public static final QName NESTED_LIST_KEY_QNAME = QName.create(TOP_QNAME, "name");
     public static final QName CHOICE_CONTAINER_QNAME = ChoiceContainer.QNAME;
@@ -114,8 +115,10 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
     public static final YangInstanceIdentifier BI_TOP_PATH = YangInstanceIdentifier.of(TOP_QNAME);
     public static final YangInstanceIdentifier BI_TOP_LEVEL_LIST_PATH = BI_TOP_PATH.node(TOP_LEVEL_LIST_QNAME);
     public static final YangInstanceIdentifier BI_TOP_LEVEL_LIST_FOO_PATH = BI_TOP_LEVEL_LIST_PATH
-            .node(new YangInstanceIdentifier.NodeIdentifierWithPredicates(TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE));
-    public static final YangInstanceIdentifier BI_CHOICE_CONTAINER_PATH = YangInstanceIdentifier.of(CHOICE_CONTAINER_QNAME);
+            .node(new YangInstanceIdentifier.NodeIdentifierWithPredicates(
+                    TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE));
+    public static final YangInstanceIdentifier BI_CHOICE_CONTAINER_PATH =
+            YangInstanceIdentifier.of(CHOICE_CONTAINER_QNAME);
 
     private BindingNormalizedNodeCodecRegistry registry;
 
@@ -139,7 +142,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
     @Test
     public void containerFromNormalized() {
         final ContainerNode topNormalized = getEmptyTop();
-        final Map.Entry<InstanceIdentifier<?>, DataObject> entry = registry.fromNormalizedNode(BI_TOP_PATH, topNormalized);
+        final Map.Entry<InstanceIdentifier<?>, DataObject> entry =
+                registry.fromNormalizedNode(BI_TOP_PATH, topNormalized);
         assertEquals(top(), entry.getValue());
     }
 
@@ -163,8 +167,10 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
                 .build());
         final ContainerNode topNormalized = getEmptyTop();
 
-        final Map.Entry<InstanceIdentifier<?>, DataObject> entry = registry.fromNormalizedNode(BI_TOP_PATH, topNormalized);
-        final Map.Entry<InstanceIdentifier<?>, DataObject> entryWithAugments = registry.fromNormalizedNode(BI_TOP_PATH, topNormalizedWithAugments);
+        final Map.Entry<InstanceIdentifier<?>, DataObject> entry =
+                registry.fromNormalizedNode(BI_TOP_PATH, topNormalized);
+        final Map.Entry<InstanceIdentifier<?>, DataObject> entryWithAugments =
+                registry.fromNormalizedNode(BI_TOP_PATH, topNormalizedWithAugments);
 
         // Equals on other with no augmentation should be false
         assertNotEquals(top(), entryWithAugments.getValue());
@@ -184,8 +190,9 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
         // Equals on self should be true
         assertEquals(entryWithAugments.getValue(), entryWithAugments.getValue());
 
-        final Top topWithAugmentsDiffValue = topWithAugments(Collections.<Class<? extends Augmentation<Top>>, Augmentation<Top>>
-            singletonMap(Top1.class, new Top1Builder().setAugmentedString("differentValue").build()));
+        final Top topWithAugmentsDiffValue = topWithAugments(Collections.<Class<? extends Augmentation<Top>>,
+                Augmentation<Top>> singletonMap(Top1.class, new Top1Builder().setAugmentedString("differentValue")
+                        .build()));
         assertNotEquals(topWithAugmentsDiffValue, entryWithAugments.getValue());
         assertNotEquals(entryWithAugments.getValue(), topWithAugmentsDiffValue);
     }
@@ -203,7 +210,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
                 .withChild(ImmutableNodes.leafNode(AUGMENT_INT_Q, AUGMENT_INT_VALUE))
                 .build());
 
-        final Map.Entry<InstanceIdentifier<?>, DataObject> entryWithAugments = registry.fromNormalizedNode(BI_TOP_PATH, topNormalizedWithAugments);
+        final Map.Entry<InstanceIdentifier<?>, DataObject> entryWithAugments =
+                registry.fromNormalizedNode(BI_TOP_PATH, topNormalizedWithAugments);
         Map<Class<? extends Augmentation<Top>>, Augmentation<Top>> augments = Maps.newHashMap();
         augments.put(Top1.class, new Top1Builder().setAugmentedString(AUGMENT_STRING_VALUE).build());
         augments.put(Top2.class, new Top2Builder().setAugmentedInt(AUGMENT_INT_VALUE).build());
@@ -232,7 +240,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
                     .withChild(mapNodeBuilder(TOP_LEVEL_LIST_QNAME).build()).build();
     }
 
-    private static Top topWithAugments(final Map<Class<? extends Augmentation<Top>>, ? extends Augmentation<Top>> augments) {
+    private static Top topWithAugments(
+            final Map<Class<? extends Augmentation<Top>>, ? extends Augmentation<Top>> augments) {
         final TopBuilder topBuilder = new TopBuilder();
         for (Map.Entry<Class<? extends Augmentation<Top>>, ? extends Augmentation<Top>> augment : augments.entrySet()) {
             topBuilder.addAugmentation(augment.getKey(), augment.getValue());
@@ -269,7 +278,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
     @Test
     public void leafOnlyAugmentationToNormalized() {
         final Map.Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry =
-                registry.toNormalizedNode(BA_TREE_LEAF_ONLY, new TreeLeafOnlyAugmentBuilder().setSimpleValue("simpleValue").build());
+                registry.toNormalizedNode(BA_TREE_LEAF_ONLY,
+                        new TreeLeafOnlyAugmentBuilder().setSimpleValue("simpleValue").build());
         final Set<QName> augmentationChildren = new HashSet<>();
         augmentationChildren.add(SIMPLE_VALUE_QNAME);
         final AugmentationNode augmentationNode = ImmutableAugmentationNodeBuilder.create()
@@ -287,8 +297,9 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
                 .withNodeIdentifier(new YangInstanceIdentifier.AugmentationIdentifier(augmentationChildren))
                 .withChild(leafNode(SIMPLE_VALUE_QNAME, "simpleValue"))
                 .build();
-        final Map.Entry<InstanceIdentifier<?>, DataObject> entry = registry.fromNormalizedNode(BI_TOP_LEVEL_LIST_FOO_PATH.node(
-                new YangInstanceIdentifier.AugmentationIdentifier(augmentationChildren)), augmentationNode);
+        final Map.Entry<InstanceIdentifier<?>, DataObject> entry =
+                registry.fromNormalizedNode(BI_TOP_LEVEL_LIST_FOO_PATH.node(
+                        new YangInstanceIdentifier.AugmentationIdentifier(augmentationChildren)), augmentationNode);
         assertEquals(new TreeLeafOnlyAugmentBuilder().setSimpleValue("simpleValue").build(), entry.getValue());
     }
 
@@ -303,10 +314,12 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
         ContainerNode containerNode = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TOP_QNAME))
                 .withChild(ImmutableOrderedLeafSetNodeBuilder.create()
-                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TOP_LEVEL_ORDERED_LEAF_LIST_QNAME))
+                        .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(
+                                TOP_LEVEL_ORDERED_LEAF_LIST_QNAME))
                         .withChild(
                                 ImmutableLeafSetEntryNodeBuilder.create()
-                                        .withNodeIdentifier(new YangInstanceIdentifier.NodeWithValue(TOP_LEVEL_ORDERED_LEAF_LIST_QNAME, "foo"))
+                                        .withNodeIdentifier(new YangInstanceIdentifier.NodeWithValue(
+                                                TOP_LEVEL_ORDERED_LEAF_LIST_QNAME, "foo"))
                                         .withValue("foo")
                                         .build())
                         .build())
@@ -328,7 +341,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TOP_LEVEL_LEAF_LIST_QNAME))
                         .withChild(
                                 ImmutableLeafSetEntryNodeBuilder.create()
-                                        .withNodeIdentifier(new YangInstanceIdentifier.NodeWithValue(TOP_LEVEL_LEAF_LIST_QNAME, "foo"))
+                                        .withNodeIdentifier(new YangInstanceIdentifier.NodeWithValue(
+                                                TOP_LEVEL_LEAF_LIST_QNAME, "foo"))
                                         .withValue("foo")
                                         .build())
                         .build())
@@ -340,11 +354,14 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
     public void leafListFromNormalized() {
         final ContainerNode topWithLeafList = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TOP_QNAME))
-                .withChild(ImmutableLeafSetNodeBuilder.create().withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TOP_LEVEL_LEAF_LIST_QNAME))
-                        .withChild(ImmutableLeafSetEntryNodeBuilder.create().withNodeIdentifier(
-                                new YangInstanceIdentifier.NodeWithValue(TOP_LEVEL_LEAF_LIST_QNAME, "foo")).withValue("foo").build()).build())
+                .withChild(ImmutableLeafSetNodeBuilder.create().withNodeIdentifier(
+                            new YangInstanceIdentifier.NodeIdentifier(TOP_LEVEL_LEAF_LIST_QNAME))
+                            .withChild(ImmutableLeafSetEntryNodeBuilder.create().withNodeIdentifier(
+                                new YangInstanceIdentifier.NodeWithValue(TOP_LEVEL_LEAF_LIST_QNAME, "foo"))
+                                    .withValue("foo").build()).build())
                 .build();
-        final Map.Entry<InstanceIdentifier<?>, DataObject> entry = registry.fromNormalizedNode(BI_TOP_PATH, topWithLeafList);
+        final Map.Entry<InstanceIdentifier<?>, DataObject> entry =
+                registry.fromNormalizedNode(BI_TOP_PATH, topWithLeafList);
         final List<String> topLevelLeafList = new ArrayList<>();
         topLevelLeafList.add("foo");
         final Top top = new TopBuilder().setTopLevelLeafList(topLevelLeafList).build();
@@ -355,10 +372,11 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
     public void orderedLeafListFromNormalized() {
         ContainerNode topWithLeafList = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(TOP_QNAME))
-                .withChild(ImmutableOrderedLeafSetNodeBuilder.create().withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier
-                        (TOP_LEVEL_ORDERED_LEAF_LIST_QNAME))
+                .withChild(ImmutableOrderedLeafSetNodeBuilder.create().withNodeIdentifier(
+                        new YangInstanceIdentifier.NodeIdentifier(TOP_LEVEL_ORDERED_LEAF_LIST_QNAME))
                         .withChild(ImmutableLeafSetEntryNodeBuilder.create().withNodeIdentifier(
-                                new YangInstanceIdentifier.NodeWithValue(TOP_LEVEL_ORDERED_LEAF_LIST_QNAME, "foo")).withValue("foo").build()).build())
+                                new YangInstanceIdentifier.NodeWithValue(TOP_LEVEL_ORDERED_LEAF_LIST_QNAME, "foo"))
+                                .withValue("foo").build()).build())
                 .build();
         Map.Entry<InstanceIdentifier<?>, DataObject> entry = registry.fromNormalizedNode(BI_TOP_PATH, topWithLeafList);
         List<String> topLevelLeafList = new ArrayList<>();
@@ -369,14 +387,17 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
 
     @Test
     public void choiceToNormalized() {
-        final ChoiceContainer choiceContainerBA = new ChoiceContainerBuilder().setIdentifier(new ExtendedBuilder().setExtendedId(
-                new ExtendedIdBuilder().setId("identifier_value").build()).build()).build();
+        final ChoiceContainer choiceContainerBA =
+                new ChoiceContainerBuilder().setIdentifier(new ExtendedBuilder().setExtendedId(
+                        new ExtendedIdBuilder().setId("identifier_value").build()).build()).build();
         final Map.Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry =
                 registry.toNormalizedNode(InstanceIdentifier.create(ChoiceContainer.class), choiceContainerBA);
         final ContainerNode choiceContainer = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(CHOICE_CONTAINER_QNAME))
-                .withChild(ImmutableChoiceNodeBuilder.create().withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(CHOICE_IDENTIFIER_QNAME))
-                        .withChild(ImmutableContainerNodeBuilder.create().withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(EXTENDED_ID_QNAME))
+                .withChild(ImmutableChoiceNodeBuilder.create().withNodeIdentifier(
+                        new YangInstanceIdentifier.NodeIdentifier(CHOICE_IDENTIFIER_QNAME))
+                        .withChild(ImmutableContainerNodeBuilder.create().withNodeIdentifier(
+                                new YangInstanceIdentifier.NodeIdentifier(EXTENDED_ID_QNAME))
                                 .withChild(leafNode(CHOICE_IDENTIFIER_ID_QNAME, "identifier_value")).build()).build())
                 .build();
         assertEquals(choiceContainer, entry.getValue());
@@ -393,7 +414,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
         final QName nestedContainerLeafOuterQname = QName.create(containerIdentifierQname4798,
                 "leaf-in-outer-container");
 
-        final YangInstanceIdentifier yangInstanceIdentifierOuter = YangInstanceIdentifier.of(containerIdentifierQname4798);
+        final YangInstanceIdentifier yangInstanceIdentifierOuter =
+                YangInstanceIdentifier.of(containerIdentifierQname4798);
         final ContainerNode containerNodeOuter = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(containerIdentifierQname4798))
                 .withChild(ImmutableContainerNodeBuilder.create()
@@ -406,14 +428,17 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
         assertNotNull(entryContainer.getValue());
         assertNotNull(entryContainer.getKey());
 
-        final YangInstanceIdentifier.NodeIdentifierWithPredicates nodeIdentifierWithPredicates4798 = new YangInstanceIdentifier
+        final YangInstanceIdentifier.NodeIdentifierWithPredicates nodeIdentifierWithPredicates4798 =
+                new YangInstanceIdentifier
                 .NodeIdentifierWithPredicates( nestedListQname4798, nestedListKeyQname4798, "foo" );
-        final YangInstanceIdentifier yangInstanceIdentifier4798 = YangInstanceIdentifier.of(containerIdentifierQname4798)
+        final YangInstanceIdentifier yangInstanceIdentifier4798 =
+                YangInstanceIdentifier.of(containerIdentifierQname4798)
                 .node(choiceIdentifierQname4798)
                 .node(nestedListQname4798)
                 .node(nodeIdentifierWithPredicates4798);
 
-        final YangInstanceIdentifier yangInstanceIdentifierValid = YangInstanceIdentifier.of(containerIdentifierQname4798)
+        final YangInstanceIdentifier yangInstanceIdentifierValid =
+                YangInstanceIdentifier.of(containerIdentifierQname4798)
                 .node(choiceIdentifierQname4798)
                 .node(nestedContainerValidQname)
                 .node(nestedListQname4798)
@@ -423,8 +448,10 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
                 .withChild(ImmutableChoiceNodeBuilder.create()
                         .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(choiceIdentifierQname4798))
                         .withChild(ImmutableContainerNodeBuilder.create()
-                                .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(nestedContainerValidQname))
-                                .withChild(ImmutableMapNodeBuilder.create().withNodeIdentifier(new YangInstanceIdentifier
+                                .withNodeIdentifier(
+                                        new YangInstanceIdentifier.NodeIdentifier(nestedContainerValidQname))
+                                .withChild(ImmutableMapNodeBuilder.create().withNodeIdentifier(
+                                        new YangInstanceIdentifier
                                         .NodeIdentifier(nestedListQname4798))
                                         .withChild(mapEntry(nestedListQname4798, nestedListKeyQname4798, "foo"))
                                         .withChild(mapEntry(nestedListQname4798, nestedListKeyQname4798, "bar"))
@@ -462,12 +489,16 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
     public void choiceFromNormalized() {
         final ContainerNode choiceContainerBI = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(CHOICE_CONTAINER_QNAME))
-                .withChild(ImmutableChoiceNodeBuilder.create().withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(CHOICE_IDENTIFIER_QNAME))
-                        .withChild(ImmutableContainerNodeBuilder.create().withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(EXTENDED_ID_QNAME))
+                .withChild(ImmutableChoiceNodeBuilder.create().withNodeIdentifier(
+                        new YangInstanceIdentifier.NodeIdentifier(CHOICE_IDENTIFIER_QNAME))
+                        .withChild(ImmutableContainerNodeBuilder.create().withNodeIdentifier(
+                                new YangInstanceIdentifier.NodeIdentifier(EXTENDED_ID_QNAME))
                                 .withChild(leafNode(CHOICE_IDENTIFIER_ID_QNAME, "identifier_value")).build()).build())
                 .build();
-        final Map.Entry<InstanceIdentifier<?>, DataObject> entry = registry.fromNormalizedNode(BI_CHOICE_CONTAINER_PATH, choiceContainerBI);
-        final ChoiceContainer choiceContainerBA = new ChoiceContainerBuilder().setIdentifier(new ExtendedBuilder().setExtendedId(
+        final Map.Entry<InstanceIdentifier<?>, DataObject> entry =
+                registry.fromNormalizedNode(BI_CHOICE_CONTAINER_PATH, choiceContainerBI);
+        final ChoiceContainer choiceContainerBA = new ChoiceContainerBuilder().setIdentifier(
+                new ExtendedBuilder().setExtendedId(
                 new ExtendedIdBuilder().setId("identifier_value").build()).build()).build();
         assertEquals(choiceContainerBA, entry.getValue());
     }
@@ -478,13 +509,17 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
         final List<NestedList> nestedLists = new ArrayList<>();
         nestedLists.add(new NestedListBuilder().setKey(new NestedListKey("foo")).build());
         nestedLists.add(new NestedListBuilder().setKey(new NestedListKey("bar")).build());
-        final TopLevelList topLevelList = new TopLevelListBuilder().setKey(TOP_LEVEL_LIST_FOO_KEY).setNestedList(nestedLists).build();
-        final Map.Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = registry.toNormalizedNode(ii, topLevelList);
-        final MapEntryNode foo = mapEntryBuilder().withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifierWithPredicates(
+        final TopLevelList topLevelList = new TopLevelListBuilder().setKey(TOP_LEVEL_LIST_FOO_KEY)
+                .setNestedList(nestedLists).build();
+        final Map.Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry =
+                registry.toNormalizedNode(ii, topLevelList);
+        final MapEntryNode foo = mapEntryBuilder().withNodeIdentifier(
+                new YangInstanceIdentifier.NodeIdentifierWithPredicates(
                 TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
                 .withChild(leafNode(TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
                 .withChild(
-                        ImmutableOrderedMapNodeBuilder.create().withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(NESTED_LIST_QNAME))
+                        ImmutableOrderedMapNodeBuilder.create().withNodeIdentifier(
+                                new YangInstanceIdentifier.NodeIdentifier(NESTED_LIST_QNAME))
                                 .withChild(mapEntry(NESTED_LIST_QNAME, NESTED_LIST_KEY_QNAME, "foo"))
                                 .withChild(mapEntry(NESTED_LIST_QNAME, NESTED_LIST_KEY_QNAME, "bar")).build()).build();
         assertEquals(foo, entry.getValue());
@@ -492,18 +527,22 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
 
     @Test
     public void orderedLisFromNormalized() {
-        final MapEntryNode foo = mapEntryBuilder().withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifierWithPredicates(
+        final MapEntryNode foo = mapEntryBuilder().withNodeIdentifier(
+                new YangInstanceIdentifier.NodeIdentifierWithPredicates(
                 TOP_LEVEL_LIST_QNAME, TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
                 .withChild(leafNode(TOP_LEVEL_LIST_KEY_QNAME, TOP_LEVEL_LIST_FOO_KEY_VALUE))
                 .withChild(
-                        ImmutableOrderedMapNodeBuilder.create().withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(NESTED_LIST_QNAME))
+                        ImmutableOrderedMapNodeBuilder.create().withNodeIdentifier(
+                                new YangInstanceIdentifier.NodeIdentifier(NESTED_LIST_QNAME))
                                 .withChild(mapEntry(NESTED_LIST_QNAME, NESTED_LIST_KEY_QNAME, "foo"))
                                 .withChild(mapEntry(NESTED_LIST_QNAME, NESTED_LIST_KEY_QNAME, "bar")).build()).build();
-        final Map.Entry<InstanceIdentifier<?>, DataObject> entry = registry.fromNormalizedNode(BI_TOP_LEVEL_LIST_FOO_PATH, foo);
+        final Map.Entry<InstanceIdentifier<?>, DataObject> entry =
+                registry.fromNormalizedNode(BI_TOP_LEVEL_LIST_FOO_PATH, foo);
         final List<NestedList> nestedLists = new ArrayList<>();
         nestedLists.add(new NestedListBuilder().setKey(new NestedListKey("foo")).build());
         nestedLists.add(new NestedListBuilder().setKey(new NestedListKey("bar")).build());
-        final TopLevelList topLevelList = new TopLevelListBuilder().setKey(TOP_LEVEL_LIST_FOO_KEY).setNestedList(nestedLists).build();
+        final TopLevelList topLevelList =
+                new TopLevelListBuilder().setKey(TOP_LEVEL_LIST_FOO_KEY).setNestedList(nestedLists).build();
         assertEquals(topLevelList, entry.getValue());
     }
 
@@ -559,7 +598,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
         assertEquals(BI_TOP_PATH, biResult.getKey());
         assertEquals(topNormalized, biResult.getValue());
 
-        final Map.Entry<InstanceIdentifier<?>, DataObject> baResult = registry.fromNormalizedNode(BI_TOP_PATH, topNormalized);
+        final Map.Entry<InstanceIdentifier<?>, DataObject> baResult =
+                registry.fromNormalizedNode(BI_TOP_PATH, topNormalized);
 
         assertEquals(InstanceIdentifier.create(Top.class), baResult.getKey());
         assertEquals(top, baResult.getValue());

@@ -12,13 +12,12 @@ import org.opendaylight.yangtools.sal.binding.generator.util.BindingRuntimeConte
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 
 /**
- *
  * Thrown when Java Binding class was used in data for which codec does not
  * have schema.
  *
+ * <p>
  * By serialization /  deserialization of this exception {@link #getBindingClass()}
  * will return null.
- *
  */
 public class MissingSchemaForClassException extends MissingSchemaException {
 

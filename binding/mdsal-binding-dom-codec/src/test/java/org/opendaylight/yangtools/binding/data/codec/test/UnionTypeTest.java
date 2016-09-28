@@ -39,7 +39,8 @@ public class UnionTypeTest extends AbstractBindingRuntimeTest {
 
     private static final String testString = "testtesttest";
 
-    public static final QName WRAPPER_QNAME = QName.create("urn:opendaylight:params:xml:ns:yang:yangtools:test:union", "2015-01-21", "wrapper");
+    public static final QName WRAPPER_QNAME = QName.create("urn:opendaylight:params:xml:ns:yang:yangtools:test:union",
+            "2015-01-21", "wrapper");
     public static final QName WRAP_LEAF_QNAME = QName.create(WRAPPER_QNAME, "wrap");
 
     private BindingNormalizedNodeCodecRegistry registry;
@@ -56,7 +57,8 @@ public class UnionTypeTest extends AbstractBindingRuntimeTest {
     public void unionTest() {
         TopLevel topLevel = TopLevelBuilder.getDefaultInstance(testString);
         Wrapper wrapper = new WrapperBuilder().setWrap(topLevel).build();
-        NormalizedNode<?, ?> topLevelEntry = registry.toNormalizedNode(InstanceIdentifier.builder(Wrapper.class).build(), wrapper).getValue();
+        NormalizedNode<?, ?> topLevelEntry =
+                registry.toNormalizedNode(InstanceIdentifier.builder(Wrapper.class).build(), wrapper).getValue();
 
         ContainerNode containerNode = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(WRAPPER_QNAME))
