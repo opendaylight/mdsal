@@ -15,7 +15,6 @@ public interface BindingCodecTreeFactory extends
         org.opendaylight.yangtools.binding.data.codec.api.BindingCodecTreeFactory {
 
     /**
-     *
      * Creates Binding Codec Tree for specified Binding runtime context.
      *
      * @param context
@@ -27,7 +26,6 @@ public interface BindingCodecTreeFactory extends
     BindingCodecTree create(BindingRuntimeContext context);
 
     /**
-     *
      * Creates Binding Codec Tree for specified Binding runtime context.
      *
      * @param context
