@@ -28,8 +28,8 @@ class WritableInteriorNode extends WriteableNodeWithSubshard {
     }
 
     @Override
-    WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor) {
-        return new WriteableNodeOperation(this, parentCursor) {
+    protected WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor) {
+        return new WritableNodeOperation(this, parentCursor) {
             @Override
             public void exit() {
                 // We are not root, so we can safely exit our level.

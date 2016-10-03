@@ -10,13 +10,16 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
-abstract class ModificationContextNodeBuilder {
+public abstract class ModificationContextNodeBuilder {
 
-    private final Map<PathArgument, InteriorNodeBuilder> interiorChildren = new HashMap<>();
+    private final Map<PathArgument, InteriorNodeBuilder> interiorChildren = new LinkedHashMap<>();
     private final Map<PathArgument, WriteableSubshardBoundaryNode> boundaryChildren = new HashMap<>();
+
+    private InteriorNodeBuilder lastPotential;
 
     protected ModificationContextNodeBuilder getInterior(final PathArgument arg) {
         InteriorNodeBuilder potential = interiorChildren.get(arg);
@@ -31,7 +34,7 @@ abstract class ModificationContextNodeBuilder {
         boundaryChildren.put(arg, subshardNode);
     }
 
-    final Map<PathArgument, WriteableModificationNode> buildChildren() {
+    protected final Map<PathArgument, WriteableModificationNode> buildChildren() {
         final Map<PathArgument, WriteableModificationNode> builtChildren = new HashMap<>(boundaryChildren);
         for (InteriorNodeBuilder interiorNode : interiorChildren.values()) {
             WriteableModificationNode builded = interiorNode.build();
