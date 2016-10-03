@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_9b233a04",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/yangtools/sal/java/api/generator/GeneratorUtilTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-03T12:31:45Z",
+      "side": 1,
+      "message": "please fix this typo in separate patch and then change it here. Check all weird things in GeneratorUtil.",
+      "range": {
+        "startLine": 147,
+        "startChar": 15,
+        "endLine": 147,
+        "endChar": 48
+      },
+      "revId": "a1e41592b5a8242b022d1d058504da7200141e43",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
