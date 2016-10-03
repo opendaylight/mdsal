@@ -46,7 +46,7 @@ final class TestUtils {
 
     static final ListenableFuture<?> LISTENABLE_FUTURE = mock(ListenableFuture.class);
 
-    static final WriteableModificationNode WRITEABLE_MODIFICATION_NODE = mock(WriteableModificationNode.class);
+    static final WriteableModificationNode WRITEABLE_MODIFICATION_NODE = mock(WriteableSubshardBoundaryNode.class);
 
     static final DOMDataTreeWriteCursor DOM_DATA_TREE_WRITE_CURSOR = mock(DOMDataTreeWriteCursor.class);
 
@@ -72,13 +72,13 @@ final class TestUtils {
     static ShardDataModification createModification(final ShardRootModificationContext root,
             final Map<YangInstanceIdentifier, ForeignShardModificationContext> shards) {
 
-        final ShardDataModificationFactoryBuilder builder = new ShardDataModificationFactoryBuilder(
-            root.getIdentifier());
+        final InmemoryShardDataModificationFactoryBuilder builder = new InmemoryShardDataModificationFactoryBuilder(
+                root.getIdentifier());
         for (ForeignShardModificationContext subshard : shards.values()) {
             builder.addSubshard(subshard);
         }
 
-        final ShardDataModificationFactory factory = builder.build();
+        final InMemoryShardDataModificationFactory factory = builder.build();
         return new ShardDataModification(root, factory.getChildren(), factory.getChildShards());
     }
 

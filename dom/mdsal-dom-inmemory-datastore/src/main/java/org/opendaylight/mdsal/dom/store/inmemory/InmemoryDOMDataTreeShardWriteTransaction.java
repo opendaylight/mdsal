@@ -38,21 +38,21 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         MERGE {
             @Override
             void applyOnLeaf(final DOMDataTreeWriteCursor cursor, final PathArgument child,
-                    final NormalizedNode<?, ?> data) {
+                             final NormalizedNode<?, ?> data) {
                 cursor.merge(child, data);
             }
         },
         DELETE {
             @Override
             void applyOnLeaf(final DOMDataTreeWriteCursor cursor, final PathArgument child,
-                    final NormalizedNode<?, ?> data) {
+                             final NormalizedNode<?, ?> data) {
                 cursor.delete(child);
             }
         },
         WRITE {
             @Override
             void applyOnLeaf(final DOMDataTreeWriteCursor cursor, final PathArgument child,
-                    final NormalizedNode<?, ?> data) {
+                             final NormalizedNode<?, ?> data) {
                 cursor.write(child, data);
             }
         };
@@ -60,7 +60,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         abstract void applyOnLeaf(DOMDataTreeWriteCursor cursor, PathArgument child, NormalizedNode<?, ?> data);
 
         void apply(final DOMDataTreeWriteCursor cursor, final YangInstanceIdentifier path,
-                final NormalizedNode<?, ?> data) {
+                   final NormalizedNode<?, ?> data) {
             int enterCount = 0;
             final Iterator<PathArgument> it = path.getPathArguments().iterator();
             if (it.hasNext()) {
@@ -116,7 +116,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
 
     private DOMDataTreeWriteCursor getCursor() {
         if (cursor == null) {
-            cursor = new ShardDataModificationCursor(modification, this);
+            cursor = new InMemoryShardDataModificationCursor(modification, this);
         }
         return cursor;
     }
@@ -125,7 +125,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
         final YangInstanceIdentifier relativePath = toRelative(path);
         Preconditions.checkArgument(!YangInstanceIdentifier.EMPTY.equals(relativePath),
                 "Deletion of shard root is not allowed");
-        SimpleCursorOperation.DELETE.apply(getCursor(), relativePath , null);
+        SimpleCursorOperation.DELETE.apply(getCursor(), relativePath, null);
     }
 
     void merge(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
