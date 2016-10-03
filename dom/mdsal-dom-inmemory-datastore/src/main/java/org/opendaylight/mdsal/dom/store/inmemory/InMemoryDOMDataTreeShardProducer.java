@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardProducer;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.slf4j.Logger;
@@ -103,10 +104,11 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
             AtomicReferenceFieldUpdater.newUpdater(InMemoryDOMDataTreeShardProducer.class, State.class, "state");
     private volatile State state;
 
-    private ShardDataModificationFactory modificationFactory;
+    private InMemoryShardDataModificationFactory modificationFactory;
 
     InMemoryDOMDataTreeShardProducer(final InMemoryDOMDataTreeShard parentShard,
-        final Collection<DOMDataTreeIdentifier> prefixes, final ShardDataModificationFactory modificationFactory) {
+                                     final Collection<DOMDataTreeIdentifier> prefixes,
+                                     final InMemoryShardDataModificationFactory modificationFactory) {
         this.parentShard = Preconditions.checkNotNull(parentShard);
         this.prefixes = ImmutableSet.copyOf(prefixes);
         this.modificationFactory = Preconditions.checkNotNull(modificationFactory);
@@ -177,7 +179,7 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
     void transactionAborted(final InmemoryDOMDataTreeShardWriteTransaction tx) {
         final State localState = state;
         if (localState instanceof Allocated) {
-            final Allocated allocated = (Allocated)localState;
+            final Allocated allocated = (Allocated) localState;
             if (allocated.getTransaction().equals(tx)) {
                 final boolean success = STATE_UPDATER.compareAndSet(this, localState, idleState);
                 if (!success) {
@@ -201,11 +203,11 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         return prefixes;
     }
 
-    ShardDataModificationFactory getModificationFactory() {
+    InMemoryShardDataModificationFactory getModificationFactory() {
         return modificationFactory;
     }
 
-    void setModificationFactory(final ShardDataModificationFactory modificationFactory) {
+    void setModificationFactory(final InMemoryShardDataModificationFactory modificationFactory) {
         this.modificationFactory = Preconditions.checkNotNull(modificationFactory);
     }
 }

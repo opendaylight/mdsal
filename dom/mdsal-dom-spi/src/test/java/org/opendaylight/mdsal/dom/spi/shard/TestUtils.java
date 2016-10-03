@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -13,18 +13,13 @@ import static org.mockito.Mockito.reset;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
-import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardProducer;
-import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardWriteTransaction;
-import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
-import org.opendaylight.mdsal.dom.spi.shard.WriteCursorStrategy;
-import org.opendaylight.mdsal.dom.spi.shard.WriteableModificationNode;
-import org.opendaylight.mdsal.dom.spi.shard.WriteableSubshardBoundaryNode;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
@@ -36,6 +31,8 @@ final class TestUtils {
             new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
 
     static final PathArgument PATH_ARGUMENT = mock(PathArgument.class);
+
+    static final NodeIdentifier NODE_IDENTIFIER = NodeIdentifier.create(QName.create("test"));
 
     static final NormalizedNode<?, ?> NORMALIZED_NODE = mock(NormalizedNode.class);
 
@@ -70,18 +67,4 @@ final class TestUtils {
     private TestUtils() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
     }
-
-    static ShardDataModification createModification(final ShardRootModificationContext root,
-            final Map<YangInstanceIdentifier, ForeignShardModificationContext> shards) {
-
-        final InmemoryShardDataModificationFactoryBuilder builder = new InmemoryShardDataModificationFactoryBuilder(
-                root.getIdentifier());
-        for (ForeignShardModificationContext subshard : shards.values()) {
-            builder.addSubshard(subshard);
-        }
-
-        final InMemoryShardDataModificationFactory factory = builder.build();
-        return new ShardDataModification(root, factory.getChildren(), factory.getChildShards());
-    }
-
 }
