@@ -14,7 +14,10 @@ import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
-final class WriteableSubshardBoundaryNode extends WriteableModificationNode {
+/**
+ * Writable node that is located at a boundary to a subshard.
+ */
+class WriteableSubshardBoundaryNode extends WriteableModificationNode {
 
     private final ForeignShardModificationContext boundary;
 
@@ -32,7 +35,7 @@ final class WriteableSubshardBoundaryNode extends WriteableModificationNode {
     }
 
     @Override
-    WriteCursorStrategy createOperation(final DOMDataTreeWriteCursor parentCursor) {
+    protected WriteCursorStrategy createOperation(final DOMDataTreeWriteCursor parentCursor) {
         return new DelegatingWriteCursorStrategy() {
             @Override
             public void exit() {
@@ -57,18 +60,18 @@ final class WriteableSubshardBoundaryNode extends WriteableModificationNode {
     }
 
     @Override
-    WriteableModificationNode getChild(final PathArgument node) {
+    protected WriteableModificationNode getChild(final PathArgument node) {
         // Another level of nesting should be taken care of by underlying cursor.
         return null;
     }
 
     @Override
-    void markDeleted() {
+    protected void markDeleted() {
         // FIXME: Should we delete all data or disconnect?
     }
 
     @Override
-    Map<PathArgument, WriteableModificationNode> getChildrenWithSubshards() {
+    protected Map<PathArgument, WriteableModificationNode> getChildrenWithSubshards() {
         return ImmutableMap.of();
     }
 }

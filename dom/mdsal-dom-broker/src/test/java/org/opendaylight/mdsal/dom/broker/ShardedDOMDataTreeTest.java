@@ -11,10 +11,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -30,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -76,12 +78,17 @@ public class ShardedDOMDataTreeTest {
     }
 
     private static final DOMDataTreeIdentifier ROOT_ID =
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
+            new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.EMPTY);
     private static final DOMDataTreeIdentifier TEST_ID =
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, TestModel.TEST_PATH);
+            new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
 
     private static final DOMDataTreeIdentifier INNER_CONTAINER_ID =
-            new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, TestModel.INNER_CONTAINER_PATH);
+            new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, TestModel.INNER_CONTAINER_PATH);
+
+    private static final YangInstanceIdentifier OUTER_LIST_YID = TestModel.OUTER_LIST_PATH.node(
+            new NodeIdentifierWithPredicates(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1));
+    private static final DOMDataTreeIdentifier OUTER_LIST_ID =
+            new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, OUTER_LIST_YID);
 
     private InMemoryDOMDataTreeShard rootShard;
 
@@ -161,7 +168,7 @@ public class ShardedDOMDataTreeTest {
 
     @Test
     public void testSingleShardWrite() throws Exception {
-        final DOMDataTreeListener mockedDataTreeListener = Mockito.mock(DOMDataTreeListener.class);
+        final DOMDataTreeListener mockedDataTreeListener = mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
         dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID),
@@ -351,6 +358,81 @@ public class ShardedDOMDataTreeTest {
         final ContainerNode testContainer = ImmutableContainerNodeBuilder.create()
                 .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
                 .withChild(containerNode)
+                .build();
+
+        return testContainer;
+    }
+
+    //test multiple vertical levels between the shards
+    @Test
+    public void testLargerSubshardSpace() throws Exception {
+
+        final InMemoryDOMDataTreeShard outerListShard = InMemoryDOMDataTreeShard.create(OUTER_LIST_ID, executor, 1, 1);
+        outerListShard.onGlobalContextUpdated(schemaContext);
+
+        try (final DOMDataTreeProducer producer =
+                     dataTreeService.createProducer(Collections.singletonList(OUTER_LIST_ID))) {
+            dataTreeService.registerDataTreeShard(OUTER_LIST_ID, outerListShard, producer);
+        }
+
+        final DOMDataTreeProducer producer = dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
+        final DOMDataTreeCursorAwareTransaction tx = producer.createTransaction(false);
+        final DOMDataTreeWriteCursor cursor = tx.createCursor(ROOT_ID);
+
+        assertNotNull(cursor);
+        cursor.write(TestModel.TEST_PATH.getLastPathArgument(), createCrossShardContainer2());
+        cursor.close();
+
+        tx.submit().checkedGet();
+
+        final DOMDataTreeListener listener = mock(DOMDataTreeListener.class);
+        doNothing().when(listener).onDataTreeChanged(any(), any());
+        dataTreeService.registerListener(listener,
+                Collections.singletonList(
+                        new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.EMPTY)),
+                false, Collections.emptyList());
+
+        verify(listener, times(2)).onDataTreeChanged(any(), any());
+
+
+    }
+
+    private static ContainerNode createCrossShardContainer2() {
+
+        final MapEntryNode
+                innerListEntry1 = ImmutableNodes
+                .mapEntryBuilder(TestModel.INNER_LIST_QNAME, TestModel.NAME_QNAME, "name-1")
+                .withChild(ImmutableNodes.leafNode(TestModel.NAME_QNAME, "name-1"))
+                .withChild(ImmutableNodes.leafNode(TestModel.VALUE_QNAME, "value-1"))
+                .build();
+        final MapEntryNode innerListEntry2 = ImmutableNodes
+                .mapEntryBuilder(TestModel.INNER_LIST_QNAME, TestModel.NAME_QNAME, "name-2")
+                .withChild(ImmutableNodes.leafNode(TestModel.NAME_QNAME, "name-2"))
+                .withChild(ImmutableNodes.leafNode(TestModel.VALUE_QNAME, "value-2"))
+                .build();
+
+        final MapNode innerList1 = ImmutableNodes
+                .mapNodeBuilder(TestModel.INNER_LIST_QNAME).withChild(innerListEntry1).build();
+        final MapNode innerList2 = ImmutableNodes
+                .mapNodeBuilder(TestModel.INNER_LIST_QNAME).withChild(innerListEntry2).build();
+
+        final MapEntryNode outerListEntry1 = ImmutableNodes
+                .mapEntryBuilder(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1)
+                .withChild(innerList1)
+                .build();
+        final MapEntryNode outerListEntry2 = ImmutableNodes
+                .mapEntryBuilder(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 2)
+                .withChild(innerList2)
+                .build();
+
+        final MapNode outerList = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+                .withChild(outerListEntry1)
+                .withChild(outerListEntry2)
+                .build();
+
+        final ContainerNode testContainer = ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+                .withChild(outerList)
                 .build();
 
         return testContainer;

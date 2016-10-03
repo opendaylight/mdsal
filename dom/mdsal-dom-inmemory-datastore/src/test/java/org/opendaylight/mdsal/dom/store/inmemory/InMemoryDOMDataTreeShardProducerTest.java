@@ -37,8 +37,8 @@ public class InMemoryDOMDataTreeShardProducerTest {
         final InMemoryDOMDataTreeShardProducer inMemoryDOMDataTreeShardProducer =
                 new InMemoryDOMDataTreeShardProducer(inMemoryDOMDataTreeShard,
                         ImmutableSet.of(DOM_DATA_TREE_IDENTIFIER),
-                        new ShardDataModificationFactory(DOM_DATA_TREE_IDENTIFIER, ImmutableMap.of(),
-                            ImmutableMap.of()));
+                        new InMemoryShardDataModificationFactory(DOM_DATA_TREE_IDENTIFIER, ImmutableMap.of(),
+                                ImmutableMap.of()));
 
         assertNotNull(inMemoryDOMDataTreeShardProducer.createTransaction());
         verify(inMemoryDOMDataTreeShard).createTransaction(

@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @NotThreadSafe
-final class ForeignShardModificationContext {
+public final class ForeignShardModificationContext {
     private static final Logger LOG = LoggerFactory.getLogger(ForeignShardModificationContext.class);
     private final DOMDataTreeIdentifier identifier;
     private final DOMDataTreeShardProducer producer;
@@ -25,7 +25,8 @@ final class ForeignShardModificationContext {
     private DOMDataTreeWriteCursor cursor;
     private volatile boolean notReady = true;
 
-    ForeignShardModificationContext(final DOMDataTreeIdentifier identifier, final DOMDataTreeShardProducer producer) {
+    public ForeignShardModificationContext(final DOMDataTreeIdentifier identifier,
+                                           final DOMDataTreeShardProducer producer) {
         this.identifier = Preconditions.checkNotNull(identifier);
         this.producer = Preconditions.checkNotNull(producer);
     }

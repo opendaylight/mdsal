@@ -58,7 +58,7 @@ public class WriteableNodeWithSubshardTest {
         }
 
         @Override
-        WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor) {
+        protected WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor) {
             return null;
         }
 

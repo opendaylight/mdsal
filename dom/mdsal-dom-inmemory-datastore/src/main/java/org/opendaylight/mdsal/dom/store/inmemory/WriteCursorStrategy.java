@@ -12,7 +12,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 
-interface WriteCursorStrategy extends CursorStrategy {
+public interface WriteCursorStrategy extends CursorStrategy {
 
     @Override
     WriteCursorStrategy enter(PathArgument arg);

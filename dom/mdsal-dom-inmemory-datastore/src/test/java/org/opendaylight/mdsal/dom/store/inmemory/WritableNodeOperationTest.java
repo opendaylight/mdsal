@@ -31,7 +31,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 
-public class WriteableNodeOperationTest extends WriteableNodeOperation {
+public class WritableNodeOperationTest extends WritableNodeOperation {
 
     @Test
     public void enterTest() throws Exception {
@@ -149,7 +149,7 @@ public class WriteableNodeOperationTest extends WriteableNodeOperation {
         resetMocks();
     }
 
-    public WriteableNodeOperationTest() {
+    public WritableNodeOperationTest() {
         super(WRITEABLE_MODIFICATION_NODE, DOM_DATA_TREE_WRITE_CURSOR);
     }
 
