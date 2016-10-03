@@ -137,7 +137,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     }
 
     @VisibleForTesting
-    ShardDataModificationFactory createModificationFactory(final Collection<DOMDataTreeIdentifier> prefixes) {
+    InMemoryShardDataModificationFactory createModificationFactory(final Collection<DOMDataTreeIdentifier> prefixes) {
         final Map<DOMDataTreeIdentifier, SubshardProducerSpecification> affected = new HashMap<>();
         for (final DOMDataTreeIdentifier producerPrefix : prefixes) {
             for (final ChildShardContext child : childShards.values()) {
@@ -160,7 +160,8 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
             }
         }
 
-        final ShardDataModificationFactoryBuilder builder = new ShardDataModificationFactoryBuilder(prefix);
+        final InmemoryShardDataModificationFactoryBuilder builder =
+                new InmemoryShardDataModificationFactoryBuilder(prefix);
         for (final SubshardProducerSpecification spec : affected.values()) {
             final ForeignShardModificationContext foreignContext =
                     new ForeignShardModificationContext(spec.getPrefix(), spec.createProducer());
@@ -175,11 +176,11 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     public InMemoryDOMDataTreeShardProducer createProducer(final Collection<DOMDataTreeIdentifier> prefixes) {
         for (final DOMDataTreeIdentifier prodPrefix : prefixes) {
             Preconditions.checkArgument(prefix.contains(prodPrefix), "Prefix %s is not contained under shart root",
-                prodPrefix, prefix);
+                    prodPrefix, prefix);
         }
 
         final InMemoryDOMDataTreeShardProducer ret = new InMemoryDOMDataTreeShardProducer(this, prefixes,
-            createModificationFactory(prefixes));
+                createModificationFactory(prefixes));
         producers.add(ret);
         return ret;
     }
@@ -227,9 +228,9 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     }
 
     private static ChildShardContext createContextFor(final DOMDataTreeIdentifier prefix,
-            final DOMDataTreeShard child) {
+                                                      final DOMDataTreeShard child) {
         Preconditions.checkArgument(child instanceof WriteableDOMDataTreeShard,
-            "Child %s is not a writable shared", child);
+                "Child %s is not a writable shared", child);
         return new ChildShardContext(prefix, (WriteableDOMDataTreeShard) child);
     }
 
@@ -258,7 +259,7 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         Preconditions.checkArgument(snapshot instanceof CursorAwareDataTreeSnapshot);
 
         return new InmemoryDOMDataTreeShardWriteTransaction(producer,
-            producer.getModificationFactory().createModification((CursorAwareDataTreeSnapshot)snapshot), dataTree,
-            shardChangePublisher, executor);
+                producer.getModificationFactory().createModification((CursorAwareDataTreeSnapshot) snapshot), dataTree,
+                shardChangePublisher, executor);
     }
 }
