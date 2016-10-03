@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.base.Preconditions;
 import java.util.Map;
@@ -28,8 +28,8 @@ class WritableInteriorNode extends WriteableNodeWithSubshard {
     }
 
     @Override
-    WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor) {
-        return new WriteableNodeOperation(this, parentCursor) {
+    public WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor) {
+        return new WritableNodeOperation(this, parentCursor) {
             @Override
             public void exit() {
                 // We are not root, so we can safely exit our level.

@@ -6,19 +6,20 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
-abstract class ModificationContextNodeBuilder {
+public abstract class ModificationContextNodeBuilder {
 
-    private final Map<PathArgument, InteriorNodeBuilder> interiorChildren = new HashMap<>();
+    private final Map<PathArgument, InteriorNodeBuilder> interiorChildren = new LinkedHashMap<>();
     private final Map<PathArgument, WriteableSubshardBoundaryNode> boundaryChildren = new HashMap<>();
 
-    protected ModificationContextNodeBuilder getInterior(final PathArgument arg) {
+    public ModificationContextNodeBuilder getInterior(final PathArgument arg) {
         InteriorNodeBuilder potential = interiorChildren.get(arg);
         if (potential == null) {
             potential = new InteriorNodeBuilder(arg);
@@ -27,11 +28,11 @@ abstract class ModificationContextNodeBuilder {
         return potential;
     }
 
-    protected void addBoundary(final PathArgument arg, final WriteableSubshardBoundaryNode subshardNode) {
+    public void addBoundary(final PathArgument arg, final WriteableSubshardBoundaryNode subshardNode) {
         boundaryChildren.put(arg, subshardNode);
     }
 
-    final Map<PathArgument, WriteableModificationNode> buildChildren() {
+    public final Map<PathArgument, WriteableModificationNode> buildChildren() {
         final Map<PathArgument, WriteableModificationNode> builtChildren = new HashMap<>(boundaryChildren);
         for (InteriorNodeBuilder interiorNode : interiorChildren.values()) {
             WriteableModificationNode builded = interiorNode.build();
@@ -41,7 +42,7 @@ abstract class ModificationContextNodeBuilder {
         return builtChildren;
     }
 
-    private static final class InteriorNodeBuilder extends ModificationContextNodeBuilder {
+    public static final class InteriorNodeBuilder extends ModificationContextNodeBuilder {
         private final PathArgument arg;
 
         InteriorNodeBuilder(final PathArgument arg) {

@@ -6,32 +6,32 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
-abstract class WriteableNodeWithSubshard extends WriteableModificationNode {
+public abstract class WriteableNodeWithSubshard extends WriteableModificationNode {
 
     private final Map<PathArgument, WriteableModificationNode> children;
 
-    WriteableNodeWithSubshard(final Map<PathArgument, WriteableModificationNode> children) {
+    protected WriteableNodeWithSubshard(final Map<PathArgument, WriteableModificationNode> children) {
         this.children = ImmutableMap.copyOf(children);
     }
 
     @Override
-    Map<PathArgument, WriteableModificationNode> getChildrenWithSubshards() {
+    public Map<PathArgument, WriteableModificationNode> getChildrenWithSubshards() {
         return children;
     }
 
     @Override
-    WriteableModificationNode getChild(final PathArgument node) {
+    public WriteableModificationNode getChild(final PathArgument node) {
         return children.get(node);
     }
 
     @Override
-    void markDeleted() {
+    public void markDeleted() {
         for (WriteableModificationNode child : children.values()) {
             child.markDeleted();
         }
