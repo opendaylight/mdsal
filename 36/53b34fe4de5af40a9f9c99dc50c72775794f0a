@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Robert Varga <nite@hq.sk>
+Code-Review+1: Tomas Cere <tcere@cisco.com>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Mon, 03 Oct 2016 12:40:43 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/46354
+Project: mdsal
+Branch: refs/heads/stable/boron
