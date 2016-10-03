@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -15,16 +15,19 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
-abstract class WriteableModificationNode implements Identifiable<PathArgument> {
+/**
+ * Writable node that can have subshard children somewhere on lower level.
+ */
+public abstract class WriteableModificationNode implements Identifiable<PathArgument> {
 
     /**
      * Gets child which is on path towards subshard.
      *
      * @return null if requested child is not subshard or enclosing node of any subshard.
      */
-    abstract @Nullable WriteableModificationNode getChild(@Nonnull PathArgument node);
+    @Nullable public abstract WriteableModificationNode getChild(@Nonnull PathArgument node);
 
-    abstract Map<PathArgument, WriteableModificationNode> getChildrenWithSubshards();
+    public abstract Map<PathArgument, WriteableModificationNode> getChildrenWithSubshards();
 
     /**
      * Creates operation used to modify this node and its children.
@@ -32,8 +35,8 @@ abstract class WriteableModificationNode implements Identifiable<PathArgument> {
      * @param parentCursor Cursor associated with parent shard
      * @return WriteableOperation for this node.
      */
-    abstract WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor);
+    public abstract WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor);
 
-    abstract void markDeleted();
+    public abstract void markDeleted();
 
 }

@@ -35,13 +35,13 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTree.class);
 
     @GuardedBy("this")
-    private final DOMDataTreePrefixTable<ShardRegistration<?>> shards = DOMDataTreePrefixTable.create();
+    private final DOMDataTreePrefixTable<DOMDataTreeShardRegistration<?>> shards = DOMDataTreePrefixTable.create();
     @GuardedBy("this")
     private final DOMDataTreePrefixTable<DOMDataTreeProducer> producers = DOMDataTreePrefixTable.create();
 
-    void removeShard(final ShardRegistration<?> reg) {
+    void removeShard(final DOMDataTreeShardRegistration<?> reg) {
         final DOMDataTreeIdentifier prefix = reg.getPrefix();
-        final ShardRegistration<?> parentReg;
+        final DOMDataTreeShardRegistration<?> parentReg;
 
         synchronized (this) {
             shards.remove(prefix);
@@ -71,8 +71,8 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         Preconditions.checkArgument(prefix.equals(firstSubtree), "Trying to register shard to a different namespace"
                 + " than the producer has claimed");
 
-        final ShardRegistration<T> reg;
-        final ShardRegistration<?> parentReg;
+        final DOMDataTreeShardRegistration<T> reg;
+        final DOMDataTreeShardRegistration<?> parentReg;
 
         synchronized (this) {
             /*
@@ -80,7 +80,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
              * and if it exists, check if its registration prefix does not collide with
              * this registration.
              */
-            final DOMDataTreePrefixTableEntry<ShardRegistration<?>> parent = shards.lookup(prefix);
+            final DOMDataTreePrefixTableEntry<DOMDataTreeShardRegistration<?>> parent = shards.lookup(prefix);
             if (parent != null) {
                 parentReg = parent.getValue();
                 if (parentReg != null && prefix.equals(parentReg.getPrefix())) {
@@ -93,7 +93,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
             // FIXME: wrap the shard in a proper adaptor based on implemented interface
 
-            reg = new ShardRegistration<T>(this, prefix, shard);
+            reg = new DOMDataTreeShardRegistration<>(this, prefix, shard);
 
             shards.store(prefix, reg);
 
@@ -146,7 +146,8 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
             final DOMDataTreeProducer producer = findProducer(subtree);
             Preconditions.checkArgument(producer == null, "Subtree %s is attached to producer %s", subtree, producer);
 
-            final DOMDataTreePrefixTableEntry<ShardRegistration<?>> possibleShardReg = shards.lookup(subtree);
+            final DOMDataTreePrefixTableEntry<DOMDataTreeShardRegistration<?>> possibleShardReg =
+                    shards.lookup(subtree);
             if (possibleShardReg != null && possibleShardReg.getValue() != null) {
                 shardMap.put(subtree, possibleShardReg.getValue().getInstance());
             }

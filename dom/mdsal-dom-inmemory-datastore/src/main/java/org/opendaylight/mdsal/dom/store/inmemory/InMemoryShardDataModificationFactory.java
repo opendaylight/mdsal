@@ -12,17 +12,20 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
+import org.opendaylight.mdsal.dom.spi.shard.WriteableModificationNode;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
 
-final class ShardDataModificationFactory {
+final class InMemoryShardDataModificationFactory {
     private final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards;
     private final Map<PathArgument, WriteableModificationNode> children;
     private final DOMDataTreeIdentifier root;
 
-    ShardDataModificationFactory(final DOMDataTreeIdentifier root,
-        final Map<PathArgument, WriteableModificationNode> children,
-        final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards) {
+    InMemoryShardDataModificationFactory(
+            final DOMDataTreeIdentifier root,
+            final Map<PathArgument, WriteableModificationNode> children,
+            final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards) {
         this.root = Preconditions.checkNotNull(root);
         this.children = ImmutableMap.copyOf(children);
         this.childShards = ImmutableMap.copyOf(childShards);

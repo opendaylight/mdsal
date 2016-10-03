@@ -6,15 +6,20 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
+import com.google.common.annotations.Beta;
 import com.google.common.collect.ForwardingObject;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 
-abstract class DelegatingWriteCursorStrategy extends ForwardingObject implements WriteCursorStrategy {
+/**
+ * Delegating implementation of a {@link WriteCursorStrategy}.
+ */
+@Beta
+public abstract class DelegatingWriteCursorStrategy extends ForwardingObject implements WriteCursorStrategy {
 
     @Override
     protected abstract DOMDataTreeWriteCursor delegate();

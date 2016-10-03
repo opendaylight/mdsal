@@ -7,22 +7,25 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 
-final class ShardRegistration<T extends DOMDataTreeShard> extends AbstractListenerRegistration<T> {
+@Beta
+public final class DOMDataTreeShardRegistration<T extends DOMDataTreeShard> extends AbstractListenerRegistration<T> {
     private final DOMDataTreeIdentifier prefix;
     private final ShardedDOMDataTree tree;
 
-    protected ShardRegistration(final ShardedDOMDataTree tree, final DOMDataTreeIdentifier prefix, final T shard) {
+    public DOMDataTreeShardRegistration(final ShardedDOMDataTree tree, final DOMDataTreeIdentifier prefix,
+            final T shard) {
         super(shard);
         this.tree = Preconditions.checkNotNull(tree);
         this.prefix = Preconditions.checkNotNull(prefix);
     }
 
-    DOMDataTreeIdentifier getPrefix() {
+    public DOMDataTreeIdentifier getPrefix() {
         return prefix;
     }
 
