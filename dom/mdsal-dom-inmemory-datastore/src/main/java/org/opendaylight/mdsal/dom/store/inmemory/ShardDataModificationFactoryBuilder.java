@@ -13,26 +13,28 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
+import org.opendaylight.mdsal.dom.spi.shard.ModificationContextNodeBuilder;
+import org.opendaylight.mdsal.dom.spi.shard.WriteableSubshardBoundaryNode;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
-class ShardDataModificationFactoryBuilder extends ModificationContextNodeBuilder
-        implements Builder<ShardDataModificationFactory> {
+public abstract class ShardDataModificationFactoryBuilder<T> extends ModificationContextNodeBuilder
+        implements Builder<T> {
+    protected final DOMDataTreeIdentifier root;
+    protected final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards = new HashMap<>();
 
-    private final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards = new HashMap<>();
-    private final DOMDataTreeIdentifier root;
-
-    ShardDataModificationFactoryBuilder(final DOMDataTreeIdentifier root) {
+    public ShardDataModificationFactoryBuilder(final DOMDataTreeIdentifier root) {
         this.root = Preconditions.checkNotNull(root);
     }
 
-    void addSubshard(final ForeignShardModificationContext value) {
+    public void addSubshard(final ForeignShardModificationContext value) {
         WriteableSubshardBoundaryNode leafNode = WriteableSubshardBoundaryNode.from(value);
         putNode(value.getIdentifier().getRootIdentifier(), leafNode);
     }
 
-    void addSubshard(final DOMDataTreeIdentifier prefix, final ForeignShardModificationContext value) {
+    public void addSubshard(final DOMDataTreeIdentifier prefix, final ForeignShardModificationContext value) {
         childShards.put(prefix, value);
     }
 
@@ -47,17 +49,14 @@ class ShardDataModificationFactoryBuilder extends ModificationContextNodeBuilder
                     break;
                 }
 
-                current = getInterior(nextArg);
+                current = current.getInterior(nextArg);
             }
         }
-    }
-
-    @Override
-    public ShardDataModificationFactory build() {
-        return new ShardDataModificationFactory(root, buildChildren(), childShards);
     }
 
     private YangInstanceIdentifier toRelative(final YangInstanceIdentifier key) {
         return key.relativeTo(root.getRootIdentifier()).get();
     }
+
+    public abstract T build();
 }

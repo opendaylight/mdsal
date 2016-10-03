@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -15,11 +15,11 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 
-abstract class WriteableNodeOperation implements WriteCursorStrategy {
+public abstract class WritableNodeOperation implements WriteCursorStrategy {
     private final WriteableModificationNode node;
     private final DOMDataTreeWriteCursor cursor;
 
-    WriteableNodeOperation(final WriteableModificationNode node, final DOMDataTreeWriteCursor cursor) {
+    protected WritableNodeOperation(final WriteableModificationNode node, final DOMDataTreeWriteCursor cursor) {
         this.node = Preconditions.checkNotNull(node);
         this.cursor = Preconditions.checkNotNull(cursor);
     }
@@ -100,14 +100,18 @@ abstract class WriteableNodeOperation implements WriteCursorStrategy {
             write(writtenChild.getIdentifier(), writtenChild);
         }
         // Delete step - remove subshard data that was written into current shard
-        for (PathArgument childId : node.getChildrenWithSubshards().keySet()) {
-            @SuppressWarnings("unchecked")
-            Optional<NormalizedNode<?, ?>> writtenValue = ((NormalizedNodeContainer) data).getChild(childId);
-            if (writtenValue.isPresent()) {
-                // delete from current
-                cursor.delete(childId);
-            }
-        }
+        // delete from current
+        node.getChildrenWithSubshards().entrySet()
+                .stream().filter(entry -> entry.getValue() instanceof WriteableSubshardBoundaryNode).forEach(entry -> {
+                    @SuppressWarnings("unchecked")
+                    Optional<NormalizedNode<?, ?>> writtenValue =
+                            ((NormalizedNodeContainer) data).getChild(entry.getKey());
+                    if (writtenValue.isPresent()) {
+                        // delete from current
+                        cursor.delete(entry.getKey());
+                    }
+                });
+
         cursor.exit();
     }
 }

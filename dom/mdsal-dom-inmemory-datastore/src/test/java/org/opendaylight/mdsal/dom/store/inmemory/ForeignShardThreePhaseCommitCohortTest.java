@@ -18,6 +18,7 @@ import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
 
 import org.junit.After;
 import org.junit.Test;
+import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
 
 public class ForeignShardThreePhaseCommitCohortTest {
 

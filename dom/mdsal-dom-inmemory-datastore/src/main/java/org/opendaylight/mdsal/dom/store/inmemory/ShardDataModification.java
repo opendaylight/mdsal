@@ -13,25 +13,30 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
+import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
+import org.opendaylight.mdsal.dom.spi.shard.WritableNodeOperation;
+import org.opendaylight.mdsal.dom.spi.shard.WriteCursorStrategy;
+import org.opendaylight.mdsal.dom.spi.shard.WriteableModificationNode;
+import org.opendaylight.mdsal.dom.spi.shard.WriteableNodeWithSubshard;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 
-final class ShardDataModification extends WriteableNodeWithSubshard {
+public final class ShardDataModification extends WriteableNodeWithSubshard {
 
     private final ShardRootModificationContext rootContext;
     private final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards;
 
     ShardDataModification(final ShardRootModificationContext boundary,
-            final Map<PathArgument, WriteableModificationNode> subshards,
-            final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards) {
+                          final Map<PathArgument, WriteableModificationNode> subshards,
+                          final Map<DOMDataTreeIdentifier, ForeignShardModificationContext> childShards) {
         super(subshards);
         this.rootContext = Preconditions.checkNotNull(boundary);
         this.childShards = ImmutableMap.copyOf(childShards);
     }
 
     @Override
-    WriteCursorStrategy createOperation(final DOMDataTreeWriteCursor parentCursor) {
-        return new WriteableNodeOperation(this, rootContext.cursor()) {
+    public WriteCursorStrategy createOperation(final DOMDataTreeWriteCursor parentCursor) {
+        return new WritableNodeOperation(this, rootContext.cursor()) {
             @Override
             public void exit() {
                 throw new IllegalStateException("Can not exit data tree root");
