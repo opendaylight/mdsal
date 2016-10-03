@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModificationCursor;
 
-public class ShardDataModificationCursorTest {
+public class InMemoryShardDataModificationCursorTest {
 
     @Test
     public void basicTest() throws Exception {
@@ -39,16 +39,16 @@ public class ShardDataModificationCursorTest {
         final ShardRootModificationContext shardRootModificationContext = mock(ShardRootModificationContext.class);
         final Map<PathArgument, WriteableModificationNode> children = new HashMap<>();
         children.put(PATH_ARGUMENT, WRITEABLE_MODIFICATION_NODE);
-        final ShardDataModification root =  new ShardDataModification(shardRootModificationContext, children,
-            ImmutableMap.of());
+        final ShardDataModification root = new ShardDataModification(shardRootModificationContext, children,
+                ImmutableMap.of());
 
         doReturn(dataTreeModificationCursorAdaptor).when(shardRootModificationContext).cursor();
         InmemoryDOMDataTreeShardWriteTransaction inmemoryDOMDataTreeShardWriteTransaction =
                 mock(InmemoryDOMDataTreeShardWriteTransaction.class);
-        ShardDataModificationCursor shardDataModificationCursor =
-                new ShardDataModificationCursor(root, inmemoryDOMDataTreeShardWriteTransaction);
+        InMemoryShardDataModificationCursor shardDataModificationCursor =
+                new InMemoryShardDataModificationCursor(root, inmemoryDOMDataTreeShardWriteTransaction);
 
-        final Field stackField = ShardDataModificationCursor.class.getDeclaredField("stack");
+        final Field stackField = AbstractDataModificationCursor.class.getDeclaredField("stack");
         stackField.setAccessible(true);
 
         final Deque<WriteCursorStrategy> stack =
