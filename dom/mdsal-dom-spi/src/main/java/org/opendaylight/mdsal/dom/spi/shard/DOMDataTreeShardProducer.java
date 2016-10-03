@@ -5,15 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.annotations.Beta;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 
-// FIXME: this should probably be moved to a different package
 @Beta
 public interface DOMDataTreeShardProducer {
     /**

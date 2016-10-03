@@ -5,12 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
 import static org.junit.Assert.assertNotNull;
-import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_IDENTIFIER;
-import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_SHARD_PRODUCER;
-import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.PATH_ARGUMENT;
 
 import org.junit.Test;
 
@@ -19,11 +16,12 @@ public class ModificationContextNodeBuilderTest extends ModificationContextNodeB
     @Test
     public void basicTest() throws Exception {
         final ForeignShardModificationContext foreignShardModificationContext =
-                new ForeignShardModificationContext(DOM_DATA_TREE_IDENTIFIER, DOM_DATA_TREE_SHARD_PRODUCER);
+                new ForeignShardModificationContext(
+                        TestUtils.DOM_DATA_TREE_IDENTIFIER, TestUtils.DOM_DATA_TREE_SHARD_PRODUCER);
         final WriteableSubshardBoundaryNode writeableSubshardBoundaryNode =
                 WriteableSubshardBoundaryNode.from(foreignShardModificationContext);
-        super.addBoundary(PATH_ARGUMENT, writeableSubshardBoundaryNode);
+        super.addBoundary(TestUtils.PATH_ARGUMENT, writeableSubshardBoundaryNode);
 
-        assertNotNull(super.getInterior(PATH_ARGUMENT));
+        assertNotNull(super.getInterior(TestUtils.PATH_ARGUMENT));
     }
 }
