@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_102edca5",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifierDataObjectPair.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 3635
+      },
+      "writtenOn": "2016-10-04T17:59:49Z",
+      "side": 1,
+      "message": "String concatenation is more efficient.",
+      "range": {
+        "startLine": 54,
+        "startChar": 8,
+        "endLine": 55,
+        "endChar": 52
+      },
+      "revId": "34fa3df3f0182f6231ab5c4e62e61fef2f0626d0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
