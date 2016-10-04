@@ -16,10 +16,10 @@ import static org.opendaylight.yangtools.sal.binding.generator.impl.SupportTestU
 import java.io.IOException;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;

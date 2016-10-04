@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import org.opendaylight.mdsal.sal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.yangtools.binding.generator.util.AbstractBaseType;
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 
 final class AnnotationTypeBuilderImpl extends AbstractBaseType implements AnnotationTypeBuilder {

@@ -14,10 +14,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.mdsal.sal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.binding.generator.util.Types;
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.MethodSignatureBuilder;
 
 public class MethodSignatureBuilderTest {
 

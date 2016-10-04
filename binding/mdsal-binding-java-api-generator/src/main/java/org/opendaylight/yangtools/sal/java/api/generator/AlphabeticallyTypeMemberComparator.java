@@ -8,7 +8,8 @@
 package org.opendaylight.yangtools.sal.java.api.generator;
 
 import java.util.Comparator;
-import org.opendaylight.yangtools.sal.binding.model.api.TypeMember;
+
+import org.opendaylight.mdsal.sal.binding.model.api.TypeMember;
 
 /**
  * Alphabetically type member {@link Comparator} which provides sorting by name for type members

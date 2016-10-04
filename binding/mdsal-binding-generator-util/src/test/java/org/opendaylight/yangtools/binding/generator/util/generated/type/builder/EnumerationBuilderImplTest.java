@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNull;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
+import org.opendaylight.mdsal.sal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;

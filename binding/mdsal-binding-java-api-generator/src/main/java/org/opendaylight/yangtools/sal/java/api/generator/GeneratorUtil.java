@@ -13,17 +13,18 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.opendaylight.mdsal.sal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.sal.binding.model.api.Constant;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.sal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.sal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.model.api.WildcardType;
 import org.opendaylight.yangtools.binding.generator.util.TypeConstants;
 import org.opendaylight.yangtools.binding.generator.util.Types;
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
-import org.opendaylight.yangtools.sal.binding.model.api.Constant;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
-import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.WildcardType;
 
 public final class GeneratorUtil {
 

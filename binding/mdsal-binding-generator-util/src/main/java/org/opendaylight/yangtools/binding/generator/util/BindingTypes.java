@@ -10,9 +10,9 @@ package org.opendaylight.yangtools.binding.generator.util;
 import static org.opendaylight.yangtools.binding.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.yangtools.binding.generator.util.Types.typeForClass;
 
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
-import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.sal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;

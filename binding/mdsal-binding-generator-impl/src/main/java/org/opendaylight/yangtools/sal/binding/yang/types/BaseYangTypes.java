@@ -12,10 +12,11 @@ import com.google.common.collect.ImmutableMap.Builder;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
+
+import org.opendaylight.mdsal.sal.binding.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.sal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.binding.generator.util.Types;
-import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
-import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
@@ -25,7 +26,7 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 public final class BaseYangTypes {
     /**
      * mapping of basic built-in YANG types (keys) to JAVA
-     * {@link org.opendaylight.yangtools.sal.binding.model.api.Type Type}. This
+     * {@link org.opendaylight.mdsal.sal.binding.model.api.Type Type}. This
      * map is filled with mapping data in static initialization block
      */
     private static final Map<String, Type> TYPE_MAP;

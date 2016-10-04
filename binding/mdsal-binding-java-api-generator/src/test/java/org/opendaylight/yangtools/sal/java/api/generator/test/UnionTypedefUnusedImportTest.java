@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.java.api.generator.GeneratorJavaFile;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 

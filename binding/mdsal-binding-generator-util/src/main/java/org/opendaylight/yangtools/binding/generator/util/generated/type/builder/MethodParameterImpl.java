@@ -8,8 +8,9 @@
 package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
 
 import java.util.Objects;
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature.Parameter;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.model.api.MethodSignature.Parameter;
 
 final class MethodParameterImpl implements Parameter {
 

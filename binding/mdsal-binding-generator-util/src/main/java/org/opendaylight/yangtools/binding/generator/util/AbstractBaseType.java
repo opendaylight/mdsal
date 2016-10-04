@@ -8,7 +8,8 @@
 package org.opendaylight.yangtools.binding.generator.util;
 
 import java.util.Objects;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
 
 /**
  * It is used only as ancestor for other <code>Type</code>s

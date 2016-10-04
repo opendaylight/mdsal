@@ -10,14 +10,15 @@ package org.opendaylight.yangtools.binding.generator.util.generated.type.builder
 import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.List;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
-import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTOBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.MethodSignatureBuilder;
+
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.sal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.sal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.GeneratedTOBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;

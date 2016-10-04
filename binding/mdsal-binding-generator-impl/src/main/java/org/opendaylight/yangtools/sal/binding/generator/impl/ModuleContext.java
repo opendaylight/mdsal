@@ -20,10 +20,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.EnumBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTOBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTypeBuilder;
+
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.EnumBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.GeneratedTOBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;

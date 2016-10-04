@@ -16,16 +16,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
+import org.opendaylight.mdsal.sal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.sal.binding.model.api.AnnotationType.Parameter;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.AnnotationTypeBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.GeneratedTOBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.binding.generator.util.Types;
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType.Parameter;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.AnnotationTypeBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTOBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.MethodSignatureBuilder;
 
 public class AnnotationBuilderTest {
 

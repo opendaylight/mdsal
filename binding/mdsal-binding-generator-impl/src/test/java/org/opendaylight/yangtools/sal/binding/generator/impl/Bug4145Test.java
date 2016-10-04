@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;

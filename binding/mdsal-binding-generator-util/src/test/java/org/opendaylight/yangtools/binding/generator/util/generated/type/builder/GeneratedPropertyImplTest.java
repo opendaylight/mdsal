@@ -10,9 +10,9 @@ package org.opendaylight.yangtools.binding.generator.util.generated.type.builder
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.sal.binding.model.api.AccessModifier;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedProperty;
 import org.opendaylight.yangtools.binding.generator.util.Types;
-import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
 
 public class GeneratedPropertyImplTest {
 

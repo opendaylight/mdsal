@@ -12,9 +12,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTOBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.GeneratedTOBuilder;
 
 public class GeneratedTOBuilderTest {
 

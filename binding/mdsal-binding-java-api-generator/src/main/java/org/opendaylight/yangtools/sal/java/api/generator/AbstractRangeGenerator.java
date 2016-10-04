@@ -13,8 +13,9 @@ import com.google.common.collect.ImmutableMap.Builder;
 import java.util.Collection;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+
+import org.opendaylight.mdsal.sal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

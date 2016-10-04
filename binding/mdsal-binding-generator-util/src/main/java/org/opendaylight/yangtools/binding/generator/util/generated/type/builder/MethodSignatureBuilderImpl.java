@@ -10,10 +10,11 @@ package org.opendaylight.yangtools.binding.generator.util.generated.type.builder
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.MethodSignatureBuilder;
+
+import org.opendaylight.mdsal.sal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.sal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 
 final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodSignatureBuilder> implements MethodSignatureBuilder {

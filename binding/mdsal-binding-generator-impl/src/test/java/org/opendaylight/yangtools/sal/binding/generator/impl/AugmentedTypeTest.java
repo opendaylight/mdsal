@@ -14,12 +14,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.sal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public class AugmentedTypeTest {

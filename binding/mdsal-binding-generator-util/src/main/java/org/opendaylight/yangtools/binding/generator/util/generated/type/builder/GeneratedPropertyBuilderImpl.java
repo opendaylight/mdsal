@@ -9,10 +9,10 @@ package org.opendaylight.yangtools.binding.generator.util.generated.type.builder
 
 import java.util.List;
 
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
+import org.opendaylight.mdsal.sal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 
 public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilder<GeneratedPropertyBuilder> implements GeneratedPropertyBuilder {
     private String value;

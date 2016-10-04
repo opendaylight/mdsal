@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.opendaylight.yangtools.binding.generator.util.Types.typeForClass;
 
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.sal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;

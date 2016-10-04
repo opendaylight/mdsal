@@ -9,10 +9,11 @@ package org.opendaylight.yangtools.sal.java.api.generator;
 
 import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+
+import org.opendaylight.mdsal.sal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.sal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.sal.binding.model.api.Type;
 
 /**
  * Random utility methods for dealing with {@link Type} objects.
