@@ -22,6 +22,30 @@
       "revId": "3acb698fd36f8504ad8d9f5f09cc2f16897096da",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_85590c91",
+        "filename": "binding/mdsal-binding-api/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-10-04T15:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_051fbcb8",
+      "range": {
+        "startLine": 94,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 9
+      },
+      "revId": "3acb698fd36f8504ad8d9f5f09cc2f16897096da",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
