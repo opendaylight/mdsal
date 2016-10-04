@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.api;
+package org.opendaylight.mdsal.sal.binding.generator.api;
 
 import java.util.List;
 import java.util.Set;

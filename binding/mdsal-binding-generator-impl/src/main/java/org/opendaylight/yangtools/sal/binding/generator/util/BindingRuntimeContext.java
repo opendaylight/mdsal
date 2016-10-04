@@ -26,9 +26,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nullable;
+
+import org.opendaylight.mdsal.sal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.yangtools.binding.generator.util.ReferencedTypeImpl;
 import org.opendaylight.yangtools.concepts.Immutable;
-import org.opendaylight.yangtools.sal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.yangtools.sal.binding.generator.impl.BindingSchemaContextUtils;
 import org.opendaylight.yangtools.sal.binding.generator.impl.ModuleContext;

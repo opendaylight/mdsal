@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.opendaylight.mdsal.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil;
 import org.opendaylight.yangtools.binding.generator.util.BindingTypes;
 import org.opendaylight.yangtools.binding.generator.util.ReferencedTypeImpl;
@@ -51,7 +53,6 @@ import org.opendaylight.yangtools.binding.generator.util.Types;
 import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
-import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
 import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
 import org.opendaylight.yangtools.sal.binding.model.api.Constant;

@@ -19,7 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;

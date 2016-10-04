@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.maven.project.MavenProject;
+import org.opendaylight.mdsal.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil;
-import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.sal.java.api.generator.GeneratorJavaFile;

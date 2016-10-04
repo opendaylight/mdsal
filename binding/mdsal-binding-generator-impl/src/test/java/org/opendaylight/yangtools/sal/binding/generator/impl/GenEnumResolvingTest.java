@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;

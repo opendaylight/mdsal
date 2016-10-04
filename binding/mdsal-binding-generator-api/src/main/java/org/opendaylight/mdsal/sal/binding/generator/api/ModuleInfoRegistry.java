@@ -5,14 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.api;
 
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+package org.opendaylight.mdsal.sal.binding.generator.api;
 
-public interface ClassLoadingStrategy {
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 
-    Class<?> loadClass(Type type) throws ClassNotFoundException;
+public interface ModuleInfoRegistry {
 
-    Class<?> loadClass(String fullyQualifiedName) throws ClassNotFoundException;
-
+    ObjectRegistration<YangModuleInfo> registerModuleInfo(YangModuleInfo yangModuleInfo);
 }

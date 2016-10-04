@@ -7,7 +7,7 @@
  */
 package org.opendaylight.yangtools.sal.binding.generator.impl;
 
-import org.opendaylight.yangtools.sal.binding.generator.api.ClassLoadingStrategy;
+import org.opendaylight.mdsal.sal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;

@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
