@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_3cc65917",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/yangtools/sal/java/api/generator/TypeUtilsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-04T09:02:44Z",
+      "side": 1,
+      "message": "any asserts here?",
+      "range": {
+        "startLine": 48,
+        "startChar": 7,
+        "endLine": 48,
+        "endChar": 45
+      },
+      "revId": "05182d954481acd0cb9288be62008f44f3bb4d20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
