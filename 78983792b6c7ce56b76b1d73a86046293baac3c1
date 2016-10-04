@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_7c9e1109",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/yangtools/binding/data/codec/impl/EnumerationCodecTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-04T09:13:43Z",
+      "side": 1,
+      "message": "unused import?",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 100
+      },
+      "revId": "78983792b6c7ce56b76b1d73a86046293baac3c1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
