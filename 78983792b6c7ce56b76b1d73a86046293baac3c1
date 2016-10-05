@@ -22,6 +22,30 @@
       "revId": "78983792b6c7ce56b76b1d73a86046293baac3c1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_402a3f7f",
+        "filename": "binding/mdsal-binding-dom-codec/src/test/java/org/opendaylight/yangtools/binding/data/codec/impl/EnumerationCodecTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5994
+      },
+      "writtenOn": "2016-10-05T08:03:59Z",
+      "side": 1,
+      "message": "It\u0027s not unused import. It is the way how static imports work and how enums are constructed. Anyway, Enum should be declared as private and then cant be statically imported. So expression (wolf.isFull \u0026\u0026 sheep.isAlive) would be evaluated as true... will be fixed in next patch",
+      "parentUuid": "7a6b29fe_7c9e1109",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 100
+      },
+      "revId": "78983792b6c7ce56b76b1d73a86046293baac3c1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
