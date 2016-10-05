@@ -22,6 +22,30 @@
       "revId": "05182d954481acd0cb9288be62008f44f3bb4d20",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_409fdfb4",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/java/org/opendaylight/yangtools/sal/java/api/generator/TypeUtilsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5994
+      },
+      "writtenOn": "2016-10-05T08:11:34Z",
+      "side": 1,
+      "message": "NO, because it is expected, as stated in test annotation, expection to be thrown after method call with these arguments.",
+      "parentUuid": "7a6b29fe_3cc65917",
+      "range": {
+        "startLine": 48,
+        "startChar": 7,
+        "endLine": 48,
+        "endChar": 45
+      },
+      "revId": "05182d954481acd0cb9288be62008f44f3bb4d20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
