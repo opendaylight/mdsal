@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_735bd72e",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/GeneratorUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-05T10:32:45Z",
+      "side": 1,
+      "message": "I\u0027m aware this is recommended change by IDE when compiling with Java 8, but our benchmark shows that collect call is slower than for each cycle. We\u0027re agreed with Robert to wait until Java 9, so for now, just let it be as it is. If you\u0027re interested in benchmarking, let me know.",
+      "range": {
+        "startLine": 380,
+        "startChar": 11,
+        "endLine": 381,
+        "endChar": 51
+      },
+      "revId": "a632bdd691108b87bc57570b5e21ab69b9505446",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
