@@ -16,6 +16,7 @@
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>binding-aggregator</artifactId>
     <version>0.10.0-SNAPSHOT</version>
     <packaging>pom</packaging>
