@@ -11,6 +11,11 @@ import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.Test;
 
+/**
+ * Integration tests the DataBrokerTestModule.
+ *
+ * @author Michael Vorburger
+ */
 public class DataBrokerTestModuleTest {
 
     @Test
