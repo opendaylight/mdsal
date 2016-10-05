@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_76d585b8",
+        "filename": "binding/pom.xml",
+        "patchSetId": 12
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-10-05T16:04:16Z",
+      "side": 1,
+      "message": "we missed the groupId, should be specified to point to org.opendaylight.mdsal",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 38
+      },
+      "revId": "33ed6f6ab12256c9b9d7b48ff208f55fcb792317",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
