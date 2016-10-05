@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
+import java.util.Map;
 import org.opendaylight.mdsal.common.api.AsyncWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
@@ -47,6 +48,18 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
      */
     <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data);
 
+    default <T extends DataObject> void put(LogicalDatastoreType store,
+            Map.Entry<InstanceIdentifier<T>, T> identifiedData) {
+        put(store, identifiedData.getKey(), identifiedData.getValue());
+    }
+
+    default <T extends DataObject> void put(DataTreeIdentifier<T> identifier, T data) {
+        put(identifier.getDatastoreType(), identifier.getRootIdentifier(), data);
+    }
+
+    default <T extends DataObject> void put(Map.Entry<DataTreeIdentifier<T>, T> identifiedData) {
+        put(identifiedData.getKey(), identifiedData.getValue());
+    }
 
     /**
      * Stores a piece of data at the specified path. This acts as an add /
@@ -82,6 +95,20 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
     <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
             boolean createMissingParents);
 
+    default <T extends DataObject> void put(LogicalDatastoreType store,
+            Map.Entry<InstanceIdentifier<T>, T> identifiedData, boolean createMissingParents) {
+        put(store, identifiedData.getKey(), identifiedData.getValue(), createMissingParents);
+    }
+
+    default <T extends DataObject> void put(DataTreeIdentifier<T> identifier, T data, boolean createMissingParents) {
+        put(identifier.getDatastoreType(), identifier.getRootIdentifier(), data, createMissingParents);
+    }
+
+    default <T extends DataObject> void put(Map.Entry<DataTreeIdentifier<T>, T> identifiedData,
+            boolean createMissingParents) {
+        put(identifiedData.getKey(), identifiedData.getValue(), createMissingParents);
+    }
+
     /**
      * Merges a piece of data with the existing data at a specified path. Any pre-existing data
      * which is not explicitly overwritten will be preserved. This means that if you store a container,
@@ -109,6 +136,19 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
      */
     <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data);
 
+    default <T extends DataObject> void merge(LogicalDatastoreType store,
+            Map.Entry<InstanceIdentifier<T>, T> identifiedData) {
+        merge(store, identifiedData.getKey(), identifiedData.getValue());
+    }
+
+    default <T extends DataObject> void merge(DataTreeIdentifier<T> identifier, T data) {
+        merge(identifier.getDatastoreType(), identifier.getRootIdentifier(), data);
+    }
+
+    default <T extends DataObject> void merge(Map.Entry<DataTreeIdentifier<T>, T> identifiedData) {
+        merge(identifiedData.getKey(), identifiedData.getValue());
+    }
+
     /**
      * Merges a piece of data with the existing data at a specified path. Any
      * pre-existing data which is not explicitly overwritten will be preserved.
@@ -135,6 +175,20 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
      */
     <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
             boolean createMissingParents);
+
+    default <T extends DataObject> void merge(LogicalDatastoreType store,
+            Map.Entry<InstanceIdentifier<T>, T> identifiedData, boolean createMissingParents) {
+        merge(store, identifiedData.getKey(), identifiedData.getValue(), createMissingParents);
+    }
+
+    default <T extends DataObject> void merge(DataTreeIdentifier<T> identifier, T data, boolean createMissingParents) {
+        merge(identifier.getDatastoreType(), identifier.getRootIdentifier(), data, createMissingParents);
+    }
+
+    default <T extends DataObject> void merge(Map.Entry<DataTreeIdentifier<T>, T> identifiedData,
+            boolean createMissingParents) {
+        merge(identifiedData.getKey(), identifiedData.getValue(), createMissingParents);
+    }
 
     @Override
     void delete(LogicalDatastoreType store, InstanceIdentifier<?> path);
