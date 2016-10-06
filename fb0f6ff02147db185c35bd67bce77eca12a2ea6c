@@ -16,6 +16,24 @@
       "revId": "fb0f6ff02147db185c35bd67bce77eca12a2ea6c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_872bc632",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 994
+      },
+      "writtenOn": "2016-10-06T15:28:59Z",
+      "side": 1,
+      "message": "Yes, you have right and I absolutely agree. But unfortunately add serious exception here now, means to modify ClusterSingletonService API contracts. So do we want to do it?",
+      "parentUuid": "7a6b29fe_873626b3",
+      "revId": "fb0f6ff02147db185c35bd67bce77eca12a2ea6c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
