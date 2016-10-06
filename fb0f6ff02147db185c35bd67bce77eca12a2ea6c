@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_873626b3",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-06T15:09:46Z",
+      "side": 1,
+      "message": "I assume this will get thrown back to the client. I find throwing unchecked, undocumented exceptions are unfriendly and not good practice and can cause latent bugs in callers that could possibly recover if they\u0027re aware an exception can be thrown. I\u0027d prefer this be a specific checked exception.",
+      "revId": "fb0f6ff02147db185c35bd67bce77eca12a2ea6c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
