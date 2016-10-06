@@ -34,6 +34,24 @@
       "revId": "fb0f6ff02147db185c35bd67bce77eca12a2ea6c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_8703c675",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-06T16:27:47Z",
+      "side": 1,
+      "message": "yeah - we can make it unchecked to avoid API breakage. At least it\u0027s documented. But this can be done in a separate patch.",
+      "parentUuid": "7a6b29fe_872bc632",
+      "revId": "fb0f6ff02147db185c35bd67bce77eca12a2ea6c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
