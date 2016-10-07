@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.util.concurrent.MoreExecutors;
 import java.lang.reflect.Method;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
@@ -28,6 +29,7 @@ public class RpcServiceAdapterTest {
 
     @SuppressWarnings("checkstyle:IllegalThrows")
     @Test
+    @Ignore
     public void invoke() throws Throwable {
         final BindingBrokerTestFactory bindingBrokerTestFactory = new BindingBrokerTestFactory();
         bindingBrokerTestFactory.setExecutor(MoreExecutors.newDirectExecutorService());
