@@ -5,12 +5,14 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.api;
+package org.opendaylight.mdsal.binding.generator.api;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy} instead.
- */
-@Deprecated
-public interface ClassLoadingStrategy extends org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy {
+import org.opendaylight.yangtools.sal.binding.model.api.Type;
+
+public interface ClassLoadingStrategy {
+
+    Class<?> loadClass(Type type) throws ClassNotFoundException;
+
+    Class<?> loadClass(String fullyQualifiedName) throws ClassNotFoundException;
 
 }

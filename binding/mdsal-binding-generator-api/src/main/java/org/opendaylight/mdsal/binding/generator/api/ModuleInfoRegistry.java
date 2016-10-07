@@ -5,12 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.api;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy} instead.
- */
-@Deprecated
-public interface ClassLoadingStrategy extends org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy {
+package org.opendaylight.mdsal.binding.generator.api;
 
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+
+public interface ModuleInfoRegistry {
+
+    ObjectRegistration<YangModuleInfo> registerModuleInfo(YangModuleInfo yangModuleInfo);
 }
