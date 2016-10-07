@@ -11,8 +11,9 @@ import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 
 /**
- *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder} instead.
  */
+@Deprecated
 public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> {
 
     /**

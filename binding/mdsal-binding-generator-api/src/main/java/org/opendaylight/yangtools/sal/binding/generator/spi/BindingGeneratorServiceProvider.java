@@ -7,6 +7,10 @@
  */
 package org.opendaylight.yangtools.sal.binding.generator.spi;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.spi.BindingGeneratorServiceProvider} instead.
+ */
+@Deprecated
 public interface BindingGeneratorServiceProvider {
 
     void registerTypeProvider(final TypeProvider provider);

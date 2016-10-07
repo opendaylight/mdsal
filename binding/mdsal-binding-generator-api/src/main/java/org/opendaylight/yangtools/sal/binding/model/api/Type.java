@@ -12,19 +12,21 @@ package org.opendaylight.yangtools.sal.binding.model.api;
  * Type defined in java MUST contain name and package name, except of primitive
  * types like int, byte etc. In case of mapping of primitive type the package
  * name MUST be left as empty string.
- * 
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.Type} instead.
  */
+@Deprecated
 public interface Type {
     /**
      * Returns name of the package that interface belongs to.
-     * 
+     *
      * @return name of the package that interface belongs to
      */
     String getPackageName();
 
     /**
      * Returns name of the interface.
-     * 
+     *
      * @return name of the interface.
      */
     String getName();
@@ -38,7 +40,7 @@ public interface Type {
      * <li>If Type contains package name: [package name].[type name] (e.g
      * java.lang.Byte, org.opendaylight.controller.gen.GenType)</li>
      * </ul>
-     * 
+     *
      * @return fully qualified name of Type.
      */
     String getFullyQualifiedName();

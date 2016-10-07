@@ -14,7 +14,10 @@ package org.opendaylight.yangtools.sal.binding.model.api;
  * their access counterparts (getters and setters).
  *
  * @see MethodSignature
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.GeneratedProperty} instead.
  */
+@Deprecated
 public interface GeneratedProperty extends TypeMember {
 
     String getValue();
