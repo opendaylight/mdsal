@@ -15,7 +15,10 @@ import org.opendaylight.yangtools.sal.binding.model.api.Type;
  * instantiate Generated Property definition.
  *
  * @see GeneratedProperty
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder} instead.
  */
+@Deprecated
 public interface GeneratedPropertyBuilder extends TypeMemberBuilder<GeneratedPropertyBuilder> {
 
     GeneratedPropertyBuilder setValue(String value);

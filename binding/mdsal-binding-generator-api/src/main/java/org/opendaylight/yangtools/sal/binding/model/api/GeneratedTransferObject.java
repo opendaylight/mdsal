@@ -22,7 +22,9 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
  * {@link #getEqualsIdentifiers ()}, {@link #getHashCodeIdentifiers()} and
  * {@link #getToStringIdentifiers ()}.
  *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject} instead.
  */
+@Deprecated
 public interface GeneratedTransferObject extends GeneratedType {
 
     GeneratedProperty getSUID();

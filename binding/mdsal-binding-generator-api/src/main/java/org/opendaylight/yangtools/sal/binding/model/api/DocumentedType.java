@@ -12,7 +12,10 @@ import org.opendaylight.yangtools.yang.common.QName;
 /**
  * Implementing this interface allows an object to hold information which are
  * essential for generating java doc from type definition.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.DocumentedType} instead.
  */
+@Deprecated
 public interface DocumentedType {
 
     /**
