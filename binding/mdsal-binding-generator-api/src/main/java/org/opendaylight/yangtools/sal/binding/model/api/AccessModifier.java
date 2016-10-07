@@ -10,7 +10,10 @@ package org.opendaylight.yangtools.sal.binding.model.api;
 /**
  * Enum definition which provides four access modifiers that are described
  * in Java programming language (Default, Private, Protected, Public).
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.AccessModifier} instead.
  */
+@Deprecated
 public enum AccessModifier {
     DEFAULT, PRIVATE, PUBLIC, PROTECTED
 }

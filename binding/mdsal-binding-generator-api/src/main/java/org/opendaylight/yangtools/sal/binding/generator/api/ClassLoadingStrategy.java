@@ -9,10 +9,13 @@ package org.opendaylight.yangtools.sal.binding.generator.api;
 
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy} instead.
+ */
+@Deprecated
 public interface ClassLoadingStrategy {
 
     Class<?> loadClass(Type type) throws ClassNotFoundException;
 
     Class<?> loadClass(String fullyQualifiedName) throws ClassNotFoundException;
-
 }

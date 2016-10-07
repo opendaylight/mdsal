@@ -13,6 +13,11 @@ import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 
+/**
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.Restrictions} instead.
+ */
+@Deprecated
 public interface Restrictions {
 
     List<LengthConstraint> getLengthConstraints();

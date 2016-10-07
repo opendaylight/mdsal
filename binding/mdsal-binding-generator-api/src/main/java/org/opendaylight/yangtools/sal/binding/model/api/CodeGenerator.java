@@ -9,13 +9,15 @@ package org.opendaylight.yangtools.sal.binding.model.api;
 
 /**
  * Transformates virtual data to the concrete code in programming language.
- * 
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.CodeGenerator} instead.
  */
+@Deprecated
 public interface CodeGenerator {
 
     /**
      * Generates code for <code>type</code>.
-     * 
+     *
      * @param type
      *            Input type to be processed
      * @return generated JAVA code
@@ -25,11 +27,11 @@ public interface CodeGenerator {
     /**
      * Checks if the concrete instance of <code>type</code> fit to concrete
      * implementation of this interface.
-     * 
+     *
      * (e. g. method return true if in <code>EnumGenerator</code> (which
      * implements this interface) has input parameter of type Enumeration (which
      * is subtype of Type)
-     * 
+     *
      * @param type
      *            Input type to be processed
      * @return true if type is acceptable for processing.
@@ -38,7 +40,7 @@ public interface CodeGenerator {
 
     /**
      * Returns name of <code>type</code> parameter.
-     * 
+     *
      * @param type
      *            Input type to be processed
      * @return name of generated unit
