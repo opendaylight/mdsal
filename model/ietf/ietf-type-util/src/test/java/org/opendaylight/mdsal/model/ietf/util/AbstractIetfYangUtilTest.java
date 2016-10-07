@@ -11,6 +11,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import org.junit.Test;
@@ -21,13 +22,13 @@ public class AbstractIetfYangUtilTest {
     private static final String CANON = "01:02:1e:5a:fb:88";
 
     @Test
-    public void testBytesToMac() {
+    public void testBytesToMac() throws Exception {
         final MacClass mac = UTIL.macAddressFor(BYTES);
         assertEquals(CANON, mac._value);
     }
 
     @Test
-    public void testMacToBytes() {
+    public void testMacToBytes() throws Exception {
         final byte[] bytes1 = UTIL.bytesFor(new MacClass(CANON));
         assertTrue(Arrays.equals(BYTES, bytes1));
 
@@ -39,5 +40,11 @@ public class AbstractIetfYangUtilTest {
     public void canonizeMACTest() throws Exception {
         assertFalse(UTIL.canonizeMacAddress(new MacClass("01:02:1E:5A:FB:88"))._value
                 .equals(UTIL.canonizeMacAddress(new MacClass(CANON))._value));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void hexValueWithExceptionTest() throws Exception {
+        AbstractIetfYangUtil.hexValue(Character.highSurrogate(1000));
+        fail("Expected invalid character exception");
     }
 }
