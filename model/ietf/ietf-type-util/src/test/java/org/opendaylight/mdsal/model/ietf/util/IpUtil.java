@@ -42,12 +42,12 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
 
     @Override
     protected String ipv4AddressString(final IpClass addr) {
-        return addr._value;
+        return addr.getValue();
     }
 
     @Override
     protected String ipv6AddressString(final IpClass addr) {
-        return addr._value;
+        return addr.getValue();
     }
 
     @Override

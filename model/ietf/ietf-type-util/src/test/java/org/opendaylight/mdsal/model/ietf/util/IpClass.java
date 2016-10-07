@@ -10,7 +10,8 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import com.google.common.base.Preconditions;
 
-public final class IpClass {
+public class IpClass {
+
     final String _value;
 
     public IpClass(final String value) {
@@ -19,5 +20,9 @@ public final class IpClass {
 
     public IpClass(final IpClass template) {
         this._value = template._value;
+    }
+
+    String getValue() {
+        return this._value;
     }
 }
