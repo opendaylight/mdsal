@@ -12,12 +12,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.net.InetAddresses;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.junit.Test;
 
 public class AbstractIetfInetUtilTest {
@@ -105,6 +107,7 @@ public class AbstractIetfInetUtilTest {
         assertTrue(UTIL.ipv4PrefixForShort(UTIL.ipv4AddressBytes(ipClass), 0, 0)._value.equals("0.0.0.0/0"));
         assertTrue(UTIL.ipv4PrefixForShort(UTIL.ipv4AddressBytes(ipClass), 0, 32)._value.equals("1.2.3.4/32"));
         assertTrue(UTIL.ipv4PrefixForShort(new byte[] { 1, 2, 3, 4, 5 }, 1, 32)._value.equals("2.3.4.5/32"));
+        assertTrue(UTIL.ipv4PrefixForShort(new byte[] { 1, 2, 3, 4, 5 }, 0, 1)._value.equals("1.0.0.0/1"));
 
         assertTrue(UTIL.splitIpv4Prefix(new IpClass("1.2.3.4/16")).getKey()._value.equals("1.2.3.4"));
         assertTrue(UTIL.splitIpv4Prefix(new IpClass("1.2.3.4/16")).getValue().equals(16));
@@ -147,5 +150,21 @@ public class AbstractIetfInetUtilTest {
     public void inetAddressTest() throws Exception {
         assertTrue(UTIL.inetAddressFor(new IpClass("1.2.3.4")) instanceof Inet4Address);
         assertTrue(UTIL.inetAddressFor(new IpClass("FE80::2002:B3FF:FE1E:8329")) instanceof Inet6Address);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void inet4AddressForWithExceptionTest() throws Exception {
+        final IpClass ipClass = mock(IpClass.class);
+        doReturn("testClass").when(ipClass).toString();
+        doThrow(UnknownHostException.class).when(ipClass).getValue();
+        UTIL.inet4AddressFor(ipClass);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void inet6AddressForWithExceptionTest() throws Exception {
+        final IpClass ipClass = mock(IpClass.class);
+        doReturn("testClass").when(ipClass).toString();
+        doThrow(UnknownHostException.class).when(ipClass).getValue();
+        UTIL.inet6AddressFor(ipClass);
     }
 }
