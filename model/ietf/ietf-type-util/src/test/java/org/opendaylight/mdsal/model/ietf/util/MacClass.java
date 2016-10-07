@@ -11,7 +11,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 import com.google.common.base.Preconditions;
 
 public final class MacClass {
-    final String _value;
+    private final String _value;
 
     public MacClass(final String value) {
         this._value = Preconditions.checkNotNull(value);
@@ -19,5 +19,9 @@ public final class MacClass {
 
     public MacClass(final MacClass template) {
         this._value = template._value;
+    }
+
+    String getValue() {
+        return _value;
     }
 }

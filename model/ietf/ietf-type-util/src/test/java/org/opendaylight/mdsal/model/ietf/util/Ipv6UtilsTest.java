@@ -5,14 +5,20 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.opendaylight.mdsal.model.ietf.util;
 
 import static com.google.common.net.InetAddresses.forString;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import static org.opendaylight.mdsal.model.ietf.util.Ipv6Utils.fillIpv6Bytes;
+
+import java.lang.reflect.Constructor;
 import org.junit.Test;
 
 public class Ipv6UtilsTest {
+
     @Test
     public void testDiscards() {
         assertEqualResult("2001:0000:3238:DFE1:63:0000:0000:FEFB");
@@ -22,9 +28,6 @@ public class Ipv6UtilsTest {
         assertEqualResult("::");
     }
 
-    /**
-     * @author Anton Ivanov aivanov@brocade.com
-     */
     @Test
     public void testFullQuads() {
         assertEqualResult("0000:0000:0000:0000:0000:0000:0000:0001");
@@ -109,5 +112,18 @@ public class Ipv6UtilsTest {
     // Utility for quick comparison with Guava
     private static void assertEqualResult(final String str) {
         assertArrayEquals(forString(str).getAddress(), bytesForString(str));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void privateConstructTest() throws Throwable {
+        final Constructor constructor = Ipv6Utils.class.getDeclaredConstructor();
+        assertFalse(constructor.isAccessible());
+        constructor.setAccessible(true);
+        try {
+            constructor.newInstance();
+            fail("Exception should be thrown");
+        } catch (Exception e) {
+            throw e.getCause();
+        }
     }
 }
