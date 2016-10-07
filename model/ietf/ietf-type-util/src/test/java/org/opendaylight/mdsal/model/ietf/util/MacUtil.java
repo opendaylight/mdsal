@@ -15,6 +15,6 @@ final class MacUtil extends AbstractIetfYangUtil<MacClass> {
 
     @Override
     protected String getValue(final MacClass macAddress) {
-        return macAddress._value;
+        return macAddress.getValue();
     }
 }
