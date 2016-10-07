@@ -16,7 +16,10 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
  * Enumeration definition.
  *
  * @see Enumeration
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder} instead.
  */
+@Deprecated
 public interface EnumBuilder extends Type {
 
     /**

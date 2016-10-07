@@ -16,7 +16,10 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
  * and instantiate Generated Transfer Object definition.
  *
  * @see GeneratedTransferObject
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder} instead.
  */
+@Deprecated
 public interface GeneratedTOBuilder extends GeneratedTypeBuilderBase<GeneratedTOBuilder> {
 
     /**

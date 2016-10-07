@@ -1,7 +1,7 @@
-module odl-test-foo-bar {
+module odl-test-foo-Bar {
     yang-version 1;
-    namespace "urn:opendaylight:params:xml:ns:yang:mdsal:binding2:test:foo-bar";
-    prefix "fmb";
+    namespace "urn:opendaylight:params:xml:ns:yang:mdsal:binding2:test:foo-Bar";
+    prefix "fmB";
 
     description
         "One of several modules for testing collisions due to too similar namespaces.";
