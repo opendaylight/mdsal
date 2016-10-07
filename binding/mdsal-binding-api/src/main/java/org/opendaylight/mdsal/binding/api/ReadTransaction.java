@@ -7,11 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
 import org.opendaylight.mdsal.common.api.AsyncReadTransaction;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -23,31 +19,5 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * For more information on usage and examples, please see the documentation in
  *  {@link org.opendaylight.mdsal.common.api.AsyncReadTransaction}.
  */
-public interface ReadTransaction extends AsyncReadTransaction<InstanceIdentifier<?>, DataObject> {
-
-    /**
-     * Reads data from the provided logical data store located at the provided path.
-     *
-     *<p>
-     * If the target is a subtree, then the whole subtree is read (and will be
-     * accessible from the returned data object).
-     *
-     * @param store
-     *            Logical data store from which read should occur.
-     * @param path
-     *            Path which uniquely identifies subtree which client want to
-     *            read
-     * @return a CheckFuture containing the result of the read. The Future blocks until the
-     *         commit operation is complete. Once complete:
-     *         <ul>
-     *         <li>If the data at the supplied path exists, the Future returns an Optional object
-     *         containing the data.</li>
-     *         <li>If the data at the supplied path does not exist, the Future returns
-     *         Optional#absent().</li>
-     *         <li>If the read of the data fails, the Future will fail with a
-     *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
-     *         </ul>
-     */
-    <T extends DataObject> CheckedFuture<Optional<T>,ReadFailedException> read(
-            LogicalDatastoreType store, InstanceIdentifier<T> path);
+public interface ReadTransaction extends ReadableDataStore, AsyncReadTransaction<InstanceIdentifier<?>, DataObject> {
 }
