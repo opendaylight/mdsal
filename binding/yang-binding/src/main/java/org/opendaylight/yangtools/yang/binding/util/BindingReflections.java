@@ -141,7 +141,7 @@ public class BindingReflections {
     public static boolean isRpcMethod(final Method possibleMethod) {
         return possibleMethod != null && RpcService.class.isAssignableFrom(possibleMethod.getDeclaringClass())
                 && Future.class.isAssignableFrom(possibleMethod.getReturnType())
-                && possibleMethod.getParameterTypes().length <= 1;
+                && possibleMethod.getParameterTypes().length <= 2;
     }
 
     /**
@@ -173,17 +173,13 @@ public class BindingReflections {
      *            method to scan
      * @return Optional.absent() if rpc has no input, Rpc input type otherwise.
      */
-    @SuppressWarnings("unchecked")
     public static Optional<Class<? extends DataContainer>> resolveRpcInputClass(final Method targetMethod) {
-        @SuppressWarnings("rawtypes")
-        Class[] types = targetMethod.getParameterTypes();
-        if (types.length == 0) {
-            return Optional.absent();
+        for (Class clazz : targetMethod.getParameterTypes()) {
+            if (DataContainer.class.isAssignableFrom(clazz)) {
+                return Optional.of(clazz);
+            }
         }
-        if (types.length == 1) {
-            return Optional.<Class<? extends DataContainer>> of(types[0]);
-        }
-        throw new IllegalArgumentException("Method has 2 or more arguments.");
+        return Optional.absent();
     }
 
     public static QName getQName(final Class<? extends BaseIdentity> context) {
