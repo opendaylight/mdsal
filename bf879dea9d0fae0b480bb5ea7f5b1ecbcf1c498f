@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_582fcff6",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/GeneratorUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5994
+      },
+      "writtenOn": "2016-10-07T10:24:17Z",
+      "side": 1,
+      "message": "ups, sorry about that...",
+      "parentUuid": "7a6b29fe_64d78824",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 35
+      },
+      "revId": "bf879dea9d0fae0b480bb5ea7f5b1ecbcf1c498f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_e4fd583d",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/GeneratorUtil.java",
         "patchSetId": 3
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_d83abf33",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/GeneratorUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 5994
+      },
+      "writtenOn": "2016-10-07T10:24:17Z",
+      "side": 1,
+      "message": "aha, I will keep it in mind for future reference...",
+      "parentUuid": "7a6b29fe_e4fd583d",
+      "range": {
+        "startLine": 332,
+        "startChar": 16,
+        "endLine": 332,
+        "endChar": 41
+      },
+      "revId": "bf879dea9d0fae0b480bb5ea7f5b1ecbcf1c498f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_64f2e870",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/GeneratorUtil.java",
         "patchSetId": 3
@@ -59,6 +107,30 @@
       "writtenOn": "2016-10-06T14:10:43Z",
       "side": 1,
       "message": "if (t instanceof ...) {\n    builder.append(\"? extends \");\n}\nbuilder.append(getExplicitType...)\n\neliminating the need for wildcardParam",
+      "range": {
+        "startLine": 335,
+        "startChar": 0,
+        "endLine": 338,
+        "endChar": 45
+      },
+      "revId": "bf879dea9d0fae0b480bb5ea7f5b1ecbcf1c498f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_184557b3",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/yangtools/sal/java/api/generator/GeneratorUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 5994
+      },
+      "writtenOn": "2016-10-07T10:24:17Z",
+      "side": 1,
+      "message": "Ha, nice one... will be fixed in next patch",
+      "parentUuid": "7a6b29fe_64f2e870",
       "range": {
         "startLine": 335,
         "startChar": 0,
