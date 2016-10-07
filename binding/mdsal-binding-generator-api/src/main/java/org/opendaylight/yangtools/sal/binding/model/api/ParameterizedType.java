@@ -13,7 +13,10 @@ package org.opendaylight.yangtools.sal.binding.model.api;
  * The parametrized Type is designed to be used to store information of Java
  * Generic Type. The array of {@link #getActualTypeArguments()} holds
  * information of all generic parameters defined for Parameterized Type.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.ParameterizedType} instead.
  */
+@Deprecated
 public interface ParameterizedType extends Type {
 
     /**

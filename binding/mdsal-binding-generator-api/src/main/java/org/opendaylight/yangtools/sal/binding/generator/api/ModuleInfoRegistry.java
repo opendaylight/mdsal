@@ -8,10 +8,10 @@
 
 package org.opendaylight.yangtools.sal.binding.generator.api;
 
-import org.opendaylight.yangtools.concepts.ObjectRegistration;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.api.ModuleInfoRegistry} instead.
+ */
+@Deprecated
+public interface ModuleInfoRegistry extends org.opendaylight.mdsal.binding.generator.api.ModuleInfoRegistry {
 
-public interface ModuleInfoRegistry {
-
-    ObjectRegistration<YangModuleInfo> registerModuleInfo(YangModuleInfo yangModuleInfo);
 }

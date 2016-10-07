@@ -13,7 +13,10 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 
 /**
  * Interface provide methods for reading data of enumeration class.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.Enumeration} instead.
  */
+@Deprecated
 public interface Enumeration extends GeneratedType {
 
     /**

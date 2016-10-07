@@ -10,7 +10,10 @@ package org.opendaylight.yangtools.sal.binding.model.api;
 /**
  * The BaseTypeWithRestrictions is marker interface that encapsulates definition of java
  * concrete type only with changed restriction values.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.BaseTypeWithRestrictions} instead.
  */
+@Deprecated
 public interface BaseTypeWithRestrictions extends ConcreteType {
 
 }

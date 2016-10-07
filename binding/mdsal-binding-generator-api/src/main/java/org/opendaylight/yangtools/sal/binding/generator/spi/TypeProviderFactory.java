@@ -9,6 +9,10 @@ package org.opendaylight.yangtools.sal.binding.generator.spi;
 
 import org.opendaylight.yangtools.yang.model.api.ModuleIdentifier;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.spi.TypeProviderFactory} instead.
+ */
+@Deprecated
 //FIXME not implemented anywhere
 public interface TypeProviderFactory {
 

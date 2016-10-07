@@ -12,7 +12,9 @@ import org.opendaylight.yangtools.sal.binding.model.api.Type;
 
 /**
  *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.type.builder.ConstantBuilder} instead.
  */
+@Deprecated
 public interface ConstantBuilder {
 
     void assignValue(final Object value);

@@ -15,13 +15,16 @@ import java.util.List;
  * For sake of simplicity the Annotation Type is not designed to model exact
  * behaviour of annotation mechanism, but just to hold information needed to
  * model annotation over java Type definition.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.AnnotationType} instead.
  */
+@Deprecated
 public interface AnnotationType extends Type {
 
     /**
      * Returns the List of Annotations. <br>
      * Each Annotation Type MAY have defined multiple Annotations.
-     * 
+     *
      * @return the List of Annotations.
      */
     List<AnnotationType> getAnnotations();
@@ -30,7 +33,7 @@ public interface AnnotationType extends Type {
      * Returns Parameter Definition assigned for given parameter name. <br>
      * If Annotation does not contain parameter with specified param name, the
      * method MAY return <code>null</code> value.
-     * 
+     *
      * @param paramName
      *            Parameter Name
      * @return Parameter Definition assigned for given parameter name.
@@ -39,21 +42,21 @@ public interface AnnotationType extends Type {
 
     /**
      * Returns List of all parameters assigned to Annotation Type.
-     * 
+     *
      * @return List of all parameters assigned to Annotation Type.
      */
     List<Parameter> getParameters();
 
     /**
      * Returns List of parameter names.
-     * 
+     *
      * @return List of parameter names.
      */
     List<String> getParameterNames();
 
     /**
      * Returns <code>true</code> if annotation contains parameters.
-     * 
+     *
      * @return <code>true</code> if annotation contains parameters.
      */
     boolean containsParameters();
@@ -73,7 +76,7 @@ public interface AnnotationType extends Type {
 
         /**
          * Returns the Name of the parameter.
-         * 
+         *
          * @return the Name of the parameter.
          */
         String getName();
@@ -81,7 +84,7 @@ public interface AnnotationType extends Type {
         /**
          * Returns value in String format if Parameter contains singular value,
          * otherwise MAY return <code>null</code>.
-         * 
+         *
          * @return value in String format if Parameter contains singular value.
          */
         String getValue();
@@ -91,7 +94,7 @@ public interface AnnotationType extends Type {
          * assigned for given parameter name. <br>
          * If there are multiple values assigned for given parameter name the
          * method MUST NOT return empty List.
-         * 
+         *
          * @return List of Parameter assigned values in order in which they were
          *         assigned for given parameter name.
          */

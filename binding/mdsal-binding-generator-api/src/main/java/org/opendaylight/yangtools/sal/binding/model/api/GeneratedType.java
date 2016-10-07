@@ -32,7 +32,10 @@ import java.util.List;
  * By the definition of the interface constant, enum, enclosed types and method
  * definitions MUST be public, so there is no need to specify the scope of
  * visibility.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.GeneratedType} instead.
  */
+@Deprecated
 public interface GeneratedType extends Type, DocumentedType {
 
     /**

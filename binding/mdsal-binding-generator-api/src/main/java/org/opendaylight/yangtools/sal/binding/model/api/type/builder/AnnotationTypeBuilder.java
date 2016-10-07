@@ -18,9 +18,12 @@ import org.opendaylight.yangtools.sal.binding.model.api.Type;
  * {@link Type} interface. The Annotation Type contains set of methods which are
  * capable to provide information about other Annotation Types and Annotation
  * Parameters.
- * 
+ *
  * @see AnnotationType
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder} instead.
  */
+@Deprecated
 public interface AnnotationTypeBuilder extends Type {
 
     /**
@@ -29,7 +32,7 @@ public interface AnnotationTypeBuilder extends Type {
      * Neither the package name or annotation name can contain <code>null</code>
      * references. In case that any of parameters contains <code>null</code> the
      * method SHOULD thrown {@link IllegalArgumentException}
-     * 
+     *
      * @param packageName
      *            Package Name of Annotation Type
      * @param name
@@ -46,7 +49,7 @@ public interface AnnotationTypeBuilder extends Type {
      * Neither the param name or value can contain <code>null</code> references.
      * In case that any of parameters contains <code>null</code> the method
      * SHOULD thrown {@link IllegalArgumentException}
-     * 
+     *
      * @param paramName
      *            Parameter Name
      * @param value
@@ -65,7 +68,7 @@ public interface AnnotationTypeBuilder extends Type {
      * Neither the param name or value can contain <code>null</code> references.
      * In case that any of parameters contains <code>null</code> the method
      * SHOULD thrown {@link IllegalArgumentException}
-     * 
+     *
      * @param paramName
      *            Parameter Name
      * @param values
@@ -82,7 +85,7 @@ public interface AnnotationTypeBuilder extends Type {
      * modification to Annotation Type Builder will have an impact to
      * instantiated Annotation Type. <br>
      * For this purpose call this method after all additions are complete.
-     * 
+     *
      * @return <code>new</code> <i>immutable</i> instance of Annotation Type.
      */
     AnnotationType toInstance();

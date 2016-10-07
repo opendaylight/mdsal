@@ -12,14 +12,17 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 /**
  * Generated Type Builder interface is helper interface for building and
  * defining the GeneratedType.
- * 
+ *
  * @see GeneratedType
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder} instead.
  */
+@Deprecated
 public interface GeneratedTypeBuilder extends GeneratedTypeBuilderBase<GeneratedTypeBuilder> {
 
     /**
      * Returns the <code>new</code> <i>immutable</i> instance of Generated Type.
-     * 
+     *
      * @return the <code>new</code> <i>immutable</i> instance of Generated Type.
      */
     GeneratedType toInstance();

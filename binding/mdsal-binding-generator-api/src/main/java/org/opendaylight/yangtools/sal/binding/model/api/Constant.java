@@ -19,19 +19,22 @@ package org.opendaylight.yangtools.sal.binding.model.api;
  * type name (e.g. fully qualified name). From this string user should be able
  * to determine to which type can be {@link #getValue()} type typecasted to
  * unbox and provide value assigned to constant.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.Constant} instead.
  */
+@Deprecated
 public interface Constant {
 
     /**
      * Returns the Type that declares constant.
-     * 
+     *
      * @return the Type that declares constant.
      */
     Type getDefiningType();
 
     /**
      * Returns the return Type (or just Type) of the Constant.
-     * 
+     *
      * @return the return Type (or just Type) of the Constant.
      */
     Type getType();
@@ -39,14 +42,14 @@ public interface Constant {
     /**
      * Returns the name of constant. <br>
      * By conventions the name SHOULD be in CAPITALS separated with underscores.
-     * 
+     *
      * @return the name of constant.
      */
     String getName();
 
     /**
      * Returns boxed value that is assigned for context.
-     * 
+     *
      * @return boxed value that is assigned for context.
      */
     Object getValue();
@@ -56,7 +59,7 @@ public interface Constant {
      * <br>
      * The expected string SHOULD be in format: <code>public final
      * static [Type] CONSTANT_NAME = [value];</code>
-     * 
+     *
      * @return Constant definition in formatted string.
      */
     String toFormattedString();

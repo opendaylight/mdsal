@@ -20,7 +20,10 @@ import java.util.List;
  * <code>null</code> values. <br>
  * The defining Type contains the reference to Generated Type that declares
  * Method Signature.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.MethodSignature} instead.
  */
+@Deprecated
 public interface MethodSignature extends TypeMember {
 
     /**
@@ -30,7 +33,7 @@ public interface MethodSignature extends TypeMember {
      * in front of each method. <br>
      * The abstract methods are allowed in Class definitions but only when the
      * class is declared as abstract.
-     * 
+     *
      * @return <code>true</code> if the method signature is defined as abstract.
      */
     boolean isAbstract();
@@ -38,7 +41,7 @@ public interface MethodSignature extends TypeMember {
     /**
      * Returns the List of parameters that method declare. If the method does
      * not contain any parameters, the method will return empty List.
-     * 
+     *
      * @return the List of parameters that method declare.
      */
     List<Parameter> getParameters();
@@ -53,14 +56,14 @@ public interface MethodSignature extends TypeMember {
 
         /**
          * Returns the parameter name.
-         * 
+         *
          * @return the parameter name.
          */
         String getName();
 
         /**
          * Returns Type that is bounded to parameter name.
-         * 
+         *
          * @return Type that is bounded to parameter name.
          */
         Type getType();

@@ -13,6 +13,10 @@ import org.opendaylight.yangtools.sal.binding.model.api.Constant;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.common.QName;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase} instead.
+ */
+@Deprecated
 public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>> extends Type {
 
     /**

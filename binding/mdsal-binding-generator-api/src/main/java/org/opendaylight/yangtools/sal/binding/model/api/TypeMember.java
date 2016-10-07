@@ -11,7 +11,10 @@ import java.util.List;
 
 /**
  * Common interface for variables and methods in class.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.TypeMember} instead.
  */
+@Deprecated
 public interface TypeMember {
 
     /**
