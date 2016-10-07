@@ -10,7 +10,10 @@ package org.opendaylight.yangtools.sal.binding.model.api;
 /**
  * The Concrete Type is marker interface that encapsulates definition of java
  * concrete type.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.ConcreteType} instead.
  */
+@Deprecated
 public interface ConcreteType extends Type {
 
     Restrictions getRestrictions();

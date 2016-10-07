@@ -7,6 +7,10 @@
  */
 package org.opendaylight.yangtools.sal.binding.model.api;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.model.api.GeneratedTransferIdentityObject} instead.
+ */
+@Deprecated
 public interface GeneratedTransferIdentityObject extends
         GeneratedTransferObject {
 
