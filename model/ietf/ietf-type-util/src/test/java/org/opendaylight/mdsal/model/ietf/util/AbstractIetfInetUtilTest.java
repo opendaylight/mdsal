@@ -12,12 +12,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.net.InetAddresses;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.junit.Test;
 
 public class AbstractIetfInetUtilTest {
@@ -147,5 +149,13 @@ public class AbstractIetfInetUtilTest {
     public void inetAddressTest() throws Exception {
         assertTrue(UTIL.inetAddressFor(new IpClass("1.2.3.4")) instanceof Inet4Address);
         assertTrue(UTIL.inetAddressFor(new IpClass("FE80::2002:B3FF:FE1E:8329")) instanceof Inet6Address);
+    }
+
+    @Test
+    public void inet4AddressForTest() throws Exception {
+        IpClass ipClass = mock(IpClass.class);
+//        ipClass
+        doThrow(UnknownHostException.class).when(ipClass._value);
+        UTIL.inet4AddressFor(ipClass);
     }
 }

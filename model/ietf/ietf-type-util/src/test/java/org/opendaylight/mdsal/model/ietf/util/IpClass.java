@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.model.ietf.util;
 
 import com.google.common.base.Preconditions;
 
-public final class IpClass {
+public class IpClass {
     final String _value;
 
     public IpClass(final String value) {
