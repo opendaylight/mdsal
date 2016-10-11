@@ -5,21 +5,17 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
+package org.opendaylight.mdsal.binding.generator.util.generated.type.builder;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.generated.type.builder.MethodSignatureBuilderImpl} instead.
- */
-@Deprecated
 final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodSignatureBuilder> implements MethodSignatureBuilder {
 
     private List<MethodSignature.Parameter> parameters = Collections.emptyList();

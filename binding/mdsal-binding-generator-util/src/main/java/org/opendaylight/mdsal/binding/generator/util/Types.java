@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Optional;
@@ -21,12 +21,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 import javax.annotation.Nullable;
-import org.opendaylight.yangtools.sal.binding.model.api.BaseTypeWithRestrictions;
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
-import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
-import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.WildcardType;
+import org.opendaylight.mdsal.binding.model.api.BaseTypeWithRestrictions;
+import org.opendaylight.mdsal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.WildcardType;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
@@ -34,10 +34,6 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.Types} instead.
- */
-@Deprecated
 public final class Types {
     private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
             new CacheLoader<Class<?>, ConcreteType>() {

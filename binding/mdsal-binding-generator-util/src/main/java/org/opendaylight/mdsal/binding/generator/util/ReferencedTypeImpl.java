@@ -5,21 +5,19 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 /**
- *
+ * 
  * Wraps combination of <code>packageName</code> and <code>name</code> to the
  * object representation
- *
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.ReferencedTypeImpl} instead.
+ * 
  */
-@Deprecated
 public final class ReferencedTypeImpl extends AbstractBaseType {
 
     /**
      * Creates instance of this class with concrete package name and type name
-     *
+     * 
      * @param packageName
      *            string with the package name
      * @param name

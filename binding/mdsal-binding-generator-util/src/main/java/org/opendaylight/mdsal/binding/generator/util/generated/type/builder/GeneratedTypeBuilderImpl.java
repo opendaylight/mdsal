@@ -5,16 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
+package org.opendaylight.mdsal.binding.generator.util.generated.type.builder;
 
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.generated.type.builder.GeneratedTypeBuilderImpl} instead.
- */
-@Deprecated
 public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder<GeneratedTypeBuilder> implements
         GeneratedTypeBuilder {
 

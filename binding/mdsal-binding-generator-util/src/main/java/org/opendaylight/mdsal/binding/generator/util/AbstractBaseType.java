@@ -5,17 +5,15 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import java.util.Objects;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.Type;
 
 /**
  * It is used only as ancestor for other <code>Type</code>s
  *
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.AbstractBaseType} instead.
  */
-@Deprecated
 public class AbstractBaseType implements Type {
 
     /**
