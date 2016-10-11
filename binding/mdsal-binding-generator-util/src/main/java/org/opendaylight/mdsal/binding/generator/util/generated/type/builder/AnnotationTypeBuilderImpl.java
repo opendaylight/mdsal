@@ -5,22 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
+package org.opendaylight.mdsal.binding.generator.util.generated.type.builder;
 
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.yangtools.binding.generator.util.AbstractBaseType;
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.AnnotationTypeBuilder;
+import org.opendaylight.mdsal.binding.generator.util.AbstractBaseType;
+import org.opendaylight.mdsal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.generated.type.builder.AnnotationTypeBuilderImpl} instead.
- */
-@Deprecated
 final class AnnotationTypeBuilderImpl extends AbstractBaseType implements AnnotationTypeBuilder {
 
     private final String packageName;
