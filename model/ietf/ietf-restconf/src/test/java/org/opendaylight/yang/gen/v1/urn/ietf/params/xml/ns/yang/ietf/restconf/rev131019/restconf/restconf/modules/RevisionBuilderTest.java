@@ -15,16 +15,19 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.re
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev131019.restconf.restconf.modules.Module.Revision;
 
 public class RevisionBuilderTest {
+
     @Test
     public void testEmptyString() {
-        Revision revision = RevisionBuilder.getDefaultInstance("");
+        final RevisionBuilder revisionBuilder = new RevisionBuilder();
+        assertNotNull(revisionBuilder);
+        final Revision revision = RevisionBuilder.getDefaultInstance("");
         validate(revision, "", null);
     }
 
     @Test
     public void testValidDataString() {
-        String dateString = "2014-04-23";
-        Revision revision = RevisionBuilder.getDefaultInstance(dateString);
+        final String dateString = "2014-04-23";
+        final Revision revision = RevisionBuilder.getDefaultInstance(dateString);
         validate(revision, null, new RevisionIdentifier(dateString));
     }
 
