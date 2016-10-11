@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
+package org.opendaylight.mdsal.binding.generator.util.generated.type.builder;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -13,17 +13,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.AnnotationTypeBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.TypeMemberBuilder;
+import org.opendaylight.mdsal.binding.model.api.AccessModifier;
+import org.opendaylight.mdsal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.generated.type.builder.AbstractTypeMemberBuilder} instead.
- */
-@Deprecated
 abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> implements TypeMemberBuilder<T> {
     private final String name;
     private Type returnType;

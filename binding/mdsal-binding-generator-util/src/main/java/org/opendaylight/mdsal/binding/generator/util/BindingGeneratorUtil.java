@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableList;
@@ -22,13 +22,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
-import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.MethodSignatureBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.TypeMemberBuilder;
+import org.opendaylight.mdsal.binding.model.api.AccessModifier;
+import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -50,9 +50,8 @@ import org.opendaylight.yangtools.yang.model.util.type.DecimalTypeBuilder;
  * Contains the methods for converting strings to valid JAVA language strings
  * (package names, class names, attribute names) and to valid javadoc comments.
  *
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.BindingGeneratorUtil} instead.
+ *
  */
-@Deprecated
 public final class BindingGeneratorUtil {
 
     /**
