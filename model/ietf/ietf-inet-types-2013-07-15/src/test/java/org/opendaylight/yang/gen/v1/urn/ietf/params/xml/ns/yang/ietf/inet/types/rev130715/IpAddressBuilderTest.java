@@ -15,14 +15,14 @@ import static org.junit.Assert.assertNotNull;
 import java.lang.reflect.Constructor;
 import org.junit.Test;
 
-public class IpAddressNoZoneBuilderTest {
+public class IpAddressBuilderTest {
 
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor constructor = IpAddressNoZoneBuilder.class.getDeclaredConstructor();
+        final Constructor constructor = IpAddressBuilder.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
-        final IpAddressNoZoneBuilder newInstance = (IpAddressNoZoneBuilder) constructor.newInstance();
+        final IpAddressBuilder newInstance = (IpAddressBuilder) constructor.newInstance();
         assertNotNull(newInstance);
 
         testIpv4("1.1.1.1");
@@ -43,17 +43,22 @@ public class IpAddressNoZoneBuilderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testIllegalArgumentException() {
-        IpAddressNoZoneBuilder.getDefaultInstance("2001:0DB8::CD3/60");
+    public void testIllegalArgumentException1() {
+        IpAddressBuilder.getDefaultInstance("badIp");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIllegalArgumentException2() {
+        IpAddressBuilder.getDefaultInstance("2001:0DB8::CD3/60");
     }
 
     private static void testIpv4(final String ip) {
-        final IpAddressNoZone defaultInstance = IpAddressNoZoneBuilder.getDefaultInstance(ip);
-        assertEquals(new IpAddressNoZone(new Ipv4AddressNoZone(ip)), defaultInstance);
+        final IpAddress defaultInstance = IpAddressBuilder.getDefaultInstance(ip);
+        assertEquals(new IpAddress(new Ipv4Address(ip)), defaultInstance);
     }
 
     private static void testIpv6(final String ip) {
-        final IpAddressNoZone defaultInstance = IpAddressNoZoneBuilder.getDefaultInstance(ip);
-        assertEquals(new IpAddressNoZone(new Ipv6AddressNoZone(ip)), defaultInstance);
+        final IpAddress defaultInstance = IpAddressBuilder.getDefaultInstance(ip);
+        assertEquals(new IpAddress(new Ipv6Address(ip)), defaultInstance);
     }
 }
