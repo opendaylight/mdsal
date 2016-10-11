@@ -1,0 +1,71 @@
+/*
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+
+package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev131019.restconf.restconf.modules;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.Test;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.Uri;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
+
+public class ModuleBuilderTest {
+    @Test
+    public void testModuleBuilder() {
+        final ModuleBuilder moduleBuilder = new ModuleBuilder();
+        final Module.Revision revision = new Module.Revision("first revision");
+        final YangIdentifier yangIdentifierOne = new YangIdentifier("YangIdentifier1");
+        final YangIdentifier yangIdentifierTwo = new YangIdentifier("YangIdentifier2");
+        final Uri namespace = new Uri("namespace");
+        final List<YangIdentifier> yangIdentifierList = new ArrayList<YangIdentifier>() {{
+            add(yangIdentifierOne);
+            add(yangIdentifierTwo);
+        }};
+        final ModuleKey moduleKeyOne = new ModuleKey(yangIdentifierOne, revision);
+        final ModuleKey moduleKeyTwo = new ModuleKey(moduleKeyOne);
+        moduleBuilder.setRevision(revision);
+        moduleBuilder.setDeviation(yangIdentifierList);
+        moduleBuilder.setFeature(yangIdentifierList);
+        moduleBuilder.setName(yangIdentifierOne);
+        moduleBuilder.setNamespace(namespace);
+        moduleBuilder.setKey(moduleKeyOne);
+        final Module moduleOne = moduleBuilder.build();
+        final Module moduleTwo = new ModuleBuilder(moduleOne).build();
+
+        assertNotNull(moduleBuilder);
+        assertNotNull(revision);
+        assertNotNull(yangIdentifierOne);
+        assertNotNull(yangIdentifierTwo);
+        assertNotNull(namespace);
+        assertNotNull(yangIdentifierList);
+        assertNotNull(moduleKeyOne);
+        assertNotNull(moduleKeyOne.hashCode());
+        assertNotNull(moduleKeyOne.toString());
+        assertNotNull(moduleBuilder.toString());
+        assertNotNull(moduleBuilder.hashCode());
+
+        assertEquals(moduleKeyOne, moduleKeyTwo);
+        assertEquals(revision, moduleKeyOne.getRevision());
+        assertEquals(yangIdentifierOne, moduleKeyOne.getName());
+        assertEquals(revision, moduleBuilder.getRevision());
+        assertEquals(yangIdentifierList, moduleBuilder.getDeviation());
+        assertEquals(yangIdentifierList, moduleBuilder.getFeature());
+        assertEquals(yangIdentifierOne, moduleBuilder.getName());
+        assertEquals(namespace, moduleBuilder.getNamespace());
+        assertEquals(moduleKeyOne, moduleBuilder.getKey());
+        assertEquals(moduleOne.toString(), moduleTwo.toString());
+        assertEquals(moduleKeyOne.toString(), moduleKeyTwo.toString());
+
+        assertTrue(moduleOne.equals(moduleTwo));
+        assertTrue(moduleKeyOne.equals(moduleKeyTwo));
+    }
+}
