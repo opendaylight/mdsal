@@ -15,14 +15,14 @@ import static org.junit.Assert.assertNotNull;
 import java.lang.reflect.Constructor;
 import org.junit.Test;
 
-public class IpAddressNoZoneBuilderTest {
+public class HostBuilderTest {
 
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor constructor = IpAddressNoZoneBuilder.class.getDeclaredConstructor();
+        final Constructor constructor = HostBuilder.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
-        final IpAddressNoZoneBuilder newInstance = (IpAddressNoZoneBuilder) constructor.newInstance();
+        final HostBuilder newInstance = (HostBuilder) constructor.newInstance();
         assertNotNull(newInstance);
 
         testIpv4("1.1.1.1");
@@ -40,20 +40,33 @@ public class IpAddressNoZoneBuilderTest {
         testIpv6("0:0:0:0:0:0:0:1");
         testIpv6("::1");
         testIpv6("::");
+        testDomain("test.domainName.org");
+        testDomain("domainName.test");
+        testDomain("test");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testIllegalArgumentException() {
-        IpAddressNoZoneBuilder.getDefaultInstance("2001:0DB8::CD3/60");
+    public void testIllegalArgumentException1() {
+        HostBuilder.getDefaultInstance("2001:0DB8::CD3/60");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIllegalArgumentException2() {
+        testDomain("test.invalid.domain.name?");
     }
 
     private static void testIpv4(final String ip) {
-        final IpAddressNoZone defaultInstance = IpAddressNoZoneBuilder.getDefaultInstance(ip);
-        assertEquals(new IpAddressNoZone(new Ipv4AddressNoZone(ip)), defaultInstance);
+        final Host defaultInstance = HostBuilder.getDefaultInstance(ip);
+        assertEquals(new Host(new IpAddress(new Ipv4Address(ip))), defaultInstance);
     }
 
     private static void testIpv6(final String ip) {
-        final IpAddressNoZone defaultInstance = IpAddressNoZoneBuilder.getDefaultInstance(ip);
-        assertEquals(new IpAddressNoZone(new Ipv6AddressNoZone(ip)), defaultInstance);
+        final Host defaultInstance = HostBuilder.getDefaultInstance(ip);
+        assertEquals(new Host(new IpAddress(new Ipv6Address(ip))), defaultInstance);
+    }
+
+    private static void testDomain(final String ip) {
+        final Host defaultInstance = HostBuilder.getDefaultInstance(ip);
+        assertEquals(new Host(new DomainName(ip)), defaultInstance);
     }
 }
