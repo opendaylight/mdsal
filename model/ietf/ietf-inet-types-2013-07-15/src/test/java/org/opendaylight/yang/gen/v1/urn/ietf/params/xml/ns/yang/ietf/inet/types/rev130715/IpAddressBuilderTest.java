@@ -5,6 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
 import static junit.framework.Assert.assertNotNull;
@@ -14,14 +15,13 @@ import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Constructor;
 import org.junit.Test;
 
-public class IpAddressNoZoneBuilderTest {
-
+public class IpAddressBuilderTest {
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor constructor = IpAddressNoZoneBuilder.class.getDeclaredConstructor();
+        final Constructor constructor = IpAddressBuilder.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
-        final IpAddressNoZoneBuilder newInstance = (IpAddressNoZoneBuilder) constructor.newInstance();
+        final IpAddressBuilder newInstance = (IpAddressBuilder) constructor.newInstance();
         assertNotNull(newInstance);
 
         testIpv4("1.1.1.1");
@@ -42,17 +42,22 @@ public class IpAddressNoZoneBuilderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testIllegalArgumentException() {
-        IpAddressNoZoneBuilder.getDefaultInstance("2001:0DB8::CD3/60");
+    public void testIllegalArgumentException1() {
+        IpAddressBuilder.getDefaultInstance("badIp");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIllegalArgumentException2() {
+        IpAddressBuilder.getDefaultInstance("2001:0DB8::CD3/60");
     }
 
     private void testIpv4(final String ip) {
-        final IpAddressNoZone defaultInstance = IpAddressNoZoneBuilder.getDefaultInstance(ip);
-        assertEquals(new IpAddressNoZone(new Ipv4AddressNoZone(ip)), defaultInstance);
+        final IpAddress defaultInstance = IpAddressBuilder.getDefaultInstance(ip);
+        assertEquals(new IpAddress(new Ipv4Address(ip)), defaultInstance);
     }
 
     private void testIpv6(final String ip) {
-        final IpAddressNoZone defaultInstance = IpAddressNoZoneBuilder.getDefaultInstance(ip);
-        assertEquals(new IpAddressNoZone(new Ipv6AddressNoZone(ip)), defaultInstance);
+        final IpAddress defaultInstance = IpAddressBuilder.getDefaultInstance(ip);
+        assertEquals(new IpAddress(new Ipv6Address(ip)), defaultInstance);
     }
 }

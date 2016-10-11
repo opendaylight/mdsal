@@ -5,6 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
 import static junit.framework.Assert.assertNotNull;
@@ -14,14 +15,13 @@ import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Constructor;
 import org.junit.Test;
 
-public class IpAddressNoZoneBuilderTest {
-
+public class HostBuilderTest {
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor constructor = IpAddressNoZoneBuilder.class.getDeclaredConstructor();
+        final Constructor constructor = HostBuilder.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
-        final IpAddressNoZoneBuilder newInstance = (IpAddressNoZoneBuilder) constructor.newInstance();
+        final HostBuilder newInstance = (HostBuilder) constructor.newInstance();
         assertNotNull(newInstance);
 
         testIpv4("1.1.1.1");
@@ -39,20 +39,33 @@ public class IpAddressNoZoneBuilderTest {
         testIpv6("0:0:0:0:0:0:0:1");
         testIpv6("::1");
         testIpv6("::");
+        testDomain("test.domainName.org");
+        testDomain("domainName.test");
+        testDomain("test");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testIllegalArgumentException() {
-        IpAddressNoZoneBuilder.getDefaultInstance("2001:0DB8::CD3/60");
+    public void testIllegalArgumentException1() {
+        HostBuilder.getDefaultInstance("2001:0DB8::CD3/60");
     }
 
-    private void testIpv4(final String ip) {
-        final IpAddressNoZone defaultInstance = IpAddressNoZoneBuilder.getDefaultInstance(ip);
-        assertEquals(new IpAddressNoZone(new Ipv4AddressNoZone(ip)), defaultInstance);
+    @Test(expected = IllegalArgumentException.class)
+    public void testIllegalArgumentException2() {
+        testDomain("test.invalid.domain.name?");
+    }
+
+    private static void testIpv4(final String ip) {
+        final Host defaultInstance = HostBuilder.getDefaultInstance(ip);
+        assertEquals(new Host(new IpAddress(new Ipv4Address(ip))), defaultInstance);
     }
 
     private void testIpv6(final String ip) {
-        final IpAddressNoZone defaultInstance = IpAddressNoZoneBuilder.getDefaultInstance(ip);
-        assertEquals(new IpAddressNoZone(new Ipv6AddressNoZone(ip)), defaultInstance);
+        final Host defaultInstance = HostBuilder.getDefaultInstance(ip);
+        assertEquals(new Host(new IpAddress(new Ipv6Address(ip))), defaultInstance);
+    }
+
+    private void testDomain(final String ip) {
+        final Host defaultInstance = HostBuilder.getDefaultInstance(ip);
+        assertEquals(new Host(new DomainName(ip)), defaultInstance);
     }
 }
