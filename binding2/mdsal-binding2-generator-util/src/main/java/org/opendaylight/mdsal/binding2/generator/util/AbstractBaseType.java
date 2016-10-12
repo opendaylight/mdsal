@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.binding2.model.api.Type;
  * This class represents ancestor for other <code>Type</code>s
  */
 @Beta
-abstract public class AbstractBaseType implements Type {
+public abstract class AbstractBaseType implements Type {
 
     /**
      * Name of the package to which this <code>Type</code> belongs.
