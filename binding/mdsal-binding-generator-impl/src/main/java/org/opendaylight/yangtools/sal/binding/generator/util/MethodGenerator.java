@@ -10,6 +10,10 @@ package org.opendaylight.yangtools.sal.binding.generator.util;
 import javassist.CannotCompileException;
 import javassist.CtMethod;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.MethodGenerator} instead
+ */
+@Deprecated
 public interface MethodGenerator {
     void process(CtMethod method) throws CannotCompileException;
 }

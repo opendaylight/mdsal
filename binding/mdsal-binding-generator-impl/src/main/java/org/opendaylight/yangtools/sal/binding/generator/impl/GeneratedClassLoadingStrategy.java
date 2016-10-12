@@ -11,6 +11,10 @@ import org.opendaylight.yangtools.sal.binding.generator.api.ClassLoadingStrategy
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy} instead
+ */
+@Deprecated
 public abstract class GeneratedClassLoadingStrategy implements ClassLoadingStrategy {
 
     private static final GeneratedClassLoadingStrategy TCCL_STRATEGY = new TCCLClassLoadingStrategy();

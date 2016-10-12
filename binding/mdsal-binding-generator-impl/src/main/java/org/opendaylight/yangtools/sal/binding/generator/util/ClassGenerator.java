@@ -10,6 +10,10 @@ package org.opendaylight.yangtools.sal.binding.generator.util;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.ClassGenerator} instead
+ */
+@Deprecated
 public interface ClassGenerator {
     void process(CtClass cls) throws CannotCompileException;
 }

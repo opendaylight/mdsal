@@ -32,6 +32,10 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.impl.ModuleContext} instead
+ */
+@Deprecated
 public final class ModuleContext {
     private GeneratedTypeBuilder moduleNode;
     private final List<GeneratedTOBuilder> genTOs = new ArrayList<GeneratedTOBuilder>();

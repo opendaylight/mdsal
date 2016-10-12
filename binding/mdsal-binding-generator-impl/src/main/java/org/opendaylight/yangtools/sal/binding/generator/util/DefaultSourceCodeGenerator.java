@@ -28,7 +28,10 @@ import javassist.NotFoundException;
  * written to a file under a specified directory.
  *
  * @author Thomas Pantelis
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.DefaultSourceCodeGenerator} instead
  */
+@Deprecated
 public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultSourceCodeGenerator.class);
 

@@ -13,6 +13,10 @@ import com.google.common.collect.Iterables;
 import java.util.StringTokenizer;
 import org.opendaylight.yangtools.yang.common.QName;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.binding.generator.impl.YangTextTemplate} instead
+ */
+@Deprecated
 final class YangTextTemplate {
     private static final CharMatcher NEWLINE_OR_TAB = CharMatcher.anyOf("\n\t");
 

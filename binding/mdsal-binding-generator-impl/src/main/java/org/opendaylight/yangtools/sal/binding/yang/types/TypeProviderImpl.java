@@ -88,6 +88,10 @@ import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.yang.types.TypeProviderImpl} instead
+ */
+@Deprecated
 public final class TypeProviderImpl implements TypeProvider {
     private static final Logger LOG = LoggerFactory.getLogger(TypeProviderImpl.class);
     private static final Pattern NUMBERS_PATTERN = Pattern.compile("[0-9]+\\z");

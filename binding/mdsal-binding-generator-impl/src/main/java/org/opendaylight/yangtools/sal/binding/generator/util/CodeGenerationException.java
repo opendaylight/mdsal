@@ -7,6 +7,10 @@
  */
 package org.opendaylight.yangtools.sal.binding.generator.util;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.CodeGenerationException} instead
+ */
+@Deprecated
 public class CodeGenerationException extends RuntimeException{
     private static final long serialVersionUID = 1L;
 

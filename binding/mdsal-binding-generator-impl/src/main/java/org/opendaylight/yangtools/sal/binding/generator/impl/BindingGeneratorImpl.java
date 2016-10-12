@@ -110,6 +110,10 @@ import org.opendaylight.yangtools.yang.parser.util.ModuleDependencySort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl} instead
+ */
+@Deprecated
 public class BindingGeneratorImpl implements BindingGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(BindingGeneratorImpl.class);
     private static final Splitter COLON_SPLITTER = Splitter.on(':');

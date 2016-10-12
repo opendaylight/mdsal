@@ -34,6 +34,10 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.impl.BindingSchemaContextUtils} instead
+ */
+@Deprecated
 public final class BindingSchemaContextUtils {
 
     private BindingSchemaContextUtils() {

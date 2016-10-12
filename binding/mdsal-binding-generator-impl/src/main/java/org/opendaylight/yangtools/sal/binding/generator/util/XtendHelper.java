@@ -12,6 +12,10 @@ import java.util.List;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.XtendHelper} instead
+ */
+@Deprecated
 public final class XtendHelper {
     private XtendHelper() {
         throw new UnsupportedOperationException("Utility class should not be instantiated");

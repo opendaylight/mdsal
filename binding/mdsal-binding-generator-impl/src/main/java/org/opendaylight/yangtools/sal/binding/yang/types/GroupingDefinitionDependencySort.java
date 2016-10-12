@@ -26,6 +26,10 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.parser.util.TopologicalSort;
 import org.opendaylight.yangtools.yang.parser.util.TopologicalSort.Node;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort} instead
+ */
+@Deprecated
 public class GroupingDefinitionDependencySort {
 
     /**

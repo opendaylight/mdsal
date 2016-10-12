@@ -12,7 +12,10 @@ package org.opendaylight.yangtools.sal.binding.generator.util;
  * Factory class for creating SourceCodeGenerator instances.
  *
  * @author Thomas Pantelis
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.SourceCodeGeneratorFactory} instead
  */
+@Deprecated
 public class SourceCodeGeneratorFactory {
 
     private static final String GENERATE_CODEC_SOURCE_PROP = "org.opendaylight.yangtools.sal.generateCodecSource";

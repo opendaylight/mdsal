@@ -23,6 +23,10 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.binding.yang.types.TypedefResolver} instead
+ */
+@Deprecated
 final class TypedefResolver {
     private TypedefResolver() {
         throw new UnsupportedOperationException();

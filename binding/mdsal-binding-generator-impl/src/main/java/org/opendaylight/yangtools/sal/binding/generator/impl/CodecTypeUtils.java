@@ -11,6 +11,10 @@ import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.impl.CodecTypeUtils} instead
+ */
+@Deprecated
 public final class CodecTypeUtils {
 
     private CodecTypeUtils() {

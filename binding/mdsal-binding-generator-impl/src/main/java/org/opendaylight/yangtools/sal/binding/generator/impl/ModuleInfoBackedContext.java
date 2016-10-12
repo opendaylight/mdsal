@@ -34,6 +34,10 @@ import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext} instead
+ */
+@Deprecated
 public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         implements ModuleInfoRegistry, SchemaContextProvider, SchemaSourceProvider<YangTextSchemaSource> {
 

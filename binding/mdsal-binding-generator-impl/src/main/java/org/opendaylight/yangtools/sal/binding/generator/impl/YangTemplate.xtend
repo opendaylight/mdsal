@@ -40,6 +40,10 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPair
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.binding.generator.impl.YangTemplate} instead
+ */
+@Deprecated
 class YangTemplate {
 
     // FIXME: this is not thread-safe and seems to be unused!

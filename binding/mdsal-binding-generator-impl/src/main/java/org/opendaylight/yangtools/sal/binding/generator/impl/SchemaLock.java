@@ -7,6 +7,10 @@
  */
 package org.opendaylight.yangtools.sal.binding.generator.impl;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.binding.generator.impl.SchemaLock} instead
+ */
+@Deprecated
 interface SchemaLock {
     void waitForSchema(Class<?> cls);
 }

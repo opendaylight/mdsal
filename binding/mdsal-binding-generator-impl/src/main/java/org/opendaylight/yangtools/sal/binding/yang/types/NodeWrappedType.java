@@ -9,6 +9,10 @@ package org.opendaylight.yangtools.sal.binding.yang.types;
 
 import org.opendaylight.yangtools.yang.parser.util.TopologicalSort.NodeImpl;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.yang.types.NodeWrappedType} instead
+ */
+@Deprecated
 public final class NodeWrappedType extends NodeImpl {
     /**
      * The payload which is saved inside Node
@@ -17,7 +21,7 @@ public final class NodeWrappedType extends NodeImpl {
 
     /**
      * Create new instance of class <code>NodeWrappedType</code>.
-     * 
+     *
      * @param wrappedType
      *            object with payload data
      */
@@ -27,7 +31,7 @@ public final class NodeWrappedType extends NodeImpl {
 
     /**
      * Gets payload from class
-     * 
+     *
      * @return object with <code>wrappedType</code>
      */
     Object getWrappedType() {
