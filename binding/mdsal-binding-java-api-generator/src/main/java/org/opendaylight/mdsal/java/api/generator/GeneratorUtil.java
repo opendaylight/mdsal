@@ -5,30 +5,26 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.opendaylight.yangtools.sal.java.api.generator.Constants.COMMA;
+import static org.opendaylight.mdsal.java.api.generator.Constants.COMMA;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.opendaylight.yangtools.binding.generator.util.TypeConstants;
-import org.opendaylight.yangtools.binding.generator.util.Types;
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
-import org.opendaylight.yangtools.sal.binding.model.api.Constant;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
-import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.WildcardType;
+import org.opendaylight.mdsal.binding.generator.util.TypeConstants;
+import org.opendaylight.mdsal.binding.generator.util.Types;
+import org.opendaylight.mdsal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.model.api.Constant;
+import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.WildcardType;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.GeneratorUtil} instead
- */
-@Deprecated
 public final class GeneratorUtil {
 
     /**

@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator
+package org.opendaylight.mdsal.java.api.generator
 
 import com.google.common.collect.ImmutableSortedSet
 import java.util.ArrayList
@@ -19,16 +19,16 @@ import java.util.List
 import java.util.Map
 import java.util.Objects
 import java.util.Set
-import org.opendaylight.yangtools.binding.generator.util.ReferencedTypeImpl
-import org.opendaylight.yangtools.binding.generator.util.Types
-import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedTOBuilderImpl
+import org.opendaylight.mdsal.binding.generator.util.ReferencedTypeImpl
+import org.opendaylight.mdsal.binding.generator.util.Types
+import org.opendaylight.mdsal.binding.generator.util.generated.type.builder.GeneratedTOBuilderImpl
 import org.opendaylight.yangtools.concepts.Builder
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature
-import org.opendaylight.yangtools.sal.binding.model.api.Type
+import org.opendaylight.mdsal.binding.model.api.ConcreteType
+import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
+import org.opendaylight.mdsal.binding.model.api.GeneratedType
+import org.opendaylight.mdsal.binding.model.api.MethodSignature
+import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.yangtools.yang.binding.Augmentable
 import org.opendaylight.yangtools.yang.binding.AugmentationHolder
 import org.opendaylight.yangtools.yang.binding.DataObject
@@ -36,9 +36,8 @@ import org.opendaylight.yangtools.yang.binding.Identifiable
 
 /**
  * Template for generating JAVA builder classes.
- * @deprecated Use file from org.opendaylight.mdsal.java.api.generator instead
  */
-@Deprecated
+
 class BuilderTemplate extends BaseTemplate {
 
     /**

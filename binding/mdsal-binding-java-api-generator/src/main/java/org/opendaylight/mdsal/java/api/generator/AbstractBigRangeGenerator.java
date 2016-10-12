@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
 import com.google.common.collect.Range;
 import java.util.Collection;
@@ -19,10 +19,7 @@ import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
  * boundary values.
  *
  * @param <T> type of the class
- *
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.AbstractBigRangeGenerator} instead
  */
-@Deprecated
 abstract class AbstractBigRangeGenerator<T extends Number & Comparable<T>> extends AbstractRangeGenerator<T> {
     private static final String RANGE = Range.class.getName();
 

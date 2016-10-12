@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.model.api;
 
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-
 /**
  * Transformates virtual data to the concrete code in programming language.
  *

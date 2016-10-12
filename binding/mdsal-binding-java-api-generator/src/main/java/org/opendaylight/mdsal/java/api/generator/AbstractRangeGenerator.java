@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -13,17 +13,12 @@ import com.google.common.collect.ImmutableMap.Builder;
 import java.util.Collection;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @param <T> type of the class
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.AbstractRangeGenerator} instead
- */
-@Deprecated
 abstract class AbstractRangeGenerator<T extends Number & Comparable<T>> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRangeGenerator.class);
     private static final Map<String, AbstractRangeGenerator<?>> GENERATORS;

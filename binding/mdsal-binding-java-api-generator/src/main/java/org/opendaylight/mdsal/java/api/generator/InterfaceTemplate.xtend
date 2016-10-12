@@ -5,22 +5,20 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator
+package org.opendaylight.mdsal.java.api.generator
 
 import java.util.List
-import org.opendaylight.yangtools.binding.generator.util.TypeConstants
-import org.opendaylight.yangtools.sal.binding.model.api.Constant
-import org.opendaylight.yangtools.sal.binding.model.api.Enumeration
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType
+import org.opendaylight.mdsal.binding.generator.util.TypeConstants
+import org.opendaylight.mdsal.binding.model.api.Constant
+import org.opendaylight.mdsal.binding.model.api.Enumeration
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
+import org.opendaylight.mdsal.binding.model.api.GeneratedType
+import org.opendaylight.mdsal.binding.model.api.MethodSignature
+import org.opendaylight.mdsal.binding.model.api.AnnotationType
 
 /**
  * Template for generating JAVA interfaces.
- * @deprecated Use file from org.opendaylight.mdsal.java.api.generator instead
  */
-@Deprecated
 class InterfaceTemplate extends BaseTemplate {
 
     /**

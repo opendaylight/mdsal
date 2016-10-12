@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator
+package org.opendaylight.mdsal.java.api.generator
 
 import java.io.InputStream
 import java.io.IOException
@@ -20,10 +20,10 @@ import java.util.Map
 import java.util.Set
 import java.util.TreeMap
 
-import org.opendaylight.yangtools.binding.generator.util.Types
-import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType
-import org.opendaylight.yangtools.sal.binding.model.api.Type
-import org.opendaylight.yangtools.sal.binding.model.api.WildcardType
+import org.opendaylight.mdsal.binding.generator.util.Types
+import org.opendaylight.mdsal.binding.model.api.ParameterizedType
+import org.opendaylight.mdsal.binding.model.api.Type
+import org.opendaylight.mdsal.binding.model.api.WildcardType
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo
 import org.opendaylight.yangtools.yang.model.api.Module
 import org.opendaylight.yangtools.yang.model.api.SchemaContext
@@ -33,10 +33,6 @@ import static org.opendaylight.yangtools.yang.binding.BindingMapping.*
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider
 import com.google.common.base.Preconditions
 
-/**
- * @deprecated Use file from org.opendaylight.mdsal.java.api.generator instead
- */
-@Deprecated
 class YangModuleInfoTemplate {
 
     val Module module
