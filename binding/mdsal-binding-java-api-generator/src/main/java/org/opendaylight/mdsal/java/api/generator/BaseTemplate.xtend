@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator
+package org.opendaylight.mdsal.java.api.generator
 
 import com.google.common.base.CharMatcher
 import com.google.common.base.Splitter
@@ -16,22 +16,18 @@ import java.util.List
 import java.util.Map
 import java.util.StringTokenizer
 import java.util.regex.Pattern
-import org.opendaylight.yangtools.binding.generator.util.Types
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType
-import org.opendaylight.yangtools.sal.binding.model.api.Constant
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature
-import org.opendaylight.yangtools.sal.binding.model.api.Restrictions
-import org.opendaylight.yangtools.sal.binding.model.api.Type
-import org.opendaylight.yangtools.sal.binding.model.api.TypeMember
+import org.opendaylight.mdsal.binding.generator.util.Types
+import org.opendaylight.mdsal.binding.model.api.ConcreteType
+import org.opendaylight.mdsal.binding.model.api.Constant
+import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
+import org.opendaylight.mdsal.binding.model.api.GeneratedType
+import org.opendaylight.mdsal.binding.model.api.MethodSignature
+import org.opendaylight.mdsal.binding.model.api.Restrictions
+import org.opendaylight.mdsal.binding.model.api.Type
+import org.opendaylight.mdsal.binding.model.api.TypeMember
 import org.opendaylight.yangtools.yang.common.QName
 
-/**
- * @deprecated Use file from org.opendaylight.mdsal.java.api.generator instead
- */
-@Deprecated
 abstract class BaseTemplate {
     protected val GeneratedType type;
     protected val Map<String, String> importMap;
@@ -309,10 +305,10 @@ abstract class BaseTemplate {
 
         val StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
 
-        while (tokenizer.hasMoreElements) {
+        while(tokenizer.hasMoreElements) {
             val nextElement = tokenizer.nextElement.toString
 
-            if (lineBuilder.length != 0 && lineBuilder.length + nextElement.length > 80) {
+            if(lineBuilder.length + nextElement.length > 80) {
                 if (lineBuilder.charAt(lineBuilder.length - 1) == ' ') {
                     lineBuilder.setLength(0)
                     lineBuilder.append(lineBuilder.substring(0, lineBuilder.length - 1))
@@ -331,7 +327,7 @@ abstract class BaseTemplate {
                 }
             }
 
-            if (isFirstElementOnNewLineEmptyChar) {
+            if(isFirstElementOnNewLineEmptyChar) {
                 isFirstElementOnNewLineEmptyChar = !isFirstElementOnNewLineEmptyChar
             }
 
