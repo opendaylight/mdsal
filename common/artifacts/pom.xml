@@ -114,6 +114,11 @@
                 <artifactId>mdsal-binding-util</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-binding-test-utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
