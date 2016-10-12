@@ -8,10 +8,9 @@
 
 package org.opendaylight.mdsal.binding2.generator.util;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
@@ -28,10 +27,6 @@ import org.opendaylight.yangtools.yang.model.api.Module;
  */
 @Beta
 public final class Binding2Mapping {
-
-    private Binding2Mapping() {
-        throw new UnsupportedOperationException("Utility class");
-    }
 
     public static final Set<String> JAVA_RESERVED_WORDS = ImmutableSet.of("abstract", "assert", "boolean", "break",
             "byte", "case", "catch", "char", "class", "const", "continue", "default", "double", "do", "else", "enum",
@@ -67,10 +62,14 @@ public final class Binding2Mapping {
         }
     };
 
+    private Binding2Mapping() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
     public static String getRootPackageName(final Module module) {
-        checkArgument(module != null, "Module must not be null");
-        checkArgument(module.getRevision() != null, "Revision must not be null");
-        checkArgument(module.getNamespace() != null, "Namespace must not be null");
+        Preconditions.checkArgument(module != null, "Module must not be null");
+        Preconditions.checkArgument(module.getRevision() != null, "Revision must not be null");
+        Preconditions.checkArgument(module.getNamespace() != null, "Namespace must not be null");
 
         final StringBuilder packageNameBuilder = new StringBuilder();
         packageNameBuilder.append(PACKAGE_PREFIX);
@@ -95,6 +94,9 @@ public final class Binding2Mapping {
                 case ';':
                 case '=':
                     chars[i] = '.';
+                    break;
+                default:
+                    // no-op, any other character is kept as it is
             }
         }
 
@@ -140,12 +142,12 @@ public final class Binding2Mapping {
     }
 
     public static String getClassName(final String localName) {
-        checkArgument(localName != null, "Name should not be null.");
+        Preconditions.checkArgument(localName != null, "Name should not be null.");
         return toFirstUpper(toCamelCase(localName));
     }
 
     private static String toCamelCase(final String rawString) {
-        checkArgument(rawString != null, "String should not be null");
+        Preconditions.checkArgument(rawString != null, "String should not be null");
         Iterable<String> components = CAMEL_SPLITTER.split(rawString);
         StringBuilder builder = new StringBuilder();
         for (String comp : components) {

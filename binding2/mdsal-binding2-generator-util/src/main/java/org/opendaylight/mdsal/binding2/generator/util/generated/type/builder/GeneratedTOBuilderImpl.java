@@ -12,7 +12,6 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.Collections;
 import java.util.List;
 import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject;
@@ -39,7 +38,7 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
     private boolean isUnionTypeBuilder = false;
     private TypeDefinition<?> baseType = null;
     private Restrictions restrictions;
-    private GeneratedPropertyBuilder SUID;
+    private GeneratedPropertyBuilder suid;
     private String reference;
     private String description;
     private String moduleName;
@@ -128,7 +127,7 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
 
     @Override
     public void setSUID(GeneratedPropertyBuilder suid) {
-        this.SUID = suid;
+        this.suid = suid;
     }
 
     @Override
@@ -194,7 +193,7 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
         private final boolean isUnionType;
         private final boolean isUnionTypeBuilder;
         private final Restrictions restrictions;
-        private final GeneratedProperty SUID;
+        private final GeneratedProperty innerSuid;
         private final String reference;
         private final String description;
         private final String moduleName;
@@ -218,16 +217,16 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
             this.moduleName = builder.moduleName;
             this.schemaPath = builder.schemaPath;
 
-            if (builder.SUID == null) {
-                this.SUID = null;
+            if (builder.suid == null) {
+                this.innerSuid = null;
             } else {
-                this.SUID = builder.SUID.toInstance(GeneratedTransferObjectImpl.this);
+                this.innerSuid = builder.suid.toInstance(GeneratedTransferObjectImpl.this);
             }
         }
 
         @Override
         public GeneratedProperty getSUID() {
-            return SUID;
+            return innerSuid;
         }
 
         @Override
