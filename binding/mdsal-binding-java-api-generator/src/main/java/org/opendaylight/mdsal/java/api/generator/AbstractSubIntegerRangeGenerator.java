@@ -5,13 +5,8 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
-/**
- * @param <T> type of the class
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.AbstractSubIntegerRangeGenerator} instead
- */
-@Deprecated
 abstract class AbstractSubIntegerRangeGenerator<T extends Number & Comparable<T>> extends AbstractPrimitiveRangeGenerator<T> {
     protected AbstractSubIntegerRangeGenerator(final Class<T> typeClass, final String primitiveName, final T minValue, final T maxValue) {
         super(typeClass, primitiveName, minValue, maxValue);
