@@ -5,12 +5,8 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.ByteRangeGenerator} instead
- */
-@Deprecated
 final class ByteRangeGenerator extends AbstractSubIntegerRangeGenerator<Byte> {
     ByteRangeGenerator() {
         super(Byte.class, byte.class.getName(), Byte.MIN_VALUE, Byte.MAX_VALUE);

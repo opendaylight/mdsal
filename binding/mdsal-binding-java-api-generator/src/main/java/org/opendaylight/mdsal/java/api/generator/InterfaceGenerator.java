@@ -5,22 +5,20 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
 /**
  *
  * Transformator of the data from the virtual form to JAVA source code. The result source code represents JAVA interface. For
  * generating of the source code is used the template written in XTEND language.
  *
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.InterfaceGenerator} instead
  */
-import org.opendaylight.yangtools.sal.binding.model.api.CodeGenerator;
-import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.CodeGenerator;
+import org.opendaylight.mdsal.binding.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Type;
 
-@Deprecated
 public final class InterfaceGenerator implements CodeGenerator {
 
     @Override

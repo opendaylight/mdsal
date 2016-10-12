@@ -5,20 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
 import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.Type;
 
 /**
  * Random utility methods for dealing with {@link Type} objects.
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.TypeUtils} instead
  */
-@Deprecated
 final class TypeUtils {
     private static final String VALUE_PROP = "value";
 

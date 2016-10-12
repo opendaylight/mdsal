@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.opendaylight.yangtools.sal.binding.model.api.CodeGenerator;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.CodeGenerator;
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
@@ -30,9 +30,7 @@ import com.google.common.base.Preconditions;
 /**
  * Generates files with JAVA source codes for every specified type.
  *
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.GeneratorJavaFile} instead
  */
-@Deprecated
 public final class GeneratorJavaFile {
 
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorJavaFile.class);
