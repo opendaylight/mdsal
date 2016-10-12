@@ -8,10 +8,8 @@
 
 package org.opendaylight.mdsal.binding2.generator.impl;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-
 import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,11 +66,11 @@ final class ModuleToGenType {
      */
     private static Map<Module, ModuleContext> allTypeDefinitionsToGenTypes(final Module module, Map<Module, ModuleContext> genCtx,
                                                      TypeProvider typeProvider) {
-        checkArgument(module != null, "Module reference cannot be NULL.");
-        checkArgument(module.getName() != null, "Module name cannot be NULL.");
+        Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
+        Preconditions.checkArgument(module.getName() != null, "Module name cannot be NULL.");
         final DataNodeIterator it = new DataNodeIterator(module);
         final List<TypeDefinition<?>> typeDefinitions = it.allTypedefs();
-        checkState(typeDefinitions != null, "Type Definitions for module «module.name» cannot be NULL.");
+        Preconditions.checkState(typeDefinitions != null, "Type Definitions for module «module.name» cannot be NULL.");
 
         typeDefinitions.stream().filter(typedef -> typedef != null).forEach(typedef -> {
             final Type type = ((TypeProviderImpl) typeProvider).generatedTypeForExtendedDefinitionType(typedef,

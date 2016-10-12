@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding2.generator.util.generated.type.builder;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,10 +41,8 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
     private final String name;
     private List<Pair> values = ImmutableList.of();
     private List<AnnotationTypeBuilder> annotationBuilders = ImmutableList.of();
-    private List<Pair> unmodifiableValues  = ImmutableList.of();
     private String description;
     private String reference;
-    private Status status;
     private String moduleName;
     private List<QName> schemaPath;
 
@@ -67,10 +64,6 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         this.schemaPath = schemaPath;
     }
 
-    public void setStatus(final Status status) {
-        this.status = status;
-    }
-
     @Override
     public void setDescription(String description) {
         this.description = description;
@@ -89,13 +82,12 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
     public void addValue(String name, int value, String description, String reference, Status status) {
         final EnumPairImpl p = new EnumPairImpl(name, value, description, reference, status);
         values = LazyCollections.lazyAdd(values, p);
-        unmodifiableValues = Collections.unmodifiableList(values);
     }
 
     @Override
     public Enumeration toInstance(Type definingType) {
         return new EnumerationImpl(definingType, annotationBuilders, packageName, name, values, description,
-                reference, status, moduleName, schemaPath);
+                reference, moduleName, schemaPath);
     }
 
     @Override
@@ -220,7 +212,6 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         private final Type definingType;
         private final String description;
         private final String reference;
-        private final Status status;
         private final String moduleName;
         private final List<QName> schemaPath;
         private final List<Pair> values;
@@ -228,14 +219,12 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
 
         public EnumerationImpl(final Type definingType, final List<AnnotationTypeBuilder> annotationBuilders,
                                final String packageName, final String name, final List<Pair> values, final String description,
-                               final String reference, final Status status, final String moduleName, final
-                               List<QName> schemaPath) {
+                final String reference, final String moduleName, final List<QName> schemaPath) {
             super(packageName, name);
             this.definingType = definingType;
             this.values = values;
             this.description = description;
             this.reference = reference;
-            this.status = status;
             this.moduleName = moduleName;
             this.schemaPath = schemaPath;
 
@@ -346,10 +335,6 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         @Override
         public List<GeneratedProperty> getProperties() {
             return ImmutableList.of();
-        }
-
-        public Status getStatus() {
-            return status;
         }
     }
 }

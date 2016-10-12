@@ -225,9 +225,8 @@ public final class Types {
         return parameterizedTypeFor(augmentation, valueType);
     }
 
-
-    public static  @Nullable
-    String getOuterClassName(final Type valueType) {
+    @Nullable
+    public static String getOuterClassName(final Type valueType) {
         final String pkgName = valueType.getPackageName();
         if(CharMatcher.JAVA_UPPER_CASE.indexIn(pkgName) >= 0) {
             // It is inner class.
@@ -309,17 +308,6 @@ public final class Types {
          */
         private final Type rawType;
 
-        @Override
-        public Type[] getActualTypeArguments() {
-
-            return actualTypes;
-        }
-
-        @Override
-        public Type getRawType() {
-            return rawType;
-        }
-
         /**
          * Creates instance of this class with concrete rawType and array of
          * actual parameters.
@@ -335,6 +323,16 @@ public final class Types {
             this.actualTypes = actTypes.clone();
         }
 
+        @Override
+        public Type[] getActualTypeArguments() {
+
+            return actualTypes;
+        }
+
+        @Override
+        public Type getRawType() {
+            return rawType;
+        }
     }
 
     /**
@@ -361,13 +359,11 @@ public final class Types {
     }
 
     private static final class DefaultRestrictions<T extends Number> implements Restrictions {
-        private final T min;
-        private final T max;
         private final List<RangeConstraint> rangeConstraints;
 
         private DefaultRestrictions(final T min, final T max) {
-            this.min = Preconditions.checkNotNull(min);
-            this.max = Preconditions.checkNotNull(max);
+            Preconditions.checkNotNull(min);
+            Preconditions.checkNotNull(max);
             this.rangeConstraints = Collections.singletonList(BaseConstraints.newRangeConstraint(min, max, Optional
                     .absent(), Optional.absent()));
         }
