@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.binding2.generator.impl.util;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
@@ -17,7 +15,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding2.generator.util.Types;
 import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding2.model.api.ParameterizedType;
@@ -37,8 +34,6 @@ public final class YangTextTemplate {
     private static final CharMatcher NL_MATCHER = CharMatcher.is(NEW_LINE);
     private static final CharMatcher AMP_MATCHER = CharMatcher.is('&');
     private static final Splitter NL_SPLITTER = Splitter.on(NL_MATCHER);
-    private static final CharMatcher TAB_MATCHER = CharMatcher.is('\t');
-    private static final Pattern SPACES_PATTERN = Pattern.compile(" +");
 
     private YangTextTemplate() {
         throw new UnsupportedOperationException("Util class");
@@ -139,9 +134,10 @@ public final class YangTextTemplate {
      */
     public static void putTypeIntoImports(final GeneratedType parentGenType, final Type type,
         final Map<String, String> imports) {
-        checkArgument(parentGenType != null, "Parent Generated Type parameter MUST be specified and cannot be NULL!");
-        checkArgument(type != null, "Type parameter MUST be specified and cannot be NULL!");
-        checkArgument(parentGenType.getPackageName() != null,
+        Preconditions.checkArgument(parentGenType != null,
+                "Parent Generated Type parameter MUST be specified and cannot be NULL!");
+        Preconditions.checkArgument(type != null, "Type parameter MUST be specified and cannot be NULL!");
+        Preconditions.checkArgument(parentGenType.getPackageName() != null,
                 "Parent Generated Type cannot have Package Name referenced as NULL!");
 
         final String typeName = Preconditions.checkNotNull(type.getName());
@@ -175,8 +171,8 @@ public final class YangTextTemplate {
      */
     public static String getExplicitType(final GeneratedType parentGenType, final Type type,
         final Map<String, String> imports) {
-        checkArgument(type != null, "Type parameter MUST be specified and cannot be NULL!");
-        checkArgument(imports != null, "Imports Map cannot be NULL!");
+        Preconditions.checkArgument(type != null, "Type parameter MUST be specified and cannot be NULL!");
+        Preconditions.checkArgument(imports != null, "Imports Map cannot be NULL!");
 
         final String typePackageName = Preconditions.checkNotNull(type.getPackageName());
         final String typeName = Preconditions.checkNotNull(type.getName());
@@ -185,7 +181,7 @@ public final class YangTextTemplate {
         if (typePackageName.equals(importedPackageName)) {
             builder = new StringBuilder(typeName);
             addActualTypeParameters(builder, type, parentGenType, imports);
-            if (builder.toString().equals("Void")) {
+            if ("Void".equals(builder.toString())) {
                 return "void";
             }
         } else {
