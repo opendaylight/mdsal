@@ -61,15 +61,6 @@ class RpcServiceAdapter implements InvocationHandler {
         proxy = (RpcService) Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type}, this);
     }
 
-    private ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final NormalizedNode<?, ?> input) {
-        final CheckedFuture<DOMRpcResult, DOMRpcException> result = delegate.invokeRpc(schemaPath, input);
-        if (result instanceof LazyDOMRpcResultFuture) {
-            return ((LazyDOMRpcResultFuture) result).getBindingFuture();
-        }
-
-        return transformFuture(schemaPath, result, codec.getCodecFactory());
-    }
-
     private RpcInvocationStrategy createStrategy(final Method method, final RpcDefinition schema) {
         final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(schema);
         if (strategy.isContextBasedRouted()) {
@@ -105,12 +96,12 @@ class RpcServiceAdapter implements InvocationHandler {
     private static boolean isObjectMethod(final Method method) {
         switch (method.getName()) {
             case "toString":
-                return (method.getReturnType().equals(String.class) && method.getParameterTypes().length == 0);
+                return method.getReturnType().equals(String.class) && method.getParameterTypes().length == 0;
             case "hashCode":
-                return (method.getReturnType().equals(int.class) && method.getParameterTypes().length == 0);
+                return method.getReturnType().equals(int.class) && method.getParameterTypes().length == 0;
             case "equals":
-                return (method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 1 && method
-                        .getParameterTypes()[0] == Object.class);
+                return method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 1
+                        && method.getParameterTypes()[0] == Object.class;
             default:
                 return false;
         }
@@ -123,28 +114,10 @@ class RpcServiceAdapter implements InvocationHandler {
             case "hashCode":
                 return System.identityHashCode(self);
             case "equals":
-                return (self == args[0]);
+                return self == args[0];
             default:
                 return null;
         }
-    }
-
-    private static ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
-            final ListenableFuture<DOMRpcResult> domFuture, final BindingNormalizedNodeCodecRegistry codec) {
-        return Futures.transform(domFuture, new Function<DOMRpcResult, RpcResult<?>>() {
-            @Override
-            public RpcResult<?> apply(final DOMRpcResult input) {
-                final NormalizedNode<?, ?> domData = input.getResult();
-                final DataObject bindingResult;
-                if (domData != null) {
-                    final SchemaPath rpcOutput = rpc.createChild(QName.create(rpc.getLastComponent(), "output"));
-                    bindingResult = codec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
-                } else {
-                    bindingResult = null;
-                }
-                return RpcResult.class.cast(RpcResultBuilder.success(bindingResult).build());
-            }
-        });
     }
 
     private abstract class RpcInvocationStrategy {
@@ -167,6 +140,30 @@ class RpcServiceAdapter implements InvocationHandler {
 
         final SchemaPath getRpcName() {
             return rpcName;
+        }
+
+        private ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final NormalizedNode<?, ?> input) {
+            final CheckedFuture<DOMRpcResult, DOMRpcException> result = delegate.invokeRpc(schemaPath, input);
+            if (result instanceof LazyDOMRpcResultFuture) {
+                return ((LazyDOMRpcResultFuture) result).getBindingFuture();
+            }
+
+            return transformFuture(schemaPath, result, codec.getCodecFactory());
+        }
+
+        private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
+                final ListenableFuture<DOMRpcResult> domFuture, final BindingNormalizedNodeCodecRegistry codec) {
+            return Futures.transform(domFuture, (Function<DOMRpcResult, RpcResult<?>>) input -> {
+                final NormalizedNode<?, ?> domData = input.getResult();
+                final DataObject bindingResult;
+                if (domData != null) {
+                    final SchemaPath rpcOutput = rpc.createChild(QName.create(rpc.getLastComponent(), "output"));
+                    bindingResult = codec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
+                } else {
+                    bindingResult = null;
+                }
+                return RpcResult.class.cast(RpcResultBuilder.success(bindingResult).build());
+            });
         }
 
     }

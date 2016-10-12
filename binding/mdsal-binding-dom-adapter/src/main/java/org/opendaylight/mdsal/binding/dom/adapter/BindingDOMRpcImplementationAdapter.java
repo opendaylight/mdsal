@@ -17,7 +17,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -47,16 +46,13 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
     public <T extends RpcService> BindingDOMRpcImplementationAdapter(final BindingNormalizedNodeCodecRegistry codec,
             final Class<T> type, final Map<SchemaPath, Method> localNameToMethod, final T delegate) {
         try {
-            this.invoker = SERVICE_INVOKERS.get(type, new Callable<RpcServiceInvoker>() {
-                @Override
-                public RpcServiceInvoker call() {
-                    final Map<QName, Method> map = new HashMap<>();
-                    for (Entry<SchemaPath, Method> e : localNameToMethod.entrySet()) {
-                        map.put(e.getKey().getLastComponent(), e.getValue());
-                    }
-
-                    return RpcServiceInvoker.from(map);
+            this.invoker = SERVICE_INVOKERS.get(type, () -> {
+                final Map<QName, Method> map = new HashMap<>();
+                for (Entry<SchemaPath, Method> e : localNameToMethod.entrySet()) {
+                    map.put(e.getKey().getLastComponent(), e.getValue());
                 }
+
+                return RpcServiceInvoker.from(map);
             });
         } catch (ExecutionException e) {
             throw new IllegalArgumentException("Failed to create invokers for type " + type, e);
@@ -73,7 +69,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
         final SchemaPath schemaPath = rpc.getType();
         final DataObject bindingInput = input != null ? deserilialize(rpc.getType(),input) : null;
         final ListenableFuture<RpcResult<?>> bindingResult = invoke(schemaPath,bindingInput);
-        return transformResult(schemaPath,bindingResult);
+        return transformResult(bindingResult);
     }
 
     private DataObject deserilialize(final SchemaPath rpcPath, final NormalizedNode<?, ?> input) {
@@ -88,7 +84,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
         return JdkFutureAdapters.listenInPoolThread(invoker.invokeRpc(delegate, schemaPath.getLastComponent(), input));
     }
 
-    private CheckedFuture<DOMRpcResult, DOMRpcException> transformResult(final SchemaPath schemaPath,
+    private CheckedFuture<DOMRpcResult, DOMRpcException> transformResult(
             final ListenableFuture<RpcResult<?>> bindingResult) {
         return LazyDOMRpcResultFuture.create(codec, bindingResult);
     }

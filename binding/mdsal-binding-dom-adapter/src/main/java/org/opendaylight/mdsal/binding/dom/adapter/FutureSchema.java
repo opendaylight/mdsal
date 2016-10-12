@@ -25,6 +25,7 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 class FutureSchema implements AutoCloseable {
 
     private final List<FutureSchemaPredicate> postponedOperations = new CopyOnWriteArrayList<>();
+    private final SettableFuture<?> schemaPromise = SettableFuture.create();
     private final long duration;
     private final TimeUnit unit;
 
@@ -115,8 +116,6 @@ class FutureSchema implements AutoCloseable {
         final void cancel() {
             schemaPromise.cancel(true);
         }
-
-        private final SettableFuture<?> schemaPromise = SettableFuture.create();
     }
 
 }
