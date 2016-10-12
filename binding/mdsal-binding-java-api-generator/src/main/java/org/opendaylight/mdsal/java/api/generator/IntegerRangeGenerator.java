@@ -5,12 +5,8 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.IntegerRangeGenerator} instead
- */
-@Deprecated
 final class IntegerRangeGenerator extends AbstractPrimitiveRangeGenerator<Integer> {
     IntegerRangeGenerator() {
         super(Integer.class, int.class.getName(), Integer.MIN_VALUE, Integer.MAX_VALUE);
