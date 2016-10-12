@@ -5,15 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.BigDecimalRangeGenerator} instead
- */
-@Deprecated
 final class BigDecimalRangeGenerator extends AbstractBigRangeGenerator<BigDecimal> {
     BigDecimalRangeGenerator() {
         super(BigDecimal.class);

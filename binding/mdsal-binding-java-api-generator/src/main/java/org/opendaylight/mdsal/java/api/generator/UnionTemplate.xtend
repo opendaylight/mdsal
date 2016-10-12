@@ -5,20 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator
+package org.opendaylight.mdsal.java.api.generator
 
-import static org.opendaylight.yangtools.binding.generator.util.Types.*
+import static org.opendaylight.mdsal.binding.generator.util.Types.*
 import com.google.common.base.Preconditions;
 import java.beans.ConstructorProperties
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject
-import org.opendaylight.yangtools.sal.binding.model.api.Enumeration
+import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
+import org.opendaylight.mdsal.binding.model.api.Enumeration
 
 /**
  * Template for generating JAVA class.
- * @deprecated Use file from org.opendaylight.mdsal.java.api.generator instead
  */
-@Deprecated
 class UnionTemplate extends ClassTemplate {
 
     /**
