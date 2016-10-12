@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.java.api.generator;
+package org.opendaylight.mdsal.java.api.generator;
 
 import com.google.common.collect.Range;
 import java.math.BigInteger;
@@ -14,13 +14,9 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.java.api.generator.LengthGenerator} instead
- */
-@Deprecated
 final class LengthGenerator {
     private LengthGenerator() {
         throw new UnsupportedOperationException();
