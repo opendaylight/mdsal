@@ -18,7 +18,10 @@ import javassist.CtMethod;
  * is called, the entire class source code is generated and outputted.
  *
  * @author Thomas Pantelis
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.SourceCodeGenerator} instead
  */
+@Deprecated
 public interface SourceCodeGenerator {
 
     /**

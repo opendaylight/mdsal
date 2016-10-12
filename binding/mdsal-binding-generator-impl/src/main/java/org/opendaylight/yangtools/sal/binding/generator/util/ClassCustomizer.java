@@ -7,14 +7,14 @@
  */
 package org.opendaylight.yangtools.sal.binding.generator.util;
 
-import com.google.common.annotations.Beta;
-
 import javassist.CtClass;
 
 /**
  * Interface allowing customization of classes after loading.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.ClassCustomizer} instead
  */
-@Beta
+@Deprecated
 public interface ClassCustomizer {
     /**
      * Customize a class.
