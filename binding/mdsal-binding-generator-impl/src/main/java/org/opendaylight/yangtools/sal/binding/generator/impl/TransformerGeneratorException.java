@@ -7,6 +7,10 @@
  */
 package org.opendaylight.yangtools.sal.binding.generator.impl;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.binding.generator.impl.TransformerGeneratorException} instead
+ */
+@Deprecated
 final class TransformerGeneratorException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 

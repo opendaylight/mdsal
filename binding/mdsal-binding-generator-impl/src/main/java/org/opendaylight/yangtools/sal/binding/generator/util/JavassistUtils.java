@@ -28,7 +28,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Users of this utility class are expected to synchronize on this instance
  * it they need to ensure atomic operations on it.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.JavassistUtils} instead
  */
+@Deprecated
 public final class JavassistUtils {
     private static final Logger LOG = LoggerFactory.getLogger(JavassistUtils.class);
 
