@@ -72,7 +72,9 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Same goes for all possible augmentations.
  *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext} instead
  */
+@Deprecated
 public class BindingRuntimeContext implements Immutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeContext.class);
     private static final char DOT = '.';
