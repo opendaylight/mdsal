@@ -22,6 +22,10 @@ import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.yang.types.BaseYangTypes} instead
+ */
+@Deprecated
 public final class BaseYangTypes {
     /**
      * mapping of basic built-in YANG types (keys) to JAVA
