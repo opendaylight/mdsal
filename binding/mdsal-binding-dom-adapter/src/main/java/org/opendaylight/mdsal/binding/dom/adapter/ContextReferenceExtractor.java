@@ -32,13 +32,47 @@ abstract class ContextReferenceExtractor {
         }
     };
 
-
     private static final LoadingCache<Class<?>, ContextReferenceExtractor> EXTRACTORS = CacheBuilder.newBuilder()
             .weakKeys().build(new CacheLoader<Class<?>, ContextReferenceExtractor>() {
 
                 @Override
                 public ContextReferenceExtractor load(final Class<?> key) throws Exception {
                     return create(key);
+                }
+
+                @Nonnull
+                private ContextReferenceExtractor create(final Class<?> key) {
+                    final Method contextGetter = getContextGetter(key);
+                    if (contextGetter == null) {
+                        return NULL_EXTRACTOR;
+                    }
+                    final Class<?> returnType = contextGetter.getReturnType();
+                    try {
+                        if (InstanceIdentifier.class.isAssignableFrom(returnType)) {
+                            return DirectGetterRouteContextExtractor.create(contextGetter);
+                        }
+                        final Method getValueMethod = findGetValueMethod(returnType, InstanceIdentifier.class);
+                        if (getValueMethod != null) {
+                            return GetValueRouteContextExtractor.create(contextGetter, getValueMethod);
+                        } else {
+                            LOG.warn("Class {} can not be used to determine context, falling back to NULL_EXTRACTOR.",
+                                    returnType);
+                        }
+                    } catch (final IllegalAccessException e) {
+                        LOG.warn(
+                                "Class {} does not conform to Binding Specification v1. Falling back to NULL_EXTRACTOR",
+                                e);
+                    }
+                    return NULL_EXTRACTOR;
+                }
+
+                private Method getContextGetter(final Class<?> key) {
+                    for (final Method method : key.getMethods()) {
+                        if (method.getAnnotation(RoutingContext.class) != null) {
+                            return method;
+                        }
+                    }
+                    return null;
                 }
             });
 
@@ -59,30 +93,8 @@ abstract class ContextReferenceExtractor {
      * @return Instance Identifier representing context reference
      *     or null, if data object does not contain context reference.
      */
-    abstract @Nullable InstanceIdentifier<?> extract(DataObject obj);
-
-    @Nonnull
-    private static ContextReferenceExtractor create(final Class<?> key) {
-        final Method contextGetter = getContextGetter(key);
-        if (contextGetter == null) {
-            return NULL_EXTRACTOR;
-        }
-        final Class<?> returnType = contextGetter.getReturnType();
-        try {
-            if (InstanceIdentifier.class.isAssignableFrom(returnType)) {
-                return DirectGetterRouteContextExtractor.create(contextGetter);
-            }
-            final Method getValueMethod = findGetValueMethod(returnType,InstanceIdentifier.class);
-            if (getValueMethod != null) {
-                return GetValueRouteContextExtractor.create(contextGetter, getValueMethod);
-            } else {
-                LOG.warn("Class {} can not be used to determine context, falling back to NULL_EXTRACTOR.",returnType);
-            }
-        } catch (final IllegalAccessException e) {
-            LOG.warn("Class {} does not conform to Binding Specification v1. Falling back to NULL_EXTRACTOR", e);
-        }
-        return NULL_EXTRACTOR;
-    }
+    @Nullable
+    abstract InstanceIdentifier<?> extract(DataObject obj);
 
     @Nullable
     private static Method findGetValueMethod(final Class<?> type, final Class<?> returnType) {
@@ -96,16 +108,4 @@ abstract class ContextReferenceExtractor {
         }
         return null;
     }
-
-    private static Method getContextGetter(final Class<?> key) {
-        for (final Method method : key.getMethods()) {
-            if (method.getAnnotation(RoutingContext.class) != null) {
-                return method;
-            }
-        }
-        return null;
-    }
-
-
-
 }

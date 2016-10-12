@@ -27,6 +27,7 @@ class FutureSchema implements AutoCloseable {
     private final List<FutureSchemaPredicate> postponedOperations = new CopyOnWriteArrayList<>();
     private final long duration;
     private final TimeUnit unit;
+    private final SettableFuture<?> schemaPromise = SettableFuture.create();
 
     protected FutureSchema(final long time, final TimeUnit unit) {
         this.duration = time;
@@ -115,8 +116,6 @@ class FutureSchema implements AutoCloseable {
         final void cancel() {
             schemaPromise.cancel(true);
         }
-
-        private final SettableFuture<?> schemaPromise = SettableFuture.create();
     }
 
 }
