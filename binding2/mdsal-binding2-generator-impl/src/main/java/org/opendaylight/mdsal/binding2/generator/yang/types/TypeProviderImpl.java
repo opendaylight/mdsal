@@ -8,8 +8,6 @@
 
 package org.opendaylight.mdsal.binding2.generator.yang.types;
 
-import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
-
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.Date;
@@ -26,13 +24,10 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 
 @Beta
 public final class TypeProviderImpl implements TypeProvider {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TypeProviderImpl.class);
 
     /**
      * Contains the schema data red from YANG files.
@@ -110,7 +105,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
         final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
         if (!(baseTypeDef instanceof LeafrefTypeDefinition) && !(baseTypeDef instanceof IdentityrefTypeDefinition)) {
-            final Module module = findParentModule(schemaContext, parentNode);
+            final Module module = SchemaContextUtil.findParentModule(schemaContext, parentNode);
 
             if (module != null) {
                 final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());

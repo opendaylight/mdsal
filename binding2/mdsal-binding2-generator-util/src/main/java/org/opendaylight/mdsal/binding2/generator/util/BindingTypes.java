@@ -8,9 +8,6 @@
 
 package org.opendaylight.mdsal.binding2.generator.util;
 
-import static org.opendaylight.mdsal.binding2.generator.util.Types.parameterizedTypeFor;
-import static org.opendaylight.mdsal.binding2.generator.util.Types.typeForClass;
-
 import javax.management.NotificationListener;
 import org.opendaylight.mdsal.binding2.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding2.model.api.ParameterizedType;
@@ -27,28 +24,28 @@ import org.opendaylight.yangtools.concepts.Identifier;
 
 public final class BindingTypes {
 
-    public static final ConcreteType AUGMENTABLE = typeForClass(Augmentable.class);
-    public static final ConcreteType AUGMENTATION = typeForClass(Augmentation.class);
-    public static final ConcreteType TREE_NODE = typeForClass(TreeNode.class);
-    public static final ConcreteType TREE_ROOT = typeForClass(TreeRoot.class);
-    public static final ConcreteType IDENTIFIABLE_ITEM = typeForClass(IdentifiableItem.class);
-    public static final ConcreteType IDENTIFIER = typeForClass(Identifier.class);
-    public static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
-    public static final ConcreteType NOTIFICATION = typeForClass(Notification.class);
-    public static final ConcreteType NOTIFICATION_LISTENER = typeForClass(NotificationListener.class);
+    public static final ConcreteType AUGMENTABLE = Types.typeForClass(Augmentable.class);
+    public static final ConcreteType AUGMENTATION = Types.typeForClass(Augmentation.class);
+    public static final ConcreteType TREE_NODE = Types.typeForClass(TreeNode.class);
+    public static final ConcreteType TREE_ROOT = Types.typeForClass(TreeRoot.class);
+    public static final ConcreteType IDENTIFIABLE_ITEM = Types.typeForClass(IdentifiableItem.class);
+    public static final ConcreteType IDENTIFIER = Types.typeForClass(Identifier.class);
+    public static final ConcreteType INSTANCE_IDENTIFIER = Types.typeForClass(InstanceIdentifier.class);
+    public static final ConcreteType NOTIFICATION = Types.typeForClass(Notification.class);
+    public static final ConcreteType NOTIFICATION_LISTENER = Types.typeForClass(NotificationListener.class);
 
-    private static final ConcreteType TREE_CHILD_NODE = typeForClass(TreeChildNode.class);
+    private static final ConcreteType TREE_CHILD_NODE = Types.typeForClass(TreeChildNode.class);
 
     private BindingTypes() {
         throw new UnsupportedOperationException("Utility class");
     }
 
     public static ParameterizedType augmentable(Type t) {
-        return parameterizedTypeFor(AUGMENTABLE, t);
+        return Types.parameterizedTypeFor(AUGMENTABLE, t);
     }
 
     public static ParameterizedType treeChildNode(Type t) {
-        return parameterizedTypeFor(TREE_CHILD_NODE, t);
+        return Types.parameterizedTypeFor(TREE_CHILD_NODE, t);
     }
 
 }

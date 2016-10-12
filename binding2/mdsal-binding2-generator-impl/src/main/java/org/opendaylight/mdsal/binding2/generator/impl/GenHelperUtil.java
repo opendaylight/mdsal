@@ -8,14 +8,9 @@
 
 package org.opendaylight.mdsal.binding2.generator.impl;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static org.opendaylight.mdsal.binding2.generator.impl.AugmentToGenType.usesAugmentationToGenTypes;
-import static org.opendaylight.mdsal.binding2.generator.util.BindingTypes.TREE_ROOT;
-import static org.opendaylight.mdsal.binding2.generator.util.BindingTypes.augmentable;
-import static org.opendaylight.mdsal.binding2.generator.util.Types.typeForClass;
-
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
@@ -34,8 +29,6 @@ import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.mdsal.binding2.txt.yangTemplateForModule;
-import org.opendaylight.mdsal.binding2.txt.yangTemplateForNode;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -53,17 +46,14 @@ import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-
+import org.opendaylight.mdsal.binding2.txt.yangTemplateForModule;
+import org.opendaylight.mdsal.binding2.txt.yangTemplateForNode;
 
 /**
  * Helper util class used for generation of types in binding spec v2.
  */
 @Beta
 final class GenHelperUtil {
-
-    private GenHelperUtil() {
-        throw new UnsupportedOperationException("Util class");
-    }
 
     private static final Pattern UNICODE_CHAR_PATTERN = Pattern.compile("\\\\+u");
     private static final Splitter BSDOT_SPLITTER = Splitter.on("\\.");
@@ -79,6 +69,9 @@ final class GenHelperUtil {
      */
     private static final String YANG_EXT_NAMESPACE = "urn:opendaylight:yang:extension:yang-ext";
 
+    private GenHelperUtil() {
+        throw new UnsupportedOperationException("Util class");
+    }
 
     /**
      * Create GeneratedTypeBuilder object from module argument.
@@ -94,11 +87,11 @@ final class GenHelperUtil {
      *             if module is null
      */
     static GeneratedTypeBuilder moduleToDataType(final Module module, Map<Module, ModuleContext> genCtx, final boolean verboseClassComments) {
-        checkArgument(module != null, "Module reference cannot be NULL.");
+        Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
 
         final GeneratedTypeBuilder moduleDataTypeBuilder = moduleTypeBuilder(module, "Data", verboseClassComments);
         addImplementedInterfaceFromUses(module, moduleDataTypeBuilder, genCtx);
-        moduleDataTypeBuilder.addImplementsType(TREE_ROOT);
+        moduleDataTypeBuilder.addImplementsType(BindingTypes.TREE_ROOT);
         moduleDataTypeBuilder.addComment(module.getDescription());
         moduleDataTypeBuilder.setDescription(createDescription(module, verboseClassComments));
         moduleDataTypeBuilder.setReference(module.getReference());
@@ -121,7 +114,7 @@ final class GenHelperUtil {
      *             if <code>module</code> is null
      */
     static GeneratedTypeBuilder moduleTypeBuilder(final Module module, final String postfix, final boolean verboseClassComments) {
-        checkArgument(module != null, "Module reference cannot be NULL.");
+        Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         final String packageName = Binding2Mapping.getRootPackageName(module);
         final String moduleName = Binding2Mapping.getClassName(module.getName()) + postfix;
 
@@ -251,7 +244,8 @@ final class GenHelperUtil {
         final String basePackageName = Binding2Mapping.getRootPackageName(module);
         for (final UsesNode usesNode : node.getUses()) {
             for (final AugmentationSchema augment : usesNode.getAugmentations()) {
-                genCtx = usesAugmentationToGenTypes(schemaContext, basePackageName, augment, module, usesNode,
+                genCtx = AugmentToGenType.usesAugmentationToGenTypes(schemaContext, basePackageName, augment, module,
+                        usesNode,
                         node, genCtx, genTypeBuilders, verboseClassComments);
                 genCtx = processUsesAugments(schemaContext, augment, module, genCtx, genTypeBuilders, verboseClassComments);
             }
@@ -452,7 +446,7 @@ final class GenHelperUtil {
             it.addImplementsType(BindingTypes.treeChildNode(parent));
         }
         if (!(schemaNode instanceof GroupingDefinition)) {
-            it.addImplementsType(augmentable(it));
+            it.addImplementsType(BindingTypes.augmentable(it));
         }
 
         if (schemaNode instanceof DataNodeContainer) {
@@ -493,11 +487,11 @@ final class GenHelperUtil {
     private static GeneratedTypeBuilder addRawInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
                        final SchemaContext schemaContext, final String prefix, final boolean verboseClassComments,
                        Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
-        checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
-        checkArgument(packageName != null, "Package Name for Generated Type cannot be NULL.");
-        checkArgument(schemaNode.getQName() != null, "QName for Data Schema Node cannot be NULL.");
+        Preconditions.checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
+        Preconditions.checkArgument(packageName != null, "Package Name for Generated Type cannot be NULL.");
+        Preconditions.checkArgument(schemaNode.getQName() != null, "QName for Data Schema Node cannot be NULL.");
         final String schemaNodeName = schemaNode.getQName().getLocalName();
-        checkArgument(schemaNodeName != null, "Local Name of QName for Data Schema Node cannot be NULL.");
+        Preconditions.checkArgument(schemaNodeName != null, "Local Name of QName for Data Schema Node cannot be NULL.");
 
         String genTypeName;
         if (prefix == null) {
@@ -532,7 +526,7 @@ final class GenHelperUtil {
 
     private static Constant qNameConstant(final GeneratedTypeBuilderBase<?> toBuilder, final String constantName,
                                           final QName name) {
-        return toBuilder.addConstant(typeForClass(QName.class), constantName, name);
+        return toBuilder.addConstant(Types.typeForClass(QName.class), constantName, name);
     }
 
     private static String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName,
