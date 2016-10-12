@@ -24,18 +24,17 @@ import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 
 public class BindingDOMRpcServiceAdapter implements RpcConsumerRegistry {
 
-    protected static final Factory<RpcConsumerRegistry> BUILDER_FACTORY = new Factory<RpcConsumerRegistry>() {
-
-        @Override
-        public BindingDOMAdapterBuilder<RpcConsumerRegistry> newBuilder() {
-            return new Builder();
-        }
-
-    };
+    protected static final Factory<RpcConsumerRegistry> BUILDER_FACTORY = Builder::new;
 
     private final LoadingCache<Class<? extends RpcService>, RpcServiceAdapter> proxies = CacheBuilder.newBuilder()
             .weakKeys()
             .build(new CacheLoader<Class<? extends RpcService>, RpcServiceAdapter>() {
+
+                private RpcServiceAdapter createProxy(final Class<? extends RpcService> key) {
+                    Preconditions.checkArgument(BindingReflections.isBindingClass(key));
+                    Preconditions.checkArgument(key.isInterface(), "Supplied RPC service type must be interface.");
+                    return new RpcServiceAdapter(key, codec, domService);
+                }
 
                 @Override
                 public RpcServiceAdapter load(final Class<? extends RpcService> key) throws Exception {
@@ -58,12 +57,6 @@ public class BindingDOMRpcServiceAdapter implements RpcConsumerRegistry {
     public <T extends RpcService> T getRpcService(final Class<T> rpcService) {
         Preconditions.checkArgument(rpcService != null, "Rpc Service needs to be specied.");
         return (T) proxies.getUnchecked(rpcService).getProxy();
-    }
-
-    private RpcServiceAdapter createProxy(final Class<? extends RpcService> key) {
-        Preconditions.checkArgument(BindingReflections.isBindingClass(key));
-        Preconditions.checkArgument(key.isInterface(), "Supplied RPC service type must be interface.");
-        return new RpcServiceAdapter(key, codec, domService);
     }
 
     private static final class Builder extends BindingDOMAdapterBuilder<RpcConsumerRegistry> {

@@ -16,7 +16,6 @@ import org.opendaylight.mdsal.binding.api.DataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
-import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 
 class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
@@ -53,11 +52,8 @@ class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
     public void close() throws DataTreeProducerException {
         try {
             delegate.close();
-        } catch (final DOMDataTreeProducerBusyException e) {
-            throw new DataTreeProducerException(e.getMessage(), e);
         } catch (final DOMDataTreeProducerException e) {
             throw new DataTreeProducerException(e.getMessage(), e);
         }
     }
-
 }
