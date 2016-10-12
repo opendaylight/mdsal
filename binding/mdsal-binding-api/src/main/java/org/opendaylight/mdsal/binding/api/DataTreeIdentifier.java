@@ -41,7 +41,8 @@ public final class DataTreeIdentifier<T extends DataObject> implements Immutable
      *
      * @return Logical data store type. Guaranteed to be non-null.
      */
-    public @Nonnull LogicalDatastoreType getDatastoreType() {
+    @Nonnull
+    public LogicalDatastoreType getDatastoreType() {
         return datastoreType;
     }
 
@@ -50,7 +51,8 @@ public final class DataTreeIdentifier<T extends DataObject> implements Immutable
      *
      * @return Instance identifier corresponding to the root node.
      */
-    public @Nonnull InstanceIdentifier<T> getRootIdentifier() {
+    @Nonnull
+    public InstanceIdentifier<T> getRootIdentifier() {
         return rootIdentifier;
     }
 
