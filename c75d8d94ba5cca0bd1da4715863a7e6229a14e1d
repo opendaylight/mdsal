@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_6eae33e9",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WriteableDataStore.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-10-13T08:25:44Z",
+      "side": 1,
+      "message": "While the refactor is simple, the semantics of the methods described here seems to be quite different -- transactions offer clear isolation and atomicity, while these aspects are completely undefined.\n\nHence the javadocs are not accurate in this interface and have to be overridden with specific in their original place -- they simply are not the same thing. In a transaction the effects do not complete until the transaction is submitted, but here ... do they take effect immediately? Are they observable from other instances of this interface coming from the same factory?",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 73
+      },
+      "revId": "c75d8d94ba5cca0bd1da4715863a7e6229a14e1d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_8e5e2f11",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WriteableDataStore.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-10-13T08:25:44Z",
+      "side": 1,
+      "message": "data store is quite overloaded, is there something else we can use?",
+      "range": {
+        "startLine": 23,
+        "startChar": 17,
+        "endLine": 23,
+        "endChar": 35
+      },
+      "revId": "c75d8d94ba5cca0bd1da4715863a7e6229a14e1d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
