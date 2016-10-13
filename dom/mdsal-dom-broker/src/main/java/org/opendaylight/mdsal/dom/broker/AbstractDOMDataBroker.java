@@ -7,8 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static com.google.common.base.Preconditions.checkState;
-
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -57,7 +56,8 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
                         public <L extends DOMDataTreeChangeListener> ListenerRegistration<L>
                                 registerDataTreeChangeListener(final DOMDataTreeIdentifier treeId, final L listener) {
                             DOMStore publisher = getTxFactories().get(treeId.getDatastoreType());
-                            checkState(publisher != null, "Requested logical data store is not available.");
+                            Preconditions.checkState(publisher != null,
+                                    "Requested logical data store is not available.");
 
                             return ((DOMStoreTreeChangePublisher)publisher).registerTreeChangeListener(
                                     treeId.getRootIdentifier(), listener);
