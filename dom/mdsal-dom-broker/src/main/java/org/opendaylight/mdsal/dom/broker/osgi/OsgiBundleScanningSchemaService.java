@@ -233,9 +233,9 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     public synchronized SchemaContextListener addingService(final ServiceReference<SchemaContextListener> reference) {
 
         final SchemaContextListener listener = context.getService(reference);
-        final SchemaContext _ctxContext = getGlobalContext();
-        if (getContext() != null && _ctxContext != null) {
-            listener.onGlobalContextUpdated(_ctxContext);
+        final SchemaContext ctxContext = getGlobalContext();
+        if (getContext() != null && ctxContext != null) {
+            listener.onGlobalContextUpdated(ctxContext);
         }
         return listener;
     }
