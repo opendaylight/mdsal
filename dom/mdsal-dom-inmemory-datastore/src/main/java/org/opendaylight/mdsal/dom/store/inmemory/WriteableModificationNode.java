@@ -22,7 +22,8 @@ abstract class WriteableModificationNode implements Identifiable<PathArgument> {
      *
      * @return null if requested child is not subshard or enclosing node of any subshard.
      */
-    abstract @Nullable WriteableModificationNode getChild(@Nonnull PathArgument node);
+    @Nullable
+    abstract WriteableModificationNode getChild(@Nonnull PathArgument node);
 
     abstract Map<PathArgument, WriteableModificationNode> getChildrenWithSubshards();
 
