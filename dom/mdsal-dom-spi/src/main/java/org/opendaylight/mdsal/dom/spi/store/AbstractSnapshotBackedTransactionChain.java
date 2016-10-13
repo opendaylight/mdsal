@@ -12,7 +12,6 @@ import com.google.common.base.Preconditions;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
-
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
@@ -120,8 +119,8 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
     }
 
     private boolean recordTransaction(final State expected, final DOMStoreWriteTransaction transaction) {
-        final State state = new Allocated(transaction);
-        return STATE_UPDATER.compareAndSet(this, expected, state);
+        final State real = new Allocated(transaction);
+        return STATE_UPDATER.compareAndSet(this, expected, real);
     }
 
     @Override

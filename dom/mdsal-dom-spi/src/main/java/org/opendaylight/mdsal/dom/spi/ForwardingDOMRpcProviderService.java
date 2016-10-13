@@ -21,7 +21,8 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
  */
 public abstract class ForwardingDOMRpcProviderService extends ForwardingObject implements DOMRpcProviderService {
     @Override
-    protected abstract @Nonnull DOMRpcProviderService delegate();
+    @Nonnull
+    protected abstract DOMRpcProviderService delegate();
 
     @Override
     public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(

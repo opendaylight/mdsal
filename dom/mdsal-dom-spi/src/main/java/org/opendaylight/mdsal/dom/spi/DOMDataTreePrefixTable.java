@@ -47,7 +47,8 @@ public final class DOMDataTreePrefixTable<V> {
      * @param prefix Prefix for lookup
      * @return closest non-null entry towards root or null if no entry towards root exists.
      */
-    public @Nullable DOMDataTreePrefixTableEntry<V> lookup(@Nonnull final DOMDataTreeIdentifier prefix) {
+    @Nullable
+    public DOMDataTreePrefixTableEntry<V> lookup(@Nonnull final DOMDataTreeIdentifier prefix) {
         final DOMDataTreePrefixTableEntry<V> t = roots.get(prefix.getDatastoreType());
         if (t == null) {
             return null;
@@ -66,7 +67,7 @@ public final class DOMDataTreePrefixTable<V> {
     public void store(@Nonnull final DOMDataTreeIdentifier prefix, @Nonnull final V value) {
         DOMDataTreePrefixTableEntry<V> domDataTreePrefixTableEntry = roots.get(prefix.getDatastoreType());
         if (domDataTreePrefixTableEntry == null) {
-            domDataTreePrefixTableEntry = new DOMDataTreePrefixTableEntry<V>();
+            domDataTreePrefixTableEntry = new DOMDataTreePrefixTableEntry<>();
             roots.put(prefix.getDatastoreType(), domDataTreePrefixTableEntry);
         }
 
