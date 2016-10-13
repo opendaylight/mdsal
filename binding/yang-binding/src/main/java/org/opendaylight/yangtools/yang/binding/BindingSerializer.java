@@ -7,6 +7,10 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.BindingSerializer} instead
+ */
+@Deprecated
 public interface BindingSerializer<P,I> {
     P serialize(I input);
 }

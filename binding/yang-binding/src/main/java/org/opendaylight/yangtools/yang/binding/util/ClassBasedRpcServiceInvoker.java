@@ -18,6 +18,10 @@ import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.QName;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.yang.binding.util.ClassBasedRpcServiceInvoker} instead
+ */
+@Deprecated
 final class ClassBasedRpcServiceInvoker extends AbstractMappedRpcInvoker<String> {
     private static final LoadingCache<Class<? extends RpcService>, RpcServiceInvoker> INVOKERS = CacheBuilder.newBuilder()
             .weakKeys()

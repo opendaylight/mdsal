@@ -15,6 +15,10 @@ import java.util.Map.Entry;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.yang.binding.util.LocalNameRpcServiceInvoker} instead
+ */
+@Deprecated
 final class LocalNameRpcServiceInvoker extends AbstractMappedRpcInvoker<String> {
     private final QNameModule module;
 

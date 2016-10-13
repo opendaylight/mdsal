@@ -85,7 +85,9 @@ import java.io.IOException;
  * generated Binding DTOs and wired in OSGI.
  *
  *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.BindingStreamEventWriter} instead
  */
+@Deprecated
 public interface BindingStreamEventWriter extends Closeable, Flushable {
 
     /**

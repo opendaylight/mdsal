@@ -31,6 +31,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableIt
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.util.DataObjectReadingUtil} instead
+ */
+@Deprecated
 public class DataObjectReadingUtil {
 
     private DataObjectReadingUtil() {

@@ -24,6 +24,10 @@ import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.yang.binding.util.AugmentationFieldGetter} instead
+ */
+@Deprecated
 abstract class AugmentationFieldGetter {
 
     private static final Logger LOG = LoggerFactory.getLogger(AugmentationFieldGetter.class);

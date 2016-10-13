@@ -53,7 +53,9 @@ import org.opendaylight.yangtools.util.HashCodeBuilder;
  *
  * This would be the same as using a path like so, "/nodes/node/openflow:1" to refer to the openflow:1 node
  *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.InstanceIdentifier} instead
  */
+@Deprecated
 public class InstanceIdentifier<T extends DataObject> implements Path<InstanceIdentifier<? extends DataObject>>, Immutable, Serializable {
     private static final Field PATHARGUMENTS_FIELD;
     private static final long serialVersionUID = 2L;

@@ -27,12 +27,14 @@ import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.opendaylight.yangtools.yang.common.QName;
 
 /**
- * Provides single method invocation of notificatoin callbacks on supplied instance.
+ * Provides single method invocation of notification callbacks on supplied instance.
  *
  * Notification Listener invoker provides common invocation interface for any subtype of {@link NotificationListener}.
  * via {@link #invokeNotification(NotificationListener, QName, DataContainer)} method.
  *
+ * @deprecated Use {org.opendaylight.mdsal.yang.binding.util.NotificationListenerInvoker} instead
  */
+@Deprecated
 public final class NotificationListenerInvoker {
 
     private static final Lookup LOOKUP = MethodHandles.publicLookup();

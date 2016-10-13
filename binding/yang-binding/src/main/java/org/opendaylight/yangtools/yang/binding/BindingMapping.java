@@ -21,6 +21,10 @@ import java.util.regex.Pattern;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.BindingMapping} instead
+ */
+@Deprecated
 public final class BindingMapping {
 
     public static final String VERSION = "0.6";
