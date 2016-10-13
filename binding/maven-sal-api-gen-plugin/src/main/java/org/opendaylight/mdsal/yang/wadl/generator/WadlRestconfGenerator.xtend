@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.wadl.generator
+package org.opendaylight.mdsal.yang.wadl.generator
 
 import java.io.BufferedWriter
 import java.io.File
@@ -25,10 +25,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext
 import org.sonatype.plexus.build.incremental.BuildContext
 import org.sonatype.plexus.build.incremental.DefaultBuildContext
 
-/**
- * @deprecated Use {org.opendaylight.mdsal.yang.wadl.generator.WadlRestconfGenerator} instead
- */
-@Deprecated
 class WadlRestconfGenerator {
 	
 	File path
