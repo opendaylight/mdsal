@@ -9,6 +9,10 @@ package org.opendaylight.yangtools.yang.binding;
 
 import org.opendaylight.yangtools.concepts.Codec;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.BindingCodec} instead
+ */
+@Deprecated
 public interface BindingCodec<P, I> extends BindingSerializer<P, I>, BindingDeserializer<I, P>, Codec<P, I> {
 
     @Override

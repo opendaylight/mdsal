@@ -9,20 +9,23 @@ package org.opendaylight.yangtools.yang.binding;
 
 /**
  * Child of parent container
- * 
- * Marker interface uniquelly bounding generated Java interfaces to their 
+ *
+ * Marker interface uniquelly bounding generated Java interfaces to their
  * parent container.
- * 
+ *
  * Any nested Java interface generated from YANG must implement this interface,
  * where parameter <code>P</code> points to it's defining data node container
  * (interface generated for List, Container, Case).
- * 
+ *
  * In case of children added by augmentation (which implements {@link Augmentation})
  * interfaces representing nested container must implements {@link ChildOf} with
  * same argument as Augmentation.
- * 
+ *
  * @param <P> Parent container
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.ChildOf} instead
  */
+@Deprecated
 public interface ChildOf<P> extends DataObject {
 
 }
