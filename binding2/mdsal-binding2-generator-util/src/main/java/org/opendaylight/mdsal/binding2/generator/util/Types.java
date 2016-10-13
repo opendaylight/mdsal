@@ -39,6 +39,17 @@ import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 
 @Beta
 public final class Types {
+    private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
+            new CacheLoader<Class<?>, ConcreteType>() {
+
+                @Override
+                public ConcreteType load(Class<?> key) throws Exception {
+                    return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
+                }
+            };
+
+    private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
+            CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
 
     public static final ConcreteType BOOLEAN = typeForClass(Boolean.class);
     public static final ConcreteType RPC_CALLBACK = typeForClass(RpcCallback.class);
@@ -52,26 +63,13 @@ public final class Types {
     private static final Type LIST_TYPE = typeForClass(List.class);
     private static final Type MAP_TYPE = typeForClass(Map.class);
 
-    private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
-            new CacheLoader<Class<?>, ConcreteType>() {
-
-                @Override
-                public ConcreteType load(Class<?> key) throws Exception {
-                    return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
-                }
-            };
-
-    private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
-            CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
-
-
     private Types() {
         throw new UnsupportedOperationException("Utility class");
     }
 
     /**
      * Creates the instance of type
-     * {@link org.opendaylight.mdsal.binding2.model.api.ConcreteType
+     * {@link ConcreteType
      * ConcreteType} which represents JAVA <code>void</code> type.
      *
      * @return <code>ConcreteType</code> instance which represents JAVA
@@ -83,7 +81,7 @@ public final class Types {
 
     /**
      * Creates the instance of type
-     * {@link org.opendaylight.mdsal.binding2.model.api.ConcreteType
+     * {@link ConcreteType
      * ConcreteType} which represents primitive JAVA type for which package
      * doesn't exist.
      *
@@ -161,7 +159,7 @@ public final class Types {
 
     /**
      * Creates instance of type
-     * {@link org.opendaylight.mdsal.binding2.model.api.ParameterizedType
+     * {@link ParameterizedType
      * ParameterizedType}
      *
      * @param type
@@ -177,7 +175,7 @@ public final class Types {
 
     /**
      * Creates instance of type
-     * {@link org.opendaylight.mdsal.binding2.model.api.WildcardType
+     * {@link WildcardType
      * WildcardType}
      *
      * @param packageName
@@ -193,9 +191,9 @@ public final class Types {
 
     /**
      * Creates instance of
-     * {@link org.opendaylight.mdsal.binding2.model.api.ParameterizedType
+     * {@link ParameterizedType
      * ParameterizedType} where raw type is
-     * {@link org.opendaylight.mdsal.binding2.spec.Augmentable} and actual
+     * {@link Augmentable} and actual
      * parameter is <code>valueType</code>.
      *
      * @param valueType
@@ -211,9 +209,9 @@ public final class Types {
 
     /**
      * Creates instance of
-     * {@link org.opendaylight.mdsal.binding2.model.api.ParameterizedType
+     * {@link ParameterizedType
      * ParameterizedType} where raw type is
-     * {@link org.opendaylight.mdsal.binding2.spec.Augmentation} and actual
+     * {@link Augmentation} and actual
      * parameter is <code>valueType</code>.
      *
      * @param valueType
