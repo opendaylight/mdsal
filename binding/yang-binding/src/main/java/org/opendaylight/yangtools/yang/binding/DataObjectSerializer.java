@@ -11,7 +11,10 @@ import java.io.IOException;
 
 /**
  * A serializer which writes DataObject to supplied stream event writer.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.DataObjectSerializer} instead
  */
+@Deprecated
 public interface DataObjectSerializer {
     /**
      * Writes stream events representing object to supplied stream

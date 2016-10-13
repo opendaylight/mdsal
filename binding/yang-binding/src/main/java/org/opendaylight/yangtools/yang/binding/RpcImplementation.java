@@ -12,6 +12,10 @@ import java.util.concurrent.Future;
 
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.RpcImplementation} instead
+ */
+@Deprecated
 public interface RpcImplementation {
 
     // Fixme: Change to RpcInput

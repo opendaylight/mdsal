@@ -23,6 +23,10 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.yang.binding.util.AbstractMappedRpcInvoker} instead
+ */
+@Deprecated
 abstract class AbstractMappedRpcInvoker<T> extends RpcServiceInvoker {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMappedRpcInvoker.class);
     private final Map<T, RpcMethodInvoker> map;

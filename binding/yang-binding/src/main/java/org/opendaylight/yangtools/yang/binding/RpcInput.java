@@ -7,6 +7,10 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.RpcInput} instead
+ */
+@Deprecated
 public interface RpcInput extends DataContainer {
 
 }
