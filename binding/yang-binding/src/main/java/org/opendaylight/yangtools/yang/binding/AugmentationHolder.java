@@ -20,7 +20,10 @@ import java.util.Map;
  * @param <T>
  *            Base class which should is target
  *            for augmentations.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.AugmentationHolder} instead
  */
+@Deprecated
 public interface AugmentationHolder<T> {
 
     /**

@@ -10,8 +10,9 @@ package org.opendaylight.yangtools.yang.binding;
 /**
  * Marker interface for YANG-defined notifications
  *
- *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.Notification} instead
  */
+@Deprecated
 public interface Notification extends DataContainer {
 
 }

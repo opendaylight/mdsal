@@ -31,7 +31,10 @@ import org.slf4j.LoggerFactory;
  * IMPLICATIONS ON EVERY USER INTERACTING WITH THE RESULTING OBJECTS.
  *
  * @param <T> Resulting object type
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.util.StringValueObjectFactory} instead
  */
+@Deprecated
 @Beta
 public final class StringValueObjectFactory<T> {
     private static final MethodType CONSTRUCTOR_METHOD_TYPE = MethodType.methodType(Object.class, Object.class);

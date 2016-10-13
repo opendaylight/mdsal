@@ -15,6 +15,10 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.yang.binding.util.RpcMethodInvokerWithoutInput} instead
+ */
+@Deprecated
 class RpcMethodInvokerWithoutInput extends RpcMethodInvoker {
 
     private static final MethodType INVOCATION_SIGNATURE = MethodType.methodType(Future.class, RpcService.class);

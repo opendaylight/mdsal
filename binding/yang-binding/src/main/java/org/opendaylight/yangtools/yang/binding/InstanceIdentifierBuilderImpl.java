@@ -16,6 +16,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableIt
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.yang.binding.InstanceIdentifierBuilderImpl} instead
+ */
+@Deprecated
 final class InstanceIdentifierBuilderImpl<T extends DataObject> implements InstanceIdentifier.InstanceIdentifierBuilder<T> {
     private final ImmutableList.Builder<PathArgument> pathBuilder = ImmutableList.builder();
     private final HashCodeBuilder<PathArgument> hashBuilder;
