@@ -40,7 +40,8 @@ public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeI
      *
      * @return Logical data store type. Guaranteed to be non-null.
      */
-    public @Nonnull LogicalDatastoreType getDatastoreType() {
+    @Nonnull
+    public LogicalDatastoreType getDatastoreType() {
         return datastoreType;
     }
 
@@ -49,7 +50,8 @@ public final class DOMDataTreeIdentifier implements Immutable, Path<DOMDataTreeI
      *
      * @return Instance identifier corresponding to the root node.
      */
-    public @Nonnull YangInstanceIdentifier getRootIdentifier() {
+    @Nonnull
+    public YangInstanceIdentifier getRootIdentifier() {
         return rootIdentifier;
     }
 

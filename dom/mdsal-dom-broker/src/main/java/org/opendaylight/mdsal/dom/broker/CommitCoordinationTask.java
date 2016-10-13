@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
  */
 final class CommitCoordinationTask implements Callable<Void> {
     private enum Phase {
-        canCommit,
-        preCommit,
-        doCommit,
+        CAN_COMMIT,
+        PRE_COMMIT,
+        DO_COMMIT
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(CommitCoordinationTask.class);
@@ -50,17 +50,17 @@ final class CommitCoordinationTask implements Callable<Void> {
     public Void call() throws TransactionCommitFailedException {
         final long startTime = commitStatTracker != null ? System.nanoTime() : 0;
 
-        Phase phase = Phase.canCommit;
+        Phase phase = Phase.CAN_COMMIT;
 
         try {
             LOG.debug("Transaction {}: canCommit Started", tx.getIdentifier());
             canCommitBlocking();
 
-            phase = Phase.preCommit;
+            phase = Phase.PRE_COMMIT;
             LOG.debug("Transaction {}: preCommit Started", tx.getIdentifier());
             preCommitBlocking();
 
-            phase = Phase.doCommit;
+            phase = Phase.DO_COMMIT;
             LOG.debug("Transaction {}: doCommit Started", tx.getIdentifier());
             commitBlocking();
 

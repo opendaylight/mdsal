@@ -53,7 +53,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     @Override
     public boolean cancel() {
         LOG.debug("{}: Cancelling transaction");
-        if (finished == true) {
+        if (finished) {
             return false;
         }
 
@@ -71,7 +71,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     public CheckedFuture<Void, TransactionCommitFailedException> submit() {
         checkRunning();
         LOG.debug("{}: Submitting transaction", txIdentifier);
-        if (initialized == false) {
+        if (!initialized) {
             // If underlying producers, transactions and cursors are
             // not even initialized just seal this transaction and
             // return immediate future
@@ -103,7 +103,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
                     final NormalizedNode<?, ?> data) {
         checkRunning();
         LOG.debug("{}: Invoking put operation at {}:{} with payload {}", txIdentifier, store, path);
-        if (initialized == false) {
+        if (!initialized) {
             initializeDataTreeProducerLayer(path.getParent());
         }
 
@@ -116,7 +116,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
                       final NormalizedNode<?, ?> data) {
         checkRunning();
         LOG.debug("{}: Invoking merge operation at {}:{} with payload {}", txIdentifier, store, path);
-        if (initialized == false) {
+        if (!initialized) {
             initializeDataTreeProducerLayer(path.getParent());
         }
 
@@ -128,7 +128,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     public void delete(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         checkRunning();
         LOG.debug("{}: Invoking delete operation at {}:{}", txIdentifier, store, path);
-        if (initialized == false) {
+        if (!initialized) {
             initializeDataTreeProducerLayer(path.getParent());
         }
 
@@ -169,7 +169,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     }
 
     private void checkRunning() {
-        Preconditions.checkState(finished == false, "{}: Transaction already finished");
+        Preconditions.checkState(!finished, "{}: Transaction already finished");
     }
 
     private void closeProducers() {
