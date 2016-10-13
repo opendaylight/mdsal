@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.unified.doc.generator
+package org.opendaylight.mdsal.yang.unified.doc.generator
 
 import com.google.common.collect.Iterables
 import java.io.BufferedWriter
@@ -55,10 +55,6 @@ import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
 import org.sonatype.plexus.build.incremental.DefaultBuildContext
 
-/**
- * @deprecated Use {org.opendaylight.mdsal.yang.unified.doc.generator.GeneratorImpl} instead
- */
-@Deprecated
 class GeneratorImpl {
 
     File path
