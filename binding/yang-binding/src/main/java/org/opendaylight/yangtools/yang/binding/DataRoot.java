@@ -9,8 +9,10 @@ package org.opendaylight.yangtools.yang.binding;
 
 /**
  * Data Root of YANG module
- * 
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.DataRoot} instead
  */
+@Deprecated
 public interface DataRoot {
 
 }

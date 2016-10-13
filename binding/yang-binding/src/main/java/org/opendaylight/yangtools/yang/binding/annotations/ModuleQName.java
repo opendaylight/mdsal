@@ -14,7 +14,10 @@ import java.lang.annotation.Target;
 
 /**
  * Maintains information about yang module from which class using this annotation was generated.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.annotations.ModuleQName} instead
  */
+@Deprecated
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.PACKAGE})
 public @interface ModuleQName {

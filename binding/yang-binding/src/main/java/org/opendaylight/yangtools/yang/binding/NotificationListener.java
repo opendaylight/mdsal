@@ -23,7 +23,10 @@ import java.util.EventListener;
  * <p>
  * E.g. if we have notification SessionUp the callback will have signature:
  * <code>void  onSessionUp(SessionUp notification)</code>
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.NotificationListener} instead
  */
+@Deprecated
 public interface NotificationListener extends EventListener {
 
 }

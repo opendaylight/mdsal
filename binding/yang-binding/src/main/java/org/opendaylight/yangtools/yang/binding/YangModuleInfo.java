@@ -11,6 +11,10 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Set;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.YangModuleInfo} instead
+ */
+@Deprecated
 public interface YangModuleInfo {
 
     /**
