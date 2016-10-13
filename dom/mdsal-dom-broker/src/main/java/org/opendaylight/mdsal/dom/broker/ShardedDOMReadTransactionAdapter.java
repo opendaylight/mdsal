@@ -57,7 +57,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
     public void close() {
         // TODO should we also cancel all read futures?
         LOG.debug("{}: Closing read transaction", txIdentifier);
-        if (finished == true) {
+        if (finished) {
             return;
         }
 
@@ -115,7 +115,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
     }
 
     private void checkRunning() {
-        Preconditions.checkState(finished == false, "Transaction is already closed");
+        Preconditions.checkState(!finished, "Transaction is already closed");
     }
 
     static class ReadShardedListener implements DOMDataTreeListener {

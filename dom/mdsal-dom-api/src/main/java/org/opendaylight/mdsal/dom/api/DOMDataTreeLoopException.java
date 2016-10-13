@@ -16,11 +16,11 @@ import javax.annotation.Nonnull;
 public class DOMDataTreeLoopException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public DOMDataTreeLoopException(final @Nonnull String message) {
+    public DOMDataTreeLoopException(@Nonnull final String message) {
         super(message);
     }
 
-    public DOMDataTreeLoopException(final @Nonnull String message, final @Nonnull Throwable cause) {
+    public DOMDataTreeLoopException(@Nonnull final String message, @Nonnull final Throwable cause) {
         super(message, cause);
     }
 }
