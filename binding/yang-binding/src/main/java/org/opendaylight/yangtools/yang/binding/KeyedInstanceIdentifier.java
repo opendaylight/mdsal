@@ -13,7 +13,9 @@ package org.opendaylight.yangtools.yang.binding;
  *
  * @param <T> Target data type
  * @param <K> Target key type
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.KeyedInstanceIdentifier} instead
  */
+@Deprecated
 public class KeyedInstanceIdentifier<T extends Identifiable<K> & DataObject, K extends Identifier<T>> extends InstanceIdentifier<T> {
     private static final long serialVersionUID = 1L;
     private final K key;

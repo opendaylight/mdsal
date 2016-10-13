@@ -11,6 +11,10 @@ package org.opendaylight.yangtools.yang.binding.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.annotations.QName} instead
+ */
+@Deprecated
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QName {
 

@@ -21,7 +21,9 @@ package org.opendaylight.yangtools.yang.binding;
  *        (currently all users of it have to walk the package hierarchy, so that
  *        is an improvement in and of itself).
  *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.DataObjectSerializerRegistry} instead
  */
+@Deprecated
 public interface DataObjectSerializerRegistry {
 
     DataObjectSerializer getSerializer(Class<? extends DataObject> binding);

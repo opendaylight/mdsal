@@ -49,6 +49,10 @@ import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.util.BindingReflections} instead
+ */
+@Deprecated
 public class BindingReflections {
 
     private static final long EXPIRATION_TIME = 60;
