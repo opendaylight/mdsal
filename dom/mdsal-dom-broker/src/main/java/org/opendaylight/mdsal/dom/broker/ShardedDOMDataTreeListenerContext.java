@@ -38,17 +38,15 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
     @GuardedBy("this")
     private Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> currentData = Collections.emptyMap();
 
-    private ShardedDOMDataTreeListenerContext(T listener, Collection<DOMDataTreeIdentifier> subtrees,
-            boolean allowRxMerges) {
+    private ShardedDOMDataTreeListenerContext(T listener) {
         for (LogicalDatastoreType type : LogicalDatastoreType.values()) {
             storeListeners.put(type, new StoreListener(type));
         }
         this.listener = Preconditions.checkNotNull(listener, "listener");
     }
 
-    static <T extends DOMDataTreeListener> ShardedDOMDataTreeListenerContext<T> create(final T listener,
-            final Collection<DOMDataTreeIdentifier> subtrees, final boolean allowRxMerges) {
-        return new ShardedDOMDataTreeListenerContext<>(listener, subtrees, allowRxMerges);
+    static <T extends DOMDataTreeListener> ShardedDOMDataTreeListenerContext<T> create(final T listener) {
+        return new ShardedDOMDataTreeListenerContext<>(listener);
     }
 
     synchronized void notifyListener() {

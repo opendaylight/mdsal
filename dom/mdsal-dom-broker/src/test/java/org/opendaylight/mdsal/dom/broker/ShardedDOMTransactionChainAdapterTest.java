@@ -27,7 +27,6 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
-import org.opendaylight.mdsal.dom.store.inmemory.WriteableDOMDataTreeShard;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 public class ShardedDOMTransactionChainAdapterTest {
@@ -36,13 +35,13 @@ public class ShardedDOMTransactionChainAdapterTest {
     public void basicTest() throws Exception {
         String identifier = "TestIdent";
         DOMDataTreeService dataTreeService = mock(DOMDataTreeService.class);
-        WriteableDOMDataTreeShard shard = mock(WriteableDOMDataTreeShard.class);
         DOMDataTreeProducer producer = mock(DOMDataTreeProducer.class);
         DOMDataTreeCursorAwareTransaction transaction = mock(DOMDataTreeCursorAwareTransaction.class);
         DOMDataTreeWriteCursor cursor = mock(DOMDataTreeWriteCursor.class);
         doReturn(producer).when(dataTreeService).createProducer(any());
         doReturn(transaction).when(producer).createTransaction(true);
         doReturn(cursor).when(transaction).createCursor(any());
+        doNothing().when(producer).close();
 
 
         TransactionChainListener chainListener = new BlockingTransactionChainListener();

@@ -28,11 +28,8 @@ import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTableEntry;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTreeShardingService {
-    private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTree.class);
 
     @GuardedBy("this")
     private final DOMDataTreePrefixTable<DOMDataTreeShardRegistration<?>> shards = DOMDataTreePrefixTable.create();
@@ -176,12 +173,12 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         Preconditions.checkNotNull(listener, "listener");
         Preconditions.checkArgument(!subtrees.isEmpty(), "Subtrees must not be empty.");
         final ShardedDOMDataTreeListenerContext<T> listenerContext =
-                ShardedDOMDataTreeListenerContext.create(listener, subtrees, allowRxMerges);
+                ShardedDOMDataTreeListenerContext.create(listener);
         try {
             // FIXME: Add attachment of producers
             for (final DOMDataTreeProducer producer : producers) {
                 Preconditions.checkArgument(producer instanceof ShardedDOMDataTreeProducer);
-                final ShardedDOMDataTreeProducer castedProducer = ((ShardedDOMDataTreeProducer) producer);
+                final ShardedDOMDataTreeProducer castedProducer = (ShardedDOMDataTreeProducer) producer;
                 simpleLoopCheck(subtrees, castedProducer.getSubtrees());
                 // FIXME: We should also unbound listeners
                 castedProducer.bindToListener(listenerContext);
