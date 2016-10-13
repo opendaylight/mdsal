@@ -49,6 +49,10 @@ public final class Binding2Mapping {
             .omitEmptyStrings().trimResults();
     private static final Pattern COLON_SLASH_SLASH = Pattern.compile("://", Pattern.LITERAL);
     private static final String QUOTED_DOT = Matcher.quoteReplacement(".");
+    public static final String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
+    public static final String MODEL_BINDING_PROVIDER_CLASS_NAME = "$YangModelBindingProvider";
+    public static final String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
+    public static final String MEMBER_PATTERN_LIST = "patterns";
 
     private static final ThreadLocal<SimpleDateFormat> PACKAGE_DATE_FORMAT = new ThreadLocal<SimpleDateFormat>() {
 
