@@ -5,14 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.unified.doc.generator
+package org.opendaylight.mdsal.yang.unified.doc.generator
 
 import com.google.common.collect.Iterables
 import java.io.BufferedWriter
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
-import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Collection
@@ -56,10 +55,6 @@ import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
 import org.sonatype.plexus.build.incremental.DefaultBuildContext
 
-/**
- * @deprecated Use {org.opendaylight.mdsal.yang.unified.doc.generator.GeneratorImpl} instead
- */
-@Deprecated
 class GeneratorImpl {
 
     File path
@@ -89,7 +84,7 @@ class GeneratorImpl {
         this.ctx = ctx;
         module.imports.forEach[importModule | this.imports.put(importModule.prefix, importModule.moduleName)]
         try {
-            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination), StandardCharsets.UTF_8)
+            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination))
             val bw = new BufferedWriter(fw)
             currentModule = module;
             bw.append(generate(module, ctx));
