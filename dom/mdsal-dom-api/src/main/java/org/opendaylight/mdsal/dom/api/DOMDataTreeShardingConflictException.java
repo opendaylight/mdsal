@@ -16,11 +16,11 @@ import javax.annotation.Nonnull;
 public class DOMDataTreeShardingConflictException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public DOMDataTreeShardingConflictException(final @Nonnull String message) {
+    public DOMDataTreeShardingConflictException(@Nonnull final String message) {
         super(message);
     }
 
-    public DOMDataTreeShardingConflictException(final @Nonnull String message, final @Nonnull Throwable cause) {
+    public DOMDataTreeShardingConflictException(@Nonnull final String message, @Nonnull final Throwable cause) {
         super(message, cause);
     }
 }
