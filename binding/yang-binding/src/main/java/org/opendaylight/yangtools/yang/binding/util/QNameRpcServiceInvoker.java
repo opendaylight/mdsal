@@ -11,6 +11,10 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import org.opendaylight.yangtools.yang.common.QName;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.yang.binding.util.QNameRpcServiceInvoker} instead
+ */
+@Deprecated
 final class QNameRpcServiceInvoker extends AbstractMappedRpcInvoker<QName> {
     private QNameRpcServiceInvoker(final Map<QName, Method> qnameToMethod) {
         super(qnameToMethod);

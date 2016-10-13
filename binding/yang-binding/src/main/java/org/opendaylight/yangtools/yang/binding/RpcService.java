@@ -10,7 +10,9 @@ package org.opendaylight.yangtools.yang.binding;
 /**
  * Marker interface for tagging generated YANG Modules
  *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.RpcService} instead
  */
+@Deprecated
 public interface RpcService {
 
 }

@@ -16,9 +16,9 @@ import java.util.ServiceLoader;
  * Implementation of this interface should be discoverable
  * via {@link ServiceLoader}
  *
- *
- *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.YangModelBindingProvider} instead
  */
+@Deprecated
 public interface YangModelBindingProvider {
 
     /**

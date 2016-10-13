@@ -22,7 +22,9 @@ import java.io.IOException;
  *        (currently all users of it have to walk the package hierarchy, so that
  *        is an improvement in and of itself).
  *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.DataObjectSerializerImplementation} instead
  */
+@Deprecated
 public interface DataObjectSerializerImplementation {
     /**
      *

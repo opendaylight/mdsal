@@ -9,18 +9,21 @@ package org.opendaylight.yangtools.yang.binding;
 
 /**
  * Data Container - object contains structured data
- * 
+ *
  * Marker interface which must be implmeneted by all interfaces
  * generated for YANG:
  * <ul>
  * <li>Rpc Input
- * <li>Output 
+ * <li>Output
  * <li>Notification
  * <li>Container
  * <li>List
  * <li>Case
  * </ul>
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.DataContainer} instead
  */
+@Deprecated
 public interface DataContainer {
 
     Class<? extends DataContainer> getImplementedInterface();

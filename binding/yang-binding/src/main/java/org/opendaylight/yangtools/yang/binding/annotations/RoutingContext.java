@@ -16,7 +16,10 @@ import java.lang.annotation.Target;
 
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 
-
+/**
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.annotations.RoutingContext} instead
+ */
+@Deprecated
 @Inherited
 @Documented
 @Target(ElementType.METHOD)
