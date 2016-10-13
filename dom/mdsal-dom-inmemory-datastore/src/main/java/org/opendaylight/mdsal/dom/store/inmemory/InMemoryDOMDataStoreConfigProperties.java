@@ -33,6 +33,14 @@ public class InMemoryDOMDataStoreConfigProperties {
     private final int maxDataChangeListenerQueueSize;
     private final int maxDataStoreExecutorQueueSize;
 
+    private InMemoryDOMDataStoreConfigProperties(int maxDataChangeExecutorPoolSize, int maxDataChangeExecutorQueueSize,
+            int maxDataChangeListenerQueueSize, int maxDataStoreExecutorQueueSize) {
+        this.maxDataChangeExecutorQueueSize = maxDataChangeExecutorQueueSize;
+        this.maxDataChangeExecutorPoolSize = maxDataChangeExecutorPoolSize;
+        this.maxDataChangeListenerQueueSize = maxDataChangeListenerQueueSize;
+        this.maxDataStoreExecutorQueueSize = maxDataStoreExecutorQueueSize;
+    }
+
     /**
      * Constructs an instance with the given property values.
      *
@@ -65,15 +73,6 @@ public class InMemoryDOMDataStoreConfigProperties {
      */
     public static InMemoryDOMDataStoreConfigProperties getDefault() {
         return DEFAULT;
-    }
-
-    private InMemoryDOMDataStoreConfigProperties(int maxDataChangeExecutorPoolSize,
-            int maxDataChangeExecutorQueueSize, int maxDataChangeListenerQueueSize,
-            int maxDataStoreExecutorQueueSize) {
-        this.maxDataChangeExecutorQueueSize = maxDataChangeExecutorQueueSize;
-        this.maxDataChangeExecutorPoolSize = maxDataChangeExecutorPoolSize;
-        this.maxDataChangeListenerQueueSize = maxDataChangeListenerQueueSize;
-        this.maxDataStoreExecutorQueueSize = maxDataStoreExecutorQueueSize;
     }
 
     /**

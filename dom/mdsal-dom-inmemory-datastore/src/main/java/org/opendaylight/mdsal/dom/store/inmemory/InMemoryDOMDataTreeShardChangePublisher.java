@@ -70,12 +70,6 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
 
     }
 
-    @Override
-    public <L extends DOMDataTreeChangeListener> AbstractDOMDataTreeChangeListenerRegistration<L>
-            registerTreeChangeListener(final YangInstanceIdentifier path, final L listener) {
-        return super.registerTreeChangeListener(path, listener);
-    }
-
     synchronized void publishChange(@Nonnull final DataTreeCandidate candidate) {
         processCandidateTree(candidate);
     }

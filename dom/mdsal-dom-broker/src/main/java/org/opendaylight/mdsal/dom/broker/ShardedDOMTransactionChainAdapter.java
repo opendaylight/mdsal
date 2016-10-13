@@ -83,7 +83,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
 
     @Override
     public void close() {
-        if (finished = true) {
+        if (finished) {
             // already closed, do nothing
             return;
         }
@@ -129,7 +129,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
     }
 
     private void checkRunning() {
-        Preconditions.checkState(finished == false);
+        Preconditions.checkState(!finished);
     }
 
     public void transactionFailed(final AsyncTransaction<?, ?> tx, final Throwable cause) {
