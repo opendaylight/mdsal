@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.maven.sal.api.gen.plugin;
+package org.opendaylight.mdsal.maven.sal.api.gen.plugin;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -17,18 +17,17 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.maven.project.MavenProject;
-import org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil;
-import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
-import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.java.api.generator.GeneratorJavaFile;
-import org.opendaylight.yangtools.sal.java.api.generator.YangModuleInfoTemplate;
+import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
+import org.opendaylight.mdsal.binding.generator.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.java.api.generator.GeneratorJavaFile;
+import org.opendaylight.mdsal.java.api.generator.YangModuleInfoTemplate;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -40,10 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
-/**
- * @deprecated Use {@link org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl} instead
- */
-@Deprecated
 public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContextAware, MavenProjectAware {
     private static final Logger LOG = LoggerFactory.getLogger(CodeGeneratorImpl.class);
     private static final String FS = File.separator;
@@ -181,7 +176,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
     private File writeFile(final File file, final String source) {
         try (final OutputStream stream = buildContext.newFileOutputStream(file)) {
-            try (final Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+            try (final Writer fw = new OutputStreamWriter(stream)) {
                 try (final BufferedWriter bw = new BufferedWriter(fw)) {
                     bw.write(source);
                 }
