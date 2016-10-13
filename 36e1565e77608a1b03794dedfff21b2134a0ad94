@@ -16,6 +16,210 @@
       "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_89baa908",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "How about \"Assertion utilities for objects\"",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_49d9b182",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "You should probably explain/summarize how objects are converted to text and compared so that they provide useful context on assert failure. In other words, why one would use this class instead of the object\u0027s equals method.",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c9d4a149",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "Since this isn\u0027t specific to DataObject, perhaps we can call it just AssertObjects.",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_e9e87d18",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "How about \"Asserts that an actual object is equal to an expected one.\", since it doesn\u0027t really need to be a YANG DataObject.",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_49ab71d6",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "\u003cp\u003e should be on a separate line as \u003cp/\u003e. I found that checkstyle doesn\u0027t complain about needing a blank line \u003cp/\u003e is used instead of \u003cp\u003e.",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_a9bde504",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "Perhaps we just state that this method works correctly for YANG DataContainer or DataObject and most? other objects? Do you know of any limitations?",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_496411e5",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "how about \"the expected object\"?",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_895e2911",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "how about \"the actual object to check against \u003ccode\u003eexpected\u003c/code\"?",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_097339b2",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "How about we drop the Beans part and name this assertEquals? Not sure what semantics the term Beans adds here.",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_29ca75a1",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "Needs java docs.",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_694aad28",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AugmentableExtension.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "Does this need to be public, i.e. if it\u0027s only used/needed internally?",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_895109db",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/XtendBuilderExtensions.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-13T12:03:16Z",
+      "side": 1,
+      "message": "Does this need to be public, i.e. if it\u0027s only used/needed internally?",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
