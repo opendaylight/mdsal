@@ -23,7 +23,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 public abstract class ForwardingDOMDataWriteTransaction extends ForwardingObject
         implements DOMDataTreeWriteTransaction {
     @Override
-    protected abstract @Nonnull DOMDataTreeWriteTransaction delegate();
+    @Nonnull
+    protected abstract DOMDataTreeWriteTransaction delegate();
 
     @Override
     public Object getIdentifier() {

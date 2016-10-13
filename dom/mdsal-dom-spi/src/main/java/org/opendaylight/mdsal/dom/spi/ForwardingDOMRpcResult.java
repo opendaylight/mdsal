@@ -20,7 +20,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  */
 public abstract class ForwardingDOMRpcResult extends ForwardingObject implements DOMRpcResult {
     @Override
-    protected abstract @Nonnull DOMRpcResult delegate();
+    @Nonnull
+    protected abstract DOMRpcResult delegate();
 
     @Override
     public Collection<RpcError> getErrors() {
