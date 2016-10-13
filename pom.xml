@@ -38,6 +38,7 @@
       <module>model</module>
       <module>entityownership</module>
       <module>singleton-service</module>
+      <module>trace</module>
     </modules>
 
     <build>
