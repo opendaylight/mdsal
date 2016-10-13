@@ -9,8 +9,10 @@ package org.opendaylight.yangtools.yang.binding;
 
 /**
  * Base Identity
- * 
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.yang.binding.BaseIdentity} instead
  */
+@Deprecated
 public abstract class BaseIdentity {
 
     public final static BaseIdentity INSTANCE = new BaseIdentity() {

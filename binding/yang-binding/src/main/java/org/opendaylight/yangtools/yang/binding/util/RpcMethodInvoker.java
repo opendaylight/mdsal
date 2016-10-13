@@ -18,6 +18,10 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
+/**
+ * @deprecated Use {org.opendaylight.mdsal.yang.binding.util.RpcMethodInvoker} instead
+ */
+@Deprecated
 abstract class RpcMethodInvoker {
 
     private static final Lookup LOOKUP = MethodHandles.publicLookup();
