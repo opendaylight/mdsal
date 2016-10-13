@@ -22,7 +22,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  */
 public abstract class ForwardingDOMRpcImplementation extends ForwardingObject implements DOMRpcImplementation {
     @Override
-    protected abstract @Nonnull DOMRpcImplementation delegate();
+    @Nonnull
+    protected abstract DOMRpcImplementation delegate();
 
     @Override
     public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(

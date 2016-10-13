@@ -24,7 +24,8 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 public abstract class ForwardingDOMDataBroker extends ForwardingObject implements DOMDataBroker {
 
     @Override
-    protected abstract @Nonnull DOMDataBroker delegate();
+    @Nonnull
+    protected abstract DOMDataBroker delegate();
 
     @Override
     public DOMDataTreeReadTransaction newReadOnlyTransaction() {
