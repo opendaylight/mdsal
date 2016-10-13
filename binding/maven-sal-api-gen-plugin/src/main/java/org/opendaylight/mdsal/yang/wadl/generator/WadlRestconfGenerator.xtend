@@ -5,13 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.wadl.generator
+package org.opendaylight.mdsal.yang.wadl.generator
 
 import java.io.BufferedWriter
 import java.io.File
 import java.io.OutputStreamWriter
 import java.net.URI
-import java.nio.charset.StandardCharsets
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.List
@@ -26,10 +25,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext
 import org.sonatype.plexus.build.incremental.BuildContext
 import org.sonatype.plexus.build.incremental.DefaultBuildContext
 
-/**
- * @deprecated Use {org.opendaylight.mdsal.yang.wadl.generator.WadlRestconfGenerator} instead
- */
-@Deprecated
 class WadlRestconfGenerator {
 	
 	File path
@@ -65,7 +60,7 @@ class WadlRestconfGenerator {
 				
 				this.module = module
 				val destination = new File(path, '''«module.name».wadl''')
-	            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination), StandardCharsets.UTF_8)
+	            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination))
 	            val bw = new BufferedWriter(fw)
 	            bw.append(application);
 	            bw.close();
