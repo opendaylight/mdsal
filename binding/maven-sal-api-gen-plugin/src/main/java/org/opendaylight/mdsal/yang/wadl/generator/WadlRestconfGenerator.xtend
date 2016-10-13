@@ -5,13 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.wadl.generator
+package org.opendaylight.mdsal.yang.wadl.generator
 
 import java.io.BufferedWriter
 import java.io.File
 import java.io.OutputStreamWriter
 import java.net.URI
-import java.nio.charset.StandardCharsets
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.List
@@ -26,12 +25,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext
 import org.sonatype.plexus.build.incremental.BuildContext
 import org.sonatype.plexus.build.incremental.DefaultBuildContext
 
-/**
- * @deprecated Use {org.opendaylight.mdsal.yang.wadl.generator.WadlRestconfGenerator} instead
- */
-@Deprecated
 class WadlRestconfGenerator {
-	
+
 	File path
 	static val BuildContext CTX = new DefaultBuildContext();
 	static val PATH_DELIMETER = '/'
@@ -54,18 +49,18 @@ class WadlRestconfGenerator {
 			if (!dataContainers.empty || !module.rpcs.nullOrEmpty) {
 				configData = new ArrayList
 				operationalData = new ArrayList
-				
+
 				for (data : dataContainers) {
 					if (data.configuration) {
-						configData.add(data)	
+						configData.add(data)
 					} else {
 						operationalData.add(data)
 					}
 				}
-				
+
 				this.module = module
 				val destination = new File(path, '''«module.name».wadl''')
-	            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination), StandardCharsets.UTF_8)
+	            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination))
 	            val bw = new BufferedWriter(fw)
 	            bw.append(application);
 	            bw.close();
@@ -75,23 +70,23 @@ class WadlRestconfGenerator {
 		}
 		return result
 	}
-	
+
 	private def application() '''
 		<?xml version="1.0"?>
 		<application xmlns="http://wadl.dev.java.net/2009/02" «module.importsAsNamespaces» xmlns:«module.prefix»="«module.namespace»">
-		
+
 			«grammars»
-			
+
 			«resources»
 		</application>
 	'''
-	
+
 	private def importsAsNamespaces(Module module) '''
 		«FOR imprt : module.imports»
 			xmlns:«imprt.prefix»="«context.findModuleByName(imprt.moduleName, imprt.revision).namespace»"
 		«ENDFOR»
 	'''
-	
+
 	private def grammars() '''
 		<grammars>
 			<include href="«module.name».yang"/>
@@ -100,7 +95,7 @@ class WadlRestconfGenerator {
 			«ENDFOR»
 		</grammars>
 	'''
-	
+
 	private def resources() '''
 		<resources base="http://localhost:9998/restconf">
 			«resourceOperational»
@@ -108,7 +103,7 @@ class WadlRestconfGenerator {
 			«resourceOperations»
 		</resources>
 	'''
-	
+
 	private def resourceOperational() '''
 		«IF !operationalData.nullOrEmpty»
 			<resource path="operational">
@@ -118,7 +113,7 @@ class WadlRestconfGenerator {
 			</resource>
 		«ENDIF»
 	'''
-	
+
 	private def resourceConfig() '''
 		«IF !configData.nullOrEmpty»
 			<resource path="config">
@@ -131,7 +126,7 @@ class WadlRestconfGenerator {
 			</resource>
 		«ENDIF»
 	'''
-	
+
 	private def resourceOperations() '''
 		«IF !module.rpcs.nullOrEmpty»
 			<resource path="operations">
@@ -143,19 +138,19 @@ class WadlRestconfGenerator {
 			</resource>
 		«ENDIF»
 	'''
-	
+
 	private def String firstResource(DataSchemaNode schemaNode, boolean config) '''
 		<resource path="«module.name»:«schemaNode.createPath»">
 			«resourceBody(schemaNode, config)»
 		</resource>
 	'''
-		
+
 	private def String resource(DataSchemaNode schemaNode, boolean config) '''
 		<resource path="«schemaNode.createPath»">
 			«resourceBody(schemaNode, config)»
 		</resource>
 	'''
-	
+
 	private def String createPath(DataSchemaNode schemaNode) {
 		pathListParams = new ArrayList
 		var StringBuilder path = new StringBuilder
@@ -171,7 +166,7 @@ class WadlRestconfGenerator {
 		}
 		return path.toString
 	}
-	
+
 	private def String resourceBody(DataSchemaNode schemaNode, boolean config) '''
 		«IF !pathListParams.nullOrEmpty»
 			«resourceParams»
@@ -189,7 +184,7 @@ class WadlRestconfGenerator {
 			«child.resource(config)»
 		«ENDFOR»
 	'''
-	
+
 	private def resourceParams() '''
 		«FOR pathParam : pathListParams»
 		    «IF pathParam != null»
@@ -198,7 +193,7 @@ class WadlRestconfGenerator {
 			«ENDIF»
 		«ENDFOR»
 	'''
-	
+
 	private def methodGet(DataSchemaNode schemaNode) '''
 		<method name="GET">
 			<response>
@@ -206,7 +201,7 @@ class WadlRestconfGenerator {
 			</response>
 		</method>
 	'''
-	
+
 	private def mehodPut(DataSchemaNode schemaNode) '''
 		<method name="PUT">
 			<request>
@@ -214,7 +209,7 @@ class WadlRestconfGenerator {
 			</request>
 		</method>
 	'''
-	
+
 	private def mehodPost(DataSchemaNode schemaNode) '''
 		<method name="POST">
 			<request>
@@ -222,7 +217,7 @@ class WadlRestconfGenerator {
 			</request>
 		</method>
 	'''
-	
+
 	private def methodPostRpc(boolean input, boolean output) '''
 		<method name="POST">
 			«IF input»
@@ -250,7 +245,7 @@ class WadlRestconfGenerator {
 		<representation mediaType="application/yang.data+xml" element="«elementData»"/>
 		<representation mediaType="application/yang.data+json" element="«elementData»"/>
 	'''
-	
+
 	private def boolean isListOrContainer(DataSchemaNode schemaNode) {
 		return (schemaNode instanceof ListSchemaNode || schemaNode instanceof ContainerSchemaNode)
 	}
