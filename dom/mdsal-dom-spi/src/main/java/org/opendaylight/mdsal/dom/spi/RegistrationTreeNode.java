@@ -70,7 +70,8 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
      * @param arg Child identifier
      * @return Collection of children, guaranteed to be non-null.
      */
-    public @Nonnull Collection<RegistrationTreeNode<T>> getInexactChildren(@Nonnull final PathArgument arg) {
+    @Nonnull
+    public Collection<RegistrationTreeNode<T>> getInexactChildren(@Nonnull final PathArgument arg) {
         Preconditions.checkNotNull(arg);
         if (arg instanceof NodeWithValue || arg instanceof NodeIdentifierWithPredicates) {
             /*
@@ -97,7 +98,7 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
     RegistrationTreeNode<T> ensureChild(@Nonnull final PathArgument child) {
         RegistrationTreeNode<T> potential = children.get(Preconditions.checkNotNull(child));
         if (potential == null) {
-            potential = new RegistrationTreeNode<T>(this, child);
+            potential = new RegistrationTreeNode<>(this, child);
             children.put(child, potential);
         }
         return potential;

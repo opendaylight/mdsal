@@ -19,7 +19,8 @@ import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
  */
 public abstract class ForwardingDOMTransactionChain extends ForwardingObject implements DOMTransactionChain {
     @Override
-    protected abstract @Nonnull DOMTransactionChain delegate();
+    @Nonnull
+    protected abstract DOMTransactionChain delegate();
 
     @Override
     public void close() {

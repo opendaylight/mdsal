@@ -29,14 +29,6 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
     private final Collection<RpcError> errors;
     private final NormalizedNode<?, ?> result;
 
-    private static Collection<RpcError> asCollection(final RpcError... errors) {
-        if (errors.length == 0) {
-            return Collections.emptyList();
-        } else {
-            return Arrays.asList(errors);
-        }
-    }
-
     public DefaultDOMRpcResult(final NormalizedNode<?, ?> result, final RpcError... errors) {
         this(result, asCollection(errors));
     }
@@ -49,17 +41,26 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
         this(result, Collections.<RpcError>emptyList());
     }
 
-    public DefaultDOMRpcResult(final NormalizedNode<?, ?> result, final @Nonnull Collection<RpcError> errors) {
+    public DefaultDOMRpcResult(final NormalizedNode<?, ?> result, @Nonnull final Collection<RpcError> errors) {
         this.result = result;
         this.errors = Preconditions.checkNotNull(errors);
     }
 
-    public DefaultDOMRpcResult(final @Nonnull Collection<RpcError> errors) {
+    public DefaultDOMRpcResult(@Nonnull final Collection<RpcError> errors) {
         this(null, errors);
     }
 
+    private static Collection<RpcError> asCollection(final RpcError... errors) {
+        if (errors.length == 0) {
+            return Collections.emptyList();
+        } else {
+            return Arrays.asList(errors);
+        }
+    }
+
     @Override
-    public @Nonnull Collection<RpcError> getErrors() {
+    @Nonnull
+    public Collection<RpcError> getErrors() {
         return errors;
     }
 
