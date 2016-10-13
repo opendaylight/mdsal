@@ -5,14 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.unified.doc.generator
+package org.opendaylight.mdsal.yang.unified.doc.generator
 
 import com.google.common.collect.Iterables
 import java.io.BufferedWriter
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
-import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Collection
@@ -56,10 +55,6 @@ import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
 import org.sonatype.plexus.build.incremental.DefaultBuildContext
 
-/**
- * @deprecated Use {org.opendaylight.mdsal.yang.unified.doc.generator.GeneratorImpl} instead
- */
-@Deprecated
 class GeneratorImpl {
 
     File path
@@ -89,7 +84,7 @@ class GeneratorImpl {
         this.ctx = ctx;
         module.imports.forEach[importModule | this.imports.put(importModule.prefix, importModule.moduleName)]
         try {
-            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination), StandardCharsets.UTF_8)
+            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination))
             val bw = new BufferedWriter(fw)
             currentModule = module;
             bw.append(generate(module, ctx));
@@ -308,7 +303,7 @@ class GeneratorImpl {
         }
         return '''
             <h2>Augmentations</h2>
-            
+
             <ul>
             «FOR augment : module.augmentations»
                 <li>
@@ -325,7 +320,7 @@ class GeneratorImpl {
                     «FOR childNode : augment.childNodes»
                         «childNode.printSchemaNodeInfo»
                     «ENDFOR»
-                    
+
                     <h3>Example</h3>
                     «createAugmentChildNodesAsString(new ArrayList(augment.childNodes))»
                     «printNodeChildren(parseTargetPath(augment.targetPath))»
@@ -334,13 +329,13 @@ class GeneratorImpl {
             </ul>
         '''
     }
-    
+
     private def createAugmentChildNodesAsString(List<DataSchemaNode> childNodes) {
         augmentChildNodesAsString = new StringBuilder();
         augmentChildNodesAsString.append(printNodeChildren(childNodes))
         return ''
     }
-    
+
     private def parseTargetPath(SchemaPath path) {
         val List<DataSchemaNode> nodes = new ArrayList<DataSchemaNode>();
         for (QName pathElement : path.pathFromRoot) {
@@ -368,7 +363,7 @@ class GeneratorImpl {
         
         return targetPathNodes
     }
-    
+
     private def DataSchemaNode findNodeInChildNodes(QName findingNode, Iterable<DataSchemaNode> childNodes) {
         for(child : childNodes) {
             if (child.QName.equals(findingNode))
@@ -388,7 +383,7 @@ class GeneratorImpl {
             }
         }
     }
-    
+
     private def printNodeChildren(List<DataSchemaNode> childNodes) {
         if (childNodes.empty) {
             return ''
@@ -401,7 +396,7 @@ class GeneratorImpl {
         </pre>
         '''
     }
-    
+
     private def CharSequence printAugmentedNode(DataSchemaNode child) {
         
         if(child instanceof ChoiceCaseNode)
@@ -429,7 +424,7 @@ class GeneratorImpl {
         «ENDIF»
         '''
     }
-    
+
     private def printChoiceNode(ChoiceSchemaNode child) {
         val List<ChoiceCaseNode> cases = new ArrayList(child.cases);
         if(!cases.empty) {
@@ -438,7 +433,7 @@ class GeneratorImpl {
                 printAugmentedNode(caseChildNode)
         }
     }
-    
+
     private def printListNode(ListSchemaNode listNode) {
         return
         '''
@@ -449,7 +444,7 @@ class GeneratorImpl {
             &lt;/«listNode.QName.localName»&gt;
         '''
     }
-    
+
     private def printContainerNode(ContainerSchemaNode containerNode) {
         return
         '''
@@ -460,7 +455,7 @@ class GeneratorImpl {
             &lt;/«containerNode.QName.localName»&gt;
         '''
     }
-    
+
     private def printLeafListNode(LeafListSchemaNode leafListNode) {
         return
         '''
@@ -469,14 +464,14 @@ class GeneratorImpl {
             &lt;«leafListNode.QName.localName»&gt;. . .&lt;/«leafListNode.QName.localName»&gt;
         '''
     }
-    
+
     private def printAnyXmlNode(AnyXmlSchemaNode anyXmlNode) {
         return 
         '''
             &lt;«anyXmlNode.QName.localName»&gt;. . .&lt;/«anyXmlNode.QName.localName»&gt;
         '''
     }
-    
+
     private def printLeafNode(LeafSchemaNode leafNode) {
         return 
         '''
@@ -1023,18 +1018,15 @@ class GeneratorImpl {
         «node.QName.xmlExampleTag("...")»
     '''
 
-
     private def dispatch CharSequence asXmlExampleTag(ListSchemaNode node, YangInstanceIdentifier identifier) '''
         &lt!-- See «localLink(identifier.append(node),"definition")» for child nodes.  --&gt
         &lt!-- This node could appear multiple times --&gt
         «node.QName.xmlExampleTag("...")»
     '''
 
-
     private def dispatch CharSequence asXmlExampleTag(DataSchemaNode node, YangInstanceIdentifier identifier) '''
         <!-- noop -->
     '''
-
 
     def xmlExampleTag(QName name, CharSequence data) {
         return '''&lt;«name.localName» xmlns="«name.namespace»"&gt;«data»&lt;/«name.localName»&gt;'''
@@ -1042,14 +1034,11 @@ class GeneratorImpl {
 
     def header(int level,QName name) '''<h«level»>«name.localName»</h«level»>'''
 
-
     def header(int level,YangInstanceIdentifier name) '''
         <h«level» id="«FOR cmp : name.pathArguments SEPARATOR "/"»«cmp.nodeType.localName»«ENDFOR»">
             «FOR cmp : name.pathArguments SEPARATOR "/"»«cmp.nodeType.localName»«ENDFOR»
         </h«level»>
     '''
-
-
 
     private def dispatch CharSequence printInfo(DataSchemaNode node, int level, YangInstanceIdentifier path) '''
         «header(level+1,node.QName)»
@@ -1087,8 +1076,6 @@ class GeneratorImpl {
     private def dispatch CharSequence printInfo(ChoiceCaseNode node, int level, YangInstanceIdentifier path) '''
         «node.childNodes.printChildren(level,path)»
     '''
-
-
 
     def CharSequence printShortInfo(ContainerSchemaNode node, int level, YangInstanceIdentifier path) {
         val newPath = path.append(node);
@@ -1170,7 +1157,6 @@ class GeneratorImpl {
         return identifier.node(new NodeIdentifierWithPredicates(node.QName, keyValues));
     }
 
-
     def asXmlPath(YangInstanceIdentifier identifier) {
         return "";
     }
@@ -1245,7 +1231,6 @@ class GeneratorImpl {
         return pathString.toString;
     }
 
-
     def CharSequence childNodesInfoTree(Map<SchemaPath, DataSchemaNode> childNodes) '''
         «IF childNodes !== null && !childNodes.empty»
             «FOR child : childNodes.values»
@@ -1291,8 +1276,6 @@ class GeneratorImpl {
 
     private def dispatch CharSequence tree(Void obj, YangInstanceIdentifier path) '''
     '''
-
-
 
     /* #################### RESTRICTIONS #################### */
     private def restrictions(TypeDefinition<?> type) '''
@@ -1366,8 +1349,6 @@ class GeneratorImpl {
         «listItem("Base type", typeAnchorLink(baseType?.path, baseType.QName.localName))»
         «ENDIF»
     '''
-
-
 
     /* #################### UTILITY #################### */
     private def String strong(CharSequence str) '''<strong>«str»</strong>'''
