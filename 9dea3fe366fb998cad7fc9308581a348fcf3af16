@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_64476f4c",
+        "filename": "model/ietf/ietf-inet-types-2013-07-15/src/test/java/org/opendaylight/yang/gen/v1/urn/ietf/params/xml/ns/yang/ietf/inet/types/rev130715/IpAddressBuilderTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-14T07:00:51Z",
+      "side": 1,
+      "message": "please allow one empty line above",
+      "range": {
+        "startLine": 19,
+        "startChar": 2,
+        "endLine": 19,
+        "endChar": 9
+      },
+      "revId": "9dea3fe366fb998cad7fc9308581a348fcf3af16",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
