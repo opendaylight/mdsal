@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_04d15bcd",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/util/AlphabeticallyTypeMemberComparator.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-14T09:33:41Z",
+      "side": 1,
+      "message": "can you try Guava ComparisonChain here?\n\nhttps://google.github.io/guava/releases/19.0/api/docs/com/google/common/collect/ComparisonChain.html",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 25,
+        "endChar": 5
+      },
+      "revId": "d1d6227ecec27b0872239d68a659ac52ecf8155f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_44da33ea",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/util/TextTemplateUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-14T09:33:41Z",
+      "side": 1,
+      "message": "please follow ordering conventions",
+      "range": {
+        "startLine": 34,
+        "startChar": 4,
+        "endLine": 44,
+        "endChar": 75
+      },
+      "revId": "d1d6227ecec27b0872239d68a659ac52ecf8155f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_84e44bad",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/util/TextTemplateUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-14T09:33:41Z",
+      "side": 1,
+      "message": "readability?\nempty spaces missing",
+      "range": {
+        "startLine": 57,
+        "startChar": 8,
+        "endLine": 58,
+        "endChar": 5
+      },
+      "revId": "d1d6227ecec27b0872239d68a659ac52ecf8155f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_24fe1739",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/util/TextTemplateUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-14T09:33:41Z",
+      "side": 1,
+      "message": "readability?\nempty spaces missing",
+      "range": {
+        "startLine": 286,
+        "startChar": 7,
+        "endLine": 287,
+        "endChar": 5
+      },
+      "revId": "d1d6227ecec27b0872239d68a659ac52ecf8155f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
