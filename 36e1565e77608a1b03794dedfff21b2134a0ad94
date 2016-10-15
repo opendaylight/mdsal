@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_f5168b54",
+        "filename": "binding/mdsal-binding-test-utils/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_a32ea4a3",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_89baa908",
         "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2016-10-13T12:03:16Z",
       "side": 1,
       "message": "How about \"Assertion utilities for objects\"",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_3508032d",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Nope, leaving as is, because if you want that then just use https://github.com/vorburger/xtendbeans directly.  Everything following here is specifically so that it works with YANG DataObjects (read from a data store).",
+      "parentUuid": "7a6b29fe_89baa908",
       "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_901c856c",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Done, there is extended JavaDoc now - hope OK for you?",
+      "parentUuid": "7a6b29fe_49d9b182",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_c9d4a149",
         "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
         "patchSetId": 3
@@ -64,6 +118,24 @@
       "writtenOn": "2016-10-13T12:03:16Z",
       "side": 1,
       "message": "Since this isn\u0027t specific to DataObject, perhaps we can call it just AssertObjects.",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d0fefd04",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Nope, leaving as is, because this IS specific to DataObject.  There IS already an AssertBeans, in ch.vorburger.xtendbeans, and that one is not specific to DataObject.",
+      "parentUuid": "7a6b29fe_c9d4a149",
       "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_7019e978",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Nope, leaving as is, see above.",
+      "parentUuid": "7a6b29fe_e9e87d18",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_49ab71d6",
         "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
         "patchSetId": 3
@@ -98,6 +188,24 @@
       "writtenOn": "2016-10-13T12:03:16Z",
       "side": 1,
       "message": "\u003cp\u003e should be on a separate line as \u003cp/\u003e. I found that checkstyle doesn\u0027t complain about needing a blank line \u003cp/\u003e is used instead of \u003cp\u003e.",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_9033e5f5",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Nope, leaving as is.  I don\u0027t like the newline after \u003cp\u003e and find JavaDoc more concise to read like this inline in code, the extra (double) new line is visual noise to my eyes.  I\u0027ve just double re-checked that this looks just fine in a browser.  I don\u0027t know what you mean by \u003cp/\u003e. The HTML produces by JavaDoc seems to render just fine in not 1 but 2 browsers I\u0027ve tested.",
+      "parentUuid": "7a6b29fe_49ab71d6",
       "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_d0255daf",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Done, I\u0027ve now mentioned this in the new class JavaDoc.",
+      "parentUuid": "7a6b29fe_a9bde504",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_496411e5",
         "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
         "patchSetId": 3
@@ -132,6 +258,24 @@
       "writtenOn": "2016-10-13T12:03:16Z",
       "side": 1,
       "message": "how about \"the expected object\"?",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b02a617c",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Done, sure ...",
+      "parentUuid": "7a6b29fe_496411e5",
       "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_1020759a",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Done, sure ..",
+      "parentUuid": "7a6b29fe_895e2911",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_097339b2",
         "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
         "patchSetId": 3
@@ -166,6 +328,24 @@
       "writtenOn": "2016-10-13T12:03:16Z",
       "side": 1,
       "message": "How about we drop the Beans part and name this assertEquals? Not sure what semantics the term Beans adds here.",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f024d9b0",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Nope, see above.  Also, assertEquals would be way too confusing with org.junit.Assert.assertEquals(Object, Object), which could very well be static import\u0027d in a test which also uses this utility.",
+      "parentUuid": "7a6b29fe_097339b2",
       "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -189,6 +369,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_50394dd7",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Nope .. but thanks for raising this! This method actually was never really intended for clients to use, just for the self tests here; so it\u0027s now made package local.  This shouldn\u0027t be public, because the exact text syntax used should be considered an implementation detail which COULD change, so a method like this which exposes it would be a bad idea.  My fault - thanks for raising the missing JavaDoc and making me correct this.",
+      "parentUuid": "7a6b29fe_29ca75a1",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_694aad28",
         "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AugmentableExtension.java",
         "patchSetId": 3
@@ -206,6 +404,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_7030c9e8",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AugmentableExtension.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Done.  It technically is internal.. I thought that this could be useful in another context as well, and had a future idea for this, but let\u0027s just keep it package local, for now; and see later.  Thanks for raising this.",
+      "parentUuid": "7a6b29fe_694aad28",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_895109db",
         "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/XtendBuilderExtensions.java",
         "patchSetId": 3
@@ -217,6 +433,24 @@
       "writtenOn": "2016-10-13T12:03:16Z",
       "side": 1,
       "message": "Does this need to be public, i.e. if it\u0027s only used/needed internally?",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d04c3d79",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/XtendBuilderExtensions.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-15T01:20:48Z",
+      "side": 1,
+      "message": "Nope, leaving as is; this one is intentional and not an oversight, this class can be used by test code using this infrastructure.  As per its JavaDoc.",
+      "parentUuid": "7a6b29fe_895109db",
       "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
