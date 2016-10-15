@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_3078112b",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-15T12:04:47Z",
+      "side": 1,
+      "message": "OK but how about generalizing to \"Assertion utilities for YANG {@link DataObject}s.\". We may add more methods then just for equals.",
+      "parentUuid": "7a6b29fe_3508032d",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_49d9b182",
         "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
         "patchSetId": 3
@@ -206,6 +224,24 @@
       "side": 1,
       "message": "Nope, leaving as is.  I don\u0027t like the newline after \u003cp\u003e and find JavaDoc more concise to read like this inline in code, the extra (double) new line is visual noise to my eyes.  I\u0027ve just double re-checked that this looks just fine in a browser.  I don\u0027t know what you mean by \u003cp/\u003e. The HTML produces by JavaDoc seems to render just fine in not 1 but 2 browsers I\u0027ve tested.",
       "parentUuid": "7a6b29fe_49ab71d6",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_507b0d29",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-10-15T12:04:47Z",
+      "side": 1,
+      "message": "Browsers accept \u003cp\u003e standalone without the ending \u003c/p\u003e. I was referring to CS complaining if you have \u003cp\u003e w/o a preceding blank line. That makes some sense here since the trailing text is on the same line as \u003cp\u003e. Most people put \u003cp\u003e on its own line, e.g., in which case you need to do this:\n\n * some text.\n * \n * \u003cp\u003e\n * More text...\n\nBut I found CS allows:\n\n * some text.\n * \u003cp/\u003e\n * More text...",
+      "parentUuid": "7a6b29fe_9033e5f5",
       "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
