@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_500b0d2b",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/FutureSchema.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-10-16T07:46:44Z",
+      "side": 1,
+      "message": "move above duration",
+      "range": {
+        "startLine": 30,
+        "startChar": 4,
+        "endLine": 30,
+        "endChar": 76
+      },
+      "revId": "f3a3910df1abddbbdf1f04cbbaa6d76704f3097f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f0169954",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/RpcServiceAdapter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-10-16T07:46:44Z",
+      "side": 1,
+      "message": "this used to be static...why is it not anymore?",
+      "range": {
+        "startLine": 154,
+        "startChar": 47,
+        "endLine": 154,
+        "endChar": 62
+      },
+      "revId": "f3a3910df1abddbbdf1f04cbbaa6d76704f3097f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
