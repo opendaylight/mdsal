@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_a86795e9",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-17T11:26:32Z",
+      "side": 1,
+      "message": "Sure, you got it (done).",
+      "parentUuid": "7a6b29fe_3078112b",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_49d9b182",
         "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
         "patchSetId": 3
@@ -242,6 +260,24 @@
       "side": 1,
       "message": "Browsers accept \u003cp\u003e standalone without the ending \u003c/p\u003e. I was referring to CS complaining if you have \u003cp\u003e w/o a preceding blank line. That makes some sense here since the trailing text is on the same line as \u003cp\u003e. Most people put \u003cp\u003e on its own line, e.g., in which case you need to do this:\n\n * some text.\n * \n * \u003cp\u003e\n * More text...\n\nBut I found CS allows:\n\n * some text.\n * \u003cp/\u003e\n * More text...",
       "parentUuid": "7a6b29fe_9033e5f5",
+      "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_e8b86d2c",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-17T11:26:32Z",
+      "side": 1,
+      "message": "Oh OK, I see what you\u0027re doing now..  Personally that (your) \"Foo\\n\u003cp/\u003e\\nBar\" on an otherwise blank line looks more noisy to me than the (my) \"Foo.\\n\\n\u003cp\u003eBar\" style.. can we agree to disagree on this, and keep it as is?  I\u0027ve now documented this on https://wiki.opendaylight.org/view/BestPractices/Coding_Guidelines#Javadoc_Paragraph:_.3C_p_.3E_tag_should_be_preceded_with_an_empty_line",
+      "parentUuid": "7a6b29fe_507b0d29",
       "revId": "36e1565e77608a1b03794dedfff21b2134a0ad94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
