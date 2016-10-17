@@ -42,9 +42,6 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPai
 
 class YangTemplate {
 
-    // FIXME: this is not thread-safe and seems to be unused!
-    private static var Module module = null
-
     def static String generateYangSnipet(SchemaNode schemaNode) {
         if (schemaNode == null)
             return ''
@@ -382,7 +379,7 @@ class YangTemplate {
         '''
             identity «identity.QName.localName» {
                 «IF identity.baseIdentity != null»
-                base "(«writeIdentityNs(identity.baseIdentity)»)«identity.baseIdentity»";
+                base "()«identity.baseIdentity»";
                 «ENDIF»
                 «IF !identity.description.nullOrEmpty»
                 description
@@ -397,17 +394,6 @@ class YangTemplate {
                 «ENDIF»
             }
         '''
-    }
-
-    def private static writeIdentityNs(IdentitySchemaNode identity) {
-        if(module == null)
-            return ''
-
-        val identityNs = identity.QName.namespace
-
-        if(!module.namespace.equals(identityNs))
-            return identityNs + ":"
-        return ''
     }
 
     def private static writeFeatures(Set<FeatureDefinition> features) {
