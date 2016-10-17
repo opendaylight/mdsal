@@ -42,10 +42,15 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPai
 
 class YangTemplate {
 
+    private static val String SKIP_PROPERTY_NAME = "mdsal.skip.verbose"
+
+    private static val SKIP = Boolean.getBoolean(SKIP_PROPERTY_NAME);
+
     def static String generateYangSnipet(SchemaNode schemaNode) {
         if (schemaNode == null)
             return ''
-
+        if (SKIP)
+            return '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
         '''
             «IF schemaNode instanceof DataSchemaNode»
             «writeDataSchemaNode(schemaNode)»
@@ -83,7 +88,8 @@ class YangTemplate {
     def static String generateYangSnipet(Set<? extends SchemaNode> nodes) {
         if (nodes.nullOrEmpty)
             return ''
-
+        if (SKIP)
+            return '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
         '''
             «FOR node : nodes»
                 «IF node instanceof NotificationDefinition»
@@ -127,7 +133,8 @@ class YangTemplate {
     }
 
     def static String generateYangSnipet(Module module) {
-
+        if (SKIP)
+            return '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
         '''
             module «module.name» {
                 yang-version «module.yangVersion»;
