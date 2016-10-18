@@ -141,7 +141,7 @@ public class BindingReflections {
     public static boolean isRpcMethod(final Method possibleMethod) {
         return possibleMethod != null && RpcService.class.isAssignableFrom(possibleMethod.getDeclaringClass())
                 && Future.class.isAssignableFrom(possibleMethod.getReturnType())
-                && possibleMethod.getParameterTypes().length <= 1;
+                && possibleMethod.getParameterTypes().length <= 2;
     }
 
     /**
@@ -177,11 +177,11 @@ public class BindingReflections {
     public static Optional<Class<? extends DataContainer>> resolveRpcInputClass(final Method targetMethod) {
         @SuppressWarnings("rawtypes")
         Class[] types = targetMethod.getParameterTypes();
-        if (types.length == 0) {
+        if (types.length == 1) {
             return Optional.absent();
         }
-        if (types.length == 1) {
-            return Optional.<Class<? extends DataContainer>> of(types[0]);
+        if (types.length == 2) {
+            return Optional.<Class<? extends DataContainer>> of(types[1]);
         }
         throw new IllegalArgumentException("Method has 2 or more arguments.");
     }
