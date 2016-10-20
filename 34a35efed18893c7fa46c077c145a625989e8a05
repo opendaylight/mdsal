@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_e471a6df",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-20T15:39:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_61bd88d7",
+      "range": {
+        "startLine": 41,
+        "startChar": 30,
+        "endLine": 41,
+        "endChar": 59
+      },
+      "revId": "34a35efed18893c7fa46c077c145a625989e8a05",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_228f1c25",
         "filename": "binding/mdsal-binding-test-utils/pom.xml",
         "patchSetId": 6
