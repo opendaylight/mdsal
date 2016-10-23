@@ -16,6 +16,7 @@ module foo {
     }
 
     extension context-reference {
+        argument "context-type";
     }
 
     container nodes {
