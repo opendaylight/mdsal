@@ -56,7 +56,7 @@ public class GenEnumResolvingTest {
         Enumeration operStatus = null;
         final List<Enumeration> enums = genInterface.getEnumerations();
         assertNotNull("Generated Type Interface cannot contain NULL reference to Enumeration types!", enums);
-        assertEquals("Generated Type Interface MUST contain 2 Enumeration Types", 2, enums.size());
+        assertEquals("Generated Type Interface MUST contain 3 Enumeration Types", 3, enums.size());
         for (final Enumeration e : enums) {
             if (e.getName().equals("LinkUpDownTrapEnable")) {
                 linkUpDownTrapEnable = e;

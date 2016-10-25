@@ -27,6 +27,7 @@ import static org.opendaylight.yangtools.binding.generator.util.Types.typeForCla
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -1375,6 +1376,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         // Embedded type definition with new parser. Also takes care of the old parser with bits
         if (leaf.getPath().equals(type.getPath().getParent())) {
+            return true;
+        }
+
+        // solves problem with typedef enums
+        if (type instanceof EnumTypeDefinition) {
             return true;
         }
 
