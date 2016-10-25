@@ -55,6 +55,7 @@ import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
 import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
 import org.opendaylight.yangtools.sal.binding.model.api.Constant;
+import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
@@ -1375,6 +1376,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         // Embedded type definition with new parser. Also takes care of the old parser with bits
         if (leaf.getPath().equals(type.getPath().getParent())) {
+            return true;
+        }
+
+        // solves problem with typedef enums
+        if (type instanceof EnumTypeDefinition) {
             return true;
         }
 
