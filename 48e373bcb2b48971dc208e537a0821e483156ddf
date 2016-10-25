@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a682502_012ccdaa",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1385,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-25T11:26:24Z",
+      "side": 1,
+      "message": "I assume we\u0027re not saying this is \"inner type\" if we use typedef in our leaf... fix seems to provide good result eventually, but inner logic should be different",
+      "range": {
+        "startLine": 1382,
+        "startChar": 8,
+        "endLine": 1385,
+        "endChar": 9
+      },
+      "revId": "48e373bcb2b48971dc208e537a0821e483156ddf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
