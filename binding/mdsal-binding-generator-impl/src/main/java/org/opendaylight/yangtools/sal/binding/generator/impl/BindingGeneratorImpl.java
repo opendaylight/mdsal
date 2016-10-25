@@ -27,6 +27,7 @@ import static org.opendaylight.yangtools.binding.generator.util.Types.typeForCla
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -1416,15 +1417,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
         if (isInnerType(leaf, typeDef)) {
             if (typeDef instanceof EnumTypeDefinition) {
-                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
-                final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
-                final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(),
-                    typeBuilder, module);
-
-                if (enumBuilder != null) {
-                    returnType = enumBuilder.toInstance(typeBuilder);
-                }
-                ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
+                returnType = resolveEnumForLeafSchemaNode(typeBuilder, leaf, module, typeDef);
             } else if (typeDef instanceof UnionTypeDefinition) {
                 GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
                 if (genTOBuilder != null) {
@@ -1444,6 +1437,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(getBaseOrDeclaredType(typeDef), leaf,
                         restrictions);
             }
+        } else if(typeDef instanceof EnumTypeDefinition) {
+            returnType = resolveEnumForLeafSchemaNode(typeBuilder, leaf, module, typeDef);
         } else {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
             returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
@@ -1460,6 +1455,16 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         final MethodSignatureBuilder getter = constructGetter(typeBuilder, leafName, leafDesc, returnType, leaf.getStatus());
         processContextRefExtension(leaf, getter, parentModule);
+        return returnType;
+    }
+
+    private Type resolveEnumForLeafSchemaNode(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
+            final Module module, final TypeDefinition<?> typeDef) {
+        final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
+        final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(), typeBuilder, module);
+        final Type returnType = enumBuilder != null ? enumBuilder.toInstance(typeBuilder) :
+                typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
+        ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
         return returnType;
     }
 
