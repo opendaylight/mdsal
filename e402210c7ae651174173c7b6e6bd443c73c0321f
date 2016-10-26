@@ -22,6 +22,30 @@
       "revId": "e402210c7ae651174173c7b6e6bd443c73c0321f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1a871d63",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/util/BindingReflections.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 5994
+      },
+      "writtenOn": "2016-10-26T10:51:40Z",
+      "side": 1,
+      "message": "if you mean parameter instead of method, let me explain: if you look at old implementation then you can see that in old method input class is determined by number of parameters, which is not only dangerous but clearly wrong, because different rpc services across ODL provide methods with not standardized position of input container nor with standardized number of arguments... so old implementation relies on specific number and position. New implementation relies on nothing of that, it will search across parameters and check if parameter is child or implementation of DataContainer class which is parent of all input type implementations... So you dont need to obey the rule of number and position of parameters",
+      "parentUuid": "3a65312a_d7a9fe7c",
+      "range": {
+        "startLine": 177,
+        "startChar": 8,
+        "endLine": 181,
+        "endChar": 9
+      },
+      "revId": "e402210c7ae651174173c7b6e6bd443c73c0321f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
