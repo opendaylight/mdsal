@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_d7a9fe7c",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/util/BindingReflections.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 4782
+      },
+      "writtenOn": "2016-10-26T09:18:56Z",
+      "side": 1,
+      "message": "what about use case when there are more than 1 methods ?",
+      "range": {
+        "startLine": 177,
+        "startChar": 8,
+        "endLine": 181,
+        "endChar": 9
+      },
+      "revId": "e402210c7ae651174173c7b6e6bd443c73c0321f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
