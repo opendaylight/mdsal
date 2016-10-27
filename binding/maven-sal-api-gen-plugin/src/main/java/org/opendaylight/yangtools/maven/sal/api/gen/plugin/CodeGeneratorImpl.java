@@ -11,18 +11,17 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.maven.project.MavenProject;
 import org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
@@ -178,7 +177,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
     private File writeFile(final File file, final String source) {
         try (final OutputStream stream = buildContext.newFileOutputStream(file)) {
-            try (final Writer fw = new OutputStreamWriter(stream)) {
+            try (final Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
                 try (final BufferedWriter bw = new BufferedWriter(fw)) {
                     bw.write(source);
                 }
