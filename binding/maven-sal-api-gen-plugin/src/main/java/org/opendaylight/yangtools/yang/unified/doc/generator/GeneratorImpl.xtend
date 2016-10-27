@@ -12,6 +12,7 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Collection
@@ -84,7 +85,7 @@ class GeneratorImpl {
         this.ctx = ctx;
         module.imports.forEach[importModule | this.imports.put(importModule.prefix, importModule.moduleName)]
         try {
-            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination))
+            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination), StandardCharsets.UTF_8)
             val bw = new BufferedWriter(fw)
             currentModule = module;
             bw.append(generate(module, ctx));

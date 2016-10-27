@@ -11,6 +11,7 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.OutputStreamWriter
 import java.net.URI
+import java.nio.charset.StandardCharsets
 import java.util.ArrayList
 import java.util.HashSet
 import java.util.List
@@ -60,7 +61,7 @@ class WadlRestconfGenerator {
 				
 				this.module = module
 				val destination = new File(path, '''«module.name».wadl''')
-	            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination))
+	            val fw = new OutputStreamWriter(CTX.newFileOutputStream(destination), StandardCharsets.UTF_8)
 	            val bw = new BufferedWriter(fw)
 	            bw.append(application);
 	            bw.close();
