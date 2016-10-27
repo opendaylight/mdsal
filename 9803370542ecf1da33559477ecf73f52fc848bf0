@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_0e77df03",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1420,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-27T08:46:54Z",
+      "side": 1,
+      "message": "turn logic upside down, otherwise you end up with same condition and executing code twice... \n\nif (typeDef instanceof EnumTypeDefinition) {\n...\n\nif (isInnerType(leaf, typeDef)) {\n   ...\n} else if {...",
+      "range": {
+        "startLine": 1418,
+        "startChar": 8,
+        "endLine": 1420,
+        "endChar": 94
+      },
+      "revId": "9803370542ecf1da33559477ecf73f52fc848bf0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ee738313",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1441,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-10-27T08:46:54Z",
+      "side": 1,
+      "message": "shouldn\u0027t be here...doesn\u0027t make sense to evaluate condition and run same code in both resulting cases...",
+      "range": {
+        "startLine": 1440,
+        "startChar": 8,
+        "endLine": 1441,
+        "endChar": 90
+      },
+      "revId": "9803370542ecf1da33559477ecf73f52fc848bf0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
