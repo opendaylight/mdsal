@@ -27,7 +27,6 @@ import static org.opendaylight.yangtools.binding.generator.util.Types.typeForCla
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -1415,14 +1414,18 @@ public class BindingGeneratorImpl implements BindingGenerator {
         Type returnType = null;
 
         final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
-        if (typeDef instanceof EnumTypeDefinition) {
-            final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
-            final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(), typeBuilder, module);
-            returnType = enumBuilder != null ? enumBuilder.toInstance(typeBuilder) :
-                    typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
-            ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
-        } else if (isInnerType(leaf, typeDef)) {
-            if (typeDef instanceof UnionTypeDefinition) {
+        if (isInnerType(leaf, typeDef)) {
+            if (typeDef instanceof EnumTypeDefinition) {
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
+                final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
+                final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(),
+                    typeBuilder, module);
+
+                if (enumBuilder != null) {
+                    returnType = enumBuilder.toInstance(typeBuilder);
+                }
+                ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
+            } else if (typeDef instanceof UnionTypeDefinition) {
                 GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
                 if (genTOBuilder != null) {
                     returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
