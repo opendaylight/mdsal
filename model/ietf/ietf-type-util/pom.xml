@@ -4,10 +4,10 @@
   <parent>
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>model-ietf</artifactId>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>0.9.1-Boron-SR1</version>
   </parent>
   <artifactId>ietf-type-util</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1-Boron-SR1</version>
   <packaging>bundle</packaging>
 
   <dependencies>
