@@ -197,6 +197,7 @@
                                         <outputBaseDir>
                                             ${salGeneratorPath}
                                         </outputBaseDir>
+                                        <resourceBaseDir>${project.build.directory}/generated-sources/spi</resourceBaseDir>
                                     </generator>
                                     <generator>
                                         <codeGeneratorClass>org.opendaylight.yangtools.yang.unified.doc.generator.maven.DocumentationGeneratorImpl</codeGeneratorClass>

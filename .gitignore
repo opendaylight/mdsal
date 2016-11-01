@@ -11,6 +11,7 @@
 .project
 .settings
 target
+target-ide
 *.iml
 *.svg
 .idea
