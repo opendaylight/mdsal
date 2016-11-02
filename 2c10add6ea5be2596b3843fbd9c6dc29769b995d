@@ -1,0 +1,400 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_fb95f188",
+        "filename": "trace/binding-impl/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "Add those dependencies in the mdsal-artifacts, and pull the mdsal-artifacts within dependencyManagement, so you don\u0027t have to specify the version for those bundles here. Same apply elsewhere.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 17
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_bb7c1974",
+        "filename": "trace/binding-impl/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "please fix indentation and wrap the import line at 120 caracters, or per package. Same applies elsewhere",
+      "range": {
+        "startLine": 66,
+        "startChar": 3,
+        "endLine": 80,
+        "endChar": 12
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_9b467d22",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingBroker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "import should be ordered alphabetically, with no space between them. See https://wiki.opendaylight.org/view/GettingStarted:_Eclipse_Setup#Import_ordering",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 21
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_3bbe4900",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingBroker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "Is this thread safe?",
+      "range": {
+        "startLine": 85,
+        "startChar": 13,
+        "endLine": 85,
+        "endChar": 26
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_3b55a9c6",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingDOMDataBroker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "I think this should be under an api package",
+      "range": {
+        "startLine": 8,
+        "startChar": 41,
+        "endLine": 8,
+        "endChar": 45
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_fb4a1126",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingDOMDataBroker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "redundant word",
+      "range": {
+        "startLine": 13,
+        "startChar": 33,
+        "endLine": 13,
+        "endChar": 36
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_fb717178",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingWriteTransaction.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "Is this thread safe? I think you might face concurrent issues with the List definition line 29",
+      "range": {
+        "startLine": 25,
+        "startChar": 6,
+        "endLine": 25,
+        "endChar": 29
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_bb5899fb",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingWriteTransaction.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "can this occur? Line 43, we have the same condition. If true, value \u003d null, hence we will fall into line 47 condition.",
+      "range": {
+        "startLine": 57,
+        "startChar": 12,
+        "endLine": 57,
+        "endChar": 31
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1b69cd8b",
+        "filename": "trace/dom-impl/src/main/resources/org/opendaylight/blueprint/impl-blueprint.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "Are you sure you want to expose this interface under the odl:type default. People pulling it in, and that don\u0027t want this tracing functionality will still end up with it. I don\u0027t think we should impose it.",
+      "range": {
+        "startLine": 34,
+        "startChar": 6,
+        "endLine": 34,
+        "endChar": 77
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7b0561c1",
+        "filename": "trace/dom-impl/src/main/resources/org/opendaylight/blueprint/impl-blueprint.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "same comment as above. I think it should have its own odl:type to avoid imposing it to consumer of the formal service.",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 48
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_bb0ff9e0",
+        "filename": "trace/features/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "you should use mdsal-artifacts in dependencyManagement and do not use properties. (best practice across odl core projects at least)",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 49
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5b0a25d3",
+        "filename": "trace/features/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "not needed",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 71
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_9b14bdf6",
+        "filename": "trace/features/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "hardcode the version here. Moreover this is confusing. It is the controller.mdsal version. At first I thought it was the mdsal version itself.",
+      "range": {
+        "startLine": 35,
+        "startChar": 17,
+        "endLine": 35,
+        "endChar": 33
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_bb26d966",
+        "filename": "trace/features/src/main/features/features.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "Not sure you need to create your own feature file, I believe this could go in feature-mdsak, hence it would avoid the consumer to have to edit their features/pom.xml to add that repository.",
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5b3185a1",
+        "filename": "trace/features/src/main/features/features.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "I think this can be better formatted. like MD-SAL :: Tracing Broker or whatever.",
+      "range": {
+        "startLine": 17,
+        "startChar": 92,
+        "endLine": 17,
+        "endChar": 102
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1b00ada9",
+        "filename": "trace/features/src/main/features/features.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "kill the extra space please",
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_9b2b1d30",
+        "filename": "trace/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "lite",
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_fb1fb107",
+        "filename": "trace/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 3675
+      },
+      "writtenOn": "2016-11-02T13:07:34Z",
+      "side": 1,
+      "message": "remove, moreover, master is enforcing 3.3.9",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 18
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
