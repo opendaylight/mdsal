@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_817e0be3",
+        "filename": "trace/binding-impl/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_fb95f188",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 17
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_bb7c1974",
         "filename": "trace/binding-impl/pom.xml",
         "patchSetId": 6
@@ -36,6 +60,30 @@
       "writtenOn": "2016-11-02T13:07:34Z",
       "side": 1,
       "message": "please fix indentation and wrap the import line at 120 caracters, or per package. Same applies elsewhere",
+      "range": {
+        "startLine": 66,
+        "startChar": 3,
+        "endLine": 80,
+        "endChar": 12
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_e1837fca",
+        "filename": "trace/binding-impl/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_bb7c1974",
       "range": {
         "startLine": 66,
         "startChar": 3,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_c1a48359",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingBroker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_9b467d22",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 21
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_3bbe4900",
         "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingBroker.java",
         "patchSetId": 6
@@ -82,6 +154,30 @@
       "writtenOn": "2016-11-02T13:07:34Z",
       "side": 1,
       "message": "Is this thread safe?",
+      "range": {
+        "startLine": 85,
+        "startChar": 13,
+        "endLine": 85,
+        "endChar": 26
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_d05f2f71",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingBroker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "I don\u0027t see why not. True the watch registration data structures are not thread safe but I do not see any reason that they should be. They\u0027re designed to be configured at the very start, not as the app runs. Doesn\u0027t make any sense for that to happen from multiple threads.",
+      "parentUuid": "3a65312a_3bbe4900",
       "range": {
         "startLine": 85,
         "startChar": 13,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_612f6fa2",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingDOMDataBroker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_3b55a9c6",
+      "range": {
+        "startLine": 8,
+        "startChar": 41,
+        "endLine": 8,
+        "endChar": 45
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_fb4a1126",
         "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingDOMDataBroker.java",
         "patchSetId": 6
@@ -128,6 +248,30 @@
       "writtenOn": "2016-11-02T13:07:34Z",
       "side": 1,
       "message": "redundant word",
+      "range": {
+        "startLine": 13,
+        "startChar": 33,
+        "endLine": 13,
+        "endChar": 36
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_412cf3ab",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingDOMDataBroker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_fb4a1126",
       "range": {
         "startLine": 13,
         "startChar": 33,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_fc3684e6",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingWriteTransaction.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "wrapped access to log with synchronized even though I think it\u0027s rather unlikely that a transaction would be used from multiple threads",
+      "parentUuid": "3a65312a_fb717178",
+      "range": {
+        "startLine": 25,
+        "startChar": 6,
+        "endLine": 25,
+        "endChar": 29
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_bb5899fb",
         "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingWriteTransaction.java",
         "patchSetId": 6
@@ -174,6 +342,30 @@
       "writtenOn": "2016-11-02T13:07:34Z",
       "side": 1,
       "message": "can this occur? Line 43, we have the same condition. If true, value \u003d null, hence we will fall into line 47 condition.",
+      "range": {
+        "startLine": 57,
+        "startChar": 12,
+        "endLine": 57,
+        "endChar": 31
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5c34d8dd",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingWriteTransaction.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "The condition on line 47 is if value !\u003d null (and another condition). Either way, no harm in defensive programming.",
+      "parentUuid": "3a65312a_bb5899fb",
       "range": {
         "startLine": 57,
         "startChar": 12,
@@ -209,6 +401,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_26410d3a",
+        "filename": "trace/dom-impl/src/main/resources/org/opendaylight/blueprint/impl-blueprint.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "The way this is supposed to work is that it will NOT be generally installed in karaf. The way to use it is to install it before loading your components and then it\u0027ll intercept the various called to the broker and log stuff. It\u0027s a debug-time tool and if you don\u0027t want it, don\u0027t package:install it. So, yes, this is by design.",
+      "parentUuid": "3a65312a_1b69cd8b",
+      "range": {
+        "startLine": 34,
+        "startChar": 6,
+        "endLine": 34,
+        "endChar": 77
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_7b0561c1",
         "filename": "trace/dom-impl/src/main/resources/org/opendaylight/blueprint/impl-blueprint.xml",
         "patchSetId": 6
@@ -220,6 +436,30 @@
       "writtenOn": "2016-11-02T13:07:34Z",
       "side": 1,
       "message": "same comment as above. I think it should have its own odl:type to avoid imposing it to consumer of the formal service.",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 48
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_063e91b8",
+        "filename": "trace/dom-impl/src/main/resources/org/opendaylight/blueprint/impl-blueprint.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "See above",
+      "parentUuid": "3a65312a_7b0561c1",
       "range": {
         "startLine": 44,
         "startChar": 0,
@@ -255,6 +495,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_3c311ced",
+        "filename": "trace/features/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_bb0ff9e0",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 49
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_5b0a25d3",
         "filename": "trace/features/pom.xml",
         "patchSetId": 6
@@ -266,6 +530,30 @@
       "writtenOn": "2016-11-02T13:07:34Z",
       "side": 1,
       "message": "not needed",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 71
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_9c4dd075",
+        "filename": "trace/features/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_5b0a25d3",
       "range": {
         "startLine": 26,
         "startChar": 0,
@@ -301,6 +589,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_7c527414",
+        "filename": "trace/features/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Very confusing...and it\u0027s like that all over. Hard coded it",
+      "parentUuid": "3a65312a_9b14bdf6",
+      "range": {
+        "startLine": 35,
+        "startChar": 17,
+        "endLine": 35,
+        "endChar": 33
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_bb26d966",
         "filename": "trace/features/src/main/features/features.xml",
         "patchSetId": 6
@@ -312,6 +624,24 @@
       "writtenOn": "2016-11-02T13:07:34Z",
       "side": 1,
       "message": "Not sure you need to create your own feature file, I believe this could go in feature-mdsak, hence it would avoid the consumer to have to edit their features/pom.xml to add that repository.",
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1c41c039",
+        "filename": "trace/features/src/main/features/features.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "For now I\u0027d like to leave this as is. I want to keep this guy separate and out of the default features since it\u0027s really a debug tool. It\u0027ll kill performance if someone turns it on and they don\u0027t know what they\u0027re doing.",
+      "parentUuid": "3a65312a_bb26d966",
       "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -341,6 +671,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_5c4b3859",
+        "filename": "trace/features/src/main/features/features.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_5b3185a1",
+      "range": {
+        "startLine": 17,
+        "startChar": 92,
+        "endLine": 17,
+        "endChar": 102
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_1b00ada9",
         "filename": "trace/features/src/main/features/features.xml",
         "patchSetId": 6
@@ -352,6 +706,24 @@
       "writtenOn": "2016-11-02T13:07:34Z",
       "side": 1,
       "message": "kill the extra space please",
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_3c48fc5a",
+        "filename": "trace/features/src/main/features/features.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_1b00ada9",
       "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -375,6 +747,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_9c74b09d",
+        "filename": "trace/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_9b2b1d30",
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_fb1fb107",
         "filename": "trace/pom.xml",
         "patchSetId": 6
@@ -386,6 +776,30 @@
       "writtenOn": "2016-11-02T13:07:34Z",
       "side": 1,
       "message": "remove, moreover, master is enforcing 3.3.9",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 18
+      },
+      "revId": "2c10add6ea5be2596b3843fbd9c6dc29769b995d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7c79d492",
+        "filename": "trace/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-11-03T18:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_fb1fb107",
       "range": {
         "startLine": 24,
         "startChar": 0,
