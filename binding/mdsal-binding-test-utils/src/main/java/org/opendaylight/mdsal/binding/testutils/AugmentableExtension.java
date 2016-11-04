@@ -27,7 +27,7 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
  *
  * @author Michael Vorburger
  */
-//package-local: no need to expose this, consider it an implementation detail; public API is the AssertDataObjects
+// package-local: no need to expose this, consider it an implementation detail; public API is the AssertDataObjects
 class AugmentableExtension {
 
     private static final ReflectExtensions REFLECT_EXTENSIONS = new ReflectExtensions();
