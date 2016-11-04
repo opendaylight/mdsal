@@ -22,3 +22,4 @@ yang-gen-sal
 target
 .DS_Store
 META-INF
+.fbExcludeFilterFile

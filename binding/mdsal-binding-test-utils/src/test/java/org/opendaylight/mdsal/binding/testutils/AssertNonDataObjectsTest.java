@@ -7,7 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.testutils;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import ch.vorburger.xtendbeans.AssertBeans;
+import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -51,4 +54,19 @@ public class AssertNonDataObjectsTest {
         AssertDataObjects.assertEqualBeans(first, second);
     }
 
+    @Test
+    public void testSomeBeanMismatch() {
+        SomeBean expected = new SomeBean();
+        expected.setName("hello, world 1");
+
+        SomeBean actual = new SomeBean();
+        actual.setName("hello, world 2");
+
+        try {
+            AssertDataObjects.assertEqualBeans(expected, actual);
+        } catch (ComparisonFailure e) {
+            assertThat(e.getExpected()).contains("hello, world 1");
+            assertThat(e.getActual()).contains("hello, world 2");
+        }
+    }
 }

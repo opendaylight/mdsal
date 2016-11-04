@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.binding.testutils;
 import ch.vorburger.xtendbeans.AssertBeans;
 import org.junit.ComparisonFailure;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Assertion utilities for YANG {@link DataObject}s.
@@ -30,6 +32,8 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * @author Michael Vorburger
  */
 public final class AssertDataObjects {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AssertDataObjects.class);
 
     private static final XtendYangBeanGenerator GENERATOR = new XtendYangBeanGenerator();
 
@@ -56,6 +60,8 @@ public final class AssertDataObjects {
     static void assertEqualByText(String expectedText, Object actual) throws ComparisonFailure {
         String actualText = GENERATOR.getExpression(actual);
         if (!expectedText.equals(actualText)) {
+            String diff = DiffUtil.diff(expectedText, actualText);
+            LOG.warn("diff for ComparisonFailure about to be thrown:\n{}", diff);
             throw new ComparisonFailure("Expected and actual beans do not match", expectedText, actualText);
         }
     }
