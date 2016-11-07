@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_ff9f8c01",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/DiffUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-07T11:06:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_8155641f",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 14
+      },
+      "revId": "1a39e41ca39cceaf82ac96ba3ff6c8f1a716b348",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_c1363c03",
         "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/DiffUtil.java",
         "patchSetId": 2
@@ -59,6 +83,30 @@
       "writtenOn": "2016-11-04T19:18:31Z",
       "side": 1,
       "message": "consider String.format() -- this is not performance-critical and will be more readable.",
+      "range": {
+        "startLine": 39,
+        "startChar": 21,
+        "endLine": 39,
+        "endChar": 105
+      },
+      "revId": "1a39e41ca39cceaf82ac96ba3ff6c8f1a716b348",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_dfa45059",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/DiffUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-07T11:06:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_c1363c03",
       "range": {
         "startLine": 39,
         "startChar": 21,
