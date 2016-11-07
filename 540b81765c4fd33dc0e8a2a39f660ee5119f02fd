@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_9fd5b845",
+        "filename": "trace/api/src/main/yang/mdsaltrace.yang",
+        "patchSetId": 7
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-11-07T09:49:47Z",
+      "side": 1,
+      "message": "we really need an organization and description (with copyright).",
+      "revId": "540b81765c4fd33dc0e8a2a39f660ee5119f02fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ffcaec9f",
+        "filename": "trace/binding-impl/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-11-07T09:49:47Z",
+      "side": 1,
+      "message": "Circular dependency with controller. These have equivalents in mdsal.",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 60,
+        "endChar": 54
+      },
+      "revId": "540b81765c4fd33dc0e8a2a39f660ee5119f02fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_3fc46491",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingBroker.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-11-07T09:49:47Z",
+      "side": 1,
+      "message": "should be private",
+      "range": {
+        "startLine": 89,
+        "startChar": 4,
+        "endLine": 89,
+        "endChar": 10
+      },
+      "revId": "540b81765c4fd33dc0e8a2a39f660ee5119f02fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7fbedc00",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingReadWriteTransaction.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-11-07T09:49:47Z",
+      "side": 1,
+      "message": "Superclass already has the delegate -- can we pick it up from there?",
+      "range": {
+        "startLine": 24,
+        "startChar": 22,
+        "endLine": 24,
+        "endChar": 33
+      },
+      "revId": "540b81765c4fd33dc0e8a2a39f660ee5119f02fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_df461023",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingWriteTransaction.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-11-07T09:49:47Z",
+      "side": 1,
+      "message": "looks like \u0027extends ForwardingObject\u0027 would be appropriate (note it forwards .toString()).",
+      "range": {
+        "startLine": 26,
+        "startChar": 28,
+        "endLine": 26,
+        "endChar": 42
+      },
+      "revId": "540b81765c4fd33dc0e8a2a39f660ee5119f02fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_bf37d4af",
+        "filename": "trace/dom-impl/src/main/java/org/opendaylight/mdsal/trace/dom/impl/TracingWriteTransaction.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-11-07T09:49:47Z",
+      "side": 1,
+      "message": "Preconditions.checkNotNull()",
+      "range": {
+        "startLine": 33,
+        "startChar": 22,
+        "endLine": 33,
+        "endChar": 33
+      },
+      "revId": "540b81765c4fd33dc0e8a2a39f660ee5119f02fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
