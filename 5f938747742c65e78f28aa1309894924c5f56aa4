@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_5e21579e",
+        "filename": "trace/api/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-09T14:47:47Z",
+      "side": 1,
+      "message": "You need to use the mdsal artifacts.",
+      "revId": "5f938747742c65e78f28aa1309894924c5f56aa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7e37f3e3",
+        "filename": "trace/binding-impl/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-09T14:47:47Z",
+      "side": 1,
+      "message": "Nope...",
+      "revId": "5f938747742c65e78f28aa1309894924c5f56aa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1e4ebf6f",
+        "filename": "trace/deploy-site.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-09T14:47:47Z",
+      "side": 1,
+      "message": "org.opendaylight.mdsal",
+      "revId": "5f938747742c65e78f28aa1309894924c5f56aa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_3e5d7b22",
+        "filename": "trace/dom-impl/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-09T14:47:47Z",
+      "side": 1,
+      "message": ":-(",
+      "revId": "5f938747742c65e78f28aa1309894924c5f56aa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_de4ba757",
+        "filename": "trace/features/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-09T14:47:47Z",
+      "side": 1,
+      "message": "I don\u0027t think this is going to fly either.",
+      "revId": "5f938747742c65e78f28aa1309894924c5f56aa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_be486b5c",
+        "filename": "trace/features/src/main/features/features.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-09T14:47:47Z",
+      "side": 1,
+      "message": ":-(",
+      "revId": "5f938747742c65e78f28aa1309894924c5f56aa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
