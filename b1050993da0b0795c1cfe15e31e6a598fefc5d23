@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_d04b96ae",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/YangTemplate.xtend",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-11-09T08:04:46Z",
+      "side": 1,
+      "message": "as far as I know, keyword \"val\" is synonym to \"final\", so it should be enough to say:\n\nprivate val static SKIP_PROPERTY_NAME \u003d \"mdsal.skip.verbose\"\n\nhttp://www.eclipse.org/xtend/documentation/202_xtend_classes_members.html#fields",
+      "range": {
+        "startLine": 45,
+        "startChar": 3,
+        "endLine": 47,
+        "endChar": 74
+      },
+      "revId": "b1050993da0b0795c1cfe15e31e6a598fefc5d23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
