@@ -48,7 +48,7 @@ import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BindingReflections {
+public final class BindingReflections {
 
     private static final long EXPIRATION_TIME = 60;
     private static final String ROOT_PACKAGE_PATTERN_STRING = "(org.opendaylight.yang.gen.v1.[a-z0-9_\\.]*\\.rev[0-9][0-9][0-1][0-9][0-3][0-9])";
@@ -140,7 +140,7 @@ public class BindingReflections {
     public static boolean isRpcMethod(final Method possibleMethod) {
         return possibleMethod != null && RpcService.class.isAssignableFrom(possibleMethod.getDeclaringClass())
                 && Future.class.isAssignableFrom(possibleMethod.getReturnType())
-                && possibleMethod.getParameterTypes().length <= 1;
+                && possibleMethod.getParameterTypes().length <= 2;
     }
 
     /**
@@ -154,12 +154,12 @@ public class BindingReflections {
      */
     @SuppressWarnings("rawtypes")
     public static Optional<Class<?>> resolveRpcOutputClass(final Method targetMethod) {
-        checkState(isRpcMethod(targetMethod), "Supplied method is not Rpc invocation method");
+        checkState(isRpcMethod(targetMethod), "Supplied method is not RPC invocation method");
         Type futureType = targetMethod.getGenericReturnType();
         Type rpcResultType = ClassLoaderUtils.getFirstGenericParameter(futureType);
         Type rpcResultArgument = ClassLoaderUtils.getFirstGenericParameter(rpcResultType);
         if (rpcResultArgument instanceof Class && !Void.class.equals(rpcResultArgument)) {
-            return Optional.<Class<?>> of((Class) rpcResultArgument);
+            return Optional.of((Class) rpcResultArgument);
         }
         return Optional.absent();
     }
@@ -172,17 +172,14 @@ public class BindingReflections {
      *            method to scan
      * @return Optional.absent() if rpc has no input, Rpc input type otherwise.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public static Optional<Class<? extends DataContainer>> resolveRpcInputClass(final Method targetMethod) {
-        @SuppressWarnings("rawtypes")
-        Class[] types = targetMethod.getParameterTypes();
-        if (types.length == 0) {
-            return Optional.absent();
+        for (Class clazz : targetMethod.getParameterTypes()) {
+            if (DataContainer.class.isAssignableFrom(clazz)) {
+                return Optional.of(clazz);
+            }
         }
-        if (types.length == 1) {
-            return Optional.<Class<? extends DataContainer>> of(types[0]);
-        }
-        throw new IllegalArgumentException("Method has 2 or more arguments.");
+        return Optional.absent();
     }
 
     public static QName getQName(final Class<? extends BaseIdentity> context) {
