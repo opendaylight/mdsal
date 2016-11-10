@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.CheckedFuture;
@@ -188,7 +189,10 @@ class RpcServiceAdapter implements InvocationHandler {
 
         protected RoutedStrategy(final SchemaPath path, final Method rpcMethod, final QName leafName) {
             super(path);
-            final Class<? extends DataContainer> inputType = BindingReflections.resolveRpcInputClass(rpcMethod).get();
+            final Optional<Class<? extends DataContainer>> maybeInputType =
+                    BindingReflections.resolveRpcInputClass(rpcMethod);
+            Preconditions.checkState(maybeInputType.isPresent(), "Rpc method have no input");
+            final Class<? extends DataContainer> inputType = maybeInputType.get();
             refExtractor = ContextReferenceExtractor.from(inputType);
             this.contextName = new NodeIdentifier(leafName);
         }
