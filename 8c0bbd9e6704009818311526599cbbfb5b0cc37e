@@ -22,6 +22,30 @@
       "revId": "8c0bbd9e6704009818311526599cbbfb5b0cc37e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5f866766",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingDOMMountPointServiceAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 637
+      },
+      "writtenOn": "2016-11-12T19:50:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_3f745598",
+      "range": {
+        "startLine": 51,
+        "startChar": 28,
+        "endLine": 51,
+        "endChar": 40
+      },
+      "revId": "8c0bbd9e6704009818311526599cbbfb5b0cc37e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
