@@ -27,6 +27,7 @@ import static org.opendaylight.yangtools.binding.generator.util.Types.typeForCla
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -1420,7 +1421,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
                 final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(),
                     typeBuilder, module);
-
                 if (enumBuilder != null) {
                     returnType = enumBuilder.toInstance(typeBuilder);
                 }
@@ -1451,6 +1451,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         if (returnType == null) {
             return null;
+        }
+
+        if (typeDef instanceof EnumTypeDefinition) {
+            ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
         }
 
         String leafDesc = leaf.getDescription();
