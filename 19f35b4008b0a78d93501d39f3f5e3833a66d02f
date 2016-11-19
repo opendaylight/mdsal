@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_1d9fc5b5",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding2/generator/util/Binding2Mapping.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-11-19T21:54:17Z",
+      "side": 1,
+      "message": "okay, and this looks weird :) Please add an explicit comment about this being a no-op",
+      "range": {
+        "startLine": 98,
+        "startChar": 16,
+        "endLine": 98,
+        "endChar": 24
+      },
+      "revId": "19f35b4008b0a78d93501d39f3f5e3833a66d02f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
