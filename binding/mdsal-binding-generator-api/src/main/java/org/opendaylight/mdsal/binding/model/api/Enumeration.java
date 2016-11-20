@@ -47,7 +47,7 @@ public interface Enumeration extends GeneratedType {
      * Interface is used for reading enumeration item. It means item's name and
      * its value.
      */
-    interface Pair extends DocumentedNode {
+    interface Pair extends DocumentedNode.WithStatus {
 
         /**
          * Returns the name of the enumeration item as it is specified in the input yang.
