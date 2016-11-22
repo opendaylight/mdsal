@@ -57,22 +57,21 @@ public final class JavassistUtils {
         return ret;
     }
 
-    public void method(final CtClass it, final Class<? extends Object> returnType, final String name,
-            final Class<? extends Object> parameter, final MethodGenerator function1) throws CannotCompileException {
+    public void method(final CtClass it, final Class<?> returnType, final String name,
+            final Class<?> parameter, final MethodGenerator function1) throws CannotCompileException {
         final CtClass[] pa = new CtClass[] { asCtClass(parameter) };
-        final CtMethod _ctMethod = new CtMethod(asCtClass(returnType), name, pa, it);
+        final CtMethod method = new CtMethod(asCtClass(returnType), name, pa, it);
 
-        final CtMethod method = _ctMethod;
         function1.process(method);
         it.addMethod(method);
     }
 
-    public void method(final CtClass it, final Class<? extends Object> returnType, final String name,
+    public void method(final CtClass it, final Class<?> returnType, final String name,
             final Collection<? extends Class<?>> parameters, final MethodGenerator function1) throws CannotCompileException {
         final CtClass[] pa = new CtClass[parameters.size()];
 
         int i = 0;
-        for (Class<? extends Object> parameter : parameters) {
+        for (Class<?> parameter : parameters) {
             pa[i] = asCtClass(parameter);
             ++i;
         }
@@ -82,11 +81,10 @@ public final class JavassistUtils {
         it.addMethod(method);
     }
 
-    public void staticMethod(final CtClass it, final Class<? extends Object> returnType, final String name,
-            final Class<? extends Object> parameter, final MethodGenerator function1) throws CannotCompileException {
+    public void staticMethod(final CtClass it, final Class<?> returnType, final String name,
+            final Class<?> parameter, final MethodGenerator function1) throws CannotCompileException {
         final CtClass[] pa = new CtClass[] { asCtClass(parameter) };
-        final CtMethod _ctMethod = new CtMethod(asCtClass(returnType), name, pa, it);
-        final CtMethod method = _ctMethod;
+        final CtMethod method = new CtMethod(asCtClass(returnType), name, pa, it);
         function1.process(method);
         it.addMethod(method);
     }
@@ -144,23 +142,23 @@ public final class JavassistUtils {
         it.addInterface(supertype);
     }
 
-    public CtClass asCtClass(final Class<? extends Object> class1) {
+    public CtClass asCtClass(final Class<?> class1) {
         return get(this.classPool, class1);
     }
 
-    public CtField field(final CtClass it, final String name, final Class<? extends Object> returnValue) throws CannotCompileException {
+    public CtField field(final CtClass it, final String name, final Class<?> returnValue) throws CannotCompileException {
         final CtField field = new CtField(asCtClass(returnValue), name, it);
         field.setModifiers(Modifier.PUBLIC);
         it.addField(field);
         return field;
     }
 
-    public CtField staticField(final CtClass it, final String name, final Class<? extends Object> returnValue) throws CannotCompileException {
+    public CtField staticField(final CtClass it, final String name, final Class<?> returnValue) throws CannotCompileException {
         return staticField(it, name, returnValue, null);
     }
 
     public CtField staticField(final CtClass it, final String name,
-            final Class<? extends Object> returnValue,
+            final Class<?> returnValue,
             final SourceCodeGenerator sourceGenerator) throws CannotCompileException {
         final CtField field = new CtField(asCtClass(returnValue), name, it);
         field.setModifiers(Modifier.PUBLIC + Modifier.STATIC);
