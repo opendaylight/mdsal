@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
@@ -21,25 +21,25 @@ import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager.Batc
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidates;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChangePublisher {
-    private static final BatchedInvoker<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
-        MANAGER_INVOKER = (listener, notifications) -> {
-            // FIXME: this is inefficient, as we could grab the entire queue for the listener and post it
+    private static final BatchedInvoker<AbstractDOMDataTreeChangeListenerRegistration<?>, Collection<DataTreeCandidate>>
+        MANAGER_INVOKER = (listener, notificationsBatch) -> {
             final DOMDataTreeChangeListener inst = listener.getInstance();
             if (inst != null) {
-                inst.onDataTreeChanged(ImmutableList.copyOf(notifications));
+                for (Collection<DataTreeCandidate> notifications : notificationsBatch) {
+                    inst.onDataTreeChanged(notifications);
+                }
             }
         };
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMStoreTreeChangePublisher.class);
 
-    private final QueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
-        notificationManager;
+    private final QueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>,
+        Collection<DataTreeCandidate>> notificationManager;
 
     InMemoryDOMStoreTreeChangePublisher(final ExecutorService listenerExecutor, final int maxQueueSize) {
         notificationManager = QueuedNotificationManager.create(listenerExecutor, MANAGER_INVOKER, maxQueueSize,
@@ -47,14 +47,10 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
     }
 
     @Override
-    protected void notifyListeners(final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
-            final YangInstanceIdentifier path, final DataTreeCandidateNode node) {
-        final DataTreeCandidate candidate = DataTreeCandidates.newDataTreeCandidate(path, node);
-
-        for (AbstractDOMDataTreeChangeListenerRegistration<?> reg : registrations) {
-            LOG.debug("Enqueueing candidate {} to registration {}", candidate, registrations);
-            notificationManager.submitNotification(reg, candidate);
-        }
+    protected void notifyListener(AbstractDOMDataTreeChangeListenerRegistration<?> registration,
+            Collection<DataTreeCandidate> changes) {
+        LOG.debug("Enqueueing candidates {} for registration {}", changes, registration);
+        notificationManager.submitNotification(registration, changes);
     }
 
     @Override
@@ -72,7 +68,7 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
         final Optional<NormalizedNode<?, ?>> node = snapshot.readNode(treeId);
         if (node.isPresent()) {
             final DataTreeCandidate candidate = DataTreeCandidates.fromNormalizedNode(treeId, node.get());
-            notificationManager.submitNotification(reg, candidate);
+            notificationManager.submitNotification(reg, Collections.singletonList(candidate));
         }
 
         return reg;
