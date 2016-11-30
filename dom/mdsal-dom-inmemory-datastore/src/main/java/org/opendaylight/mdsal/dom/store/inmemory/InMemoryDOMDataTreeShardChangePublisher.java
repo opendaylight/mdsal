@@ -21,8 +21,6 @@ import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager.Batc
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +36,8 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
             }
         };
 
-    private final QueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>,
-        DataTreeCandidate> notificationManager;
+    private final QueuedNotificationManager<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate>
+        notificationManager;
 
     InMemoryDOMDataTreeShardChangePublisher(final Executor executor,
                                             final int maxQueueSize,
@@ -52,16 +50,10 @@ final class InMemoryDOMDataTreeShardChangePublisher extends AbstractDOMShardTree
     }
 
     @Override
-    protected void notifyListeners(
-            @Nonnull final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
-                                   @Nonnull final YangInstanceIdentifier path,
-                                   @Nonnull final DataTreeCandidateNode node) {
-        final DataTreeCandidate candidate = DataTreeCandidates.newDataTreeCandidate(path, node);
-
-        for (final AbstractDOMDataTreeChangeListenerRegistration<?> reg : registrations) {
-            LOG.debug("Enqueueing candidate {} to registration {}", candidate, registrations);
-            notificationManager.submitNotification(reg, candidate);
-        }
+    protected void notifyListener(AbstractDOMDataTreeChangeListenerRegistration<?> registration,
+            Collection<DataTreeCandidate> changes) {
+        LOG.debug("Enqueueing candidates {} for registration {}", changes, registration);
+        notificationManager.submitNotifications(registration, changes);
     }
 
     @Override

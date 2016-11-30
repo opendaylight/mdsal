@@ -38,7 +38,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
@@ -128,9 +127,8 @@ public class AbstractDOMShardTreeChangePublisherTest extends AbstractDOMShardTre
     }
 
     @Override
-    protected void notifyListeners(
-            @Nonnull final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
-                   @Nonnull final YangInstanceIdentifier path, @Nonnull final DataTreeCandidateNode node) {
+    protected void notifyListener(AbstractDOMDataTreeChangeListenerRegistration<?> registration,
+            Collection<DataTreeCandidate> changes) {
         // NOOP
     }
 
