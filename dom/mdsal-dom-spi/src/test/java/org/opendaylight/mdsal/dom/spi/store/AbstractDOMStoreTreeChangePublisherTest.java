@@ -70,8 +70,8 @@ public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTre
     }
 
     @Override
-    protected void notifyListeners(@Nonnull Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
-                                   @Nonnull YangInstanceIdentifier path, @Nonnull DataTreeCandidateNode node) {
+    protected void notifyListener(AbstractDOMDataTreeChangeListenerRegistration<?> registration,
+            Collection<DataTreeCandidate> changes) {
         notifyInvoked = true;
     }
 
