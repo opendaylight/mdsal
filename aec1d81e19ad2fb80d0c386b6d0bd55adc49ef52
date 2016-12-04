@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_1ae4273a",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/AbstractDOMStoreTreeChangePublisher.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-04T18:03:10Z",
+      "side": 1,
+      "message": "this should be a Multimap",
+      "range": {
+        "startLine": 169,
+        "startChar": 18,
+        "endLine": 170,
+        "endChar": 68
+      },
+      "revId": "aec1d81e19ad2fb80d0c386b6d0bd55adc49ef52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
