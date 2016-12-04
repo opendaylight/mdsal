@@ -22,6 +22,30 @@
       "revId": "aec1d81e19ad2fb80d0c386b6d0bd55adc49ef52",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_5ad5ff41",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/AbstractDOMStoreTreeChangePublisher.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2016-12-04T18:30:50Z",
+      "side": 1,
+      "message": "It could be but I decide against that b/c I wanted to hash AbstractDOMDataTreeChangeListenerRegistration on identity to avoid potential problematic implementations of equals (e.g. not checking instanceof - been burned by that in the past and learned my lesson).",
+      "parentUuid": "1a622d24_1ae4273a",
+      "range": {
+        "startLine": 169,
+        "startChar": 18,
+        "endLine": 170,
+        "endChar": 68
+      },
+      "revId": "aec1d81e19ad2fb80d0c386b6d0bd55adc49ef52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
