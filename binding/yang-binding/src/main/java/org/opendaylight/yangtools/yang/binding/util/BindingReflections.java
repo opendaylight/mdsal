@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
 import com.google.common.collect.Sets;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -132,8 +131,6 @@ public class BindingReflections {
     /**
      * Checks if method is RPC invocation
      *
-     *
-     *
      * @param possibleMethod
      *            Method to check
      * @return true if method is RPC invocation, false otherwise.
@@ -141,7 +138,11 @@ public class BindingReflections {
     public static boolean isRpcMethod(final Method possibleMethod) {
         return possibleMethod != null && RpcService.class.isAssignableFrom(possibleMethod.getDeclaringClass())
                 && Future.class.isAssignableFrom(possibleMethod.getReturnType())
-                && possibleMethod.getParameterTypes().length <= 1;
+                // length <= 2: it seemed to be impossible to get correct RpcMethodInvoker because of
+                // resolveRpcInputClass() check.While RpcMethodInvoker counts with one argument for
+                // non input type and two arguments for input type, resolveRpcInputClass() counting
+                // with zero for non input and one for input type
+                && possibleMethod.getParameterTypes().length <= 2;
     }
 
     /**
@@ -155,12 +156,12 @@ public class BindingReflections {
      */
     @SuppressWarnings("rawtypes")
     public static Optional<Class<?>> resolveRpcOutputClass(final Method targetMethod) {
-        checkState(isRpcMethod(targetMethod), "Supplied method is not Rpc invocation method");
+        checkState(isRpcMethod(targetMethod), "Supplied method is not a RPC invocation method");
         Type futureType = targetMethod.getGenericReturnType();
         Type rpcResultType = ClassLoaderUtils.getFirstGenericParameter(futureType);
         Type rpcResultArgument = ClassLoaderUtils.getFirstGenericParameter(rpcResultType);
         if (rpcResultArgument instanceof Class && !Void.class.equals(rpcResultArgument)) {
-            return Optional.<Class<?>> of((Class) rpcResultArgument);
+            return Optional.of((Class) rpcResultArgument);
         }
         return Optional.absent();
     }
@@ -173,17 +174,14 @@ public class BindingReflections {
      *            method to scan
      * @return Optional.absent() if rpc has no input, Rpc input type otherwise.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public static Optional<Class<? extends DataContainer>> resolveRpcInputClass(final Method targetMethod) {
-        @SuppressWarnings("rawtypes")
-        Class[] types = targetMethod.getParameterTypes();
-        if (types.length == 0) {
-            return Optional.absent();
+        for (Class clazz : targetMethod.getParameterTypes()) {
+            if (DataContainer.class.isAssignableFrom(clazz)) {
+                return Optional.of(clazz);
+            }
         }
-        if (types.length == 1) {
-            return Optional.<Class<? extends DataContainer>> of(types[0]);
-        }
-        throw new IllegalArgumentException("Method has 2 or more arguments.");
+        return Optional.absent();
     }
 
     public static QName getQName(final Class<? extends BaseIdentity> context) {
@@ -274,14 +272,10 @@ public class BindingReflections {
         checkArgument(cls != null);
         String packageName = getModelRootPackageName(cls.getPackage());
         final String potentialClassName = getModuleInfoClassName(packageName);
-        return ClassLoaderUtils.withClassLoader(cls.getClassLoader(), new Callable<YangModuleInfo>() {
-            @Override
-            public YangModuleInfo call() throws ClassNotFoundException, IllegalAccessException,
-                    IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-                Class<?> moduleInfoClass = Thread.currentThread().getContextClassLoader().loadClass(potentialClassName);
-                return (YangModuleInfo) moduleInfoClass.getMethod("getInstance").invoke(null);
-            }
-        });
+        return ClassLoaderUtils.withClassLoader(cls.getClassLoader(), (Callable<YangModuleInfo>) () -> {
+            Class<?> moduleInfoClass = Thread.currentThread().getContextClassLoader().loadClass(potentialClassName);
+            return (YangModuleInfo) moduleInfoClass.getMethod("getInstance").invoke(null);
+         });
     }
 
     public static String getModuleInfoClassName(final String packageName) {
@@ -300,7 +294,7 @@ public class BindingReflections {
         if (DataContainer.class.isAssignableFrom(cls) || Augmentation.class.isAssignableFrom(cls)) {
             return true;
         }
-        return (cls.getName().startsWith(BindingMapping.PACKAGE_PREFIX));
+        return cls.getName().startsWith(BindingMapping.PACKAGE_PREFIX);
     }
 
     /**
@@ -367,7 +361,7 @@ public class BindingReflections {
      * @return Set of {@link YangModuleInfo} available for supplied classloader.
      */
     public static ImmutableSet<YangModuleInfo> loadModuleInfos(final ClassLoader loader) {
-        Builder<YangModuleInfo> moduleInfoSet = ImmutableSet.<YangModuleInfo> builder();
+        Builder<YangModuleInfo> moduleInfoSet = ImmutableSet.builder();
         ServiceLoader<YangModelBindingProvider> serviceLoader = ServiceLoader.load(YangModelBindingProvider.class,
                 loader);
         for (YangModelBindingProvider bindingProvider : serviceLoader) {
@@ -448,7 +442,7 @@ public class BindingReflections {
 
     @SuppressWarnings("unchecked")
     private static Optional<Class<? extends DataContainer>> getYangModeledReturnType(final Method method) {
-        if (method.getName().equals("getClass") || !method.getName().startsWith("get")
+        if ("getClass".equals(method.getName()) || !method.getName().startsWith("get")
                 || method.getParameterTypes().length > 0) {
             return Optional.absent();
         }
@@ -456,23 +450,17 @@ public class BindingReflections {
         @SuppressWarnings("rawtypes")
         Class returnType = method.getReturnType();
         if (DataContainer.class.isAssignableFrom(returnType)) {
-            return Optional.<Class<? extends DataContainer>> of(returnType);
+            return Optional.of(returnType);
         } else if (List.class.isAssignableFrom(returnType)) {
             try {
                 return ClassLoaderUtils.withClassLoader(method.getDeclaringClass().getClassLoader(),
-                        new Callable<Optional<Class<? extends DataContainer>>>() {
-                            @SuppressWarnings("rawtypes")
-                            @Override
-                            public Optional<Class<? extends DataContainer>> call() {
-                                Type listResult = ClassLoaderUtils.getFirstGenericParameter(method
-                                        .getGenericReturnType());
-                                if (listResult instanceof Class
-                                        && DataContainer.class.isAssignableFrom((Class) listResult)) {
-                                    return Optional.<Class<? extends DataContainer>> of((Class) listResult);
-                                }
-                                return Optional.absent();
+                        (Callable<Optional<Class<? extends DataContainer>>>) () -> {
+                            Type listResult = ClassLoaderUtils.getFirstGenericParameter(method.getGenericReturnType());
+                            if (listResult instanceof Class
+                                    && DataContainer.class.isAssignableFrom((Class) listResult)) {
+                                return Optional.of((Class) listResult);
                             }
-
+                            return Optional.absent();
                         });
             } catch (Exception e) {
                 /*
@@ -490,100 +478,96 @@ public class BindingReflections {
     private static class ClassToQNameLoader extends CacheLoader<Class<?>, Optional<QName>> {
 
         @Override
-        public Optional<QName> load(final Class<?> key) throws Exception {
+        public Optional<QName> load(@SuppressWarnings("NullableProblems") final Class<?> key) throws Exception {
             return resolveQNameNoCache(key);
         }
-    }
 
-    /**
-     *
-     * Tries to resolve QName for supplied class.
-     *
-     * Looks up for static field with name from constant
-     * {@link BindingMapping#QNAME_STATIC_FIELD_NAME} and returns value if
-     * present.
-     *
-     * If field is not present uses {@link #computeQName(Class)} to compute
-     * QName for missing types.
-     *
-     * @param key
-     * @return
-     */
-    private static Optional<QName> resolveQNameNoCache(final Class<?> key) {
-        try {
-            Field field = key.getField(BindingMapping.QNAME_STATIC_FIELD_NAME);
-            Object obj = field.get(null);
-            if (obj instanceof QName) {
-                return Optional.of((QName) obj);
-            }
-
-        } catch (NoSuchFieldException e) {
-            return Optional.of(computeQName(key));
-
-        } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            /*
-             *
-             * It is safe to log this this exception on debug, since this method
-             * should not fail. Only failures are possible if the runtime /
-             * backing.
-             */
-            LOG.debug("Unexpected exception during extracting QName for {}", key, e);
-        }
-        return Optional.absent();
-    }
-
-    /**
-     * Computes QName for supplied class
-     *
-     * Namespace and revision are same as {@link YangModuleInfo} associated with
-     * supplied class.
-     * <p>
-     * If class is
-     * <ul>
-     * <li>rpc input: local name is "input".
-     * <li>rpc output: local name is "output".
-     * <li>augmentation: local name is "module name".
-     * </ul>
-     *
-     * There is also fallback, if it is not possible to compute QName using
-     * following algorithm returns module QName.
-     *
-     * FIXME: Extend this algorithm to also provide QName for YANG modeled
-     * simple types.
-     *
-     * @throws IllegalStateException
-     *             If YangModuleInfo could not be resolved
-     * @throws IllegalArgumentException
-     *             If supplied class was not derived from YANG model.
-     *
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static QName computeQName(final Class key) {
-        if (isBindingClass(key)) {
-            YangModuleInfo moduleInfo;
+        /**
+         *
+         * Tries to resolve QName for supplied class.
+         *
+         * Looks up for static field with name from constant {@link BindingMapping#QNAME_STATIC_FIELD_NAME} and returns
+         * value if present.
+         *
+         * If field is not present uses {@link #computeQName(Class)} to compute QName for missing types.
+         *
+         * @param key
+         * @return
+         */
+        private static Optional<QName> resolveQNameNoCache(final Class<?> key) {
             try {
-                moduleInfo = getModuleInfo(key);
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to get QName for " + key + ". YangModuleInfo was not found.", e);
-            }
-            final QName module = getModuleQName(moduleInfo).intern();
-            if (Augmentation.class.isAssignableFrom(key)) {
-                return module;
-            } else if (isRpcType(key)) {
-                final String className = key.getSimpleName();
-                if (className.endsWith(BindingMapping.RPC_OUTPUT_SUFFIX)) {
-                    return QName.create(module, "output").intern();
-                } else {
-                    return QName.create(module, "input").intern();
+                Field field = key.getField(BindingMapping.QNAME_STATIC_FIELD_NAME);
+                Object obj = field.get(null);
+                if (obj instanceof QName) {
+                    return Optional.of((QName) obj);
                 }
+
+            } catch (NoSuchFieldException e) {
+                return Optional.of(computeQName(key));
+
+            } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
+                /*
+                 *
+                 * It is safe to log this this exception on debug, since this method
+                 * should not fail. Only failures are possible if the runtime /
+                 * backing.
+                 */
+                LOG.debug("Unexpected exception during extracting QName for {}", key, e);
             }
-            /*
-             * Fallback for Binding types which do not have QNAME field
-             */
-            return module;
-        } else {
-            throw new IllegalArgumentException("Supplied class " + key + "is not derived from YANG.");
+            return Optional.absent();
         }
+
+        /**
+         * Computes QName for supplied class
+         *
+         * Namespace and revision are same as {@link YangModuleInfo} associated with supplied class.
+         * <p>
+         * If class is
+         * <ul>
+         * <li>rpc input: local name is "input".
+         * <li>rpc output: local name is "output".
+         * <li>augmentation: local name is "module name".
+         * </ul>
+         *
+         * There is also fallback, if it is not possible to compute QName using following algorithm returns module
+         * QName.
+         *
+         * FIXME: Extend this algorithm to also provide QName for YANG modeled simple types.
+         *
+         * @throws IllegalStateException If YangModuleInfo could not be resolved
+         * @throws IllegalArgumentException If supplied class was not derived from YANG model.
+         *
+         */
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        private static QName computeQName(final Class key) {
+            if (isBindingClass(key)) {
+                YangModuleInfo moduleInfo;
+                try {
+                    moduleInfo = getModuleInfo(key);
+                } catch (Exception e) {
+                    throw new IllegalStateException("Unable to get QName for " + key
+                            + ". YangModuleInfo was not found.", e);
+                }
+                final QName module = getModuleQName(moduleInfo).intern();
+                if (Augmentation.class.isAssignableFrom(key)) {
+                    return module;
+                } else if (isRpcType(key)) {
+                    final String className = key.getSimpleName();
+                    if (className.endsWith(BindingMapping.RPC_OUTPUT_SUFFIX)) {
+                        return QName.create(module, "output").intern();
+                    } else {
+                        return QName.create(module, "input").intern();
+                    }
+                }
+                /*
+                 * Fallback for Binding types which do not have QNAME field
+                 */
+                return module;
+            } else {
+                throw new IllegalArgumentException("Supplied class " + key + "is not derived from YANG.");
+            }
+        }
+
     }
 
     /**
