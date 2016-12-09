@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_6a00d6aa",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/UnionRenderer.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2016-12-09T14:15:43Z",
+      "side": 1,
+      "message": "use dedicated modifier from BaseRenderer",
+      "range": {
+        "startLine": 41,
+        "startChar": 11,
+        "endLine": 41,
+        "endChar": 75
+      },
+      "revId": "8276a5524e6ff001a1a2a37ea37366a193e743ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
