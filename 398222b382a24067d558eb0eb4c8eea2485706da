@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_6f5f480f",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/RpcServiceAdapter.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-09T09:12:14Z",
+      "side": 1,
+      "message": "has",
+      "range": {
+        "startLine": 194,
+        "startChar": 80,
+        "endLine": 194,
+        "endChar": 84
+      },
+      "revId": "398222b382a24067d558eb0eb4c8eea2485706da",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_efaa38d3",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/util/BindingReflections.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-09T09:12:14Z",
+      "side": 1,
+      "message": "document this constant somewhere -- javadoc, comment?",
+      "range": {
+        "startLine": 143,
+        "startChar": 64,
+        "endLine": 143,
+        "endChar": 65
+      },
+      "revId": "398222b382a24067d558eb0eb4c8eea2485706da",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8fb90431",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/util/BindingReflections.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-09T09:12:14Z",
+      "side": 1,
+      "message": "an",
+      "range": {
+        "startLine": 157,
+        "startChar": 69,
+        "endLine": 157,
+        "endChar": 70
+      },
+      "revId": "398222b382a24067d558eb0eb4c8eea2485706da",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
