@@ -19,6 +19,7 @@ import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Bug4145Test {
     @Test
@@ -26,7 +27,7 @@ public class Bug4145Test {
         File resourceFile = new File(getClass().getResource(
                 "/bug-4145/foo.yang").toURI());
 
-        SchemaContext context = TestUtils.parseYangSources(resourceFile);
+        SchemaContext context = YangParserTestUtils.parseYangSources(resourceFile);
 
         List<Type> generateTypes = new BindingGeneratorImpl(false)
                 .generateTypes(context);

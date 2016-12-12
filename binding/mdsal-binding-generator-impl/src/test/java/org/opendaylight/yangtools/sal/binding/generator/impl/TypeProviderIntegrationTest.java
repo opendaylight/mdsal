@@ -24,6 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class TypeProviderIntegrationTest {
     private final String PKG = "org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.";
@@ -37,7 +38,7 @@ public class TypeProviderIntegrationTest {
                 .toURI());
         File ietfInetTypes = new File(TypeProviderIntegrationTest.class.getResource("/ietf/ietf-inet-types.yang")
                 .toURI());
-        context = TestUtils.parseYangSources(abstractTopology, ietfInetTypes);
+        context = YangParserTestUtils.parseYangSources(abstractTopology, ietfInetTypes);
         assertNotNull(context);
     }
 

@@ -23,6 +23,7 @@ import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
 
@@ -57,7 +58,7 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
 
     @Test
     public void choiceCaseResolvingTypeTest() throws IOException, SourceException, ReactorException {
-        final SchemaContext context = TestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -114,7 +115,6 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
         // augment
         // "/nm:netconf-state/nm:datastores/nm:datastore/nm:locks/nm:lock-type"
         pcgPref = "org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.augment.monitoring.rev130701";
-        genType = null;
 
         genType = checkGeneratedType(genTypes, "AutonomousLock", pcgPref
                 + ".netconf.state.datastores.datastore.locks.lock.type"); // choice

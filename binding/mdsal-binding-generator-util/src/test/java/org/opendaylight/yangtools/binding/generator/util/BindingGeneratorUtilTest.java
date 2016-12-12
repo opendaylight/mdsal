@@ -50,6 +50,7 @@ import org.opendaylight.yangtools.yang.model.util.type.RestrictedTypes;
 import org.opendaylight.yangtools.yang.model.util.type.StringTypeBuilder;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorUtilTest {
     private static final SchemaPath ROOT_PATH = SchemaPath.create(true, QName.create("/root"));
@@ -58,7 +59,7 @@ public class BindingGeneratorUtilTest {
     public ExpectedException expectedEx = ExpectedException.none();
 
     private static List<File> loadTestResources(final String testFile) {
-        final List<File> testModels = new ArrayList<File>();
+        final List<File> testModels = new ArrayList<>();
         File listModelFile;
         try {
             listModelFile = new File(BindingGeneratorUtilTest.class.getResource(testFile).toURI());
@@ -86,7 +87,7 @@ public class BindingGeneratorUtilTest {
     public void testBindingGeneratorUtilMethods() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/module.yang");
 
-        final Set<Module> modules = TestUtils.parseYangSources(testModels).getModules();
+        final Set<Module> modules = YangParserTestUtils.parseYangSources(testModels).getModules();
         String packageName = "";
         Module module = null;
         for (Module m : modules) {
