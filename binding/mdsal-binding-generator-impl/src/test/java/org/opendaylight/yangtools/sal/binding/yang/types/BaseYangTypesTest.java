@@ -35,6 +35,7 @@ import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 /**
  * Test class for testing BaseYangTypes class.
@@ -63,7 +64,7 @@ public class BaseYangTypesTest {
     public static void setup() throws SourceException, ReactorException {
         final List<InputStream> modelsToParse = Collections
             .singletonList(BaseYangTypesTest.class.getResourceAsStream("/base-yang-types.yang"));
-        schemaContext = TestUtils.parseYangStreams(modelsToParse);
+        schemaContext = YangParserTestUtils.parseYangStreams(modelsToParse);
         assertNotNull(schemaContext);
         initTypeDefinitionsFromSchemaContext();
     }

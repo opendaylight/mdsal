@@ -21,6 +21,7 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AugmentedTypeTest {
 
@@ -37,7 +38,7 @@ public class AugmentedTypeTest {
         File ietfInterfaces = new File(getClass().getResource("/augment-test-models/ietf-interfaces@2012-11-15.yang")
                 .toURI());
 
-        final SchemaContext context = TestUtils.parseYangSources(abstractTopology, augmentTopology,
+        final SchemaContext context = YangParserTestUtils.parseYangSources(abstractTopology, augmentTopology,
                 augmentNetworkLink, augmentTopologyTunnels, ietfInterfaces);
         assertNotNull("Schema Context is null", context);
 

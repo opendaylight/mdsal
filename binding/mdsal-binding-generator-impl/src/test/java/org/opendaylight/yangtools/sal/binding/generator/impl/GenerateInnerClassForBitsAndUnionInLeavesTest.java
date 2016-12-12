@@ -19,6 +19,7 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GenerateInnerClassForBitsAndUnionInLeavesTest {
 
@@ -26,7 +27,7 @@ public class GenerateInnerClassForBitsAndUnionInLeavesTest {
     public void testInnerClassCreationForBitsAndUnionsInLeafes() throws Exception {
         final URI yangTypesPath = getClass().getResource("/bit_and_union_in_leaf.yang").toURI();
 
-        final SchemaContext context = TestUtils.parseYangSources(new File(yangTypesPath));
+        final SchemaContext context = YangParserTestUtils.parseYangSources(new File(yangTypesPath));
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
