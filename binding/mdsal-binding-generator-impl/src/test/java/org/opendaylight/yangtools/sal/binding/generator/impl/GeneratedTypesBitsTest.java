@@ -24,15 +24,15 @@ import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
 import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature.Parameter;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesBitsTest {
-
 
     @Test
     public void testGeneretedTypesBitsTest() throws Exception {
         final URI yangTypesPath = getClass().getResource("/simple-bits-demo.yang").toURI();
 
-        final SchemaContext context =  TestUtils.parseYangSources(new File(yangTypesPath));
+        final SchemaContext context = YangParserTestUtils.parseYangSources(new File(yangTypesPath));
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -63,15 +63,12 @@ public class GeneratedTypesBitsTest {
                     List<GeneratedProperty> genProperties = genTO.getProperties();
                     classPropertiesNumb = genProperties.size();
 
-                    genProperties = null;
                     genProperties = genTO.getToStringIdentifiers();
                     toStringPropertiesNum = genProperties.size();
 
-                    genProperties = null;
                     genProperties = genTO.getEqualsIdentifiers();
                     equalPropertiesNum = genProperties.size();
 
-                    genProperties = null;
                     genProperties = genTO.getHashCodeIdentifiers();
                     hashPropertiesNum = genProperties.size();
 

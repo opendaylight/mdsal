@@ -13,6 +13,7 @@ import java.util.List;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 /**
  * Test Model Provider designated to load test resources and provide Schema Context
@@ -40,6 +41,6 @@ public final class TypeProviderModel {
     }
 
     public static SchemaContext createTestContext() throws SourceException, ReactorException {
-        return TestUtils.parseYangStreams(provideTestModelStreams());
+        return YangParserTestUtils.parseYangStreams(provideTestModelStreams());
     }
 }

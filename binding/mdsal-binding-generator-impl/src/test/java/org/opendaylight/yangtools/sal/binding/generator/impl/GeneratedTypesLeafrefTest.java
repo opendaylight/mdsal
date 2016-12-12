@@ -28,6 +28,7 @@ import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesLeafrefTest {
 
@@ -39,7 +40,7 @@ public class GeneratedTypesLeafrefTest {
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
         File ietfYangTypes = new File(getClass().getResource("/ietf/ietf-yang-types.yang").toURI());
 
-        final SchemaContext context =  TestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+        final SchemaContext context =  YangParserTestUtils.parseYangSources(abstractTopology, ietfInterfaces,
                 ietfInetTypes, ietfYangTypes);
         assertNotNull(context);
         assertEquals(4, context.getModules().size());
@@ -221,7 +222,7 @@ public class GeneratedTypesLeafrefTest {
         final URI resource = getClass().getResource("/leafref-test-invalid-model/foo.yang").toURI();
         assertNotNull(resource);
 
-        final SchemaContext context =  TestUtils.parseYangSources(new File(resource));
+        final SchemaContext context =  YangParserTestUtils.parseYangSources(new File(resource));
         assertNotNull(context);
         assertEquals(1, context.getModules().size());
 
