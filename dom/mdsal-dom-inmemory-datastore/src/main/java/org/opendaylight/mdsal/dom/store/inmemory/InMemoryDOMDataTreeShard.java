@@ -15,7 +15,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,8 +28,11 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.opendaylight.mdsal.dom.spi.DOMDataTreePrefixTable;
-import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardProducer;
+import org.opendaylight.mdsal.dom.spi.shard.ChildShardContext;
 import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
+import org.opendaylight.mdsal.dom.spi.shard.ReadableWriteableDOMDataTreeShard;
+import org.opendaylight.mdsal.dom.spi.shard.SubshardProducerSpecification;
+import org.opendaylight.mdsal.dom.spi.shard.WriteableDOMDataTreeShard;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.concurrent.CountingRejectedExecutionHandler;
 import org.opendaylight.yangtools.util.concurrent.FastThreadPoolExecutor;
@@ -47,26 +49,6 @@ import org.slf4j.LoggerFactory;
 
 @Beta
 public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeShard, SchemaContextListener {
-    private static final class SubshardProducerSpecification {
-        private final Collection<DOMDataTreeIdentifier> prefixes = new ArrayList<>(1);
-        private final ChildShardContext shard;
-
-        SubshardProducerSpecification(final ChildShardContext subshard) {
-            this.shard = Preconditions.checkNotNull(subshard);
-        }
-
-        void addPrefix(final DOMDataTreeIdentifier prefix) {
-            prefixes.add(prefix);
-        }
-
-        DOMDataTreeShardProducer createProducer() {
-            return shard.getShard().createProducer(prefixes);
-        }
-
-        DOMDataTreeIdentifier getPrefix() {
-            return shard.getPrefix();
-        }
-    }
 
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataTreeShard.class);
     private static final int DEFAULT_SUBMIT_QUEUE_SIZE = 1000;

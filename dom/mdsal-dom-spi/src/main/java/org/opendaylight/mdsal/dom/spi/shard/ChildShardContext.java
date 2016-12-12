@@ -6,25 +6,25 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.dom.store.inmemory;
+package org.opendaylight.mdsal.dom.spi.shard;
 
 import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 
-final class ChildShardContext {
+public final class ChildShardContext {
     private final WriteableDOMDataTreeShard shard;
     private final DOMDataTreeIdentifier prefix;
 
-    ChildShardContext(final DOMDataTreeIdentifier prefix, final WriteableDOMDataTreeShard shard) {
+    public ChildShardContext(final DOMDataTreeIdentifier prefix, final WriteableDOMDataTreeShard shard) {
         this.prefix = Preconditions.checkNotNull(prefix);
         this.shard = Preconditions.checkNotNull(shard);
     }
 
-    WriteableDOMDataTreeShard getShard() {
+    public WriteableDOMDataTreeShard getShard() {
         return shard;
     }
 
-    DOMDataTreeIdentifier getPrefix() {
+    public DOMDataTreeIdentifier getPrefix() {
         return prefix;
     }
 }

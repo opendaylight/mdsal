@@ -12,6 +12,8 @@ import static org.mockito.Mockito.mock;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_IDENTIFIER;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.dom.spi.shard.ChildShardContext;
+import org.opendaylight.mdsal.dom.spi.shard.WriteableDOMDataTreeShard;
 
 public class ChildShardContextTest {
 
