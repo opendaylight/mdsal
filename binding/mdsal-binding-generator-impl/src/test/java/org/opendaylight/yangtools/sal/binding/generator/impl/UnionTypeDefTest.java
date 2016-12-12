@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class UnionTypeDefTest {
 
@@ -23,7 +24,7 @@ public class UnionTypeDefTest {
     public void unionTypeResolvingTest() throws Exception {
         File abstractTopology = new File(getClass().getResource("/union-test-models/abstract-topology.yang").toURI());
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
-        final SchemaContext context = TestUtils.parseYangSources(abstractTopology, ietfInetTypes);
+        final SchemaContext context = YangParserTestUtils.parseYangSources(abstractTopology, ietfInetTypes);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

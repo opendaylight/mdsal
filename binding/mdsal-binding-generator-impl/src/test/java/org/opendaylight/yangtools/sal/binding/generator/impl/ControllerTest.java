@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class ControllerTest {
 
@@ -25,7 +26,7 @@ public class ControllerTest {
         File co = new File(getClass().getResource("/controller-models/controller-openflow.yang").toURI());
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
 
-        final SchemaContext context =  TestUtils.parseYangSources(cn, co, ietfInetTypes);
+        final SchemaContext context = YangParserTestUtils.parseYangSources(cn, co, ietfInetTypes);
         assertNotNull("Schema Context is null", context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

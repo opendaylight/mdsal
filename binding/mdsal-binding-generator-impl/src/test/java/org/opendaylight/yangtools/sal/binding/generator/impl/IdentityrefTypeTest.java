@@ -25,6 +25,7 @@ import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class IdentityrefTypeTest {
 
@@ -34,7 +35,7 @@ public class IdentityrefTypeTest {
     public void loadTestResources() throws URISyntaxException {
         URI folderPath = IdentityrefTypeTest.class.getResource("/identityref.yang").toURI();
         File folderFile = new File(folderPath);
-        testModels = new ArrayList<File>();
+        testModels = new ArrayList<>();
 
         if (folderFile.isFile()) {
             testModels.add(folderFile);
@@ -57,7 +58,7 @@ public class IdentityrefTypeTest {
      */
     @Test
     public void testIdentityrefYangBuiltInType() throws IOException, SourceException, ReactorException {
-        final SchemaContext context = TestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
