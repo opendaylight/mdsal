@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_fd4f8990",
+        "filename": "binding/maven-sal-api-gen-plugin/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-12T11:37:14Z",
+      "side": 1,
+      "message": "no need for this: it already is declared with this scope in yangtools-artifacts.",
+      "range": {
+        "startLine": 86,
+        "startChar": 12,
+        "endLine": 86,
+        "endChar": 31
+      },
+      "revId": "c1857ac18ff667df991ec4dafefe6a414e9c8e6f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
