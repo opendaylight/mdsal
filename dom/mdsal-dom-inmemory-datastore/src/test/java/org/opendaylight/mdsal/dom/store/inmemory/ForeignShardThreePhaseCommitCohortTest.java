@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_IDENTIFIER;
@@ -17,10 +18,16 @@ import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DOM_DATA_TREE_
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
 
 public class ForeignShardThreePhaseCommitCohortTest {
+
+    @Before
+    public void setUp() throws Exception {
+        doNothing().when(DOM_DATA_TREE_WRITE_CURSOR).close();
+    }
 
     @Test
     public void basicTest() throws Exception {
