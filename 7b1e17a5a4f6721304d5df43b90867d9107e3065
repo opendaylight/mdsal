@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_4627c964",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/BuilderRenderer.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-13T14:58:17Z",
+      "side": 1,
+      "message": "Break this down to multiple Preconditions.checkArgument() calls. Also note the existence of Strings.isNullOrEmpty().",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 9
+      },
+      "revId": "7b1e17a5a4f6721304d5df43b90867d9107e3065",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_661da50f",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/BuilderRenderer.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-13T14:58:17Z",
+      "side": 1,
+      "message": "Is there a reason why we need a List (and not have a List input)?\n\nOtherwise we could do Lists/Collections2.transform(types, Type::getFullyQualifiedName);",
+      "range": {
+        "startLine": 226,
+        "startChar": 18,
+        "endLine": 226,
+        "endChar": 30
+      },
+      "revId": "7b1e17a5a4f6721304d5df43b90867d9107e3065",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_e6d89555",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/BuilderRenderer.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-13T14:58:17Z",
+      "side": 1,
+      "message": "properties.size(), but ...",
+      "range": {
+        "startLine": 245,
+        "startChar": 58,
+        "endLine": 245,
+        "endChar": 60
+      },
+      "revId": "7b1e17a5a4f6721304d5df43b90867d9107e3065",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_26e3ad08",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/BuilderRenderer.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-13T14:58:17Z",
+      "side": 1,
+      "message": "... this looks like a Collections.transform() candidate",
+      "range": {
+        "startLine": 246,
+        "startChar": 0,
+        "endLine": 248,
+        "endChar": 9
+      },
+      "revId": "7b1e17a5a4f6721304d5df43b90867d9107e3065",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
