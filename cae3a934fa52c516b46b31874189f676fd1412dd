@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_6692c558",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/ClassRenderer.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-13T15:05:49Z",
+      "side": 1,
+      "message": "This pattern is confusing. Are properties mutable after construction? If not, maintain an immutable copy in the field. If they are, use Collection.unmodifiableList() to wrap them",
+      "range": {
+        "startLine": 92,
+        "startChar": 15,
+        "endLine": 92,
+        "endChar": 47
+      },
+      "revId": "cae3a934fa52c516b46b31874189f676fd1412dd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
