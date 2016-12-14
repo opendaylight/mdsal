@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_845f14e5",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/ChildShardContext.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-14T17:09:07Z",
+      "side": 1,
+      "message": "@Beta plus javadocs",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 6
+      },
+      "revId": "ab617ede77c04c4cc221011a5e88748599a7fa59",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_c4590c00",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/ForeignShardThreePhaseCommitCohort.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-14T17:09:07Z",
+      "side": 1,
+      "message": "Boolean.TRUE",
+      "range": {
+        "startLine": 23,
+        "startChar": 94,
+        "endLine": 23,
+        "endChar": 98
+      },
+      "revId": "ab617ede77c04c4cc221011a5e88748599a7fa59",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_a45cd0ee",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/ForeignShardThreePhaseCommitCohort.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-14T17:09:07Z",
+      "side": 1,
+      "message": "null checks?",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 27
+      },
+      "revId": "ab617ede77c04c4cc221011a5e88748599a7fa59",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_e46d289b",
+        "filename": "dom/mdsal-dom-inmemory-datastore/src/main/java/org/opendaylight/mdsal/dom/store/inmemory/SubshardProducerSpecification.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-14T17:09:07Z",
+      "side": 1,
+      "message": "@Beta, @NotThreadSafe and javadoc",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 6
+      },
+      "revId": "ab617ede77c04c4cc221011a5e88748599a7fa59",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
