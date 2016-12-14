@@ -728,7 +728,7 @@ class GeneratorImpl {
             </tr>
             <tr>
                 <td>«strong("yang-version")»</td>
-                <td>«module.yangVersion»</td>
+                <td>«module.yangVersion.toCanonicalString»</td>
             </tr>
             <tr>
                 «FOR imp : module.imports BEFORE '''<td>«strong("imports")»</td><td>''' AFTER '''</td>'''»

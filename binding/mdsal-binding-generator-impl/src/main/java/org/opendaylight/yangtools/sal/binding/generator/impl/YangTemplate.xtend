@@ -137,7 +137,7 @@ class YangTemplate {
             return '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
         '''
             module «module.name» {
-                yang-version «module.yangVersion»;
+                yang-version «module.yangVersion.toCanonicalString»;
                 namespace "«module.QNameModule.namespace.toString»";
                 prefix "«module.prefix»";
 
