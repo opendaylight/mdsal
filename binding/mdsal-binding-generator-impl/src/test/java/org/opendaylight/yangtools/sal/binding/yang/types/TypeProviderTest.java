@@ -761,14 +761,14 @@ public class TypeProviderTest {
         String result = provider.getTypeDefaultConstruction(leaf, "true");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangBoolean(new java.lang.Boolean(\"true\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangBoolean(java.lang.Boolean.valueOf(\"true\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-empty");
         result = provider.getTypeDefaultConstruction(leaf, "true");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangEmpty(new java.lang.Boolean(\"true\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangEmpty(java.lang.Boolean.valueOf(\"true\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-enumeration");
@@ -789,35 +789,35 @@ public class TypeProviderTest {
         result = provider.getTypeDefaultConstruction(leaf, "17");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt8(new java.lang.Byte(\"17\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt8(java.lang.Byte.valueOf(\"17\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-int8-restricted");
         result = provider.getTypeDefaultConstruction(leaf, "99");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt8Restricted(new java.lang.Byte(\"99\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt8Restricted(java.lang.Byte.valueOf(\"99\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-int16");
         result = provider.getTypeDefaultConstruction(leaf, "1024");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt16(new java.lang.Short(\"1024\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt16(java.lang.Short.valueOf(\"1024\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-int32");
         result = provider.getTypeDefaultConstruction(leaf, "1048576");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt32(new java.lang.Integer(\"1048576\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt32(java.lang.Integer.valueOf(\"1048576\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-int64");
         result = provider.getTypeDefaultConstruction(leaf, "1099511627776");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt64(new java.lang.Long(\"1099511627776\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt64(java.lang.Long.valueOf(\"1099511627776\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-string");
@@ -838,21 +838,21 @@ public class TypeProviderTest {
         result = provider.getTypeDefaultConstruction(leaf, "128");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangUint8(new java.lang.Short(\"128\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangUint8(java.lang.Short.valueOf(\"128\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-uint16");
         result = provider.getTypeDefaultConstruction(leaf, "1048576");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangUint16(new java.lang.Integer(\"1048576\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangUint16(java.lang.Integer.valueOf(\"1048576\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-uint32");
         result = provider.getTypeDefaultConstruction(leaf, "1099511627776");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangUint32(new java.lang.Long(\"1099511627776\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangUint32(java.lang.Long.valueOf(\"1099511627776\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-uint64");
@@ -934,14 +934,14 @@ public class TypeProviderTest {
         result = provider.getTypeDefaultConstruction(leaf, "128");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt16(new java.lang.Short(\"128\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt16(java.lang.Short.valueOf(\"128\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("foo-leafref-value");
         result = provider.getTypeDefaultConstruction(leaf, "32");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt8(new java.lang.Byte(\"32\"))",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangInt8(java.lang.Byte.valueOf(\"32\"))",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("foo-cond-bar-item");
