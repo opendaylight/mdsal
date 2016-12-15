@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.yangtools.sal.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import javassist.CtClass;
 import javassist.CtField;
@@ -18,10 +18,7 @@ import javassist.CtMethod;
  * is called, the entire class source code is generated and outputted.
  *
  * @author Thomas Pantelis
- *
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.SourceCodeGenerator} instead
  */
-@Deprecated
 public interface SourceCodeGenerator {
 
     /**

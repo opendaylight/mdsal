@@ -5,12 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.yang.types;
+package org.opendaylight.mdsal.binding.yang.types;
 
-import static org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
+import static org.opendaylight.mdsal.binding.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -34,26 +35,25 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.opendaylight.mdsal.binding.yang.types.TypedefResolver;
-import org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil;
-import org.opendaylight.yangtools.binding.generator.util.TypeConstants;
-import org.opendaylight.yangtools.binding.generator.util.Types;
-import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.EnumerationBuilderImpl;
-import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
-import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
-import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
-import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
-import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.EnumBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTOBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.generator.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.generator.util.TypeConstants;
+import org.opendaylight.mdsal.binding.generator.util.Types;
+import org.opendaylight.mdsal.binding.generator.util.generated.type.builder.EnumerationBuilderImpl;
+import org.opendaylight.mdsal.binding.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
+import org.opendaylight.mdsal.binding.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
+import org.opendaylight.mdsal.binding.model.api.AccessModifier;
+import org.opendaylight.mdsal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
@@ -89,10 +89,6 @@ import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.yang.types.TypeProviderImpl} instead
- */
-@Deprecated
 public final class TypeProviderImpl implements TypeProvider {
     private static final Logger LOG = LoggerFactory.getLogger(TypeProviderImpl.class);
     private static final Pattern NUMBERS_PATTERN = Pattern.compile("[0-9]+\\z");
@@ -1454,11 +1450,11 @@ public final class TypeProviderImpl implements TypeProvider {
             }
             result = bitsToDef((BitsTypeDefinition) base, className, defaultValue, type.getBaseType() != null);
         } else if (base instanceof BooleanTypeDefinition) {
-            result = typeToBooleanDef(defaultValue);
+            result = typeToDef(Boolean.class, defaultValue);
         } else if (base instanceof DecimalTypeDefinition) {
             result = typeToDef(BigDecimal.class, defaultValue);
         } else if (base instanceof EmptyTypeDefinition) {
-            result = typeToBooleanDef(defaultValue);
+            result = typeToDef(Boolean.class, defaultValue);
         } else if (base instanceof EnumTypeDefinition) {
             char[] defValArray = defaultValue.toCharArray();
             char first = Character.toUpperCase(defaultValue.charAt(0));
@@ -1482,37 +1478,25 @@ public final class TypeProviderImpl implements TypeProvider {
         } else if (base instanceof InstanceIdentifierTypeDefinition) {
             throw new UnsupportedOperationException("Cannot get default construction for instance-identifier type");
         } else if (BaseTypes.isInt8(base)) {
-            result = typeToValueOfDef(Byte.class, defaultValue);
+            result = typeToDef(Byte.class, defaultValue);
         } else if (BaseTypes.isInt16(base)) {
-            result = typeToValueOfDef(Short.class, defaultValue);
+            result = typeToDef(Short.class, defaultValue);
         } else if (BaseTypes.isInt32(base)) {
-            result = typeToValueOfDef(Integer.class, defaultValue);
+            result = typeToDef(Integer.class, defaultValue);
         } else if (BaseTypes.isInt64(base)) {
-            result = typeToValueOfDef(Long.class, defaultValue);
+            result = typeToDef(Long.class, defaultValue);
         } else if (base instanceof LeafrefTypeDefinition) {
             result = leafrefToDef(node, (LeafrefTypeDefinition) base, defaultValue);
         } else if (base instanceof StringTypeDefinition) {
             result = "\"" + defaultValue + "\"";
         } else if (BaseTypes.isUint8(base)) {
-            result = typeToValueOfDef(Short.class, defaultValue);
+            result = typeToDef(Short.class, defaultValue);
         } else if (BaseTypes.isUint16(base)) {
-            result = typeToValueOfDef(Integer.class, defaultValue);
+            result = typeToDef(Integer.class, defaultValue);
         } else if (BaseTypes.isUint32(base)) {
-            result = typeToValueOfDef(Long.class, defaultValue);
+            result = typeToDef(Long.class, defaultValue);
         } else if (BaseTypes.isUint64(base)) {
-            switch (defaultValue) {
-                case "0":
-                    result = "java.math.BigInteger.ZERO";
-                    break;
-                case "1":
-                    result = "java.math.BigInteger.ONE";
-                    break;
-                case "10":
-                    result = "java.math.BigInteger.TEN";
-                    break;
-                default:
-                    result = typeToDef(BigInteger.class, defaultValue);
-            }
+            result = typeToDef(BigInteger.class, defaultValue);
         } else if (base instanceof UnionTypeDefinition) {
             result = unionToDef(node);
         } else {
@@ -1535,21 +1519,6 @@ public final class TypeProviderImpl implements TypeProvider {
 
     private static String typeToDef(final Class<?> clazz, final String defaultValue) {
         return "new " + clazz.getName() + "(\"" + defaultValue + "\")";
-    }
-
-    private static String typeToValueOfDef(final Class<?> clazz, final String defaultValue) {
-        return clazz.getName() + ".valueOf(\"" + defaultValue + "\")";
-    }
-
-    private static String typeToBooleanDef(final String defaultValue) {
-        switch (defaultValue) {
-            case "false":
-                return "java.lang.Boolean.FALSE";
-            case "true":
-                return "java.lang.Boolean.TRUE";
-            default:
-                return typeToValueOfDef(Boolean.class, defaultValue);
-        }
     }
 
     private static String binaryToDef(final String defaultValue) {

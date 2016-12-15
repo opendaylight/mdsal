@@ -5,16 +5,15 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
+import com.google.common.annotations.Beta;
 import javassist.CtClass;
 
 /**
  * Interface allowing customization of classes after loading.
- *
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.ClassCustomizer} instead
  */
-@Deprecated
+@Beta
 public interface ClassCustomizer {
     /**
      * Customize a class.

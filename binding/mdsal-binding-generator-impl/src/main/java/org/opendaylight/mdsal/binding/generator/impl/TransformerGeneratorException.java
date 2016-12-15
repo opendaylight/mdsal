@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.impl;
+package org.opendaylight.mdsal.binding.generator.impl;
 
 final class TransformerGeneratorException extends RuntimeException {
     private static final long serialVersionUID = 1L;

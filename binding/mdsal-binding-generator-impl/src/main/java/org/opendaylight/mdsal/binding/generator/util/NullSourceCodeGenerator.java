@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.yangtools.sal.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import javassist.CtClass;
 import javassist.CtField;
@@ -16,10 +16,7 @@ import javassist.CtMethod;
  * Implementation of the SourceCodeGenerator interface that does nothing.
  *
  * @author Thomas Pantelis
- *
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.NullSourceCodeGenerator} instead
  */
-@Deprecated
 public class NullSourceCodeGenerator implements SourceCodeGenerator {
 
     @Override
