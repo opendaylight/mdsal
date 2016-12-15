@@ -159,7 +159,7 @@ public class TypeProviderImplTest {
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
         doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
 
-        assertEquals("new java.lang.Boolean(\"false\")", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "false"));
+        assertEquals("java.lang.Boolean.FALSE", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "false"));
 
         // decimal type
         final DecimalTypeDefinition decimalType = BaseTypes.decimalTypeBuilder(refTypePath).setFractionDigits(4).build();
@@ -179,7 +179,7 @@ public class TypeProviderImplTest {
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
         doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
 
-        assertEquals("new java.lang.Boolean(\"default value\")", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
+        assertEquals("java.lang.Boolean.valueOf(\"default value\")", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
 
         // enum type
         final EnumTypeDefinition enumType =  BaseTypes.enumerationTypeBuilder(refTypePath).build();
