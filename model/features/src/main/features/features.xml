@@ -22,7 +22,6 @@
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-yang-types/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-yang-types-20130715/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-restconf/{{VERSION}}</bundle>
-        <bundle>mvn:org.opendaylight.mdsal.model/yang-ext/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/opendaylight-l2-types/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-ted/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-topology/{{VERSION}}</bundle>
