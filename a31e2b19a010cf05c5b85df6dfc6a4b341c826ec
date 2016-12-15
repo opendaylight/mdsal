@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_47edf9ee",
+        "filename": "common/features/src/main/features/features.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2016-12-15T18:32:18Z",
+      "side": 1,
+      "message": "this is undefined",
+      "range": {
+        "startLine": 40,
+        "startChar": 26,
+        "endLine": 40,
+        "endChar": 46
+      },
+      "revId": "a31e2b19a010cf05c5b85df6dfc6a4b341c826ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
