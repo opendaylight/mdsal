@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
+import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -38,7 +39,9 @@ public interface DOMDataTreeCursor extends AutoCloseable {
      * @throws IllegalArgumentException when specified path does not identify a valid child, or if
      *         that child is not an instance of {@link NormalizedNodeContainer}.
      */
-    void enter(@Nonnull PathArgument... path);
+    default void enter(@Nonnull final PathArgument... path) {
+        enter(Arrays.asList(path));
+    }
 
     /**
      * Move the cursor to the specified child of the current position. This is equivalent to
