@@ -5,10 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.base.Preconditions;
 import java.net.URI;
 import java.util.Date;
@@ -26,10 +27,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.YangSchemaUtils} instead
- */
-@Deprecated
 public final class YangSchemaUtils {
     public static final String AUGMENT_IDENTIFIER = "augment-identifier";
 

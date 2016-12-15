@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.impl;
+package org.opendaylight.mdsal.binding.generator.impl;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
@@ -13,14 +13,22 @@ import com.google.common.collect.Iterables;
 import java.util.StringTokenizer;
 import org.opendaylight.yangtools.yang.common.QName;
 
-final class YangTextTemplate {
+/**
+ * This class is not to be used for public consumption
+ * and will be made non-public once the transition of
+ * deprecating package names with "yangtools" in them is complete.
+ *
+ * FIXME: Make the class non-public
+ */
+
+public final class YangTextTemplate {
     private static final CharMatcher NEWLINE_OR_TAB = CharMatcher.anyOf("\n\t");
 
     private YangTextTemplate() {
         throw new UnsupportedOperationException();
     }
 
-    static String formatSchemaPath(final String moduleName, final Iterable<QName> schemaPath) {
+    public static String formatSchemaPath(final String moduleName, final Iterable<QName> schemaPath) {
         final StringBuilder sb = new StringBuilder();
         sb.append(moduleName);
 
@@ -37,7 +45,7 @@ final class YangTextTemplate {
         return sb.toString();
     }
 
-    static String formatToAugmentPath(final Iterable<QName> schemaPath) {
+    public static String formatToAugmentPath(final Iterable<QName> schemaPath) {
         final StringBuilder sb = new StringBuilder();
         for (QName pathElement : schemaPath) {
             sb.append("\\(").append(pathElement.getNamespace()).append(')').append(pathElement.getLocalName());
@@ -45,7 +53,7 @@ final class YangTextTemplate {
         return sb.toString();
     }
 
-    static String formatToParagraph(final String text, final int nextLineIndent) {
+    public static String formatToParagraph(final String text, final int nextLineIndent) {
         if (Strings.isNullOrEmpty(text)) {
             return "";
         }

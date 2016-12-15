@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.yang.types;
+package org.opendaylight.mdsal.binding.yang.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,12 +23,24 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
-final class TypedefResolver {
+/**
+ * This class is not to be used for public consumption
+ * and will be made non-public once the transition of
+ * deprecating package names with "yangtools" in them is complete.
+ *
+ * FIXME: Make the class non-public
+ */
+public final class TypedefResolver {
     private TypedefResolver() {
         throw new UnsupportedOperationException();
     }
 
-    static List<TypeDefinition<?>> getAllTypedefs(final Module module) {
+    /**
+     * This method is not to be used for public consumption
+     * and will be made non-public once the transition of
+     * deprecating package names with "yangtools" in them is complete.
+     */
+    public static List<TypeDefinition<?>> getAllTypedefs(final Module module) {
         final List<TypeDefinition<?>> ret = new ArrayList<>();
 
         fillRecursively(ret, module);

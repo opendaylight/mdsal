@@ -5,14 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.yang.types;
+package org.opendaylight.mdsal.binding.yang.types;
 
 import org.opendaylight.yangtools.yang.parser.util.TopologicalSort.NodeImpl;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.yang.types.NodeWrappedType} instead
- */
-@Deprecated
 public final class NodeWrappedType extends NodeImpl {
     /**
      * The payload which is saved inside Node

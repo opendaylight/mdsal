@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
@@ -28,10 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Users of this utility class are expected to synchronize on this instance
  * it they need to ensure atomic operations on it.
- *
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.JavassistUtils} instead
  */
-@Deprecated
 public final class JavassistUtils {
     private static final Logger LOG = LoggerFactory.getLogger(JavassistUtils.class);
 

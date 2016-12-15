@@ -5,14 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.impl
+package org.opendaylight.mdsal.binding.generator.impl
 
 import java.util.Collection
 import java.util.Date
 import java.util.List
 import java.util.Map
 import java.util.Set
-import org.opendaylight.mdsal.binding.generator.impl.YangTextTemplate
 import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema
@@ -41,10 +40,6 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPair
 
-/**
- * @deprecated Use {org.opendaylight.mdsal.binding.generator.impl.YangTemplate} instead
- */
-@Deprecated
 class YangTemplate {
 
     private static val String SKIP_PROPERTY_NAME = "mdsal.skip.verbose"

@@ -5,12 +5,8 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.CodeGenerationException} instead
- */
-@Deprecated
 public class CodeGenerationException extends RuntimeException{
     private static final long serialVersionUID = 1L;
 

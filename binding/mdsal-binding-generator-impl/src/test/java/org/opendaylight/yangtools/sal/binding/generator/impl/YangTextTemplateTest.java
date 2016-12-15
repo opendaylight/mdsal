@@ -9,6 +9,7 @@ package org.opendaylight.yangtools.sal.binding.generator.impl;
 
 import java.lang.reflect.Constructor;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.generator.impl.YangTextTemplate;
 
 public class YangTextTemplateTest {
 

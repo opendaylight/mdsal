@@ -6,20 +6,18 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.yangtools.sal.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The default implementation of the SourceCodeGenerator interface that generates readable source code
@@ -28,10 +26,7 @@ import javassist.NotFoundException;
  * written to a file under a specified directory.
  *
  * @author Thomas Pantelis
- *
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.DefaultSourceCodeGenerator} instead
  */
-@Deprecated
 public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultSourceCodeGenerator.class);
 

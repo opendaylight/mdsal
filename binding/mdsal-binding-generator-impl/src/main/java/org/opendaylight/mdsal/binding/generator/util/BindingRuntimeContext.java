@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -26,17 +26,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.opendaylight.yangtools.binding.generator.util.ReferencedTypeImpl;
+import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
+import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
+import org.opendaylight.mdsal.binding.generator.impl.BindingSchemaContextUtils;
+import org.opendaylight.mdsal.binding.generator.impl.ModuleContext;
+import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.concepts.Immutable;
-import org.opendaylight.yangtools.sal.binding.generator.api.ClassLoadingStrategy;
-import org.opendaylight.yangtools.sal.binding.generator.impl.BindingGeneratorImpl;
-import org.opendaylight.yangtools.sal.binding.generator.impl.BindingSchemaContextUtils;
-import org.opendaylight.yangtools.sal.binding.generator.impl.ModuleContext;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
-import org.opendaylight.yangtools.sal.binding.model.api.MethodSignature;
-import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -73,9 +72,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Same goes for all possible augmentations.
  *
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext} instead
  */
-@Deprecated
 public class BindingRuntimeContext implements Immutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeContext.class);
     private static final char DOT = '.';
