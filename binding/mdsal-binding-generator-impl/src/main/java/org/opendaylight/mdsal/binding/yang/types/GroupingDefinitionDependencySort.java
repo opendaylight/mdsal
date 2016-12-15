@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.yang.types;
+package org.opendaylight.mdsal.binding.yang.types;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -26,10 +26,6 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.parser.util.TopologicalSort;
 import org.opendaylight.yangtools.yang.parser.util.TopologicalSort.Node;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort} instead
- */
-@Deprecated
 public class GroupingDefinitionDependencySort {
 
     /**
@@ -54,7 +50,7 @@ public class GroupingDefinitionDependencySort {
      * @param groupingDefinitions
      *            set of grouping definition which should be sorted according to
      *            mutual dependencies
-     * @return list of grouping definitiond which are sorted by mutual
+     * @return list of grouping definition which are sorted by mutual
      *         dependencies
      * @throws IllegalArgumentException
      *             if <code>groupingDefinitions</code>
@@ -90,7 +86,7 @@ public class GroupingDefinitionDependencySort {
      *
      *
      * @param groupingDefinitions
-     *            set of goruping definition which will be wrapped to nodes
+     *            set of grouping definition which will be wrapped to nodes
      *
      * @return set of nodes where every one contains wrapped grouping definition
      */

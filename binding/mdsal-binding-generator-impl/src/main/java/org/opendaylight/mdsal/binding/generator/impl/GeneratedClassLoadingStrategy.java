@@ -5,16 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.impl;
+package org.opendaylight.mdsal.binding.generator.impl;
 
-import org.opendaylight.yangtools.sal.binding.generator.api.ClassLoadingStrategy;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy} instead
- */
-@Deprecated
 public abstract class GeneratedClassLoadingStrategy implements ClassLoadingStrategy {
 
     private static final GeneratedClassLoadingStrategy TCCL_STRATEGY = new TCCLClassLoadingStrategy();

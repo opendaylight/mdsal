@@ -5,16 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.impl;
+package org.opendaylight.mdsal.binding.generator.impl;
 
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.impl.CodecTypeUtils} instead
- */
-@Deprecated
 public final class CodecTypeUtils {
 
     private CodecTypeUtils() {

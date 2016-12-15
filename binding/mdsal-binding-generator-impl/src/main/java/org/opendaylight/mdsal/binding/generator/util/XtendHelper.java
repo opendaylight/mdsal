@@ -5,17 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import java.util.List;
-
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.XtendHelper} instead
- */
-@Deprecated
 public final class XtendHelper {
     private XtendHelper() {
         throw new UnsupportedOperationException("Utility class should not be instantiated");

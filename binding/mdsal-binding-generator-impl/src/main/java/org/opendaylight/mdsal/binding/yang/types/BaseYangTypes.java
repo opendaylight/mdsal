@@ -5,27 +5,23 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.sal.binding.yang.types;
+package org.opendaylight.mdsal.binding.yang.types;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
-import org.opendaylight.yangtools.binding.generator.util.Types;
-import org.opendaylight.yangtools.sal.binding.generator.spi.TypeProvider;
-import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.generator.util.Types;
+import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.yang.types.BaseYangTypes} instead
- */
-@Deprecated
 public final class BaseYangTypes {
     /**
      * mapping of basic built-in YANG types (keys) to JAVA
@@ -146,6 +142,7 @@ public final class BaseYangTypes {
          *            string with YANG type name
          * @return java <code>Type</code> representation of <code>type</code>
          */
+        @Deprecated
         @Override
         public Type javaTypeForYangType(final String type) {
             return TYPE_MAP.get(type);

@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.yangtools.sal.binding.generator.impl;
+package org.opendaylight.mdsal.binding.generator.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -34,10 +34,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 
-/**
- * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.impl.BindingSchemaContextUtils} instead
- */
-@Deprecated
 public final class BindingSchemaContextUtils {
 
     private BindingSchemaContextUtils() {
