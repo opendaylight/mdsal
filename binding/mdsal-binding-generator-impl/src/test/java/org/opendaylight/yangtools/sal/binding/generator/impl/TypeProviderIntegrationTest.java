@@ -79,12 +79,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-boolean");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new java.lang.Boolean(\"true\")", actual);
+        assertEquals("java.lang.Boolean.valueOf(\"true\")", actual);
 
         final QName leafNode2 = QName.create(m.getQNameModule(), "ext-boolean");
         leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyBoolean(new java.lang.Boolean(\"true\"))", actual);
+        assertEquals("new " + PKG + "MyBoolean(java.lang.Boolean.valueOf(\"true\"))", actual);
     }
 
     @Test
@@ -105,12 +105,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-empty");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new java.lang.Boolean(\"false\")", actual);
+        assertEquals("java.lang.Boolean.valueOf(\"false\")", actual);
 
         final QName leafNode2 = QName.create(m.getQNameModule(), "ext-empty");
         leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyEmpty(new java.lang.Boolean(\"false\"))", actual);
+        assertEquals("new " + PKG + "MyEmpty(java.lang.Boolean.valueOf(\"false\"))", actual);
     }
 
     @Test
@@ -131,12 +131,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int8");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new java.lang.Byte(\"11\")", actual);
+        assertEquals("java.lang.Byte.valueOf(\"11\")", actual);
 
         final QName leafNode2 = QName.create(m.getQNameModule(), "ext-int8");
         leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyInt8(new java.lang.Byte(\"11\"))", actual);
+        assertEquals("new " + PKG + "MyInt8(java.lang.Byte.valueOf(\"11\"))", actual);
     }
 
     @Test
@@ -144,12 +144,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int16");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new java.lang.Short(\"111\")", actual);
+        assertEquals("java.lang.Short.valueOf(\"111\")", actual);
 
         final QName leafNode2 = QName.create(m.getQNameModule(), "ext-int16");
         leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyInt16(new java.lang.Short(\"111\"))", actual);
+        assertEquals("new " + PKG + "MyInt16(java.lang.Short.valueOf(\"111\"))", actual);
     }
 
     @Test
@@ -157,12 +157,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int32");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new java.lang.Integer(\"1111\")", actual);
+        assertEquals("java.lang.Integer.valueOf(\"1111\")", actual);
 
         final QName leafNode2 = QName.create(m.getQNameModule(), "ext-int32");
         leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyInt32(new java.lang.Integer(\"1111\"))", actual);
+        assertEquals("new " + PKG + "MyInt32(java.lang.Integer.valueOf(\"1111\"))", actual);
     }
 
     @Test
@@ -170,12 +170,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int64");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new java.lang.Long(\"11111\")", actual);
+        assertEquals("java.lang.Long.valueOf(\"11111\")", actual);
 
         final QName leafNode2 = QName.create(m.getQNameModule(), "ext-int64");
         leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyInt64(new java.lang.Long(\"11111\"))", actual);
+        assertEquals("new " + PKG + "MyInt64(java.lang.Long.valueOf(\"11111\"))", actual);
     }
 
     @Test
@@ -222,12 +222,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint8");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new java.lang.Short(\"11\")", actual);
+        assertEquals("java.lang.Short.valueOf(\"11\")", actual);
 
         final QName leafNode2 = QName.create(m.getQNameModule(), "ext-uint8");
         leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyUint8(new java.lang.Short(\"11\"))", actual);
+        assertEquals("new " + PKG + "MyUint8(java.lang.Short.valueOf(\"11\"))", actual);
     }
 
     @Test
@@ -235,12 +235,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint16");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new java.lang.Integer(\"111\")", actual);
+        assertEquals("java.lang.Integer.valueOf(\"111\")", actual);
 
         final QName leafNode2 = QName.create(m.getQNameModule(), "ext-uint16");
         leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyUint16(new java.lang.Integer(\"111\"))", actual);
+        assertEquals("new " + PKG + "MyUint16(java.lang.Integer.valueOf(\"111\"))", actual);
     }
 
     @Test
@@ -248,12 +248,12 @@ public class TypeProviderIntegrationTest {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint32");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new java.lang.Long(\"1111\")", actual);
+        assertEquals("java.lang.Long.valueOf(\"1111\")", actual);
 
         final QName leafNode2 = QName.create(m.getQNameModule(), "ext-uint32");
         leaf = (LeafSchemaNode) m.getDataChildByName(leafNode2);
         actual = provider.getTypeDefaultConstruction(leaf);
-        assertEquals("new " + PKG + "MyUint32(new java.lang.Long(\"1111\"))", actual);
+        assertEquals("new " + PKG + "MyUint32(java.lang.Long.valueOf(\"1111\"))", actual);
     }
 
     @Test

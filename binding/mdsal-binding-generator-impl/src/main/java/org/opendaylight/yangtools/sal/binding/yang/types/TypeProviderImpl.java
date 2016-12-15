@@ -1449,11 +1449,11 @@ public final class TypeProviderImpl implements TypeProvider {
             }
             result = bitsToDef((BitsTypeDefinition) base, className, defaultValue, type.getBaseType() != null);
         } else if (base instanceof BooleanTypeDefinition) {
-            result = typeToDef(Boolean.class, defaultValue);
+            result = typeToValueOfDef(Boolean.class, defaultValue);
         } else if (base instanceof DecimalTypeDefinition) {
             result = typeToDef(BigDecimal.class, defaultValue);
         } else if (base instanceof EmptyTypeDefinition) {
-            result = typeToDef(Boolean.class, defaultValue);
+            result = typeToValueOfDef(Boolean.class, defaultValue);
         } else if (base instanceof EnumTypeDefinition) {
             char[] defValArray = defaultValue.toCharArray();
             char first = Character.toUpperCase(defaultValue.charAt(0));
@@ -1477,25 +1477,37 @@ public final class TypeProviderImpl implements TypeProvider {
         } else if (base instanceof InstanceIdentifierTypeDefinition) {
             throw new UnsupportedOperationException("Cannot get default construction for instance-identifier type");
         } else if (BaseTypes.isInt8(base)) {
-            result = typeToDef(Byte.class, defaultValue);
+            result = typeToValueOfDef(Byte.class, defaultValue);
         } else if (BaseTypes.isInt16(base)) {
-            result = typeToDef(Short.class, defaultValue);
+            result = typeToValueOfDef(Short.class, defaultValue);
         } else if (BaseTypes.isInt32(base)) {
-            result = typeToDef(Integer.class, defaultValue);
+            result = typeToValueOfDef(Integer.class, defaultValue);
         } else if (BaseTypes.isInt64(base)) {
-            result = typeToDef(Long.class, defaultValue);
+            result = typeToValueOfDef(Long.class, defaultValue);
         } else if (base instanceof LeafrefTypeDefinition) {
             result = leafrefToDef(node, (LeafrefTypeDefinition) base, defaultValue);
         } else if (base instanceof StringTypeDefinition) {
             result = "\"" + defaultValue + "\"";
         } else if (BaseTypes.isUint8(base)) {
-            result = typeToDef(Short.class, defaultValue);
+            result = typeToValueOfDef(Short.class, defaultValue);
         } else if (BaseTypes.isUint16(base)) {
-            result = typeToDef(Integer.class, defaultValue);
+            result = typeToValueOfDef(Integer.class, defaultValue);
         } else if (BaseTypes.isUint32(base)) {
-            result = typeToDef(Long.class, defaultValue);
+            result = typeToValueOfDef(Long.class, defaultValue);
         } else if (BaseTypes.isUint64(base)) {
-            result = typeToDef(BigInteger.class, defaultValue);
+            switch (defaultValue) {
+                case "0":
+                    result = "java.math.BigInteger.ZERO";
+                    break;
+                case "1":
+                    result = "java.math.BigInteger.ONE";
+                    break;
+                case "10":
+                    result = "java.math.BigInteger.TEN";
+                    break;
+                default:
+                    result = typeToDef(BigInteger.class, defaultValue);
+            }
         } else if (base instanceof UnionTypeDefinition) {
             result = unionToDef(node);
         } else {
@@ -1518,6 +1530,10 @@ public final class TypeProviderImpl implements TypeProvider {
 
     private static String typeToDef(final Class<?> clazz, final String defaultValue) {
         return "new " + clazz.getName() + "(\"" + defaultValue + "\")";
+    }
+
+    private static String typeToValueOfDef(final Class<?> clazz, final String defaultValue) {
+        return clazz.getName() + ".valueOf(\"" + defaultValue + "\")";
     }
 
     private static String binaryToDef(final String defaultValue) {
