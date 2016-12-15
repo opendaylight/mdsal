@@ -13,7 +13,7 @@
     <parent>
       <groupId>org.opendaylight.odlparent</groupId>
       <artifactId>odlparent-lite</artifactId>
-      <version>1.7.2-SNAPSHOT</version>
+      <version>1.7.2-Boron-SR2</version>
       <relativePath/>
     </parent>
 
@@ -50,7 +50,7 @@
                         <dependency>
                             <groupId>org.opendaylight.yangtools</groupId>
                             <artifactId>checkstyle-logging</artifactId>
-                            <version>1.0.2-SNAPSHOT</version>
+                            <version>1.0.2-Boron-SR2</version>
                         </dependency>
                     </dependencies>
                 </plugin>
