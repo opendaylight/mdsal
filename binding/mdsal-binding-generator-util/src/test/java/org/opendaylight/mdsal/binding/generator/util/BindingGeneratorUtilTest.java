@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,11 +28,11 @@ import java.util.Set;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.opendaylight.yangtools.binding.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
-import org.opendaylight.yangtools.sal.binding.model.api.AccessModifier;
-import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
+import org.opendaylight.mdsal.binding.model.api.AccessModifier;
+import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;

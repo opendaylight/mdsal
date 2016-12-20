@@ -5,12 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
+package org.opendaylight.mdsal.binding.generator.util.generated.type.builder;
 
 import java.io.Serializable;
 
 import org.junit.Test;
-import org.opendaylight.yangtools.binding.generator.util.Types;
+import org.opendaylight.mdsal.binding.generator.util.Types;
 
 public class AbstractGeneratedTypeBuilderTest {
 

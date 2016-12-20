@@ -5,16 +5,16 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util;
+package org.opendaylight.mdsal.binding.generator.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
-import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.WildcardType;
+import org.opendaylight.mdsal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.WildcardType;
 
 public class TypesTest {
 
