@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
+package org.opendaylight.mdsal.binding.generator.util.generated.type.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,13 +13,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.yangtools.binding.generator.util.Types;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.generator.util.Types;
+import org.opendaylight.mdsal.binding.model.api.Type;
 
 public class MethodParameterImplTest {
 
-    MethodParameterImpl parameter1, parameter2, parameter3, parameter4;
-    int hash1, hash2, hash3, hash4;
+    private MethodParameterImpl parameter1, parameter2, parameter3, parameter4;
+    private int hash1, hash2, hash3, hash4;
 
     @Before
     public void Setup() {

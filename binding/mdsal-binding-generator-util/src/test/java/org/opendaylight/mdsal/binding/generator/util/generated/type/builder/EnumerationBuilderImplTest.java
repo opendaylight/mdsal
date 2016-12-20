@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
+package org.opendaylight.mdsal.binding.generator.util.generated.type.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNull;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
@@ -24,10 +24,7 @@ import org.opendaylight.yangtools.yang.model.util.type.EnumPairBuilder;
 
 public class EnumerationBuilderImplTest {
 
-    private EnumerationBuilderImpl enumerationBuilder;
-    private EnumerationBuilderImpl enumerationBuilderSame;
-    private EnumerationBuilderImpl enumerationBuilderOtherName;
-    private EnumerationBuilderImpl enumerationBuilderOtherPackage;
+    private final QName qName = QName.create("TestQName", "10-10-2014", "TestLocalQName");
     private final String DESCRIPTION = "Test description of Enum";
     private final String packageName = "org.opendaylight.test";
     private final String name = "TestName";
@@ -37,8 +34,10 @@ public class EnumerationBuilderImplTest {
     private final String valueDescription = "Value used for test";
     private final int value = 12;
     private Enumeration enumeration;
-    private final QName qName = QName.create("TestQName", "10-10-2014", "TestLocalQName");
-
+    private EnumerationBuilderImpl enumerationBuilder;
+    private EnumerationBuilderImpl enumerationBuilderSame;
+    private EnumerationBuilderImpl enumerationBuilderOtherName;
+    private EnumerationBuilderImpl enumerationBuilderOtherPackage;
 
     @Before
     public void setup() {
