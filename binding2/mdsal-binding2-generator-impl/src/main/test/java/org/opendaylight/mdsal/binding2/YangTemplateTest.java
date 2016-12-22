@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding2;
 
 import com.google.common.annotations.Beta;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.Set;
 import org.junit.Before;
@@ -19,6 +20,7 @@ import org.opendaylight.mdsal.binding2.txt.yangTemplateForNodes;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 @Beta
 public class YangTemplateTest {
@@ -26,8 +28,8 @@ public class YangTemplateTest {
     private Set<Module> modules;
 
     @Before
-    public void setup() throws URISyntaxException, ReactorException {
-        modules = TestUtils.loadModules(getClass().getResource("/yang-template").toURI());
+    public void setup() throws URISyntaxException, ReactorException, FileNotFoundException {
+        modules = YangParserTestUtils.parseYangSources("/yang-template").getModules();
     }
 
     @Test
