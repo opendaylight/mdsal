@@ -11,27 +11,24 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.EffectiveSchemaContext;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Bug6135Test {
 
     @Ignore
     @Test
-    public void bug6135Test() throws ReactorException {
-        final CrossSourceStatementReactor.BuildAction reactor = YangInferencePipeline.RFC6020_REACTOR.newBuild();
-        reactor.addSource(new YangStatementSourceImpl("/bug-6135/foo.yang", false));
-
-        final EffectiveSchemaContext context = reactor.buildEffective();
+    public void bug6135Test() throws FileNotFoundException, ReactorException, URISyntaxException {
+        final SchemaContext context = YangParserTestUtils.parseYangSource("/bug-6135/foo.yang");
         assertNotNull(context);
 
         final List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
