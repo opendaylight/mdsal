@@ -12,8 +12,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
@@ -21,37 +23,19 @@ import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.EffectiveSchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorImplTest {
 
-    private static final YangStatementSourceImpl NETWORK_TOPOLOGY_20131021 = new YangStatementSourceImpl(
-            "/isis-topology/network-topology@2013-10-21.yang", false);
-
-    private static final YangStatementSourceImpl ISIS_20131021 = new YangStatementSourceImpl(
-            "/isis-topology/isis-topology@2013-10-21.yang", false);
-
-    private static final YangStatementSourceImpl L3_20131021 = new YangStatementSourceImpl(
-            "/isis-topology/l3-unicast-igp-topology@2013-10-21.yang", false);
-
     @Test
     public void isisTotpologyStatementParserTest() throws IOException,
-            YangSyntaxErrorException, URISyntaxException, SourceException,
-            ReactorException {
-        CrossSourceStatementReactor.BuildAction reactor = YangInferencePipeline.RFC6020_REACTOR
-                .newBuild();
+            URISyntaxException, ReactorException {
+        final InputStream topo = getClass().getResourceAsStream("/isis-topology/network-topology@2013-10-21.yang");
+        final InputStream isis = getClass().getResourceAsStream("/isis-topology/isis-topology@2013-10-21.yang");
+        final InputStream l3 = getClass().getResourceAsStream("/isis-topology/l3-unicast-igp-topology@2013-10-21.yang");
 
-        reactor.addSources(ISIS_20131021, L3_20131021,
-                NETWORK_TOPOLOGY_20131021);
-
-        EffectiveSchemaContext context = reactor.buildEffective();
+        SchemaContext context = YangParserTestUtils.parseYangStreams(ImmutableList.of(isis, l3, topo));
         assertNotNull(context);
 
         List<Type> generateTypes = new BindingGeneratorImpl(false)
@@ -62,7 +46,7 @@ public class BindingGeneratorImplTest {
 
     @Test
     public void choiceNodeGenerationTest() throws IOException,
-            YangSyntaxErrorException, URISyntaxException, SourceException, ReactorException {
+            URISyntaxException, ReactorException {
         File resourceFile = new File(getClass().getResource(
                 "/binding-generator-impl-test/choice-test.yang").toURI());
 
@@ -159,8 +143,7 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void notificationGenerationTest() throws IOException,
-            YangSyntaxErrorException, URISyntaxException, SourceException, ReactorException {
+    public void notificationGenerationTest() throws IOException, URISyntaxException, ReactorException {
         File resourceFile = new File(getClass().getResource(
                 "/binding-generator-impl-test/notification-test.yang").toURI());
 

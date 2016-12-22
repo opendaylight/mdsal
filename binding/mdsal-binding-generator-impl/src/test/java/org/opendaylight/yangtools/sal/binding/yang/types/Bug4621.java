@@ -10,12 +10,12 @@ package org.opendaylight.yangtools.sal.binding.yang.types;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
@@ -24,9 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.stmt.reactor.CrossSourceStatementReactor;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangInferencePipeline;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.YangStatementSourceImpl;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Bug4621 {
 
@@ -34,13 +32,10 @@ public class Bug4621 {
     public ExpectedException expectedEx = ExpectedException.none();
 
     @Test
-    public void bug4621test() throws ReactorException, URISyntaxException {
-        final CrossSourceStatementReactor.BuildAction reactor = YangInferencePipeline.RFC6020_REACTOR
-                .newBuild();
+    public void bug4621test() throws FileNotFoundException, ReactorException, URISyntaxException {
         File file = new File(getClass().getResource("/bug-4621/foo.yang").toURI());
-        reactor.addSource(new YangStatementSourceImpl(file.getPath(), true));
 
-        final SchemaContext schemaContext = reactor.buildEffective();
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(file);
         final Module moduleValid = schemaContext.findModuleByNamespace(new URI("foo")).iterator().next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
@@ -52,7 +47,6 @@ public class Bug4621 {
                 .getDataChildByName(leafrefNode);
         LeafSchemaNode leafRel = (LeafSchemaNode) leafrefRel;
         TypeDefinition<?> leafTypeRel = leafRel.getType();
-        Type leafrefRelResolvedType = typeProvider.javaTypeForSchemaDefinitionType(leafTypeRel, leafRel);
-        assertNotNull(leafrefRelResolvedType);
+        assertNotNull(typeProvider.javaTypeForSchemaDefinitionType(leafTypeRel, leafRel));
     }
 }
