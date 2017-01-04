@@ -1,0 +1,12 @@
+module demo {
+    namespace "urn:opendaylight:demo";
+    prefix "demo";
+    revision "2016-12-22";
+
+    typedef some-type {
+        type union {
+            type instance-identifier;
+            type string;
+        }
+    }
+}
