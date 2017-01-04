@@ -113,6 +113,17 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
         return wildcarded;
     }
 
+    /**
+     * Return this.
+     *
+     * <p>Bug 7425: Each binding type used in union needs getValue method.
+     *
+     * @return this
+     */
+    public final InstanceIdentifier getValue() {
+        return this;
+    }
+
     @Override
     public final int hashCode() {
         return hash;
