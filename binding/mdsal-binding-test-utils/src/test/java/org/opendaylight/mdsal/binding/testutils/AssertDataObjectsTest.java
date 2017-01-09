@@ -32,12 +32,12 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
 
     @Test
     public void testAssertDataObjectsWithTopLevelListKey() {
-        AssertDataObjects.assertEqualByText("new TopLevelListKey(\"test\")\n", new TopLevelListKey("test"));
+        AssertDataObjects.assertEqualByText("new TopLevelListKey(\"test\")", new TopLevelListKey("test"));
     }
 
     @Test
     public void testAssertDataObjectsWithEmptyTop() {
-        AssertDataObjects.assertEqualByText(HEADER + "new TopBuilder\n", ExampleYangObjects.topEmpty().getValue());
+        AssertDataObjects.assertEqualByText(HEADER + "new TopBuilder", ExampleYangObjects.topEmpty().getValue());
     }
 
     @Test

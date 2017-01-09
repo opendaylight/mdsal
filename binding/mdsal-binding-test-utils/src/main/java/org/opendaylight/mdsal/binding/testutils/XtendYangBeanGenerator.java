@@ -76,9 +76,13 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
     protected CharSequence getNewBeanExpression(Object bean) {
         if (bean instanceof DataContainer) {
             DataContainer dataContainerBean = (DataContainer) bean;
-            Class<?> builderClass = getBuilderClassByAppendingBuilderToClassName(
+            Optional<Class<?>> optBuilderClass = getOptionalBuilderClassByAppendingBuilderToClassName(
                     dataContainerBean.getImplementedInterface());
-            return super.getNewBeanExpression(dataContainerBean, builderClass);
+            if (optBuilderClass.isPresent()) {
+                return super.getNewBeanExpression(dataContainerBean, optBuilderClass.get());
+            } else {
+                throw new IllegalArgumentException("DataContainer has no *Builder class: " + bean.getClass());
+            }
         } else {
             return super.getNewBeanExpression(bean);
         }
