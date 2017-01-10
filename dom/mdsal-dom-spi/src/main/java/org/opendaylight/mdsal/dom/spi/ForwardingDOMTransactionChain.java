@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.spi;
 import com.google.common.collect.ForwardingObject;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 
@@ -35,5 +36,10 @@ public abstract class ForwardingDOMTransactionChain extends ForwardingObject imp
     @Override
     public DOMDataTreeWriteTransaction newWriteOnlyTransaction() {
         return delegate().newWriteOnlyTransaction();
+    }
+
+    @Override
+    public DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
+        return delegate().newReadWriteTransaction();
     }
 }

@@ -15,6 +15,7 @@ import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
@@ -45,6 +46,11 @@ public class ShardedDOMDataBrokerAdapter implements DOMDataBroker {
     }
 
     @Override
+    public DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
+        return new ShardedDOMReadWriteTransactionAdapter(newTransactionIdentifier(), service);
+    }
+
+    @Override
     public DOMTransactionChain createTransactionChain(final TransactionChainListener listener) {
         return new ShardedDOMTransactionChainAdapter(newChainIdentifier(), service, listener);
     }
@@ -56,5 +62,4 @@ public class ShardedDOMDataBrokerAdapter implements DOMDataBroker {
     private Object newChainIdentifier() {
         return "DOM-CHAIN-" + chainNum;
     }
-
 }

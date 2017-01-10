@@ -16,6 +16,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
@@ -40,14 +41,7 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
         DataBroker, DataTreeChangeService {
 
 
-    static final Factory<DataBroker> BUILDER_FACTORY = new BindingDOMAdapterBuilder.Factory<DataBroker>() {
-
-        @Override
-        public BindingDOMAdapterBuilder<DataBroker> newBuilder() {
-            return new Builder();
-        }
-
-    };
+    static final Factory<DataBroker> BUILDER_FACTORY = () -> new Builder();
     private final DataTreeChangeService treeChangeService;
 
     public BindingDOMDataBrokerAdapter(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
@@ -63,12 +57,17 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
 
     @Override
     public ReadTransaction newReadOnlyTransaction() {
-        return new BindingDOMReadTransactionAdapter(getDelegate().newReadOnlyTransaction(),getCodec());
+        return new BindingDOMReadTransactionAdapter(getDelegate().newReadOnlyTransaction(), getCodec());
     }
 
     @Override
     public WriteTransaction newWriteOnlyTransaction() {
-        return new BindingDOMWriteTransactionAdapter<>(getDelegate().newWriteOnlyTransaction(),getCodec());
+        return new BindingDOMWriteTransactionAdapter<>(getDelegate().newWriteOnlyTransaction(), getCodec());
+    }
+
+    @Override
+    public ReadWriteTransaction newReadWriteTransaction() {
+        return new BindingDOMReadWriteTransactionAdapter(getDelegate().newReadWriteTransaction(), getCodec());
     }
 
     @Override
@@ -101,5 +100,4 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
         }
         return treeChangeService.registerDataTreeChangeListener(treeId, listener);
     }
-
 }
