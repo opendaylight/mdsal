@@ -93,6 +93,35 @@ public interface TransactionChain<P extends Path<P>, D> extends AutoCloseable,
     @Override
     AsyncWriteTransaction<P, D> newWriteOnlyTransaction();
 
+    /**
+     * Create a new read-write transaction which will continue the chain.
+     *
+     * <p>
+     * The previous write transaction has to be either SUBMITTED
+     * ({@link AsyncWriteTransaction#submit submit} was invoked) or CANCELLED
+     * ({@link #close close} was invoked).
+     *
+     * <p>
+     * The returned read-write transaction presents an isolated view of the data if the previous
+     * write transaction was successful - in other words, this read-write transaction will see the
+     * state changes made by the previous write transaction in the chain. However, state which
+     * was introduced by other transactions outside this transaction chain after creation of
+     * the previous transaction is not visible.
+     *
+     * <p>
+     * Committing this read-write transaction using {@link AsyncWriteTransaction#submit submit}
+     * will submit the state changes in this transaction to be visible to any subsequent
+     * transaction in this chain and also to any transaction outside this chain.
+     *
+     * @return New transaction in the chain.
+     * @throws IllegalStateException
+     *             if the previous transaction was not SUBMITTED or CANCELLED.
+     * @throws TransactionChainClosedException
+     *             if the chain has been closed.
+     */
+    @Override
+    AsyncReadWriteTransaction<P, D> newReadWriteTransaction();
+
     @Override
     void close();
 }
