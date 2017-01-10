@@ -14,6 +14,7 @@ import org.opendaylight.mdsal.dom.api.DOMService;
 
 abstract class BindingDOMAdapterBuilder<T extends BindingService> extends AdapterBuilder<T, DOMService> {
 
+    @FunctionalInterface
     interface Factory<T extends BindingService> {
 
         BindingDOMAdapterBuilder<T> newBuilder();

@@ -30,6 +30,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeLoopException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
@@ -80,6 +81,20 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
                         cachedDataTreeService), this);
 
         return writeTx;
+    }
+
+    @Override
+    public DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
+        checkRunning();
+        checkWriteTxClosed();
+        checkReadTxClosed();
+        ShardedDOMReadWriteTransactionAdapter adapter = new ShardedDOMReadWriteTransactionAdapter(
+                newTransactionIdentifier(), cachedDataTreeService);
+        TransactionChainReadWriteTransaction readWriteTx = new TransactionChainReadWriteTransaction(
+                newTransactionIdentifier(), adapter, adapter.getReadAdapter(), writeTxSubmitFuture, this);
+
+        writeTx = readWriteTx;
+        return readWriteTx;
     }
 
     @Override

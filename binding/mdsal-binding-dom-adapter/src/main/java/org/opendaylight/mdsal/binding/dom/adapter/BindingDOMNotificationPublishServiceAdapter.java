@@ -21,15 +21,7 @@ import org.opendaylight.yangtools.yang.binding.Notification;
 
 public class BindingDOMNotificationPublishServiceAdapter implements NotificationPublishService, AutoCloseable {
 
-    static final Factory<NotificationPublishService> BUILDER_FACTORY
-            = new BindingDOMAdapterBuilder.Factory<NotificationPublishService>() {
-
-                @Override
-                public BindingDOMAdapterBuilder<NotificationPublishService> newBuilder() {
-                    return new Builder();
-                }
-
-            };
+    static final Factory<NotificationPublishService> BUILDER_FACTORY = Builder::new;
 
     private final BindingToNormalizedNodeCodec codecRegistry;
     private final DOMNotificationPublishService domPublishService;
@@ -84,7 +76,7 @@ public class BindingDOMNotificationPublishServiceAdapter implements Notification
 
         @Override
         public Set<Class<? extends DOMService>> getRequiredDelegates() {
-            return ImmutableSet.<Class<? extends DOMService>>of(DOMNotificationPublishService.class);
+            return ImmutableSet.of(DOMNotificationPublishService.class);
         }
 
         @Override

@@ -30,5 +30,8 @@ public interface DOMDataBroker extends
     DOMDataTreeWriteTransaction newWriteOnlyTransaction();
 
     @Override
+    DOMDataTreeReadWriteTransaction newReadWriteTransaction();
+
+    @Override
     DOMTransactionChain createTransactionChain(TransactionChainListener listener);
 }
