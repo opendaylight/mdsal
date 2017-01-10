@@ -55,4 +55,7 @@ public interface AsyncDataBroker<P extends Path<P>, D> extends
 
     @Override
     AsyncWriteTransaction<P, D> newWriteOnlyTransaction();
+
+    @Override
+    AsyncReadWriteTransaction<P, D> newReadWriteTransaction();
 }

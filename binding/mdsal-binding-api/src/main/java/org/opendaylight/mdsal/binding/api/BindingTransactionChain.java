@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.api;
 
 import org.opendaylight.mdsal.common.api.TransactionChain;
-
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -30,4 +29,7 @@ public interface BindingTransactionChain extends TransactionFactory,
 
     @Override
     WriteTransaction newWriteOnlyTransaction();
+
+    @Override
+    ReadWriteTransaction newReadWriteTransaction();
 }
