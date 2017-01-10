@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_e68d3533",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/UnionBuilderRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:38:26Z",
+      "side": 1,
+      "message": "where is this accessed? looks like it is only in body(), hence should not be a field at all.",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 76
+      },
+      "revId": "ed164cd616e54c9f546cf73012cd62065328a1ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_2688cd1e",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/UnionRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:38:26Z",
+      "side": 1,
+      "message": "join with previous line",
+      "range": {
+        "startLine": 124,
+        "startChar": 24,
+        "endLine": 124,
+        "endChar": 51
+      },
+      "revId": "ed164cd616e54c9f546cf73012cd62065328a1ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_6679252f",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/UnionRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:38:26Z",
+      "side": 1,
+      "message": "this is checked multiple times, restructure if/else to reduce these *and* add comments as to what is going on.",
+      "range": {
+        "startLine": 140,
+        "startChar": 23,
+        "endLine": 140,
+        "endChar": 76
+      },
+      "revId": "ed164cd616e54c9f546cf73012cd62065328a1ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_a6733d4c",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/UnionRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:38:26Z",
+      "side": 1,
+      "message": "with a if ... instanceof GTO branch you can make a local variable, killing these duplicate asks.",
+      "range": {
+        "startLine": 141,
+        "startChar": 20,
+        "endLine": 141,
+        "endChar": 46
+      },
+      "revId": "ed164cd616e54c9f546cf73012cd62065328a1ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
