@@ -19,14 +19,12 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Facto
 import org.opendaylight.mdsal.dom.api.DOMService;
 
 public abstract class BindingDOMAdapterLoader extends AdapterLoader<BindingService, DOMService> {
-
-
-    private static final Map<Class<?>,BindingDOMAdapterBuilder.Factory<?>> FACTORIES = ImmutableMap.<Class<?>,
-                BindingDOMAdapterBuilder.Factory<?>>builder()
-            .put(NotificationService.class,BindingDOMNotificationServiceAdapter.BUILDER_FACTORY)
-            .put(NotificationPublishService.class,BindingDOMNotificationPublishServiceAdapter.BUILDER_FACTORY)
-            .put(DataBroker.class,BindingDOMDataBrokerAdapter.BUILDER_FACTORY)
-            .put(RpcConsumerRegistry.class,BindingDOMRpcServiceAdapter.BUILDER_FACTORY)
+    private static final Map<Class<?>,BindingDOMAdapterBuilder.Factory<?>> FACTORIES =
+            ImmutableMap.<Class<?>, BindingDOMAdapterBuilder.Factory<?>>builder()
+            .put(NotificationService.class, BindingDOMNotificationServiceAdapter.BUILDER_FACTORY)
+            .put(NotificationPublishService.class, BindingDOMNotificationPublishServiceAdapter.BUILDER_FACTORY)
+            .put(DataBroker.class, BindingDOMDataBrokerAdapter.BUILDER_FACTORY)
+            .put(RpcConsumerRegistry.class, BindingDOMRpcServiceAdapter.BUILDER_FACTORY)
             .build();
 
     private final BindingToNormalizedNodeCodec codec;

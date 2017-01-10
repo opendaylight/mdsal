@@ -14,6 +14,7 @@ import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 
@@ -35,6 +36,11 @@ public abstract class ForwardingDOMDataBroker extends ForwardingObject implement
     @Override
     public DOMDataTreeWriteTransaction newWriteOnlyTransaction() {
         return delegate().newWriteOnlyTransaction();
+    }
+
+    @Override
+    public DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
+        return delegate().newReadWriteTransaction();
     }
 
     @Override
