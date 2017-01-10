@@ -34,5 +34,8 @@ public interface DataBroker extends  AsyncDataBroker<InstanceIdentifier<?>, Data
     WriteTransaction newWriteOnlyTransaction();
 
     @Override
+    ReadWriteTransaction newReadWriteTransaction();
+
+    @Override
     BindingTransactionChain createTransactionChain(TransactionChainListener listener);
 }
