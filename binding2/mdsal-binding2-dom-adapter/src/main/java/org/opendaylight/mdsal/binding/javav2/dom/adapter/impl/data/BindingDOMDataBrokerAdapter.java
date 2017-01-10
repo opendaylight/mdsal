@@ -30,6 +30,9 @@ import org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.AbstractForwardedDa
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.builder.BindingDOMAdapterBuilder;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.builder.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
+import org.opendaylight.mdsal.common.api.AsyncReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
@@ -72,6 +75,12 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
     @Override
     public WriteTransaction newWriteOnlyTransaction() {
         return new BindingDOMWriteTransactionAdapter<>(getDelegate().newWriteOnlyTransaction(), getCodec());
+    }
+
+    @Override
+    public AsyncReadWriteTransaction<InstanceIdentifier<?>, TreeNode> newReadWriteTransaction() {
+        // TODO - placeholder for now
+        throw new UnsupportedOperationException();
     }
 
     @Override

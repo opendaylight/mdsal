@@ -17,8 +17,10 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
+import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionFactory;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
@@ -156,6 +158,21 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
             txns.put(store.getKey(), store.getValue().newWriteOnlyTransaction());
         }
         return new DOMForwardedWriteTransaction<>(newTransactionIdentifier(), txns, this);
+    }
+
+    /**
+     * Creates a new composite read-write transaction.
+     *
+     * @return New composite read-write transaction associated with this factory.
+     */
+    public final DOMDataTreeReadWriteTransaction newReadWriteTransaction() {
+        checkNotClosed();
+
+        final Map<LogicalDatastoreType, DOMStoreReadWriteTransaction> txns = new EnumMap<>(LogicalDatastoreType.class);
+        for (Entry<LogicalDatastoreType, T> store : storeTxFactories.entrySet()) {
+            txns.put(store.getKey(), store.getValue().newReadWriteTransaction());
+        }
+        return new DOMForwardedReadWriteTransaction(newTransactionIdentifier(), txns, this);
     }
 
     /**

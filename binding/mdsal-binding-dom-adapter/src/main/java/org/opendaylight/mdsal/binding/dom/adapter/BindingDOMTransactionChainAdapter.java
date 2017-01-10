@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.opendaylight.mdsal.binding.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.TransactionChain;
@@ -22,6 +23,7 @@ import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.yangtools.concepts.Delegator;
@@ -64,6 +66,19 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
 
             @Override
             public CheckedFuture<Void,TransactionCommitFailedException> submit() {
+                return listenForFailure(this,super.submit());
+            }
+
+        };
+    }
+
+    @Override
+    public ReadWriteTransaction newReadWriteTransaction() {
+        final DOMDataTreeReadWriteTransaction delegateTx = delegate.newReadWriteTransaction();
+        return new BindingDOMReadWriteTransactionAdapter(delegateTx, codec) {
+
+            @Override
+            public CheckedFuture<Void, TransactionCommitFailedException> submit() {
                 return listenForFailure(this,super.submit());
             }
 
@@ -127,5 +142,4 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
             bindingListener.onTransactionChainSuccessful(BindingDOMTransactionChainAdapter.this);
         }
     }
-
 }
