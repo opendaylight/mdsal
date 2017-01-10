@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_9e4d4a41",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:46:29Z",
+      "side": 1,
+      "message": "Preconditions.checkArgument()",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 9
+      },
+      "revId": "f395e2f5808f7ef105847d7f453527504c8b4219",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_7e4aee26",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:46:29Z",
+      "side": 1,
+      "message": "missing space",
+      "range": {
+        "startLine": 46,
+        "startChar": 14,
+        "endLine": 46,
+        "endChar": 16
+      },
+      "revId": "f395e2f5808f7ef105847d7f453527504c8b4219",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_be6766b6",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:46:29Z",
+      "side": 1,
+      "message": "use an ArrayList pre-sized to getType().getConstantDefinitions.size()",
+      "range": {
+        "startLine": 72,
+        "startChar": 37,
+        "endLine": 72,
+        "endChar": 56
+      },
+      "revId": "f395e2f5808f7ef105847d7f453527504c8b4219",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9e742a69",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:46:29Z",
+      "side": 1,
+      "message": "unnecessary check",
+      "range": {
+        "startLine": 73,
+        "startChar": 9,
+        "endLine": 73,
+        "endChar": 60
+      },
+      "revId": "f395e2f5808f7ef105847d7f453527504c8b4219",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_1e081ad9",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:46:29Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 80,
+        "startChar": 48,
+        "endLine": 81,
+        "endChar": 53
+      },
+      "revId": "f395e2f5808f7ef105847d7f453527504c8b4219",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_3e13560e",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:46:29Z",
+      "side": 1,
+      "message": "I must say I *really* dislike this code allowing null collections to be passed in. Why is that?",
+      "range": {
+        "startLine": 115,
+        "startChar": 12,
+        "endLine": 115,
+        "endChar": 38
+      },
+      "revId": "f395e2f5808f7ef105847d7f453527504c8b4219",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9e226a50",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:46:29Z",
+      "side": 1,
+      "message": "What is the reason for using LinkedLists all over the place?",
+      "range": {
+        "startLine": 121,
+        "startChar": 54,
+        "endLine": 121,
+        "endChar": 74
+      },
+      "revId": "f395e2f5808f7ef105847d7f453527504c8b4219",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_fe0c3eef",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:46:29Z",
+      "side": 1,
+      "message": "\u0027\u003d\u0027",
+      "range": {
+        "startLine": 125,
+        "startChar": 40,
+        "endLine": 125,
+        "endChar": 43
+      },
+      "revId": "f395e2f5808f7ef105847d7f453527504c8b4219",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_be15a6e6",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-10T21:46:29Z",
+      "side": 1,
+      "message": "and same here",
+      "range": {
+        "startLine": 142,
+        "startChar": 37,
+        "endLine": 143,
+        "endChar": 36
+      },
+      "revId": "f395e2f5808f7ef105847d7f453527504c8b4219",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
