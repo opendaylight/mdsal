@@ -22,6 +22,30 @@
       "revId": "cae3a934fa52c516b46b31874189f676fd1412dd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_78b20b95",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/ClassRenderer.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-10T10:39:16Z",
+      "side": 1,
+      "message": "Done. Keeping immutable copy in field.",
+      "parentUuid": "1a622d24_6692c558",
+      "range": {
+        "startLine": 92,
+        "startChar": 15,
+        "endLine": 92,
+        "endChar": 47
+      },
+      "revId": "cae3a934fa52c516b46b31874189f676fd1412dd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
