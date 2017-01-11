@@ -15,8 +15,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.beans.ConstructorProperties;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.opendaylight.mdsal.binding2.model.api.Enumeration;
@@ -26,17 +26,15 @@ import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.txt.unionTemplate;
 
 public class UnionRenderer extends ClassRenderer {
-    /**
-     * list of all imported names for template
-     */
-    private final Map<String, String> importedNames = new HashMap<>();
-
     public UnionRenderer(final GeneratedTransferObject type) {
         super(type);
     }
 
     @Override
     protected String generateConstructors() {
+        // list of all imported names for template
+        final Map<String, String> importedNames = new HashMap<>();
+
         if(isBaseEncodingImportRequired()) {
             this.putToImportMap("BaseEncoding","com.google.common.io");
         }
@@ -103,27 +101,34 @@ public class UnionRenderer extends ClassRenderer {
             return super.getterMethod(field);
         }
 
-        final List<CharSequence> strings = new LinkedList<>();
         final Function<GeneratedProperty, Boolean> tempFunction = (GeneratedProperty p) -> {
             String name = p.getName();
             return !"value".equals(name);
         };
-        Iterable<GeneratedProperty> filtered = Iterables.<GeneratedProperty>filter(this.getFinalProperties(),
+        List<GeneratedProperty> filtered = (List) Iterables.filter(this.getFinalProperties(),
                 (Predicate<? super GeneratedProperty>) tempFunction);
+
+        final List<CharSequence> strings = new ArrayList<>(filtered.size());
 
         for (GeneratedProperty property : filtered) {
             final Type propertyReturnType = property.getReturnType();
-            final StringBuilder currentProperty = new StringBuilder();
-            currentProperty.append("if (")
+            //string builder for current property
+            final StringBuilder sb = new StringBuilder();
+            sb.append("if (")
                 .append(fieldName(property))
                 .append(" != null) {")
                 .append(fieldName(field))
                 .append(" = ");
             if ("java.lang.String".equals(propertyReturnType.getFullyQualifiedName())) {
-                currentProperty.append(fieldName(property))
-                        .append(".toCharArray();");
+                sb.append(fieldName(property)).append(".toCharArray();");
+            } else if ("org.opendaylight.mdsal.binding2.spec.InstanceIdentifier".equals(propertyReturnType
+                    .getFullyQualifiedName())) {
+                sb.append(fieldName(field))
+                    .append(" = ")
+                    .append(fieldName(property))
+                    .append(".toString().toCharArray();");
             } else if ("byte[]".equals(propertyReturnType.getName())) {
-                currentProperty.append("new ")
+                sb.append("new ")
                     .append(importedName(String.class))
                     .append('(')
                     .append(fieldName(property))
@@ -131,39 +136,37 @@ public class UnionRenderer extends ClassRenderer {
             } else if (propertyReturnType.getFullyQualifiedName().startsWith("java.lang") ||
                     propertyReturnType instanceof Enumeration ||
                     propertyReturnType.getFullyQualifiedName().startsWith("java.math")) {
-                currentProperty.append(fieldName(property))
-                        .append(".toString().toCharArray();");
-            } else if (propertyReturnType instanceof GeneratedTransferObject &&
-                    ((GeneratedTransferObject)propertyReturnType).isUnionType()) {
-                currentProperty.append(fieldName(property))
-                        .append(".getValue();");
-            } else if (propertyReturnType instanceof GeneratedTransferObject &&
-                    ((GeneratedTransferObject) propertyReturnType).isTypedef() &&
-                    ((GeneratedTransferObject) propertyReturnType).getProperties() != null &&
-                    ((GeneratedTransferObject) propertyReturnType).getProperties().isEmpty() &&
-                    (((GeneratedTransferObject) propertyReturnType).getProperties().size() == 1) &&
-                    ((GeneratedTransferObject) propertyReturnType).getProperties().get(0).getName().equals("value") &&
-                    BOOLEAN.equals(((GeneratedTransferObject) propertyReturnType).getProperties().get(0)
-                            .getReturnType())) {
-                currentProperty.append(fieldName(property))
-                        .append(".isValue().toString().toCharArray();");
-            } else if (propertyReturnType instanceof GeneratedTransferObject &&
-                    ((GeneratedTransferObject) propertyReturnType).isTypedef() &&
-                    ((GeneratedTransferObject) propertyReturnType).getProperties() != null &&
-                    ((GeneratedTransferObject) propertyReturnType).getProperties().isEmpty() &&
-                    (((GeneratedTransferObject) propertyReturnType).getProperties().size() == 1) &&
-                    ((GeneratedTransferObject) propertyReturnType).getProperties().get(0).getName().equals("value") &&
-                    "byte[]".equals(((GeneratedTransferObject) propertyReturnType).getProperties().get(0)
-                            .getReturnType().getName())) {
-                currentProperty.append("BaseEncoding.base64().encode(")
-                        .append(fieldName(property))
+                sb.append(fieldName(property)).append(".toString().toCharArray();");
+
+            } else if (propertyReturnType instanceof GeneratedTransferObject) {
+                final GeneratedTransferObject propRetTypeCast = (GeneratedTransferObject) propertyReturnType;
+                final List<GeneratedProperty> retTypeCastProperties = propRetTypeCast.getProperties();
+
+                // generated union type
+                if (propRetTypeCast.isUnionType()) {
+                    sb.append(fieldName(property)).append(".getValue();");
+
+                // generated boolean typedef
+                } else if (propRetTypeCast.isTypedef() && retTypeCastProperties != null &&
+                        !retTypeCastProperties.isEmpty() && retTypeCastProperties.size() == 1 &&
+                        retTypeCastProperties.get(0).getName().equals("value") &&
+                        BOOLEAN.equals(retTypeCastProperties.get(0).getReturnType())) {
+                    sb.append(fieldName(property)).append(".isValue().toString().toCharArray();");
+
+                //generated byte[] typedef
+                } else if (propRetTypeCast.isTypedef() && retTypeCastProperties != null &&
+                        !retTypeCastProperties.isEmpty() && retTypeCastProperties.size() == 1 &&
+                        retTypeCastProperties.get(0).getName().equals("value") &&
+                        "byte[]".equals(retTypeCastProperties.get(0).getReturnType().getName())) {
+                    sb.append("BaseEncoding.base64().encode(").append(fieldName(property))
                         .append(".getValue()).toCharArray();");
+                }
             } else {
-                currentProperty.append(fieldName(property))
+                sb.append(fieldName(property))
                         .append(".getValue().toString().toCharArray();");
             }
-            currentProperty.append("}");
-            strings.add(currentProperty);
+            sb.append("}");
+            strings.add(sb);
         }
         return String.join(" else ", strings);
     }

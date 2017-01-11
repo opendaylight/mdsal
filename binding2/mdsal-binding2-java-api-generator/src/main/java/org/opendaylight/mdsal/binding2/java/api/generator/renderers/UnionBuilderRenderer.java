@@ -15,17 +15,16 @@ import org.opendaylight.mdsal.binding2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding2.txt.unionBuilderTemplate;
 
 public class UnionBuilderRenderer extends ClassRenderer {
-    /**
-     * list of all imported names for template
-     */
-    private final Map<String, String> importedNames = new HashMap<>();
-    private final Map<String, String> generatedParameters = new HashMap<>();
 
     public UnionBuilderRenderer(final GeneratedTransferObject type) {
         super(type);
     }
 
     protected String body() {
+        // list of all imported names for template
+        final Map<String, String> importedNames = new HashMap<>();
+        final Map<String, String> generatedParameters = new HashMap<>();
+
         importedNames.put("unsupportedOperationException", importedName(UnsupportedOperationException.class));
         for (MethodSignature methodSignature : genTO.getMethodDefinitions()) {
             importedNames.put(methodSignature.getName(), importedName(methodSignature.getReturnType()));
