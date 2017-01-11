@@ -140,6 +140,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_28803845",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-11T13:24:47Z",
+      "side": 1,
+      "message": "by going to AbstractGeneratedType, these are never null:\nfinal List\u003cAnnotationType\u003e annotationList \u003d new ArrayList\u003c\u003e(annotationBuilders.size());\n\nwill be fixed in next patch",
+      "parentUuid": "1a622d24_3e13560e",
+      "range": {
+        "startLine": 115,
+        "startChar": 12,
+        "endLine": 115,
+        "endChar": 38
+      },
+      "revId": "f395e2f5808f7ef105847d7f453527504c8b4219",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_9e226a50",
         "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding2/java/api/generator/renderers/InterfaceRenderer.java",
         "patchSetId": 15
