@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_9c0d45eb",
+        "filename": "model/ietf/ietf-routing/src/main/yang/ietf-routing.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-01-12T17:02:04Z",
+      "side": 1,
+      "message": "Added revision-date to this source:\nhttps://raw.githubusercontent.com/YangModels/yang/50268e7e393622d2fcc655cc9339339f8812a444/standard/ietf/DRAFT/ietf-routing.yang",
+      "revId": "052a8d9f8fa6aa5aa8210d35112ee93323eb603e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
