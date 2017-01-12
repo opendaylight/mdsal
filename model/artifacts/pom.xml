@@ -137,6 +137,11 @@
                 <artifactId>ietf-access-control-list</artifactId>
                 <version>0.8.0-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>ietf-routing</artifactId>
+                <version>0.8.0-SNAPSHOT</version>
+            </dependency>
             <!-- TODO: Sort dependencies alphabetically? -->
         </dependencies>
     </dependencyManagement>
