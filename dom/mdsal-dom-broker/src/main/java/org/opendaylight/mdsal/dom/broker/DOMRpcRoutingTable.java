@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -18,10 +19,12 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -122,8 +125,21 @@ final class DOMRpcRoutingTable {
         return contexts != null && contexts.containsContext(input.getContextReference());
     }
 
+    @VisibleForTesting
     Map<SchemaPath, Set<YangInstanceIdentifier>> getRpcs() {
         return Maps.transformValues(rpcs, AbstractDOMRpcRoutingTableEntry::registeredIdentifiers);
+    }
+
+    Map<SchemaPath, Set<YangInstanceIdentifier>> getRpcs(final DOMRpcAvailabilityListener listener) {
+        final Map<SchemaPath, Set<YangInstanceIdentifier>> ret = new HashMap<>(rpcs.size());
+        for (Entry<SchemaPath, AbstractDOMRpcRoutingTableEntry> e : rpcs.entrySet()) {
+            final Set<YangInstanceIdentifier> ids = e.getValue().registeredIdentifiers(listener);
+            if (!ids.isEmpty()) {
+                ret.put(e.getKey(), ids);
+            }
+        }
+
+        return ret;
     }
 
     private static RpcDefinition findRpcDefinition(final SchemaContext context, final SchemaPath schemaPath) {
@@ -177,5 +193,4 @@ final class DOMRpcRoutingTable {
 
         return new DOMRpcRoutingTable(b.build(), context);
     }
-
 }
