@@ -6,12 +6,12 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *@
 
-@import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.getClassName
-@import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.getRootPackageName
-@import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.MODULE_INFO_CLASS_NAME
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.getFormattedRevision
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.getSourcePath
 @import org.opendaylight.mdsal.binding2.java.api.generator.renderers.YangModuleInfoTemplateRenderer.getSortedQName
+@import org.opendaylight.mdsal.binding2.util.Binding2Mapping.getClassName
+@import org.opendaylight.mdsal.binding2.util.Binding2Mapping.getRootPackageName
+@import org.opendaylight.mdsal.binding2.util.Binding2Mapping.MODULE_INFO_CLASS_NAME
 @import org.opendaylight.yangtools.yang.model.api.Module
 @import org.opendaylight.yangtools.yang.model.api.SchemaContext
 

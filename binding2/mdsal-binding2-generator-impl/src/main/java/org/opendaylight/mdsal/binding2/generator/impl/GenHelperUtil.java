@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding2.generator.impl.util.YangTextTemplate;
 import org.opendaylight.mdsal.binding2.generator.util.Binding2GeneratorUtil;
-import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping;
 import org.opendaylight.mdsal.binding2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding2.generator.util.Types;
 import org.opendaylight.mdsal.binding2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
@@ -29,6 +28,9 @@ import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding2.txt.yangTemplateForModule;
+import org.opendaylight.mdsal.binding2.txt.yangTemplateForNode;
+import org.opendaylight.mdsal.binding2.util.Binding2Mapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -46,8 +48,6 @@ import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.opendaylight.mdsal.binding2.txt.yangTemplateForModule;
-import org.opendaylight.mdsal.binding2.txt.yangTemplateForNode;
 
 /**
  * Helper util class used for generation of types in binding spec v2.

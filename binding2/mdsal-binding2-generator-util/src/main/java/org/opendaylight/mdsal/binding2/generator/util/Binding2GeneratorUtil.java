@@ -12,6 +12,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Iterables;
 import java.util.Iterator;
+import org.opendaylight.mdsal.binding2.util.Binding2Mapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
