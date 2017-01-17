@@ -29,4 +29,13 @@ public interface DOMRpcImplementation {
      */
     @Nonnull CheckedFuture<DOMRpcResult, DOMRpcException>
         invokeRpc(@Nonnull DOMRpcIdentifier rpc, @Nullable NormalizedNode<?, ?> input);
+
+    /**
+     * Return the relative invocation cost of this implementation. Default implementation return 0.
+     *
+     * @return Non-negative cost of invoking this implementation.
+     */
+    default long invocationCost() {
+        return 0;
+    }
 }
