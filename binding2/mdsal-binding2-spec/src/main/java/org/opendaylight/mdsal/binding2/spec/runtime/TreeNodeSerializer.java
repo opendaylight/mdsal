@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding2.spec.runtime;
 
 import com.google.common.annotations.Beta;
 import java.io.IOException;
-import org.opendaylight.mdsal.binding2.spec.TreeNode;
+import org.opendaylight.mdsal.binding2.spec.base.TreeNode;
 
 /*
  * A serializer which writes TreeNode to supplied stream event writer.
