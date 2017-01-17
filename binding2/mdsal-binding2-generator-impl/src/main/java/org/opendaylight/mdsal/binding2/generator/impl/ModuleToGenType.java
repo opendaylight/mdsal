@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.opendaylight.mdsal.binding2.generator.spi.TypeProvider;
-import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping;
 import org.opendaylight.mdsal.binding2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -42,7 +42,7 @@ final class ModuleToGenType {
         if (!module.getChildNodes().isEmpty()) {
             final GeneratedTypeBuilder moduleType = GenHelperUtil.moduleToDataType(module, genCtx, verboseClassComments);
             genCtx.get(module).addModuleNode(moduleType);
-            final String basePackageName = Binding2Mapping.getRootPackageName(module);
+            final String basePackageName = BindingMapping.getRootPackageName(module);
             GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
                     .getChildNodes());
         }

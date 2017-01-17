@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2017 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding2.generator.util;
+package org.opendaylight.mdsal.binding2.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
@@ -26,7 +26,7 @@ import org.opendaylight.yangtools.yang.model.api.Module;
  * Standard Util class that provides generated Java related functionality
  */
 @Beta
-public final class Binding2Mapping {
+public final class BindingMapping {
 
     public static final Set<String> JAVA_RESERVED_WORDS = ImmutableSet.of("abstract", "assert", "boolean", "break",
             "byte", "case", "catch", "char", "class", "const", "continue", "default", "double", "do", "else", "enum",
@@ -62,7 +62,7 @@ public final class Binding2Mapping {
         }
     };
 
-    private Binding2Mapping() {
+    private BindingMapping() {
         throw new UnsupportedOperationException("Utility class");
     }
 
@@ -131,7 +131,7 @@ public final class Binding2Mapping {
             }
 
             //FIXME: don't use underscore in v2
-            if (Character.isDigit(p.charAt(0)) || Binding2Mapping.JAVA_RESERVED_WORDS.contains(p)) {
+            if (Character.isDigit(p.charAt(0)) || BindingMapping.JAVA_RESERVED_WORDS.contains(p)) {
                 builder.append('_');
             }
             builder.append(p);

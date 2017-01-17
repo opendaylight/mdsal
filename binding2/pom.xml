@@ -32,6 +32,7 @@
       <module>mdsal-binding2-generator-impl</module>
       <module>mdsal-binding2-java-api-generator</module>
       <module>mdsal-binding2-generator-util</module>
+      <module>mdsal-binding2-util</module>
     </modules>
 
   <!--

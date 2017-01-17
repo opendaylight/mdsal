@@ -6,11 +6,11 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *@
 
-@import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.PATTERN_CONSTANT_NAME
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.asArguments
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.fieldName
 @import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject
 @import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty
+@import org.opendaylight.mdsal.binding2.util.BindingMapping.PATTERN_CONSTANT_NAME
 
 @(genTo: GeneratedTransferObject, allProperties: List[GeneratedProperty], properties: List[GeneratedProperty],
 parentProperties: List[GeneratedProperty], importedNames: Map[String, String], argumentsDeclaration: String,

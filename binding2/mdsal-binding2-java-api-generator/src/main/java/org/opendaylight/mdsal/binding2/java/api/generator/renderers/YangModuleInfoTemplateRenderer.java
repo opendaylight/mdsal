@@ -8,8 +8,8 @@
 
 package org.opendaylight.mdsal.binding2.java.api.generator.renderers;
 
-import static org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.MODEL_BINDING_PROVIDER_CLASS_NAME;
-import static org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.getRootPackageName;
+import static org.opendaylight.mdsal.binding2.util.BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME;
+import static org.opendaylight.mdsal.binding2.util.BindingMapping.getRootPackageName;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -26,8 +26,8 @@ import org.opendaylight.mdsal.binding2.generator.util.Types;
 import org.opendaylight.mdsal.binding2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.WildcardType;
-import org.opendaylight.mdsal.binding2.spec.YangModelBindingProvider;
-import org.opendaylight.mdsal.binding2.spec.YangModuleInfo;
+import org.opendaylight.mdsal.binding2.spec.runtime.YangModelBindingProvider;
+import org.opendaylight.mdsal.binding2.spec.runtime.YangModuleInfo;
 import org.opendaylight.mdsal.binding2.txt.modelProviderTemplate;
 import org.opendaylight.mdsal.binding2.txt.yangModuleInfoTemplate;
 import org.opendaylight.yangtools.yang.model.api.Module;
