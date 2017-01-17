@@ -16,18 +16,18 @@
         <relativePath/>
     </parent>
 
-    <groupId>org.opendaylight.mdsal.model.binding2</groupId>
-    <version>0.10.0-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>model-aggregator</artifactId>
+    <groupId>org.opendaylight.mdsal.model.binding2</groupId>
+    <artifactId>model-iana-aggregator</artifactId>
+    <version>0.10.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>${project.artifactId}</name>
-    <description>${project.artifactId}</description>
 
     <modules>
-        <module>yang-ext</module>
-        <module>iana</module>
+        <module>iana-afn-safi</module>
+        <module>iana-if-type</module>
+        <module>iana-if-type-2014-05-08</module>
     </modules>
+
   <!--
       Maven Site Configuration
 
