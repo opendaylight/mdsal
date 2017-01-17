@@ -29,9 +29,9 @@ import org.opendaylight.mdsal.binding2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.WildcardType;
-import org.opendaylight.mdsal.binding2.spec.Augmentable;
-import org.opendaylight.mdsal.binding2.spec.Augmentation;
-import org.opendaylight.mdsal.binding2.spec.RpcCallback;
+import org.opendaylight.mdsal.binding2.spec.structural.Augmentable;
+import org.opendaylight.mdsal.binding2.spec.structural.Augmentation;
+import org.opendaylight.mdsal.binding2.spec.base.RpcCallback;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
@@ -193,7 +193,7 @@ public final class Types {
      * Creates instance of
      * {@link org.opendaylight.mdsal.binding2.model.api.ParameterizedType
      * ParameterizedType} where raw type is
-     * {@link org.opendaylight.mdsal.binding2.spec.Augmentable} and actual
+     * {@link Augmentable} and actual
      * parameter is <code>valueType</code>.
      *
      * @param valueType
@@ -211,7 +211,7 @@ public final class Types {
      * Creates instance of
      * {@link org.opendaylight.mdsal.binding2.model.api.ParameterizedType
      * ParameterizedType} where raw type is
-     * {@link org.opendaylight.mdsal.binding2.spec.Augmentation} and actual
+     * {@link Augmentation} and actual
      * parameter is <code>valueType</code>.
      *
      * @param valueType

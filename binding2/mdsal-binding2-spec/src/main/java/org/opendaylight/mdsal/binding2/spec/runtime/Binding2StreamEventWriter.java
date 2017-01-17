@@ -12,10 +12,10 @@ import com.google.common.annotations.Beta;
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
-import org.opendaylight.mdsal.binding2.spec.Augmentation;
-import org.opendaylight.mdsal.binding2.spec.IdentifiableItem;
-import org.opendaylight.mdsal.binding2.spec.Item;
-import org.opendaylight.mdsal.binding2.spec.TreeNode;
+import org.opendaylight.mdsal.binding2.spec.structural.Augmentation;
+import org.opendaylight.mdsal.binding2.spec.base.IdentifiableItem;
+import org.opendaylight.mdsal.binding2.spec.base.Item;
+import org.opendaylight.mdsal.binding2.spec.base.TreeNode;
 
 /**
  * Event Stream Writer for Binding version 2 Representation
