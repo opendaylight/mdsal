@@ -37,6 +37,8 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
 
     private static final Cache<Class<?>, RpcServiceInvoker> SERVICE_INVOKERS
             = CacheBuilder.newBuilder().weakKeys().build();
+    // Default implementations are 0, we need to perform some translation, hence we have a slightly higher cost
+    private static final int COST = 1;
 
     private final BindingNormalizedNodeCodecRegistry codec;
     private final RpcServiceInvoker invoker;
@@ -72,6 +74,11 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
         return transformResult(bindingResult);
     }
 
+    @Override
+    public long invocationCost() {
+        return COST;
+    }
+
     private DataObject deserilialize(final SchemaPath rpcPath, final NormalizedNode<?, ?> input) {
         if (input instanceof LazySerializedContainerNode) {
             return ((LazySerializedContainerNode) input).bindingData();
@@ -88,5 +95,4 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
             final ListenableFuture<RpcResult<?>> bindingResult) {
         return LazyDOMRpcResultFuture.create(codec, bindingResult);
     }
-
 }
