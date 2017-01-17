@@ -28,6 +28,8 @@ import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding2.spec.base.TreeNode;
+import org.opendaylight.mdsal.binding2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding2.txt.yangTemplateForModule;
 import org.opendaylight.mdsal.binding2.txt.yangTemplateForNode;
 import org.opendaylight.mdsal.binding2.util.BindingMapping;
@@ -416,9 +418,9 @@ final class GenHelperUtil {
      * <code>schemaNode</code>.
      *
      * The new builder always implements
-     * {@link org.opendaylight.mdsal.binding2.spec.TreeNode TreeNode}.<br>
+     * {@link TreeNode TreeNode}.<br>
      * If <code>schemaNode</code> is instance of GroupingDefinition it also
-     * implements {@link org.opendaylight.mdsal.binding2.spec.Augmentable
+     * implements {@link Augmentable
      * Augmentable}.<br>
      * If <code>schemaNode</code> is instance of
      * {@link org.opendaylight.yangtools.yang.model.api.DataNodeContainer

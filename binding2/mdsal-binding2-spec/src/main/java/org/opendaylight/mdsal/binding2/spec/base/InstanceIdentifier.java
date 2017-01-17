@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2013 - 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2017 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding2.spec;
+package org.opendaylight.mdsal.binding2.spec.base;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.opendaylight.mdsal.binding2.spec.structural.Augmentation;
+import org.opendaylight.mdsal.binding2.spec.structural.TreeChildNode;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.util.HashCodeBuilder;

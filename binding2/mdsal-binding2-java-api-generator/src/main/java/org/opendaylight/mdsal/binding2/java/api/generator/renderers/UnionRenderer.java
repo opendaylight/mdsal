@@ -124,7 +124,7 @@ public class UnionRenderer extends ClassRenderer {
             if ("java.lang.String".equals(propertyReturnType.getFullyQualifiedName())) {
                 sb.append(fieldName(property)).append(".toCharArray();");
             // generated type InstanceIdentifier
-            } else if ("org.opendaylight.mdsal.binding2.spec.InstanceIdentifier".equals(propertyReturnType
+            } else if ("org.opendaylight.mdsal.binding2.spec.base.InstanceIdentifier".equals(propertyReturnType
                     .getFullyQualifiedName())) {
                 sb.append(fieldName(field))
                     .append(" = ")
