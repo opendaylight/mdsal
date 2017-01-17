@@ -75,7 +75,7 @@
             <id>binding2-generator</id>
             <activation>
                 <file>
-                    <exists>src/main/yang</exists>
+                    <exists>src/main/yangFALSE</exists> <!--TODO REMOVE FALSE IF BINDING2 WILL DONE -->
                 </file>
             </activation>
             <dependencies>
