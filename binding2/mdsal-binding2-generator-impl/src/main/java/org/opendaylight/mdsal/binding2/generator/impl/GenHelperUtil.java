@@ -19,8 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding2.generator.impl.util.YangTextTemplate;
-import org.opendaylight.mdsal.binding2.generator.util.Binding2GeneratorUtil;
-import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping;
+import org.opendaylight.mdsal.binding2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding2.generator.util.Types;
 import org.opendaylight.mdsal.binding2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
@@ -29,6 +28,9 @@ import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding2.txt.yangTemplateForModule;
+import org.opendaylight.mdsal.binding2.txt.yangTemplateForNode;
+import org.opendaylight.mdsal.binding2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -46,8 +48,6 @@ import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
-import org.opendaylight.mdsal.binding2.txt.yangTemplateForModule;
-import org.opendaylight.mdsal.binding2.txt.yangTemplateForNode;
 
 /**
  * Helper util class used for generation of types in binding spec v2.
@@ -115,8 +115,8 @@ final class GenHelperUtil {
      */
     static GeneratedTypeBuilder moduleTypeBuilder(final Module module, final String postfix, final boolean verboseClassComments) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
-        final String packageName = Binding2Mapping.getRootPackageName(module);
-        final String moduleName = Binding2Mapping.getClassName(module.getName()) + postfix;
+        final String packageName = BindingMapping.getRootPackageName(module);
+        final String moduleName = BindingMapping.getClassName(module.getName()) + postfix;
 
         final GeneratedTypeBuilderImpl moduleBuilder = new GeneratedTypeBuilderImpl(packageName, moduleName);
         moduleBuilder.setDescription(createDescription(module, verboseClassComments));
@@ -171,7 +171,7 @@ final class GenHelperUtil {
 
     private static String createDescription(final Module module, final boolean verboseClassComments) {
         final StringBuilder sb = new StringBuilder();
-        final String moduleDescription = Binding2GeneratorUtil.encodeAngleBrackets(module.getDescription());
+        final String moduleDescription = BindingGeneratorUtil.encodeAngleBrackets(module.getDescription());
         final String formattedDescription = YangTextTemplate.formatToParagraph(moduleDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
@@ -187,7 +187,7 @@ final class GenHelperUtil {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(Binding2GeneratorUtil.encodeAngleBrackets(yangTemplateForModule.render(module).body()));
+            sb.append(BindingGeneratorUtil.encodeAngleBrackets(yangTemplateForModule.render(module).body()));
             sb.append("</pre>");
         }
 
@@ -241,7 +241,7 @@ final class GenHelperUtil {
     static Map<Module, ModuleContext> processUsesAugments(final SchemaContext schemaContext, final
                         DataNodeContainer node, final Module module, Map<Module, ModuleContext> genCtx,  Map<String,
                         Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments) {
-        final String basePackageName = Binding2Mapping.getRootPackageName(module);
+        final String basePackageName = BindingMapping.getRootPackageName(module);
         for (final UsesNode usesNode : node.getUses()) {
             for (final AugmentationSchema augment : usesNode.getAugmentations()) {
                 genCtx = AugmentToGenType.usesAugmentationToGenTypes(schemaContext, basePackageName, augment, module,
@@ -307,7 +307,7 @@ final class GenHelperUtil {
 
         String augTypeName;
         if (augIdentifier != null) {
-            augTypeName = Binding2Mapping.getClassName(augIdentifier);
+            augTypeName = BindingMapping.getClassName(augIdentifier);
         } else {
             augTypeName = augGenTypeName(augmentBuilders, targetTypeRef.getName());
         }
@@ -495,14 +495,14 @@ final class GenHelperUtil {
 
         String genTypeName;
         if (prefix == null) {
-            genTypeName = Binding2Mapping.getClassName(schemaNodeName);
+            genTypeName = BindingMapping.getClassName(schemaNodeName);
         } else {
-            genTypeName = prefix + Binding2Mapping.getClassName(schemaNodeName);
+            genTypeName = prefix + BindingMapping.getClassName(schemaNodeName);
         }
 
         final GeneratedTypeBuilderImpl newType = new GeneratedTypeBuilderImpl(packageName, genTypeName);
         final Module module = SchemaContextUtil.findParentModule(schemaContext, schemaNode);
-        qNameConstant(newType, Binding2Mapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
+        qNameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
         newType.addComment(schemaNode.getDescription());
         newType.setDescription(createDescription(schemaNode, newType.getFullyQualifiedName(), schemaContext, verboseClassComments));
         newType.setReference(schemaNode.getReference());
@@ -532,7 +532,7 @@ final class GenHelperUtil {
     private static String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName,
                              final SchemaContext schemaContext, final boolean verboseClassComments) {
         final StringBuilder sb = new StringBuilder();
-        final String nodeDescription = Binding2GeneratorUtil.encodeAngleBrackets(schemaNode.getDescription());
+        final String nodeDescription = BindingGeneratorUtil.encodeAngleBrackets(schemaNode.getDescription());
         final String formattedDescription = YangTextTemplate.formatToParagraph(nodeDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
@@ -558,7 +558,7 @@ final class GenHelperUtil {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(Binding2GeneratorUtil.encodeAngleBrackets(yangTemplateForNode.render(schemaNode).body()));
+            sb.append(BindingGeneratorUtil.encodeAngleBrackets(yangTemplateForNode.render(schemaNode).body()));
             sb.append("</pre>");
             sb.append(NEW_LINE);
             sb.append("The schema path to identify an instance is");

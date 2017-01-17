@@ -18,11 +18,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.opendaylight.mdsal.binding2.generator.util.Binding2GeneratorUtil;
-import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping;
+import org.opendaylight.mdsal.binding2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding2.generator.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
@@ -94,7 +94,7 @@ final class AugmentToGenType {
         Preconditions.checkArgument(module.getName() != null, "Module name cannot be NULL.");
         Preconditions.checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
 
-        final String basePackageName = Binding2Mapping.getRootPackageName(module);
+        final String basePackageName = BindingMapping.getRootPackageName(module);
         final List<AugmentationSchema> augmentations = resolveAugmentations(module);
         Map<Module, ModuleContext> resultCtx = genCtx;
         for (final AugmentationSchema augment : augmentations) {
@@ -242,7 +242,7 @@ final class AugmentToGenType {
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             String packageName = augmentPackageName;
             if (usesNodeParent instanceof SchemaNode) {
-                packageName = Binding2GeneratorUtil.packageNameForAugmentedGeneratedType(augmentPackageName,
+                packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(augmentPackageName,
                         ((SchemaNode) usesNodeParent).getPath());
             }
             generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName,
@@ -355,7 +355,7 @@ final class AugmentToGenType {
 
         for (final DataSchemaNode caseNode : augmentedNodes) {
             if (caseNode != null) {
-                final String packageName = Binding2GeneratorUtil.packageNameForGeneratedType(basePackageName,
+                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
                         caseNode.getPath());
                 final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(packageName,
                         caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders);

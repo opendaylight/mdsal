@@ -8,10 +8,10 @@
 
 package org.opendaylight.mdsal.binding2.java.api.generator.renderers;
 
-import static org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.MEMBER_PATTERN_LIST;
-import static org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping.PATTERN_CONSTANT_NAME;
 import static org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.fieldName;
 import static org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.setterMethod;
+import static org.opendaylight.mdsal.binding2.util.BindingMapping.MEMBER_PATTERN_LIST;
+import static org.opendaylight.mdsal.binding2.util.BindingMapping.PATTERN_CONSTANT_NAME;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;

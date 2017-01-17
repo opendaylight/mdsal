@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding2.generator.util.AbstractBaseType;
-import org.opendaylight.mdsal.binding2.generator.util.Binding2Mapping;
 import org.opendaylight.mdsal.binding2.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding2.model.api.Constant;
 import org.opendaylight.mdsal.binding2.model.api.Enumeration;
@@ -28,6 +27,7 @@ import org.opendaylight.mdsal.binding2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding2.model.api.type.builder.EnumBuilder;
+import org.opendaylight.mdsal.binding2.util.BindingMapping;
 import org.opendaylight.yangtools.util.LazyCollections;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.Status;
@@ -99,7 +99,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         builder.append(name);
         builder.append(", values=");
         builder.append(values);
-        builder.append("]");
+        builder.append(']');
         return builder.toString();
     }
 
@@ -125,7 +125,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
                             final String reference, final Status status) {
 
             this.name = name;
-            this.mappedName = Binding2Mapping.getClassName(name);
+            this.mappedName = BindingMapping.getClassName(name);
             this.value = value;
             this.description = description;
             this.reference = reference;
@@ -202,7 +202,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
             builder.append(getMappedName());
             builder.append(", value=");
             builder.append(value);
-            builder.append("]");
+            builder.append(']');
             return builder.toString();
         }
     }
@@ -257,7 +257,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         public String toFormattedString() {
             StringBuilder builder = new StringBuilder();
             builder.append("public enum");
-            builder.append(" ");
+            builder.append(' ');
             builder.append(getName());
             builder.append(" {");
             builder.append("\n");
@@ -265,7 +265,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
             int i = 0;
             for (final Enumeration.Pair valPair : values) {
                 builder.append("\t");
-                builder.append(" ");
+                builder.append(' ');
                 builder.append(valPair.getMappedName());
                 builder.append(" (");
                 builder.append(valPair.getValue());

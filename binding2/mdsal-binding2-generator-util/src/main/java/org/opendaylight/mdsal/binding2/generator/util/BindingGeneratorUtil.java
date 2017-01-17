@@ -12,6 +12,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Iterables;
 import java.util.Iterator;
+import org.opendaylight.mdsal.binding2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -21,12 +22,12 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
  * class names, attribute names and/or valid JavaDoc comments.
  */
 @Beta
-public final class Binding2GeneratorUtil {
+public final class BindingGeneratorUtil {
 
     private static final CharMatcher GT_MATCHER = CharMatcher.is('>');
     private static final CharMatcher LT_MATCHER = CharMatcher.is('<');
 
-    private Binding2GeneratorUtil() {
+    private BindingGeneratorUtil() {
         throw new UnsupportedOperationException("Utility class");
     }
 
@@ -102,7 +103,7 @@ public final class Binding2GeneratorUtil {
             //FIXME: colon or dash in identifier?
             builder.append(nodeLocalName);
         }
-        return Binding2Mapping.normalizePackageName(builder.toString());
+        return BindingMapping.normalizePackageName(builder.toString());
     }
 
     /**
