@@ -10,27 +10,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.opendaylight.odlparent</groupId>
-        <artifactId>odlparent-lite</artifactId>
-        <version>1.8.0-SNAPSHOT</version>
-        <relativePath/>
+        <groupId>org.opendaylight.mdsal</groupId>
+        <artifactId>mdsal-model-binding2-parent</artifactId>
+        <version>0.10.0-SNAPSHOT</version>
+        <relativePath>../../../binding2/mdsal-model-binding2-parent</relativePath>
     </parent>
 
-    <groupId>org.opendaylight.mdsal.model.binding2</groupId>
-    <version>0.10.0-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>model-aggregator</artifactId>
-    <packaging>pom</packaging>
+    <groupId>org.opendaylight.mdsal.model.binding2</groupId>
+    <artifactId>ietf-topology-ospf</artifactId>
+    <version>2013.10.21.10-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
+    <packaging>bundle</packaging>
 
-    <modules>
-        <module>yang-ext</module>
-        <module>iana</module>
-        <module>ietf</module>
-        <module>l2-types</module>
-        <module>general-entity</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model.binding2</groupId>
+            <artifactId>ietf-topology-l3-unicast-igp</artifactId>
+            <version>2013.10.21.10-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model.binding2</groupId>
+            <artifactId>ietf-ted</artifactId>
+            <version>2013.10.21.10-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+
   <!--
       Maven Site Configuration
 
