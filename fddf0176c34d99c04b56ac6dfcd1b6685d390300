@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_314c05c8",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding2/spec/runtime/Binding2Codec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-18T11:12:11Z",
+      "side": 1,
+      "message": "will do as we discussed in one more patch in this chain",
+      "parentUuid": "1a622d24_58bd66b6",
+      "range": {
+        "startLine": 9,
+        "startChar": 31,
+        "endLine": 9,
+        "endChar": 39
+      },
+      "revId": "fddf0176c34d99c04b56ac6dfcd1b6685d390300",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_98b37ee8",
         "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding2/spec/runtime/Binding2Codec.java",
         "patchSetId": 1
