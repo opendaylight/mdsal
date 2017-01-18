@@ -25,6 +25,7 @@
     <description>${project.artifactId}</description>
 
     <modules>
+        <module>artifacts</module>
         <module>yang-ext</module>
         <module>iana</module>
         <module>ietf</module>
