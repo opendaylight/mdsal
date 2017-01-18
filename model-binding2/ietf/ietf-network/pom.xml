@@ -26,9 +26,8 @@
 
     <dependencyManagement>
         <dependencies>
-            <!--TODO fix for binding2 after migrate-->
             <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
+                <groupId>org.opendaylight.mdsal.model.binding2</groupId>
                 <artifactId>mdsal-model-artifacts</artifactId>
                 <version>0.10.0-SNAPSHOT</version>
                 <type>pom</type>
