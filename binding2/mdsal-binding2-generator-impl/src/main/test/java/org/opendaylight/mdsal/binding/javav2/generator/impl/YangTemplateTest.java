@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2017 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding2;
+package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import com.google.common.annotations.Beta;
 import java.io.FileNotFoundException;
@@ -14,9 +14,9 @@ import java.net.URISyntaxException;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding2.txt.yangTemplateForModule;
-import org.opendaylight.mdsal.binding2.txt.yangTemplateForNode;
-import org.opendaylight.mdsal.binding2.txt.yangTemplateForNodes;
+import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
+import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNode;
+import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNodes;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
