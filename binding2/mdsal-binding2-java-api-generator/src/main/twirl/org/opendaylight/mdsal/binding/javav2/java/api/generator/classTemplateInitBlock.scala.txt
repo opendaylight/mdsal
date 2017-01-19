@@ -6,8 +6,8 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *@
 
-@import org.opendaylight.mdsal.binding2.util.BindingMapping.MEMBER_PATTERN_LIST
-@import org.opendaylight.mdsal.binding2.util.BindingMapping.PATTERN_CONSTANT_NAME
+@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MEMBER_PATTERN_LIST
+@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.PATTERN_CONSTANT_NAME
 
 @(patterName: String)
 static {

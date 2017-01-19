@@ -6,8 +6,8 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *@
 
-@import org.opendaylight.mdsal.binding2.util.BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME
-@import org.opendaylight.mdsal.binding2.util.BindingMapping.MODULE_INFO_CLASS_NAME
+@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME
+@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MODULE_INFO_CLASS_NAME
 
 @(packageName: String, yangModelBindingProviderName: String, yangModuleInfoName: String)
 package @{packageName};
