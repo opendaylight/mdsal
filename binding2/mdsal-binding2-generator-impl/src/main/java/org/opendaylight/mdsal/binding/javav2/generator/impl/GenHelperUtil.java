@@ -32,7 +32,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTyp
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
-import org.opendaylight.mdsal.binding2.util.BindingMapping;
+import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;

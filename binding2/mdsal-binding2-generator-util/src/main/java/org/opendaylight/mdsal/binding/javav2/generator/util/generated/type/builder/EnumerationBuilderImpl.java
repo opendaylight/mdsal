@@ -27,7 +27,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
-import org.opendaylight.mdsal.binding2.util.BindingMapping;
+import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.util.LazyCollections;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.Status;

@@ -22,7 +22,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding2.util.BindingMapping;
+import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
