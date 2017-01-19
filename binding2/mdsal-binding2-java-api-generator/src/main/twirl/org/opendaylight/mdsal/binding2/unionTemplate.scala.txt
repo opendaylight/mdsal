@@ -10,7 +10,7 @@
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.fieldName
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.asArguments
-@import org.opendaylight.mdsal.binding2.generator.util.Types.getOuterClassName
+@import org.opendaylight.mdsal.binding.javav2.generator.util.Types.getOuterClassName
 
 @(baseType: GeneratedType, importedNames: Map[String, String], finalProperties: List[GeneratedProperty],
 parentProperties: List[GeneratedProperty], properties: List[GeneratedProperty], propertyList: String)

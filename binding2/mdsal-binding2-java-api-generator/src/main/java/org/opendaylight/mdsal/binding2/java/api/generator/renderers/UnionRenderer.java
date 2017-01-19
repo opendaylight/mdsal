@@ -8,7 +8,7 @@
 
 package org.opendaylight.mdsal.binding2.java.api.generator.renderers;
 
-import static org.opendaylight.mdsal.binding2.generator.util.Types.BOOLEAN;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.fieldName;
 
 import com.google.common.base.Function;
