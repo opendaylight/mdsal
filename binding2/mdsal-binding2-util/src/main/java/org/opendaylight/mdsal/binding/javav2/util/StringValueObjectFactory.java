@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding2.util;
+package org.opendaylight.mdsal.binding.javav2.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;

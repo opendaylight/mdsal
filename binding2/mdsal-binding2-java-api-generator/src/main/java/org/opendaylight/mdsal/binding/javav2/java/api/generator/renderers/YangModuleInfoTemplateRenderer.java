@@ -8,8 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
-import static org.opendaylight.mdsal.binding2.util.BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME;
-import static org.opendaylight.mdsal.binding2.util.BindingMapping.getRootPackageName;
+import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME;
+import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.getRootPackageName;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
