@@ -5,16 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding2.spec.base;
+
+package org.opendaylight.mdsal.binding.javav2.spec.structural;
 
 import com.google.common.annotations.Beta;
+import org.opendaylight.yangtools.util.ClassLoaderUtils;
 
 @Beta
-public interface RpcCallback<O> {
+public interface Augmentation<T> {
 
-    void onSuccess(O output);
-
-    void onFailure(Throwable e);
-
+    // REPLACES: BindingReflections#findAugmentationTarget
+    default Class<T> augmentTarget() {
+        return ClassLoaderUtils.findFirstGenericArgument(getClass(), Augmentation.class);
+    }
 
 }

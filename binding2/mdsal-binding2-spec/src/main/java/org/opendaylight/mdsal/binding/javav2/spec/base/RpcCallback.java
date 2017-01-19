@@ -6,17 +6,16 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding2.spec.structural;
+package org.opendaylight.mdsal.binding.javav2.spec.base;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.yangtools.util.ClassLoaderUtils;
 
 @Beta
-public interface Augmentation<T> {
+public interface RpcCallback<O> {
 
-    // REPLACES: BindingReflections#findAugmentationTarget
-    default Class<T> augmentTarget() {
-        return ClassLoaderUtils.findFirstGenericArgument(getClass(), Augmentation.class);
-    }
+    void onSuccess(O output);
+
+    void onFailure(Throwable e);
+
 
 }

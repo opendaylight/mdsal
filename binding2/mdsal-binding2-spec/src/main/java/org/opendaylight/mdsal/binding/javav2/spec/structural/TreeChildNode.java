@@ -6,11 +6,11 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding2.spec.structural;
+package org.opendaylight.mdsal.binding.javav2.spec.structural;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.binding2.spec.base.TreeArgument;
-import org.opendaylight.mdsal.binding2.spec.base.TreeNode;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeArgument;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 
 /**

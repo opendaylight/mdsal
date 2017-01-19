@@ -6,11 +6,11 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding2.spec.runtime;
+package org.opendaylight.mdsal.binding.javav2.spec.runtime;
 
 import com.google.common.annotations.Beta;
 import java.io.IOException;
-import org.opendaylight.mdsal.binding2.spec.base.TreeNode;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
 /*
  * A serializer which writes TreeNode to supplied stream event writer.

@@ -6,19 +6,20 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding2.spec.base;
+package org.opendaylight.mdsal.binding.javav2.spec.base;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.binding2.spec.structural.TreeChildNode;
 
 /**
+ * Represents instantiable data object such as input / output, data tree items.
  *
- * Replaces org.opendaylight.yangtools.yang.binding.DataObject from Binding Spec v1
- * @see TreeRoot
- * @see TreeChildNode
- *
+ * @param <T> Final interface which is instantiable and extends this interface
  */
+
 @Beta
-public interface TreeNode {
+public interface Instantiable<T extends Instantiable<T>> {
+
+    // REPLACES: DataObject#getImplementedInterface()
+    Class<T> implementedInterface();
 
 }
