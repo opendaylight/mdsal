@@ -15,7 +15,7 @@
 * Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
-@import org.opendaylight.mdsal.binding2.generator.impl.util.YangTextTemplate
+@import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate
 @import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
 @import org.opendaylight.yangtools.yang.model.api.Module
 
