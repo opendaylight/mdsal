@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.mdsal.binding2.generator.util.Types;
+import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;

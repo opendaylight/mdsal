@@ -15,7 +15,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import java.util.Map;
 import java.util.StringTokenizer;
-import org.opendaylight.mdsal.binding2.generator.util.Types;
+import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
