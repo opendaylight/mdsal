@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.opendaylight.mdsal.binding2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 
 public final class LengthGenerator {

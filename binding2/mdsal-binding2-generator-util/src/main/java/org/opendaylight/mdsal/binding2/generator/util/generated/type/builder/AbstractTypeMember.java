@@ -10,10 +10,10 @@ package org.opendaylight.mdsal.binding2.generator.util.generated.type.builder;
 import com.google.common.annotations.Beta;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.mdsal.binding2.model.api.AccessModifier;
-import org.opendaylight.mdsal.binding2.model.api.AnnotationType;
-import org.opendaylight.mdsal.binding2.model.api.Type;
-import org.opendaylight.mdsal.binding2.model.api.TypeMember;
+import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
+import org.opendaylight.mdsal.binding.javav2.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.TypeMember;
 
 @Beta
 abstract class AbstractTypeMember implements TypeMember {

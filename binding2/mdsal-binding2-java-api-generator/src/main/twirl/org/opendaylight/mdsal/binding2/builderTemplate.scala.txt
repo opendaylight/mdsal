@@ -7,11 +7,11 @@
  *@
 
 @import java.util.List
-@import org.opendaylight.mdsal.binding2.model.api.ConcreteType
-@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
-@import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject
-@import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty
-@import org.opendaylight.mdsal.binding2.model.api.Type
+@import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType
+@import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject
+@import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty
+@import org.opendaylight.mdsal.binding.javav2.model.api.Type
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.fieldName
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.formatDataForJavaDocBuilder
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.getSimpleNameForBuilder

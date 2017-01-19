@@ -11,8 +11,8 @@ package org.opendaylight.mdsal.binding2.generator.util.generated.type.builder;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import java.util.List;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 
 @Beta

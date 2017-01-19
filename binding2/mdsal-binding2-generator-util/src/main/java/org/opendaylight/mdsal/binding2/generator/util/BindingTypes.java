@@ -9,9 +9,9 @@
 package org.opendaylight.mdsal.binding2.generator.util;
 
 import javax.management.NotificationListener;
-import org.opendaylight.mdsal.binding2.model.api.ConcreteType;
-import org.opendaylight.mdsal.binding2.model.api.ParameterizedType;
-import org.opendaylight.mdsal.binding2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;

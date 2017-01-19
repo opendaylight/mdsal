@@ -11,7 +11,7 @@ package org.opendaylight.mdsal.binding2.generator.util;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.Objects;
-import org.opendaylight.mdsal.binding2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 
 /**
  * This class represents ancestor for other <code>Type</code>s

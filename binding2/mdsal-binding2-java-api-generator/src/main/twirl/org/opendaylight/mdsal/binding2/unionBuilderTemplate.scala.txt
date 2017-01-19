@@ -7,7 +7,7 @@
  *@
 
 @import java.util.List
-@import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject
+@import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.formatDataForJavaDoc
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.wrapToDocumentation
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.getAccessModifier

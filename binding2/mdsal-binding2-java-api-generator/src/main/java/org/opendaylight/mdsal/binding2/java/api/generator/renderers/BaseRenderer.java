@@ -21,14 +21,14 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding2.generator.util.Types;
-import org.opendaylight.mdsal.binding2.model.api.Constant;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding2.model.api.MethodSignature;
-import org.opendaylight.mdsal.binding2.model.api.ParameterizedType;
-import org.opendaylight.mdsal.binding2.model.api.Type;
-import org.opendaylight.mdsal.binding2.model.api.WildcardType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.WildcardType;
 import org.opendaylight.yangtools.yang.common.QName;
 
 public abstract class BaseRenderer {

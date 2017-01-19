@@ -14,16 +14,16 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Objects;
 import org.opendaylight.mdsal.binding2.generator.util.AbstractBaseType;
-import org.opendaylight.mdsal.binding2.model.api.AccessModifier;
-import org.opendaylight.mdsal.binding2.model.api.Constant;
-import org.opendaylight.mdsal.binding2.model.api.Type;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.AnnotationTypeBuilder;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.EnumBuilder;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedPropertyBuilder;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTOBuilder;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
+import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.AnnotationTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 
 @Beta

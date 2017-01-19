@@ -10,10 +10,10 @@ package org.opendaylight.mdsal.binding2.generator.util.generated.type.builder;
 
 import com.google.common.annotations.Beta;
 import java.util.List;
-import org.opendaylight.mdsal.binding2.model.api.AnnotationType;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty;
-import org.opendaylight.mdsal.binding2.model.api.Type;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.GeneratedPropertyBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
 
 @Beta
 public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilder<GeneratedPropertyBuilder> implements

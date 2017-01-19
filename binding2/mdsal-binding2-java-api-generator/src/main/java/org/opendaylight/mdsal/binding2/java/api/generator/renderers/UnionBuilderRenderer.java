@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding2.java.api.generator.renderers;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding2.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding2.txt.unionBuilderTemplate;
 
 public class UnionBuilderRenderer extends ClassRenderer {
