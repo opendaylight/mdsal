@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding2.spec.base;
+package org.opendaylight.mdsal.binding.javav2.spec.base;
 
 /**
  *  The "action" statement is used to define an operation connected to a

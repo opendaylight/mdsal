@@ -6,12 +6,19 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding2.spec.base;
+package org.opendaylight.mdsal.binding.javav2.spec.base;
 
 import com.google.common.annotations.Beta;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
 
+/**
+ *
+ * Replaces org.opendaylight.yangtools.yang.binding.DataObject from Binding Spec v1
+ * @see TreeRoot
+ * @see TreeChildNode
+ *
+ */
 @Beta
-public interface Input<T extends Input<T>> {
-
+public interface TreeNode {
 
 }

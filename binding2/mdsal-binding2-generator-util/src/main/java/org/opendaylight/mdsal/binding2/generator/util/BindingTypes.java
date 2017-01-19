@@ -12,14 +12,14 @@ import javax.management.NotificationListener;
 import org.opendaylight.mdsal.binding2.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding2.model.api.Type;
-import org.opendaylight.mdsal.binding2.spec.structural.Augmentable;
-import org.opendaylight.mdsal.binding2.spec.structural.Augmentation;
-import org.opendaylight.mdsal.binding2.spec.base.IdentifiableItem;
-import org.opendaylight.mdsal.binding2.spec.base.InstanceIdentifier;
-import org.opendaylight.mdsal.binding2.spec.base.Notification;
-import org.opendaylight.mdsal.binding2.spec.structural.TreeChildNode;
-import org.opendaylight.mdsal.binding2.spec.base.TreeNode;
-import org.opendaylight.mdsal.binding2.spec.base.TreeRoot;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
+import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeRoot;
 import org.opendaylight.yangtools.concepts.Identifier;
 
 public final class BindingTypes {

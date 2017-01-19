@@ -9,7 +9,7 @@
 package org.opendaylight.mdsal.binding2.generator.api;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.binding2.spec.runtime.YangModuleInfo;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModuleInfo;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 
 /**

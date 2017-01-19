@@ -6,16 +6,16 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding2.spec.runtime;
+package org.opendaylight.mdsal.binding.javav2.spec.runtime;
 
 import com.google.common.annotations.Beta;
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
-import org.opendaylight.mdsal.binding2.spec.structural.Augmentation;
-import org.opendaylight.mdsal.binding2.spec.base.IdentifiableItem;
-import org.opendaylight.mdsal.binding2.spec.base.Item;
-import org.opendaylight.mdsal.binding2.spec.base.TreeNode;
+import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
 /**
  * Event Stream Writer for Binding version 2 Representation

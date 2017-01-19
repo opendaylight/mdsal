@@ -5,15 +5,16 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding2.spec.base;
+
+package org.opendaylight.mdsal.binding.javav2.spec.base;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.Objects;
-import org.opendaylight.mdsal.binding2.spec.structural.Augmentation;
-import org.opendaylight.mdsal.binding2.spec.structural.TreeChildNode;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.util.HashCodeBuilder;
 

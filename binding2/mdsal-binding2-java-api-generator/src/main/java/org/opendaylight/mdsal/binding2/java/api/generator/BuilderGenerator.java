@@ -15,8 +15,8 @@ import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding2.model.api.Type;
 import org.opendaylight.mdsal.binding2.model.api.UnitName;
-import org.opendaylight.mdsal.binding2.spec.structural.Augmentable;
-import org.opendaylight.mdsal.binding2.spec.structural.Augmentation;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.concepts.Identifier;
 
 /**
