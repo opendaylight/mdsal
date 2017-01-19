@@ -9,10 +9,10 @@ package org.opendaylight.mdsal.binding2.java.api.generator.rangeGenerators;
 
 import com.google.common.base.Preconditions;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.binding2.model.api.ConcreteType;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 
 /**
  * Random utility methods for dealing with {@link Type} objects.

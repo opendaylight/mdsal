@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.opendaylight.mdsal.binding2.generator.util.AbstractBaseType;
-import org.opendaylight.mdsal.binding2.model.api.AnnotationType;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.AnnotationTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 
 @Beta

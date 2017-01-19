@@ -13,7 +13,7 @@ import static org.opendaylight.mdsal.binding2.java.api.generator.util.TextTempla
 
 import java.util.LinkedList;
 import java.util.List;
-import org.opendaylight.mdsal.binding2.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding2.txt.enumTemplate;
 
 public class EnumRenderer extends BaseRenderer {

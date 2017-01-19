@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.opendaylight.mdsal.binding2.model.api.Enumeration;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding2.txt.unionTemplate;
 
 public class UnionRenderer extends ClassRenderer {

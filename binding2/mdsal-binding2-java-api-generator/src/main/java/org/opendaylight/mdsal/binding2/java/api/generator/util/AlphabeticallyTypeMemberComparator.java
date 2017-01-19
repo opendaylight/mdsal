@@ -9,7 +9,7 @@
 package org.opendaylight.mdsal.binding2.java.api.generator.util;
 
 import java.util.Comparator;
-import org.opendaylight.mdsal.binding2.model.api.TypeMember;
+import org.opendaylight.mdsal.binding.javav2.model.api.TypeMember;
 
 /**
  * Alphabetically type member {@link Comparator} which provides sorting by name for type members

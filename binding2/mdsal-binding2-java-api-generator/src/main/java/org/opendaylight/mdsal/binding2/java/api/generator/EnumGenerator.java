@@ -10,10 +10,10 @@ package org.opendaylight.mdsal.binding2.java.api.generator;
 
 import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.binding2.java.api.generator.renderers.EnumRenderer;
-import org.opendaylight.mdsal.binding2.model.api.CodeGenerator;
-import org.opendaylight.mdsal.binding2.model.api.Enumeration;
-import org.opendaylight.mdsal.binding2.model.api.Type;
-import org.opendaylight.mdsal.binding2.model.api.UnitName;
+import org.opendaylight.mdsal.binding.javav2.model.api.CodeGenerator;
+import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.UnitName;
 import org.opendaylight.yangtools.concepts.Identifier;
 
 /**

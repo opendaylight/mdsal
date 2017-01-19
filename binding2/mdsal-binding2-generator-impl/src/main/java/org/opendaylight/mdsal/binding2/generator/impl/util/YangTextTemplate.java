@@ -16,10 +16,10 @@ import com.google.common.collect.Iterables;
 import java.util.Map;
 import java.util.StringTokenizer;
 import org.opendaylight.mdsal.binding2.generator.util.Types;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding2.model.api.ParameterizedType;
-import org.opendaylight.mdsal.binding2.model.api.Type;
-import org.opendaylight.mdsal.binding2.model.api.WildcardType;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.WildcardType;
 import org.opendaylight.yangtools.yang.common.QName;
 
 /**

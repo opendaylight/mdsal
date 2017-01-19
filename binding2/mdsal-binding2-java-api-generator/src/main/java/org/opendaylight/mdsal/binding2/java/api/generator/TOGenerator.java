@@ -12,10 +12,10 @@ import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.binding2.java.api.generator.renderers.ClassRenderer;
 import org.opendaylight.mdsal.binding2.java.api.generator.renderers.UnionBuilderRenderer;
 import org.opendaylight.mdsal.binding2.java.api.generator.renderers.UnionRenderer;
-import org.opendaylight.mdsal.binding2.model.api.CodeGenerator;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding2.model.api.Type;
-import org.opendaylight.mdsal.binding2.model.api.UnitName;
+import org.opendaylight.mdsal.binding.javav2.model.api.CodeGenerator;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.UnitName;
 import org.opendaylight.yangtools.concepts.Identifier;
 
 /**

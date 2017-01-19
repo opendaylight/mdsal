@@ -8,8 +8,8 @@
 
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.asArguments
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.fieldName
-@import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty
-@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty
+@import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType
 
 @(genType: GeneratedType, parentProperties: List[GeneratedProperty], allProperty: GeneratedProperty, other: List[GeneratedProperty],
 importedName: String, genRestrictions: String)

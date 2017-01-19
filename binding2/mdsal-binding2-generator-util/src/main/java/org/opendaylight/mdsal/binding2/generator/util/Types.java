@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.opendaylight.mdsal.binding2.model.api.BaseTypeWithRestrictions;
-import org.opendaylight.mdsal.binding2.model.api.ConcreteType;
-import org.opendaylight.mdsal.binding2.model.api.ParameterizedType;
-import org.opendaylight.mdsal.binding2.model.api.Restrictions;
-import org.opendaylight.mdsal.binding2.model.api.Type;
-import org.opendaylight.mdsal.binding2.model.api.WildcardType;
+import org.opendaylight.mdsal.binding.javav2.model.api.BaseTypeWithRestrictions;
+import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.WildcardType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
@@ -69,7 +69,7 @@ public final class Types {
 
     /**
      * Creates the instance of type
-     * {@link org.opendaylight.mdsal.binding2.model.api.ConcreteType
+     * {@link ConcreteType
      * ConcreteType} which represents JAVA <code>void</code> type.
      *
      * @return <code>ConcreteType</code> instance which represents JAVA
@@ -81,7 +81,7 @@ public final class Types {
 
     /**
      * Creates the instance of type
-     * {@link org.opendaylight.mdsal.binding2.model.api.ConcreteType
+     * {@link ConcreteType
      * ConcreteType} which represents primitive JAVA type for which package
      * doesn't exist.
      *
@@ -159,7 +159,7 @@ public final class Types {
 
     /**
      * Creates instance of type
-     * {@link org.opendaylight.mdsal.binding2.model.api.ParameterizedType
+     * {@link ParameterizedType
      * ParameterizedType}
      *
      * @param type
@@ -175,7 +175,7 @@ public final class Types {
 
     /**
      * Creates instance of type
-     * {@link org.opendaylight.mdsal.binding2.model.api.WildcardType
+     * {@link WildcardType
      * WildcardType}
      *
      * @param packageName
@@ -191,7 +191,7 @@ public final class Types {
 
     /**
      * Creates instance of
-     * {@link org.opendaylight.mdsal.binding2.model.api.ParameterizedType
+     * {@link ParameterizedType
      * ParameterizedType} where raw type is
      * {@link Augmentable} and actual
      * parameter is <code>valueType</code>.
@@ -209,7 +209,7 @@ public final class Types {
 
     /**
      * Creates instance of
-     * {@link org.opendaylight.mdsal.binding2.model.api.ParameterizedType
+     * {@link ParameterizedType
      * ParameterizedType} where raw type is
      * {@link Augmentation} and actual
      * parameter is <code>valueType</code>.

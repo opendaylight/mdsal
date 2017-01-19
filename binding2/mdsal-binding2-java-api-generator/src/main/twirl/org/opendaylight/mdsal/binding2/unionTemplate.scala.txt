@@ -6,8 +6,8 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *@
 
-@import org.opendaylight.mdsal.binding2.model.api.GeneratedType
-@import org.opendaylight.mdsal.binding2.model.api.GeneratedProperty
+@import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.fieldName
 @import org.opendaylight.mdsal.binding2.java.api.generator.util.TextTemplateUtil.asArguments
 @import org.opendaylight.mdsal.binding2.generator.util.Types.getOuterClassName

@@ -14,11 +14,11 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.mdsal.binding2.model.api.AccessModifier;
-import org.opendaylight.mdsal.binding2.model.api.AnnotationType;
-import org.opendaylight.mdsal.binding2.model.api.Type;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.AnnotationTypeBuilder;
-import org.opendaylight.mdsal.binding2.model.api.type.builder.TypeMemberBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
+import org.opendaylight.mdsal.binding.javav2.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.AnnotationTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
 
 @Beta

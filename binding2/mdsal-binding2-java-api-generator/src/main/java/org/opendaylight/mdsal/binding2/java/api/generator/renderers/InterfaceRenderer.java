@@ -14,13 +14,13 @@ import static org.opendaylight.mdsal.binding2.java.api.generator.util.TextTempla
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
-import org.opendaylight.mdsal.binding2.model.api.AnnotationType;
-import org.opendaylight.mdsal.binding2.model.api.Constant;
-import org.opendaylight.mdsal.binding2.model.api.Enumeration;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding2.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding2.model.api.MethodSignature;
-import org.opendaylight.mdsal.binding2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
+import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding2.txt.enumTemplate;
 import org.opendaylight.mdsal.binding2.txt.interfaceTemplate;
 
