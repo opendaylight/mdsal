@@ -1,0 +1,52 @@
+= MD-SAL Karaf Features for Binding2 =
+
+
+[uml, file="features-binding2.png"]
+--
+
+[odl-yangtools-yang-parser] as yang.parser
+[odl-yangtools-yang-data] as yang.data
+[odl-yangtools-common] as common
+
+[odl-mdsal-common] as common.api
+[odl-mdsal-dom] as dom
+[odl-mdsal-dom-api] as dom.api
+[odl-mdsal-dom-broker] as dom.broker
+[odl-mdsal-binding2-base] as binding2.base
+[odl-mdsal-binding2] as binding2
+[odl-mdsal-binding2-api] as binding2.api
+[odl-mdsal-binding2-runtime] as binding2.runtime
+[odl-mdsal-binding2-dom-adapter] as binding2.dom.adapter
+[odl-mdsal-binding2-models] as binding2.models
+
+
+yang.data --> common
+yang.data --> yang.parser
+yang.parser --> common
+
+dom.api --> yang.data
+dom.api --> common.api
+
+dom.broker --> dom.api
+dom.broker --> yang.parser
+
+binding2.base --> common
+
+binding2.dom.adapter --> binding2.api
+binding2.dom.adapter --> binding2.runtime
+binding2.dom.adapter --> dom.api
+
+binding2.api --> binding2.base
+binding2.api --> common.api
+
+binding2.runtime --> binding2.base
+binding2.runtime --> yang.data
+
+binding2.models --> binding2.base
+
+dom --> dom.broker
+dom --> dom.api
+
+binding2 --> binding2.dom.adapter
+binding2 --> dom
+--
