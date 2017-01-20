@@ -29,12 +29,10 @@
         <dependency>
             <groupId>org.opendaylight.mdsal.model.binding2</groupId>
             <artifactId>ietf-inet-types</artifactId>
-            <version>2010.09.24.10-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model.binding2</groupId>
             <artifactId>ietf-yang-types-20130715</artifactId>
-            <version>2013.07.15.10-SNAPSHOT</version>
         </dependency>
 
         <dependency>
