@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_8a42f6ab",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/base/Action.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-20T15:52:07Z",
+      "side": 1,
+      "message": "This needs to be specialized. Typically what an action will do is touch the data store at specified context, hence this needs to cover DataObjects where an action can be defined.\n\nThat definition context needs to be carried in Action definition, too, I think -- but what will that do to groupings vs. instantiations?",
+      "range": {
+        "startLine": 35,
+        "startChar": 44,
+        "endLine": 35,
+        "endChar": 45
+      },
+      "revId": "f639a55efe3c47a8209fc5ca0c3931dd974600a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
