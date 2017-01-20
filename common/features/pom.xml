@@ -41,6 +41,36 @@
         <module>odl-mdsal-singleton-dom</module>
     </modules>
 
+        <!-- Binding specification version 2-->
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-generator-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-spec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-generator-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-generator-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}.model.binding2</groupId>
+            <artifactId>yang-ext</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}.model.binding2</groupId>
+            <artifactId>general-entity</artifactId>
+        </dependency>
+
     <!--
         Maven Site Configuration
 
