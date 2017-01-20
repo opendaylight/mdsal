@@ -97,7 +97,6 @@
         <dependency>
             <groupId>com.typesafe.play</groupId>
             <artifactId>twirl-api_2.11</artifactId>
-            <version>1.1.1</version>
         </dependency>
     </dependencies>
 
@@ -111,8 +110,10 @@
                     <instructions>
                         <Bundle-Name>${project.groupId}.${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            {local-packages},
-                            org.opendaylight.mdsal.binding2.generator.impl,
+                            play.twirl.api,
+                            play.twirl.api.utils,
+                            scala,
+                            scala.*,
                         </Export-Package>
                     </instructions>
                 </configuration>
