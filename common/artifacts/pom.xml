@@ -26,41 +26,41 @@
     <dependencyManagement>
         <dependencies>
 
-          <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>features-mdsal</artifactId>
-            <classifier>features</classifier>
-            <version>${project.version}</version>
-            <type>xml</type>
-          </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>features-mdsal</artifactId>
+                <classifier>features</classifier>
+                <version>${project.version}</version>
+                <type>xml</type>
+            </dependency>
 
-          <!-- Common APIs for Binding and DOM -->
-          <dependency>
-              <groupId>org.opendaylight.mdsal</groupId>
-              <artifactId>mdsal-common-api</artifactId>
-              <version>${project.version}</version>
-          </dependency>
+            <!-- Common APIs for Binding and DOM -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-common-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-          <dependency>
-              <groupId>org.opendaylight.mdsal</groupId>
-              <artifactId>mdsal-dom-api</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>org.opendaylight.mdsal</groupId>
-              <artifactId>mdsal-dom-spi</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>org.opendaylight.mdsal</groupId>
-              <artifactId>mdsal-dom-broker</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>org.opendaylight.mdsal</groupId>
-              <artifactId>mdsal-dom-inmemory-datastore</artifactId>
-              <version>${project.version}</version>
-          </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-dom-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-dom-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-dom-broker</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-dom-inmemory-datastore</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Binding MD-SAL & Java Binding -->
             <dependency>
@@ -188,6 +188,11 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-dom-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-eos-dom-simple</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
