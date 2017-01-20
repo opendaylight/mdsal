@@ -33,7 +33,11 @@
             <version>${project.version}</version>
             <type>xml</type>
           </dependency>
-
+          <dependency>
+            <groupId>com.typesafe.play</groupId>
+            <artifactId>twirl-api_2.11</artifactId>
+            <version>1.1.1</version>
+          </dependency>
           <!-- Common APIs for Binding and DOM -->
           <dependency>
               <groupId>org.opendaylight.mdsal</groupId>
@@ -147,6 +151,11 @@
             <!-- Binding specification version 2-->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-binding2-maven-api-gen-plugin</artifactId>
+                <version>0.10.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-generator-api</artifactId>
                 <version>0.10.0-SNAPSHOT</version>
             </dependency>
@@ -175,6 +184,18 @@
                 <artifactId>mdsal-binding2-util</artifactId>
                 <version>0.10.0-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model.binding2</groupId>
+                <artifactId>yang-ext</artifactId>
+                <version>2013.09.07.10-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model.binding2</groupId>
+                <artifactId>general-entity</artifactId>
+                <version>0.10.0-SNAPSHOT</version>
+            </dependency>
+            <!-- Binding specification version 2 END-->
+
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-common-api</artifactId>
