@@ -28,7 +28,6 @@
         <dependency>
             <groupId>org.opendaylight.mdsal.model.binding2</groupId>
             <artifactId>ietf-topology</artifactId>
-            <version>2013.10.21.10-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

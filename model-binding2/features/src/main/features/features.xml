@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi: set et smarttab sw=4 tabstop=4: -->
+<!--
+ Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+-->
+<features name="odl-mdsal-binding2-models-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.3.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.3.0 http://karaf.apache.org/xmlns/features/v1.3.0">
+
+    <repository>mvn:org.opendaylight.mdsal/features-mdsal/{{VERSION}}/xml/features</repository>
+
+    <feature name='odl-mdsal-binding2-models' version='${project.version}' description='OpenDaylight :: MD-SAL :: Models'>
+        <feature version='${mdsal.version}' dependency="true">odl-mdsal-binding2-base</feature>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/iana-afn-safi/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/iana-if-type-2014-05-08/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-inet-types/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-interfaces/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-yang-types/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-yang-types-20130715/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-restconf/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/opendaylight-l2-types/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-ted/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-topology/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-topology-isis/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-topology-ospf/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-topology-l3-unicast-igp/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-network-2015-06-08/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-inet-types-2013-07-15/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-type-util/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-packet-fields/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model.binding2/ietf-access-control-list/{{VERSION}}</bundle>
+    </feature>
+
+</features>

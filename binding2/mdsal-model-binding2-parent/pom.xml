@@ -61,7 +61,7 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-              <groupId>org.opendaylight.mdsal.model</groupId>
+              <groupId>org.opendaylight.mdsal.model.binding2</groupId>
               <artifactId>mdsal-model-artifacts</artifactId>
               <version>${mdsalmodel.version}</version>
               <type>pom</type>
