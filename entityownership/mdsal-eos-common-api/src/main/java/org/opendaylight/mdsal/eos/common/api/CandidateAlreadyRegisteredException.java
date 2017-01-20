@@ -16,15 +16,14 @@ import org.opendaylight.yangtools.concepts.Path;
  * Thrown when a Candidate has already been registered for a given Entity. This could be due to a component doing a
  * duplicate registration or two different components within the same process trying to register a Candidate.
  */
-public class CandidateAlreadyRegisteredException extends Exception {
+public final class CandidateAlreadyRegisteredException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     private final GenericEntity<?> entity;
 
-    public <T extends Path<T>> CandidateAlreadyRegisteredException(@Nonnull GenericEntity<T> entity) {
-        super(String.format("Candidate has already been registered for %s",
-                Preconditions.checkNotNull(entity, "entity should not be null")));
-        this.entity = entity;
+    public <T extends Path<T>> CandidateAlreadyRegisteredException(@Nonnull final GenericEntity<T> entity) {
+        super(String.format("Candidate has already been registered for %s", entity));
+        this.entity =  Preconditions.checkNotNull(entity);
     }
 
     /**
