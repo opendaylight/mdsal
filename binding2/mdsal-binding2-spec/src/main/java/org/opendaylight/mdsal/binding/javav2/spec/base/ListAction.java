@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.binding.javav2.spec.base;
 
 /**
  *
+ * ListAction provides support for YANG actions defined under List statement.
+ *
  * The "action" statement is used to define an operation connected to a
  * specific container or list data node. The "action" statement defines
  * an action node in the schema tree. Under the action node, a schema node
@@ -24,12 +26,13 @@ package org.opendaylight.mdsal.binding.javav2.spec.base;
  *
  */
 @FunctionalInterface
-public interface Action<P extends TreeNode, I extends Input<I> & Instantiable<I>, O extends Output<O> & Instantiable<O>> {
+public interface ListAction<P extends TreeNode, I extends Input<I> & Instantiable<I>, O extends Output<O> & Instantiable<O>> {
 
     /**
      * @param input Action input schema node
-     * @param ii implicit InstanceIdentifier connected to action, according to https://tools.ietf.org/html/rfc7950
+     * @param kii implicit KeyedInstanceIdentifier connected to action, according to https://tools.ietf.org/html/rfc7950
      * @param callback on success/failure callback
+     * @param <K> target key type
      */
-    void invoke(I input, InstanceIdentifier<P> ii, RpcCallback<O> callback);
+    <K> void invoke(I input, KeyedInstanceIdentifier<P, K> kii, RpcCallback<O> callback);
 }
