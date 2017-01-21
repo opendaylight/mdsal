@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_88703e73",
+        "filename": "entityownership/mdsal-eos-dom-simple/src/main/java/org/opendaylight/mdsal/eos/dom/simple/SimpleDOMEntityOwnershipService.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-01-21T03:56:15Z",
+      "side": 1,
+      "message": "Shouldn\u0027t hold the lock when notifying listeners...",
+      "revId": "7fae2a94f600a2c4576c0ca5f0bfca66cdc33580",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_a8753a65",
+        "filename": "entityownership/mdsal-eos-dom-simple/src/main/java/org/opendaylight/mdsal/eos/dom/simple/SimpleDOMEntityOwnershipService.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-01-21T03:56:15Z",
+      "side": 1,
+      "message": "...here too",
+      "revId": "7fae2a94f600a2c4576c0ca5f0bfca66cdc33580",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
