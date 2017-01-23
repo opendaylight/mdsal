@@ -46,6 +46,29 @@
       "revId": "f639a55efe3c47a8209fc5ca0c3931dd974600a9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d55e0e12",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/base/Action.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-23T00:58:23Z",
+      "side": 1,
+      "message": "And after further thought, we need even more specialization: actions under a list should get a KeyedInstanceIdentifier, hence we need an Action and a ListAction.",
+      "range": {
+        "startLine": 35,
+        "startChar": 25,
+        "endLine": 35,
+        "endChar": 49
+      },
+      "revId": "f639a55efe3c47a8209fc5ca0c3931dd974600a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
