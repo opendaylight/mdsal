@@ -26,12 +26,15 @@
 
     <modules>
         <module>ietf-inet-types</module>
+        <module>ietf-inet-types-2013-07-15</module>
         <module>ietf-interfaces</module>
         <module>ietf-yang-types</module>
         <module>ietf-yang-types-20130715</module>
         <module>ietf-network</module>
         <module>ietf-packet-fields</module>
         <module>ietf-access-control-list</module>
+        <module>ietf-ip</module>
+        <module>ietf-nat</module>
 
         <!-- Legacy IETF topology models -->
         <module>ietf-ted</module>
@@ -40,9 +43,13 @@
         <module>ietf-topology-l3-unicast-igp</module>
         <module>ietf-topology-ospf</module>
 
+        <!-- Restconf -->
         <module>ietf-restconf</module>
-        <module>ietf-inet-types-2013-07-15</module>
 
+        <!-- Incompatibly-edited IETF models to avoid ODL limitations -->
+        <module>odl-mdsal-v1-ietf-routing</module>
+
+        <!-- Utility code, no Yang modules here -->
         <module>ietf-type-util</module>
     </modules>
 
