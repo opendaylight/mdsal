@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_cdd95a85",
+        "filename": "model/ietf/ietf-ip/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-24T12:16:32Z",
+      "side": 1,
+      "message": "2017?",
+      "range": {
+        "startLine": 4,
+        "startChar": 13,
+        "endLine": 4,
+        "endChar": 17
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_eddc1e77",
+        "filename": "model/ietf/ietf-ip/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-24T12:16:32Z",
+      "side": 1,
+      "message": "Where is this coming from?",
+      "range": {
+        "startLine": 4,
+        "startChar": 18,
+        "endLine": 4,
+        "endChar": 30
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ad41760d",
+        "filename": "model/ietf/ietf-ip/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-24T12:16:32Z",
+      "side": 1,
+      "message": "we need to revisit versioning and naming again",
+      "range": {
+        "startLine": 22,
+        "startChar": 13,
+        "endLine": 22,
+        "endChar": 27
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2d90e694",
+        "filename": "model/ietf/ietf-nat/src/main/yang/ietf-nat.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-24T12:16:32Z",
+      "side": 1,
+      "message": "should have a file name reflecting revision",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 15
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ed953e89",
+        "filename": "model/ietf/ietf-restconf/src/main/yang/ietf-restconf@2013-10-19.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-24T12:16:32Z",
+      "side": 1,
+      "message": "unrelated change?",
+      "range": {
+        "startLine": 689,
+        "startChar": 0,
+        "endLine": 689,
+        "endChar": 1
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_cd92fa9e",
+        "filename": "model/ietf/ietf-yang-types-20130715/src/main/yang/ietf-yang-types@2013-07-15.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 467,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-24T12:16:32Z",
+      "side": 1,
+      "message": "unrelated change",
+      "range": {
+        "startLine": 467,
+        "startChar": 0,
+        "endLine": 467,
+        "endChar": 4
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6dd02e54",
+        "filename": "model/ietf/odl-mdsal-v1-ietf-routing/src/main/yang/odl-mdsal-v1-ietf-routing.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-24T12:16:32Z",
+      "side": 1,
+      "message": "This is derived from ietf-routing, we should be carrying the original version in the first commit.\n\nAny changes should be done afterwards, so they can be reviewed.",
+      "range": {
+        "startLine": 1,
+        "startChar": 7,
+        "endLine": 1,
+        "endChar": 32
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
