@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_08d8701c",
+        "filename": "model/ietf/ietf-ip/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-01-24T14:52:08Z",
+      "side": 1,
+      "message": "I started by copying and editing another file (added in [0]) but I guess my changes are significant enough (and the original file similar enough to its sister poms) warrant a copyright change. Will change in the next patch set.",
+      "parentUuid": "fafc7978_eddc1e77",
+      "range": {
+        "startLine": 4,
+        "startChar": 18,
+        "endLine": 4,
+        "endChar": 30
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_ad41760d",
         "filename": "model/ietf/ietf-ip/pom.xml",
         "patchSetId": 2
@@ -59,6 +83,30 @@
       "writtenOn": "2017-01-24T12:16:32Z",
       "side": 1,
       "message": "we need to revisit versioning and naming again",
+      "range": {
+        "startLine": 22,
+        "startChar": 13,
+        "endLine": 22,
+        "endChar": 27
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6812dcb5",
+        "filename": "model/ietf/ietf-ip/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-01-24T14:52:08Z",
+      "side": 1,
+      "message": "I followed versioning from items the most recently added [1] to mdsal-model-artifacts.\n\nGenerally, it would be nice to have the same version for every model within the same branch, but perhaps 0.10.-SNAPSHOT would be better here (as that is a version common to model-aggregatot, features-mdsal-model and binding-parent).\n\n[1] https://git.opendaylight.org/gerrit/#/c/39423/4/model/artifacts/pom.xml",
+      "parentUuid": "fafc7978_ad41760d",
       "range": {
         "startLine": 22,
         "startChar": 13,
@@ -94,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_a88324cb",
+        "filename": "model/ietf/ietf-nat/src/main/yang/ietf-nat.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-01-24T14:52:08Z",
+      "side": 1,
+      "message": "Does this rule apply only to files with multiple revision statements? I guess more explicit file name does not hurt even if there is just one revision.",
+      "parentUuid": "fafc7978_2d90e694",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 15
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_ed953e89",
         "filename": "model/ietf/ietf-restconf/src/main/yang/ietf-restconf@2013-10-19.yang",
         "patchSetId": 2
@@ -105,6 +177,30 @@
       "writtenOn": "2017-01-24T12:16:32Z",
       "side": 1,
       "message": "unrelated change?",
+      "range": {
+        "startLine": 689,
+        "startChar": 0,
+        "endLine": 689,
+        "endChar": 1
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_68601c36",
+        "filename": "model/ietf/ietf-restconf/src/main/yang/ietf-restconf@2013-10-19.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-01-24T14:52:08Z",
+      "side": 1,
+      "message": "Ok, will move to a separate Change.",
+      "parentUuid": "fafc7978_ed953e89",
       "range": {
         "startLine": 689,
         "startChar": 0,
@@ -151,6 +247,30 @@
       "writtenOn": "2017-01-24T12:16:32Z",
       "side": 1,
       "message": "This is derived from ietf-routing, we should be carrying the original version in the first commit.\n\nAny changes should be done afterwards, so they can be reviewed.",
+      "range": {
+        "startLine": 1,
+        "startChar": 7,
+        "endLine": 1,
+        "endChar": 32
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0874f0fb",
+        "filename": "model/ietf/odl-mdsal-v1-ietf-routing/src/main/yang/odl-mdsal-v1-ietf-routing.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-01-24T14:52:08Z",
+      "side": 1,
+      "message": "I tried adding the original in [3] but I have not found a way to get it through verify (at least without overriding binding-parent).\n\n[3] https://git.opendaylight.org/gerrit/50377",
+      "parentUuid": "fafc7978_6dd02e54",
       "range": {
         "startLine": 1,
         "startChar": 7,
