@@ -135,6 +135,18 @@
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-access-control-list</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>ietf-ip</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>ietf-nat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-v1-ietf-routing</artifactId>
+        </dependency>
     </dependencies>
 
   <!--
