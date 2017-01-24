@@ -92,6 +92,30 @@
       "revId": "f639a55efe3c47a8209fc5ca0c3931dd974600a9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ad57b601",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/base/Rpc.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-24T12:03:42Z",
+      "side": 1,
+      "message": "discussed \u0026 notes taken...",
+      "parentUuid": "fafc7978_15a096f3",
+      "range": {
+        "startLine": 18,
+        "startChar": 17,
+        "endLine": 18,
+        "endChar": 20
+      },
+      "revId": "f639a55efe3c47a8209fc5ca0c3931dd974600a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
