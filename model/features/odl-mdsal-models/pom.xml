@@ -127,6 +127,18 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>ietf-access-control-list</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ietf-ip</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ietf-nat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>odl-mdsal-v1-ietf-routing</artifactId>
+        </dependency>
     </dependencies>
 
     <!--
