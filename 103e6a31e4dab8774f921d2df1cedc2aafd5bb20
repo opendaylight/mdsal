@@ -213,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_087eb0ae",
+        "filename": "model/ietf/ietf-restconf/src/main/yang/ietf-restconf@2013-10-19.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-01-24T15:09:20Z",
+      "side": 1,
+      "message": "https://git.opendaylight.org/gerrit/50956 is now parent of patch set 3.",
+      "parentUuid": "fafc7978_68601c36",
+      "range": {
+        "startLine": 689,
+        "startChar": 0,
+        "endLine": 689,
+        "endChar": 1
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_cd92fa9e",
         "filename": "model/ietf/ietf-yang-types-20130715/src/main/yang/ietf-yang-types@2013-07-15.yang",
         "patchSetId": 2
