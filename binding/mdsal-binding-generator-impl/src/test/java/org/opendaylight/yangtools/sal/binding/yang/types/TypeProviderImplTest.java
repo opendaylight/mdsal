@@ -199,7 +199,7 @@ public class TypeProviderImplTest {
         // identityref type
         final IdentitySchemaNode identitySchemaNode = mock(IdentitySchemaNode.class);
         final IdentityrefTypeBuilder identityRefBuilder = BaseTypes.identityrefTypeBuilder(refTypePath);
-        identityRefBuilder.setIdentity(identitySchemaNode);
+        identityRefBuilder.addIdentity(identitySchemaNode);
         final IdentityrefTypeDefinition identityRef =  identityRefBuilder.build();
 
         reset(leafSchemaNode);
