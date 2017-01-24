@@ -33,6 +33,9 @@
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-type-util/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-packet-fields/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal.model/ietf-access-control-list/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-ip/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/ietf-nat/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal.model/odl-mdsal-v1-ietf-routing/{{VERSION}}</bundle>
     </feature>
 
 </features>
