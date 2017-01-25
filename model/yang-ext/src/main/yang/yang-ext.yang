@@ -51,6 +51,7 @@ module yang-ext {
         leaf context-instance {
             type instance-identifier;
             description "Pointer to the context. ";
+            mandatory true;
         }
     }
 
