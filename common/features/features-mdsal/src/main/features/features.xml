@@ -54,7 +54,6 @@
         <feature version='${project.version}' dependency="true">odl-mdsal-binding-base</feature>
         <bundle dependency="true">mvn:org.javassist/javassist/{{VERSION}}</bundle>
         <bundle dependency="true">mvn:org.apache.commons/commons-lang3/{{VERSION}}</bundle>
-        <bundle dependency="true">mvn:org.eclipse.xtext/org.eclipse.xtext.xbase.lib/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-impl/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-util/{{VERSION}}</bundle>
