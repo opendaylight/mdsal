@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_405241de",
+        "filename": "common/mdsal-common-api/src/main/java/org/opendaylight/mdsal/common/api/AsyncDataTransactionFactory.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-01-26T18:45:55Z",
+      "side": 1,
+      "message": "yeah - I don\u0027t think we need to define it here. I\u0027m fine with removing it, however, in this case, don\u0027t they need to follow the same mechanics, i.e. if binding has it then DOM needs it as well?",
+      "parentUuid": "fafc7978_eaab5687",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 62
+      },
+      "revId": "ee0eaa207e433d86a71476eaf8559f9374a3cd42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_eab076df",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadWriteTransactionAdapter.java",
         "patchSetId": 3
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_4069a18a",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadWriteTransactionAdapter.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-01-26T18:45:55Z",
+      "side": 1,
+      "message": "Both the read and write tx\u0027s reference the same identifier. Won\u0027t that tie them together in the backend? (It\u0027s been a while since I\u0027ve looked at this changes)",
+      "parentUuid": "fafc7978_eab076df",
+      "range": {
+        "startLine": 26,
+        "startChar": 6,
+        "endLine": 26,
+        "endChar": 93
+      },
+      "revId": "ee0eaa207e433d86a71476eaf8559f9374a3cd42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_aa882e23",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadWriteTransactionAdapter.java",
         "patchSetId": 3
@@ -82,6 +130,30 @@
       "writtenOn": "2017-01-26T13:42:08Z",
       "side": 1,
       "message": "This is problematic: this class has three termination methods:\n- close()\n- cancel()\n- submit()\n\nAll of these need to work together. Does close() imply cancel()?",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 5
+      },
+      "revId": "ee0eaa207e433d86a71476eaf8559f9374a3cd42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a005edc3",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadWriteTransactionAdapter.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-01-26T18:45:55Z",
+      "side": 1,
+      "message": "not sure.",
+      "parentUuid": "fafc7978_aa882e23",
       "range": {
         "startLine": 40,
         "startChar": 0,
@@ -128,6 +200,30 @@
       "writtenOn": "2017-01-26T13:42:08Z",
       "side": 1,
       "message": "are these two aspects of the same transaction, i.e. is their lifecycle fused?",
+      "range": {
+        "startLine": 26,
+        "startChar": 12,
+        "endLine": 26,
+        "endChar": 115
+      },
+      "revId": "ee0eaa207e433d86a71476eaf8559f9374a3cd42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_80d8a954",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainReadWriteTransaction.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-01-26T18:45:55Z",
+      "side": 1,
+      "message": "They share the same identifier.",
+      "parentUuid": "fafc7978_ea99966f",
       "range": {
         "startLine": 26,
         "startChar": 12,
