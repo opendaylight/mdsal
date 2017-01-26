@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_aad30e37",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/ClusteredDOMDataTreeChangeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-01-26T13:04:02Z",
+      "side": 1,
+      "message": "Can you add @Beta and @deprecated, please?\n\nThe reason behind @deprecated is that DOMDataTreeChangeListener itself will need to be deprecated in favor of DOMDataTreeListener. The reason for that being the fact that DOMDataTreeChangeListener does not have a well-defined failure model.\n\nIt will also neatly solve the trouble of mis-defined DOMDataTreeChangeListener in a clustered environment: DOMDataTreeListener is always global, hence it does not need a \u0027Clustered\u0027 counterpart.",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 16
+      },
+      "revId": "acb248c6a5b3b3c31ed5d64434d9a0ec33b068e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
