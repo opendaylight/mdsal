@@ -26,6 +26,7 @@ import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
@@ -63,7 +64,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         String modulePackageName = BindingReflections.getModelRootPackageName(fullyQualifiedName);
 
         WeakReference<ClassLoader> classLoaderRef = packageNameToClassLoader.get(modulePackageName);
-        ClassLoader classloader = null;
+        ClassLoader classloader;
         if (classLoaderRef != null && (classloader = classLoaderRef.get()) != null) {
             return ClassLoaderUtils.loadClass(classloader, fullyQualifiedName);
         }
@@ -103,7 +104,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
             if (previous == null) {
                 String modulePackageName = moduleInfo.getClass().getPackage().getName();
                 packageNameToClassLoader.putIfAbsent(modulePackageName,
-                        new WeakReference<ClassLoader>(moduleClassLoader));
+                        new WeakReference<>(moduleClassLoader));
                 ctxResolver.registerSource(toYangTextSource(identifier, moduleInfo));
                 for (YangModuleInfo importedInfo : moduleInfo.getImportedModules()) {
                     resolveModuleInfo(importedInfo);
@@ -133,7 +134,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     private static SourceIdentifier sourceIdentifierFrom(final YangModuleInfo moduleInfo) {
-        return SourceIdentifier.create(moduleInfo.getName(), Optional.of(moduleInfo.getRevision()));
+        return RevisionSourceIdentifier.create(moduleInfo.getName(), Optional.of(moduleInfo.getRevision()));
     }
 
     public void addModuleInfos(final Iterable<? extends YangModuleInfo> moduleInfos) {
