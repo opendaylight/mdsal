@@ -22,12 +22,12 @@ public abstract class AbstractBaseType implements Type {
     /**
      * Name of the package to which this <code>Type</code> belongs.
      */
-    private final String packageName;
+    protected final String packageName;
 
     /**
      * Name of this <code>Type</code>.
      */
-    private final String name;
+    protected final String name;
 
     /**
      * Constructs the instance of this class with the concrete package name type
@@ -46,7 +46,7 @@ public abstract class AbstractBaseType implements Type {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, packageName);
+        return Objects.hash(this.name, this.packageName);
     }
 
     @Override
@@ -60,35 +60,35 @@ public abstract class AbstractBaseType implements Type {
         if (!(obj instanceof Type)) {
             return false;
         }
-        Type other = (Type) obj;
-        return Objects.equals(name, other.getName()) && Objects.equals(packageName, other.getPackageName());
+        final Type other = (Type) obj;
+        return Objects.equals(this.name, other.getName()) && Objects.equals(this.packageName, other.getPackageName());
     }
 
 
     @Override
     public String toString() {
-        if (packageName.isEmpty()) {
-            return "Type (" + name + ")";
+        if (this.packageName.isEmpty()) {
+            return "Type (" + this.name + ")";
         }
-        return "Type (" + packageName + "." + name + ")";
+        return "Type (" + this.packageName + "." + this.name + ")";
     }
 
     @Override
     public String getPackageName() {
-        return packageName;
+        return this.packageName;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public String getFullyQualifiedName() {
-        if (packageName.isEmpty()) {
-            return name;
+        if (this.packageName.isEmpty()) {
+            return this.name;
         } else {
-            return packageName + "." + name;
+            return this.packageName + "." + this.name;
         }
     }
 }
