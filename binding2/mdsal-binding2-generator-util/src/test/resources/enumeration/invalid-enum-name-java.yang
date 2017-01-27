@@ -1,0 +1,16 @@
+module invalid-enum-name-java{
+    namespace "m:i:e:n:j";
+    prefix "ienj";
+
+    revision "2017-01-27" {
+    }
+    
+    container e-cont{
+        leaf e-leaf{
+            type enumeration {
+                enum *;
+                enum 1;
+            }
+        }
+    }
+}
