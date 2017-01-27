@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_d1e725e3",
+        "filename": "model/yang-ext/src/main/yang/yang-ext.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-27T12:03:28Z",
+      "side": 1,
+      "message": "perhaps not valid email address anymore",
+      "range": {
+        "startLine": 6,
+        "startChar": 27,
+        "endLine": 6,
+        "endChar": 44
+      },
+      "revId": "0f599d9aeb44054c2c9bdc3073d1a99f4b4e63e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_09d18ffb",
         "filename": "model/yang-ext/src/main/yang/yang-ext.yang",
         "patchSetId": 2
@@ -18,6 +41,29 @@
         "startChar": 20,
         "endLine": 16,
         "endChar": 22
+      },
+      "revId": "0f599d9aeb44054c2c9bdc3073d1a99f4b4e63e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_91dd9d17",
+        "filename": "model/yang-ext/src/main/yang/yang-ext.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-01-27T12:03:28Z",
+      "side": 1,
+      "message": "tab",
+      "range": {
+        "startLine": 78,
+        "startChar": 3,
+        "endLine": 78,
+        "endChar": 5
       },
       "revId": "0f599d9aeb44054c2c9bdc3073d1a99f4b4e63e3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
