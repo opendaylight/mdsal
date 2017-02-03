@@ -1,0 +1,11 @@
+module rpctest {
+  yang-version 1;
+  namespace "urn:rpctest:simple:test";
+  prefix rpct;
+  revision "2017-02-03";
+
+  //no input or output declared
+  rpc test-me {
+  }
+
+}
