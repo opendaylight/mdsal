@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.junit.Test;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
 import org.opendaylight.yangtools.sal.binding.model.api.GeneratedType;
@@ -34,6 +35,9 @@ public class BuilderGeneratorTest {
     private final String argPartOfGenToStringMethode =
             "\n    builder.append(\"augmentation=\");\n    builder.append(augmentation.values());";
     private final String comaPartOfAppend = "builder.append(\", \");";
+    private final String comaAugmentPart = "int builderLength = builder.length();\n"
+            + "    if (builderLength > 2 && !builder.substring(builderLength - 2, builderLength).equals(\", \")) {\n"
+            + "        " + this.comaPartOfAppend + "\n" + "    }";
     private final String TEST = "test";
 
     @Test
@@ -85,7 +89,7 @@ public class BuilderGeneratorTest {
         final String generateToString = genToString(genType).toString();
         assertTrue(generateToString.contains(this.firstPartOfGenToStringMethod
                 + "\n    if (_test != null) {\n        builder.append(\"_test=\");\n        builder.append(_test);\n    }"
-                + "\n    " + this.comaPartOfAppend + this.argPartOfGenToStringMethode
+                + "\n    " + this.comaAugmentPart + this.argPartOfGenToStringMethode
                 + this.lastPartOfGenToStringMethode));
     }
 
@@ -98,7 +102,7 @@ public class BuilderGeneratorTest {
                 + "\n    if (_test1 != null) {\n        builder.append(\"_test1=\");\n        builder.append(_test1);\n        "
                 + this.comaPartOfAppend + "\n    }"
                 + "\n    if (_test2 != null) {\n        builder.append(\"_test2=\");\n        builder.append(_test2);\n    }"
-                + "\n    " + this.comaPartOfAppend
+                + "\n    " + this.comaAugmentPart
                 + this.argPartOfGenToStringMethode + this.lastPartOfGenToStringMethode));
     }
 

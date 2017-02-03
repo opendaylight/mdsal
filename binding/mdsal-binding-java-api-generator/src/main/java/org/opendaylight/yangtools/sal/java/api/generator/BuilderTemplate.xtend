@@ -726,7 +726,10 @@ class BuilderTemplate extends BaseTemplate {
                 «ENDFOR»
                 «IF augmentField != null»
                     «IF !properties.empty»
-                «APPEND_COMMA»
+                int builderLength = builder.length();
+                    if (builderLength > 2 && !builder.substring(builderLength - 2, builderLength).equals(", ")) {
+                        «APPEND_COMMA»
+                    }
                     «ENDIF»
                     builder.append("«augmentField.name»=");
                     builder.append(«augmentField.name».values());«"\n"»
