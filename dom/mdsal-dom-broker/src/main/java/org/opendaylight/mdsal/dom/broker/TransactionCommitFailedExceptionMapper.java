@@ -25,7 +25,7 @@ public final class TransactionCommitFailedExceptionMapper
     public static final TransactionCommitFailedExceptionMapper COMMIT_ERROR_MAPPER = create("commit");
 
     private TransactionCommitFailedExceptionMapper(final String opName) {
-        super( opName, TransactionCommitFailedException.class );
+        super(opName, TransactionCommitFailedException.class);
     }
 
     public static TransactionCommitFailedExceptionMapper create(final String opName) {
@@ -33,7 +33,7 @@ public final class TransactionCommitFailedExceptionMapper
     }
 
     @Override
-    protected TransactionCommitFailedException newWithCause( final String message, final Throwable cause ) {
-        return new TransactionCommitFailedException( message, cause );
+    protected TransactionCommitFailedException newWithCause(final String message, final Throwable cause) {
+        return new TransactionCommitFailedException(message, cause);
     }
 }

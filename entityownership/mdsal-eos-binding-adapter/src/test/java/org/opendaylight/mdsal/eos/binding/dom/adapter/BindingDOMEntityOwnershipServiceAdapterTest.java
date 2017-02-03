@@ -106,7 +106,7 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
 
         final DOMEntityOwnershipChange domOwnershipChange = new DOMEntityOwnershipChange(DOM_ENTITY,
                 EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, true);
-        domListenerCaptor.getValue().ownershipChanged(domOwnershipChange );
+        domListenerCaptor.getValue().ownershipChanged(domOwnershipChange);
 
         final ArgumentCaptor<EntityOwnershipChange> ownershipChangeCaptor = ArgumentCaptor.forClass(
                 EntityOwnershipChange.class);
@@ -144,6 +144,6 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
                             mockCodecRegistry));
         final DOMEntityOwnershipChange domOwnershipChange = mock(DOMEntityOwnershipChange.class);
         doThrow(IllegalStateException.class).when(domOwnershipChange).getEntity();
-        domEntityOwnershipListenerAdapter.ownershipChanged(domOwnershipChange );
+        domEntityOwnershipListenerAdapter.ownershipChanged(domOwnershipChange);
     }
 }

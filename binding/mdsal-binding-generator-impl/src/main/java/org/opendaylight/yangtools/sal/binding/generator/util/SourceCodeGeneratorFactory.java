@@ -29,11 +29,11 @@ public class SourceCodeGeneratorFactory {
      * @param generatedSourceDir the directory in which to put generated source files. If null,
      *     a default is used (see DefaultSourceCodeGenerator).
      */
-    public SourceCodeGenerator getInstance( String generatedSourceDir ) {
+    public SourceCodeGenerator getInstance(String generatedSourceDir) {
 
-        boolean generateSource = Boolean.valueOf( System.getProperty( GENERATE_CODEC_SOURCE_PROP, "false") );
-        if( generateSource ) {
-            return new DefaultSourceCodeGenerator( generatedSourceDir );
+        boolean generateSource = Boolean.valueOf(System.getProperty( GENERATE_CODEC_SOURCE_PROP, "false"));
+        if(generateSource) {
+            return new DefaultSourceCodeGenerator(generatedSourceDir);
         }
 
         return NULL_GENERATOR;

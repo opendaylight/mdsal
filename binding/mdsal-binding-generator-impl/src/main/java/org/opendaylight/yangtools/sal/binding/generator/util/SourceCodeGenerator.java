@@ -24,15 +24,15 @@ public interface SourceCodeGenerator {
     /**
      * Appends the given class field and value to the temporary output.
      */
-    void appendField( CtField field, String value );
+    void appendField(CtField field, String value);
 
     /**
      * Appends the given method and source code body to the temporary output.
      */
-    void appendMethod( CtMethod method, String code );
+    void appendMethod(CtMethod method, String code);
 
     /**
      * Generates the full source code for the given class and outputs it.
      */
-    void outputGeneratedSource( CtClass ctClass );
+    void outputGeneratedSource(CtClass ctClass);
 }

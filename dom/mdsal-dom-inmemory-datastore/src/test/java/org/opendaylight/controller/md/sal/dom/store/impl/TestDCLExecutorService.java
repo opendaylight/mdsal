@@ -26,7 +26,7 @@ public class TestDCLExecutorService extends ForwardingExecutorService {
     private final ExecutorService postSetupExecutor;
 
 
-    public TestDCLExecutorService( final ExecutorService postSetupExecutor ) {
+    public TestDCLExecutorService(final ExecutorService postSetupExecutor) {
         this.postSetupExecutor = postSetupExecutor;
     }
 

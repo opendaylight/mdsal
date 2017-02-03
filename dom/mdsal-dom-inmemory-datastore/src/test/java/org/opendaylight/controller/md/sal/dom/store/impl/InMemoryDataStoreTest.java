@@ -119,71 +119,71 @@ public class InMemoryDataStoreTest {
     public void testDelete() throws Exception {
 
         DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
-        assertNotNull( writeTx );
+        assertNotNull(writeTx);
 
         // Write /test and commit
 
-        writeTx.write( TestModel.TEST_PATH, ImmutableNodes.containerNode( TestModel.TEST_QNAME ) );
+        writeTx.write(TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
 
-        assertThreePhaseCommit( writeTx.ready() );
+        assertThreePhaseCommit(writeTx.ready());
 
         Optional<NormalizedNode<?, ?>> afterCommitRead =
-                domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH ).get();
-        assertEquals( "After commit read: isPresent", true, afterCommitRead.isPresent() );
+                domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
+        assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
 
         // Delete /test and verify
 
         writeTx = domStore.newWriteOnlyTransaction();
 
-        writeTx.delete( TestModel.TEST_PATH );
+        writeTx.delete(TestModel.TEST_PATH);
 
-        assertThreePhaseCommit( writeTx.ready() );
+        assertThreePhaseCommit(writeTx.ready());
 
-        afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH ).get();
-        assertEquals( "After commit read: isPresent", false, afterCommitRead.isPresent() );
+        afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
+        assertEquals("After commit read: isPresent", false, afterCommitRead.isPresent());
     }
 
     @Test
     public void testMerge() throws Exception {
 
         DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
-        assertNotNull( writeTx );
+        assertNotNull(writeTx);
 
         ContainerNode containerNode = ImmutableContainerNodeBuilder.create()
-                .withNodeIdentifier( new NodeIdentifier( TestModel.TEST_QNAME ) )
-                .addChild( ImmutableNodes.mapNodeBuilder( TestModel.OUTER_LIST_QNAME )
-                        .addChild( ImmutableNodes.mapEntry( TestModel.OUTER_LIST_QNAME,
-                                                            TestModel.ID_QNAME, 1 ) ).build() ).build();
+                .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+                .addChild(ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+                        .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME,
+                                                            TestModel.ID_QNAME, 1)).build()).build();
 
-        writeTx.merge( TestModel.TEST_PATH, containerNode );
+        writeTx.merge(TestModel.TEST_PATH, containerNode);
 
-        assertThreePhaseCommit( writeTx.ready() );
+        assertThreePhaseCommit(writeTx.ready());
 
         Optional<NormalizedNode<?, ?>> afterCommitRead =
-                domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH ).get();
-        assertEquals( "After commit read: isPresent", true, afterCommitRead.isPresent() );
-        assertEquals( "After commit read: data", containerNode, afterCommitRead.get() );
+                domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
+        assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
+        assertEquals("After commit read: data", containerNode, afterCommitRead.get());
 
         // Merge a new list entry node
 
         writeTx = domStore.newWriteOnlyTransaction();
-        assertNotNull( writeTx );
+        assertNotNull(writeTx);
 
         containerNode = ImmutableContainerNodeBuilder.create()
-                .withNodeIdentifier( new NodeIdentifier( TestModel.TEST_QNAME ) )
-                .addChild( ImmutableNodes.mapNodeBuilder( TestModel.OUTER_LIST_QNAME )
-                        .addChild( ImmutableNodes.mapEntry( TestModel.OUTER_LIST_QNAME,
-                                                            TestModel.ID_QNAME, 1 ) )
-                        .addChild( ImmutableNodes.mapEntry( TestModel.OUTER_LIST_QNAME,
-                                                            TestModel.ID_QNAME, 2 ) ).build() ).build();
+                .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+                .addChild(ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+                        .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME,
+                                                            TestModel.ID_QNAME, 1))
+                        .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME,
+                                                            TestModel.ID_QNAME, 2)).build()).build();
 
-        writeTx.merge( TestModel.TEST_PATH, containerNode );
+        writeTx.merge(TestModel.TEST_PATH, containerNode);
 
-        assertThreePhaseCommit( writeTx.ready() );
+        assertThreePhaseCommit(writeTx.ready());
 
-        afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH ).get();
-        assertEquals( "After commit read: isPresent", true, afterCommitRead.isPresent() );
-        assertEquals( "After commit read: data", containerNode, afterCommitRead.get() );
+        afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
+        assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
+        assertEquals("After commit read: data", containerNode, afterCommitRead.get());
     }
 
 
@@ -191,15 +191,15 @@ public class InMemoryDataStoreTest {
     public void testExistsForExistingData() throws Exception {
 
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
-        assertNotNull( writeTx );
+        assertNotNull(writeTx);
 
         ContainerNode containerNode = ImmutableContainerNodeBuilder.create()
-            .withNodeIdentifier( new NodeIdentifier( TestModel.TEST_QNAME ) )
-            .addChild( ImmutableNodes.mapNodeBuilder( TestModel.OUTER_LIST_QNAME )
-                .addChild( ImmutableNodes.mapEntry( TestModel.OUTER_LIST_QNAME,
-                    TestModel.ID_QNAME, 1 ) ).build() ).build();
+            .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
+            .addChild(ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
+                .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME,
+                    TestModel.ID_QNAME, 1)).build()).build();
 
-        writeTx.merge( TestModel.TEST_PATH, containerNode );
+        writeTx.merge(TestModel.TEST_PATH, containerNode);
 
         CheckedFuture<Boolean, ReadFailedException> exists =
             writeTx.exists(TestModel.TEST_PATH);
@@ -213,7 +213,7 @@ public class InMemoryDataStoreTest {
         ready.commit().get();
 
         DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
-        assertNotNull( readTx );
+        assertNotNull(readTx);
 
         exists =
             readTx.exists(TestModel.TEST_PATH);
@@ -225,7 +225,7 @@ public class InMemoryDataStoreTest {
     public void testExistsForNonExistingData() throws Exception {
 
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
-        assertNotNull( writeTx );
+        assertNotNull(writeTx);
 
         CheckedFuture<Boolean, ReadFailedException> exists =
             writeTx.exists(TestModel.TEST_PATH);
@@ -233,7 +233,7 @@ public class InMemoryDataStoreTest {
         assertEquals(false, exists.checkedGet());
 
         DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
-        assertNotNull( readTx );
+        assertNotNull(readTx);
 
         exists =
             readTx.exists(TestModel.TEST_PATH);
@@ -245,7 +245,7 @@ public class InMemoryDataStoreTest {
     public void testExistsThrowsReadFailedException() throws Exception {
 
         DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
-        assertNotNull( readTx );
+        assertNotNull(readTx);
 
         readTx.close();
 
@@ -258,24 +258,24 @@ public class InMemoryDataStoreTest {
     public void testReadWithReadOnlyTransactionClosed() throws Throwable {
 
         DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
-        assertNotNull( readTx );
+        assertNotNull(readTx);
 
         readTx.close();
 
-        doReadAndThrowEx( readTx );
+        doReadAndThrowEx(readTx);
     }
 
     @SuppressWarnings("checkstyle:IllegalThrows")
     @Test(expected = ReadFailedException.class)
     public void testReadWithReadOnlyTransactionFailure() throws Throwable {
 
-        DataTreeSnapshot mockSnapshot = Mockito.mock( DataTreeSnapshot.class );
-        Mockito.doThrow( new RuntimeException( "mock ex" ) ).when( mockSnapshot )
-        .readNode( Mockito.any( YangInstanceIdentifier.class ) );
+        DataTreeSnapshot mockSnapshot = Mockito.mock(DataTreeSnapshot.class);
+        Mockito.doThrow(new RuntimeException("mock ex")).when(mockSnapshot)
+        .readNode(Mockito.any(YangInstanceIdentifier.class));
 
         DOMStoreReadTransaction readTx = SnapshotBackedTransactions.newReadTransaction("1", true, mockSnapshot);
 
-        doReadAndThrowEx( readTx );
+        doReadAndThrowEx(readTx);
     }
 
     @SuppressWarnings("checkstyle:IllegalThrows")
@@ -283,35 +283,35 @@ public class InMemoryDataStoreTest {
     public void testReadWithReadWriteTransactionClosed() throws Throwable {
 
         DOMStoreReadTransaction readTx = domStore.newReadWriteTransaction();
-        assertNotNull( readTx );
+        assertNotNull(readTx);
 
         readTx.close();
 
-        doReadAndThrowEx( readTx );
+        doReadAndThrowEx(readTx);
     }
 
     @SuppressWarnings("checkstyle:IllegalThrows")
     @Test(expected = ReadFailedException.class)
     public void testReadWithReadWriteTransactionFailure() throws Throwable {
 
-        DataTreeSnapshot mockSnapshot = Mockito.mock( DataTreeSnapshot.class );
-        DataTreeModification mockModification = Mockito.mock( DataTreeModification.class );
-        Mockito.doThrow( new RuntimeException( "mock ex" ) ).when( mockModification )
-        .readNode( Mockito.any( YangInstanceIdentifier.class ) );
-        Mockito.doReturn( mockModification ).when( mockSnapshot ).newModification();
+        DataTreeSnapshot mockSnapshot = Mockito.mock(DataTreeSnapshot.class);
+        DataTreeModification mockModification = Mockito.mock(DataTreeModification.class);
+        Mockito.doThrow(new RuntimeException("mock ex")).when(mockModification)
+        .readNode(Mockito.any(YangInstanceIdentifier.class));
+        Mockito.doReturn(mockModification).when(mockSnapshot).newModification();
         @SuppressWarnings("unchecked")
-        TransactionReadyPrototype<String> mockReady = Mockito.mock( TransactionReadyPrototype.class );
+        TransactionReadyPrototype<String> mockReady = Mockito.mock(TransactionReadyPrototype.class);
         DOMStoreReadTransaction readTx = SnapshotBackedTransactions.newReadWriteTransaction(
                 "1", false, mockSnapshot, mockReady);
 
-        doReadAndThrowEx( readTx );
+        doReadAndThrowEx(readTx);
     }
 
     @SuppressWarnings("checkstyle:IllegalThrows")
-    private static void doReadAndThrowEx( final DOMStoreReadTransaction readTx ) throws Throwable {
+    private static void doReadAndThrowEx(final DOMStoreReadTransaction readTx) throws Throwable {
         try {
             readTx.read(TestModel.TEST_PATH).get();
-        } catch ( ExecutionException e ) {
+        } catch (ExecutionException e) {
             throw e.getCause();
         }
     }
@@ -324,7 +324,7 @@ public class InMemoryDataStoreTest {
         writeTx.ready();
 
         // Should throw ex
-        writeTx.write( TestModel.TEST_PATH, ImmutableNodes.containerNode( TestModel.TEST_QNAME ) );
+        writeTx.write(TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
     }
 
     @Test(expected = IllegalStateException.class)

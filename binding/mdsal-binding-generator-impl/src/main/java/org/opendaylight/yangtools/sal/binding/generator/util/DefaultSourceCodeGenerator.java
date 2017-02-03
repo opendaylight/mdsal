@@ -44,12 +44,12 @@ public class DefaultSourceCodeGenerator implements SourceCodeGenerator {
      *     is obtained from a system property (<i>org.opendaylight.yangtools.sal.generatedCodecSourceDir</i>) or
      *     defaults to "generated-codecs".
      */
-    public DefaultSourceCodeGenerator( String generatedSourceDir ) {
-        if( generatedSourceDir != null ) {
+    public DefaultSourceCodeGenerator(String generatedSourceDir) {
+        if(generatedSourceDir != null) {
             this.generatedSourceDir = generatedSourceDir;
         }
         else {
-            this.generatedSourceDir = System.getProperty( GENERATED_SOURCE_DIR_PROP, "generated-codecs" );
+            this.generatedSourceDir = System.getProperty(GENERATED_SOURCE_DIR_PROP, "generated-codecs");
         }
     }
 
