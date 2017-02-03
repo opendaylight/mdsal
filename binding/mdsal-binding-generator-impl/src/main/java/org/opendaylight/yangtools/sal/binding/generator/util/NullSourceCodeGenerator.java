@@ -20,14 +20,14 @@ import javassist.CtMethod;
 public class NullSourceCodeGenerator implements SourceCodeGenerator {
 
     @Override
-    public void appendField( CtField field, String value ) {
+    public void appendField(CtField field, String value) {
     }
 
     @Override
-    public void appendMethod( CtMethod method, String code ) {
+    public void appendMethod(CtMethod method, String code) {
     }
 
     @Override
-    public void outputGeneratedSource( CtClass ctClass ) {
+    public void outputGeneratedSource(CtClass ctClass) {
     }
 }

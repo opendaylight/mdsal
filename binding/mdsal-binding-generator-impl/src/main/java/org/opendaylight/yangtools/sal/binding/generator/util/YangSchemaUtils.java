@@ -92,7 +92,7 @@ public final class YangSchemaUtils {
                 currentNode = ((ChoiceSchemaNode) child).getCaseNodeByName(caseQName);
             } else {
                 // Search in grouping
-                for( final GroupingDefinition grouping : currentNode.getGroupings()) {
+                for(final GroupingDefinition grouping : currentNode.getGroupings()) {
                     if(currentArg.equals(grouping.getQName())) {
                         currentNode = grouping;
                         break;

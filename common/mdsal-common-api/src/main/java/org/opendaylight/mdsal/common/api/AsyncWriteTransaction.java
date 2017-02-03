@@ -142,30 +142,30 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * <h3>Example usage:</h3>
      *
      * <pre>
-     *  private void doWrite( final int tries ) {
+     *  private void doWrite(final int tries) {
      *      WriteTransaction writeTx = dataBroker.newWriteOnlyTransaction();
      *      MyDataObject data = ...;
      *      InstanceIdentifier&lt;MyDataObject&gt; path = ...;
-     *      writeTx.put( LogicalDatastoreType.OPERATIONAL, path, data );
-     *      Futures.addCallback( writeTx.submit(), new FutureCallback&lt;Void&gt;() {
-     *          public void onSuccess( Void result ) {
+     *      writeTx.put(LogicalDatastoreType.OPERATIONAL, path, data);
+     *      Futures.addCallback(writeTx.submit(), new FutureCallback&lt;Void&gt;() {
+     *          public void onSuccess(Void result) {
      *              // succeeded
      *          }
-     *          public void onFailure( Throwable t ) {
-     *              if( t instanceof OptimisticLockFailedException ) {
-     *                  if( ( tries - 1 ) &gt; 0 ) {
+     *          public void onFailure(Throwable t) {
+     *              if(t instanceof OptimisticLockFailedException) {
+     *                  if(( tries - 1) &gt; 0 ) {
      *                      // do retry
-     *                      doWrite( tries - 1 );
+     *                      doWrite(tries - 1);
      *                  } else {
      *                      // out of retries
      *                  }
      *              } else {
      *                  // failed due to another type of TransactionCommitFailedException.
      *              }
-     *          } );
+     *          });
      * }
      * ...
-     * doWrite( 2 );
+     * doWrite(2);
      * </pre>
      *
      * <h2>Failure scenarios</h2>

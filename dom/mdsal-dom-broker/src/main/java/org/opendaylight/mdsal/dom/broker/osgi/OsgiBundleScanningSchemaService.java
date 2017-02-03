@@ -218,7 +218,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
             }
 
             final int numUrls = Iterables.size(urls);
-            if (numUrls > 0 ) {
+            if (numUrls > 0) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("removedBundle: {}, state: {}, # urls: {}", bundle.getSymbolicName(),
                             bundle.getState(), numUrls);

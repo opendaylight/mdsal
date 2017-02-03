@@ -83,7 +83,7 @@ public class DOMBrokerTest {
 
     @After
     public void tearDown() {
-        if (executor != null ) {
+        if (executor != null) {
             executor.shutdownNow();
         }
 
@@ -136,23 +136,23 @@ public class DOMBrokerTest {
 
     @Test(expected = TransactionCommitFailedException.class)
     public void testRejectedCommit() throws Exception {
-        commitExecutor.delegate = Mockito.mock( ExecutorService.class );
-        Mockito.doThrow( new RejectedExecutionException( "mock" ) )
-            .when( commitExecutor.delegate ).execute( Mockito.any( Runnable.class ) );
-        Mockito.doNothing().when( commitExecutor.delegate ).shutdown();
-        Mockito.doReturn( Collections.emptyList() ).when( commitExecutor.delegate ).shutdownNow();
-        Mockito.doReturn( "" ).when( commitExecutor.delegate ).toString();
-        Mockito.doReturn( true ).when( commitExecutor.delegate )
-            .awaitTermination( Mockito.anyLong(), Mockito.any( TimeUnit.class ) );
+        commitExecutor.delegate = Mockito.mock(ExecutorService.class);
+        Mockito.doThrow(new RejectedExecutionException("mock"))
+            .when(commitExecutor.delegate).execute(Mockito.any(Runnable.class));
+        Mockito.doNothing().when(commitExecutor.delegate).shutdown();
+        Mockito.doReturn(Collections.emptyList()).when(commitExecutor.delegate).shutdownNow();
+        Mockito.doReturn("").when(commitExecutor.delegate).toString();
+        Mockito.doReturn(true).when(commitExecutor.delegate)
+            .awaitTermination(Mockito.anyLong(), Mockito.any(TimeUnit.class));
 
         final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
-        writeTx.put( OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME) );
+        writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
 
-        writeTx.submit().checkedGet( 5, TimeUnit.SECONDS );
+        writeTx.submit().checkedGet(5, TimeUnit.SECONDS);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    AtomicReference<Throwable> submitTxAsync( final DOMDataTreeWriteTransaction writeTx ) {
+    AtomicReference<Throwable> submitTxAsync(final DOMDataTreeWriteTransaction writeTx) {
         final AtomicReference<Throwable> caughtEx = new AtomicReference<>();
         new Thread() {
             @Override
@@ -160,8 +160,8 @@ public class DOMBrokerTest {
 
                 try {
                     writeTx.submit();
-                } catch ( final Throwable e ) {
-                    caughtEx.set( e );
+                } catch (final Throwable e) {
+                    caughtEx.set(e);
                 }
             }
 
@@ -234,7 +234,7 @@ public class DOMBrokerTest {
 
         ExecutorService delegate;
 
-        CommitExecutorService( final ExecutorService delegate ) {
+        CommitExecutorService(final ExecutorService delegate) {
             this.delegate = delegate;
         }
 

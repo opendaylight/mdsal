@@ -38,7 +38,7 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
 
     @Override
     public void delete(final LogicalDatastoreType store, final InstanceIdentifier<?> path) {
-        doDelete( store, path);
+        doDelete(store, path);
     }
 
     @Override

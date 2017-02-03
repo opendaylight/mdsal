@@ -193,7 +193,7 @@ public class TypeProviderImplTest {
             assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
             fail("Expected NoSuchElementException");
         } catch (Exception e) {
-            assertTrue( e instanceof NoSuchElementException);
+            assertTrue(e instanceof NoSuchElementException);
         }
 
         // identityref type

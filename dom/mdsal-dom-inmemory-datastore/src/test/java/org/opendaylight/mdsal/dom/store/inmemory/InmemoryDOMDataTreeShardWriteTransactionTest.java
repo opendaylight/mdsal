@@ -72,7 +72,7 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
         shardDataModification = TestUtils.createModification(SHARD_ROOT_MODIFICATION_CONTEXT,
                 ImmutableMap.of(YANG_INSTANCE_IDENTIFIER, FOREIGN_SHARD_MODIFICATION_CONTEXT));
         final DataTreeModificationCursor dataTreeModificationCursor = mock(DataTreeModificationCursor.class);
-        doReturn(DataTreeModificationCursorAdaptor.of( dataTreeModificationCursor))
+        doReturn(DataTreeModificationCursorAdaptor.of(dataTreeModificationCursor))
                 .when(SHARD_ROOT_MODIFICATION_CONTEXT).cursor();
         doNothing().when(SHARD_ROOT_MODIFICATION_CONTEXT).closeCursor();
         final DataTreeCandidate dataTreeCandidate = mock(DataTreeCandidate.class);
