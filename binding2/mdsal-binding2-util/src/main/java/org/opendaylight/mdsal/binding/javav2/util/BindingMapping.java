@@ -36,7 +36,7 @@ public final class BindingMapping {
             "true", "try", "void", "volatile", "while");
 
     public static final String QNAME_STATIC_FIELD_NAME = "QNAME";
-    public static final String PACKAGE_PREFIX = "org.opendaylight.yang.gen.v2";
+    public static final String PACKAGE_PREFIX = "org.opendaylight.mdsal.gen.javav2";
 
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
     private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
@@ -191,6 +191,39 @@ public final class BindingMapping {
             return s.toUpperCase();
         }
         return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+    public static String getPropertyName(final String yangIdentifier) {
+        final String potential = toFirstLower(toCamelCase(yangIdentifier));
+        if ("class".equals(potential)) {
+            return "xmlClass";
+        }
+        return potential;
+    }
+
+    /**
+     * Returns the {@link String} {@code s} with an
+     * {@link Character#isLowerCase(char) lower case} first character. This
+     * function is null-safe.
+     *
+     * @param s
+     *            the string that should get an lower case first character. May
+     *            be <code>null</code>.
+     * @return the {@link String} {@code s} with an lower case first character
+     *         or <code>null</code> if the input {@link String} {@code s} was
+     *         <code>null</code>.
+     */
+    private static String toFirstLower(final String s) {
+        if (s == null || s.length() == 0) {
+            return s;
+        }
+        if (Character.isLowerCase(s.charAt(0))) {
+            return s;
+        }
+        if (s.length() == 1) {
+            return s.toLowerCase();
+        }
+        return s.substring(0, 1).toLowerCase() + s.substring(1);
     }
 
     //TODO: further implementation of static util methods...

@@ -399,7 +399,7 @@ final class AugmentToGenType {
                 final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
                 if (childNodes != null) {
                     GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType,
-                            childNodes);
+                            childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders);
                 }
                 genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
                 genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);

@@ -8,6 +8,10 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.BOOLEAN;
+
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -30,6 +34,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
@@ -173,7 +178,7 @@ final class GenHelperUtil {
 
     private static String createDescription(final Module module, final boolean verboseClassComments) {
         final StringBuilder sb = new StringBuilder();
-        final String moduleDescription = BindingGeneratorUtil.encodeAngleBrackets(module.getDescription());
+        final String moduleDescription = encodeAngleBrackets(module.getDescription());
         final String formattedDescription = YangTextTemplate.formatToParagraph(moduleDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
@@ -189,7 +194,7 @@ final class GenHelperUtil {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(BindingGeneratorUtil.encodeAngleBrackets(yangTemplateForModule.render(module).body()));
+            sb.append(encodeAngleBrackets(yangTemplateForModule.render(module).body()));
             sb.append("</pre>");
         }
 
@@ -228,12 +233,15 @@ final class GenHelperUtil {
      *         added to it.
      */
     static GeneratedTypeBuilder resolveDataSchemaNodes(final Module module, final String basePackageName,
-                          final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf, final Iterable<DataSchemaNode> schemaNodes) {
+                          final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf,
+                          final Iterable<DataSchemaNode> schemaNodes, Map<Module, ModuleContext> genCtx,
+                          final SchemaContext schemaContext, final boolean verboseClassComments,
+                          Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
         if (schemaNodes != null && parent != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting() && !schemaNode.isAddedByUses()) {
-                    //TODO: design decomposition and implement it
-                    //addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, parent, childOf, module);
+                    addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, parent, childOf, module, genCtx,
+                            schemaContext, verboseClassComments, genTypeBuilders);
                 }
             }
         }
@@ -370,7 +378,7 @@ final class GenHelperUtil {
     }
 
     /**
-     * @param unknownSchemaNodes
+     * @param unknownSchemaNodes unknows schema nodes
      * @return nodeParameter of UnknownSchemaNode
      */
     private static String getAugmentIdentifier(final List<UnknownSchemaNode> unknownSchemaNodes) {
@@ -434,7 +442,7 @@ final class GenHelperUtil {
      *            schema node for which is created generated type builder
      * @param parent
      *            parent type (can be null)
-     * @param schemaContext
+     * @param schemaContext schema context
      * @return generated type builder <code>schemaNode</code>
      */
     private static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
@@ -511,7 +519,6 @@ final class GenHelperUtil {
         newType.setSchemaPath((List<QName>) schemaNode.getPath().getPathFromRoot());
         newType.setModuleName(module.getName());
 
-        //FIXME: update genTypeBuilders for callers
         if (!genTypeBuilders.containsKey(packageName)) {
             final Map<String, GeneratedTypeBuilder> builders = new HashMap<>();
             builders.put(genTypeName, newType);
@@ -526,6 +533,119 @@ final class GenHelperUtil {
 
     }
 
+    private static void addSchemaNodeToBuilderAsMethod(final String basePackageName, final DataSchemaNode node,
+        final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf, final Module module,
+        Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments,
+        Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+        //TODO: implement rest of schema nodes GTO building
+        if (node != null && typeBuilder != null) {
+            if (node instanceof ContainerSchemaNode) {
+                containerToGenType(module, basePackageName, typeBuilder, childOf, (ContainerSchemaNode) node,
+                        schemaContext, verboseClassComments, genCtx, genTypeBuilders);
+            }
+        }
+
+    }
+
+    private static void containerToGenType(final Module module, final String basePackageName,
+        final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf, final ContainerSchemaNode node,
+        final SchemaContext schemaContext, final boolean verboseClassComments, Map<Module, ModuleContext> genCtx,
+        Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+
+        final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node,
+                schemaContext, verboseClassComments, genCtx, genTypeBuilders);
+        if (genType != null) {
+            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(), genType, node.getStatus());
+            resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
+                    schemaContext, verboseClassComments, genTypeBuilders);
+        }
+    }
+
+    private static GeneratedTypeBuilder processDataSchemaNode(final Module module, final String basePackageName,
+        final GeneratedTypeBuilder childOf, final DataSchemaNode node, final SchemaContext schemaContext,
+        final boolean verboseClassComments, Map<Module, ModuleContext> genCtx, Map<String, Map<String,
+        GeneratedTypeBuilder>> genTypeBuilders) {
+
+        if (node.isAugmenting() || node.isAddedByUses()) {
+            return null;
+        }
+        final String packageName = packageNameForGeneratedType(basePackageName, node.getPath());
+        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, node, childOf, module,
+                genCtx, schemaContext, verboseClassComments, genTypeBuilders);
+        genType.addComment(node.getDescription());
+        annotateDeprecatedIfNecessary(node.getStatus(), genType);
+        genType.setDescription(createDescription(node, genType.getFullyQualifiedName(), schemaContext, verboseClassComments));
+        genType.setModuleName(module.getName());
+        genType.setReference(node.getReference());
+        genType.setSchemaPath((List) node.getPath().getPathFromRoot());
+        if (node instanceof DataNodeContainer) {
+            genCtx.get(module).addChildNodeType(node, genType);
+            //TODO: implement groupings to GTO building first
+            // groupingsToGenTypes(module, ((DataNodeContainer) node).getGroupings());
+            processUsesAugments(schemaContext, (DataNodeContainer) node, module, genCtx, genTypeBuilders,
+                    verboseClassComments);
+        }
+        return genType;
+    }
+
+    /**
+     * Created a method signature builder as part of
+     * <code>interfaceBuilder</code>.
+     *
+     * The method signature builder is created for the getter method of
+     * <code>schemaNodeName</code>. Also <code>comment</code> and
+     * <code>returnType</code> information are added to the builder.
+     *
+     * @param interfaceBuilder
+     *            generated type builder for which the getter method should be
+     *            created
+     * @param schemaNodeName
+     *            string with schema node name. The name will be the part of the
+     *            getter method name.
+     * @param comment
+     *            string with comment for the getter method
+     * @param returnType
+     *            type which represents the return type of the getter method
+     * @param status
+     *            status from yang file, for deprecated annotation
+     * @return method signature builder which represents the getter method of
+     *         <code>interfaceBuilder</code>
+     */
+    private static MethodSignatureBuilder constructGetter(final GeneratedTypeBuilder interfaceBuilder,
+                                                          final String schemaNodeName, final String comment, final Type returnType, final Status status) {
+
+        final MethodSignatureBuilder getMethod = interfaceBuilder
+                .addMethod(getterMethodName(schemaNodeName, returnType));
+        if (status == Status.DEPRECATED) {
+            getMethod.addAnnotation("", "Deprecated");
+        }
+        getMethod.setComment(encodeAngleBrackets(comment));
+        getMethod.setReturnType(returnType);
+        return getMethod;
+    }
+
+    /**
+     * Creates the name of the getter method name from <code>localName</code>.
+     *
+     * @param localName
+     *            string with the name of the getter method
+     * @param returnType
+     *            return type
+     * @return string with the name of the getter method for
+     *         <code>methodName</code> in JAVA method format
+     */
+    private static String getterMethodName(final String localName, final Type returnType) {
+        final StringBuilder method = new StringBuilder();
+        if (BOOLEAN.equals(returnType)) {
+            method.append("is");
+        } else {
+            method.append("get");
+        }
+        final String name = BindingMapping.toFirstUpper(BindingMapping.getPropertyName(localName));
+        method.append(name);
+        return method.toString();
+    }
+
     private static Constant qNameConstant(final GeneratedTypeBuilderBase<?> toBuilder, final String constantName,
                                           final QName name) {
         return toBuilder.addConstant(Types.typeForClass(QName.class), constantName, name);
@@ -534,7 +654,7 @@ final class GenHelperUtil {
     private static String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName,
                              final SchemaContext schemaContext, final boolean verboseClassComments) {
         final StringBuilder sb = new StringBuilder();
-        final String nodeDescription = BindingGeneratorUtil.encodeAngleBrackets(schemaNode.getDescription());
+        final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription());
         final String formattedDescription = YangTextTemplate.formatToParagraph(nodeDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
@@ -560,7 +680,7 @@ final class GenHelperUtil {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(BindingGeneratorUtil.encodeAngleBrackets(yangTemplateForNode.render(schemaNode).body()));
+            sb.append(encodeAngleBrackets(yangTemplateForNode.render(schemaNode).body()));
             sb.append("</pre>");
             sb.append(NEW_LINE);
             sb.append("The schema path to identify an instance is");
