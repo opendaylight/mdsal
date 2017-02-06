@@ -15,12 +15,13 @@ import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.p
 import static org.opendaylight.mdsal.binding.test.model.util.ListsBindingUtils.topLevelList;
 
 import java.util.concurrent.ExecutionException;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugment;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.TreeComplexUsesAugmentBuilder;
@@ -35,8 +36,13 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Michael Vorburger
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class AbstractDataBrokerTestTest extends AbstractDataBrokerTest {
+public class AbstractDataBrokerTestTest extends AbstractConcurrentDataBrokerTest {
     private static final InstanceIdentifier<Top> TOP_PATH = InstanceIdentifier.create(Top.class);
+
+    @Before
+    public void before() {
+        assertNotNull(getDataBroker());
+    }
 
     @Test
     public void aEnsureDataBrokerIsNotNull() {
