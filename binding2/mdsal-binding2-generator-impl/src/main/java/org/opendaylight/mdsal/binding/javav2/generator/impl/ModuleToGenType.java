@@ -30,10 +30,10 @@ final class ModuleToGenType {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    static Map<Module, ModuleContext> generate(final Module module, final SchemaContext schemaContext,
-                                               TypeProvider typeProvider, final boolean verboseClassComments) {
-        Map<Module, ModuleContext> genCtx = new HashMap<>();
+    static Map<Module, ModuleContext> generate(final Module module, Map<String, Map<String, GeneratedTypeBuilder>>
+            genTypeBuilders, final SchemaContext schemaContext, TypeProvider typeProvider, final boolean verboseClassComments) {
 
+        Map<Module, ModuleContext> genCtx = new HashMap<>();
         genCtx.put(module, new ModuleContext());
         genCtx = allTypeDefinitionsToGenTypes(module, genCtx, typeProvider);
 
@@ -44,7 +44,7 @@ final class ModuleToGenType {
             genCtx.get(module).addModuleNode(moduleType);
             final String basePackageName = BindingMapping.getRootPackageName(module);
             GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
-                    .getChildNodes());
+                    .getChildNodes(), genCtx, schemaContext, verboseClassComments, genTypeBuilders);
         }
 
         return genCtx;
