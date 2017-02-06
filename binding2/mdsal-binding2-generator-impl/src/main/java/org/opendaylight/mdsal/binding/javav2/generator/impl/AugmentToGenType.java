@@ -22,6 +22,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
@@ -356,7 +357,7 @@ final class AugmentToGenType {
         for (final DataSchemaNode caseNode : augmentedNodes) {
             if (caseNode != null) {
                 final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                        caseNode.getPath());
+                        caseNode.getPath(), null);
                 final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(packageName,
                         caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders);
                 caseTypeBuilder.addImplementsType(targetType);
@@ -399,7 +400,7 @@ final class AugmentToGenType {
                 final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
                 if (childNodes != null) {
                     GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType,
-                            childNodes);
+                            childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders);
                 }
                 genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
                 genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);

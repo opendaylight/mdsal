@@ -12,6 +12,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Iterables;
 import java.util.Iterator;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -51,15 +52,24 @@ public final class BindingGeneratorUtil {
      * @return string with valid JAVA package name
      * @throws NullPointerException if any of the arguments are null
      */
-    public static String packageNameForGeneratedType(final String basePackageName, final SchemaPath schemaPath) {
+    public static String packageNameForGeneratedType(final String basePackageName, final SchemaPath schemaPath, final
+        BindingNamespaceType namespaceType) {
+
         final Iterable<QName> pathTowardsRoot = schemaPath.getPathTowardsRoot();
         final Iterable<QName> pathFromRoot = schemaPath.getPathFromRoot();
         final int size = Iterables.size(pathTowardsRoot) - 1;
         if (size <= 0) {
+            if (namespaceType != null) {
+                final StringBuilder sb = new StringBuilder();
+                sb.append(basePackageName)
+                  .append('.')
+                  .append(namespaceType.getPackagePrefix());
+                return sb.toString();
+            }
             return basePackageName;
         }
 
-        return generateNormalizedPackageName(basePackageName, pathFromRoot, size);
+        return generateNormalizedPackageName(basePackageName, pathFromRoot, size, namespaceType);
     }
 
     /**
@@ -90,20 +100,22 @@ public final class BindingGeneratorUtil {
             return basePackageName;
         }
 
-        return generateNormalizedPackageName(basePackageName, pathFromRoot, size);
+        return generateNormalizedPackageName(basePackageName, pathFromRoot, size, null);
     }
 
 
-    private static String generateNormalizedPackageName(final String base, final Iterable<QName> path, final int size) {
+    private static String generateNormalizedPackageName(final String base, final Iterable<QName> path, final int
+            size, BindingNamespaceType namespaceType) {
         final StringBuilder builder = new StringBuilder(base);
         final Iterator<QName> iterator = path.iterator();
         for (int i = 0; i < size; ++i) {
             builder.append('.');
             String nodeLocalName = iterator.next().getLocalName();
-            //FIXME: colon or dash in identifier?
+            //TODO: incorporate use of https://git.opendaylight.org/gerrit/#/c/51132/
+            //TODO: to not to worry about various characters in identifiers
             builder.append(nodeLocalName);
         }
-        return BindingMapping.normalizePackageName(builder.toString());
+        return BindingMapping.normalizePackageName(builder.toString(), namespaceType);
     }
 
     /**

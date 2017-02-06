@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.concepts.SemVer;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
@@ -36,7 +37,7 @@ public final class BindingMapping {
             "true", "try", "void", "volatile", "while");
 
     public static final String QNAME_STATIC_FIELD_NAME = "QNAME";
-    public static final String PACKAGE_PREFIX = "org.opendaylight.yang.gen.v2";
+    public static final String PACKAGE_PREFIX = "org.opendaylight.mdsal.gen.javav2";
 
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
     private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
@@ -105,17 +106,22 @@ public final class BindingMapping {
             packageNameBuilder.append('.');
         }
 
-        final SemVer semVer = module.getSemanticVersion();
-        if (semVer != null) {
-            packageNameBuilder.append(semVer.toString());
-        } else {
-            packageNameBuilder.append("rev");
-            packageNameBuilder.append(PACKAGE_DATE_FORMAT.get().format(module.getRevision()));
-        }
-        return normalizePackageName(packageNameBuilder.toString());
+        //TODO: per yangtools dev, semantic version not used yet
+//        final SemVer semVer = module.getSemanticVersion();
+//        if (semVer != null) {
+//            packageNameBuilder.append(semVer.toString());
+//        } else {
+//            packageNameBuilder.append("rev");
+//            packageNameBuilder.append(PACKAGE_DATE_FORMAT.get().format(module.getRevision()));
+//        }
+
+        packageNameBuilder.append("rev");
+        packageNameBuilder.append(PACKAGE_DATE_FORMAT.get().format(module.getRevision()));
+
+        return normalizePackageName(packageNameBuilder.toString(), null);
     }
 
-    public static String normalizePackageName(final String packageName) {
+    public static String normalizePackageName(final String packageName, final BindingNamespaceType namespaceType) {
         if (packageName == null) {
             return null;
         }
@@ -135,6 +141,10 @@ public final class BindingMapping {
                 builder.append('_');
             }
             builder.append(p);
+        }
+
+        if (namespaceType != null) {
+            builder.append('.').append(namespaceType.getPackagePrefix());
         }
 
         // Prevent duplication of input string
@@ -191,6 +201,39 @@ public final class BindingMapping {
             return s.toUpperCase();
         }
         return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+    public static String getPropertyName(final String yangIdentifier) {
+        final String potential = toFirstLower(toCamelCase(yangIdentifier));
+        if ("class".equals(potential)) {
+            return "xmlClass";
+        }
+        return potential;
+    }
+
+    /**
+     * Returns the {@link String} {@code s} with an
+     * {@link Character#isLowerCase(char) lower case} first character. This
+     * function is null-safe.
+     *
+     * @param s
+     *            the string that should get an lower case first character. May
+     *            be <code>null</code>.
+     * @return the {@link String} {@code s} with an lower case first character
+     *         or <code>null</code> if the input {@link String} {@code s} was
+     *         <code>null</code>.
+     */
+    private static String toFirstLower(final String s) {
+        if (s == null || s.length() == 0) {
+            return s;
+        }
+        if (Character.isLowerCase(s.charAt(0))) {
+            return s;
+        }
+        if (s.length() == 1) {
+            return s.toLowerCase();
+        }
+        return s.substring(0, 1).toLowerCase() + s.substring(1);
     }
 
     //TODO: further implementation of static util methods...
