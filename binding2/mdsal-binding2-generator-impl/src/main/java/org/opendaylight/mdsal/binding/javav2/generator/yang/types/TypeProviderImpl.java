@@ -21,6 +21,7 @@ import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
@@ -39,7 +40,17 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     private final Map<String, Map<Date, Map<String, Type>>> genTypeDefsContextMap;
 
+
+    /**
+     * Map which maps schema paths to JAVA <code>Type</code>.
+     */
+    private final Map<SchemaPath, Type> referencedTypes;
+
+    /**
+     * Map for additional types e.g unions
+     */
     private final Map<Module, Set<Type>> additionalTypes;
+
     /**
      * Creates new instance of class <code>TypeProviderImpl</code>.
      *
@@ -51,6 +62,7 @@ public final class TypeProviderImpl implements TypeProvider {
     public TypeProviderImpl(final SchemaContext schemaContext) {
         this.schemaContext = schemaContext;
         this.genTypeDefsContextMap = new HashMap<>();
+        this.referencedTypes = new HashMap<>();
         this.additionalTypes = new HashMap<>();
     }
 

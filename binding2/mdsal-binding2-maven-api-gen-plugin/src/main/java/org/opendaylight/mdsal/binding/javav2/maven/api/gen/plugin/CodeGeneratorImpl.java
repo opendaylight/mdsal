@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.maven.project.MavenProject;
+import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.binding.javav2.generator.impl.BindingGeneratorImpl;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
@@ -54,6 +57,9 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
      */
     @Override
     public Collection<File> generateSources(SchemaContext context, File outputBaseDir, Set<Module> currentModules) throws IOException {
+
+        final BindingGenerator bindingGenerator = new BindingGeneratorImpl(true);
+        final List<Type> types = bindingGenerator.generateTypes(context, currentModules);
 
         List<File> result = new ArrayList<>();
         return result;

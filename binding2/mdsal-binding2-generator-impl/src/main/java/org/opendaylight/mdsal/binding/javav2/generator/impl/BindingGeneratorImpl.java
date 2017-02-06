@@ -43,6 +43,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * (in JAVA class/interface name format). Inner value represents instance of
      * builder for schema node specified in key part.
      */
+    //TODO: convert it to local variable eventually
     private Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
 
     private Map<Module, ModuleContext> genCtx = new HashMap<>();
@@ -51,12 +52,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * Provide methods for converting YANG types to JAVA types.
      */
     private TypeProvider typeProvider;
-
-    /**
-     * Holds reference to schema context to resolve data of augmented element
-     * when creating augmentation builder
-     */
-    private SchemaContext schemaContext;
 
     /**
      * Creates a new binding generator v2.
@@ -83,7 +78,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
     public List<Type> generateTypes(SchemaContext context) {
         Preconditions.checkArgument(context != null, "Schema Context reference cannot be NULL.");
         Preconditions.checkState(context.getModules() != null, "Schema Context does not contain defined modules.");
-        schemaContext = context;
         typeProvider = new TypeProviderImpl(context);
         final Set<Module> modules = context.getModules();
         return generateTypes(context, modules);
@@ -95,17 +89,18 @@ public class BindingGeneratorImpl implements BindingGenerator {
         Preconditions.checkState(context.getModules() != null, "Schema Context does not contain defined modules.");
         Preconditions.checkArgument(modules != null, "Set of Modules cannot be NULL.");
 
-        schemaContext = context;
         typeProvider = new TypeProviderImpl(context);
         final Module[] modulesArray = new Module[context.getModules().size()];
         context.getModules().toArray(modulesArray);
         final List<Module> contextModules = ModuleDependencySort.sort(modulesArray);
+        genTypeBuilders = new HashMap<>();
 
         for (final Module contextModule : contextModules) {
-            genCtx = ModuleToGenType.generate(contextModule, context, typeProvider, verboseClassComments);
+            genCtx = ModuleToGenType.generate(contextModule, genTypeBuilders, context, typeProvider,
+                    verboseClassComments);
         }
         for (final Module contextModule : contextModules) {
-            genCtx = AugmentToGenType.generate(contextModule, schemaContext, genCtx,
+            genCtx = AugmentToGenType.generate(contextModule, context, genCtx,
                     genTypeBuilders, verboseClassComments);
         }
 
