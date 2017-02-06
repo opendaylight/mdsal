@@ -356,7 +356,7 @@ final class AugmentToGenType {
         for (final DataSchemaNode caseNode : augmentedNodes) {
             if (caseNode != null) {
                 final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                        caseNode.getPath());
+                        caseNode.getPath(), null);
                 final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(packageName,
                         caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders);
                 caseTypeBuilder.addImplementsType(targetType);
@@ -399,7 +399,7 @@ final class AugmentToGenType {
                 final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
                 if (childNodes != null) {
                     GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType,
-                            childNodes);
+                            childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders);
                 }
                 genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
                 genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
