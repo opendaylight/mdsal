@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_d81b97c8",
+        "filename": "binding2/mdsal-binding2-util/src/main/java/org/opendaylight/mdsal/binding/javav2/util/BindingMapping.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-02-07T19:44:46Z",
+      "side": 1,
+      "message": "javadoc, please",
+      "range": {
+        "startLine": 40,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 84
+      },
+      "revId": "fbecb7543f2cc40d539c1be0faeb2d5807b7a609",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_78842bd4",
+        "filename": "binding2/mdsal-binding2-util/src/main/java/org/opendaylight/mdsal/binding/javav2/util/BindingMapping.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-02-07T19:44:46Z",
+      "side": 1,
+      "message": "javadoc...",
+      "range": {
+        "startLine": 124,
+        "startChar": 3,
+        "endLine": 124,
+        "endChar": 115
+      },
+      "revId": "fbecb7543f2cc40d539c1be0faeb2d5807b7a609",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_187d1fe8",
+        "filename": "binding2/mdsal-binding2-util/src/main/java/org/opendaylight/mdsal/binding/javav2/util/BindingMapping.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-02-07T19:44:46Z",
+      "side": 1,
+      "message": "missing javadoc",
+      "range": {
+        "startLine": 206,
+        "startChar": 4,
+        "endLine": 206,
+        "endChar": 71
+      },
+      "revId": "fbecb7543f2cc40d539c1be0faeb2d5807b7a609",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
