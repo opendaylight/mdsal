@@ -1,0 +1,11 @@
+module test-cont {
+    yang-version 1;
+
+    namespace "urn:test:simple:test:cont";
+    prefix test-cont;
+    organization "test.cont.org";
+    revision "2017-02-06";
+
+    container my-cont {
+    }
+}

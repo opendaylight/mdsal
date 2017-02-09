@@ -8,6 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.yang.types;
 
+import static org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeGenHelper.baseTypeDefForExtendedType;
+import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.Date;
@@ -25,7 +28,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 
 @Beta
 public final class TypeProviderImpl implements TypeProvider {
@@ -108,16 +110,12 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
-        if (typeDefinition.getQName() == null) {
-            throw new IllegalArgumentException(
-                    "Type Definition cannot have non specified QName (QName cannot be NULL!)");
-        }
         Preconditions.checkArgument(typeDefinition.getQName().getLocalName() != null,
                 "Type Definitions Local Name cannot be NULL!");
 
         final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
         if (!(baseTypeDef instanceof LeafrefTypeDefinition) && !(baseTypeDef instanceof IdentityrefTypeDefinition)) {
-            final Module module = SchemaContextUtil.findParentModule(schemaContext, parentNode);
+            final Module module = findParentModule(schemaContext, parentNode);
 
             if (module != null) {
                 final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
@@ -128,27 +126,6 @@ public final class TypeProviderImpl implements TypeProvider {
             }
         }
         return null;
-    }
-
-    /**
-     * Gets base type definition for <code>extendTypeDef</code>. The method is
-     * recursively called until non <code>ExtendedType</code> type is found.
-     *
-     * @param extendTypeDef
-     *            type definition for which is the base type definition sought
-     * @return type definition which is base type for <code>extendTypeDef</code>
-     * @throws IllegalArgumentException
-     *             if <code>extendTypeDef</code> equal null
-     */
-    private static TypeDefinition<?> baseTypeDefForExtendedType(final TypeDefinition<?> extendTypeDef) {
-        Preconditions.checkArgument(extendTypeDef != null, "Type Definition reference cannot be NULL!");
-
-        TypeDefinition<?> ret = extendTypeDef;
-        while (ret.getBaseType() != null) {
-            ret = ret.getBaseType();
-        }
-
-        return ret;
     }
 
     public Map<Module, Set<Type>> getAdditionalTypes() {
