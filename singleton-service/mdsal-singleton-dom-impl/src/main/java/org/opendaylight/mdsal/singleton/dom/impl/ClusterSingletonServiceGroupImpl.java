@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
@@ -142,7 +143,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             Verify.verify(!hasOwnership);
             Verify.verify(serviceEntityCandidateReg == null);
             serviceEntityCandidateReg = entityOwnershipService.registerCandidate(serviceEntity);
-        } catch (final Exception e) {
+        } catch (final RuntimeException | InterruptedException | CandidateAlreadyRegisteredException e) {
             LOG.debug("Unexpected error by registration service Provider {}", clusterSingletonGroupIdentifier, e);
             needCloseProviderInstance = true;
             throw new RuntimeException(e);
@@ -168,7 +169,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             if (hasOwnership) {
                 service.instantiateServiceInstance();
             }
-        } catch (final Exception e) {
+        } catch (final RuntimeException | InterruptedException e) {
             LOG.debug("Unexpected error by registration service Provider {}", clusterSingletonGroupIdentifier, e);
             needCloseProviderInstance = true;
             throw new RuntimeException(e);
@@ -197,7 +198,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             } else {
                 needCloseProviderInstance = true;
             }
-        } catch (final Exception e) {
+        } catch (final RuntimeException | InterruptedException e) {
             LOG.debug("Unexpected error by registration service Provider {}", clusterSingletonGroupIdentifier, e);
             needCloseProviderInstance = true;
             throw new RuntimeException(e);
@@ -302,7 +303,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             } else {
                 LOG.debug("Service {} is closed, so don't take leadership", clusterSingletonGroupIdentifier);
             }
-        } catch (final Exception e) {
+        } catch (final RuntimeException | InterruptedException e) {
             LOG.error("Unexpected exception state for service Provider {} in TakeLeadership",
                     clusterSingletonGroupIdentifier, e);
             needCloseProviderInstance = true;
@@ -349,7 +350,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
              * instance has fully closed prior to relinquishing service ownership.
              */
             needReleaseLock = false;
-        } catch (final Exception e) {
+        } catch (final RuntimeException | InterruptedException e) {
             LOG.error("Unexpected exception state for service Provider {} in LostLeadership",
                     clusterSingletonGroupIdentifier, e);
             needCloseProviderInstance = true;
