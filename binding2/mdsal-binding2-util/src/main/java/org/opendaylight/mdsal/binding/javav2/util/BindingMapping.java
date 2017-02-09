@@ -8,9 +8,10 @@
 
 package org.opendaylight.mdsal.binding.javav2.util;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
@@ -19,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
 /**
@@ -70,9 +72,9 @@ public final class BindingMapping {
     }
 
     public static String getRootPackageName(final Module module) {
-        Preconditions.checkArgument(module != null, "Module must not be null");
-        Preconditions.checkArgument(module.getRevision() != null, "Revision must not be null");
-        Preconditions.checkArgument(module.getNamespace() != null, "Namespace must not be null");
+        checkArgument(module != null, "Module must not be null");
+        checkArgument(module.getRevision() != null, "Revision must not be null");
+        checkArgument(module.getNamespace() != null, "Namespace must not be null");
 
         final StringBuilder packageNameBuilder = new StringBuilder();
         packageNameBuilder.append(PACKAGE_PREFIX);
@@ -167,12 +169,17 @@ public final class BindingMapping {
      * @return class name
      */
     public static String getClassName(final String localName) {
-        Preconditions.checkArgument(localName != null, "Name should not be null.");
+        checkArgument(localName != null, "Name should not be null.");
         return toFirstUpper(toCamelCase(localName));
     }
 
+    public static String getClassName(final QName name) {
+        checkArgument(name != null, "Name should not be null.");
+        return toFirstUpper(toCamelCase(name.getLocalName()));
+    }
+
     private static String toCamelCase(final String rawString) {
-        Preconditions.checkArgument(rawString != null, "String should not be null");
+        checkArgument(rawString != null, "String should not be null");
         Iterable<String> components = CAMEL_SPLITTER.split(rawString);
         StringBuilder builder = new StringBuilder();
         for (String comp : components) {
