@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.util;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
@@ -20,6 +22,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
 /**
@@ -147,7 +150,8 @@ public final class BindingMapping {
                 builder.append('.');
             }
 
-            //FIXME: don't use underscore in v2
+            //FIXME: don't use underscore in v2 - this issue is supposed to disappear
+            //FIXME: by using https://git.opendaylight.org/gerrit/#/c/51132/
             if (Character.isDigit(p.charAt(0)) || BindingMapping.JAVA_RESERVED_WORDS.contains(p)) {
                 builder.append('_');
             }
@@ -170,6 +174,11 @@ public final class BindingMapping {
     public static String getClassName(final String localName) {
         Preconditions.checkArgument(localName != null, "Name should not be null.");
         return toFirstUpper(toCamelCase(localName));
+    }
+
+    public static String getClassName(final QName name) {
+        checkArgument(name != null, "Name should not be null.");
+        return toFirstUpper(toCamelCase(name.getLocalName()));
     }
 
     private static String toCamelCase(final String rawString) {
