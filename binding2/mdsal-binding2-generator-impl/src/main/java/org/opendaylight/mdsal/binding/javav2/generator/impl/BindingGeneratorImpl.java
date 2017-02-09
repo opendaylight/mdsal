@@ -83,6 +83,34 @@ public class BindingGeneratorImpl implements BindingGenerator {
         return generateTypes(context, modules);
     }
 
+    /**
+     * Resolves generated types from <code>context</code> schema nodes only for
+     * modules specified in <code>modules</code>
+     *
+     * Generated types are created for modules, groupings, types, containers,
+     * lists, choices, augments, rpcs, notification, identities.
+     *
+     * @param context
+     *            schema context which contains data about all schema nodes
+     *            saved in modules
+     * @param modules
+     *            set of modules for which schema nodes should be generated
+     *            types
+     * @return list of types (usually <code>GeneratedType</code> or
+     *         <code>GeneratedTransferObject</code>) which:
+     *         <ul>
+     *         <li>are generated from <code>context</code> schema nodes and</li>
+     *         <li>are also part of some of the module in <code>modules</code>
+     *         set.</li>
+     *         </ul>
+     * @throws IllegalArgumentException
+     *             <ul>
+     *             <li>if arg <code>context</code> is null or</li>
+     *             <li>if arg <code>modules</code> is null</li>
+     *             </ul>
+     * @throws IllegalStateException
+     *             if <code>context</code> contain no modules
+     */
     @Override
     public List<Type> generateTypes(SchemaContext context, Set<Module> modules) {
         Preconditions.checkArgument(context != null, "Schema Context reference cannot be NULL.");
