@@ -11,6 +11,7 @@ import com.google.common.annotations.Beta;
 import java.util.List;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration.Pair;
+import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 
 /**
  * This util class converts every non-java char in identifier to java char by its unicode name
@@ -80,8 +81,12 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration.Pair;
 @Beta
 public final class NonJavaCharsConverter {
 
-    private final static int FIRST_CHAR = 0;
-    private final static int FIRST_INDEX = 1;
+    private static final int FIRST_CHAR = 0;
+    private static final int FIRST_INDEX = 1;
+    private static final char UNDERSCORE = '_';
+    private static final String TRIPLE_UNDERSCORE = "TRIPLEUNDERSCORE";
+    private static final char DASH = '-';
+    private static final String EMPTY_STRING = "";
 
     private NonJavaCharsConverter() {
         throw new UnsupportedOperationException("Util class");
@@ -117,6 +122,28 @@ public final class NonJavaCharsConverter {
         return convertIdentifierEnumValue(name, name, values, FIRST_INDEX);
     }
 
+    /**
+     * Normalizing package name by non java chars.
+     *
+     * @param name
+     *            - part of package name
+     * @return normalized name
+     */
+    public static String normalizePackageName(final String name) {
+        StringBuilder normalizedName = new StringBuilder(name);
+        if (BindingMapping.JAVA_RESERVED_WORDS.contains(name) || BindingMapping.WINDOWS_RESERVED_WORDS.contains(name)) {
+            return normalizedName.append(UNDERSCORE).toString();
+        }
+        if(name.contains(String.valueOf(UNDERSCORE))) {
+            normalizedName = new StringBuilder(name.replaceAll(String.valueOf(UNDERSCORE), TRIPLE_UNDERSCORE));
+        }
+        if(name.contains(String.valueOf(DASH))) {
+            normalizedName =
+                    new StringBuilder(name.replaceAll(String.valueOf(DASH), String.valueOf(TRIPLE_UNDERSCORE)));
+        }
+        return convertIdentifier(normalizedName.toString(), JavaIdentifier.PACKAGE);
+    }
+
     private static String convertIdentifierEnumValue(final String name, final String origName, final List<Pair> values,
             final int rank) {
         String newName = name;
@@ -124,7 +151,8 @@ public final class NonJavaCharsConverter {
             if (pair.getName().toLowerCase().equals(name.toLowerCase())
                     || pair.getMappedName().toLowerCase().equals(name.toLowerCase())) {
                 int actualRank = rank;
-                final StringBuilder actualNameBuilder = new StringBuilder(origName).append('_').append(actualRank);
+                final StringBuilder actualNameBuilder =
+                        new StringBuilder(origName).append(UNDERSCORE).append(actualRank);
                 newName = convertIdentifierEnumValue(actualNameBuilder.toString(), origName, values,
                         ++actualRank);
             }
@@ -193,6 +221,9 @@ public final class NonJavaCharsConverter {
             case METHOD:
             case VARIABLE:
                 return fixCases(convertedIdentifier);
+            case PACKAGE:
+                return convertedIdentifier.replaceAll(String.valueOf(UNDERSCORE), EMPTY_STRING)
+                        .replaceAll(TRIPLE_UNDERSCORE.toLowerCase(), String.valueOf(UNDERSCORE));
             default:
                 throw new IllegalArgumentException("Unknown java type of identifier : " + javaIdentifier.toString());
         }
@@ -207,9 +238,9 @@ public final class NonJavaCharsConverter {
      */
     private static String fixCases(final String convertedIdentifier) {
         final StringBuilder sb = new StringBuilder();
-        if (convertedIdentifier.contains("_")) {
+        if (convertedIdentifier.contains(String.valueOf(UNDERSCORE))) {
             boolean isFirst = true;
-            for (final String part : convertedIdentifier.split("_")) {
+            for (final String part : convertedIdentifier.split(String.valueOf(UNDERSCORE))) {
                 if (isFirst) {
                     isFirst = false;
                     sb.append(part);
