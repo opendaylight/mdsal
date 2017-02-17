@@ -15,14 +15,11 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.getAugmentIdentifier;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.qNameConstant;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
-
 import com.google.common.annotations.Beta;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
@@ -71,7 +68,7 @@ final class GenHelperUtil {
      * @throws IllegalArgumentException
      *             if module is null
      */
-    static GeneratedTypeBuilder moduleToDataType(final Module module, Map<Module, ModuleContext> genCtx, final boolean verboseClassComments) {
+    static GeneratedTypeBuilder moduleToDataType(final Module module, final Map<Module, ModuleContext> genCtx, final boolean verboseClassComments) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
 
         final GeneratedTypeBuilder moduleDataTypeBuilder = moduleTypeBuilder(module, "Data", verboseClassComments);
@@ -131,7 +128,7 @@ final class GenHelperUtil {
      * @return generated type builder with all implemented types
      */
     private static GeneratedTypeBuilder addImplementedInterfaceFromUses(final DataNodeContainer dataNodeContainer,
-                          final GeneratedTypeBuilder builder, Map<Module, ModuleContext> genCtx) {
+                          final GeneratedTypeBuilder builder, final Map<Module, ModuleContext> genCtx) {
         for (final UsesNode usesNode : dataNodeContainer.getUses()) {
             final GeneratedType genType = findGroupingByPath(usesNode.getGroupingPath(), genCtx).toInstance();
             if (genType == null) {
@@ -143,7 +140,7 @@ final class GenHelperUtil {
         return builder;
     }
 
-     static GeneratedTypeBuilder findGroupingByPath(final SchemaPath path, Map<Module, ModuleContext> genCtx) {
+     static GeneratedTypeBuilder findGroupingByPath(final SchemaPath path, final Map<Module, ModuleContext> genCtx) {
         for (final ModuleContext ctx : genCtx.values()) {
             final GeneratedTypeBuilder result = ctx.getGrouping(path);
             if (result != null) {
@@ -180,9 +177,9 @@ final class GenHelperUtil {
      */
     static GeneratedTypeBuilder resolveDataSchemaNodes(final Module module, final String basePackageName,
                           final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf,
-                          final Iterable<DataSchemaNode> schemaNodes, Map<Module, ModuleContext> genCtx,
+                          final Iterable<DataSchemaNode> schemaNodes, final Map<Module, ModuleContext> genCtx,
                           final SchemaContext schemaContext, final boolean verboseClassComments,
-                          Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+                          final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
 
         if (schemaNodes != null && parent != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
@@ -196,14 +193,14 @@ final class GenHelperUtil {
     }
 
     static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
-            schemaNode, final Module module, Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext,
-                                                              final boolean verboseClassComments, Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+            schemaNode, final Module module, final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext,
+                                                              final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
         return addDefaultInterfaceDefinition(packageName, schemaNode, null, module, genCtx, schemaContext,
                 verboseClassComments, genTypeBuilders);
     }
 
     static Map<Module, ModuleContext> processUsesAugments(final SchemaContext schemaContext, final
-                        DataNodeContainer node, final Module module, Map<Module, ModuleContext> genCtx,  Map<String,
+                        DataNodeContainer node, final Module module, Map<Module, ModuleContext> genCtx,  final Map<String,
                         Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments) {
         final String basePackageName = BindingMapping.getRootPackageName(module);
         for (final UsesNode usesNode : node.getUses()) {
@@ -217,7 +214,7 @@ final class GenHelperUtil {
         return genCtx;
     }
 
-    static GeneratedTypeBuilder findChildNodeByPath(final SchemaPath path, Map<Module, ModuleContext> genCtx) {
+    static GeneratedTypeBuilder findChildNodeByPath(final SchemaPath path, final Map<Module, ModuleContext> genCtx) {
         for (final ModuleContext ctx : genCtx.values()) {
             final GeneratedTypeBuilder result = ctx.getChildNode(path);
             if (result != null) {
@@ -227,7 +224,7 @@ final class GenHelperUtil {
         return null;
     }
 
-    static GeneratedTypeBuilder findCaseByPath(final SchemaPath path, Map<Module, ModuleContext> genCtx) {
+    static GeneratedTypeBuilder findCaseByPath(final SchemaPath path, final Map<Module, ModuleContext> genCtx) {
         for (final ModuleContext ctx : genCtx.values()) {
             final GeneratedTypeBuilder result = ctx.getCase(path);
             if (result != null) {
@@ -260,7 +257,7 @@ final class GenHelperUtil {
      */
     static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
                 final String basePackageName, final Type targetTypeRef, final AugmentationSchema augSchema,
-                Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, Map<Module, ModuleContext> genCtx) {
+                final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx) {
 
         Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.get(augmentPackageName);
         if (augmentBuilders == null) {
@@ -320,7 +317,7 @@ final class GenHelperUtil {
     private static GeneratedTypeBuilder augSchemaNodeToMethods(final Module module, final String basePackageName,
                                                         final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf,
                                                         final Iterable<DataSchemaNode> schemaNodes) {
-        if ((schemaNodes != null) && (typeBuilder != null)) {
+        if (schemaNodes != null && typeBuilder != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting()) {
                     //TODO: design decomposition and implement it
@@ -356,8 +353,8 @@ final class GenHelperUtil {
      * @return generated type builder <code>schemaNode</code>
      */
     private static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
-            schemaNode, final Type parent, final Module module, Map<Module, ModuleContext> genCtx,
-            final SchemaContext schemaContext, final boolean verboseClassComments, Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+            schemaNode, final Type parent, final Module module, final Map<Module, ModuleContext> genCtx,
+            final SchemaContext schemaContext, final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
 
         GeneratedTypeBuilder it = addRawInterfaceDefinition(packageName, schemaNode, schemaContext, "",
                 verboseClassComments, genTypeBuilders);
@@ -407,7 +404,7 @@ final class GenHelperUtil {
      */
     private static GeneratedTypeBuilder addRawInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
                        final SchemaContext schemaContext, final String prefix, final boolean verboseClassComments,
-                       Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+                       final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
 
         Preconditions.checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
         Preconditions.checkArgument(packageName != null, "Package Name for Generated Type cannot be NULL.");
@@ -416,11 +413,11 @@ final class GenHelperUtil {
 
         String genTypeName;
         if (prefix == null) {
-            genTypeName = BindingMapping.getClassName(NonJavaCharsConverter.convertIdentifier(schemaNodeName,
-                    JavaIdentifier.CLASS));
+            genTypeName = BindingMapping
+                    .getClassName(NonJavaCharsConverter.normalizeClassIdentifier(packageName, schemaNodeName));
         } else {
-            genTypeName = prefix + BindingMapping.getClassName(NonJavaCharsConverter.convertIdentifier
-                    (schemaNodeName, JavaIdentifier.CLASS));
+            genTypeName = prefix + BindingMapping
+                    .getClassName(NonJavaCharsConverter.normalizeClassIdentifier(packageName, schemaNodeName));
         }
 
         final GeneratedTypeBuilderImpl newType = new GeneratedTypeBuilderImpl(packageName, genTypeName);
@@ -448,8 +445,8 @@ final class GenHelperUtil {
 
     private static void addSchemaNodeToBuilderAsMethod(final String basePackageName, final DataSchemaNode node,
         final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf, final Module module,
-        Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments,
-        Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+        final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments,
+        final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
         //TODO: implement rest of schema nodes GTO building
         if (node != null && typeBuilder != null) {
             if (node instanceof ContainerSchemaNode) {
@@ -462,8 +459,8 @@ final class GenHelperUtil {
 
     private static void containerToGenType(final Module module, final String basePackageName,
         final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf, final ContainerSchemaNode node,
-        final SchemaContext schemaContext, final boolean verboseClassComments, Map<Module, ModuleContext> genCtx,
-        Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+        final SchemaContext schemaContext, final boolean verboseClassComments, final Map<Module, ModuleContext> genCtx,
+        final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
 
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node,
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders);
@@ -476,7 +473,7 @@ final class GenHelperUtil {
 
     private static GeneratedTypeBuilder processDataSchemaNode(final Module module, final String basePackageName,
         final GeneratedTypeBuilder childOf, final DataSchemaNode node, final SchemaContext schemaContext,
-        final boolean verboseClassComments, Map<Module, ModuleContext> genCtx, Map<String, Map<String,
+        final boolean verboseClassComments, final Map<Module, ModuleContext> genCtx, final Map<String, Map<String,
         GeneratedTypeBuilder>> genTypeBuilders) {
 
         if (node.isAugmenting() || node.isAddedByUses()) {
