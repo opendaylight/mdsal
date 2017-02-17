@@ -26,9 +26,38 @@ public final class BindingGeneratorUtil {
 
     private static final CharMatcher GT_MATCHER = CharMatcher.is('>');
     private static final CharMatcher LT_MATCHER = CharMatcher.is('<');
+    private static final char UNDERSCORE = '_';
+    private static final char DASH = '-';
+    private static final int FIRST_CHAR = 0;
 
     private BindingGeneratorUtil() {
         throw new UnsupportedOperationException("Utility class");
+    }
+
+    /**
+     * Normalizing package name according to
+     * <a href="https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html">Naming a
+     * Package in JAVA</a>.
+     * In binding generator v2 flow, this method is called after dealing with possible non-Java
+     * characters.
+     *
+     * @param name
+     *            - part of package name
+     * @return normalized name
+     */
+    public static String normalizePackageName(final String name) {
+        final StringBuilder normalizedName = new StringBuilder(name);
+        if (BindingMapping.JAVA_RESERVED_WORDS.contains(name)) {
+            return normalizedName.append(UNDERSCORE).toString();
+        }
+        final char firstChar = name.charAt(FIRST_CHAR);
+        if (!Character.isJavaIdentifierStart(firstChar) || Character.isDigit(firstChar)) {
+            normalizedName.insert(FIRST_CHAR, UNDERSCORE);
+        }
+        if (name.contains(String.valueOf(DASH))) {
+            return normalizedName.toString().replaceAll(String.valueOf(DASH), String.valueOf(UNDERSCORE));
+        }
+        return normalizedName.toString();
     }
 
     /**
@@ -99,7 +128,7 @@ public final class BindingGeneratorUtil {
         final Iterator<QName> iterator = path.iterator();
         for (int i = 0; i < size; ++i) {
             builder.append('.');
-            String nodeLocalName = iterator.next().getLocalName();
+            final String nodeLocalName = iterator.next().getLocalName();
             //FIXME: colon or dash in identifier?
             builder.append(nodeLocalName);
         }
@@ -111,7 +140,7 @@ public final class BindingGeneratorUtil {
      * @param description description of a yang statement which is used to generate javadoc comments
      * @return string with encoded angle brackets
      */
-    public static String encodeAngleBrackets(String description) {
+    public static String encodeAngleBrackets(final String description) {
         String newDesc = description;
         if (newDesc != null) {
             newDesc = LT_MATCHER.replaceFrom(newDesc, "&lt;");
