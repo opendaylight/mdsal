@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.buil
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.yangtools.yang.model.api.Status;
