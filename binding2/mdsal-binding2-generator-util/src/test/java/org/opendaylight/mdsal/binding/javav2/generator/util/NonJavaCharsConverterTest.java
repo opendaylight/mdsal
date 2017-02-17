@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 
 public class NonJavaCharsConverterTest {
 
@@ -102,6 +102,61 @@ public class NonJavaCharsConverterTest {
         assertTest("Acc1", "acc1", JavaIdentifier.METHOD);
         assertTest("1", "digitOne", JavaIdentifier.METHOD);
         assertTest("%", "percentSign", JavaIdentifier.METHOD);
+    }
+
+
+    @Test
+    public void resrvedKeyWordsTest() {
+        for (final String reservedKeyword : BindingMapping.JAVA_RESERVED_WORDS) {
+            final String packageNameNormalizer = NonJavaCharsConverter.normalizePackageName(reservedKeyword);
+            final StringBuilder expected = new StringBuilder(reservedKeyword).append('_');
+            assertEquals(expected.toString(), packageNameNormalizer);
+        }
+    }
+
+    @Test
+    public void digitAtStartTest() {
+        for (int i = 0; i < 10; i++) {
+            final String str_i = String.valueOf(i);
+            final String packageNameNormalizer = NonJavaCharsConverter.normalizePackageName(str_i);
+            final String expected = Character.getName(str_i.charAt(0)).replaceAll(" ", "").toLowerCase();
+            assertEquals(expected.toString(), packageNameNormalizer);
+        }
+    }
+
+    @Test
+    public void dashTest() {
+        final String test = "str-test";
+        final String packageNameNormalizer = NonJavaCharsConverter.normalizePackageName(test);
+        final String expected = "str_test";
+        assertEquals(expected, packageNameNormalizer);
+    }
+
+    @Test
+    public void nonJavaStartChar() {
+        testNonJavaChar("*foo", "asteriskfoo");
+        testNonJavaChar("/foo", "solidusfoo");
+        testNonJavaChar("\\foo", "reversesolidusfoo");
+        testNonJavaChar(":foo", "colonfoo");
+
+        testNonJavaChar("f*oo", "fasteriskoo");
+        testNonJavaChar("f/oo", "fsolidusoo");
+        testNonJavaChar("f\\oo", "freversesolidusoo");
+        testNonJavaChar("f:oo", "fcolonoo");
+
+        testNonJavaChar("foo*", "fooasterisk");
+        testNonJavaChar("foo/", "foosolidus");
+        testNonJavaChar("foo\\", "fooreversesolidus");
+        testNonJavaChar("foo:", "foocolon");
+
+        testNonJavaChar("_foo_", "_foo_");
+        testNonJavaChar("f_oo", "f_oo");
+
+    }
+
+    private void testNonJavaChar(final String tested, final Object expected) {
+        final String packageNameNormalizer = NonJavaCharsConverter.normalizePackageName(tested);
+        assertEquals(expected, packageNameNormalizer);
     }
 
     private void assertTest(final String testedIdentifier, final String acceptable,
