@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.generator.util.AbstractBaseType;
-import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
 import org.opendaylight.mdsal.binding.javav2.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
@@ -46,7 +45,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
     private List<QName> schemaPath;
 
     public EnumerationBuilderImpl(final String packageName, final String name) {
-        super(packageName, NonJavaCharsConverter.convertIdentifier(name, JavaIdentifier.ENUM));
+        super(packageName, NonJavaCharsConverter.normalizeClassIdentifier(packageName, name));
     }
 
     public void setReference(final String reference) {
