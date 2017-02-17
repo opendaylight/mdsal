@@ -39,6 +39,8 @@ the first character of identifier, any other first character of identifier part 
  \example - ReverseSolidusExample
  1example - DigitOneExample
  example1 - Example1
+ int - IntReservedKeyword
+ con - ConReservedKeyword
 
 * enum value, constant
 ** used underscore as special separator
@@ -50,6 +52,8 @@ the first character of identifier, any other first character of identifier part 
  \example - REVERSE_SOLIDUS_EXAMPLE
  1example - DIGIT_ONE_EXAMPLE
  example1 - EXAMPLE1
+ int - INT_RESERVED_KEYWORD
+ con - CON_RESERVED_KEYWORD
 
 * method, variable
 ** without special separator
@@ -62,6 +66,53 @@ the first character of identifier, any other first character of identifier part 
  \example - reverseSolidusExample
  1example - digitOneExample
  example1 - example1
+ int - intReservedKeyword
+ con - conReservedKeyword
+
+* package - part of package name (https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html)
+** without special separator for part of package name
+** identifier is converting to lower case
+** if identifier contains a reserved Java or Windows keyword, such as 'int' the suggested convention is to add an underscore to identifier
+** dash is parsed as underscore according to https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html
+
+ examples:
+ example* - exampleasterisk
+ example*example - exampleaserisksexample
+ example - reversesolidusexample
+ 1example - digitoneexample
+ example1 - example1
+ int - int_
+ con - con_
+ foo-cont - foo_cont
+
+==== Special case
+There is special case in CLASS, INTERFACE, ENUM, ENUM VALUE, CONSTANT, METHOD and VARIABLE if
+identifier contains single dash - then the converter ignores the single dash in the way of the
+non-java chars. In other way, if dash is the first or the last char in the identifier or there is
+more dashes in a row in the identifier, then these dashes are converted as non-java chars.
+
+Example:
+
+* class, enum, interface
+
+ foo-cont - FooCont
+ foo--cont - FooHyphenMinusHyphenMinusCont
+ -foo - HyphenMinusFoo
+ foo- - FooHyphenMinus
+
+* enum value, constant
+
+ foo-cont - FOO_CONT
+ foo--cont - FOO_HYPHEN_MINUS_HYPHEN_MINUS_CONT
+ -foo - HYPHEN_MINUS_FOO
+ foo- - FOO_HYPHEN_MINUS
+
+* method, variable
+
+ foo-cont - fooCont
+ foo--cont - fooHyphenMinusHyphenMinusCont
+ -foo - hyphenMinusFoo
+ foo- - fooHyphenMinus
 
 === Binding Specification v2 Concepts
 
