@@ -24,5 +24,5 @@ import com.google.common.annotations.Beta;
 @Beta
 public enum JavaIdentifier {
 
-    CLASS, INTERFACE, ENUM, ENUM_VALUE, METHOD, VARIABLE, CONSTANT
+    CLASS, INTERFACE, ENUM, ENUM_VALUE, METHOD, VARIABLE, CONSTANT, PACKAGE
 }
