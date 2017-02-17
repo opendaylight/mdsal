@@ -34,6 +34,10 @@ public final class BindingMapping {
             "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient",
             "true", "try", "void", "volatile", "while");
 
+    public static final Set<String> WINDOWS_RESERVED_WORDS = ImmutableSet.of("CON", "PRN", "AUX", "CLOCK$", "NUL",
+            "COM0", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT0", "LPT1", "LPT2",
+            "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9");
+
     public static final String QNAME_STATIC_FIELD_NAME = "QNAME";
 
     /**
@@ -140,7 +144,7 @@ public final class BindingMapping {
         final StringBuilder builder = new StringBuilder();
         boolean first = true;
 
-        for (String p : DOT_SPLITTER.split(packageName.toLowerCase())) {
+        for (final String p : DOT_SPLITTER.split(packageName.toLowerCase())) {
             if (first) {
                 first = false;
             } else {
@@ -173,20 +177,19 @@ public final class BindingMapping {
 
     private static String toCamelCase(final String rawString) {
         Preconditions.checkArgument(rawString != null, "String should not be null");
-        Iterable<String> components = CAMEL_SPLITTER.split(rawString);
-        StringBuilder builder = new StringBuilder();
-        for (String comp : components) {
+        final Iterable<String> components = CAMEL_SPLITTER.split(rawString);
+        final StringBuilder builder = new StringBuilder();
+        for (final String comp : components) {
             builder.append(toFirstUpper(comp));
         }
         return checkNumericPrefix(builder.toString());
     }
 
     private static String checkNumericPrefix(final String rawString) {
-        if (rawString == null || rawString.isEmpty()) {
+        if ((rawString == null) || rawString.isEmpty()) {
             return rawString;
         }
-        char firstChar = rawString.charAt(0);
-        if (firstChar >= '0' && firstChar <= '9') {
+        if (Character.isDigit(rawString.charAt(0))) {
             return "_" + rawString;
         } else {
             return rawString;
@@ -206,7 +209,7 @@ public final class BindingMapping {
      *         <code>null</code>.
      */
     public static String toFirstUpper(final String s) {
-        if (s == null || s.length() == 0) {
+        if ((s == null) || (s.length() == 0)) {
             return s;
         }
         if (Character.isUpperCase(s.charAt(0))) {
