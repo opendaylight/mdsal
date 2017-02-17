@@ -9,11 +9,31 @@ package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.buil
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.yangtools.yang.model.api.Status;
 
 public class EnumerationBuilderImplTest {
+
+    @Test
+    public void sameEnumTest() {
+        EnumerationBuilderImpl enumerationBuilderImpl = new EnumerationBuilderImpl("package.same.test", "test");
+        Enumeration enumeration = enumerationBuilderImpl.toInstance(enumerationBuilderImpl);
+        String formattedString = enumeration.toFormattedString();
+
+        assertNotNull(formattedString);
+        assertTrue(!formattedString.isEmpty());
+        assertTrue(formattedString.contains("Test"));
+
+        enumerationBuilderImpl = new EnumerationBuilderImpl("package.same.test", "Test");
+        enumeration = enumerationBuilderImpl.toInstance(enumerationBuilderImpl);
+        formattedString = enumeration.toFormattedString();
+
+        assertNotNull(formattedString);
+        assertTrue(!formattedString.isEmpty());
+        assertTrue(formattedString.contains("Test1"));
+    }
 
     @Test
     public void enumTest() {
@@ -31,7 +51,8 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void enumUniqueTest() {
-        final EnumerationBuilderImpl enumerationBuilderImpl = new EnumerationBuilderImpl("package.test", "test");
+        final EnumerationBuilderImpl enumerationBuilderImpl =
+                new EnumerationBuilderImpl("package.ex.ex.ex.test", "test");
         enumerationBuilderImpl.addValue("foo", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("Foo", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("foo1", 1, "des", "ref", Status.CURRENT);
@@ -89,7 +110,7 @@ public class EnumerationBuilderImplTest {
     @Test
     public void asteriskInEnumTest() {
         final EnumerationBuilderImpl enumerationBuilderImpl =
-                new EnumerationBuilderImpl("package.test", "test**");
+                new EnumerationBuilderImpl("package.ex.test", "test**");
         enumerationBuilderImpl.addValue("val**ue", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("val*ue", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("*value*", 1, "des", "ref", Status.CURRENT);
@@ -109,7 +130,7 @@ public class EnumerationBuilderImplTest {
     @Test
     public void reverseSolidusInEnumTest() {
         final EnumerationBuilderImpl enumerationBuilderImpl =
-                new EnumerationBuilderImpl("package.test", "test\\\\");
+                new EnumerationBuilderImpl("package.ex.ex.test", "test\\\\");
         enumerationBuilderImpl.addValue("val\\\\ue", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("val\\ue", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("\\value\\", 1, "des", "ref", Status.CURRENT);
