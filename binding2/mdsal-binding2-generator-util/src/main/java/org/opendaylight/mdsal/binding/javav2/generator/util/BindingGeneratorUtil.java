@@ -112,7 +112,7 @@ public final class BindingGeneratorUtil {
         final Iterator<QName> iterator = path.iterator();
         for (int i = 0; i < size; ++i) {
             builder.append('.');
-            String nodeLocalName = iterator.next().getLocalName();
+            final String nodeLocalName = iterator.next().getLocalName();
             builder.append(nodeLocalName);
         }
 
@@ -124,7 +124,7 @@ public final class BindingGeneratorUtil {
      * @param description description of a yang statement which is used to generate javadoc comments
      * @return string with encoded angle brackets
      */
-    public static String encodeAngleBrackets(String description) {
+    public static String encodeAngleBrackets(final String description) {
         String newDesc = description;
         if (newDesc != null) {
             newDesc = LT_MATCHER.replaceFrom(newDesc, "&lt;");
