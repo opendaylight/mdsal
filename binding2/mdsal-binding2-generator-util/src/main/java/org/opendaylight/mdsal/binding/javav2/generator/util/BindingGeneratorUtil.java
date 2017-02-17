@@ -10,10 +10,11 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 import com.google.common.collect.Iterables;
 import java.util.Iterator;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
-import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -27,6 +28,8 @@ public final class BindingGeneratorUtil {
 
     private static final CharMatcher GT_MATCHER = CharMatcher.is('>');
     private static final CharMatcher LT_MATCHER = CharMatcher.is('<');
+
+    private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
 
     private BindingGeneratorUtil() {
         throw new UnsupportedOperationException("Utility class");
@@ -104,7 +107,7 @@ public final class BindingGeneratorUtil {
     }
 
     private static String generateNormalizedPackageName(final String base, final Iterable<QName> path, final int
-            size, BindingNamespaceType namespaceType) {
+            size, final BindingNamespaceType namespaceType) {
         final StringBuilder builder = new StringBuilder(base);
         if (namespaceType != null) {
             builder.append('.').append(namespaceType.getPackagePrefix());
@@ -112,11 +115,13 @@ public final class BindingGeneratorUtil {
         final Iterator<QName> iterator = path.iterator();
         for (int i = 0; i < size; ++i) {
             builder.append('.');
-            String nodeLocalName = iterator.next().getLocalName();
+            final String nodeLocalName = iterator.next().getLocalName();
             builder.append(nodeLocalName);
         }
-
-        return BindingMapping.normalizePackageName(builder.toString());
+        final String normalizedPackageName = NonJavaCharsConverter.convertFullPackageName(builder.toString());
+        // Prevent duplication of input
+        PACKAGE_INTERNER.intern(normalizedPackageName);
+        return normalizedPackageName;
     }
 
     /**
@@ -124,7 +129,7 @@ public final class BindingGeneratorUtil {
      * @param description description of a yang statement which is used to generate javadoc comments
      * @return string with encoded angle brackets
      */
-    public static String encodeAngleBrackets(String description) {
+    public static String encodeAngleBrackets(final String description) {
         String newDesc = description;
         if (newDesc != null) {
             newDesc = LT_MATCHER.replaceFrom(newDesc, "&lt;");
