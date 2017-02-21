@@ -24,6 +24,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipChange;
@@ -39,7 +40,6 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.yangtools.binding.data.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.yangtools.sal.binding.generator.impl.GeneratedClassLoadingStrategy;
 
 /**
  * Unit tests for BindingDOMEntityOwnershipServiceAdapter.
@@ -62,22 +62,22 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        doReturn(DOM_ENTITY.getIdentifier()).when(mockCodecRegistry).toYangInstanceIdentifier(
+        doReturn(DOM_ENTITY.getIdentifier()).when(this.mockCodecRegistry).toYangInstanceIdentifier(
                 BINDING_ENTITY.getIdentifier());
-        doReturn(BINDING_ENTITY.getIdentifier()).when(mockCodecRegistry).fromYangInstanceIdentifier(
+        doReturn(BINDING_ENTITY.getIdentifier()).when(this.mockCodecRegistry).fromYangInstanceIdentifier(
                 DOM_ENTITY.getIdentifier());
 
-        adapter = new BindingDOMEntityOwnershipServiceAdapter(mockDOMService,
+        this.adapter = new BindingDOMEntityOwnershipServiceAdapter(this.mockDOMService,
                 new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                        mockCodecRegistry));
+                        this.mockCodecRegistry));
     }
 
     @Test
     public void testRegisterCandidate() throws CandidateAlreadyRegisteredException {
         final DOMEntityOwnershipCandidateRegistration mockDOMReg = mock(DOMEntityOwnershipCandidateRegistration.class);
-        doReturn(mockDOMReg).when(mockDOMService).registerCandidate(DOM_ENTITY);
+        doReturn(mockDOMReg).when(this.mockDOMService).registerCandidate(DOM_ENTITY);
 
-        final EntityOwnershipCandidateRegistration reg = adapter.registerCandidate(BINDING_ENTITY);
+        final EntityOwnershipCandidateRegistration reg = this.adapter.registerCandidate(BINDING_ENTITY);
 
         assertNotNull("registerCandidate returned null", reg);
         assertEquals("getInstance", BINDING_ENTITY, reg.getInstance());
@@ -89,11 +89,11 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
     @Test
     public void testRegisterListener() {
         final DOMEntityOwnershipListenerRegistration mockDOMReg = mock(DOMEntityOwnershipListenerRegistration.class);
-        doReturn(mockDOMReg).when(mockDOMService).registerListener(eq(DOM_ENTITY.getType()),
+        doReturn(mockDOMReg).when(this.mockDOMService).registerListener(eq(DOM_ENTITY.getType()),
                 any(DOMEntityOwnershipListener.class));
         final EntityOwnershipListener mockListener = mock(EntityOwnershipListener.class);
 
-        final EntityOwnershipListenerRegistration reg = adapter.registerListener(
+        final EntityOwnershipListenerRegistration reg = this.adapter.registerListener(
                 BINDING_ENTITY.getType(), mockListener);
 
         assertNotNull("registerListener returned null", reg);
@@ -102,7 +102,7 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
 
         final ArgumentCaptor<DOMEntityOwnershipListener> domListenerCaptor = ArgumentCaptor.forClass(
                 DOMEntityOwnershipListener.class);
-        verify(mockDOMService).registerListener(eq(DOM_ENTITY.getType()),  domListenerCaptor.capture());
+        verify(this.mockDOMService).registerListener(eq(DOM_ENTITY.getType()),  domListenerCaptor.capture());
 
         final DOMEntityOwnershipChange domOwnershipChange = new DOMEntityOwnershipChange(DOM_ENTITY,
                 EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, true);
@@ -123,17 +123,17 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
     @Test
     public void testGetOwnershipState() {
         final Optional<EntityOwnershipState>  expectedState = Optional.of(EntityOwnershipState.IS_OWNER);
-        doReturn(expectedState).when(mockDOMService).getOwnershipState(DOM_ENTITY);
+        doReturn(expectedState).when(this.mockDOMService).getOwnershipState(DOM_ENTITY);
 
-        final Optional<EntityOwnershipState> actualState = adapter.getOwnershipState(BINDING_ENTITY);
+        final Optional<EntityOwnershipState> actualState = this.adapter.getOwnershipState(BINDING_ENTITY);
 
         assertSame("getOwnershipState", expectedState, actualState);
     }
 
     @Test
     public void testIsCandidateRegistered() {
-        doReturn(true).when(mockDOMService).isCandidateRegistered(DOM_ENTITY);
-        assertEquals("isCandidateRegistered", true, adapter.isCandidateRegistered(BINDING_ENTITY));
+        doReturn(true).when(this.mockDOMService).isCandidateRegistered(DOM_ENTITY);
+        assertEquals("isCandidateRegistered", true, this.adapter.isCandidateRegistered(BINDING_ENTITY));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -141,7 +141,7 @@ public class BindingDOMEntityOwnershipServiceAdapterTest {
         final DOMEntityOwnershipListenerAdapter domEntityOwnershipListenerAdapter =
                 new DOMEntityOwnershipListenerAdapter(mock(EntityOwnershipListener.class),
                         new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(),
-                            mockCodecRegistry));
+                            this.mockCodecRegistry));
         final DOMEntityOwnershipChange domOwnershipChange = mock(DOMEntityOwnershipChange.class);
         doThrow(IllegalStateException.class).when(domOwnershipChange).getEntity();
         domEntityOwnershipListenerAdapter.ownershipChanged(domOwnershipChange);
