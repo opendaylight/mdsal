@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.model.api.type.builder;
 
 import java.util.List;
-
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 

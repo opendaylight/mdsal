@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.model.api;
 
-public interface GeneratedTransferIdentityObject extends GeneratedTransferObject {
+public interface GeneratedTransferIdentityObject extends
+        GeneratedTransferObject {
 
 }
