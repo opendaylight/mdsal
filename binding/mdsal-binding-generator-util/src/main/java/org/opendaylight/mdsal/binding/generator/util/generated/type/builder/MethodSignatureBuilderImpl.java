@@ -34,8 +34,8 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
 
     @Override
     public MethodSignatureBuilder addParameter(final Type type, final String name) {
-        parameters = LazyCollections.lazyAdd(parameters, new MethodParameterImpl(name, type));
-        unmodifiableParams = Collections.unmodifiableList(parameters);
+        this.parameters = LazyCollections.lazyAdd(this.parameters, new MethodParameterImpl(name, type));
+        this.unmodifiableParams = Collections.unmodifiableList(this.parameters);
         return this;
     }
 
@@ -48,16 +48,16 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
     public MethodSignature toInstance(final Type definingType) {
         final List<AnnotationType> annotations = toAnnotationTypes();
         return new MethodSignatureImpl(definingType, getName(), annotations, getComment(), getAccessModifier(),
-                getReturnType(), unmodifiableParams, isFinal(), isAbstract, isStatic());
+                getReturnType(), this.unmodifiableParams, isFinal(), this.isAbstract, isStatic());
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Objects.hashCode(getName());
-        result = prime * result + Objects.hashCode(parameters);
-        result = prime * result + Objects.hashCode(getReturnType());
+        result = (prime * result) + Objects.hashCode(getName());
+        result = (prime * result) + Objects.hashCode(this.parameters);
+        result = (prime * result) + Objects.hashCode(getReturnType());
         return result;
     }
 
@@ -72,11 +72,11 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
         if (getClass() != obj.getClass()) {
             return false;
         }
-        MethodSignatureBuilderImpl other = (MethodSignatureBuilderImpl) obj;
+        final MethodSignatureBuilderImpl other = (MethodSignatureBuilderImpl) obj;
         if (!Objects.equals(getName(), other.getName())) {
             return false;
         }
-        if (!Objects.equals(parameters, other.parameters)) {
+        if (!Objects.equals(this.parameters, other.parameters)) {
             return false;
         }
         if (!Objects.equals(getReturnType(), other.getReturnType())) {
@@ -87,13 +87,13 @@ final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodS
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("MethodSignatureBuilderImpl [name=");
         builder.append(getName());
         builder.append(", returnType=");
         builder.append(getReturnType());
         builder.append(", parameters=");
-        builder.append(parameters);
+        builder.append(this.parameters);
         builder.append(", annotationBuilders=");
         builder.append(getAnnotationBuilders());
         builder.append(", comment=");
