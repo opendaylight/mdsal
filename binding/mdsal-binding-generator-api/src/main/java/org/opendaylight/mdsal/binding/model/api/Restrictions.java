@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.model.api;
 
 import java.util.List;
-
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
@@ -16,11 +15,8 @@ import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 public interface Restrictions {
 
     List<LengthConstraint> getLengthConstraints();
-
     List<PatternConstraint> getPatternConstraints();
-
     List<RangeConstraint> getRangeConstraints();
-
     boolean isEmpty();
 
 }

@@ -8,11 +8,10 @@
 package org.opendaylight.yangtools.binding.generator.util.generated.type.builder;
 
 import java.util.List;
-
-import org.opendaylight.yangtools.sal.binding.model.api.AnnotationType;
-import org.opendaylight.yangtools.sal.binding.model.api.GeneratedProperty;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.type.builder.GeneratedPropertyBuilder;
+import org.opendaylight.mdsal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 
 /**
  * @deprecated Use {@link org.opendaylight.mdsal.binding.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl} instead.

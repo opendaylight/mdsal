@@ -12,8 +12,5 @@ package org.opendaylight.mdsal.binding.model.api;
  * in Java programming language (Default, Private, Protected, Public).
  */
 public enum AccessModifier {
-    DEFAULT,
-    PRIVATE,
-    PUBLIC,
-    PROTECTED
+    DEFAULT, PRIVATE, PUBLIC, PROTECTED
 }
