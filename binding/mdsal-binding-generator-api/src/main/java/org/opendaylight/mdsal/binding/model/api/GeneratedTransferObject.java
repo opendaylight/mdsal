@@ -21,7 +21,6 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
  * definitions. For this purpose retrieve definitions through
  * {@link #getEqualsIdentifiers ()}, {@link #getHashCodeIdentifiers()} and
  * {@link #getToStringIdentifiers ()}.
- *
  */
 public interface GeneratedTransferObject extends GeneratedType {
 
