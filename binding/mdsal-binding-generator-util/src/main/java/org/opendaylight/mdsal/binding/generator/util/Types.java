@@ -256,7 +256,7 @@ public final class Types {
 
         @Override
         public Restrictions getRestrictions() {
-            return restrictions;
+            return this.restrictions;
         }
     }
 
@@ -284,7 +284,7 @@ public final class Types {
 
         @Override
         public Restrictions getRestrictions() {
-            return restrictions;
+            return this.restrictions;
         }
     }
 
@@ -307,12 +307,12 @@ public final class Types {
         @Override
         public Type[] getActualTypeArguments() {
 
-            return actualTypes;
+            return this.actualTypes;
         }
 
         @Override
         public Type getRawType() {
-            return rawType;
+            return this.rawType;
         }
 
         /**
@@ -374,7 +374,7 @@ public final class Types {
 
         @Override
         public List<RangeConstraint> getRangeConstraints() {
-            return rangeConstraints;
+            return this.rangeConstraints;
         }
 
         @Override

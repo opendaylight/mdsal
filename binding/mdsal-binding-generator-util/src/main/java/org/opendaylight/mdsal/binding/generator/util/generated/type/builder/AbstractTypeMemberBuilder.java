@@ -39,38 +39,38 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
         Preconditions.checkArgument(name != null, "Annotation Type cannot have name as null!");
 
         final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
-        annotationBuilders = LazyCollections.lazyAdd(annotationBuilders, builder);
+        this.annotationBuilders = LazyCollections.lazyAdd(this.annotationBuilders, builder);
         return builder;
     }
 
     protected Type getReturnType() {
-        return returnType;
+        return this.returnType;
     }
 
     protected Iterable<AnnotationTypeBuilder> getAnnotationBuilders() {
-        return annotationBuilders;
+        return this.annotationBuilders;
     }
 
     protected String getComment() {
-        return comment;
+        return this.comment;
     }
 
     protected boolean isFinal() {
-        return isFinal;
+        return this.isFinal;
     }
 
     protected boolean isStatic() {
-        return isStatic;
+        return this.isStatic;
     }
 
     @Override
     public AccessModifier getAccessModifier() {
-        return accessModifier;
+        return this.accessModifier;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     protected abstract T thisInstance();
@@ -125,8 +125,8 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Objects.hashCode(getName());
-        result = prime * result + Objects.hashCode(getReturnType());
+        result = (prime * result) + Objects.hashCode(getName());
+        result = (prime * result) + Objects.hashCode(getReturnType());
         return result;
     }
 
@@ -141,13 +141,13 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
         if (getClass() != obj.getClass()) {
             return false;
         }
-        AbstractTypeMemberBuilder<?> other = (AbstractTypeMemberBuilder<?>) obj;
+        final AbstractTypeMemberBuilder<?> other = (AbstractTypeMemberBuilder<?>) obj;
         return Objects.equals(getName(), other.getName()) && Objects.equals(getReturnType(), other.getReturnType());
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("GeneratedPropertyImpl [name=");
         builder.append(getName());
         builder.append(", annotations=");
