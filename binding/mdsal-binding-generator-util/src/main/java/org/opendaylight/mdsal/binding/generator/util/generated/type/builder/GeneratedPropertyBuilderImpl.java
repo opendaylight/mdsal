@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.generator.util.generated.type.builder;
 
 import java.util.List;
-
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -18,19 +17,19 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
     private String value;
     private boolean isReadOnly;
 
-    public GeneratedPropertyBuilderImpl(String name) {
+    public GeneratedPropertyBuilderImpl(final String name) {
         super(name);
         this.isReadOnly = true;
     }
 
     @Override
-    public GeneratedPropertyBuilderImpl setValue(String value) {
+    public GeneratedPropertyBuilderImpl setValue(final String value) {
         this.value = value;
         return this;
     }
 
     @Override
-    public GeneratedPropertyBuilderImpl setReadOnly(boolean isReadOnly) {
+    public GeneratedPropertyBuilderImpl setReadOnly(final boolean isReadOnly) {
         this.isReadOnly = isReadOnly;
         return this;
     }
@@ -41,15 +40,15 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
     }
 
     @Override
-    public GeneratedProperty toInstance(Type definingType) {
+    public GeneratedProperty toInstance(final Type definingType) {
         final List<AnnotationType> annotations = toAnnotationTypes();
         return new GeneratedPropertyImpl(definingType, getName(), annotations, getComment(), getAccessModifier(),
-                getReturnType(), isFinal(), isStatic(), isReadOnly, value);
+                getReturnType(), isFinal(), isStatic(), this.isReadOnly, this.value);
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("GeneratedPropertyImpl [name=");
         builder.append(getName());
         builder.append(", annotations=");
@@ -61,7 +60,7 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
         builder.append(", isFinal=");
         builder.append(isFinal());
         builder.append(", isReadOnly=");
-        builder.append(isReadOnly);
+        builder.append(this.isReadOnly);
         builder.append(", modifier=");
         builder.append(getAccessModifier());
         builder.append("]");
