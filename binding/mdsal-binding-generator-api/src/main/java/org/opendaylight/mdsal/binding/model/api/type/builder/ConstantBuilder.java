@@ -12,7 +12,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 
 public interface ConstantBuilder {
 
-    void assignValue(Object value);
+    void assignValue(final Object value);
 
     Constant toInstance(Type definingType);
 }
