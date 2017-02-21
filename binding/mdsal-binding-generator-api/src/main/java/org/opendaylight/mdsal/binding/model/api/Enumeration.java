@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.model.api;
 
 import java.util.List;
-
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 
 /**

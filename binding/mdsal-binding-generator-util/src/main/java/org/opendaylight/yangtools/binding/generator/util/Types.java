@@ -21,12 +21,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 import javax.annotation.Nullable;
-import org.opendaylight.yangtools.sal.binding.model.api.BaseTypeWithRestrictions;
-import org.opendaylight.yangtools.sal.binding.model.api.ConcreteType;
-import org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType;
-import org.opendaylight.yangtools.sal.binding.model.api.Restrictions;
-import org.opendaylight.yangtools.sal.binding.model.api.Type;
-import org.opendaylight.yangtools.sal.binding.model.api.WildcardType;
+import org.opendaylight.mdsal.binding.model.api.BaseTypeWithRestrictions;
+import org.opendaylight.mdsal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
+import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.WildcardType;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
@@ -69,7 +69,7 @@ public final class Types {
 
     /**
      * Creates the instance of type
-     * {@link org.opendaylight.yangtools.sal.binding.model.api.ConcreteType
+     * {@link org.opendaylight.mdsal.binding.model.api.ConcreteType
      * ConcreteType} which represents JAVA <code>void</code> type.
      *
      * @return <code>ConcreteType</code> instance which represents JAVA
@@ -81,7 +81,7 @@ public final class Types {
 
     /**
      * Creates the instance of type
-     * {@link org.opendaylight.yangtools.sal.binding.model.api.ConcreteType
+     * {@link org.opendaylight.mdsal.binding.model.api.ConcreteType
      * ConcreteType} which represents primitive JAVA type for which package
      * doesn't exist.
      *
@@ -160,7 +160,7 @@ public final class Types {
 
     /**
      * Creates instance of type
-     * {@link org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType
+     * {@link org.opendaylight.mdsal.binding.model.api.ParameterizedType
      * ParameterizedType}
      *
      * @param type
@@ -176,7 +176,7 @@ public final class Types {
 
     /**
      * Creates instance of type
-     * {@link org.opendaylight.yangtools.sal.binding.model.api.WildcardType
+     * {@link org.opendaylight.mdsal.binding.model.api.WildcardType
      * WildcardType}
      *
      * @param packageName
@@ -192,7 +192,7 @@ public final class Types {
 
     /**
      * Creates instance of
-     * {@link org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType
+     * {@link org.opendaylight.mdsal.binding.model.api.ParameterizedType
      * ParameterizedType} where raw type is
      * {@link org.opendaylight.yangtools.yang.binding.Augmentable} and actual
      * parameter is <code>valueType</code>.
@@ -210,7 +210,7 @@ public final class Types {
 
     /**
      * Creates instance of
-     * {@link org.opendaylight.yangtools.sal.binding.model.api.ParameterizedType
+     * {@link org.opendaylight.mdsal.binding.model.api.ParameterizedType
      * ParameterizedType} where raw type is
      * {@link org.opendaylight.yangtools.yang.binding.Augmentation} and actual
      * parameter is <code>valueType</code>.
