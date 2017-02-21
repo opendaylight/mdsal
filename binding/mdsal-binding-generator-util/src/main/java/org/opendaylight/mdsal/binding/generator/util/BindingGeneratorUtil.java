@@ -49,8 +49,6 @@ import org.opendaylight.yangtools.yang.model.util.type.DecimalTypeBuilder;
 /**
  * Contains the methods for converting strings to valid JAVA language strings
  * (package names, class names, attribute names) and to valid javadoc comments.
- *
- *
  */
 public final class BindingGeneratorUtil {
 
@@ -108,7 +106,7 @@ public final class BindingGeneratorUtil {
      * @return string with the admissible parameter name
      */
     public static String resolveJavaReservedWordEquivalency(final String parameterName) {
-        if (parameterName != null && BindingMapping.JAVA_RESERVED_WORDS.contains(parameterName)) {
+        if ((parameterName != null) && BindingMapping.JAVA_RESERVED_WORDS.contains(parameterName)) {
             return "_" + parameterName;
         }
         return parameterName;
@@ -196,7 +194,7 @@ public final class BindingGeneratorUtil {
         final Iterator<QName> iterator = path.iterator();
         for (int i = 0; i < size; ++i) {
             builder.append('.');
-            String nodeLocalName = iterator.next().getLocalName();
+            final String nodeLocalName = iterator.next().getLocalName();
             // FIXME: Collon ":" is invalid in node local name as per RFC6020, identifier statement.
             builder.append(DASH_COLON_MATCHER.replaceFrom(nodeLocalName, '.'));
         }
@@ -348,7 +346,7 @@ public final class BindingGeneratorUtil {
         char firstChar = correctStr.charAt(0);
         firstChar = uppercase ? Character.toUpperCase(firstChar) : Character.toLowerCase(firstChar);
 
-        if (firstChar >= '0' && firstChar <= '9') {
+        if ((firstChar >= '0') && (firstChar <= '9')) {
             return '_' + correctStr;
         } else {
             return firstChar + correctStr.substring(1);
@@ -375,8 +373,8 @@ public final class BindingGeneratorUtil {
             return text;
         }
 
-        StringBuilder sb = new StringBuilder(text);
-        String toBeRemoved = String.valueOf(removalChar);
+        final StringBuilder sb = new StringBuilder(text);
+        final String toBeRemoved = String.valueOf(removalChar);
         do {
             sb.replace(toBeRemovedPos, toBeRemovedPos + 1, "");
             // check if 'toBeRemoved' character is not the only character in
@@ -384,7 +382,7 @@ public final class BindingGeneratorUtil {
             if (sb.length() == 0) {
                 throw new IllegalArgumentException("The resulting string can not be empty");
             }
-            char replacement = Character.toUpperCase(sb.charAt(toBeRemovedPos));
+            final char replacement = Character.toUpperCase(sb.charAt(toBeRemovedPos));
             sb.setCharAt(toBeRemovedPos, replacement);
             toBeRemovedPos = sb.indexOf(toBeRemoved);
         } while (toBeRemovedPos != -1);
@@ -407,7 +405,7 @@ public final class BindingGeneratorUtil {
         protected MessageDigest initialValue() {
             try {
                 return MessageDigest.getInstance("SHA");
-            } catch (NoSuchAlgorithmException e) {
+            } catch (final NoSuchAlgorithmException e) {
                 throw new IllegalStateException("Failed to get a SHA digest provider", e);
             }
         }
@@ -419,15 +417,15 @@ public final class BindingGeneratorUtil {
             dout.writeUTF(to.getName());
             dout.writeInt(to.isAbstract() ? 3 : 7);
 
-            for (Type ifc : sortedCollection(SUID_NAME_COMPARATOR, to.getImplementsTypes())) {
+            for (final Type ifc : sortedCollection(SUID_NAME_COMPARATOR, to.getImplementsTypes())) {
                 dout.writeUTF(ifc.getFullyQualifiedName());
             }
 
-            for (GeneratedPropertyBuilder gp : sortedCollection(SUID_MEMBER_COMPARATOR, to.getProperties())) {
+            for (final GeneratedPropertyBuilder gp : sortedCollection(SUID_MEMBER_COMPARATOR, to.getProperties())) {
                 dout.writeUTF(gp.getName());
             }
 
-            for (MethodSignatureBuilder m : sortedCollection(SUID_MEMBER_COMPARATOR, to.getMethodDefinitions())) {
+            for (final MethodSignatureBuilder m : sortedCollection(SUID_MEMBER_COMPARATOR, to.getMethodDefinitions())) {
                 if (!(m.getAccessModifier().equals(AccessModifier.PRIVATE))) {
                     dout.writeUTF(m.getName());
                     dout.write(m.getAccessModifier().ordinal());
@@ -435,7 +433,7 @@ public final class BindingGeneratorUtil {
             }
 
             dout.flush();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException("Failed to hash object " + to, e);
         }
 
@@ -469,7 +467,7 @@ public final class BindingGeneratorUtil {
 
         final Builder<PatternConstraint> builder = ImmutableList.builder();
         boolean filtered = false;
-        for (PatternConstraint c : constraints) {
+        for (final PatternConstraint c : constraints) {
             if (containsConstraint(type.getBaseType(), c)) {
                 filtered = true;
             } else {
@@ -483,7 +481,7 @@ public final class BindingGeneratorUtil {
     public static Restrictions getRestrictions(final TypeDefinition<?> type) {
         // Old parser generated types which actually contained based restrictions, but our code deals with that when
         // binding to core Java types. Hence we'll emit empty restrictions for base types.
-        if (type == null || type.getBaseType() == null) {
+        if ((type == null) || (type.getBaseType() == null)) {
             // Handling of decimal64 has changed in the new parser. It contains range restrictions applied to the type
             // directly, without an extended type. We need to capture such constraints. In order to retain behavior we
             // need to analyze the new semantics and see if the constraints have been overridden. To do that we
@@ -545,7 +543,7 @@ public final class BindingGeneratorUtil {
         if (type instanceof BinaryTypeDefinition) {
             final BinaryTypeDefinition binary = (BinaryTypeDefinition)type;
             final BinaryTypeDefinition base = binary.getBaseType();
-            if (base != null && base.getBaseType() != null) {
+            if ((base != null) && (base.getBaseType() != null)) {
                 length = currentOrEmpty(binary.getLengthConstraints(), base.getLengthConstraints());
             } else {
                 length = binary.getLengthConstraints();
@@ -559,7 +557,7 @@ public final class BindingGeneratorUtil {
 
             final DecimalTypeDefinition decimal = (DecimalTypeDefinition)type;
             final DecimalTypeDefinition base = decimal.getBaseType();
-            if (base != null && base.getBaseType() != null) {
+            if ((base != null) && (base.getBaseType() != null)) {
                 range = currentOrEmpty(decimal.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = decimal.getRangeConstraints();
@@ -570,7 +568,7 @@ public final class BindingGeneratorUtil {
 
             final IntegerTypeDefinition integer = (IntegerTypeDefinition)type;
             final IntegerTypeDefinition base = integer.getBaseType();
-            if (base != null && base.getBaseType() != null) {
+            if ((base != null) && (base.getBaseType() != null)) {
                 range = currentOrEmpty(integer.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = integer.getRangeConstraints();
@@ -578,7 +576,7 @@ public final class BindingGeneratorUtil {
         } else if (type instanceof StringTypeDefinition) {
             final StringTypeDefinition string = (StringTypeDefinition)type;
             final StringTypeDefinition base = string.getBaseType();
-            if (base != null && base.getBaseType() != null) {
+            if ((base != null) && (base.getBaseType() != null)) {
                 length = currentOrEmpty(string.getLengthConstraints(), base.getLengthConstraints());
             } else {
                 length = string.getLengthConstraints();
@@ -592,7 +590,7 @@ public final class BindingGeneratorUtil {
 
             final UnsignedIntegerTypeDefinition unsigned = (UnsignedIntegerTypeDefinition)type;
             final UnsignedIntegerTypeDefinition base = unsigned.getBaseType();
-            if (base != null && base.getBaseType() != null) {
+            if ((base != null) && (base.getBaseType() != null)) {
                 range = currentOrEmpty(unsigned.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = unsigned.getRangeConstraints();
