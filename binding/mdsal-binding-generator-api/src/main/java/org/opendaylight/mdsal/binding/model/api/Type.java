@@ -12,7 +12,6 @@ package org.opendaylight.mdsal.binding.model.api;
  * Type defined in java MUST contain name and package name, except of primitive
  * types like int, byte etc. In case of mapping of primitive type the package
  * name MUST be left as empty string.
- *
  */
 public interface Type {
     /**

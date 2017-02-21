@@ -25,7 +25,7 @@ public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> {
      *            Name of Annotation Type
      * @return <code>new</code> instance of Annotation Type Builder.
      */
-    AnnotationTypeBuilder addAnnotation(String packageName, String name);
+    AnnotationTypeBuilder addAnnotation(final String packageName, final String name);
 
     /**
      * Returns the name of property.
@@ -42,7 +42,7 @@ public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> {
      * @param returnType
      *            Return Type of property.
      */
-    T setReturnType(Type returnType);
+    T setReturnType(final Type returnType);
 
     AccessModifier getAccessModifier();
 
@@ -52,7 +52,7 @@ public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> {
      * @param modifier
      *            Access Modifier value.
      */
-    T setAccessModifier(AccessModifier modifier);
+    T setAccessModifier(final AccessModifier modifier);
 
     /**
      * Adds String definition of comment into Method Signature definition. <br>
@@ -62,7 +62,7 @@ public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> {
      * @param comment
      *            Comment String.
      */
-    T setComment(String comment);
+    T setComment(final String comment);
 
     /**
      * Sets the flag final for method signature. If this is set the method will
@@ -73,7 +73,7 @@ public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> {
      * @param isFinal
      *            Is Final
      */
-    T setFinal(boolean isFinal);
+    T setFinal(final boolean isFinal);
 
-    T setStatic(boolean isStatic);
+    T setStatic(final boolean isStatic);
 }
