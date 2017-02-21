@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.generator.util;
 
 import static org.opendaylight.mdsal.binding.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.mdsal.binding.generator.util.Types.typeForClass;
-
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -46,11 +45,11 @@ public final class BindingTypes {
 
     }
 
-    public static ParameterizedType augmentable(Type t) {
+    public static ParameterizedType augmentable(final Type t) {
         return parameterizedTypeFor(AUGMENTABLE, t);
     }
 
-    public static ParameterizedType childOf(Type t) {
+    public static ParameterizedType childOf(final Type t) {
         return parameterizedTypeFor(CHILD_OF, t);
     }
 

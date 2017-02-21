@@ -47,7 +47,7 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
     @Override
     public GeneratedTOBuilder setExtendsType(final GeneratedTransferObject genTransObj) {
         Preconditions.checkArgument(genTransObj != null, "Generated Transfer Object cannot be null!");
-        extendsType = genTransObj;
+        this.extendsType = genTransObj;
         return this;
     }
 
@@ -74,19 +74,19 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
 
     @Override
     public GeneratedTOBuilder addEqualsIdentity(final GeneratedPropertyBuilder property) {
-        equalsProperties = LazyCollections.lazyAdd(equalsProperties, property);
+        this.equalsProperties = LazyCollections.lazyAdd(this.equalsProperties, property);
         return this;
     }
 
     @Override
     public GeneratedTOBuilder addHashIdentity(final GeneratedPropertyBuilder property) {
-        hashProperties = LazyCollections.lazyAdd(hashProperties, property);
+        this.hashProperties = LazyCollections.lazyAdd(this.hashProperties, property);
         return this;
     }
 
     @Override
     public GeneratedTOBuilder addToStringProperty(final GeneratedPropertyBuilder property) {
-        toStringProperties = LazyCollections.lazyAdd(toStringProperties, property);
+        this.toStringProperties = LazyCollections.lazyAdd(this.toStringProperties, property);
         return this;
     }
 
@@ -112,7 +112,7 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("GeneratedTransferObject [packageName=");
         builder.append(getPackageName());
         builder.append(", name=");
@@ -124,11 +124,11 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
         builder.append(", enumerations=");
         builder.append(getEnumerations());
         builder.append(", equalsProperties=");
-        builder.append(equalsProperties);
+        builder.append(this.equalsProperties);
         builder.append(", hashCodeProperties=");
-        builder.append(hashProperties);
+        builder.append(this.hashProperties);
         builder.append(", stringProperties=");
-        builder.append(toStringProperties);
+        builder.append(this.toStringProperties);
         builder.append(", annotations=");
         builder.append(getAnnotations());
         builder.append(", methods=");
@@ -158,22 +158,22 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
     }
 
     @Override
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
     @Override
-    public void setModuleName(String moduleName) {
+    public void setModuleName(final String moduleName) {
         this.moduleName = moduleName;
     }
 
     @Override
-    public void setSchemaPath(Iterable<QName> schemaPath) {
+    public void setSchemaPath(final Iterable<QName> schemaPath) {
         this.schemaPath = schemaPath;
     }
 
     @Override
-    public void setReference(String reference) {
+    public void setReference(final String reference) {
         this.reference = reference;
     }
 
@@ -224,60 +224,60 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
 
         @Override
         public boolean isTypedef() {
-            return isTypedef;
+            return this.isTypedef;
         }
 
         @Override
         public TypeDefinition<?> getBaseType() {
-            return baseType;
+            return this.baseType;
         }
 
         @Override
         public boolean isUnionType() {
-            return isUnionType;
+            return this.isUnionType;
         }
 
         @Override
         public boolean isUnionTypeBuilder() {
-            return isUnionTypeBuilder;
+            return this.isUnionTypeBuilder;
         }
 
         @Override
         public GeneratedTransferObject getSuperType() {
-            return extendsType;
+            return this.extendsType;
         }
 
         @Override
         public List<GeneratedProperty> getEqualsIdentifiers() {
-            return equalsProperties;
+            return this.equalsProperties;
         }
 
         @Override
         public List<GeneratedProperty> getHashCodeIdentifiers() {
-            return hashCodeProperties;
+            return this.hashCodeProperties;
         }
 
         @Override
         public List<GeneratedProperty> getToStringIdentifiers() {
-            return stringProperties;
+            return this.stringProperties;
         }
 
         @Override
         public Restrictions getRestrictions() {
-            return restrictions;
+            return this.restrictions;
         }
 
         @Override
         public GeneratedProperty getSUID() {
-            return SUID;
+            return this.SUID;
         }
 
         @Override
         public String toString() {
-            if (isTypedef) {
+            if (this.isTypedef) {
                 return serializeTypedef(this);
             }
-            StringBuilder builder = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             builder.append("GeneratedTransferObject [packageName=");
             builder.append(getPackageName());
             builder.append(", name=");
@@ -299,11 +299,11 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
             builder.append(", properties=");
             builder.append(getProperties());
             builder.append(", equalsProperties=");
-            builder.append(equalsProperties);
+            builder.append(this.equalsProperties);
             builder.append(", hashCodeProperties=");
-            builder.append(hashCodeProperties);
+            builder.append(this.hashCodeProperties);
             builder.append(", stringProperties=");
-            builder.append(stringProperties);
+            builder.append(this.stringProperties);
             builder.append(", methods=");
             builder.append(getMethodDefinitions());
             builder.append("]");
@@ -312,12 +312,12 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
 
         public String serializeTypedef(final Type type) {
             if (type instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) type;
-                StringBuilder sb = new StringBuilder();
+                final ParameterizedType parameterizedType = (ParameterizedType) type;
+                final StringBuilder sb = new StringBuilder();
                 sb.append(parameterizedType.getRawType().getFullyQualifiedName());
                 sb.append('<');
                 boolean first = true;
-                for (Type parameter : parameterizedType.getActualTypeArguments()) {
+                for (final Type parameter : parameterizedType.getActualTypeArguments()) {
                     if (first) {
                         first = false;
                     } else {
@@ -334,22 +334,22 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
 
         @Override
         public String getDescription() {
-            return description;
+            return this.description;
         }
 
         @Override
         public String getReference() {
-            return reference;
+            return this.reference;
         }
 
         @Override
         public Iterable<QName> getSchemaPath() {
-            return schemaPath;
+            return this.schemaPath;
         }
 
         @Override
         public String getModuleName() {
-            return moduleName;
+            return this.moduleName;
         }
     }
 }
