@@ -31,21 +31,21 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
 
     @Override
     public boolean isAbstract() {
-        return isAbstract;
+        return this.isAbstract;
     }
 
     @Override
     public List<Parameter> getParameters() {
-        return params;
+        return this.params;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Objects.hashCode(getName());
-        result = prime * result + Objects.hashCode(params);
-        result = prime * result + Objects.hashCode(getReturnType());
+        result = (prime * result) + Objects.hashCode(getName());
+        result = (prime * result) + Objects.hashCode(this.params);
+        result = (prime * result) + Objects.hashCode(getReturnType());
         return result;
     }
 
@@ -60,11 +60,11 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
         if (getClass() != obj.getClass()) {
             return false;
         }
-        MethodSignatureImpl other = (MethodSignatureImpl) obj;
+        final MethodSignatureImpl other = (MethodSignatureImpl) obj;
         if (!Objects.equals(getName(), other.getName())) {
             return false;
         }
-        if (!Objects.equals(params, other.params)) {
+        if (!Objects.equals(this.params, other.params)) {
             return false;
         }
         if (!Objects.equals(getReturnType(), other.getReturnType())) {
@@ -75,7 +75,7 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("MethodSignatureImpl [name=");
         builder.append(getName());
         builder.append(", comment=");
@@ -91,7 +91,7 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
         builder.append(", returnType=");
         builder.append(getReturnType());
         builder.append(", params=");
-        builder.append(params);
+        builder.append(this.params);
         builder.append(", annotations=");
         builder.append(getAnnotations());
         builder.append("]");
