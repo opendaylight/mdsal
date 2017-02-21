@@ -9,14 +9,12 @@ package org.opendaylight.mdsal.binding.generator.api;
 
 import java.util.List;
 import java.util.Set;
-
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 /**
  * Transform Schema Context to Generated types.
- *
  */
 public interface BindingGenerator {
 
