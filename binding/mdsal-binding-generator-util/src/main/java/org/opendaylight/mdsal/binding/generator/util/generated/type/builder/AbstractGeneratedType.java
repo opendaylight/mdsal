@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.generator.util.generated.type.builder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.opendaylight.mdsal.binding.generator.util.AbstractBaseType;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
@@ -136,79 +135,79 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
 
     @Override
     public final Type getParentType() {
-        return parent;
+        return this.parent;
     }
 
     @Override
     public final String getComment() {
-        return comment;
+        return this.comment;
     }
 
     @Override
     public final List<AnnotationType> getAnnotations() {
-        return annotations;
+        return this.annotations;
     }
 
     @Override
     public final boolean isAbstract() {
-        return isAbstract;
+        return this.isAbstract;
     }
 
     @Override
     public final List<Type> getImplements() {
-        return implementsTypes;
+        return this.implementsTypes;
     }
 
     @Override
     public final List<GeneratedType> getEnclosedTypes() {
-        return enclosedTypes;
+        return this.enclosedTypes;
     }
 
     @Override
     public final List<Enumeration> getEnumerations() {
-        return enumerations;
+        return this.enumerations;
     }
 
     @Override
     public final List<Constant> getConstantDefinitions() {
-        return constants;
+        return this.constants;
     }
 
     @Override
     public final List<MethodSignature> getMethodDefinitions() {
-        return methodSignatures;
+        return this.methodSignatures;
     }
 
     @Override
     public final List<GeneratedProperty> getProperties() {
-        return properties;
+        return this.properties;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("GeneratedType [packageName=");
         builder.append(getPackageName());
         builder.append(", name=");
         builder.append(getName());
-        if (parent != null) {
+        if (this.parent != null) {
             builder.append(", parent=");
-            builder.append(parent.getFullyQualifiedName());
+            builder.append(this.parent.getFullyQualifiedName());
         } else {
             builder.append(", parent=null");
         }
         builder.append(", comment=");
-        builder.append(comment);
+        builder.append(this.comment);
         builder.append(", annotations=");
-        builder.append(annotations);
+        builder.append(this.annotations);
         builder.append(", enclosedTypes=");
-        builder.append(enclosedTypes);
+        builder.append(this.enclosedTypes);
         builder.append(", enumerations=");
-        builder.append(enumerations);
+        builder.append(this.enumerations);
         builder.append(", constants=");
-        builder.append(constants);
+        builder.append(this.constants);
         builder.append(", methodSignatures=");
-        builder.append(methodSignatures);
+        builder.append(this.methodSignatures);
         builder.append("]");
         return builder.toString();
     }

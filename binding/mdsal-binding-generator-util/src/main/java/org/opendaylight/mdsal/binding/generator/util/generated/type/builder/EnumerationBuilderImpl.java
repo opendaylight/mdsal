@@ -67,10 +67,10 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
 
     @Override
     public AnnotationTypeBuilder addAnnotation(final String packageName, final String name) {
-        if (packageName != null && name != null) {
+        if ((packageName != null) && (name != null)) {
             final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
-            if (!annotationBuilders.contains(builder)) {
-                annotationBuilders = LazyCollections.lazyAdd(annotationBuilders, builder);
+            if (!this.annotationBuilders.contains(builder)) {
+                this.annotationBuilders = LazyCollections.lazyAdd(this.annotationBuilders, builder);
                 return builder;
             }
         }
@@ -80,14 +80,14 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
     @Override
     public void addValue(final String name, final int value, final String description) {
         final EnumPairImpl p = new EnumPairImpl(name, value, description);
-        values = LazyCollections.lazyAdd(values, p);
-        unmodifiableValues = Collections.unmodifiableList(values);
+        this.values = LazyCollections.lazyAdd(this.values, p);
+        this.unmodifiableValues = Collections.unmodifiableList(this.values);
     }
 
     @Override
     public Enumeration toInstance(final Type definingType) {
-        return new EnumerationImpl(definingType, annotationBuilders, packageName, name, unmodifiableValues,
-                description, reference, moduleName, schemaPath);
+        return new EnumerationImpl(definingType, this.annotationBuilders, this.packageName, this.name, this.unmodifiableValues,
+                this.description, this.reference, this.moduleName, this.schemaPath);
     }
 
     /*
@@ -97,13 +97,13 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("EnumerationBuilderImpl [packageName=");
-        builder.append(packageName);
+        builder.append(this.packageName);
         builder.append(", name=");
-        builder.append(name);
+        builder.append(this.name);
         builder.append(", values=");
-        builder.append(values);
+        builder.append(this.values);
         builder.append("]");
         return builder.toString();
     }
@@ -138,17 +138,17 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
 
         @Override
         public String getName() {
-            return name;
+            return this.name;
         }
 
         @Override
         public String getMappedName() {
-            return mappedName;
+            return this.mappedName;
         }
 
         @Override
         public int getValue() {
-            return value;
+            return this.value;
         }
 
         /*
@@ -160,8 +160,8 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + Objects.hashCode(name);
-            result = prime * result + Objects.hashCode(value);
+            result = (prime * result) + Objects.hashCode(this.name);
+            result = (prime * result) + Objects.hashCode(this.value);
             return result;
         }
 
@@ -181,8 +181,8 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            EnumPairImpl other = (EnumPairImpl) obj;
-            return Objects.equals(name, other.name) && Objects.equals(value, other.value);
+            final EnumPairImpl other = (EnumPairImpl) obj;
+            return Objects.equals(this.name, other.name) && Objects.equals(this.value, other.value);
         }
 
         /*
@@ -192,20 +192,20 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
          */
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             builder.append("EnumPair [name=");
-            builder.append(name);
+            builder.append(this.name);
             builder.append(", mappedName=");
             builder.append(getMappedName());
             builder.append(", value=");
-            builder.append(value);
+            builder.append(this.value);
             builder.append("]");
             return builder.toString();
         }
 
         @Override
         public String getDescription() {
-            return description;
+            return this.description;
         }
 
         @Override
@@ -251,22 +251,22 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
 
         @Override
         public Type getParentType() {
-            return definingType;
+            return this.definingType;
         }
 
         @Override
         public List<Pair> getValues() {
-            return values;
+            return this.values;
         }
 
         @Override
         public List<AnnotationType> getAnnotations() {
-            return annotations;
+            return this.annotations;
         }
 
         @Override
         public String toFormattedString() {
-            StringBuilder builder = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             builder.append("public enum");
             builder.append(" ");
             builder.append(getName());
@@ -274,14 +274,14 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
             builder.append("\n");
 
             int i = 0;
-            for (final Enumeration.Pair valPair : values) {
+            for (final Enumeration.Pair valPair : this.values) {
                 builder.append("\t");
                 builder.append(" ");
                 builder.append(valPair.getMappedName());
                 builder.append(" (");
                 builder.append(valPair.getValue());
 
-                if (i == (values.size() - 1)) {
+                if (i == (this.values.size() - 1)) {
                     builder.append(" );");
                 } else {
                     builder.append(" ),");
@@ -299,21 +299,21 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
          */
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             builder.append("Enumeration [packageName=");
             builder.append(getPackageName());
-            if (definingType != null) {
+            if (this.definingType != null) {
                 builder.append(", definingType=");
-                builder.append(definingType.getPackageName());
+                builder.append(this.definingType.getPackageName());
                 builder.append(".");
-                builder.append(definingType.getName());
+                builder.append(this.definingType.getName());
             } else {
                 builder.append(", definingType= null");
             }
             builder.append(", name=");
             builder.append(getName());
             builder.append(", values=");
-            builder.append(values);
+            builder.append(this.values);
             builder.append("]");
             return builder.toString();
         }
@@ -360,22 +360,22 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
 
         @Override
         public String getDescription() {
-            return description;
+            return this.description;
         }
 
         @Override
         public String getReference() {
-            return reference;
+            return this.reference;
         }
 
         @Override
         public Iterable<QName> getSchemaPath() {
-            return schemaPath;
+            return this.schemaPath;
         }
 
         @Override
         public String getModuleName() {
-            return moduleName;
+            return this.moduleName;
         }
     }
 }

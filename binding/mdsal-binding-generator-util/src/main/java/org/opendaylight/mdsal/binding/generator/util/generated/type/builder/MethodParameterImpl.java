@@ -24,12 +24,12 @@ final class MethodParameterImpl implements Parameter {
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public Type getType() {
-        return type;
+        return this.type;
     }
 
     /*
@@ -41,8 +41,8 @@ final class MethodParameterImpl implements Parameter {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Objects.hashCode(name);
-        result = prime * result + Objects.hashCode(type);
+        result = (prime * result) + Objects.hashCode(this.name);
+        result = (prime * result) + Objects.hashCode(this.type);
         return result;
     }
 
@@ -62,8 +62,8 @@ final class MethodParameterImpl implements Parameter {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        MethodParameterImpl other = (MethodParameterImpl) obj;
-        return Objects.equals(name, other.name) && Objects.equals(type, other.type);
+        final MethodParameterImpl other = (MethodParameterImpl) obj;
+        return Objects.equals(this.name, other.name) && Objects.equals(this.type, other.type);
     }
 
     /*
@@ -73,13 +73,13 @@ final class MethodParameterImpl implements Parameter {
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("MethodParameter [name=");
-        builder.append(name);
+        builder.append(this.name);
         builder.append(", type=");
-        builder.append(type.getPackageName());
+        builder.append(this.type.getPackageName());
         builder.append(".");
-        builder.append(type.getName());
+        builder.append(this.type.getName());
         builder.append("]");
         return builder.toString();
     }
