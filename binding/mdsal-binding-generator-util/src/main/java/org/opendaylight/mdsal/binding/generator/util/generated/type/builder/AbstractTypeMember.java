@@ -41,50 +41,50 @@ abstract class AbstractTypeMember implements TypeMember {
 
     @Override
     public List<AnnotationType> getAnnotations() {
-        return annotations;
+        return this.annotations;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public String getComment() {
-        return comment;
+        return this.comment;
     }
 
     @Override
     public Type getDefiningType() {
-        return definingType;
+        return this.definingType;
     }
 
     @Override
     public AccessModifier getAccessModifier() {
-        return accessModifier;
+        return this.accessModifier;
     }
 
     @Override
     public Type getReturnType() {
-        return returnType;
+        return this.returnType;
     }
 
     @Override
     public boolean isFinal() {
-        return isFinal;
+        return this.isFinal;
     }
 
     @Override
     public boolean isStatic() {
-        return isStatic;
+        return this.isStatic;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Objects.hashCode(getName());
-        result = prime * result + Objects.hashCode(getReturnType());
+        result = (prime * result) + Objects.hashCode(getName());
+        result = (prime * result) + Objects.hashCode(getReturnType());
         return result;
     }
 
@@ -99,13 +99,13 @@ abstract class AbstractTypeMember implements TypeMember {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        AbstractTypeMember other = (AbstractTypeMember) obj;
+        final AbstractTypeMember other = (AbstractTypeMember) obj;
         return Objects.equals(getName(), other.getName()) && Objects.equals(getReturnType(), other.getReturnType());
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("MethodSignatureImpl [name=");
         builder.append(getName());
         builder.append(", comment=");

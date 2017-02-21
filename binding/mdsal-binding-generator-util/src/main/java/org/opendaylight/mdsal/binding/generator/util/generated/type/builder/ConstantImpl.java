@@ -28,32 +28,32 @@ final class ConstantImpl implements Constant {
 
     @Override
     public Type getDefiningType() {
-        return definingType;
+        return this.definingType;
     }
 
     @Override
     public Type getType() {
-        return type;
+        return this.type;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public Object getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toFormattedString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(type);
+        final StringBuilder builder = new StringBuilder();
+        builder.append(this.type);
         builder.append(" ");
-        builder.append(name);
+        builder.append(this.name);
         builder.append(" ");
-        builder.append(value);
+        builder.append(this.value);
         return builder.toString();
     }
 
@@ -66,8 +66,8 @@ final class ConstantImpl implements Constant {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Objects.hashCode(name);
-        result = prime * result + Objects.hashCode(type);
+        result = (prime * result) + Objects.hashCode(this.name);
+        result = (prime * result) + Objects.hashCode(this.type);
         return result;
     }
 
@@ -87,24 +87,24 @@ final class ConstantImpl implements Constant {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        ConstantImpl other = (ConstantImpl) obj;
-        return Objects.equals(name, other.name) && Objects.equals(type, other.type) && Objects.equals(value, other.value);
+        final ConstantImpl other = (ConstantImpl) obj;
+        return Objects.equals(this.name, other.name) && Objects.equals(this.type, other.type) && Objects.equals(this.value, other.value);
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("Constant [type=");
-        builder.append(type);
+        builder.append(this.type);
         builder.append(", name=");
-        builder.append(name);
+        builder.append(this.name);
         builder.append(", value=");
-        builder.append(value);
-        if (definingType != null) {
+        builder.append(this.value);
+        if (this.definingType != null) {
             builder.append(", definingType=");
-            builder.append(definingType.getPackageName());
+            builder.append(this.definingType.getPackageName());
             builder.append(".");
-            builder.append(definingType.getName());
+            builder.append(this.definingType.getName());
         } else {
             builder.append(", definingType= null");
         }

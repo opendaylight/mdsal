@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding.generator.util;
  *
  * Wraps combination of <code>packageName</code> and <code>name</code> to the
  * object representation
- *
  */
 public final class ReferencedTypeImpl extends AbstractBaseType {
 
@@ -23,13 +22,13 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
      * @param name
      *            string with the name for referenced type
      */
-    public ReferencedTypeImpl(String packageName, String name) {
+    public ReferencedTypeImpl(final String packageName, final String name) {
         super(packageName, name);
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("ReferencedTypeImpl [packageName=");
         builder.append(getPackageName());
         builder.append(", name=");
