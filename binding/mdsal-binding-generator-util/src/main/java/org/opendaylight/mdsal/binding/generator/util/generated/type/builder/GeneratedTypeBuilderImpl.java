@@ -30,28 +30,28 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
     }
 
     @Override
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
     @Override
-    public void setModuleName(String moduleName) {
+    public void setModuleName(final String moduleName) {
         this.moduleName = moduleName;
     }
 
     @Override
-    public void setSchemaPath(Iterable<QName> schemaPath) {
+    public void setSchemaPath(final Iterable<QName> schemaPath) {
         this.schemaPath = schemaPath;
     }
 
     @Override
-    public void setReference(String reference) {
+    public void setReference(final String reference) {
         this.reference = reference;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("GeneratedTransferObject [packageName=");
         builder.append(getPackageName());
         builder.append(", name=");
@@ -87,7 +87,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         private final String moduleName;
         private final Iterable<QName> schemaPath;
 
-        public GeneratedTypeImpl(GeneratedTypeBuilderImpl builder) {
+        public GeneratedTypeImpl(final GeneratedTypeBuilderImpl builder) {
             super(builder);
 
             this.description = builder.description;
@@ -98,22 +98,22 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
 
         @Override
         public String getDescription() {
-            return description;
+            return this.description;
         }
 
         @Override
         public String getReference() {
-            return reference;
+            return this.reference;
         }
 
         @Override
         public Iterable<QName> getSchemaPath() {
-            return schemaPath;
+            return this.schemaPath;
         }
 
         @Override
         public String getModuleName() {
-            return moduleName;
+            return this.moduleName;
         }
     }
 }

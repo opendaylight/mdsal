@@ -20,7 +20,7 @@ import java.util.Map
 import java.util.Set
 import java.util.TreeMap
 
-import org.opendaylight.yangtools.binding.generator.util.Types
+import org.opendaylight.mdsal.binding.generator.util.Types
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.api.WildcardType

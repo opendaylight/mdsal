@@ -12,7 +12,6 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 
 /**
  * It is used only as ancestor for other <code>Type</code>s
- *
  */
 public class AbstractBaseType implements Type {
 
@@ -28,20 +27,20 @@ public class AbstractBaseType implements Type {
 
     @Override
     public String getPackageName() {
-        return packageName;
+        return this.packageName;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public String getFullyQualifiedName() {
-        if (packageName.isEmpty()) {
-            return name;
+        if (this.packageName.isEmpty()) {
+            return this.name;
         } else {
-            return packageName + "." + name;
+            return this.packageName + "." + this.name;
         }
     }
 
@@ -70,8 +69,8 @@ public class AbstractBaseType implements Type {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Objects.hashCode(name);
-        result = prime * result + Objects.hashCode(packageName);
+        result = (prime * result) + Objects.hashCode(this.name);
+        result = (prime * result) + Objects.hashCode(this.packageName);
         return result;
     }
 
@@ -86,15 +85,15 @@ public class AbstractBaseType implements Type {
         if (!(obj instanceof Type)) {
             return false;
         }
-        Type other = (Type) obj;
-        return Objects.equals(name, other.getName()) && Objects.equals(packageName, other.getPackageName());
+        final Type other = (Type) obj;
+        return Objects.equals(this.name, other.getName()) && Objects.equals(this.packageName, other.getPackageName());
     }
 
     @Override
     public String toString() {
-        if (packageName.isEmpty()) {
-            return "Type (" + name + ")";
+        if (this.packageName.isEmpty()) {
+            return "Type (" + this.name + ")";
         }
-        return "Type (" + packageName + "." + name + ")";
+        return "Type (" + this.packageName + "." + this.name + ")";
     }
 }

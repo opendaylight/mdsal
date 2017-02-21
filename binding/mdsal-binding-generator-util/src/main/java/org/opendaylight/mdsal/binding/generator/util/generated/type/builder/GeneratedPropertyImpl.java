@@ -8,18 +8,17 @@
 package org.opendaylight.mdsal.binding.generator.util.generated.type.builder;
 
 import java.util.List;
-
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
 final class GeneratedPropertyImpl extends AbstractTypeMember implements GeneratedProperty {
-    private String value;
-    private boolean isReadOnly;
+    private final String value;
+    private final boolean isReadOnly;
 
-    public GeneratedPropertyImpl(Type definingType, String name, List<AnnotationType> annotations, String comment,
-                                 AccessModifier accessModifier, Type returnType, boolean isFinal, boolean isStatic, boolean isReadOnly, String value) {
+    public GeneratedPropertyImpl(final Type definingType, final String name, final List<AnnotationType> annotations, final String comment,
+                                 final AccessModifier accessModifier, final Type returnType, final boolean isFinal, final boolean isStatic, final boolean isReadOnly, final String value) {
         super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);
         this.value = value;
         this.isReadOnly = isReadOnly;
@@ -27,17 +26,17 @@ final class GeneratedPropertyImpl extends AbstractTypeMember implements Generate
 
     @Override
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public boolean isReadOnly() {
-        return isReadOnly;
+        return this.isReadOnly;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("GeneratedPropertyImpl [name=");
         builder.append(getName());
         builder.append(", annotations=");
@@ -57,7 +56,7 @@ final class GeneratedPropertyImpl extends AbstractTypeMember implements Generate
         builder.append(", isFinal=");
         builder.append(isFinal());
         builder.append(", isReadOnly=");
-        builder.append(isReadOnly);
+        builder.append(this.isReadOnly);
         builder.append(", modifier=");
         builder.append(getAccessModifier());
         builder.append("]");
