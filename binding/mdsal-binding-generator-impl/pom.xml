@@ -100,7 +100,7 @@
                         <Bundle-Name>${project.groupId}.${project.artifactId}</Bundle-Name>
                         <Export-Package>
                             {local-packages},
-                            org.opendaylight.yangtools.sal.binding.generator.impl,
+                            org.opendaylight.mdsal.binding.generator.impl,
                         </Export-Package>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Dependency>org.eclipse.xtext.xbase.lib;inline</Embed-Dependency>
