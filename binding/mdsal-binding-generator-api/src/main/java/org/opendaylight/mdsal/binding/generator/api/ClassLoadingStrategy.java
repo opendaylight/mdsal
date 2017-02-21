@@ -14,5 +14,4 @@ public interface ClassLoadingStrategy {
     Class<?> loadClass(Type type) throws ClassNotFoundException;
 
     Class<?> loadClass(String fullyQualifiedName) throws ClassNotFoundException;
-
 }
