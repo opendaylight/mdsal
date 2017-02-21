@@ -9,12 +9,12 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
-import static org.opendaylight.yangtools.sal.binding.generator.impl.GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy;
+import static org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.yangtools.binding.data.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.yangtools.sal.binding.generator.impl.GeneratedClassLoadingStrategy;
 
 public class BindingMountPointAdapterTest {
 
