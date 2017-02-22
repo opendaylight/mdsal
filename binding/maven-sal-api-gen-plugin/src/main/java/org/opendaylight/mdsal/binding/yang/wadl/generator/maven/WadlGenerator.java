@@ -5,25 +5,24 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.wadl.generator.maven;
+package org.opendaylight.mdsal.binding.yang.wadl.generator.maven;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
+import org.opendaylight.mdsal.binding.yang.wadl.generator.WadlRestconfGenerator;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.wadl.generator.WadlRestconfGenerator;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
 
 public class WadlGenerator implements BasicCodeGenerator {
-    
+
     @Override
-    public Collection<File> generateSources(SchemaContext context, File outputDir, Set<Module> currentModules)
+    public Collection<File> generateSources(final SchemaContext context, final File outputDir, final Set<Module> currentModules)
             throws IOException {
-        
+
         final File outputBaseDir;
         if (outputDir == null) {
             // FIXME: this hard-codes the destination
@@ -38,14 +37,10 @@ public class WadlGenerator implements BasicCodeGenerator {
     }
 
     @Override
-    public void setAdditionalConfig(Map<String, String> additionalConfiguration) {
-        // TODO Auto-generated method stub
-        
+    public void setAdditionalConfig(final Map<String, String> additionalConfiguration) {
     }
 
     @Override
-    public void setResourceBaseDir(File resourceBaseDir) {
-        // TODO Auto-generated method stub
-        
+    public void setResourceBaseDir(final File resourceBaseDir) {
     }
 }
