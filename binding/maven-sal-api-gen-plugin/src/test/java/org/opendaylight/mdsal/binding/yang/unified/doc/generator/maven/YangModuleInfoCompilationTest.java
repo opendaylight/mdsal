@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.unified.doc.generator.maven;
+package org.opendaylight.mdsal.binding.yang.unified.doc.generator.maven;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,7 +31,7 @@ import javax.tools.ToolProvider;
 import org.apache.maven.project.MavenProject;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl;
+import org.opendaylight.mdsal.binding.maven.api.gen.plugin.CodeGeneratorImpl;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
