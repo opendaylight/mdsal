@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.wadl.generator
+package org.opendaylight.mdsal.binding.yang.wadl.generator
 
 import java.io.BufferedWriter
 import java.io.File

@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.unified.doc.generator
+package org.opendaylight.mdsal.binding.yang.unified.doc.generator
 
 import com.google.common.collect.Iterables
 import java.io.BufferedWriter
@@ -55,6 +55,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
 import org.sonatype.plexus.build.incremental.DefaultBuildContext
+import com.google.common.collect.Lists
 
 class GeneratorImpl {
 
@@ -206,8 +207,8 @@ class GeneratorImpl {
                     <h3 id="«identity.QName.localName»">«identity.QName.localName»</h3>
                     <ul>
                     «identity.descAndRefLi»
-                    «IF identity.baseIdentity !== null»
-                        «listItem("base", identity.baseIdentity.QName.localName)»
+                    «IF !identity.baseIdentities.isEmpty»
+                        «listItem("base", identity.baseIdentities.get(0).QName.localName)»
                     «ENDIF»
                     </ul>
                 </li>
@@ -1192,7 +1193,7 @@ class GeneratorImpl {
     }
 
     private def String schemaPathToString(Module module, SchemaPath schemaPath, SchemaContext ctx, DataNodeContainer dataNode) {
-            val List<QName> path = schemaPath.path
+            val List<QName> path = Lists.newArrayList(schemaPath.pathFromRoot);
         val StringBuilder pathString = new StringBuilder()
         if (schemaPath.absolute) {
             pathString.append('/')
@@ -1423,22 +1424,6 @@ class GeneratorImpl {
             }
         }
         return result.toString
-    }
-
-    private def void collectChildNodes(Collection<DataSchemaNode> source, Map<SchemaPath, DataSchemaNode> destination) {
-        for (node : source) {
-            destination.put(node.path, node)
-            if (node instanceof DataNodeContainer) {
-                collectChildNodes((node as DataNodeContainer).childNodes, destination)
-            }
-            if (node instanceof ChoiceSchemaNode) {
-                val List<DataSchemaNode> choiceCases = new ArrayList()
-                for (caseNode : node.cases) {
-                    choiceCases.add(caseNode)
-                }
-                collectChildNodes(choiceCases, destination)
-            }
-        }
     }
 
     private def dispatch addedByInfo(SchemaNode node) '''
