@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
+import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
@@ -100,7 +102,8 @@ final class GenHelperUtil {
             verboseClassComments) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         final String packageName = BindingMapping.getRootPackageName(module);
-        final String moduleName = BindingMapping.getClassName(module.getName()) + postfix;
+        final String moduleName = BindingMapping.getClassName(NonJavaCharsConverter.convertIdentifier(module.getName
+                (), JavaIdentifier.CLASS)) + postfix;
 
         final GeneratedTypeBuilderImpl moduleBuilder = new GeneratedTypeBuilderImpl(packageName, moduleName);
         moduleBuilder.setDescription(createDescription(module, verboseClassComments));
@@ -413,9 +416,11 @@ final class GenHelperUtil {
 
         String genTypeName;
         if (prefix == null) {
-            genTypeName = BindingMapping.getClassName(schemaNodeName);
+            genTypeName = BindingMapping.getClassName(NonJavaCharsConverter.convertIdentifier(schemaNodeName,
+                    JavaIdentifier.CLASS));
         } else {
-            genTypeName = prefix + BindingMapping.getClassName(schemaNodeName);
+            genTypeName = prefix + BindingMapping.getClassName(NonJavaCharsConverter.convertIdentifier
+                    (schemaNodeName, JavaIdentifier.CLASS));
         }
 
         final GeneratedTypeBuilderImpl newType = new GeneratedTypeBuilderImpl(packageName, genTypeName);

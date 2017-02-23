@@ -31,9 +31,9 @@ final class ModuleToGenType {
     }
 
     static Map<Module, ModuleContext> generate(final Module module, Map<String, Map<String, GeneratedTypeBuilder>>
-            genTypeBuilders, final SchemaContext schemaContext, TypeProvider typeProvider, final boolean verboseClassComments) {
+            genTypeBuilders, final SchemaContext schemaContext, TypeProvider typeProvider, Map<Module,
+            ModuleContext> genCtx, final boolean verboseClassComments) {
 
-        Map<Module, ModuleContext> genCtx = new HashMap<>();
         genCtx.put(module, new ModuleContext());
         genCtx = allTypeDefinitionsToGenTypes(module, genCtx, typeProvider);
 

@@ -97,7 +97,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         for (final Module contextModule : contextModules) {
             genCtx = ModuleToGenType.generate(contextModule, genTypeBuilders, context, typeProvider,
-                    verboseClassComments);
+                    genCtx, verboseClassComments);
         }
         for (final Module contextModule : contextModules) {
             genCtx = AugmentToGenType.generate(contextModule, context, genCtx,

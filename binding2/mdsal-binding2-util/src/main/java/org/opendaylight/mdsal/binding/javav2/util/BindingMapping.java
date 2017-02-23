@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
 /**
@@ -121,7 +120,7 @@ public final class BindingMapping {
         packageNameBuilder.append("rev");
         packageNameBuilder.append(PACKAGE_DATE_FORMAT.get().format(module.getRevision()));
 
-        //seems to be duplicate call, because normalizing is run again on full packagename + localName
+        //seems to be duplicate call, because normalizing is run again on full package name + localName
         //return normalizePackageName(packageNameBuilder.toString(), null);
         return packageNameBuilder.toString();
     }
@@ -148,9 +147,7 @@ public final class BindingMapping {
                 builder.append('.');
             }
 
-            //TODO: incorporate use of PackageNameNormalizer (impl in progress)
-            //TODO: to not to worry about various characters in identifiers,
-            //TODO: relying on https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html
+            //FIXME: use https://git.opendaylight.org/gerrit/#/c/52007/ when merged
 
             //FIXME: delete this custom check when naming convention patch above is merged
             if (Character.isDigit(p.charAt(0)) || BindingMapping.JAVA_RESERVED_WORDS.contains(p)) {
