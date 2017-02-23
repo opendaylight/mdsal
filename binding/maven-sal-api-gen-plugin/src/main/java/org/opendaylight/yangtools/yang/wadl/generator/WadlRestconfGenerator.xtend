@@ -133,7 +133,7 @@ class WadlRestconfGenerator {
 			<resource path="operations">
 				«FOR rpc : module.rpcs»
 					<resource path="«module.name»:«rpc.QName.localName»">
-						«methodPostRpc(rpc.input != null, rpc.output !== null)»
+						«methodPostRpc(rpc.input !== null, rpc.output !== null)»
 					</resource>
 				«ENDFOR»
 			</resource>
@@ -188,7 +188,7 @@ class WadlRestconfGenerator {
 	
 	private def resourceParams() '''
 		«FOR pathParam : pathListParams»
-		    «IF pathParam != null»
+		    «IF pathParam !== null»
 			«val type = pathParam.type.QName.localName»
 			<param required="true" style="template" name="«pathParam.QName.localName»" type="«type»"/>
 			«ENDIF»

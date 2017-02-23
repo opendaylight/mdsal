@@ -343,14 +343,14 @@ class GeneratorImpl {
             val module = ctx.findModuleByNamespaceAndRevision(pathElement.namespace, pathElement.revision);
             if (module !== null) {
                 var foundNode = module.getDataChildByName(pathElement)
-                if(foundNode == null) {
+                if (foundNode === null) {
                     val child = nodes.last
                     if (child instanceof DataNodeContainer) {
                         val dataContNode = child as DataNodeContainer
                         foundNode = findNodeInChildNodes(pathElement, dataContNode.childNodes)
                     }
                 }
-                if(foundNode != null) {
+                if (foundNode !== null) {
                     nodes.add(foundNode);
                 }
             }
@@ -372,14 +372,13 @@ class GeneratorImpl {
         }
         // find recursively
         for(child : childNodes) {
-            if(child instanceof ContainerSchemaNode) {
+            if (child instanceof ContainerSchemaNode) {
                 val foundChild = findNodeInChildNodes(findingNode, child.childNodes)
-                if (foundChild != null)
+                if (foundChild !== null)
                     return foundChild;
-            }
-            else if(child instanceof ListSchemaNode) {
+            } else if (child instanceof ListSchemaNode) {
                 val foundChild = findNodeInChildNodes(findingNode, child.childNodes)
-                if (foundChild != null)
+                if (foundChild !== null)
                     return foundChild;
             }
         }
@@ -1205,7 +1204,7 @@ class GeneratorImpl {
         for (name : path) {
             if (parent instanceof DataNodeContainer) {
                 var SchemaNode node = parent.getDataChildByName(name)
-                if (node == null && (parent instanceof Module)) {
+                if (node === null && (parent instanceof Module)) {
                     val notifications = (parent as Module).notifications;
                     for (notification : notifications) {
                         if (notification.QName.equals(name)) {
@@ -1213,7 +1212,7 @@ class GeneratorImpl {
                         }
                     }
                 }
-                if (node == null && (parent instanceof Module)) {
+                if (node === null && (parent instanceof Module)) {
                     val rpcs = (parent as Module).rpcs;
                     for (rpc : rpcs) {
                         if (rpc.QName.equals(name)) {
@@ -1252,7 +1251,7 @@ class GeneratorImpl {
 
     def CharSequence childInfo(DataSchemaNode node, Map<SchemaPath, DataSchemaNode> childNodes) '''
         «val String path = nodeSchemaPathToPath(node, childNodes)»
-        «IF path != null»
+        «IF path !== null»
             «code(path)»
                 «IF node !== null»
                 <ul>
@@ -1324,7 +1323,7 @@ class GeneratorImpl {
     '''
 
     def toLengthStmt(Collection<LengthConstraint> lengths) '''
-        «IF lengths != null && !lengths.empty»
+        «IF lengths !== null && !lengths.empty»
             «listItem("Length restrictions:")»
             <ul>
             «FOR length : lengths»
@@ -1341,7 +1340,7 @@ class GeneratorImpl {
     '''
 
     def toRangeStmt(Collection<RangeConstraint> ranges) '''
-        «IF ranges != null && !ranges.empty»
+        «IF ranges !== null && !ranges.empty»
             «listItem("Range restrictions:")»
             <ul>
             «FOR range : ranges»
@@ -1358,7 +1357,7 @@ class GeneratorImpl {
     '''
 
     def toBaseStmt(TypeDefinition<?> baseType) '''
-        «IF baseType != null»
+        «IF baseType !== null»
         «listItem("Base type", typeAnchorLink(baseType?.path, baseType.QName.localName))»
         «ENDIF»
     '''
