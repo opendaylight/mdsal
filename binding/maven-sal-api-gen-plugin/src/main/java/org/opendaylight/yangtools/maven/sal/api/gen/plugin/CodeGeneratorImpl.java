@@ -21,7 +21,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import org.apache.maven.project.MavenProject;
 import org.opendaylight.yangtools.binding.generator.util.BindingGeneratorUtil;
 import org.opendaylight.yangtools.sal.binding.generator.api.BindingGenerator;
@@ -51,7 +53,8 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
     @Override
     public Collection<File> generateSources(final SchemaContext context, final File outputDir,
-            final Set<Module> yangModules) throws IOException {
+            final Set<Module> yangModules, final Function<Module, Optional<String>> moduleResourcePathResolver)
+                    throws IOException {
         final File outputBaseDir;
 
         outputBaseDir = outputDir == null ? getDefaultOutputBaseDir() : outputDir;
@@ -73,18 +76,19 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
         List<File> result = generator.generateToFile(outputBaseDir, persistentSourcesDir);
 
-        result.addAll(generateModuleInfos(outputBaseDir, yangModules, context));
+        result.addAll(generateModuleInfos(outputBaseDir, yangModules, context, moduleResourcePathResolver));
         return result;
     }
 
     private Collection<? extends File> generateModuleInfos(final File outputBaseDir, final Set<Module> yangModules,
-                                                           final SchemaContext context) {
+            final SchemaContext context, final Function<Module, Optional<String>> moduleResourcePathResolver) {
         Builder<File> result = ImmutableSet.builder();
         Builder<String> bindingProviders = ImmutableSet.builder();
         for (Module module : yangModules) {
             Builder<String> currentProvidersBuilder = ImmutableSet.builder();
             // TODO: do not mutate parameters, output of a method is defined by its return value
-            Set<File> moduleInfoProviders = generateYangModuleInfo(outputBaseDir, module, context, currentProvidersBuilder);
+            Set<File> moduleInfoProviders = generateYangModuleInfo(outputBaseDir, module, context,
+                moduleResourcePathResolver, currentProvidersBuilder);
             ImmutableSet<String> currentProviders = currentProvidersBuilder.build();
             LOG.info("Adding ModuleInfo providers {}", currentProviders);
             bindingProviders.addAll(currentProviders);
@@ -144,10 +148,11 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     }
 
     private Set<File> generateYangModuleInfo(final File outputBaseDir, final Module module, final SchemaContext ctx,
+            final Function<Module, Optional<String>> moduleResourcePathResolver,
             final Builder<String> providerSourceSet) {
         Builder<File> generatedFiles = ImmutableSet.<File> builder();
 
-        final YangModuleInfoTemplate template = new YangModuleInfoTemplate(module, ctx);
+        final YangModuleInfoTemplate template = new YangModuleInfoTemplate(module, ctx, moduleResourcePathResolver);
         String moduleInfoSource = template.generate();
         if (moduleInfoSource.isEmpty()) {
             throw new IllegalStateException("Generated code should not be empty!");
@@ -188,6 +193,13 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
             LOG.error("Could not create file: {}",file,e);
         }
         return file;
+    }
+
+    @Override
+    public Collection<File> generateSources(final SchemaContext context, final File outputBaseDir, final Set<Module> currentModules)
+            throws IOException {
+        return generateSources(context, outputBaseDir, currentModules,
+            m -> Optional.of("/" + m.getModuleSourcePath().replace(File.separator, "/")));
     }
 
 }
