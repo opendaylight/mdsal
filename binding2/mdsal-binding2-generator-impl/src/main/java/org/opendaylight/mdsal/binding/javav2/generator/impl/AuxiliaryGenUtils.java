@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNode;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
+import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -137,7 +139,8 @@ final class AuxiliaryGenUtils {
         } else {
             method.append("get");
         }
-        final String name = BindingMapping.toFirstUpper(BindingMapping.getPropertyName(localName));
+        final String name = BindingMapping.toFirstUpper(NonJavaCharsConverter.convertIdentifier(BindingMapping.getPropertyName
+                (localName), JavaIdentifier.METHOD));
         method.append(name);
         return method.toString();
     }
