@@ -60,7 +60,7 @@ public final class ForeignShardModificationContext implements Identifiable<DOMDa
             return;
         }
 
-        notReady = true;
+        notReady = false;
         if (cursor != null) {
             cursor.close();
             cursor = null;
