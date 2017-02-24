@@ -57,7 +57,6 @@ public class ForeignShardModificationContextTest {
         Mockito.reset(TestUtils.DOM_DATA_TREE_WRITE_CURSOR);
         doNothing().when(TestUtils.DOM_DATA_TREE_SHARD_WRITE_TRANSACTION).close();
         doNothing().when(TestUtils.DOM_DATA_TREE_WRITE_CURSOR).close();
-        foreignShardModificationContext.getCursor();
         foreignShardModificationContext.closeForeignTransaction();
         verify(TestUtils.DOM_DATA_TREE_WRITE_CURSOR).close();
         verify(TestUtils.DOM_DATA_TREE_SHARD_WRITE_TRANSACTION).close();
