@@ -16,7 +16,6 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.After;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 public class ForeignShardModificationContextTest {
 
@@ -53,8 +52,17 @@ public class ForeignShardModificationContextTest {
         doReturn(null).when(TestUtils.DOM_DATA_TREE_SHARD_WRITE_TRANSACTION).commit();
         foreignShardModificationContext.submit();
         verify(TestUtils.DOM_DATA_TREE_SHARD_WRITE_TRANSACTION).commit();
+    }
 
-        Mockito.reset(TestUtils.DOM_DATA_TREE_WRITE_CURSOR);
+    @Test
+    public void basicTestClose() throws Exception {
+        final ForeignShardModificationContext foreignShardModificationContext =
+                new ForeignShardModificationContext(TestUtils.DOM_DATA_TREE_IDENTIFIER,
+                        TestUtils.DOM_DATA_TREE_SHARD_PRODUCER);
+        doReturn(TestUtils.DOM_DATA_TREE_SHARD_WRITE_TRANSACTION)
+                .when(TestUtils.DOM_DATA_TREE_SHARD_PRODUCER).createTransaction();
+        doReturn(TestUtils.DOM_DATA_TREE_WRITE_CURSOR)
+                .when(TestUtils.DOM_DATA_TREE_SHARD_WRITE_TRANSACTION).createCursor(TestUtils.DOM_DATA_TREE_IDENTIFIER);
         doNothing().when(TestUtils.DOM_DATA_TREE_SHARD_WRITE_TRANSACTION).close();
         doNothing().when(TestUtils.DOM_DATA_TREE_WRITE_CURSOR).close();
         foreignShardModificationContext.getCursor();
