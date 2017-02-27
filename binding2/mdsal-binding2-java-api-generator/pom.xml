@@ -115,7 +115,7 @@
             <plugin>
                 <groupId>com.jakewharton.twirl</groupId>
                 <artifactId>twirl-maven-plugin</artifactId>
-                <version>1.0.4</version>
+                <version>1.0.5</version>
                 <executions>
                     <execution>
                         <id>twirl-to-scala-first</id>
