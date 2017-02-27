@@ -83,43 +83,6 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <!-- Twirl -> compile Twirl files to Scala without Play framework dependencies needed -->
-            <plugin>
-                <groupId>com.jakewharton.twirl</groupId>
-                <artifactId>twirl-maven-plugin</artifactId>
-                <version>1.0.4</version>
-                <executions>
-                    <execution>
-                        <id>twirl-to-scala-first</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Scala -> compile Scala files generated from Twirl -->
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.2</version>
-                <executions>
-                    <execution>
-                        <id>scala-compile-second</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
   <!--
       Maven Site Configuration
 
