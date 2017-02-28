@@ -100,6 +100,7 @@ import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
+import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -107,6 +108,8 @@ import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.InputEffectiveStatementImpl;
+import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.OutputEffectiveStatementImpl;
 import org.opendaylight.yangtools.yang.parser.util.ModuleDependencySort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -512,7 +515,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 final ContainerSchemaNode input = rpc.getInput();
                 final ContainerSchemaNode output = rpc.getOutput();
 
-                if (input != null) {
+                //in case of implicit RPC input (StatementSource.CONTEXT),
+                // stay compatible (no input argument generated)
+                if (((InputEffectiveStatementImpl) input).getDeclared()
+                        .getStatementSource() == StatementSource.DECLARATION) {
                     final GeneratedTypeBuilder inType = addRawInterfaceDefinition(basePackageName, input, rpcName);
                     addImplementedInterfaceFromUses(input, inType);
                     inType.addImplementsType(DATA_OBJECT);
@@ -525,7 +531,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 }
 
                 Type outTypeInstance = VOID;
-                if (output != null) {
+                //in case of implicit RPC output (StatementSource.CONTEXT),
+                //stay compatible (Future<RpcResult<Void>> return type generated)
+                if (((OutputEffectiveStatementImpl) output).getDeclared()
+                        .getStatementSource() == StatementSource.DECLARATION) {
                     final GeneratedTypeBuilder outType = addRawInterfaceDefinition(basePackageName, output, rpcName);
                     addImplementedInterfaceFromUses(output, outType);
                     outType.addImplementsType(DATA_OBJECT);
