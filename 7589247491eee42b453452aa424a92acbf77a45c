@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_5eea96ac",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-02-28T12:27:24Z",
+      "side": 1,
+      "message": "This is a big no-no.",
+      "range": {
+        "startLine": 111,
+        "startChar": 0,
+        "endLine": 112,
+        "endChar": 98
+      },
+      "revId": "7589247491eee42b453452aa424a92acbf77a45c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7e331a62",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/yangtools/sal/binding/generator/impl/BindingGeneratorImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 520,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-02-28T12:27:24Z",
+      "side": 1,
+      "message": "Relying on specific implementation and breaking if ever a different implementation comes in.\n\nThis check must be performed by \u0027input instanceof EffectiveStatement\u0027 check and a subsequent safe cast.",
+      "range": {
+        "startLine": 520,
+        "startChar": 37,
+        "endLine": 520,
+        "endChar": 88
+      },
+      "revId": "7589247491eee42b453452aa424a92acbf77a45c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
