@@ -19,7 +19,6 @@ import static org.mockito.Mockito.mock;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -48,8 +47,6 @@ import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.type.DerivedTypes;
 import org.opendaylight.yangtools.yang.model.util.type.RestrictedTypes;
 import org.opendaylight.yangtools.yang.model.util.type.StringTypeBuilder;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorUtilTest {
@@ -80,11 +77,9 @@ public class BindingGeneratorUtilTest {
      * &lt;/ul&gt;
      * &lt;li&gt;packageNameForTypeDefinition&lt;/li&gt; &lt;li&gt;moduleNamespaceToPackageName&lt;/li&gt;
      * - without revision &lt;/ul&gt;
-     * @throws ReactorException Reactor exception
-     * @throws SourceException Source exception
      */
     @Test
-    public void testBindingGeneratorUtilMethods() throws IOException, SourceException, ReactorException {
+    public void testBindingGeneratorUtilMethods() throws Exception {
         List<File> testModels = loadTestResources("/module.yang");
 
         final Set<Module> modules = YangParserTestUtils.parseYangSources(testModels).getModules();
