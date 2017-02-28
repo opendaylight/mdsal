@@ -100,6 +100,8 @@ import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -512,7 +514,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 final ContainerSchemaNode input = rpc.getInput();
                 final ContainerSchemaNode output = rpc.getOutput();
 
-                if (input != null) {
+                //in case of implicit RPC input (StatementSource.CONTEXT),
+                // stay compatible (no input argument generated)
+                if (isExplicitStatement(input)) {
                     final GeneratedTypeBuilder inType = addRawInterfaceDefinition(basePackageName, input, rpcName);
                     addImplementedInterfaceFromUses(input, inType);
                     inType.addImplementsType(DATA_OBJECT);
@@ -525,7 +529,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 }
 
                 Type outTypeInstance = VOID;
-                if (output != null) {
+                //in case of implicit RPC output (StatementSource.CONTEXT),
+                //stay compatible (Future<RpcResult<Void>> return type generated)
+                if (isExplicitStatement(output)) {
                     final GeneratedTypeBuilder outType = addRawInterfaceDefinition(basePackageName, output, rpcName);
                     addImplementedInterfaceFromUses(output, outType);
                     outType.addImplementsType(DATA_OBJECT);
@@ -543,6 +549,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
 
         genCtx.get(module).addTopLevelNodeType(interfaceBuilder);
+    }
+
+    private static boolean isExplicitStatement(ContainerSchemaNode node) {
+        return (node != null && node instanceof EffectiveStatement && ((EffectiveStatement) node).getDeclared()
+                .getStatementSource() == StatementSource.DECLARATION);
     }
 
     /**
