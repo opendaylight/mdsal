@@ -37,7 +37,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -448,7 +447,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         final Set<AugmentationSchema> augmentations = module.getAugmentations();
         final List<AugmentationSchema> sortedAugmentations = new ArrayList<>(augmentations);
-        Collections.sort(sortedAugmentations, AUGMENT_COMP);
+        sortedAugmentations.sort(AUGMENT_COMP);
 
         return sortedAugmentations;
     }
@@ -576,7 +575,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
         checkArgument(module != null, "Module reference cannot be NULL.");
         checkArgument(module.getName() != null, "Module name cannot be NULL.");
         final Set<NotificationDefinition> notifications = module.getNotifications();
-        checkState(notifications != null, "Set of notification from module " + module.getName() + " cannot be NULL.");
         if (notifications.isEmpty()) {
             return;
         }
@@ -620,7 +618,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            iterate over them
      * @param context
      *            schema context only used as input parameter for method
-     *            {@link identityToGenType}
+     *            {@link BindingGeneratorImpl#identityToGenType}
      *
      */
     private void allIdentitiesToGenTypes(final Module module, final SchemaContext context) {
@@ -639,7 +637,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * created transport object builder. If identity contains base identity then
      * reference to base identity is added to superior identity as its extend.
      * If identity doesn't contain base identity then only reference to abstract
-     * class {@link org.opendaylight.yangtools.yang.model.api.BaseIdentity
+     * class {@link org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode
      * BaseIdentity} is added
      *
      * @param module
@@ -698,12 +696,12 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * <code>Type</code> objects. Firstly are groupings sorted according mutual
      * dependencies. At least dependent (independent) groupings are in the list
      * saved at first positions. For every grouping the record is added to map
-     * {@link BindingGeneratorImpl#allGroupings allGroupings}
+     * {@link ModuleContext#groupings allGroupings}
      *
      * @param module
      *            current module
-     * @param collection
-     *            of groupings from which types will be generated
+     * @param groupings
+     *            collection of groupings from which types will be generated
      *
      */
     private void groupingsToGenTypes(final Module module, final Collection<GroupingDefinition> groupings) {
@@ -760,8 +758,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      */
     private EnumBuilder resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
             final GeneratedTypeBuilder typeBuilder, final Module module) {
-        if ((enumTypeDef != null) && (typeBuilder != null) && (enumTypeDef.getQName() != null)
-                && (enumTypeDef.getQName().getLocalName() != null)) {
+        if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
             final String enumerationName = BindingMapping.getClassName(enumName);
             final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
             final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
@@ -816,7 +813,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            (target path, childs...)
      * @param module
      *            current module
-     * @param parentUsesNode
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>augmentPackageName</code> equals null</li>
@@ -859,10 +855,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            final String packageName = augmentPackageName;
             final Type targetType = new ReferencedTypeImpl(targetTypeBuilder.getPackageName(),
                     targetTypeBuilder.getName());
-            addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName, targetType, augSchema);
+            addRawAugmentGenTypeDefinition(module, augmentPackageName, augmentPackageName, targetType, augSchema);
 
         } else {
             generateTypesFromAugmentedChoiceCases(module, augmentPackageName, targetTypeBuilder.toInstance(),
@@ -921,8 +916,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             throw new IllegalArgumentException("Failed to generate code for augment in " + parentUsesNode);
         }
 
-        final GroupingDefinition grouping = (GroupingDefinition) targetGrouping;
-        SchemaNode result = grouping;
+        SchemaNode result = targetGrouping;
         for (final QName node : targetPath.getPathFromRoot()) {
             if (result instanceof DataNodeContainer) {
                 final QName resultNode = QName.create(result.getQName().getModule(), node.getLocalName());
@@ -1334,7 +1328,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode, module);
                 caseTypeBuilder.addImplementsType(targetType);
 
-                SchemaNode parent = null;
+                SchemaNode parent;
                 final SchemaPath nodeSp = targetNode.getPath();
                 parent = findDataSchemaNode(schemaContext, nodeSp.getParent());
 
@@ -1546,12 +1540,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
     private boolean resolveLeafSchemaNodeAsProperty(final GeneratedTOBuilder toBuilder, final LeafSchemaNode leaf,
             final boolean isReadOnly, final Module module) {
-        if ((leaf != null) && (toBuilder != null)) {
-            String leafDesc = leaf.getDescription();
-            if (leafDesc == null) {
-                leafDesc = "";
-            }
-            Type returnType = null;
+        if (leaf != null && toBuilder != null) {
+            Type returnType;
             final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
             if (typeDef instanceof UnionTypeDefinition) {
                 // GeneratedType for this type definition should be already
@@ -1624,7 +1614,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @param node
      *            leaf list schema node which is added to
      *            <code>typeBuilder</code> as getter method
-     * @param module
+     * @param module module
      * @return boolean value
      *         <ul>
      *         <li>true - if <code>node</code>, <code>typeBuilder</code>,
@@ -1638,9 +1628,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
 
         final QName nodeName = node.getQName();
-        if (nodeName == null) {
-            return false;
-        }
 
         final TypeDefinition<?> typeDef = node.getType();
         final Module parentModule = findParentModule(schemaContext, node);
@@ -1705,7 +1692,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final Set<Type> types = ((TypeProviderImpl) typeProvider).getAdditionalTypes().get(parentModule);
         if (types == null) {
             ((TypeProviderImpl) typeProvider).getAdditionalTypes().put(parentModule,
-                    Sets.<Type> newHashSet(unionBuilder.toInstance()));
+                    Sets.newHashSet(unionBuilder.toInstance()));
         } else {
             types.add(unionBuilder.toInstance());
         }
@@ -2033,9 +2020,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @param typeBuilder
      *            generated type builder to which is added generated TO created
      *            from <code>typeDef</code>
-     * @param leafName
-     *            string with name for generated TO builder
      * @param leaf
+     *            string with name for generated TO builder
+     * @param parentModule
+     *            parent module
      * @return generated TO builder for <code>typeDef</code>
      */
     private GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef,
@@ -2049,7 +2037,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                             classNameFromLeaf, leaf);
             genTOBuilders.addAll(types);
 
-            GeneratedTOBuilder resultTOBuilder = null;
+            GeneratedTOBuilder resultTOBuilder;
             if (types.isEmpty()) {
                 throw new IllegalStateException("No GeneratedTOBuilder objects generated from union " + typeDef);
             }
@@ -2083,7 +2071,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *
      * The method passes through the list of <i>uses</i> in
      * {@code dataNodeContainer}. For every <i>use</i> is obtained corresponding
-     * generated type from {@link BindingGeneratorImpl#allGroupings
+     * generated type from {@link ModuleContext#groupings
      * allGroupings} which is added as <i>implements type</i> to
      * <code>builder</code>
      *
@@ -2097,22 +2085,13 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private GeneratedTypeBuilder addImplementedInterfaceFromUses(final DataNodeContainer dataNodeContainer,
             final GeneratedTypeBuilder builder) {
         for (final UsesNode usesNode : dataNodeContainer.getUses()) {
-            if (usesNode.getGroupingPath() != null) {
-                final GeneratedType genType = findGroupingByPath(usesNode.getGroupingPath()).toInstance();
-                if (genType == null) {
-                    throw new IllegalStateException("Grouping " + usesNode.getGroupingPath() + "is not resolved for "
-                            + builder.getName());
-                }
-
-                builder.addImplementsType(genType);
-                /*
-                builder.addComment(genType.getDescription());
-                builder.setDescription(genType.getDescription());
-                builder.setModuleName(genType.getModuleName());
-                builder.setReference(genType.getReference());
-                builder.setSchemaPath(genType.getSchemaPath());
-                */
+            final GeneratedType genType = findGroupingByPath(usesNode.getGroupingPath()).toInstance();
+            if (genType == null) {
+                throw new IllegalStateException("Grouping " + usesNode.getGroupingPath() + "is not resolved for "
+                        + builder.getName());
             }
+
+            builder.addImplementsType(genType);
         }
         return builder;
     }
@@ -2198,7 +2177,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                         sb.append(className);
                         sb.append("Key");
                     }
-		    sb.append(NEW_LINE);
+                    sb.append(NEW_LINE);
                 }
             }
         }
