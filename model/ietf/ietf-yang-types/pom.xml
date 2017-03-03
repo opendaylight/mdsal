@@ -20,7 +20,9 @@
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>ietf-yang-types</artifactId>
     <version>2010.09.24.10-SNAPSHOT</version>
-    <name>${project.artifactId}</name>
+    <!-- <name> formatting is used by autorelease to parse and notify projects on
+         build failure. Please do not modify this unless you have a good reason. -->
+    <name>ODL :: mdsal :: ${project.artifactId}</name>
     <description>${project.artifactId}</description>
     <packaging>bundle</packaging>
 

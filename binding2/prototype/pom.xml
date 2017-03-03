@@ -7,6 +7,9 @@
     <groupId>org.opendaylight.yangtools.yang.binding2</groupId>
     <artifactId>prototype</artifactId>
     <version>0.2.0-SNAPSHOT</version>
+    <!-- <name> formatting is used by autorelease to parse and notify projects on
+         build failure. Please do not modify this unless you have a good reason. -->
+    <name>ODL :: mdsal :: ${project.artifactId}</name>
 
     <dependencies>
         <dependency>

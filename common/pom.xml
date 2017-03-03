@@ -20,8 +20,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>common-agreggator</artifactId>
-    <name>md-sal</name> <!-- Used by Sonar to set project name -->
     <packaging>pom</packaging>
+    <!-- <name> formatting is used by autorelease to parse and notify projects on
+         build failure. Please do not modify this unless you have a good reason. -->
+    <name>ODL :: mdsal :: ${project.artifactId}</name>
 
     <scm>
         <connection>scm:git:ssh://git.opendaylight.org:29418/mdsal.git</connection>

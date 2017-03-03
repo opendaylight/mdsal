@@ -21,7 +21,9 @@
     <artifactId>opendaylight-l2-types</artifactId>
     <version>2013.08.27.10-SNAPSHOT</version>
     <packaging>bundle</packaging>
-
+    <!-- <name> formatting is used by autorelease to parse and notify projects on
+         build failure. Please do not modify this unless you have a good reason. -->
+    <name>ODL :: mdsal :: ${project.artifactId}</name>
 
   <!--
       Maven Site Configuration

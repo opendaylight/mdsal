@@ -20,6 +20,9 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>mdsal-binding-test-model</artifactId>
     <packaging>bundle</packaging>
+    <!-- <name> formatting is used by autorelease to parse and notify projects on
+         build failure. Please do not modify this unless you have a good reason. -->
+    <name>ODL :: mdsal :: ${project.artifactId}</name>
 
     <dependencies>
         <dependency>
