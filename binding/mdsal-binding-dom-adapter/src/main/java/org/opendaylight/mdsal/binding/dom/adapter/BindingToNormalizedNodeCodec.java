@@ -49,6 +49,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
@@ -56,6 +57,8 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +76,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
             .softValues().build(new CacheLoader<InstanceIdentifier<?>, YangInstanceIdentifier>() {
 
                 @Override
-                public YangInstanceIdentifier load(final InstanceIdentifier<?> key) throws Exception {
+                public YangInstanceIdentifier load(@Nonnull final InstanceIdentifier<?> key) throws Exception {
                     return toYangInstanceIdentifierBlocking(key);
                 }
 
@@ -98,7 +101,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
         try {
             return codecRegistry.toYangInstanceIdentifier(binding);
         } catch (final MissingSchemaException e) {
-            waitForSchema(decompose(binding),e);
+            waitForSchema(decompose(binding), e);
             return codecRegistry.toYangInstanceIdentifier(binding);
         }
     }
@@ -118,7 +121,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     }
 
     @Override
-    public YangInstanceIdentifier toYangInstanceIdentifier(final InstanceIdentifier<?> binding) {
+    public YangInstanceIdentifier toYangInstanceIdentifier(@Nonnull final InstanceIdentifier<?> binding) {
         return codecRegistry.toYangInstanceIdentifier(binding);
     }
 
@@ -155,33 +158,34 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     }
 
     @Override
-    public Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final YangInstanceIdentifier path,
+    public Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(@Nonnull final YangInstanceIdentifier path,
             final NormalizedNode<?, ?> data) {
         return codecRegistry.fromNormalizedNode(path, data);
     }
 
     @Override
-    public Notification fromNormalizedNodeNotification(final SchemaPath path, final ContainerNode data) {
+    public Notification fromNormalizedNodeNotification(@Nonnull final SchemaPath path,
+            @Nonnull final ContainerNode data) {
         return codecRegistry.fromNormalizedNodeNotification(path, data);
     }
 
     @Override
-    public DataObject fromNormalizedNodeRpcData(final SchemaPath path, final ContainerNode data) {
+    public DataObject fromNormalizedNodeRpcData(@Nonnull final SchemaPath path, @Nonnull final ContainerNode data) {
         return codecRegistry.fromNormalizedNodeRpcData(path, data);
     }
 
     @Override
-    public InstanceIdentifier<?> fromYangInstanceIdentifier(final YangInstanceIdentifier dom) {
+    public InstanceIdentifier<?> fromYangInstanceIdentifier(@Nonnull final YangInstanceIdentifier dom) {
         return codecRegistry.fromYangInstanceIdentifier(dom);
     }
 
     @Override
-    public ContainerNode toNormalizedNodeNotification(final Notification data) {
+    public ContainerNode toNormalizedNodeNotification(@Nonnull final Notification data) {
         return codecRegistry.toNormalizedNodeNotification(data);
     }
 
     @Override
-    public ContainerNode toNormalizedNodeRpcData(final DataContainer data) {
+    public ContainerNode toNormalizedNodeRpcData(@Nonnull final DataContainer data) {
         return codecRegistry.toNormalizedNodeRpcData(data);
     }
 
@@ -197,8 +201,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     public Optional<InstanceIdentifier<? extends DataObject>> toBinding(final YangInstanceIdentifier normalized)
                     throws DeserializationException {
         try {
-            return Optional.<InstanceIdentifier<? extends DataObject>>fromNullable(
-                    codecRegistry.fromYangInstanceIdentifier(normalized));
+            return Optional.fromNullable(codecRegistry.fromYangInstanceIdentifier(normalized));
         } catch (final IllegalArgumentException e) {
             return Optional.absent();
         }
@@ -262,7 +265,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     // FIXME: This should be probably part of Binding Runtime context
     public ImmutableBiMap<Method, SchemaPath> getRpcMethodToSchemaPath(final Class<? extends RpcService> key) {
         final Module module = getModuleBlocking(key);
-        final ImmutableBiMap.Builder<Method, SchemaPath> ret = ImmutableBiMap.<Method, SchemaPath>builder();
+        final ImmutableBiMap.Builder<Method, SchemaPath> ret = ImmutableBiMap.builder();
         try {
             for (final RpcDefinition rpcDef : module.getRpcs()) {
                 final Method method = findRpcMethod(key, rpcDef);
@@ -318,11 +321,16 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     private Method findRpcMethod(final Class<? extends RpcService> key, final RpcDefinition rpcDef)
             throws NoSuchMethodException {
         final String methodName = BindingMapping.getMethodName(rpcDef.getQName());
-        if (rpcDef.getInput() != null) {
+        if (rpcDef.getInput() != null && isExplicitStatement(rpcDef.getInput())) {
             final Class<?> inputClz = runtimeContext.getClassForSchema(rpcDef.getInput());
             return key.getMethod(methodName, inputClz);
         }
         return key.getMethod(methodName);
+    }
+
+    private static boolean isExplicitStatement(final ContainerSchemaNode node) {
+        return node instanceof EffectiveStatement
+                && ((EffectiveStatement) node).getDeclared().getStatementSource() == StatementSource.DECLARATION;
     }
 
     @Override
