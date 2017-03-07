@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_d9566b05",
+        "filename": "common/parent/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-07T15:29:48Z",
+      "side": 1,
+      "message": "mdsal.binding",
+      "range": {
+        "startLine": 127,
+        "startChar": 77,
+        "endLine": 127,
+        "endChar": 86
+      },
+      "revId": "5843d29abfa934981d8ba823c52cd5f8e5292b04",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
