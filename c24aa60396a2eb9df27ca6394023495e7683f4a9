@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_54c7e395",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingToNormalizedNodeCodec.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-03-07T12:53:33Z",
+      "side": 1,
+      "message": "Verify.verifyNotNull(), but I am not sure that is even needed, unless you add some more information, as \u0027throw null\u0027 will do a NPE...",
+      "range": {
+        "startLine": 318,
+        "startChar": 8,
+        "endLine": 318,
+        "endChar": 33
+      },
+      "revId": "c24aa60396a2eb9df27ca6394023495e7683f4a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
