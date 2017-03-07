@@ -44,7 +44,7 @@ public interface PostCanCommitStep extends ThreePhaseCommitStep {
      * Successful future, returning {@link #NOOP} implementation of {@link PostCanCommitStep}s.
      *
      **/
-    CheckedFuture<? extends PostCanCommitStep, DataValidationFailedException> NOOP_SUCCESS_FUTURE =
+    CheckedFuture<PostCanCommitStep, DataValidationFailedException> NOOP_SUCCESS_FUTURE =
             Futures.immediateCheckedFuture(NOOP);
 
     /**
