@@ -304,6 +304,30 @@
       "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_44d60050",
+        "filename": "model/ietf/odl-mdsal-v1-ietf-routing/src/main/yang/odl-mdsal-v1-ietf-routing.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-03-09T10:45:48Z",
+      "side": 1,
+      "message": "The way to go about that is to submit the vanilla model without actually adding it to the build.\n\nAlso ... I think our changes should be done via a second model via deviations.",
+      "parentUuid": "fafc7978_0874f0fb",
+      "range": {
+        "startLine": 1,
+        "startChar": 7,
+        "endLine": 1,
+        "endChar": 32
+      },
+      "revId": "103e6a31e4dab8774f921d2df1cedc2aafd5bb20",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
