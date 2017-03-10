@@ -12,10 +12,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
-import org.opendaylight.mdsal.binding.generator.util.Types;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.yang.types.BaseYangTypes;
 
 public class BaseTypeProvider {
