@@ -45,8 +45,8 @@ final class TypedefResolver {
             if (input != null) {
                 fillRecursively(ret, input);
             }
-            ContainerSchemaNode output = rpcDefinition.getInput();
-            if (input != null) {
+            ContainerSchemaNode output = rpcDefinition.getOutput();
+            if (output != null) {
                 fillRecursively(ret, output);
             }
         }
