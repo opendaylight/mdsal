@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
@@ -44,7 +43,7 @@ final class ModuleToGenType {
             genCtx.get(module).addModuleNode(moduleType);
             final String basePackageName = BindingMapping.getRootPackageName(module);
             GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
-                    .getChildNodes(), genCtx, schemaContext, verboseClassComments, genTypeBuilders);
+                    .getChildNodes(), genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
         }
 
         return genCtx;
