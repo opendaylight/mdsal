@@ -374,6 +374,8 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      */
     @GuardedBy("clusterLock")
     private void closeResources(final boolean needReleaseLock, final boolean needCloseProvider) {
+        LOG.debug("CloseResources for : {}, needReleaseLock: {}, needCloseProvider: {}",
+                clusterSingletonGroupIdentifier, needReleaseLock, needCloseProvider);
         if (needCloseProvider) {
             // The Game Over for this ClusterSingletonServiceGroup instance
             if (serviceEntityCandidateReg != null) {

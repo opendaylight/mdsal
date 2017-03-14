@@ -174,12 +174,24 @@ public class ShardedDOMDataTreeTest {
         dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(INNER_CONTAINER_ID),
                 true, Collections.emptyList());
 
+        DOMDataTreeIdentifier testId =
+                new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
+
+        InMemoryDOMDataTreeShard testShard = InMemoryDOMDataTreeShard.create(testId, executor, 1);
+        testShard.onGlobalContextUpdated(schemaContext);
+
+        DOMDataTreeProducer prod = dataTreeService.createProducer(Collections.singleton(testId));
+
+        dataTreeService.registerDataTreeShard(testId, testShard, prod);
+
+        prod.close();
+
         final DOMDataTreeProducer producer = dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
         DOMDataTreeCursorAwareTransaction tx = producer.createTransaction(false);
         DOMDataTreeWriteCursor cursor = tx.createCursor(ROOT_ID);
         assertNotNull(cursor);
 
-        cursor.write(TEST_ID.getRootIdentifier().getLastPathArgument(), crossShardContainer);
+        cursor.write(testId.getRootIdentifier().getLastPathArgument(), crossShardContainer);
 
         try {
             tx.submit().checkedGet();
@@ -192,7 +204,7 @@ public class ShardedDOMDataTreeTest {
         tx.submit().checkedGet();
 
         tx = producer.createTransaction(false);
-        cursor = tx.createCursor(TEST_ID);
+        cursor = tx.createCursor(testId);
         assertNotNull(cursor);
 
         cursor.delete(TestModel.INNER_CONTAINER_PATH.getLastPathArgument());

@@ -29,7 +29,7 @@ public final class ForeignShardModificationContext implements Identifiable<DOMDa
     private DOMDataTreeShardWriteTransaction tx;
     private DOMDataTreeWriteCursor cursor;
 
-    private volatile boolean notReady = true;
+    private volatile boolean ready = false;
 
     public ForeignShardModificationContext(final DOMDataTreeIdentifier identifier,
                                            final DOMDataTreeShardProducer producer) {
@@ -38,7 +38,7 @@ public final class ForeignShardModificationContext implements Identifiable<DOMDa
     }
 
     public DOMDataTreeWriteCursor getCursor() {
-        Preconditions.checkState(notReady, "Context %s has been readied", this);
+        Preconditions.checkState(!ready, "Context %s has been readied", this);
 
         if (cursor == null) {
             if (tx == null) {
@@ -54,13 +54,13 @@ public final class ForeignShardModificationContext implements Identifiable<DOMDa
     }
 
     public void ready() {
-        if (!notReady) {
+        if (ready) {
             // Idempotent, but emit a debug
             LOG.debug("Duplicate ready() of context {}", this);
             return;
         }
 
-        notReady = false;
+        ready = true;
         if (cursor != null) {
             cursor.close();
             cursor = null;
@@ -87,6 +87,7 @@ public final class ForeignShardModificationContext implements Identifiable<DOMDa
 
     public ListenableFuture<Void> submit() {
         final ListenableFuture<Void> commit = tx.commit();
+        ready = false;
         tx = null;
         return commit;
     }
