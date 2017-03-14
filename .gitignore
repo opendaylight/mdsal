@@ -23,3 +23,5 @@ target
 .DS_Store
 META-INF
 .fbExcludeFilterFile
+.cache-main
+.cache-tests
