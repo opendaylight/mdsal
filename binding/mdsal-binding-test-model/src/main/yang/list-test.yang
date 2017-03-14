@@ -1,0 +1,13 @@
+module list-test{
+    namespace "urn:list:test";
+    prefix ltst;
+
+    revision 2017-01-01;
+
+    list l{
+        key "k";
+        leaf k{
+            type string;
+        }
+    }
+}
