@@ -6,10 +6,11 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *@
 
+@import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier.CLASS
+@import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter.convertIdentifier
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.getFormattedRevision
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.getSourcePath
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers.YangModuleInfoTemplateRenderer.getSortedQName
-@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.getClassName
 @import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.getRootPackageName
 @import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MODULE_INFO_CLASS_NAME
 @import org.opendaylight.yangtools.yang.model.api.Module
@@ -37,9 +38,9 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
 
 @generateSubInfo(module: Module) = {
 @for(submodule <- module.getSubmodules) {
-    private static final class @{getClassName(submodule.getName)}Info implements @{importedNames.get("yangModuleInfo")} {
+    private static final class @{convertIdentifier(submodule.getName, CLASS)}Info implements @{importedNames.get("yangModuleInfo")} {
 
-        private static final @{importedNames.get("yangModuleInfo")} INSTANCE = new @{getClassName(submodule.getName)}Info();
+        private static final @{importedNames.get("yangModuleInfo")} INSTANCE = new @{convertIdentifier(submodule.getName, CLASS)}Info();
 
         private final @{importedNames.get("string")} name = "@{submodule.getName}";
         private final @{importedNames.get("string")} namespace = "@{submodule.getNamespace.toString}";
@@ -51,7 +52,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
             return INSTANCE;
         }
 
-        @{classBody(submodule, getClassName(submodule.getName + "Info"))}
+        @{classBody(submodule, convertIdentifier(submodule.getName + "Info", CLASS))}
     }
 }
 }
@@ -72,7 +73,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
         }
         @if(!module.getSubmodules.isEmpty) {
             @for(submodule <- module.getSubmodules) {
-                set.add(@{getClassName(submodule.getName)}Info.getInstance());
+                set.add(@{convertIdentifier(submodule.getName, CLASS)}Info.getInstance());
             }
         }
         @if(!module.getImports.isEmpty && !module.getSubmodules.isEmpty) {

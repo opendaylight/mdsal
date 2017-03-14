@@ -40,7 +40,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOB
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
-import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -155,10 +155,9 @@ final class AuxiliaryGenUtils {
         } else {
             method.append("get");
         }
-        final String name = BindingMapping.toFirstUpper(NonJavaCharsConverter.convertIdentifier(BindingMapping.getPropertyName
-                (localName), JavaIdentifier.METHOD));
-        method.append(name);
-        return method.toString();
+        // underscore used as separator for distinction of method parts in convertIdentifier()
+        method.append('_').append(localName);
+        return NonJavaCharsConverter.convertIdentifier(method.toString(), JavaIdentifier.METHOD);
     }
 
     static String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName,
@@ -306,12 +305,11 @@ final class AuxiliaryGenUtils {
     static EnumBuilder resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
         final Map<Module, ModuleContext> genCtx, final GeneratedTypeBuilder typeBuilder, final Module module) {
         if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
-            final String enumerationName = BindingMapping.getClassName(enumName);
-            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
+            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumName.getLocalName());
             final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
             enumBuilder.setDescription(enumTypedefDescription);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
-            ModuleContext ctx = genCtx.get(module);
+            final ModuleContext ctx = genCtx.get(module);
             ctx.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
             return enumBuilder;
         }
@@ -343,7 +341,7 @@ final class AuxiliaryGenUtils {
     static GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef, final GeneratedTypeBuilder
             typeBuilder, final DataSchemaNode leaf, final Module parentModule, final TypeProvider typeProvider,
             final SchemaContext schemaContext) {
-        final String classNameFromLeaf = BindingMapping.getClassName(leaf.getQName());
+        final String classNameFromLeaf = leaf.getQName().getLocalName();
         final List<GeneratedTOBuilder> genTOBuilders = new ArrayList<>();
         final String packageName = typeBuilder.getFullyQualifiedName();
         if (typeDef instanceof UnionTypeDefinition) {
@@ -381,6 +379,7 @@ final class AuxiliaryGenUtils {
 
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     static Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final TypeDefinition<?> typeDef,
             final GeneratedTypeBuilder typeBuilder, final Module parentModule, final TypeProvider typeProvider) {
         final GeneratedTOBuilderImpl returnType = new GeneratedTOBuilderImpl(genTOBuilder.getPackageName(),
@@ -441,6 +440,71 @@ final class AuxiliaryGenUtils {
         }
 
         return false;
+    }
+
+    /**
+     * Generates for the <code>list</code> which contains any list keys special
+     * generated TO builder.
+     *
+     * @param packageName
+     *            string with package name to which the list belongs
+     * @param list
+     *            schema node of list
+     * @return generated TO builder which represents the keys of the
+     *         <code>list</code> or empty TO builder if <code>list</code> is null or list of
+     *         key definitions is null or empty.
+     */
+    static GeneratedTOBuilder resolveListKeyTOBuilder(final String packageName, final ListSchemaNode list) {
+        GeneratedTOBuilder genTOBuilder = null;
+        if ((list.getKeyDefinition() != null) && (!list.getKeyDefinition().isEmpty())) {
+            // underscore used as separator for distinction of class name parts
+            final String genTOName =
+                    new StringBuilder(list.getQName().getLocalName()).append('_').append(BindingNamespaceType.Key)
+                            .toString();
+            genTOBuilder =
+                    new GeneratedTOBuilderImpl(new StringBuilder(packageName).append(".wrapper").toString(), genTOName);
+        }
+        return genTOBuilder;
+    }
+
+    /**
+     * Converts <code>leaf</code> schema node to property of generated TO
+     * builder.
+     *
+     * @param toBuilder
+     *            generated TO builder to which is <code>leaf</code> added as
+     *            property
+     * @param leaf
+     *            leaf schema node which is added to <code>toBuilder</code> as
+     *            property
+     * @param returnType
+     *            property type
+     * @param isReadOnly
+     *            boolean value which says if leaf property is|isn't read only
+     * @return boolean value
+     *         <ul>
+     *         <li>false - if <code>leaf</code>, <code>toBuilder</code> or leaf
+     *         name equals null or if leaf is added by <i>uses</i>.</li>
+     *         <li>true - other cases</li>
+     *         </ul>
+     */
+    static boolean resolveLeafSchemaNodeAsProperty(final GeneratedTOBuilder toBuilder, final LeafSchemaNode leaf,
+        final Type returnType, final boolean isReadOnly) {
+
+        if (returnType == null) {
+            return false;
+        }
+        final String leafName = leaf.getQName().getLocalName();
+        final String leafDesc = encodeAngleBrackets(leaf.getDescription());
+        final GeneratedPropertyBuilder propBuilder =
+                toBuilder.addProperty(NonJavaCharsConverter.convertIdentifier(leafName, JavaIdentifier.METHOD));
+        propBuilder.setReadOnly(isReadOnly);
+        propBuilder.setReturnType(returnType);
+        propBuilder.setComment(leafDesc);
+        toBuilder.addEqualsIdentity(propBuilder);
+        toBuilder.addHashIdentity(propBuilder);
+        toBuilder.addToStringProperty(propBuilder);
+        return true;
     }
 
     @VisibleForTesting

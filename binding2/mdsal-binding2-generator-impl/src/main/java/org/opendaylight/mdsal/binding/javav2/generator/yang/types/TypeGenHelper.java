@@ -120,6 +120,7 @@ final class TypeGenHelper {
      *             <li>if <code>typedefName</code> equals null</li>
      *             </ul>
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     static GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef, final
             TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName, final SchemaContext
             schemaContext, final Map<String, Map<Date, Map<String, Type>>> genTypeDefsContextMap) {
@@ -128,9 +129,8 @@ final class TypeGenHelper {
         Preconditions.checkArgument(basePackageName != null, "String with base package name cannot be NULL!");
 
         final String typedefName = typedef.getQName().getLocalName();
-        final String classTypedefName = BindingMapping.getClassName(typedefName);
         final String innerTypeDef = innerExtendedType.getQName().getLocalName();
-        final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, classTypedefName);
+        final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typedefName);
         final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
 
         genTOBuilder.setDescription(typedefDescription);
@@ -138,7 +138,7 @@ final class TypeGenHelper {
         genTOBuilder.setSchemaPath((List) typedef.getPath().getPathFromRoot());
         genTOBuilder.setModuleName(moduleName);
         genTOBuilder.setTypedef(true);
-        Restrictions r = BindingGeneratorUtil.getRestrictions(typedef);
+        final Restrictions r = BindingGeneratorUtil.getRestrictions(typedef);
         genTOBuilder.setRestrictions(r);
         if (typedef.getStatus() == Status.DEPRECATED) {
             genTOBuilder.addAnnotation("", "Deprecated");
@@ -157,7 +157,7 @@ final class TypeGenHelper {
         }
 
         if (typeMap != null) {
-            Type type = typeMap.get(innerTypeDef);
+            final Type type = typeMap.get(innerTypeDef);
             if (type instanceof GeneratedTransferObject) {
                 genTOBuilder.setExtendsType((GeneratedTransferObject) type);
             }
@@ -225,7 +225,7 @@ final class TypeGenHelper {
         }
 
         final List<String> regExps = new ArrayList<>(patternConstraints.size());
-        for (PatternConstraint patternConstraint : patternConstraints) {
+        for (final PatternConstraint patternConstraint : patternConstraints) {
             final String regEx = patternConstraint.getRegularExpression();
             final String modifiedRegEx = StringEscapeUtils.escapeJava(regEx);
             regExps.add(modifiedRegEx);
@@ -250,12 +250,12 @@ final class TypeGenHelper {
      */
     static List<TypeDefinition<?>> sortTypeDefinitionAccordingDepth(
             final Collection<TypeDefinition<?>> unsortedTypeDefinitions) {
-        List<TypeDefinition<?>> sortedTypeDefinition = new ArrayList<>();
+        final List<TypeDefinition<?>> sortedTypeDefinition = new ArrayList<>();
 
-        Map<Integer, List<TypeDefinition<?>>> typeDefinitionsDepths = new TreeMap<>();
-        for (TypeDefinition<?> unsortedTypeDefinition : unsortedTypeDefinitions) {
+        final Map<Integer, List<TypeDefinition<?>>> typeDefinitionsDepths = new TreeMap<>();
+        for (final TypeDefinition<?> unsortedTypeDefinition : unsortedTypeDefinitions) {
             final int depth = getTypeDefinitionDepth(unsortedTypeDefinition);
-            List<TypeDefinition<?>> typeDefinitionsConcreteDepth = typeDefinitionsDepths.computeIfAbsent(depth, k -> new ArrayList<>());
+            final List<TypeDefinition<?>> typeDefinitionsConcreteDepth = typeDefinitionsDepths.computeIfAbsent(depth, k -> new ArrayList<>());
             typeDefinitionsConcreteDepth.add(unsortedTypeDefinition);
         }
 
@@ -307,7 +307,7 @@ final class TypeGenHelper {
         if (typeDefinition == null) {
             return 1;
         }
-        TypeDefinition<?> baseType = typeDefinition.getBaseType();
+        final TypeDefinition<?> baseType = typeDefinition.getBaseType();
         if (baseType == null) {
             return 1;
         }
@@ -316,10 +316,10 @@ final class TypeGenHelper {
         if (baseType.getBaseType() != null) {
             depth = depth + getTypeDefinitionDepth(baseType);
         } else if (baseType instanceof UnionTypeDefinition) {
-            List<TypeDefinition<?>> childTypeDefinitions = ((UnionTypeDefinition) baseType).getTypes();
+            final List<TypeDefinition<?>> childTypeDefinitions = ((UnionTypeDefinition) baseType).getTypes();
             int maxChildDepth = 0;
             int childDepth = 1;
-            for (TypeDefinition<?> childTypeDefinition : childTypeDefinitions) {
+            for (final TypeDefinition<?> childTypeDefinition : childTypeDefinitions) {
                 childDepth = childDepth + getTypeDefinitionDepth(childTypeDefinition);
                 if (childDepth > maxChildDepth) {
                     maxChildDepth = childDepth;
@@ -336,18 +336,18 @@ final class TypeGenHelper {
         fillRecursively(ret, module);
 
         final Set<NotificationDefinition> notifications = module.getNotifications();
-        for (NotificationDefinition notificationDefinition : notifications) {
+        for (final NotificationDefinition notificationDefinition : notifications) {
             fillRecursively(ret, notificationDefinition);
         }
 
         final Set<RpcDefinition> rpcs = module.getRpcs();
-        for (RpcDefinition rpcDefinition : rpcs) {
+        for (final RpcDefinition rpcDefinition : rpcs) {
             ret.addAll(rpcDefinition.getTypeDefinitions());
-            ContainerSchemaNode input = rpcDefinition.getInput();
+            final ContainerSchemaNode input = rpcDefinition.getInput();
             if (input != null) {
                 fillRecursively(ret, input);
             }
-            ContainerSchemaNode output = rpcDefinition.getOutput();
+            final ContainerSchemaNode output = rpcDefinition.getOutput();
             if (output != null) {
                 fillRecursively(ret, output);
             }
@@ -355,15 +355,15 @@ final class TypeGenHelper {
 
         final Collection<DataSchemaNode> potentials = module.getChildNodes();
 
-        for (DataSchemaNode potential : potentials) {
+        for (final DataSchemaNode potential : potentials) {
             if (potential instanceof ActionNodeContainer) {
                 final Set<ActionDefinition> actions = ((ActionNodeContainer) potential).getActions();
-                for (ActionDefinition action: actions) {
-                    ContainerSchemaNode input = action.getInput();
+                for (final ActionDefinition action: actions) {
+                    final ContainerSchemaNode input = action.getInput();
                     if (input != null) {
                         fillRecursively(ret, input);
                     }
-                    ContainerSchemaNode output = action.getOutput();
+                    final ContainerSchemaNode output = action.getOutput();
                     if (output != null) {
                         fillRecursively(ret, output);
                     }
@@ -397,7 +397,7 @@ final class TypeGenHelper {
 
         final Set<GroupingDefinition> groupings = container.getGroupings();
         if (groupings != null) {
-            for (GroupingDefinition grouping : groupings) {
+            for (final GroupingDefinition grouping : groupings) {
                 fillRecursively(list, grouping);
             }
         }
@@ -412,7 +412,7 @@ final class TypeGenHelper {
      */
     static void makeSerializable(final GeneratedTOBuilderImpl gto) {
         gto.addImplementsType(Types.typeForClass(Serializable.class));
-        GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("serialVersionUID");
+        final GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("serialVersionUID");
         prop.setValue(Long.toString(BindingGeneratorUtil.computeDefaultSUID(gto)));
         gto.setSUID(prop);
     }
@@ -436,18 +436,16 @@ final class TypeGenHelper {
      *             <li>if name of <code>enumTypeDef</code> equal null</li>
      *             </ul>
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     static Enumeration provideTypeForEnum(final EnumTypeDefinition enumTypeDef, final String enumName, final
     SchemaNode parentNode, final SchemaContext schemaContext) {
         Preconditions.checkArgument(enumTypeDef != null, "EnumTypeDefinition reference cannot be NULL!");
         Preconditions.checkArgument(enumTypeDef.getQName().getLocalName() != null,
                 "Local Name in EnumTypeDefinition QName cannot be NULL!");
-
-        final String enumerationName = BindingMapping.getClassName(enumName);
-
-        Module module = findParentModule(schemaContext, parentNode);
+        final Module module = findParentModule(schemaContext, parentNode);
         final String basePackageName = BindingMapping.getRootPackageName(module);
 
-        final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(basePackageName, enumerationName);
+        final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(basePackageName, enumName);
         final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
         enumBuilder.setDescription(enumTypedefDescription);
         enumBuilder.setReference(enumTypeDef.getReference());
@@ -467,6 +465,7 @@ final class TypeGenHelper {
      * @return generated TO builder which contains data from
      *         <code>typedef</code> and <code>basePackageName</code>
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static GeneratedTOBuilderImpl typedefToTransferObject(final String basePackageName, final TypeDefinition<?> typedef, final String moduleName) {
 
         final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typedef.getPath
@@ -474,8 +473,7 @@ final class TypeGenHelper {
         final String typeDefTOName = typedef.getQName().getLocalName();
 
         if ((packageName != null) && (typeDefTOName != null)) {
-            final String genTOName = BindingMapping.getClassName(typeDefTOName);
-            final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(packageName, genTOName);
+            final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(packageName, typeDefTOName);
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
 
             newType.setDescription(typedefDescription);
@@ -489,9 +487,9 @@ final class TypeGenHelper {
     }
 
     static Module getParentModule(final SchemaNode node, final SchemaContext schemaContext) {
-        QName qname = node.getPath().getPathFromRoot().iterator().next();
-        URI namespace = qname.getNamespace();
-        Date revision = qname.getRevision();
+        final QName qname = node.getPath().getPathFromRoot().iterator().next();
+        final URI namespace = qname.getNamespace();
+        final Date revision = qname.getRevision();
         return schemaContext.findModuleByNamespaceAndRevision(namespace, revision);
     }
 }

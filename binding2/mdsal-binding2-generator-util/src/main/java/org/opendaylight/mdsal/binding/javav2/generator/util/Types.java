@@ -29,9 +29,9 @@ import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.WildcardType;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
-import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
@@ -43,7 +43,7 @@ public final class Types {
             new CacheLoader<Class<?>, ConcreteType>() {
 
                 @Override
-                public ConcreteType load(Class<?> key) throws Exception {
+                public ConcreteType load(final Class<?> key) throws Exception {
                     return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
                 }
             };
@@ -260,7 +260,7 @@ public final class Types {
 
         @Override
         public Restrictions getRestrictions() {
-            return restrictions;
+            return this.restrictions;
         }
     }
 
@@ -288,7 +288,7 @@ public final class Types {
 
         @Override
         public Restrictions getRestrictions() {
-            return restrictions;
+            return this.restrictions;
         }
     }
 
@@ -318,7 +318,7 @@ public final class Types {
          *            array of actual parameters
          */
         public ParameterizedTypeImpl(final Type rawType, final Type[] actTypes) {
-            super(rawType.getPackageName(), rawType.getName());
+            super(rawType.getPackageName(), rawType.getName(), true);
             this.rawType = rawType;
             this.actualTypes = actTypes.clone();
         }
@@ -326,12 +326,12 @@ public final class Types {
         @Override
         public Type[] getActualTypeArguments() {
 
-            return actualTypes;
+            return this.actualTypes;
         }
 
         @Override
         public Type getRawType() {
-            return rawType;
+            return this.rawType;
         }
     }
 
@@ -375,7 +375,7 @@ public final class Types {
 
         @Override
         public List<RangeConstraint> getRangeConstraints() {
-            return rangeConstraints;
+            return this.rangeConstraints;
         }
 
         @Override

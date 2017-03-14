@@ -466,7 +466,7 @@ container example-outter {
 [source,yang]
 ----
 list foo {
-    key identifier key fookey;
+    key "identifier key fookey";
     leaf identifier {
         type union {
             type string;
@@ -480,6 +480,10 @@ list foo {
     leaf fookey {
         type string;
     }
+
+    leaf boo-non-key {
+        type string;
+    }
 }
 ----
 [uml, file="list-Keyed.png"]
@@ -487,24 +491,47 @@ list foo {
 set namespaceSeparator none
 
 interface data.Foo {
+    + getFooIdentifier() : key.foo.FooIdentifier
+    + getFooKey() : key.foo.FooKey
+    + getFooFooKey() : key.foo.FooFooKey
+    + getKey() : key.foo.wrapper.FooKey
 }
 
+interface key.foo.wrapper.FooKey {
+    + getFooIdentifier() : key.foo.FooIdentifier
+    + getFooKey() : key.foo.FooKey
+    + getFooFooKey() : key.foo.FooFooKey
+}
+
+interface type.foo.identifier.IdentifierUnion
 interface key.foo.FooIdentifier {
+    + getIdentifier() : type.foo.identifier.IdentifierUnion
 }
 
 interface key.foo.FooKey {
+    + getKey() : String
 }
 
 interface key.foo.FooFooKey {
+    + getFooKey() : String
 }
 
-interface type.foo.identifier.IdentifierUnion {
+interface data.foo.FooBooNonKey {
+    + getBooNonKey() : String
 }
 
-data.Foo o- key.foo.FooIdentifier
-data.Foo o- key.foo.FooKey
-data.Foo o- key.foo.FooFooKey
 key.foo.FooIdentifier o- type.foo.identifier.IdentifierUnion
+
+data.foo.FooBooNonKey -u-|> data.Foo
+key.foo.wrapper.FooKey -u-|> data.Foo
+
+key.foo.FooKey -u-|> data.Foo
+key.foo.FooFooKey -u-|> data.Foo
+key.foo.FooIdentifier -u-|> data.Foo
+
+key.foo.FooKey -u-|> key.foo.wrapper.FooKey
+key.foo.FooFooKey -u-|> key.foo.wrapper.FooKey
+key.foo.FooIdentifier -u-|> key.foo.wrapper.FooKey
 --
 
 ==== List without Key

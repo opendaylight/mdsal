@@ -166,7 +166,7 @@ public final class BaseYangTypes {
         public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
                 final Restrictions restrictions) {
 
-            String typeName = type.getQName().getLocalName();
+            final String typeName = type.getQName().getLocalName();
             switch (typeName) {
                 case "binary":
                     return restrictions == null ? Types.BYTE_ARRAY : Types.primitiveType("byte[]", restrictions);
@@ -211,8 +211,7 @@ public final class BaseYangTypes {
 
         @Override
         public String getParamNameFromType(final TypeDefinition<?> type) {
-            return NonJavaCharsConverter.convertIdentifier(BindingMapping.getPropertyName(type.getQName()
-                    .getLocalName()), JavaIdentifier.METHOD);
+            return NonJavaCharsConverter.convertIdentifier(type.getQName().getLocalName(), JavaIdentifier.METHOD);
         }
     };
 
