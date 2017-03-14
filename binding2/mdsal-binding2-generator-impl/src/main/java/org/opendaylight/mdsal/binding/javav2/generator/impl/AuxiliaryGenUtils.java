@@ -16,23 +16,35 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNode;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate;
+import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
+import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
+import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
+import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
@@ -40,7 +52,11 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Status;
+import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 
 /**
@@ -266,6 +282,165 @@ final class AuxiliaryGenUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Adds enumeration builder created from <code>enumTypeDef</code> to
+     * <code>typeBuilder</code>.
+     *
+     * Each <code>enumTypeDef</code> item is added to builder with its name and
+     * value.
+     *
+     * @param enumTypeDef
+     *            EnumTypeDefinition contains enum data
+     * @param enumName
+     *            string contains name which will be assigned to enumeration
+     *            builder
+     * @param typeBuilder
+     *            GeneratedTypeBuilder to which will be enum builder assigned
+     * @param module
+     *            Module in which type should be generated
+     * @return enumeration builder which contains data from
+     *         <code>enumTypeDef</code>
+     */
+    static EnumBuilder resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
+        final Map<Module, ModuleContext> genCtx, final GeneratedTypeBuilder typeBuilder, final Module module) {
+        if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
+            final String enumerationName = BindingMapping.getClassName(enumName);
+            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
+            final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
+            enumBuilder.setDescription(enumTypedefDescription);
+            enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
+            ModuleContext ctx = genCtx.get(module);
+            ctx.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
+            return enumBuilder;
+        }
+        return null;
+    }
+
+
+    /**
+     * Builds generated TO builders for <code>typeDef</code> of type
+     * {@link UnionTypeDefinition} or {@link BitsTypeDefinition} which are
+     * also added to <code>typeBuilder</code> as enclosing transfer object.
+     *
+     * If more then one generated TO builder is created for enclosing then all
+     * of the generated TO builders are added to <code>typeBuilder</code> as
+     * enclosing transfer objects.
+     *
+     * @param typeDef
+     *            type definition which can be of type <code>UnionType</code> or
+     *            <code>BitsTypeDefinition</code>
+     * @param typeBuilder
+     *            generated type builder to which is added generated TO created
+     *            from <code>typeDef</code>
+     * @param leaf
+     *            string with name for generated TO builder
+     * @param parentModule
+     *            parent module
+     * @return generated TO builder for <code>typeDef</code>
+     */
+    static GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef, final GeneratedTypeBuilder
+            typeBuilder, final DataSchemaNode leaf, final Module parentModule, final TypeProvider typeProvider,
+            final SchemaContext schemaContext) {
+        final String classNameFromLeaf = BindingMapping.getClassName(leaf.getQName());
+        final List<GeneratedTOBuilder> genTOBuilders = new ArrayList<>();
+        final String packageName = typeBuilder.getFullyQualifiedName();
+        if (typeDef instanceof UnionTypeDefinition) {
+            final List<GeneratedTOBuilder> types = ((TypeProviderImpl) typeProvider)
+                    .provideGeneratedTOBuildersForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
+                            classNameFromLeaf, leaf, schemaContext, ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap());
+            genTOBuilders.addAll(types);
+
+            GeneratedTOBuilder resultTOBuilder;
+            if (types.isEmpty()) {
+                throw new IllegalStateException("No GeneratedTOBuilder objects generated from union " + typeDef);
+            }
+            resultTOBuilder = types.remove(0);
+            for (final GeneratedTOBuilder genTOBuilder : types) {
+                resultTOBuilder.addEnclosingTransferObject(genTOBuilder);
+            }
+
+            final GeneratedPropertyBuilder genPropBuilder = resultTOBuilder.addProperty("value");
+            genPropBuilder.setReturnType(Types.CHAR_ARRAY);
+            resultTOBuilder.addEqualsIdentity(genPropBuilder);
+            resultTOBuilder.addHashIdentity(genPropBuilder);
+            resultTOBuilder.addToStringProperty(genPropBuilder);
+
+        } else if (typeDef instanceof BitsTypeDefinition) {
+            genTOBuilders.add((((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
+                    packageName, typeDef, classNameFromLeaf, parentModule.getName()));
+        }
+        if (!genTOBuilders.isEmpty()) {
+            for (final GeneratedTOBuilder genTOBuilder : genTOBuilders) {
+                typeBuilder.addEnclosingTransferObject(genTOBuilder);
+            }
+            return genTOBuilders.get(0);
+        }
+        return null;
+
+    }
+
+    static Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final TypeDefinition<?> typeDef,
+            final GeneratedTypeBuilder typeBuilder, final Module parentModule, final TypeProvider typeProvider) {
+        final GeneratedTOBuilderImpl returnType = new GeneratedTOBuilderImpl(genTOBuilder.getPackageName(),
+                genTOBuilder.getName());
+        final String typedefDescription = encodeAngleBrackets(typeDef.getDescription());
+
+        returnType.setDescription(typedefDescription);
+        returnType.setReference(typeDef.getReference());
+        returnType.setSchemaPath((List) typeDef.getPath().getPathFromRoot());
+        returnType.setModuleName(parentModule.getName());
+
+        genTOBuilder.setTypedef(true);
+        genTOBuilder.setIsUnion(true);
+        TypeProviderImpl.addUnitsToGenTO(genTOBuilder, typeDef.getUnits());
+
+
+
+        final GeneratedTOBuilder unionBuilder = createUnionBuilder(genTOBuilder,typeBuilder);
+
+
+        final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
+        method.setReturnType(returnType);
+        method.addParameter(Types.STRING, "defaultValue");
+        method.setAccessModifier(AccessModifier.PUBLIC);
+        method.setStatic(true);
+
+        final Set<Type> types = ((TypeProviderImpl) typeProvider).getAdditionalTypes().get(parentModule);
+        if (types == null) {
+            ((TypeProviderImpl) typeProvider).getAdditionalTypes().put(parentModule,
+                    Sets.newHashSet(unionBuilder.toInstance()));
+        } else {
+            types.add(unionBuilder.toInstance());
+        }
+        return returnType.toInstance();
+    }
+
+    private static GeneratedTOBuilder createUnionBuilder(final GeneratedTOBuilder genTOBuilder, final GeneratedTypeBuilder typeBuilder) {
+        final String outerCls = Types.getOuterClassName(genTOBuilder);
+        final StringBuilder name;
+        if (outerCls != null) {
+            name = new StringBuilder(outerCls);
+        } else {
+            name = new StringBuilder();
+        }
+        name.append(genTOBuilder.getName());
+        name.append("Builder");
+        final GeneratedTOBuilderImpl unionBuilder = new GeneratedTOBuilderImpl(typeBuilder.getPackageName(),name.toString());
+        unionBuilder.setIsUnionBuilder(true);
+        return unionBuilder;
+    }
+
+    static boolean isInnerType(final LeafSchemaNode leaf, final TypeDefinition<?> type) {
+        if (leaf.getPath().equals(type.getPath())) {
+            return true;
+        }
+        if (leaf.getPath().equals(type.getPath().getParent())) {
+            return true;
+        }
+
+        return false;
     }
 
     @VisibleForTesting

@@ -162,6 +162,10 @@ public final class TypeProviderImpl implements TypeProvider {
         return null;
     }
 
+    public Map<String, Map<Date, Map<String, Type>>> getGenTypeDefsContextMap() {
+        return genTypeDefsContextMap;
+    }
+
     /**
      * Passes through all modules and through all its type definitions and
      * convert it to generated types.
@@ -287,7 +291,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *             <li>if <code>basePackageName</code> equals null</li>
      *             </ul>
      */
-    public static GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final String basePackageName, final
+    public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final String basePackageName, final
     TypeDefinition<?> typeDef, final String typeDefName, final String moduleName) {
 
         Preconditions.checkArgument(typeDef != null, "typeDef cannot be NULL!");
