@@ -36,8 +36,10 @@ public class ForeignShardThreePhaseCommitCohortTest {
         doReturn(DOM_DATA_TREE_SHARD_WRITE_TRANSACTION).when(DOM_DATA_TREE_SHARD_PRODUCER).createTransaction();
         doReturn(DOM_DATA_TREE_WRITE_CURSOR)
                 .when(DOM_DATA_TREE_SHARD_WRITE_TRANSACTION).createCursor(DOM_DATA_TREE_IDENTIFIER);
-        foreignShardModificationContext.getCursor();
+        doNothing().when(DOM_DATA_TREE_SHARD_WRITE_TRANSACTION).ready();
 
+        foreignShardModificationContext.getCursor();
+        foreignShardModificationContext.ready();
         final ForeignShardThreePhaseCommitCohort foreignShardThreePhaseCommitCohort =
                 new ForeignShardThreePhaseCommitCohort(DOM_DATA_TREE_IDENTIFIER, foreignShardModificationContext);
 
