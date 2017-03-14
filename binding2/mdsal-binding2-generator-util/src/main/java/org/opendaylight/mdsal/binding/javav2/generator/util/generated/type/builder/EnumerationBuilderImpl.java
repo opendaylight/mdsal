@@ -45,7 +45,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
     private List<QName> schemaPath;
 
     public EnumerationBuilderImpl(final String packageName, final String name) {
-        super(packageName, NonJavaCharsConverter.normalizeClassIdentifier(packageName, name));
+        super(packageName, name);
     }
 
     public void setReference(final String reference) {
@@ -216,7 +216,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         public EnumerationImpl(final Type definingType, final List<AnnotationTypeBuilder> annotationBuilders,
                                final String packageName, final String name, final List<Pair> values, final String description,
                 final String reference, final String moduleName, final List<QName> schemaPath) {
-            super(packageName, name);
+            super(packageName, name, true);
             this.definingType = definingType;
             this.values = values;
             this.description = description;

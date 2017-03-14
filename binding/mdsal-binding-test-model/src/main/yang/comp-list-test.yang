@@ -1,0 +1,24 @@
+module comp-list-test {
+    namespace "urn:comp:list:test";
+    prefix cltst;
+
+    revision 2017-01-01;
+
+    list l{
+        key "k1 k2 id";
+        leaf k1 {
+            type string;
+        }
+        leaf k2 {
+            type string;
+        }
+        leaf id {
+            type union {
+                type string;
+            }
+        }
+        leaf foo {
+            type string;
+        }
+    }
+}
