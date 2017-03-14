@@ -214,6 +214,51 @@ public class ShardedDOMDataTreeTest {
     }
 
     @Test
+    // TODO extract common logic from testSingleSubshardWrite and
+    // testSingleShardWrite tests
+    public void testSingleSubshardWrite() throws Exception {
+        final DOMDataTreeListener mockedDataTreeListener = mock(DOMDataTreeListener.class);
+        doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
+
+        InMemoryDOMDataTreeShard testShard = InMemoryDOMDataTreeShard.create(TEST_ID, executor, 1);
+        testShard.onGlobalContextUpdated(schemaContext);
+
+        final DOMDataTreeProducer regProducer = dataTreeService.createProducer(Collections.singleton(TEST_ID));
+        dataTreeService.registerDataTreeShard(TEST_ID, testShard, regProducer);
+        regProducer.close();
+
+        dataTreeService.registerListener(mockedDataTreeListener, Collections.singletonList(TEST_ID),
+                true, Collections.emptyList());
+
+        final DOMDataTreeProducer producer = dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
+        DOMDataTreeCursorAwareTransaction tx = producer.createTransaction(false);
+        DOMDataTreeWriteCursor cursor = tx.createCursor(ROOT_ID);
+        assertNotNull(cursor);
+
+        cursor.write(TEST_ID.getRootIdentifier().getLastPathArgument(), crossShardContainer);
+
+        cursor.close();
+        tx.submit().checkedGet();
+
+        tx = producer.createTransaction(false);
+        cursor = tx.createCursor(TEST_ID);
+        assertNotNull(cursor);
+
+        cursor.delete(TestModel.INNER_CONTAINER_PATH.getLastPathArgument());
+        cursor.close();
+        tx.submit().checkedGet();
+
+        verify(mockedDataTreeListener, timeout(5000).times(3)).onDataTreeChanged(captorForChanges.capture(),
+                captorForSubtrees.capture());
+
+        final List<Collection<DataTreeCandidate>> capturedValue = captorForChanges.getAllValues();
+        final ContainerNode capturedChange =
+                (ContainerNode) capturedValue.get(1).iterator().next().getRootNode().getDataAfter().get();
+        final ContainerNode innerContainerVerify = crossShardContainer;
+        assertEquals(innerContainerVerify, capturedChange);
+    }
+
+    @Test
     public void testMultipleWritesIntoSingleMapEntry() throws Exception {
 
         final YangInstanceIdentifier oid1 = TestModel.OUTER_LIST_PATH.node(new NodeIdentifierWithPredicates(
