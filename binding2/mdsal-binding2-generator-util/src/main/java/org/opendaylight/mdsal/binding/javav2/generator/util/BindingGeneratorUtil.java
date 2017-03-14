@@ -112,15 +112,15 @@ public final class BindingGeneratorUtil {
             dout.writeUTF(to.getName());
             dout.writeInt(to.isAbstract() ? 3 : 7);
 
-            for (Type ifc : sortedCollection(SUID_NAME_COMPARATOR, to.getImplementsTypes())) {
+            for (final Type ifc : sortedCollection(SUID_NAME_COMPARATOR, to.getImplementsTypes())) {
                 dout.writeUTF(ifc.getFullyQualifiedName());
             }
 
-            for (GeneratedPropertyBuilder gp : sortedCollection(SUID_MEMBER_COMPARATOR, to.getProperties())) {
+            for (final GeneratedPropertyBuilder gp : sortedCollection(SUID_MEMBER_COMPARATOR, to.getProperties())) {
                 dout.writeUTF(gp.getName());
             }
 
-            for (MethodSignatureBuilder m : sortedCollection(SUID_MEMBER_COMPARATOR, to.getMethodDefinitions())) {
+            for (final MethodSignatureBuilder m : sortedCollection(SUID_MEMBER_COMPARATOR, to.getMethodDefinitions())) {
                 if (!(m.getAccessModifier().equals(AccessModifier.PRIVATE))) {
                     dout.writeUTF(m.getName());
                     dout.write(m.getAccessModifier().ordinal());
@@ -128,7 +128,7 @@ public final class BindingGeneratorUtil {
             }
 
             dout.flush();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException("Failed to hash object " + to, e);
         }
 
@@ -172,16 +172,16 @@ public final class BindingGeneratorUtil {
                 sb.append(basePackageName)
                   .append('.')
                   .append(namespaceType.getPackagePrefix());
-                return sb.toString();
+                return NonJavaCharsConverter.convertFullPackageName(sb.toString());
             }
-            return basePackageName;
+            return NonJavaCharsConverter.convertFullPackageName(basePackageName);
         }
 
         return generateNormalizedPackageName(basePackageName, pathFromRoot, size, namespaceType);
     }
 
     public static Restrictions getRestrictions(final TypeDefinition<?> type) {
-        if (type == null || type.getBaseType() == null) {
+        if ((type == null) || (type.getBaseType() == null)) {
             if (type instanceof DecimalTypeDefinition) {
                 final DecimalTypeDefinition decimal = (DecimalTypeDefinition) type;
                 final DecimalTypeBuilder tmpBuilder = BaseTypes.decimalTypeBuilder(decimal.getPath());
@@ -234,7 +234,7 @@ public final class BindingGeneratorUtil {
         if (type instanceof BinaryTypeDefinition) {
             final BinaryTypeDefinition binary = (BinaryTypeDefinition)type;
             final BinaryTypeDefinition base = binary.getBaseType();
-            if (base != null && base.getBaseType() != null) {
+            if ((base != null) && (base.getBaseType() != null)) {
                 length = currentOrEmpty(binary.getLengthConstraints(), base.getLengthConstraints());
             } else {
                 length = binary.getLengthConstraints();
@@ -248,7 +248,7 @@ public final class BindingGeneratorUtil {
 
             final DecimalTypeDefinition decimal = (DecimalTypeDefinition)type;
             final DecimalTypeDefinition base = decimal.getBaseType();
-            if (base != null && base.getBaseType() != null) {
+            if ((base != null) && (base.getBaseType() != null)) {
                 range = currentOrEmpty(decimal.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = decimal.getRangeConstraints();
@@ -259,7 +259,7 @@ public final class BindingGeneratorUtil {
 
             final IntegerTypeDefinition integer = (IntegerTypeDefinition)type;
             final IntegerTypeDefinition base = integer.getBaseType();
-            if (base != null && base.getBaseType() != null) {
+            if ((base != null) && (base.getBaseType() != null)) {
                 range = currentOrEmpty(integer.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = integer.getRangeConstraints();
@@ -267,7 +267,7 @@ public final class BindingGeneratorUtil {
         } else if (type instanceof StringTypeDefinition) {
             final StringTypeDefinition string = (StringTypeDefinition)type;
             final StringTypeDefinition base = string.getBaseType();
-            if (base != null && base.getBaseType() != null) {
+            if ((base != null) && (base.getBaseType() != null)) {
                 length = currentOrEmpty(string.getLengthConstraints(), base.getLengthConstraints());
             } else {
                 length = string.getLengthConstraints();
@@ -281,7 +281,7 @@ public final class BindingGeneratorUtil {
 
             final UnsignedIntegerTypeDefinition unsigned = (UnsignedIntegerTypeDefinition)type;
             final UnsignedIntegerTypeDefinition base = unsigned.getBaseType();
-            if (base != null && base.getBaseType() != null) {
+            if ((base != null) && (base.getBaseType() != null)) {
                 range = currentOrEmpty(unsigned.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = unsigned.getRangeConstraints();
@@ -354,7 +354,7 @@ public final class BindingGeneratorUtil {
         protected MessageDigest initialValue() {
             try {
                 return MessageDigest.getInstance("SHA");
-            } catch (NoSuchAlgorithmException e) {
+            } catch (final NoSuchAlgorithmException e) {
                 throw new IllegalStateException("Failed to get a SHA digest provider", e);
             }
         }
@@ -400,7 +400,7 @@ public final class BindingGeneratorUtil {
 
         final Builder<PatternConstraint> builder = ImmutableList.builder();
         boolean filtered = false;
-        for (PatternConstraint c : constraints) {
+        for (final PatternConstraint c : constraints) {
             if (containsConstraint(type.getBaseType(), c)) {
                 filtered = true;
             } else {
