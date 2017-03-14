@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.javav2.generator.util;
 
 import com.google.common.annotations.Beta;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import java.util.List;
@@ -253,7 +252,6 @@ public final class NonJavaCharsConverter {
      *            - part of package name
      * @return normalized name
      */
-    @VisibleForTesting
     public static String normalizePackageNamePart(final String packageNamePart) {
         // if part of package name consist from java or windows reserved word, return it with
         // underscore at the end and in lower case
