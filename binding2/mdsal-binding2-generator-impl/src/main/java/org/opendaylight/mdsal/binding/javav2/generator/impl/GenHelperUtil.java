@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.addTOToTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.annotateDeprecatedIfNecessary;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.augGenTypeName;
@@ -16,9 +17,14 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.createReturnTypeForUnion;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.getAugmentIdentifier;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.isInnerType;
+import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.listKeys;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.qNameConstant;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.resolveInnerEnumFromTypeDefinition;
+import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.resolveListKeyTOBuilder;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIABLE_ITEM;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIER;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.Beta;
@@ -32,12 +38,15 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
+import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
@@ -52,16 +61,19 @@ import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
+import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 
 /**
  * Helper util class used for generation of types in Binding spec v2.
@@ -475,6 +487,9 @@ final class GenHelperUtil {
             } else if (node instanceof LeafSchemaNode) {
                 resolveLeafSchemaNodeAsMethod(schemaContext, typeBuilder, genCtx, (LeafSchemaNode) node, module,
                         typeProvider);
+            } else if (node instanceof ListSchemaNode) {
+                listToGenType(module, basePackageName, typeBuilder, childOf, (ListSchemaNode) node, schemaContext,
+                        verboseClassComments, genCtx, genTypeBuilders, typeProvider);
             }
         }
 
@@ -491,6 +506,63 @@ final class GenHelperUtil {
             constructGetter(parent, node.getQName().getLocalName(), node.getDescription(), genType, node.getStatus());
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
+        }
+    }
+
+    private static void listToGenType(final Module module, final String basePackageName, final GeneratedTypeBuilder
+            parent, final GeneratedTypeBuilder childOf, final ListSchemaNode node, final SchemaContext schemaContext,
+            final boolean verboseClassComments, final Map<Module, ModuleContext> genCtx,
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
+
+        final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node,
+                schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider);
+        if (genType != null) {
+            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(),
+                    Types.listTypeFor(genType), node.getStatus());
+
+            final List<String> listKeys = listKeys(node);
+            // FIXME: jatoth: please clean this up with converter according to rules
+            // example key 'name' in 'my-list':
+            // org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list, name=MyListName
+            final String packageName = packageNameForGeneratedType(basePackageName, node.getPath(),
+                    BindingNamespaceType.Key) + "." + node.getQName().getLocalName();
+            //FIXME: end. Check genToBuilder for generated key
+            //FIXME: looks like we need to provide cycle to go through composite key leafs
+            final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node, listKeys.get(0));
+            if (genTOBuilder != null) {
+                final Type identifierMarker = Types.parameterizedTypeFor(IDENTIFIER, genType);
+                final Type identifiableMarker = Types.parameterizedTypeFor(IDENTIFIABLE_ITEM, genTOBuilder);
+                genTOBuilder.addImplementsType(identifierMarker);
+                genType.addImplementsType(identifiableMarker);
+            }
+
+            for (final DataSchemaNode schemaNode : node.getChildNodes()) {
+                if (!schemaNode.isAugmenting()) {
+                    addSchemaNodeToListBuilders(basePackageName, schemaNode, genType, genTOBuilder, listKeys, module,
+                            typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments);
+                }
+            }
+
+            // serialVersionUID
+            if (genTOBuilder != null) {
+                final GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("serialVersionUID");
+                prop.setValue(Long.toString(computeDefaultSUID(genTOBuilder)));
+                genTOBuilder.setSUID(prop);
+            }
+
+            typeBuildersToGenTypes(module, genType, genTOBuilder, genCtx);
+        }
+    }
+
+    private static void typeBuildersToGenTypes(final Module module, final GeneratedTypeBuilder typeBuilder,
+        final GeneratedTOBuilder genTOBuilder, final Map<Module, ModuleContext> genCtx) {
+
+        checkArgument(typeBuilder != null, "Generated Type Builder cannot be NULL.");
+        if (genTOBuilder != null) {
+            final GeneratedTransferObject genTO = genTOBuilder.toInstance();
+            //FIXME: jatoth https://bugs.opendaylight.org/show_bug.cgi?id=157
+            constructGetter(typeBuilder, "key", "Returns Primary Key of Yang List Type", genTO, Status.CURRENT);
+            genCtx.get(module).addGeneratedTOBuilder(genTOBuilder);
         }
     }
 
@@ -583,6 +655,96 @@ final class GenHelperUtil {
 
         //FIXME: deal with context-ref
         return returnType;
+    }
+
+    /**
+     * Adds <code>schemaNode</code> to <code>typeBuilder</code> as getter method
+     * or to <code>genTOBuilder</code> as property.
+     *
+     * @param basePackageName
+     *            string contains the module package name
+     * @param schemaNode
+     *            data schema node which should be added as getter method to
+     *            <code>typeBuilder</code> or as a property to
+     *            <code>genTOBuilder</code> if is part of the list key
+     * @param typeBuilder
+     *            generated type builder for the list schema node
+     * @param genTOBuilder
+     *            generated TO builder for the list keys
+     * @param listKeys
+     *            list of string which contains names of the list keys
+     * @param module
+     *            current module
+     * @throws IllegalArgumentException
+     *             <ul>
+     *             <li>if <code>schemaNode</code> equals null</li>
+     *             <li>if <code>typeBuilder</code> equals null</li>
+     *             </ul>
+     */
+    private static void addSchemaNodeToListBuilders(final String basePackageName, final DataSchemaNode schemaNode,
+        final GeneratedTypeBuilder typeBuilder, final GeneratedTOBuilder genTOBuilder, final List<String> listKeys,
+        final Module module, final TypeProvider typeProvider, final SchemaContext schemaContext,
+        final Map<Module, ModuleContext> genCtx, final Map<String, Map<String, GeneratedTypeBuilder>>
+        genTypeBuilders, final boolean verboseClassComments) {
+
+        checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
+        checkArgument(typeBuilder != null, "Generated Type Builder cannot be NULL.");
+
+        if (schemaNode instanceof LeafSchemaNode) {
+            final LeafSchemaNode leaf = (LeafSchemaNode) schemaNode;
+            final String leafName = leaf.getQName().getLocalName();
+            final Type type = resolveLeafSchemaNodeAsMethod(schemaContext, typeBuilder, genCtx, leaf, module,
+                    typeProvider);
+            if (listKeys.contains(leafName)) {
+                if (type == null) {
+                    resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, true, module, schemaContext,
+                            typeProvider, genCtx);
+                } else {
+                    AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, type, true);
+                }
+            }
+        } else if (!schemaNode.isAddedByUses()) {
+            //TODO: implement leaf list to generated type
+            //TODO: implement choice to generated type
+            if (schemaNode instanceof ContainerSchemaNode) {
+                containerToGenType(module, basePackageName, typeBuilder, typeBuilder, (ContainerSchemaNode) schemaNode,
+                        schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider);
+            } else if (schemaNode instanceof ListSchemaNode) {
+                listToGenType(module, basePackageName, typeBuilder, typeBuilder, (ListSchemaNode) schemaNode,
+                        schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider);
+            }
+        }
+    }
+
+    private static boolean resolveLeafSchemaNodeAsProperty(final GeneratedTOBuilder toBuilder, final LeafSchemaNode
+            leaf,
+        final boolean isReadOnly, final Module module, final SchemaContext schemaContext, final TypeProvider
+        typeProvider, final Map<Module, ModuleContext> genCtx) {
+
+        if (leaf != null && toBuilder != null) {
+            Type returnType;
+            final TypeDefinition<?> typeDef = leaf.getType();
+            if (typeDef instanceof UnionTypeDefinition) {
+                // GeneratedType for this type definition should be already
+                // created
+                final QName qname = typeDef.getQName();
+                final Module unionModule = schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
+                        qname.getRevision());
+                final ModuleContext mc = genCtx.get(unionModule);
+                returnType = mc.getTypedefs().get(typeDef.getPath());
+            } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
+                // Annonymous enumeration (already generated, since it is inherited via uses).
+                LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
+                QName qname = originalLeaf.getQName();
+                final Module enumModule =  schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
+                        qname.getRevision());
+                returnType = genCtx.get(enumModule).getInnerType(originalLeaf.getType().getPath());
+            } else {
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
+            }
+            return AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(toBuilder, leaf, returnType, isReadOnly);
+        }
+        return false;
     }
 
     private static TypeDefinition<?> getBaseOrDeclaredType(final TypeDefinition<?> typeDef) {
