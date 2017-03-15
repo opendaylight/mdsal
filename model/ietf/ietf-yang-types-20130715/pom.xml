@@ -30,6 +30,11 @@
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>ietf-type-util</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
   <!--
