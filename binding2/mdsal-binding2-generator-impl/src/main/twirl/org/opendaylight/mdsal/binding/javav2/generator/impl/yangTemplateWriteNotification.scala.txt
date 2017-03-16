@@ -11,29 +11,28 @@
 * Twirl is transformed to Scala and compiled. Then,       *
 * it can be called from Java with particular input        *
 * parameters to render desired output code.               *
-*                                                         *
-* Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
 @import org.opendaylight.yangtools.yang.model.api.NotificationDefinition
+@import org.opendaylight.yangtools.yang.model.api.Module
 @import org.opendaylight.yangtools.yang.model.api.Status
 
-@(notification: NotificationDefinition)
+@(notification: NotificationDefinition, module: Module)
 notification @{notification.getQName().getLocalName()} {
     @if(notification.getDescription() != null && !notification.getDescription().isEmpty()) {
         description "@{notification.getDescription()}";
     }
     @if(notification.getChildNodes() != null && !notification.getChildNodes().isEmpty()) {
-        @yangTemplateWriteDataSchemaNodes(notification.getChildNodes())
+        @yangTemplateWriteDataSchemaNodes(notification.getChildNodes(), module)
     }
     @if(notification.getAvailableAugmentations() != null && !notification.getAvailableAugmentations().isEmpty()) {
-        @yangTemplateWriteAugments(notification.getAvailableAugmentations())
+        @yangTemplateWriteAugments(notification.getAvailableAugmentations(), module)
     }
     @if(notification.getGroupings() != null && !notification.getGroupings().isEmpty()) {
-        @yangTemplateWriteGroupingDefs(notification.getGroupings())
+        @yangTemplateWriteGroupingDefs(notification.getGroupings(), module)
     }
     @if(notification.getUses() != null && !notification.getUses().isEmpty()) {
-        @yangTemplateWriteUsesNodes(notification.getUses())
+        @yangTemplateWriteUsesNodes(notification.getUses(), module)
     }
     @if(notification.getReference() != null && !notification.getReference().isEmpty()) {
         reference "@{notification.getReference()}";
