@@ -11,17 +11,16 @@
 * Twirl is transformed to Scala and compiled. Then,       *
 * it can be called from Java with particular input        *
 * parameters to render desired output code.               *
-*                                                         *
-* Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
 @import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate
 @import org.opendaylight.yangtools.yang.model.api.AugmentationSchema
+@import org.opendaylight.yangtools.yang.model.api.Status
 
 @(augments: Set[_ <: AugmentationSchema])
 @for(augment <- augments) {
     @if(augment != null) {
-        augment @{YangTextTemplate.formatToAugmentPath(augment.getTargetPath().getPathFromRoot())} {
+        augment "@{YangTextTemplate.formatToAugmentPath(augment.getTargetPath().getPathFromRoot())}" {
             @if(augment.getWhenCondition() != null && !augment.getWhenCondition().toString().isEmpty()) {
                 when "@augment.getWhenCondition().toString()";
             }
@@ -31,7 +30,7 @@
             @if(augment.getReference() != null && !augment.getReference().isEmpty()) {
                 reference "@augment.getReference().toString()";
             }
-            @if(augment.getStatus() != null) {
+            @if(augment.getStatus() != Status.CURRENT) {
                 status "@augment.getStatus()";
             }
             @if(augment.getChildNodes() != null && !augment.getChildNodes().isEmpty()) {
@@ -39,6 +38,9 @@
             }
             @if(augment.getUses() != null && !augment.getUses().isEmpty()) {
                 @yangTemplateWriteUsesNodes(augment.getUses())
+            }
+            @if(augment.getActions() != null && !augment.getActions().isEmpty()) {
+                @yangTemplateWriteActions(augment.getActions())
             }
         }
     }

@@ -11,13 +11,14 @@
 * Twirl is transformed to Scala and compiled. Then,       *
 * it can be called from Java with particular input        *
 * parameters to render desired output code.               *
-*                                                         *
-* Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
 @import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate
 @import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
 @import org.opendaylight.yangtools.yang.model.api.Module
+@import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement
+@import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.ModuleEffectiveStatementImpl
+@import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.RevisionEffectiveStatementImpl
 
 @(module: Module)
 @if(module != null) {
@@ -32,15 +33,22 @@
 
         @if(module.getImports() != null && !module.getImports().isEmpty()) {
             @for(moduleImport <- module.getImports()) {
-                @if(moduleImport != null && !moduleImport.getModuleName()) {
-                    import @{moduleImport.getModuleName()} { prefix "@{moduleImport.getPrefix()}"; }
+                @if(moduleImport != null && moduleImport.getModuleName() != "") {
+                    import @{moduleImport.getModuleName()} { prefix "@{moduleImport.getPrefix()}"; revision-date @{SimpleDateFormatUtil.getRevisionFormat().format(moduleImport.getRevision())}; }
                 }
             }
         }
         @if(module.getRevision() != null) {
             revision @{SimpleDateFormatUtil.getRevisionFormat().format(module.getRevision())} {
-                description "@{YangTextTemplate.formatToParagraph(module.getDescription(), 12)}";
+                @for(effectiveStatement <- module.asInstanceOf[ModuleEffectiveStatementImpl].effectiveSubstatements()){
+                    @if(effectiveStatement.isInstanceOf[RevisionEffectiveStatementImpl]){
+                        description "@{effectiveStatement.asInstanceOf[RevisionEffectiveStatementImpl].getDescription()}";
+                    }
+                }
             }
+        }
+        @if(module.getTypeDefinitions() != null && !module.getTypeDefinitions().isEmpty()){
+            @yangTemplateWriteTypeDefs(module.getTypeDefinitions())
         }
         @if(module.getChildNodes() != null) {
             @yangTemplateWriteDataSchemaNodes(module.getChildNodes())
@@ -52,20 +60,7 @@
             @yangTemplateWriteAugments(module.getAugmentations())
         }
         @if(module.getDeviations() != null && !module.getDeviations().isEmpty()) {
-            @for(deviation <- module.getDeviations()) {
-                @if(deviation != null) {
-                    deviation @{deviation.getTargetPath()} {
-                        @if(deviation.getReference() != null && !deviation.getReference().isEmpty()) {
-                            reference "@{deviation.getReference()}";
-                        }
-                        @for(deviation <- deviation.getDeviates()) {
-                            @if(deviation != null && deviation.getDeviateType() != null ) {
-                                deviation @{deviation.getDeviateType().name()};
-                            }
-                        }
-                    }
-                }
-            }
+            @yangTemplateWriteDeviations(module.getDeviations())
         }
         @if(module.getExtensionSchemaNodes() != null && !module.getExtensionSchemaNodes().isEmpty()) {
             @for(extension <- module.getExtensionSchemaNodes()) {
