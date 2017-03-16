@@ -13,18 +13,16 @@
 * parameters to render desired output code.               *
 ***********************************************************@
 
-@import org.opendaylight.yangtools.yang.model.api.NotificationDefinition
-@import org.opendaylight.yangtools.yang.model.api.RpcDefinition
-@import org.opendaylight.yangtools.yang.model.api.SchemaNode
+@import org.opendaylight.yangtools.yang.model.api.ConstraintDefinition
+@import org.opendaylight.yangtools.yang.model.api.Status
 
-@(nodes: Set[_ <: SchemaNode])
-@if(nodes != null) {
-    @for(node <- nodes) {
-        @if(node.isInstanceOf[NotificationDefinition]) {
-                @yangTemplateWriteNotification(node.asInstanceOf[NotificationDefinition])
-        }
-        @if(node.isInstanceOf[RpcDefinition]) {
-                @yangTemplateWriteRPC(node.asInstanceOf[RpcDefinition])
-        }
-    }
+@(constraint: ConstraintDefinition)
+@if(constraint.isMandatory()) {
+    mandatory true;
+}
+@if(constraint.getMinElements() != null) {
+    min-elements @(constraint.getMinElements());
+}
+@if(constraint.getMaxElements() != null) {
+    max-elements @(constraint.getMaxElements());
 }
