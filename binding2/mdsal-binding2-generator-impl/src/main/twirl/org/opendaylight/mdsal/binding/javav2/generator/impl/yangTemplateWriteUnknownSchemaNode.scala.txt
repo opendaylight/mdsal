@@ -11,14 +11,16 @@
 * Twirl is transformed to Scala and compiled. Then,       *
 * it can be called from Java with particular input        *
 * parameters to render desired output code.               *
-*                                                         *
-* Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
+@import org.opendaylight.yangtools.yang.model.api.Module;
 @import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode
 
-@(unknownSchemaNode: UnknownSchemaNode)
+@(unknownSchemaNode: UnknownSchemaNode, module: Module)
 @if(unknownSchemaNode != null) {
-    test
-    @* to do *@
+    @if(unknownSchemaNode.getExtensionDefinition().getArgument() == null || unknownSchemaNode.getExtensionDefinition().getArgument().isEmpty()){
+        @{module.getPrefix}:@{unknownSchemaNode.getNodeType().getLocalName()};
+    } else {
+        @{module.getPrefix}:@{unknownSchemaNode.getNodeType().getLocalName()} "@{unknownSchemaNode.getNodeParameter()}";
+    }
 }
