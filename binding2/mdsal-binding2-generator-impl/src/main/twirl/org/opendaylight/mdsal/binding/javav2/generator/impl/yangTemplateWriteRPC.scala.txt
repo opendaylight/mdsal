@@ -26,18 +26,14 @@ rpc @{rpc.getQName().getLocalName()} {
     @if(rpc.getGroupings() != null && !rpc.getGroupings().isEmpty()) {
         @yangTemplateWriteGroupingDefs(rpc.getGroupings())
     }
-    @if(rpc.getInput() != null) {
+    @if(rpc.getInput() != null && rpc.getInput().getChildNodes != null && !rpc.getInput().getChildNodes().isEmpty()) {
         input {
-            @if(rpc.getInput().getChildNodes != null && !rpc.getInput().getChildNodes().isEmpty()) {
-                @yangTemplateWriteDataSchemaNodes(rpc.getInput().getChildNodes)
-            }
+            @yangTemplateWriteDataSchemaNodes(rpc.getInput().getChildNodes)
         }
     }
-    @if(rpc.getOutput() != null) {
+    @if(rpc.getOutput() != null && rpc.getOutput().getChildNodes != null && !rpc.getOutput().getChildNodes().isEmpty()) {
         output {
-            @if(rpc.getOutput().getChildNodes != null && !rpc.getOutput().getChildNodes().isEmpty()) {
-                @yangTemplateWriteDataSchemaNodes(rpc.getOutput().getChildNodes)
-            }
+            @yangTemplateWriteDataSchemaNodes(rpc.getOutput().getChildNodes)
         }
     }
     @if(rpc.getReference() != null && !rpc.getReference().isEmpty()) {

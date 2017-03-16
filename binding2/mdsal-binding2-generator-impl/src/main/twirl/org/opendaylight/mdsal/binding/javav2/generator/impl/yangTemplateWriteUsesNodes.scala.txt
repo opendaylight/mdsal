@@ -22,14 +22,13 @@
 @if(usesNodes != null) {
     @for(usesNode <- usesNodes) {
         @if(usesNode != null) {
-            uses @{usesNode.getGroupingPath().getLastComponent().getLocalName()}
-            @if(usesNode.getRefines().isEmpty()) {
-                ;
-            } else {
-                {
+            uses @{usesNode.getGroupingPath().getLastComponent().getLocalName()}@if(usesNode.getRefines().isEmpty()) {;} else { {
                 @for(path <- usesNode.getRefines().keySet()) {
-                    refine @{path.getLastComponent()} {
+                    refine @{path.getLastComponent().getLocalName()} {
                     @if(usesNode.getRefines().get(path).isInstanceOf[DataSchemaNode]) {
+                            @if(usesNode.getRefines().get(path).asInstanceOf[DataSchemaNode].getDescription() != null){
+                                description "@{usesNode.getRefines().get(path).asInstanceOf[DataSchemaNode].getDescription()}";
+                            }
                             @yangTemplateWriteDataSchemaNode(usesNode.getRefines().get(path).asInstanceOf[DataSchemaNode])
                         }
                     }
