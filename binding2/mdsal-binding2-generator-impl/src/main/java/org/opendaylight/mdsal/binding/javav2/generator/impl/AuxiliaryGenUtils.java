@@ -192,7 +192,7 @@ final class AuxiliaryGenUtils {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(yangTemplateForNode.render(schemaNode).body()));
+            sb.append(encodeAngleBrackets(yangTemplateForNode.render(schemaNode, module).body()));
             sb.append("</pre>");
             sb.append(NEW_LINE);
             sb.append("The schema path to identify an instance is");
@@ -249,7 +249,7 @@ final class AuxiliaryGenUtils {
         return replaceAllIllegalChars(sb);
     }
 
-    static String createDescription(final Set<? extends SchemaNode> schemaNodes, final String moduleName, final
+    static String createDescription(final Set<? extends SchemaNode> schemaNodes, final Module module, final
             boolean verboseClassComments) {
         final StringBuilder sb = new StringBuilder();
 
@@ -257,9 +257,9 @@ final class AuxiliaryGenUtils {
             final SchemaNode node = schemaNodes.iterator().next();
 
             if (node instanceof RpcDefinition) {
-                sb.append("Interface for implementing the following YANG RPCs defined in module <b>" + moduleName + "</b>");
+                sb.append("Interface for implementing the following YANG RPCs defined in module <b>" + module.getName() + "</b>");
             } else if (node instanceof NotificationDefinition) {
-                sb.append("Interface for receiving the following YANG notifications defined in module <b>" + moduleName + "</b>");
+                sb.append("Interface for receiving the following YANG notifications defined in module <b>" + module.getName() + "</b>");
             }
         }
         sb.append(NEW_LINE);
@@ -267,7 +267,7 @@ final class AuxiliaryGenUtils {
         if (verboseClassComments) {
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(yangTemplateForNodes.render(schemaNodes).body()));
+            sb.append(encodeAngleBrackets(yangTemplateForNodes.render(schemaNodes, module).body()));
             sb.append("</pre>");
             sb.append(NEW_LINE);
         }
