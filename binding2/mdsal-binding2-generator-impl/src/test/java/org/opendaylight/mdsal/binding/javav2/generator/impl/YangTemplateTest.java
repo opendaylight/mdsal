@@ -9,15 +9,18 @@
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import com.google.common.annotations.Beta;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.Set;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNode;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNodes;
-import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.mdsal.binding.javav2.generator.util.YangSnippetCleaner;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
@@ -29,33 +32,39 @@ public class YangTemplateTest {
 
     @Before
     public void setup() throws URISyntaxException, ReactorException, FileNotFoundException {
-        modules = YangParserTestUtils.parseYangSources("/yang-template").getModules();
+        this.modules = YangParserTestUtils.parseYangSources("/yang-template").getModules();
     }
 
     @Test
-    public void printYangSnippetForModule() {
-        for (Module module : modules) {
-            /**
-             * We should be able to call Scala render method from Binding Generator implementation
-             * for 3 different inputs:
-             * 1. single SchemaNode
-             * 2. set of SchemaNode
-             * 3. whole Module
-             */
-            final String moduleBody = yangTemplateForModule.render(module).body();
-            //FIXME: don't do it this way, only for very first attempt to show results
-            System.out.println("module ".concat(module.getName()).concat(":").concat(moduleBody));
-
-            //TODO: finish following sections
-            for (DataSchemaNode dataSchemaNode : module.getChildNodes()) {
-                final String nodeBody = yangTemplateForNode.render(dataSchemaNode).body();
+    public void printYangSnippetForModule() throws Exception{
+        for (final Module module : this.modules) {
+            String originalFile;
+            try {
+                originalFile = readFile(this.getClass().getResourceAsStream(
+                        new StringBuilder("/yang-template/").append(module.getName()).append(".yang").toString()));
+            } catch (final Exception e) {
+                throw e;
             }
-
-            final String rpcsBody = yangTemplateForNodes.render(module.getRpcs()).body();
-            final String notificationsBody = yangTemplateForNodes.render(module.getNotifications()).body();
-
-            //////////
+            final String moduleBody = yangTemplateForModule.render(module).body().trim();
+            final String cleanedModuleBody = YangSnippetCleaner.clean(moduleBody);
+            Assert.assertEquals(originalFile, cleanedModuleBody);
         }
+    }
 
+    private String readFile(final InputStream inputStream) throws IOException {
+        final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+        try {
+            final StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+            return sb.toString();
+        } finally {
+            br.close();
+        }
     }
 }
