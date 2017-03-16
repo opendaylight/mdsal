@@ -1,13 +1,19 @@
 module yang-template-import {
     yang-version 1;
-    namespace "org.opendaylight.yang.template";
+    namespace "org.opendaylight.yang.template.import";
     prefix "yti";
 
     revision 2016-06-23 {
-        description "Simple yang missing deviation statement";
+        description "Simple yang for import";
     }
 
     leaf yti-leaf {
         type string;
+    }
+
+    deviation /yti:yti-leaf {
+        deviate add {
+            default "def";
+        }
     }
 }

@@ -1,0 +1,50 @@
+@*
+ * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *@
+
+@**********************************************************
+* Twirl YangTemplate for generating yang snippets.        *
+* Twirl is transformed to Scala and compiled. Then,       *
+* it can be called from Java with particular input        *
+* parameters to render desired output code.               *
+***********************************************************@
+
+@import org.opendaylight.yangtools.yang.model.api.Deviation
+@import org.opendaylight.yangtools.yang.model.api.Status
+@import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.DeviationEffectiveStatementImpl
+
+@(deviation: Deviation)
+deviation @{deviation.asInstanceOf[DeviationEffectiveStatementImpl].getDeclared().rawArgument()} {
+    @if(deviation.getReference() != null && !deviation.getReference().isEmpty()) {
+        reference "@{deviation.getReference()}";
+    }
+    @if(deviation.getDescription() != null && !deviation.getDescription().isEmpty()) {
+        description "@{deviation.getDescription()}";
+    } 
+    @for(deviate <- deviation.getDeviates()) {
+        @if(deviate != null && deviate.getDeviateType() != null ) {
+            @if(deviate.getDeviatedDefault() == null && !deviate.getDeviatedMandatory() && deviate.getDeviatedMaxElements()==null && deviate.getDeviatedMinElements() == null) {
+                deviate @{deviate.getDeviateType().name()};
+            } else {
+                deviate  @{deviate.getDeviateType().name().toLowerCase()} {
+                @if(deviate.getDeviatedDefault() != null) {
+                    default "@{deviate.getDeviatedDefault()}";
+                }
+                @if(deviate.getDeviatedMandatory() != null && deviate.getDeviatedMandatory()) {
+                    mandatory true;
+                }
+                @if(deviate.getDeviatedMinElements() != null) {
+                    min-elements @{deviate.getDeviatedMinElements()};
+                }
+                @if(deviate.getDeviatedMaxElements() != null) {
+                    max-elements @{deviate.getDeviatedMaxElements()};
+                }
+                }
+            }
+        }
+    }
+}
