@@ -11,15 +11,14 @@
 * Twirl is transformed to Scala and compiled. Then,       *
 * it can be called from Java with particular input        *
 * parameters to render desired output code.               *
-*                                                         *
-* Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
 @import org.opendaylight.yangtools.yang.model.api.GroupingDefinition
+@import org.opendaylight.yangtools.yang.model.api.Module
 
-@(groupingDefs: Set[_ <: GroupingDefinition])
+@(groupingDefs: Set[_ <: GroupingDefinition], module: Module)
 @for(groupingDef <- groupingDefs) {
     @if(groupingDef != null) {
-        @yangTemplateWriteGroupingDef(groupingDef)
+        @yangTemplateWriteGroupingDef(groupingDef, module)
     }
 }

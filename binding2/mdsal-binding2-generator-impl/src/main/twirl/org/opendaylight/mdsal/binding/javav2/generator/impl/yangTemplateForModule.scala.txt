@@ -11,13 +11,14 @@
 * Twirl is transformed to Scala and compiled. Then,       *
 * it can be called from Java with particular input        *
 * parameters to render desired output code.               *
-*                                                         *
-* Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
 @import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate
 @import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
 @import org.opendaylight.yangtools.yang.model.api.Module
+@import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement
+@import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.ModuleEffectiveStatementImpl
+@import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.RevisionEffectiveStatementImpl
 
 @(module: Module)
 @if(module != null) {
@@ -32,40 +33,34 @@
 
         @if(module.getImports() != null && !module.getImports().isEmpty()) {
             @for(moduleImport <- module.getImports()) {
-                @if(moduleImport != null && !moduleImport.getModuleName()) {
-                    import @{moduleImport.getModuleName()} { prefix "@{moduleImport.getPrefix()}"; }
+                @if(moduleImport != null && moduleImport.getModuleName() != "") {
+                    import @{moduleImport.getModuleName()} { prefix "@{moduleImport.getPrefix()}"; revision-date @{SimpleDateFormatUtil.getRevisionFormat().format(moduleImport.getRevision())}; }
                 }
             }
         }
         @if(module.getRevision() != null) {
             revision @{SimpleDateFormatUtil.getRevisionFormat().format(module.getRevision())} {
-                description "@{YangTextTemplate.formatToParagraph(module.getDescription(), 12)}";
-            }
-        }
-        @if(module.getChildNodes() != null) {
-            @yangTemplateWriteDataSchemaNodes(module.getChildNodes())
-        }
-        @if(module.getGroupings() != null && !module.getGroupings().isEmpty()) {
-            @yangTemplateWriteGroupingDefs(module.getGroupings())
-        }
-        @if(module.getAugmentations() != null && !module.getAugmentations().isEmpty()) {
-            @yangTemplateWriteAugments(module.getAugmentations())
-        }
-        @if(module.getDeviations() != null && !module.getDeviations().isEmpty()) {
-            @for(deviation <- module.getDeviations()) {
-                @if(deviation != null) {
-                    deviation @{deviation.getTargetPath()} {
-                        @if(deviation.getReference() != null && !deviation.getReference().isEmpty()) {
-                            reference "@{deviation.getReference()}";
-                        }
-                        @for(deviation <- deviation.getDeviates()) {
-                            @if(deviation != null && deviation.getDeviateType() != null ) {
-                                deviation @{deviation.getDeviateType().name()};
-                            }
-                        }
+                @for(effectiveStatement <- module.asInstanceOf[ModuleEffectiveStatementImpl].effectiveSubstatements()){
+                    @if(effectiveStatement.isInstanceOf[RevisionEffectiveStatementImpl]){
+                        description "@{effectiveStatement.asInstanceOf[RevisionEffectiveStatementImpl].getDescription()}";
                     }
                 }
             }
+        }
+        @if(module.getTypeDefinitions() != null && !module.getTypeDefinitions().isEmpty()){
+            @yangTemplateWriteTypeDefs(module.getTypeDefinitions())
+        }
+        @if(module.getChildNodes() != null) {
+            @yangTemplateWriteDataSchemaNodes(module.getChildNodes(), module)
+        }
+        @if(module.getGroupings() != null && !module.getGroupings().isEmpty()) {
+            @yangTemplateWriteGroupingDefs(module.getGroupings(), module)
+        }
+        @if(module.getAugmentations() != null && !module.getAugmentations().isEmpty()) {
+            @yangTemplateWriteAugments(module.getAugmentations(), module)
+        }
+        @if(module.getDeviations() != null && !module.getDeviations().isEmpty()) {
+            @yangTemplateWriteDeviations(module.getDeviations())
         }
         @if(module.getExtensionSchemaNodes() != null && !module.getExtensionSchemaNodes().isEmpty()) {
             @for(extension <- module.getExtensionSchemaNodes()) {
@@ -91,22 +86,22 @@
         @if(module.getNotifications() != null && !module.getNotifications().isEmpty()) {
             @for(notification <- module.getNotifications()) {
                 @if(notification != null) {
-                    @yangTemplateWriteNotification(notification)
+                    @yangTemplateWriteNotification(notification, module)
                 }
             }
         }
         @if(module.getRpcs() != null && !module.getRpcs().isEmpty()) {
             @for(rpc <- module.getRpcs()) {
                 @if(rpc != null) {
-                    @yangTemplateWriteRPC(rpc)
+                    @yangTemplateWriteRPC(rpc, module)
                 }
             }
         }
         @if(module.getUnknownSchemaNodes() != null && !module.getUnknownSchemaNodes().isEmpty()) {
-            @yangTemplateWriteUnknownSchemaNodes(module.getUnknownSchemaNodes())
+            @yangTemplateWriteUnknownSchemaNodes(module.getUnknownSchemaNodes(), module)
         }
         @if(module.getUses() != null && !module.getUses().isEmpty()) {
-            @yangTemplateWriteUsesNodes(module.getUses())
+            @yangTemplateWriteUsesNodes(module.getUses(), module)
         }
     }
 }
