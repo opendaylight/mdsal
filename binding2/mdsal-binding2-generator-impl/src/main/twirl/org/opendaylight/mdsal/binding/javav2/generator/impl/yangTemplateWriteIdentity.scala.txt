@@ -11,11 +11,10 @@
 * Twirl is transformed to Scala and compiled. Then,       *
 * it can be called from Java with particular input        *
 * parameters to render desired output code.               *
-*                                                         *
-* Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
 @import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode
+@import org.opendaylight.yangtools.yang.model.api.Status
 
 @(identity: IdentitySchemaNode)
 identity @{identity.getQName().getLocalName()} {
@@ -28,7 +27,7 @@ identity @{identity.getQName().getLocalName()} {
     @if(identity.getReference() != null && !identity.getReference().isEmpty()) {
         reference "@{identity.getReference()}";
     }
-    @if(identity.getStatus() != null) {
+    @if(identity.getStatus() != Status.CURRENT) {
         status @{identity.getStatus()};
     }
 }

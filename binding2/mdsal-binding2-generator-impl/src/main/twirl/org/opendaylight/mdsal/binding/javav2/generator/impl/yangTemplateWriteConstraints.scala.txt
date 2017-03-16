@@ -13,18 +13,16 @@
 * parameters to render desired output code.               *
 ***********************************************************@
 
-@import org.opendaylight.yangtools.yang.model.api.FeatureDefinition
+@import org.opendaylight.yangtools.yang.model.api.ConstraintDefinition
 @import org.opendaylight.yangtools.yang.model.api.Status
 
-@(feature: FeatureDefinition)
-feature @{feature.getQName().getLocalName()} {
-    @if(feature.getDescription() != null && !feature.getDescription().isEmpty()) {
-        description "@{feature.getDescription()}";
-    }
-    @if(feature.getReference() != null && !feature.getReference().isEmpty()) {
-        reference "@{feature.getReference()}";
-    }
-    @if(feature.getStatus() != Status.CURRENT) {
-        status @{feature.getStatus()};
-    }
+@(constraint: ConstraintDefinition)
+@if(constraint.isMandatory()) {
+    mandatory true;
+}
+@if(constraint.getMinElements() != null) {
+    min-elements @(constraint.getMinElements());
+}
+@if(constraint.getMaxElements() != null) {
+    max-elements @(constraint.getMaxElements());
 }
