@@ -11,24 +11,23 @@
 * Twirl is transformed to Scala and compiled. Then,       *
 * it can be called from Java with particular input        *
 * parameters to render desired output code.               *
-*                                                         *
-* Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
 @import org.opendaylight.yangtools.yang.model.api.ExtensionDefinition
+@import org.opendaylight.yangtools.yang.model.api.Status
 
 @(extension: ExtensionDefinition)
-extension @{extension.getQName().getLocalName()} {
+extension @{extension.getQName().getLocalName()}@if(extension.getArgument() == null || extension.getArgument().isEmpty()){;} else { {
     @if(extension.getDescription() != null && !extension.getDescription().isEmpty()) {
         description "@{extension.getDescription()}";
     }
     @if(extension.getArgument() != null && !extension.getArgument().isEmpty()) {
-        argument "@{extension.getArgument()}";
+        argument @{extension.getArgument()};
     }
     @if(extension.getReference() != null && !extension.getReference().isEmpty()) {
         reference "@{extension.getReference()}";
     }
-    @if(extension.getStatus() != null) {
+    @if(extension.getStatus() != Status.CURRENT) {
         status @{extension.getStatus()};
-    }
+    }}
 }
