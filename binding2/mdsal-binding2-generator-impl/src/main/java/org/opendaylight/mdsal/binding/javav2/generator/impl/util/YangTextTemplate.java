@@ -44,7 +44,7 @@ public final class YangTextTemplate {
         sb.append(moduleName);
 
         QName currentElement = Iterables.getFirst(schemaPath, null);
-        for (QName pathElement : schemaPath) {
+        for (final QName pathElement : schemaPath) {
             sb.append('/');
             if (!currentElement.getNamespace().equals(pathElement.getNamespace())) {
                 currentElement = pathElement;
@@ -115,11 +115,8 @@ public final class YangTextTemplate {
      */
     public static String formatToAugmentPath(final Iterable<QName> schemaPath) {
         final StringBuilder sb = new StringBuilder();
-        for (QName pathElement : schemaPath) {
-            sb.append("\\(")
-            .append(pathElement.getNamespace())
-            .append(')')
-            .append(pathElement.getLocalName());
+        for (final QName pathElement : schemaPath) {
+            sb.append('/').append(pathElement.getLocalName());
         }
         return sb.toString();
     }
@@ -153,7 +150,7 @@ public final class YangTextTemplate {
             final ParameterizedType paramType = (ParameterizedType) type;
             final Type[] params = paramType.getActualTypeArguments();
             if (params != null) {
-                for (Type param : params) {
+                for (final Type param : params) {
                     putTypeIntoImports(parentGenType, param, imports);
                 }
             }
@@ -266,13 +263,13 @@ public final class YangTextTemplate {
      * @param text text for wrapping
      * @return wrapped text
      */
-    public static String wrapToDocumentation(String text) {
+    public static String wrapToDocumentation(final String text) {
         if (text.isEmpty()) {
             return "";
         }
         final StringBuilder sb = new StringBuilder("/**");
         sb.append(NEW_LINE);
-        Iterable<String> lineSplitText = NL_SPLITTER.split(text);
+        final Iterable<String> lineSplitText = NL_SPLITTER.split(text);
         for (final String t : lineSplitText) {
             sb.append(" *");
             if (t.isEmpty()) {
@@ -285,11 +282,11 @@ public final class YangTextTemplate {
         return sb.toString();
     }
 
-    public static String encodeJavadocSymbols(String description) {
-        if (description == null || description.isEmpty()) {
+    public static String encodeJavadocSymbols(final String description) {
+        if (Strings.isNullOrEmpty(description)) {
             return description;
         }
-        String ret = description.replace("*/", "&#42;&#47;");
+        final String ret = description.replace("*/", "&#42;&#47;");
         return AMP_MATCHER.replaceFrom(ret, "&amp;");
     }
 }
