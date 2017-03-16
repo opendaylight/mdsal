@@ -11,10 +11,9 @@
 * Twirl is transformed to Scala and compiled. Then,       *
 * it can be called from Java with particular input        *
 * parameters to render desired output code.               *
-*                                                         *
-* Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
+@import org.opendaylight.yangtools.yang.model.api.AnyDataSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode
 @import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
@@ -23,109 +22,149 @@
 @import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.Module
 @import org.opendaylight.yangtools.yang.model.api.SchemaNode
 @import org.opendaylight.yangtools.yang.model.api.Status
 @import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode
 
-@(dataSchemaNode: DataSchemaNode)
+@(dataSchemaNode: DataSchemaNode, module: Module)
 @if(dataSchemaNode.isInstanceOf[ContainerSchemaNode]) {
-    @writeContSchemaNode(dataSchemaNode.asInstanceOf[ContainerSchemaNode])
+    @writeContSchemaNode(dataSchemaNode.asInstanceOf[ContainerSchemaNode], module)
 }
 @if(dataSchemaNode.isInstanceOf[AnyXmlSchemaNode]) {
-    anyxml @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getQName().getLocalName()}
-    @if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() != Status.CURRENT) {
-        ;
-    } else {
-        {
+    anyxml @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getQName().getLocalName()}@if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() == Status.CURRENT && !dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getConstraints().isMandatory()){;} else { {
+        @if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getConstraints().isMandatory()){
+            mandatory true;
+        }
+        @if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() != Status.CURRENT) {
             status @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus()};
         }
-    }
+    }}
+}
+@if(dataSchemaNode.isInstanceOf[AnyDataSchemaNode]) {
+    anydata @{dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getQName().getLocalName()}@if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getStatus() == Status.CURRENT && !dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getConstraints().isMandatory()){;} else { {
+        @if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getConstraints().isMandatory()){
+            mandatory true;
+        }
+        @if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getStatus() != Status.CURRENT) {
+            status @{dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getStatus()};
+        }
+    }}
 }
 @if(dataSchemaNode.isInstanceOf[LeafSchemaNode]) {
-    leaf @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getQName().getLocalName()} {
-        type @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getType().getQName().getLocalName()};
-    }
-    @if(dataSchemaNode.asInstanceOf[LeafSchemaNode].getStatus() != Status.CURRENT) {
-        status @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getStatus()};
+    @if(!dataSchemaNode.asInstanceOf[LeafSchemaNode].isAddedByUses() && !dataSchemaNode.asInstanceOf[LeafSchemaNode].isAugmenting()){
+        leaf @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getQName().getLocalName()} {
+            @if(dataSchemaNode.asInstanceOf[LeafSchemaNode].getDescription() != null){
+                description "@{dataSchemaNode.asInstanceOf[LeafSchemaNode].getDescription()}";
+            }
+            @yangTemplateWriteType(dataSchemaNode.asInstanceOf[LeafSchemaNode].getType())
+            @if(dataSchemaNode.asInstanceOf[LeafSchemaNode].getConstraints() != null){
+                @yangTemplateWriteConstraints(dataSchemaNode.asInstanceOf[LeafSchemaNode].getConstraints())
+            }
+            @if(dataSchemaNode.asInstanceOf[LeafSchemaNode].getStatus() != Status.CURRENT) {
+                status @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getStatus()};
+            }
+        }
     }
 }
 @if(dataSchemaNode.isInstanceOf[LeafListSchemaNode]) {
     leaf-list @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getQName().getLocalName()} {
+        @if(dataSchemaNode.asInstanceOf[LeafListSchemaNode].isUserOrdered()){
+            ordered-by user;
+        }
         type @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getType().getQName().getLocalName()};
-    }
-    @if(dataSchemaNode.asInstanceOf[LeafListSchemaNode].getStatus() != Status.CURRENT) {
-        status @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getStatus()};
+        @if(dataSchemaNode.asInstanceOf[LeafListSchemaNode].getConstraints() != null){
+                @yangTemplateWriteConstraints(dataSchemaNode.asInstanceOf[LeafListSchemaNode].getConstraints())
+        }
+        @if(dataSchemaNode.asInstanceOf[LeafListSchemaNode].getStatus() != Status.CURRENT) {
+            status @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getStatus()};
+        }
     }
 }
 @if(dataSchemaNode.isInstanceOf[ChoiceCaseNode]) {
     case @{dataSchemaNode.asInstanceOf[ChoiceCaseNode].getQName().getLocalName()} {
         @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceCaseNode].getChildNodes()) {
-            @yangTemplateWriteDataSchemaNode(childNode)
+            @yangTemplateWriteDataSchemaNode(childNode, module)
         }
-    }
-    @if(dataSchemaNode.asInstanceOf[ChoiceCaseNode].getStatus() != Status.CURRENT) {
-        status @{dataSchemaNode.asInstanceOf[ChoiceCaseNode].getStatus()};
+        @if(dataSchemaNode.asInstanceOf[ChoiceCaseNode].getStatus() != Status.CURRENT) {
+            status @{dataSchemaNode.asInstanceOf[ChoiceCaseNode].getStatus()};
+        }
     }
 }
 @if(dataSchemaNode.isInstanceOf[ChoiceSchemaNode]) {
     choice @{dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getQName().getLocalName()} {
-        @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getCases()) {
-            @yangTemplateWriteDataSchemaNode(childNode)
+        @if(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getConstraints() != null){
+                @yangTemplateWriteConstraints(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getConstraints())
         }
-    }
-    @if(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getStatus() != Status.CURRENT) {
-        status @{dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getStatus()};
+        @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getCases()) {
+            @yangTemplateWriteDataSchemaNode(childNode, module)
+        }
+        @if(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getStatus() != Status.CURRENT) {
+            status @{dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getStatus()};
+        }
     }
 }
 @if(dataSchemaNode.isInstanceOf[ListSchemaNode]) {
-    @writeListSchemaNode(dataSchemaNode.asInstanceOf[ListSchemaNode])
+    @writeListSchemaNode(dataSchemaNode.asInstanceOf[ListSchemaNode], module)
 }
 
-@writeContSchemaNode(container: ContainerSchemaNode) = {
+@writeContSchemaNode(container: ContainerSchemaNode, module: Module) = {
     container @{container.getQName().getLocalName()} {
         @if(container.getChildNodes() != null && !container.getChildNodes().isEmpty()) {
-            @yangTemplateWriteDataSchemaNodes(container.getChildNodes())
-        }
-        @if(container.getAvailableAugmentations() != null && !container.getAvailableAugmentations().isEmpty()) {
-            @yangTemplateWriteAugments(container.getAvailableAugmentations())
+            @yangTemplateWriteDataSchemaNodes(container.getChildNodes(), module)
         }
         @if(container.getGroupings() != null && !container.getGroupings().isEmpty()) {
-            @yangTemplateWriteGroupingDefs(container.getGroupings())
+            @yangTemplateWriteGroupingDefs(container.getGroupings(), module)
         }
         @if(container.getUses() != null && !container.getUses().isEmpty()) {
-            @yangTemplateWriteUsesNodes(container.getUses())
+            @yangTemplateWriteUsesNodes(container.getUses(), module)
+        }
+        @if(container.getUnknownSchemaNodes() != null && !container.getUnknownSchemaNodes().isEmpty()) {
+            @yangTemplateWriteUnknownSchemaNodes(container.getUnknownSchemaNodes(), module)
+        }
+        @if(container.getActions() != null && !container.getActions().isEmpty()) {
+            @yangTemplateWriteActions(container.getActions(), module)
         }
         @if(container.getStatus() != Status.CURRENT) {
             status @{container.getStatus()};
         }
-        @if(container.getUnknownSchemaNodes() != null && !container.getUnknownSchemaNodes().isEmpty()) {
-            @yangTemplateWriteUnknownSchemaNodes(container.getUnknownSchemaNodes())
-        }
     }
 }
 
-@writeListSchemaNode(list: ListSchemaNode) = {
+@writeListSchemaNode(list: ListSchemaNode, module: Module) = {
     list @{list.getQName().getLocalName()} {
-        key "@for(listKey <- list.getKeyDefinition()) {
-            @{listKey.getLocalName()}
-        }"
+        @if(list.isUserOrdered()){
+            ordered-by user;
+        }
+        @if(dataSchemaNode.asInstanceOf[ListSchemaNode].getConstraints() != null){
+                @yangTemplateWriteConstraints(dataSchemaNode.asInstanceOf[ListSchemaNode].getConstraints())
+        }
+        key "@for(listKey <- list.getKeyDefinition()) {@{listKey.getLocalName()} }";
+        @if(!list.getUniqueConstraints().isEmpty()){
+            @for(listUnique <- list.getUniqueConstraints()){
+                unique "@for(tagUnique <- listUnique.getTag()) {@{tagUnique.getLastComponent.getLocalName()} }";
+            }
+        }
         @if(list.getChildNodes() != null && !list.getChildNodes().isEmpty()) {
-            @yangTemplateWriteDataSchemaNodes(list.getChildNodes())
+            @yangTemplateWriteDataSchemaNodes(list.getChildNodes(), module)
         }
         @if(list.getAvailableAugmentations() != null && !list.getAvailableAugmentations().isEmpty()) {
-            @yangTemplateWriteAugments(list.getAvailableAugmentations())
+            @yangTemplateWriteAugments(list.getAvailableAugmentations(), module)
         }
         @if(list.getGroupings() != null && !list.getGroupings().isEmpty()) {
-            @yangTemplateWriteGroupingDefs(list.getGroupings())
+            @yangTemplateWriteGroupingDefs(list.getGroupings(), module)
         }
         @if(list.getUses() != null && !list.getUses().isEmpty()) {
-            @yangTemplateWriteUsesNodes(list.getUses())
+            @yangTemplateWriteUsesNodes(list.getUses(), module)
+        }
+        @if(list.getUnknownSchemaNodes() != null && !list.getUnknownSchemaNodes().isEmpty()) {
+            @yangTemplateWriteUnknownSchemaNodes(list.getUnknownSchemaNodes(), module)
+        }
+        @if(list.getActions() != null && !list.getActions().isEmpty()) {
+            @yangTemplateWriteActions(list.getActions(), module)
         }
         @if(list.getStatus() != Status.CURRENT) {
             status @{list.getStatus()};
-        }
-        @if(list.getUnknownSchemaNodes() != null && !list.getUnknownSchemaNodes().isEmpty()) {
-            @yangTemplateWriteUnknownSchemaNodes(list.getUnknownSchemaNodes())
         }
     }
 }

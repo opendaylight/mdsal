@@ -13,7 +13,6 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.resolveNotification;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION_LISTENER;
-
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
@@ -40,8 +39,8 @@ final class ModuleToGenType {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    static Map<Module, ModuleContext> generate(final Module module, Map<String, Map<String, GeneratedTypeBuilder>>
-            genTypeBuilders, final SchemaContext schemaContext, TypeProvider typeProvider, Map<Module,
+    static Map<Module, ModuleContext> generate(final Module module, final Map<String, Map<String, GeneratedTypeBuilder>>
+            genTypeBuilders, final SchemaContext schemaContext, final TypeProvider typeProvider, Map<Module,
             ModuleContext> genCtx, final boolean verboseClassComments) {
 
         genCtx.put(module, new ModuleContext());
@@ -77,8 +76,8 @@ final class ModuleToGenType {
      * @throws IllegalStateException
      *             if set of type definitions from module is null
      */
-    private static Map<Module, ModuleContext> allTypeDefinitionsToGenTypes(final Module module, Map<Module, ModuleContext> genCtx,
-            TypeProvider typeProvider) {
+    private static Map<Module, ModuleContext> allTypeDefinitionsToGenTypes(final Module module, final Map<Module, ModuleContext> genCtx,
+            final TypeProvider typeProvider) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         Preconditions.checkArgument(module.getName() != null, "Module name cannot be NULL.");
         final DataNodeIterator it = new DataNodeIterator(module);
@@ -99,7 +98,7 @@ final class ModuleToGenType {
 
     private static Map<Module, ModuleContext> actionsAndRPCMethodsToGenType(final Module module, Map<Module,
             ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments,
-            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, TypeProvider typeProvider) {
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
 
         genCtx = RpcActionGenHelper.rpcMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
@@ -125,9 +124,9 @@ final class ModuleToGenType {
      * @throws IllegalStateException
      *             if set of notifications from module is null
      */
-    private static Map<Module, ModuleContext> notificationsToGenType(final Module module, Map<Module, ModuleContext> genCtx,
-            final SchemaContext schemaContext, Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
-            final boolean verboseClassComments, TypeProvider typeProvider) {
+    private static Map<Module, ModuleContext> notificationsToGenType(final Module module, final Map<Module, ModuleContext> genCtx,
+            final SchemaContext schemaContext, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+            final boolean verboseClassComments, final TypeProvider typeProvider) {
         checkArgument(module != null, "Module reference cannot be NULL.");
         checkArgument(module.getName() != null, "Module name cannot be NULL.");
         final Set<NotificationDefinition> notifications = module.getNotifications();
@@ -164,7 +163,7 @@ final class ModuleToGenType {
             }
         }
 
-        listenerInterface.setDescription(createDescription(notifications, module.getName(), verboseClassComments));
+        listenerInterface.setDescription(createDescription(notifications, module, verboseClassComments));
 
         genCtx.get(module).addTopLevelNodeType(listenerInterface);
 
