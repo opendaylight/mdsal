@@ -11,33 +11,28 @@
 * Twirl is transformed to Scala and compiled. Then,       *
 * it can be called from Java with particular input        *
 * parameters to render desired output code.               *
-*                                                         *
-* Note: we should introduce our own format instead of txt *
 ***********************************************************@
 
 @import org.opendaylight.yangtools.yang.model.api.RpcDefinition
+@import org.opendaylight.yangtools.yang.model.api.Module
 @import org.opendaylight.yangtools.yang.model.api.Status
 
-@(rpc: RpcDefinition)
+@(rpc: RpcDefinition, module: Module)
 rpc @{rpc.getQName().getLocalName()} {
     @if(rpc.getDescription() != null && !rpc.getDescription().isEmpty()) {
         "@{rpc.getDescription()}";
     }
     @if(rpc.getGroupings() != null && !rpc.getGroupings().isEmpty()) {
-        @yangTemplateWriteGroupingDefs(rpc.getGroupings())
+        @yangTemplateWriteGroupingDefs(rpc.getGroupings(), module)
     }
-    @if(rpc.getInput() != null) {
+    @if(rpc.getInput() != null && rpc.getInput().getChildNodes != null && !rpc.getInput().getChildNodes().isEmpty()) {
         input {
-            @if(rpc.getInput().getChildNodes != null && !rpc.getInput().getChildNodes().isEmpty()) {
-                @yangTemplateWriteDataSchemaNodes(rpc.getInput().getChildNodes)
-            }
+            @yangTemplateWriteDataSchemaNodes(rpc.getInput().getChildNodes, module)
         }
     }
-    @if(rpc.getOutput() != null) {
+    @if(rpc.getOutput() != null && rpc.getOutput().getChildNodes != null && !rpc.getOutput().getChildNodes().isEmpty()) {
         output {
-            @if(rpc.getOutput().getChildNodes != null && !rpc.getOutput().getChildNodes().isEmpty()) {
-                @yangTemplateWriteDataSchemaNodes(rpc.getOutput().getChildNodes)
-            }
+            @yangTemplateWriteDataSchemaNodes(rpc.getOutput().getChildNodes, module)
         }
     }
     @if(rpc.getReference() != null && !rpc.getReference().isEmpty()) {
