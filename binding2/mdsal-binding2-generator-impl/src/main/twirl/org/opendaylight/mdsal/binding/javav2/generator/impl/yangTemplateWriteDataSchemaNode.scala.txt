@@ -32,18 +32,16 @@
     @writeContSchemaNode(dataSchemaNode.asInstanceOf[ContainerSchemaNode])
 }
 @if(dataSchemaNode.isInstanceOf[AnyXmlSchemaNode]) {
-    anyxml @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getQName().getLocalName()}
-    @if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() != Status.CURRENT) {
-        ;
-    } else {
-        {
-            status @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus()};
-        }
-    }
+    anyxml @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getQName().getLocalName()};
 }
 @if(dataSchemaNode.isInstanceOf[LeafSchemaNode]) {
-    leaf @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getQName().getLocalName()} {
-        type @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getType().getQName().getLocalName()};
+    @if(!dataSchemaNode.asInstanceOf[LeafSchemaNode].isAddedByUses() && !dataSchemaNode.asInstanceOf[LeafSchemaNode].isAugmenting()){
+        leaf @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getQName().getLocalName()} {
+            @if(dataSchemaNode.asInstanceOf[LeafSchemaNode].getDescription() != null){
+                description "@{dataSchemaNode.asInstanceOf[LeafSchemaNode].getDescription()}";
+            }
+            type @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getType().getQName().getLocalName()};
+        }
     }
     @if(dataSchemaNode.asInstanceOf[LeafSchemaNode].getStatus() != Status.CURRENT) {
         status @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getStatus()};
@@ -51,6 +49,9 @@
 }
 @if(dataSchemaNode.isInstanceOf[LeafListSchemaNode]) {
     leaf-list @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getQName().getLocalName()} {
+    @if(dataSchemaNode.asInstanceOf[LeafListSchemaNode].isUserOrdered()){
+        ordered-by user;
+    }
         type @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getType().getQName().getLocalName()};
     }
     @if(dataSchemaNode.asInstanceOf[LeafListSchemaNode].getStatus() != Status.CURRENT) {
@@ -86,9 +87,6 @@
         @if(container.getChildNodes() != null && !container.getChildNodes().isEmpty()) {
             @yangTemplateWriteDataSchemaNodes(container.getChildNodes())
         }
-        @if(container.getAvailableAugmentations() != null && !container.getAvailableAugmentations().isEmpty()) {
-            @yangTemplateWriteAugments(container.getAvailableAugmentations())
-        }
         @if(container.getGroupings() != null && !container.getGroupings().isEmpty()) {
             @yangTemplateWriteGroupingDefs(container.getGroupings())
         }
@@ -106,9 +104,15 @@
 
 @writeListSchemaNode(list: ListSchemaNode) = {
     list @{list.getQName().getLocalName()} {
-        key "@for(listKey <- list.getKeyDefinition()) {
-            @{listKey.getLocalName()}
-        }"
+        @if(list.isUserOrdered()){
+            ordered-by user;
+        }
+        key "@for(listKey <- list.getKeyDefinition()) {@{listKey.getLocalName()} }";
+        @if(!list.getUniqueConstraints().isEmpty()){
+            @for(listUnique <- list.getUniqueConstraints()){
+                unique "@for(tagUnique <- listUnique.getTag()) {@{tagUnique.getLastComponent.getLocalName()} }";
+            }
+        }
         @if(list.getChildNodes() != null && !list.getChildNodes().isEmpty()) {
             @yangTemplateWriteDataSchemaNodes(list.getChildNodes())
         }
