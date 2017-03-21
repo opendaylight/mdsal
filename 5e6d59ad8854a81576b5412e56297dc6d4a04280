@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_da48ce89",
+        "filename": "model/yang-ext/src/main/yang/yang-ext.yang",
+        "patchSetId": 5
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-21T09:53:48Z",
+      "side": 1,
+      "message": "tab",
+      "range": {
+        "startLine": 78,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 5
+      },
+      "revId": "5e6d59ad8854a81576b5412e56297dc6d4a04280",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
