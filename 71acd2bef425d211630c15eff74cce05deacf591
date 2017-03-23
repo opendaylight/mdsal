@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_102a2490",
+        "filename": "model/ietf/ietf-yang-types-20130715/src/main/java/org/opendaylight/yang/gen/v1/urn/ietf/params/xml/ns/yang/ietf/yang/types/rev130715/IetfYangUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-23T20:26:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_faf68b8f",
+      "range": {
+        "startLine": 24,
+        "startChar": 4,
+        "endLine": 24,
+        "endChar": 32
+      },
+      "revId": "71acd2bef425d211630c15eff74cce05deacf591",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_daf3c79d",
         "filename": "model/ietf/ietf-yang-types-20130715/src/main/java/org/opendaylight/yang/gen/v1/urn/ietf/params/xml/ns/yang/ietf/yang/types/rev130715/IetfYangUtil.java",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2017-03-16T11:50:06Z",
       "side": 1,
       "message": "also known as Preconditions.checkState()",
+      "range": {
+        "startLine": 42,
+        "startChar": 12,
+        "endLine": 44,
+        "endChar": 13
+      },
+      "revId": "71acd2bef425d211630c15eff74cce05deacf591",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7018d084",
+        "filename": "model/ietf/ietf-yang-types-20130715/src/main/java/org/opendaylight/yang/gen/v1/urn/ietf/params/xml/ns/yang/ietf/yang/types/rev130715/IetfYangUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-23T20:26:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_daf3c79d",
       "range": {
         "startLine": 42,
         "startChar": 12,
