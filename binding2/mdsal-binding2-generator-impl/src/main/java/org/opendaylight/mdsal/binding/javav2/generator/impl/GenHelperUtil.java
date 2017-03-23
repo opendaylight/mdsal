@@ -118,7 +118,7 @@ final class GenHelperUtil {
      * @throws IllegalArgumentException
      *             if <code>module</code> is null
      */
-    private static GeneratedTypeBuilder moduleTypeBuilder(final Module module, final String postfix, final boolean
+    static GeneratedTypeBuilder moduleTypeBuilder(final Module module, final String postfix, final boolean
             verboseClassComments) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         final String packageName = BindingMapping.getRootPackageName(module);
@@ -373,7 +373,7 @@ final class GenHelperUtil {
      * @param schemaContext schema context
      * @return generated type builder <code>schemaNode</code>
      */
-    private static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
+    static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
             schemaNode, final Type parent, final Module module, final Map<Module, ModuleContext> genCtx,
             final SchemaContext schemaContext, final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
 
@@ -726,5 +726,4 @@ final class GenHelperUtil {
         }
         return genType;
     }
-
 }
