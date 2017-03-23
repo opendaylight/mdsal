@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_0a9af36d",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/ModuleToGenType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-23T14:18:48Z",
+      "side": 1,
+      "message": "add rest of params into javadoc",
+      "range": {
+        "startLine": 104,
+        "startChar": 6,
+        "endLine": 106,
+        "endChar": 38
+      },
+      "revId": "5a5736357986068c1a30f503b5d0d5865ec3891b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6a88df22",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/ModuleToGenType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-23T14:18:48Z",
+      "side": 1,
+      "message": "missing returns info in javadoc",
+      "revId": "5a5736357986068c1a30f503b5d0d5865ec3891b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
