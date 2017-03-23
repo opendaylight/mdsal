@@ -21,7 +21,9 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.resolveInnerEnumFromTypeDefinition;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.resolveListKeyTOBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.computeDefaultSUID;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.Beta;
@@ -32,10 +34,13 @@ import java.util.Map;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
+import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
+import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
@@ -57,6 +62,7 @@ import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -118,7 +124,7 @@ final class GenHelperUtil {
      * @throws IllegalArgumentException
      *             if <code>module</code> is null
      */
-    private static GeneratedTypeBuilder moduleTypeBuilder(final Module module, final String postfix, final boolean
+    static GeneratedTypeBuilder moduleTypeBuilder(final Module module, final String postfix, final boolean
             verboseClassComments) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         final String packageName = BindingMapping.getRootPackageName(module);
@@ -374,7 +380,7 @@ final class GenHelperUtil {
      * @param schemaContext schema context
      * @return generated type builder <code>schemaNode</code>
      */
-    private static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
+    static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
             schemaNode, final Type parent, final Module module, final Map<Module, ModuleContext> genCtx,
             final SchemaContext schemaContext, final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
 
@@ -396,6 +402,39 @@ final class GenHelperUtil {
         }
 
         return it;
+    }
+
+    static GeneratedTypeBuilder resolveNotification(final GeneratedTypeBuilder listenerInterface, String
+            parentName, final String basePackageName, final NotificationDefinition notification, final Module module,
+            final SchemaContext schemaContext, final boolean verboseClassComments, Map<String, Map<String, GeneratedTypeBuilder>>
+            genTypeBuilders, TypeProvider typeProvider, Map<Module, ModuleContext> genCtx) {
+
+        processUsesAugments(schemaContext, notification, module, genCtx, genTypeBuilders,
+                verboseClassComments, typeProvider);
+
+        final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition
+                (basePackageName, notification, null, module, genCtx, schemaContext,
+                        verboseClassComments, genTypeBuilders);
+        annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
+        notificationInterface.addImplementsType(NOTIFICATION);
+        genCtx.get(module).addChildNodeType(notification, notificationInterface);
+
+        // Notification object
+        resolveDataSchemaNodes(module, basePackageName, notificationInterface,
+                notificationInterface, notification.getChildNodes(), genCtx, schemaContext,
+                verboseClassComments, genTypeBuilders, typeProvider);
+
+        //in case of tied notification, incorporate parent's localName
+        final StringBuilder sb = new StringBuilder("on_");
+        if (parentName != null) {
+            sb.append(parentName).append('_');
+        }
+        sb.append(notificationInterface.getName());
+
+        listenerInterface.addMethod(NonJavaCharsConverter.convertIdentifier(sb.toString(), JavaIdentifier.METHOD))
+                .setAccessModifier(AccessModifier.PUBLIC).addParameter(notificationInterface, "notification")
+                .setComment(encodeAngleBrackets(notification.getDescription())).setReturnType(Types.VOID);
+        return listenerInterface;
     }
 
     /**
@@ -743,5 +782,4 @@ final class GenHelperUtil {
         }
         return genType;
     }
-
 }
