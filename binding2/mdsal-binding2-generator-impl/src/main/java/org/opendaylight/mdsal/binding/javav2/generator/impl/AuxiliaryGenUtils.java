@@ -18,12 +18,14 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNode;
+import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNodes;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
@@ -244,6 +246,36 @@ final class AuxiliaryGenUtils {
         }
 
         return replaceAllIllegalChars(sb);
+    }
+
+    static String createDescription(final Set<? extends SchemaNode> schemaNodes, final String moduleName, final
+            boolean verboseClassComments) {
+        final StringBuilder sb = new StringBuilder();
+
+        if (!isNullOrEmpty(schemaNodes)) {
+            final SchemaNode node = schemaNodes.iterator().next();
+
+            if (node instanceof RpcDefinition) {
+                sb.append("Interface for implementing the following YANG RPCs defined in module <b>" + moduleName + "</b>");
+            } else if (node instanceof NotificationDefinition) {
+                sb.append("Interface for receiving the following YANG notifications defined in module <b>" + moduleName + "</b>");
+            }
+        }
+        sb.append(NEW_LINE);
+
+        if (verboseClassComments) {
+            sb.append("<pre>");
+            sb.append(NEW_LINE);
+            sb.append(encodeAngleBrackets(yangTemplateForNodes.render(schemaNodes).body()));
+            sb.append("</pre>");
+            sb.append(NEW_LINE);
+        }
+
+        return replaceAllIllegalChars(sb);
+    }
+
+    private static boolean isNullOrEmpty(final Collection<?> list) {
+        return list == null || list.isEmpty();
     }
 
     /**
