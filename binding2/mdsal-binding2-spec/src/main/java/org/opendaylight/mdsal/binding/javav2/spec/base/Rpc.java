@@ -11,7 +11,7 @@ package org.opendaylight.mdsal.binding.javav2.spec.base;
 /**
  *
  * The "rpc" statement is used to define an RPC operation. The "rpc" statement
- * defines an rpc node in the schema tree. Under the rpc node, a schema node
+ * defines an RPC node in the schema tree. Under the RPC node, a schema node
  * with the name "input" and a schema node with the name "output" are also defined.
  * The nodes "input" and "output" are defined in the module’s namespace.
  *
