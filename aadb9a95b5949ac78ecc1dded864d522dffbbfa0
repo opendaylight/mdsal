@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_71d3af5f",
+        "filename": "model/ietf/ietf-yang-types-20130715/src/main/java/org/opendaylight/yang/gen/v1/urn/ietf/params/xml/ns/yang/ietf/yang/types/rev130715/IetfYangUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-03-24T15:21:23Z",
+      "side": 1,
+      "message": "I am still not convinced Mdsal project should care to maintain this piece API, but I am not convinced it should not care either.",
+      "range": {
+        "startLine": 38,
+        "startChar": 4,
+        "endLine": 38,
+        "endChar": 10
+      },
+      "revId": "aadb9a95b5949ac78ecc1dded864d522dffbbfa0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b1f6b7f7",
+        "filename": "model/ietf/ietf-yang-types-20130715/src/test/java/org/opendaylight/yang/gen/v1/urn/ietf/params/xml/ns/yang/ietf/yang/types/rev130715/tests/IetfYangUtilTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-03-24T15:21:23Z",
+      "side": 1,
+      "message": "4 spaces\n\nI have seen this (and line 41) already in the previous patch set. Possibly I was planning to vote -1, so I did not bother to comment on this.",
+      "range": {
+        "startLine": 35,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 9
+      },
+      "revId": "aadb9a95b5949ac78ecc1dded864d522dffbbfa0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
