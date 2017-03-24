@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_7e2c214b",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WriteableDataStore.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-24T03:00:47Z",
+      "side": 1,
+      "message": "I\u0027ll try to clarify what I had in mind with longer doc.. basically this could have any semantic - single transaction (auto commit), wrapping a real transaction opened \"somewhere\" - the point of this interface is to take transaction control away from the user of this API.  Does the idea as such make sense to you, and do you just want better JavaDoc, or are you against the basic idea underlying the change, to separate the APIs?  I think this would be good, and would let me align something like the SingleTransactionDataBroker (in Genius) closer to this - and then later with Karaf 4 perhaps we could look at DI \"managed\" @Transaction ?",
+      "parentUuid": "7a6b29fe_6eae33e9",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 73
+      },
+      "revId": "c75d8d94ba5cca0bd1da4715863a7e6229a14e1d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_8e5e2f11",
         "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WriteableDataStore.java",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2016-10-13T08:25:44Z",
       "side": 1,
       "message": "data store is quite overloaded, is there something else we can use?",
+      "range": {
+        "startLine": 23,
+        "startChar": 17,
+        "endLine": 23,
+        "endChar": 35
+      },
+      "revId": "c75d8d94ba5cca0bd1da4715863a7e6229a14e1d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9e29053a",
+        "filename": "binding/mdsal-binding-api/src/main/java/org/opendaylight/mdsal/binding/api/WriteableDataStore.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-24T03:00:47Z",
+      "side": 1,
+      "message": "I was going to suggest WriteableDataBroker, but that may be even more overloaded than \"data store\", no?  Or would you find that more coherent?  Any other concrete ideas / thoughts / counter suggestions more than welcome..",
+      "parentUuid": "7a6b29fe_8e5e2f11",
       "range": {
         "startLine": 23,
         "startChar": 17,
