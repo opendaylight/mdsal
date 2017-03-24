@@ -93,6 +93,29 @@
       "revId": "71acd2bef425d211630c15eff74cce05deacf591",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fdd84281",
+        "filename": "model/ietf/ietf-yang-types-20130715/src/test/java/org/opendaylight/yang/gen/v1/urn/ietf/params/xml/ns/yang/ietf/yang/types/rev130715/tests/IetfYangUtilTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-03-24T15:21:23Z",
+      "side": 1,
+      "message": "4 spaces instead 1 tab.",
+      "range": {
+        "startLine": 35,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 9
+      },
+      "revId": "71acd2bef425d211630c15eff74cce05deacf591",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
