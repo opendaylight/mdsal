@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.BOOLEAN;
 
@@ -537,6 +538,11 @@ final class AuxiliaryGenUtils {
         toBuilder.addHashIdentity(propBuilder);
         toBuilder.addToStringProperty(propBuilder);
         return true;
+    }
+
+    static void checkModuleAndModuleName(final Module module) {
+        checkArgument(module != null, "Module reference cannot be NULL.");
+        checkArgument(module.getName() != null, "Module name cannot be NULL.");
     }
 
     @VisibleForTesting
