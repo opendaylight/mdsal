@@ -156,7 +156,7 @@ final class GenHelperUtil {
      * @param genCtx generated context
      * @return generated type builder with all implemented types
      */
-    private static GeneratedTypeBuilder addImplementedInterfaceFromUses(final DataNodeContainer dataNodeContainer,
+    static GeneratedTypeBuilder addImplementedInterfaceFromUses(final DataNodeContainer dataNodeContainer,
                           final GeneratedTypeBuilder builder, final Map<Module, ModuleContext> genCtx) {
         for (final UsesNode usesNode : dataNodeContainer.getUses()) {
             final GeneratedType genType = findGroupingByPath(usesNode.getGroupingPath(), genCtx).toInstance();
@@ -463,7 +463,7 @@ final class GenHelperUtil {
      *             </ul>
      *
      */
-    private static GeneratedTypeBuilder addRawInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
+    static GeneratedTypeBuilder addRawInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
                        final SchemaContext schemaContext, final String prefix, final boolean verboseClassComments,
                        final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
 
