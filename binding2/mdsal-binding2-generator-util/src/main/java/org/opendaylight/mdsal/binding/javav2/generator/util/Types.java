@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
@@ -29,7 +30,6 @@ import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.WildcardType;
-import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
@@ -43,7 +43,7 @@ public final class Types {
             new CacheLoader<Class<?>, ConcreteType>() {
 
                 @Override
-                public ConcreteType load(final Class<?> key) throws Exception {
+                public ConcreteType load(@Nonnull final Class<?> key) throws Exception {
                     return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
                 }
             };
@@ -52,9 +52,10 @@ public final class Types {
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
 
     public static final ConcreteType BOOLEAN = typeForClass(Boolean.class);
-    public static final ConcreteType RPC_CALLBACK = typeForClass(RpcCallback.class);
+    public static final ConcreteType CLASS = typeForClass(Class.class);
     public static final ConcreteType STRING = typeForClass(String.class);
     public static final ConcreteType VOID = typeForClass(Void.class);
+
     public static final ConcreteType BYTE_ARRAY = primitiveType("byte[]", null);
     public static final ConcreteType CHAR_ARRAY = primitiveType("char[]", null);
 

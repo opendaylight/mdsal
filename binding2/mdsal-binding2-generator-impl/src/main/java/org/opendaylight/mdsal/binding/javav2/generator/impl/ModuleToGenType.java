@@ -46,9 +46,11 @@ final class ModuleToGenType {
 
         genCtx.put(module, new ModuleContext());
         genCtx = allTypeDefinitionsToGenTypes(module, genCtx, typeProvider);
+        genCtx = actionsAndRPCMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
+                genTypeBuilders, typeProvider);
         genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments, typeProvider);
 
-        //TODO: call generate for other entities (groupings, rpcs, actions, identities)
+        //TODO: call generate for other entities (groupings, identities)
 
         if (!module.getChildNodes().isEmpty()) {
             final GeneratedTypeBuilder moduleType = GenHelperUtil.moduleToDataType(module, genCtx, verboseClassComments);
@@ -92,6 +94,18 @@ final class ModuleToGenType {
                 ctx.addTypeToSchema(type, typedef);
             }
         });
+        return genCtx;
+    }
+
+    private static Map<Module, ModuleContext> actionsAndRPCMethodsToGenType(final Module module, Map<Module,
+            ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments,
+            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, TypeProvider typeProvider) {
+
+        genCtx = RpcActionGenHelper.rpcMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
+                genTypeBuilders, typeProvider);
+        genCtx = RpcActionGenHelper.actionMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
+                genTypeBuilders, typeProvider);
+
         return genCtx;
     }
 

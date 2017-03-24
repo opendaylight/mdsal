@@ -8,44 +8,63 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.util;
 
+import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.typeForClass;
+
 import javax.management.NotificationListener;
 import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
-import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
-import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Input;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
+import org.opendaylight.mdsal.binding.javav2.spec.base.KeyedInstanceIdentifier;
+import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
-import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Output;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeRoot;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
 import org.opendaylight.yangtools.concepts.Identifier;
 
 public final class BindingTypes {
 
-    public static final ConcreteType AUGMENTABLE = Types.typeForClass(Augmentable.class);
-    public static final ConcreteType AUGMENTATION = Types.typeForClass(Augmentation.class);
-    public static final ConcreteType TREE_NODE = Types.typeForClass(TreeNode.class);
-    public static final ConcreteType TREE_ROOT = Types.typeForClass(TreeRoot.class);
-    public static final ConcreteType IDENTIFIABLE_ITEM = Types.typeForClass(IdentifiableItem.class);
-    public static final ConcreteType IDENTIFIER = Types.typeForClass(Identifier.class);
-    public static final ConcreteType INSTANCE_IDENTIFIER = Types.typeForClass(InstanceIdentifier.class);
-    public static final ConcreteType NOTIFICATION = Types.typeForClass(Notification.class);
-    public static final ConcreteType NOTIFICATION_LISTENER = Types.typeForClass(NotificationListener.class);
+    public static final ConcreteType ACTION = typeForClass(Action.class);
+    public static final ConcreteType AUGMENTABLE = typeForClass(Augmentable.class);
+    public static final ConcreteType AUGMENTATION = typeForClass(Augmentation.class);
+    public static final ConcreteType IDENTIFIABLE_ITEM = typeForClass(IdentifiableItem.class);
+    public static final ConcreteType IDENTIFIER = typeForClass(Identifier.class);
+    public static final ConcreteType INPUT = typeForClass(Input.class);
+    public static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
+    public static final ConcreteType INSTANTIABLE = typeForClass(Instantiable.class);
+    public static final ConcreteType KEYED_INSTANCE_IDENTIFIER = typeForClass(KeyedInstanceIdentifier.class);
+    public static final ConcreteType LIST_ACTION = typeForClass(ListAction.class);
+    public static final ConcreteType NOTIFICATION = typeForClass(Notification.class);
+    public static final ConcreteType NOTIFICATION_LISTENER = typeForClass(NotificationListener.class);
+    public static final ConcreteType OUTPUT = typeForClass(Output.class);
+    public static final ConcreteType RPC = typeForClass(Rpc.class);
+    public static final ConcreteType RPC_CALLBACK = typeForClass(RpcCallback.class);
+    public static final ConcreteType TREE_NODE = typeForClass(TreeNode.class);
+    public static final ConcreteType TREE_ROOT = typeForClass(TreeRoot.class);
 
-    private static final ConcreteType TREE_CHILD_NODE = Types.typeForClass(TreeChildNode.class);
+    private static final ConcreteType TREE_CHILD_NODE = typeForClass(TreeChildNode.class);
 
     private BindingTypes() {
         throw new UnsupportedOperationException("Utility class");
     }
 
     public static ParameterizedType augmentable(Type t) {
-        return Types.parameterizedTypeFor(AUGMENTABLE, t);
+        return parameterizedTypeFor(AUGMENTABLE, t);
     }
 
     public static ParameterizedType treeChildNode(Type t) {
-        return Types.parameterizedTypeFor(TREE_CHILD_NODE, t);
+        return parameterizedTypeFor(TREE_CHILD_NODE, t);
     }
 
 }
