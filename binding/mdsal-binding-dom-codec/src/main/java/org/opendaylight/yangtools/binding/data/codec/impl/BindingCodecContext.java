@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.binding.data.codec.impl.NodeCodecContext.CodecContextFactory;
@@ -213,7 +214,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         return root.getNotification(notification);
     }
 
-    ContainerNodeCodecContext<?> getRpcDataContext(final SchemaPath path) {
+    BindingNormalizedNodeCodec<?> getRpcDataContext(final SchemaPath path) {
         return root.getRpc(path);
     }
 
