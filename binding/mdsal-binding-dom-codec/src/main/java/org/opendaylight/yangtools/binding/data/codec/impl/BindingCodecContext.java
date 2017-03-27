@@ -213,7 +213,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         return root.getNotification(notification);
     }
 
-    ContainerNodeCodecContext<?> getRpcDataContext(final SchemaPath path) {
+    AbstractContainerNodeCodecContext<?> getRpcDataContext(final SchemaPath path) {
         return root.getRpc(path);
     }
 
