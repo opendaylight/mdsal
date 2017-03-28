@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
+import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -45,7 +46,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
     private final RpcService delegate;
     private final QName inputQname;
 
-    public <T extends RpcService> BindingDOMRpcImplementationAdapter(final BindingNormalizedNodeCodecRegistry codec,
+    <T extends RpcService> BindingDOMRpcImplementationAdapter(final BindingNormalizedNodeCodecRegistry codec,
             final Class<T> type, final Map<SchemaPath, Method> localNameToMethod, final T delegate) {
         try {
             this.invoker = SERVICE_INVOKERS.get(type, () -> {
@@ -65,11 +66,13 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
         inputQname = QName.create(BindingReflections.getQNameModule(type), "input").intern();
     }
 
+    @Nonnull
     @Override
-    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final DOMRpcIdentifier rpc,
+    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(@Nonnull final DOMRpcIdentifier rpc,
             final NormalizedNode<?, ?> input) {
+
         final SchemaPath schemaPath = rpc.getType();
-        final DataObject bindingInput = input != null ? deserilialize(rpc.getType(),input) : null;
+        final DataObject bindingInput = input != null ? deserialize(rpc.getType(),input) : null;
         final ListenableFuture<RpcResult<?>> bindingResult = invoke(schemaPath,bindingInput);
         return transformResult(bindingResult);
     }
@@ -79,7 +82,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
         return COST;
     }
 
-    private DataObject deserilialize(final SchemaPath rpcPath, final NormalizedNode<?, ?> input) {
+    private DataObject deserialize(final SchemaPath rpcPath, final NormalizedNode<?, ?> input) {
         if (input instanceof LazySerializedContainerNode) {
             return ((LazySerializedContainerNode) input).bindingData();
         }
