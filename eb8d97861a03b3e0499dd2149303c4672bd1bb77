@@ -1,0 +1,76 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_8da53649",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-30T14:17:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_3b3f27d8",
+      "range": {
+        "startLine": 93,
+        "startChar": 20,
+        "endLine": 96,
+        "endChar": 50
+      },
+      "revId": "eb8d97861a03b3e0499dd2149303c4672bd1bb77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ed632218",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-30T14:17:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_2d0a4a21",
+      "range": {
+        "startLine": 98,
+        "startChar": 20,
+        "endLine": 99,
+        "endChar": 124
+      },
+      "revId": "eb8d97861a03b3e0499dd2149303c4672bd1bb77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_cd661e29",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-03-30T14:17:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_cd9e1eb8",
+      "range": {
+        "startLine": 150,
+        "startChar": 0,
+        "endLine": 155,
+        "endChar": 117
+      },
+      "revId": "eb8d97861a03b3e0499dd2149303c4672bd1bb77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
