@@ -222,10 +222,6 @@ public final class RpcActionGenHelper {
             parentType.addImplementsType(augmentable(parentType));
             annotateDeprecatedIfNecessary(parent.getStatus(), parentType);
 
-            GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, parentType, parentType,
-                    ((ContainerSchemaNode) parent).getChildNodes(), genCtx, schemaContext, verboseClassComments,
-                    genTypeBuilders, typeProvider);
-
             operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
 
             if (parent instanceof ListSchemaNode) {
@@ -237,6 +233,9 @@ public final class RpcActionGenHelper {
                 interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
             } else {
                 //Action
+                GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, parentType, parentType,
+                        ((ContainerSchemaNode) parent).getChildNodes(), genCtx, schemaContext, verboseClassComments,
+                        genTypeBuilders, typeProvider);
                 operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
                 interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
             }
