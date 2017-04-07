@@ -159,9 +159,9 @@ public class BuilderRenderer extends BaseRenderer {
                             final String aPackage = getPackage(fullyQualifiedName);
                             final String name = getName(fullyQualifiedName);
                             final GeneratedTOBuilderImpl generatedTOBuilder = new GeneratedTOBuilderImpl(aPackage, name);
-                            final ReferencedTypeImpl referencedType = new ReferencedTypeImpl(aPackage, name);
+                            final ReferencedTypeImpl referencedType = new ReferencedTypeImpl(aPackage, name, true);
                             final ReferencedTypeImpl generic = new ReferencedTypeImpl(getType().getPackageName(),
-                                    getType().getName());
+                                    getType().getName(), true);
                             final ParameterizedType parametrizedReturnType = Types.parameterizedTypeFor(referencedType, generic);
                             generatedTOBuilder.addMethod(method.getName()).setReturnType(parametrizedReturnType);
                             augmentField = propertyFromGetter(generatedTOBuilder.toInstance().getMethodDefinitions().get(0));
