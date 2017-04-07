@@ -20,8 +20,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Function;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.modelProviderTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.yangModuleInfoTemplate;
@@ -40,13 +42,16 @@ public class YangModuleInfoTemplateRenderer {
     private final Map<String, String> importMap = new HashMap<>();
     private final String packageName;
     private final String modelBindingProviderName;
+    private final Function<Module, Optional<String>> moduleFilePathResolver;
 
-    public YangModuleInfoTemplateRenderer(final Module module, final SchemaContext ctx) {
+
+    public YangModuleInfoTemplateRenderer(final Module module, final SchemaContext ctx, final Function<Module, Optional<String>> moduleFilePathResolver) {
 
         Preconditions.checkArgument(module != null, "Module must not be null.");
         this.module = module;
         this.ctx = ctx;
         this.packageName = getRootPackageName(module);
+        this.moduleFilePathResolver = moduleFilePathResolver;
 
         final StringBuilder sb = new StringBuilder();
         sb.append(packageName)
@@ -210,5 +215,9 @@ public class YangModuleInfoTemplateRenderer {
             }
         }
         return sorted.lastEntry().getValue();
+    }
+
+    public String getModelBindingProviderName() {
+        return modelBindingProviderName;
     }
 }
