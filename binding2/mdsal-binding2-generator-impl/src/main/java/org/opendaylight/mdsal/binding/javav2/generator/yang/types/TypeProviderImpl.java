@@ -140,7 +140,7 @@ public final class TypeProviderImpl implements TypeProvider {
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>typeDefinition</code> equal null</li>
-     *             <li>if Qname of <code>typeDefinition</code> equal null</li>
+     *             <li>if QName of <code>typeDefinition</code> equal null</li>
      *             <li>if name of <code>typeDefinition</code> equal null</li>
      *             </ul>
      */
@@ -348,7 +348,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *             <ul>
      *             <li>if <code>basePackageName</code> is null</li>
      *             <li>if <code>typedef</code> is null</li>
-     *             <li>if Qname of <code>typedef</code> is null</li>
+     *             <li>if QName of <code>typedef</code> is null</li>
      *             </ul>
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
