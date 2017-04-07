@@ -10,11 +10,22 @@ package org.opendaylight.mdsal.binding.javav2.java.api.generator;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import org.opendaylight.mdsal.binding.javav2.model.api.CodeGenerator;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.UnitName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
@@ -26,6 +37,7 @@ import org.sonatype.plexus.build.incremental.BuildContext;
 public final class GeneratorJavaFile {
 
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorJavaFile.class);
+    private static final Splitter BSDOT_SPLITTER = Splitter.on("\\.");
 
     /**
      * List of <code>CodeGenerator</code> instances.
@@ -57,10 +69,137 @@ public final class GeneratorJavaFile {
         this.buildContext = Preconditions.checkNotNull(buildContext);
         this.types = Preconditions.checkNotNull(types);
         generators.add(new EnumGenerator());
-        //TODO: finish generators
-//        generators.add(new InterfaceGenerator());
+        generators.add(new InterfaceGenerator());
+        //TODO: finish generators below
 //        generators.add(new TOGenerator());
 //        generators.add(new BuilderGenerator());
+    }
+
+    public List<File> generateToFile(final File generatedSourcesDirectory, final File persistentSourcesDirectory)
+            throws IOException {
+        final List<File> result = new ArrayList<>();
+        for (Type type : types) {
+            if (type != null) {
+                for (CodeGenerator generator : generators) {
+                    File generatedJavaFile = null;
+                    if (type instanceof GeneratedTransferObject
+                            && ((GeneratedTransferObject) type).isUnionTypeBuilder()) {
+                        File packageDir = packageToDirectory(persistentSourcesDirectory, type.getPackageName());
+                        File file = new File(packageDir, generator.getUnitName(type) + ".java");
+                        if (!file.exists()) {
+                            generatedJavaFile = generateTypeToJavaFile(persistentSourcesDirectory, type, generator);
+                        }
+                    } else {
+                        generatedJavaFile = generateTypeToJavaFile(generatedSourcesDirectory, type, generator);
+                    }
+                    if (generatedJavaFile != null) {
+                        result.add(generatedJavaFile);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Creates the package directory path as concatenation of
+     * <code>parentDirectory</code> and parsed <code>packageName</code>. The
+     * parsing of <code>packageName</code> is realized as replacement of the
+     * package name dots with the file system separator.
+     *
+     * @param parentDirectory
+     *            <code>File</code> object with reference to parent directory
+     * @param packageName
+     *            string with the name of the package
+     * @return <code>File</code> object which refers to the new directory for
+     *         package <code>packageName</code>
+     */
+    public static File packageToDirectory(final File parentDirectory, final String packageName) {
+        if (packageName == null) {
+            throw new IllegalArgumentException("Package Name cannot be NULL!");
+        }
+
+        final StringBuilder dirPathBuilder = new StringBuilder();
+        final Iterator<String> packageElementsItr = BSDOT_SPLITTER.split(packageName).iterator();
+        if (packageElementsItr.hasNext()) {
+            dirPathBuilder.append(packageElementsItr.next());
+        }
+
+        while (packageElementsItr.hasNext()) {
+            dirPathBuilder.append(File.separator);
+            dirPathBuilder.append(packageElementsItr.next());
+        }
+
+        return new File(parentDirectory, dirPathBuilder.toString());
+    }
+
+    /**
+     * Generates <code>File</code> for <code>type</code>. All files are stored
+     * to sub-folders of base directory <code>parentDir</code>. Subdirectories
+     * are generated according to packages to which the type belongs (e. g. if
+     * type belongs to the package <i>org.pcg</i> then in <code>parentDir</code>
+     * is created directory <i>org</i> which contains <i>pcg</i>).
+     *
+     * @param parentDir
+     *            directory where should be the new file generated
+     * @param type
+     *            JAVA <code>Type</code> for which should be JAVA source code
+     *            generated
+     * @param generator
+     *            code generator which is used for generating of the source code
+     * @return file which contains JAVA source code
+     * @throws IOException
+     *             if the error during writing to the file occurs
+     * @throws IllegalArgumentException
+     *             if <code>type</code> equals <code>null</code>
+     * @throws IllegalStateException
+     *             if string with generated code is empty
+     */
+    private File generateTypeToJavaFile(final File parentDir, final Type type, final CodeGenerator generator)
+            throws IOException {
+        if (parentDir == null) {
+            LOG.warn("Parent Directory not specified, files will be generated "
+                    + "accordingly to generated Type package path.");
+        }
+        if (type == null) {
+            LOG.error("Cannot generate Type into Java File because " + "Generated Type is NULL!");
+            throw new IllegalArgumentException("Generated Type Cannot be NULL!");
+        }
+        if (generator == null) {
+            LOG.error("Cannot generate Type into Java File because " + "Code Generator instance is NULL!");
+            throw new IllegalArgumentException("Code Generator Cannot be NULL!");
+        }
+        final File packageDir = packageToDirectory(parentDir, type.getPackageName());
+
+        if (!packageDir.exists()) {
+            packageDir.mkdirs();
+        }
+
+        if (generator.isAcceptable(type)) {
+            final String generatedCode = generator.generate(type);
+            Preconditions.checkState(!generatedCode.isEmpty(), "Generated code should not be empty!");
+            final File file = new File(packageDir, ((UnitName) generator.getUnitName(type)).getValue() + ".java");
+
+            if (file.exists()) {
+                LOG.warn("Naming conflict for type '{}': file with same name already exists and will not be generated.",
+                    type.getFullyQualifiedName());
+                return null;
+            }
+
+            try (final OutputStream stream = buildContext.newFileOutputStream(file)) {
+                try (final Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+                    try (final BufferedWriter bw = new BufferedWriter(fw)) {
+                        bw.write(generatedCode);
+                    }
+                } catch (IOException e) {
+                    LOG.error("Failed to write generate output into {}", file.getPath(), e);
+                    throw e;
+                }
+            }
+            return file;
+
+        }
+        return null;
     }
 
 }
