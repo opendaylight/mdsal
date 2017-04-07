@@ -27,6 +27,11 @@ import org.opendaylight.yangtools.concepts.Identifier;
 @Beta
 public final class BuilderGenerator implements CodeGenerator {
 
+    /**
+     * Constant used as suffix for builder name.
+     */
+    public static final String BUILDER = "Builder";
+
     @Override
     public String generate(Type type) {
         if ((type instanceof GeneratedType) && !(type instanceof GeneratedTransferObject)) {
@@ -55,6 +60,6 @@ public final class BuilderGenerator implements CodeGenerator {
 
     @Override
     public Identifier getUnitName(Type type) {
-        return new UnitName(type.getName());
+        return new UnitName(type.getName() + BUILDER);
     }
 }
