@@ -98,8 +98,8 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 @generateAugmentField(isPrivate: Boolean) = {
     @if(augmentField != null) {
         @if(isPrivate) {private }
-        @{importedNames.get("map")}<@{importedNames.get("class")}<? extends@{importedNames.get("augmentFieldReturnType")}>,
-        @{importedNames.get("augmentFieldReturnType")}>@{augmentField.getName} = @{importedNames.get("collections")}.emptyMap();
+        @{importedNames.get("map")}<@{importedNames.get("class")}<? extends @{importedNames.get("augmentFieldReturnType")}>,
+        @{importedNames.get("augmentFieldReturnType")}> @{augmentField.getName} = @{importedNames.get("collections")}.emptyMap();
     }
 }
 
@@ -205,7 +205,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
                 break;
             case 1:
                 final @{importedNames.get("map")}.Entry<@{importedNames.get("class")}<? extends @{importedNames.get("augmentFieldReturnType")}>, @{importedNames.get("augmentFieldReturnType")}> e = base.@{augmentField.getName}.entrySet().iterator().next();
-                this.@{augmentField.getName} = @{importedNames.get("collections")}.<@{importedNames.get("class")}<? extends @{importedNames.get("augmentFieldReturnType")}>, @{importedNames.get("augmentFieldReturnType")}>singletonMap(e.getKey(), e.getValue());
+                this.@{augmentField.getName} = @{importedNames.get("collections")}.<@{importedNames.get("class")}<? extends @{importedNames.get("augmentFieldReturnType")}>, @{importedNames.get("augmentFieldReturnType")}> singletonMap(e.getKey(), e.getValue());
                 break;
             default :
                 this.@{augmentField.getName} = new @{importedNames.get("hashMap")}<>(base.@{augmentField.getName});

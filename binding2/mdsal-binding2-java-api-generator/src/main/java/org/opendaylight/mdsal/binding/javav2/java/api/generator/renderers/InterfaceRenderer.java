@@ -73,24 +73,24 @@ public class InterfaceRenderer extends BaseRenderer {
 
         final String generatedConstants = String.join("\n", strings);
 
-        final List<String> innerClassesBuilder = new ArrayList<>(getType().getEnclosedTypes().size());
+        final List<String> innerClasses = new ArrayList<>(getType().getEnclosedTypes().size());
         for (GeneratedType innerClass : getType().getEnclosedTypes()) {
             if (innerClass instanceof GeneratedTransferObject) {
                 if (((GeneratedTransferObject) innerClass).isUnionType()) {
                     final UnionRenderer unionRenderer = new UnionRenderer((GeneratedTransferObject) innerClass);
-                    innerClassesBuilder.add(unionRenderer.body());
+                    innerClasses.add(unionRenderer.body());
                     this.getImportMap().putAll(unionRenderer.getImportMap());
                 } else {
                     final ClassRenderer classRenderer = new ClassRenderer((GeneratedTransferObject) innerClass);
-                    innerClassesBuilder.add(classRenderer.generateAsInnerClass());
+                    innerClasses.add(classRenderer.generateAsInnerClass());
                     this.getImportMap().putAll(classRenderer.getImportMap());
                 }
             }
         }
-        final String innerClasses = String.join("\n", strings);
+        final String generatedInnerClasses = String.join("\n", innerClasses);
 
         return interfaceTemplate.render(getType(), enums, mainAnnotations, methodList, generatedImports,
-                generatedConstants, innerClasses).body();
+                generatedConstants, generatedInnerClasses).body();
     }
 
     private boolean isAccessor (final MethodSignature maybeGetter) {
