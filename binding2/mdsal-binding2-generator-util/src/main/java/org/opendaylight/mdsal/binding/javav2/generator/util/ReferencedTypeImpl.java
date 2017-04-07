@@ -28,6 +28,21 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
         super(packageName, name);
     }
 
+    /**
+     * Creates instance of this class with concrete package name and type name
+     * for already normalized identifier
+     *
+     * @param packageName
+     *            string with the package name
+     * @param name
+     *            string with the name for referenced type
+     * @param isNormalized
+     *            indicates if identifier name is normalized
+     */
+    public ReferencedTypeImpl(String packageName, String name, boolean isNormalized) {
+        super(packageName, name, isNormalized);
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
