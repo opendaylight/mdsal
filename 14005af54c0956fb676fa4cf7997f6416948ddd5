@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_4c5f0e0f",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/GeneratorJavaFile.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-10T17:15:38Z",
+      "side": 1,
+      "message": "use a Splitter",
+      "range": {
+        "startLine": 119,
+        "startChar": 37,
+        "endLine": 119,
+        "endChar": 62
+      },
+      "revId": "14005af54c0956fb676fa4cf7997f6416948ddd5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_ac9b1ac8",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/GeneratorJavaFile.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-10T17:15:38Z",
+      "side": 1,
+      "message": "Preconditions.checkState()",
+      "range": {
+        "startLine": 173,
+        "startChar": 0,
+        "endLine": 175,
+        "endChar": 13
+      },
+      "revId": "14005af54c0956fb676fa4cf7997f6416948ddd5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_2caf2ae5",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/GeneratorJavaFile.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-04-10T17:15:38Z",
+      "side": 1,
+      "message": "this *just* fits into the 120 columnt limit.",
+      "range": {
+        "startLine": 179,
+        "startChar": 25,
+        "endLine": 180,
+        "endChar": 24
+      },
+      "revId": "14005af54c0956fb676fa4cf7997f6416948ddd5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
