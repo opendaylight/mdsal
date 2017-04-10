@@ -14,23 +14,29 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 
-public class NonJavaCharsConverterTest {
+public class JavaIdentifierNormalizerTest {
+
+    @Test
+    public void specialWordsTest(){
+        String normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package", "QName");
+        assertEquals("QName", normalizeIdentifier);
+    }
 
     /**
      * This test tests normalizing of enum and interface identifiers too.
      */
     @Test
     public void sameClassNamesSamePackageTest() {
-        String normalizeIdentifier1 = NonJavaCharsConverter.normalizeClassIdentifier("org.example.same.package", "Foo");
-        String normalizeIdentifier2 = NonJavaCharsConverter.normalizeClassIdentifier("org.example.same.package", "fOo");
+        String normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package", "Foo");
+        String normalizeIdentifier2 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package", "fOo");
         final String normalizeIdentifier3 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.same.package", "foo");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package", "foo");
         assertEquals(normalizeIdentifier1, "Foo");
         assertEquals(normalizeIdentifier2, "Foo1");
         assertEquals(normalizeIdentifier3, "Foo2");
 
-        normalizeIdentifier1 = NonJavaCharsConverter.normalizeClassIdentifier("org.example.same.package", "*");
-        normalizeIdentifier2 = NonJavaCharsConverter.normalizeClassIdentifier("org.example.same.package", "asterisk");
+        normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package", "*");
+        normalizeIdentifier2 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package", "asterisk");
         assertEquals(normalizeIdentifier1, "Asterisk");
         assertEquals(normalizeIdentifier2, "Asterisk1");
     }
@@ -41,18 +47,18 @@ public class NonJavaCharsConverterTest {
     @Test
     public void sameClassNamesOtherPackageTest() {
         String normalizeIdentifier1 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.other.package", "Foo");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package", "Foo");
         String normalizeIdentifier2 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.other.package.next", "fOo");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package.next", "fOo");
         final String normalizeIdentifier3 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.other.package.next.next", "foo");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package.next.next", "foo");
         assertEquals(normalizeIdentifier1, "Foo");
         assertEquals(normalizeIdentifier2, "Foo");
         assertEquals(normalizeIdentifier3, "Foo");
 
-        normalizeIdentifier1 = NonJavaCharsConverter.normalizeClassIdentifier("org.example.other.package", "*");
+        normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package", "*");
         normalizeIdentifier2 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.other.package.next", "asterisk");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package.next", "asterisk");
         assertEquals(normalizeIdentifier1, "Asterisk");
         assertEquals(normalizeIdentifier2, "Asterisk");
     }
@@ -63,11 +69,11 @@ public class NonJavaCharsConverterTest {
     @Test
     public void sameClassNamesSamePackageReservedWordsTest() {
         final String normalizeIdentifier1 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.keywords.same.package", "int");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.same.package", "int");
         final String normalizeIdentifier2 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.keywords.same.package", "InT");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.same.package", "InT");
         final String normalizeIdentifier3 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.keywords.same.package", "inT");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.same.package", "inT");
         assertEquals(normalizeIdentifier1, "IntReservedKeyword");
         assertEquals(normalizeIdentifier2, "IntReservedKeyword1");
         assertEquals(normalizeIdentifier3, "IntReservedKeyword2");
@@ -79,11 +85,11 @@ public class NonJavaCharsConverterTest {
     @Test
     public void sameClassNamesOtherPackageReservedWordsTest() {
         final String normalizeIdentifier1 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.keywords.other.package", "int");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package", "int");
         final String normalizeIdentifier2 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.keywords.other.package.next", "InT");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package.next", "InT");
         final String normalizeIdentifier3 =
-                NonJavaCharsConverter.normalizeClassIdentifier("org.example.keywords.other.package.next.next", "inT");
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package.next.next", "inT");
         assertEquals(normalizeIdentifier1, "IntReservedKeyword");
         assertEquals(normalizeIdentifier2, "IntReservedKeyword");
         assertEquals(normalizeIdentifier3, "IntReservedKeyword");
@@ -293,7 +299,7 @@ public class NonJavaCharsConverterTest {
     }
 
     private void testPackageReservedKeyword(final String reservedKeyword) {
-        final String packageNameNormalizer = NonJavaCharsConverter.normalizePackageNamePart(reservedKeyword);
+        final String packageNameNormalizer = JavaIdentifierNormalizer.normalizePartPackageName(reservedKeyword);
         final StringBuilder expected = new StringBuilder(reservedKeyword).append('_');
         assertEquals(expected.toString().toLowerCase(), packageNameNormalizer);
     }
@@ -302,7 +308,7 @@ public class NonJavaCharsConverterTest {
     public void digitAtStartTest() {
         for (int i = 0; i < 10; i++) {
             final String str_i = String.valueOf(i);
-            final String packageNameNormalizer = NonJavaCharsConverter.normalizePackageNamePart(str_i);
+            final String packageNameNormalizer = JavaIdentifierNormalizer.normalizePartPackageName(str_i);
             final String expected = Character.getName(str_i.charAt(0)).replaceAll(" ", "").toLowerCase();
             assertEquals(expected.toString(), packageNameNormalizer);
         }
@@ -323,7 +329,7 @@ public class NonJavaCharsConverterTest {
     }
 
     private void dashTest(final String tested, final String expected) {
-        final String actual = NonJavaCharsConverter.normalizePackageNamePart(tested);
+        final String actual = JavaIdentifierNormalizer.normalizePartPackageName(tested);
         assertEquals(expected, actual);
     }
 
@@ -349,14 +355,14 @@ public class NonJavaCharsConverterTest {
     }
 
     private void normalizePackageNameTest(final String tested, final Object expected) {
-        final String packageNameNormalizer = NonJavaCharsConverter.normalizePackageNamePart(tested);
+        final String packageNameNormalizer = JavaIdentifierNormalizer.normalizePartPackageName(tested);
         assertEquals(expected, packageNameNormalizer);
     }
 
     private void assertTest(final String testedIdentifier, final String acceptable,
             final JavaIdentifier javaTypeOfIdentifier) {
         final String convertedIdentifier =
-                NonJavaCharsConverter.convertIdentifier(testedIdentifier, javaTypeOfIdentifier);
+                JavaIdentifierNormalizer.normalizeSpecificIdentifier(testedIdentifier, javaTypeOfIdentifier);
         assertNotNull(convertedIdentifier);
         assertTrue(!convertedIdentifier.isEmpty());
         assertEquals(acceptable, convertedIdentifier);
@@ -414,7 +420,7 @@ public class NonJavaCharsConverterTest {
     }
 
     private void testRealPackageNameExample(final String tested, final String expected) {
-        final String actual = NonJavaCharsConverter.convertFullPackageName(tested);
+        final String actual = JavaIdentifierNormalizer.normalizeFullPackageName(tested);
         assertEquals(expected, actual);
     }
 }
