@@ -135,7 +135,7 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     }
 
     void write(final YangInstanceIdentifier path, final NormalizedNode<?, ?> data) {
-        SimpleCursorOperation.DELETE.apply(getCursor(), toRelative(path), data);
+        SimpleCursorOperation.WRITE.apply(getCursor(), toRelative(path), data);
     }
 
     private YangInstanceIdentifier toRelative(final YangInstanceIdentifier path) {
