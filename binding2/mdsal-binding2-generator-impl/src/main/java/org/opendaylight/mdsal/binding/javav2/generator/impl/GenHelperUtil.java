@@ -35,7 +35,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
-import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
@@ -431,7 +431,7 @@ final class GenHelperUtil {
         }
         sb.append(notificationInterface.getName());
 
-        listenerInterface.addMethod(NonJavaCharsConverter.convertIdentifier(sb.toString(), JavaIdentifier.METHOD))
+        listenerInterface.addMethod(JavaIdentifierNormalizer.normalizeSpecificIdentifier(sb.toString(), JavaIdentifier.METHOD))
                 .setAccessModifier(AccessModifier.PUBLIC).addParameter(notificationInterface, "notification")
                 .setComment(encodeAngleBrackets(notification.getDescription())).setReturnType(Types.VOID);
         return listenerInterface;

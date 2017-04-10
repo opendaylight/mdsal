@@ -15,7 +15,7 @@ import java.math.BigInteger;
 import java.util.Map;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
-import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -211,7 +211,8 @@ public final class BaseYangTypes {
 
         @Override
         public String getParamNameFromType(final TypeDefinition<?> type) {
-            return NonJavaCharsConverter.convertIdentifier(type.getQName().getLocalName(), JavaIdentifier.METHOD);
+            return JavaIdentifierNormalizer.normalizeSpecificIdentifier(type.getQName().getLocalName(),
+                    JavaIdentifier.METHOD);
         }
     };
 
