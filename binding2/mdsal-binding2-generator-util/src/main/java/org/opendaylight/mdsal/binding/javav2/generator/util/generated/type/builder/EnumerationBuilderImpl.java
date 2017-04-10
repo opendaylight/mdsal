@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.generator.util.AbstractBaseType;
-import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
@@ -121,7 +121,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
                 final String reference, final Status status, final List<Pair> values) {
 
             this.name = name;
-            this.mappedName = NonJavaCharsConverter.convertIdentifierEnumValue(name, values);
+            this.mappedName = JavaIdentifierNormalizer.normalizeEnumValueIdentifier(name, values);
             this.value = value;
             this.description = description;
             this.reference = reference;
