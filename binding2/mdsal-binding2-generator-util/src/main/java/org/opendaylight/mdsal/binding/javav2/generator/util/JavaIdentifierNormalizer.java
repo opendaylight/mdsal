@@ -9,25 +9,29 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 import java.util.List;
+import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration.Pair;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 
 /**
- * This util class converts every non-java char in identifier to java char by its unicode name
- * (<a href="http://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-3.8">JAVA SE
- * SPEFICIATIONS - Identifiers</a>). There are special types of mapping non-java chars to original
- * identifiers according to specific {@linkplain JavaIdentifier java type}:
+ * This util class converts every non-java char in identifier to java char by
+ * its unicode name (<a href=
+ * "http://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-3.8">JAVA SE
+ * SPECIFICATIONS - Identifiers</a>). There are special types of mapping
+ * non-java chars to original identifiers according to specific
+ * {@linkplain JavaIdentifier java type}:
  * <ul>
  * <li>class, enum, interface</li>
  * <li>
  * <ul>
  * <li>without special separator</li>
- * <li>the first character of identifier, any other first character of identifier part mapped by
- * non-Java char name from unicode and char in identifier behind non-java char name are converting
- * to upper case</li>
+ * <li>the first character of identifier, any other first character of
+ * identifier part mapped by non-Java char name from unicode and char in
+ * identifier behind non-java char name are converting to upper case</li>
  * <li>examples:</li>
  * <li>
  * <ul>
@@ -67,8 +71,9 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
  * <ul>
  * <li>without special separator</li>
  * <li>the first character of identifier is converting to lower case</li>
- * <li>any other first character of identifier part mapped by non-Java char name from unicode and
- * char in identifier behind non-java char name are converting to upper case</li>
+ * <li>any other first character of identifier part mapped by non-Java char name
+ * from unicode and char in identifier behind non-java char name are converting
+ * to upper case</li>
  * <li>examples:</li>
  * <li>
  * <ul>
@@ -83,19 +88,19 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
  * </li>
  * </ul>
  * </li>
- * <li>package - full package name
- * (<a href="https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html"> Naming a
- * package</a>)</li>
+ * <li>package - full package name (<a href=
+ * "https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html">
+ * Naming a package</a>)</li>
  * <li>
  * <li>
  * <ul>
  * <li>parts of package name are separated by dots</li>
  * <li>parts of package name are converting to lower case</li>
- * <li>if parts of package name are reserved Java or Windows keywords, such as 'int' the suggested
- * convention is to add an underscore to keyword</li>
- * <li>dash is parsed as underscore according to
- * <a href="https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html"> Naming a
- * package</a></li>
+ * <li>if parts of package name are reserved Java or Windows keywords, such as
+ * 'int' the suggested convention is to add an underscore to keyword</li>
+ * <li>dash is parsed as underscore according to <a href=
+ * "https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html">
+ * Naming a package</a></li>
  * <li>examples:</li>
  * <li>
  * <ul>
@@ -113,10 +118,11 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
  * </li>
  * </ul>
  *
- * There is special case in CLASS, INTERFACE, ENUM, ENUM VALUE, CONSTANT, METHOD and VARIABLE if
- * identifier contains single dash - then the converter ignores the single dash in the way of the
- * non-java chars. In other way, if dash is the first or the last char in the identifier or there is
- * more dashes in a row in the identifier, then these dashes are converted as non-java chars.
+ * There is special case in CLASS, INTERFACE, ENUM, ENUM VALUE, CONSTANT, METHOD
+ * and VARIABLE if identifier contains single dash - then the converter ignores
+ * the single dash in the way of the non-java chars. In other way, if dash is
+ * the first or the last char in the identifier or there is more dashes in a row
+ * in the identifier, then these dashes are converted as non-java chars.
  * Example:
  * <ul>
  * <li>class, enum, interface</li>
@@ -148,19 +154,22 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
  * </li>
  * </ul>
  *
- * Next special case talks about normalizing class name which already exists in package - but with
- * different camel cases (foo, Foo, fOo, ...). To every next classes with same names will by added
- * their actual rank (serial number), except the first one. This working for CLASS, ENUM and
- * INTEFACE java identifiers. If there exist the same ENUM VALUES in ENUM (with different camel
- * cases), then it's parsed with same logic like CLASSES, ENUMS and INTERFACES but according to list
- * of pairs of their ENUM parent. Example:
+ * Next special case talks about normalizing class name which already exists in
+ * package - but with different camel cases (foo, Foo, fOo, ...). To every next
+ * classes with same names will by added their actual rank (serial number),
+ * except the first one. This working for CLASS, ENUM and INTEFACE java
+ * identifiers. If there exist the same ENUM VALUES in ENUM (with different
+ * camel cases), then it's parsed with same logic like CLASSES, ENUMS and
+ * INTERFACES but according to list of pairs of their ENUM parent. Example:
  *
  * <ul>
  * <li>class, enum, interface</li>
  * <li>
  * <ul>
- * <li>package name org.example, class (or interface or enum) Foo - normalized to Foo
- * <li>package name org.example, class (or interface or enum) fOo - normalized to Foo1
+ * <li>package name org.example, class (or interface or enum) Foo - normalized
+ * to Foo
+ * <li>package name org.example, class (or interface or enum) fOo - normalized
+ * to Foo1
  * </ul>
  * </li>
  * <li>enum value</li>
@@ -176,13 +185,14 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
  * </pre>
  *
  * </li>
- * <li>YANG enum values will be mapped to 'FOO' and 'FOO_1' Java enum values.</li>
+ * <li>YANG enum values will be mapped to 'FOO' and 'FOO_1' Java enum
+ * values.</li>
  * </ul>
  * </li>
  * </ul>
  */
 @Beta
-public final class NonJavaCharsConverter {
+public final class JavaIdentifierNormalizer {
 
     private static final int FIRST_CHAR = 0;
     private static final int FIRST_INDEX = 1;
@@ -191,8 +201,9 @@ public final class NonJavaCharsConverter {
     private static final String EMPTY_STRING = "";
     private static final String RESERVED_KEYWORD = "reserved_keyword";
     private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
+    public static final Set<String> SPECIAL_RESERVED_WORDS = ImmutableSet.of("QName");
 
-    private NonJavaCharsConverter() {
+    private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");
     }
 
@@ -222,7 +233,7 @@ public final class NonJavaCharsConverter {
      *            - list of all actual enum values
      * @return converted and fixed name of new enum value
      */
-    public static String convertIdentifierEnumValue(final String name, final List<Pair> values) {
+    public static String normalizeEnumValueIdentifier(final String name, final List<Pair> values) {
         return convertIdentifierEnumValue(name, name, values, FIRST_INDEX);
     }
 
@@ -233,11 +244,11 @@ public final class NonJavaCharsConverter {
      *            - full package name
      * @return normalized name
      */
-    public static String convertFullPackageName(final String fullPackageName) {
+    public static String normalizeFullPackageName(final String fullPackageName) {
         final String[] packageNameParts = fullPackageName.split("\\.");
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < packageNameParts.length; i++) {
-            sb.append(NonJavaCharsConverter.normalizePackageNamePart(packageNameParts[i]));
+            sb.append(normalizePartialPackageName(packageNameParts[i]));
             if (i != (packageNameParts.length - 1)) {
                 sb.append(".");
             }
@@ -252,7 +263,7 @@ public final class NonJavaCharsConverter {
      *            - part of package name
      * @return normalized name
      */
-    public static String normalizePackageNamePart(final String packageNamePart) {
+    public static String normalizePartialPackageName(final String packageNamePart) {
         // if part of package name consist from java or windows reserved word, return it with
         // underscore at the end and in lower case
         if (BindingMapping.JAVA_RESERVED_WORDS.contains(packageNamePart.toLowerCase())
@@ -268,7 +279,7 @@ public final class NonJavaCharsConverter {
         for (int i = 0; i < normalizedPackageNamePart.length(); i++) {
             if (normalizedPackageNamePart.charAt(i) == UNDERSCORE) {
                 if (!innserSb.toString().isEmpty()) {
-                    sb.append(convertIdentifier(innserSb.toString(), JavaIdentifier.PACKAGE));
+                    sb.append(normalizeSpecificIdentifier(innserSb.toString(), JavaIdentifier.PACKAGE));
                     innserSb = new StringBuilder();
                 }
                 sb.append(UNDERSCORE);
@@ -277,7 +288,7 @@ public final class NonJavaCharsConverter {
             }
         }
         if (!innserSb.toString().isEmpty()) {
-            sb.append(convertIdentifier(innserSb.toString(), JavaIdentifier.PACKAGE));
+            sb.append(normalizeSpecificIdentifier(innserSb.toString(), JavaIdentifier.PACKAGE));
         }
         // returned normalized part of package name
         return sb.toString();
@@ -297,37 +308,8 @@ public final class NonJavaCharsConverter {
      * @return - java acceptable identifier
      */
     public static String normalizeClassIdentifier(final String packageName, final String className) {
-        final String convertedClassName = convertIdentifier(className, JavaIdentifier.CLASS);
+        final String convertedClassName = normalizeSpecificIdentifier(className, JavaIdentifier.CLASS);
         return normalizeClassIdentifier(packageName, convertedClassName, convertedClassName, FIRST_INDEX);
-    }
-
-    /**
-     * Checking while there doesn't exist any class name with the same name (regardless of camel
-     * cases) in package.
-     *
-     * @param packageName
-     *            - package of class name
-     * @param origClassName
-     *            - original class name
-     * @param actualClassName
-     *            - actual class name with rank (serial number)
-     * @param rank
-     *            - actual rank (serial number)
-     * @return converted identifier
-     */
-    private static String normalizeClassIdentifier(final String packageName, final String origClassName,
-            final String actualClassName, final int rank) {
-        if (PACKAGES_MAP.containsKey(packageName)) {
-            for (final String existingName : PACKAGES_MAP.get(packageName)) {
-                if (existingName.toLowerCase().equals(actualClassName.toLowerCase())) {
-                    final int nextRank = rank + 1;
-                    return normalizeClassIdentifier(packageName, origClassName,
-                            new StringBuilder(origClassName).append(rank).toString(), nextRank);
-                }
-            }
-        }
-        PACKAGES_MAP.put(packageName, actualClassName);
-        return actualClassName;
     }
 
     /**
@@ -340,7 +322,11 @@ public final class NonJavaCharsConverter {
      *            - java type of identifier
      * @return - java acceptable identifier
      */
-    public static String convertIdentifier(final String identifier, final JavaIdentifier javaIdentifier) {
+    public static String normalizeSpecificIdentifier(final String identifier, final JavaIdentifier javaIdentifier) {
+        if (SPECIAL_RESERVED_WORDS.contains(identifier)) {
+            return identifier;
+        }
+
         final StringBuilder sb = new StringBuilder();
 
         // if identifier isn't PACKAGE type then check it by reserved keywords
@@ -384,6 +370,35 @@ public final class NonJavaCharsConverter {
         }
         // apply camel case in appropriate way
         return fixCasesByJavaType(sb.toString().replace("__", "_").toLowerCase(), javaIdentifier);
+    }
+
+    /**
+     * Checking while there doesn't exist any class name with the same name
+     * (regardless of camel cases) in package.
+     *
+     * @param packageName
+     *            - package of class name
+     * @param origClassName
+     *            - original class name
+     * @param actualClassName
+     *            - actual class name with rank (serial number)
+     * @param rank
+     *            - actual rank (serial number)
+     * @return converted identifier
+     */
+    private static String normalizeClassIdentifier(final String packageName, final String origClassName,
+            final String actualClassName, final int rank) {
+        if (PACKAGES_MAP.containsKey(packageName)) {
+            for (final String existingName : PACKAGES_MAP.get(packageName)) {
+                if (existingName.toLowerCase().equals(actualClassName.toLowerCase())) {
+                    final int nextRank = rank + 1;
+                    return normalizeClassIdentifier(packageName, origClassName,
+                            new StringBuilder(origClassName).append(rank).toString(), nextRank);
+                }
+            }
+        }
+        PACKAGES_MAP.put(packageName, actualClassName);
+        return actualClassName;
     }
 
     /**
@@ -509,6 +524,6 @@ public final class NonJavaCharsConverter {
                 newName = convertIdentifierEnumValue(actualNameBuilder.toString(), origName, values, ++actualRank);
             }
         }
-        return convertIdentifier(newName, JavaIdentifier.ENUM_VALUE);
+        return normalizeSpecificIdentifier(newName, JavaIdentifier.ENUM_VALUE);
     }
 }
