@@ -42,8 +42,8 @@ public abstract class AbstractBaseType implements Type {
     protected AbstractBaseType(final String pkName, final String name) {
         Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
         Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
-        this.packageName = NonJavaCharsConverter.convertFullPackageName(pkName);
-        this.name = NonJavaCharsConverter.normalizeClassIdentifier(pkName, name);
+        this.packageName = JavaIdentifierNormalizer.normalizeFullPackageName(pkName);
+        this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name);
     }
 
     /**
@@ -65,8 +65,8 @@ public abstract class AbstractBaseType implements Type {
             this.packageName = pkName;
             this.name = name;
         } else {
-            this.packageName = NonJavaCharsConverter.convertFullPackageName(pkName);
-            this.name = NonJavaCharsConverter.normalizeClassIdentifier(pkName, name);
+            this.packageName = JavaIdentifierNormalizer.normalizeFullPackageName(pkName);
+            this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name);
         }
     }
 

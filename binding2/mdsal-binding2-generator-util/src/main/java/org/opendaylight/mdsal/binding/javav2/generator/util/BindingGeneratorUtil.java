@@ -172,9 +172,9 @@ public final class BindingGeneratorUtil {
                 sb.append(basePackageName)
                   .append('.')
                   .append(namespaceType.getPackagePrefix());
-                return NonJavaCharsConverter.convertFullPackageName(sb.toString());
+                return JavaIdentifierNormalizer.normalizeFullPackageName(sb.toString());
             }
-            return NonJavaCharsConverter.convertFullPackageName(basePackageName);
+            return JavaIdentifierNormalizer.normalizeFullPackageName(basePackageName);
         }
 
         return generateNormalizedPackageName(basePackageName, pathFromRoot, size, namespaceType);
@@ -372,7 +372,7 @@ public final class BindingGeneratorUtil {
             final String nodeLocalName = iterator.next().getLocalName();
             builder.append(nodeLocalName);
         }
-        final String normalizedPackageName = NonJavaCharsConverter.convertFullPackageName(builder.toString());
+        final String normalizedPackageName = JavaIdentifierNormalizer.normalizeFullPackageName(builder.toString());
         // Prevent duplication of input
         PACKAGE_INTERNER.intern(normalizedPackageName);
         return normalizedPackageName;
