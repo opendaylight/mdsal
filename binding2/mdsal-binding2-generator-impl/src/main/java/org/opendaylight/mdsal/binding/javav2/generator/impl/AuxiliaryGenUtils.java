@@ -30,7 +30,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForN
 import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
-import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
@@ -160,7 +160,7 @@ final class AuxiliaryGenUtils {
         }
         // underscore used as separator for distinction of method parts in convertIdentifier()
         method.append('_').append(localName);
-        return NonJavaCharsConverter.convertIdentifier(method.toString(), JavaIdentifier.METHOD);
+        return JavaIdentifierNormalizer.normalizeSpecificIdentifier(method.toString(), JavaIdentifier.METHOD);
     }
 
     static String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName,
@@ -530,7 +530,7 @@ final class AuxiliaryGenUtils {
         final String leafName = leaf.getQName().getLocalName();
         final String leafDesc = encodeAngleBrackets(leaf.getDescription());
         final GeneratedPropertyBuilder propBuilder =
-                toBuilder.addProperty(NonJavaCharsConverter.convertIdentifier(leafName, JavaIdentifier.METHOD));
+                toBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafName, JavaIdentifier.METHOD));
         propBuilder.setReadOnly(isReadOnly);
         propBuilder.setReturnType(returnType);
         propBuilder.setComment(leafDesc);

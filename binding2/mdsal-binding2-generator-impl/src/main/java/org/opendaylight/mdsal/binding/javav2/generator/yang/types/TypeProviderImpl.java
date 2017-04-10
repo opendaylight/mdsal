@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
-import org.opendaylight.mdsal.binding.javav2.generator.util.NonJavaCharsConverter;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
@@ -317,7 +317,7 @@ public final class TypeProviderImpl implements TypeProvider {
             for (final Bit bit : bitList) {
                 final String name = bit.getName();
                 genPropertyBuilder =
-                        genTOBuilder.addProperty(NonJavaCharsConverter.convertIdentifier(name, JavaIdentifier.METHOD));
+                        genTOBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(name, JavaIdentifier.METHOD));
                 genPropertyBuilder.setReadOnly(true);
                 genPropertyBuilder.setReturnType(BaseYangTypes.BOOLEAN_TYPE);
 
@@ -457,7 +457,7 @@ public final class TypeProviderImpl implements TypeProvider {
             final String basePackageName = BindingMapping.getRootPackageName(module);
             final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typeDefinition
                     .getPath(), BindingNamespaceType.Typedef);
-            final String genTOName = NonJavaCharsConverter.normalizeClassIdentifier(packageName, typedefName);
+            final String genTOName = JavaIdentifierNormalizer.normalizeClassIdentifier(packageName, typedefName);
             final String name = packageName + "." + genTOName;
             if (!(returnType.getFullyQualifiedName().equals(name))) {
                 returnType = shadedTOWithRestrictions(gto, r);
@@ -781,7 +781,7 @@ public final class TypeProviderImpl implements TypeProvider {
         final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, identity.getPath
                 (), BindingNamespaceType.Typedef);
         final String genTypeName =
-                NonJavaCharsConverter.normalizeClassIdentifier(packageName, identity.getQName().getLocalName());
+                JavaIdentifierNormalizer.normalizeClassIdentifier(packageName, identity.getQName().getLocalName());
 
         final Type baseType = Types.typeForClass(Class.class);
         final Type paramType = Types.wildcardTypeFor(packageName, genTypeName);
@@ -854,7 +854,7 @@ public final class TypeProviderImpl implements TypeProvider {
     private static void updateUnionTypeAsProperty(final GeneratedTOBuilder unionGenTransObject, final Type type, final String propertyName) {
         if (unionGenTransObject != null && type != null && !unionGenTransObject.containsProperty(propertyName)) {
             final GeneratedPropertyBuilder propBuilder = unionGenTransObject
-                    .addProperty(NonJavaCharsConverter.convertIdentifier(propertyName, JavaIdentifier.METHOD));
+                    .addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(propertyName, JavaIdentifier.METHOD));
             propBuilder.setReturnType(type);
 
             unionGenTransObject.addEqualsIdentity(propBuilder);
@@ -896,7 +896,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
         final GeneratedPropertyBuilder propertyBuilder;
         propertyBuilder = parentUnionGenTOBuilder
-                .addProperty(NonJavaCharsConverter.convertIdentifier(newTOBuilderName, JavaIdentifier.METHOD));
+                .addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(newTOBuilderName, JavaIdentifier.METHOD));
         propertyBuilder.setReturnType(subUnionGenTOBUilders.get(0));
         parentUnionGenTOBuilder.addEqualsIdentity(propertyBuilder);
         parentUnionGenTOBuilder.addToStringProperty(propertyBuilder);
