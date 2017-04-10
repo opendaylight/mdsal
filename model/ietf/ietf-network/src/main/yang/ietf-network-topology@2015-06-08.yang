@@ -4,10 +4,10 @@ module ietf-network-topology {
   prefix lnk;
 
   import ietf-inet-types {
-    prefix inet;
+    prefix inet; revision-date "2013-07-15";
   }
   import ietf-network {
-    prefix nd;
+    prefix nd; revision-date "2015-06-08";
   }
 
   organization "TBD";
