@@ -115,13 +115,16 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
         Optional<ClassToInstanceMap<Augmentation<?>>> optional = getAugmentations(bean);
         if (optional.isPresent()) {
             StringBuilder sb = new StringBuilder();
-            optional.get().forEach((klass, augmentation) -> {
-                sb.append("addAugmentation(");
-                sb.append(stringify(klass));
-                sb.append(", ");
-                sb.append(getNewBeanExpression(augmentation));
-                sb.append(")");
-            });
+            optional.get().entrySet().stream()
+                // We sort the augmentations by Class type, because the Map has unpredictable order:
+                .sorted((e1, e2) -> e1.getKey().getName().compareTo(e2.getKey().getName()))
+                .forEachOrdered(e -> {
+                    sb.append("addAugmentation(");
+                    sb.append(stringify(e.getKey()));
+                    sb.append(", ");
+                    sb.append(getNewBeanExpression(e.getValue()));
+                    sb.append(")");
+                });
             return sb;
         } else {
             return "";
