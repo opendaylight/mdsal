@@ -70,7 +70,7 @@ module yang-template-test {
 
     list simple-list-more-arg-in-unique {
         key "simple-list-leaf-1";
-        unique "simple-list-leaf-2 simple-list-leaf-1";
+        unique "simple-list-leaf-1 simple-list-leaf-2";
         leaf simple-list-leaf-1 {
             type string;
         }
@@ -92,13 +92,13 @@ module yang-template-test {
     }
 
     choice simple-choice {
-        case simple-case-2 {
-            leaf simple-case-2-leaf {
+        case simple-case-1 {
+            leaf simple-case-1-leaf {
                 type string;
             }
         }
-        case simple-case-1 {
-            leaf simple-case-1-leaf {
+        case simple-case-2 {
+            leaf simple-case-2-leaf {
                 type string;
             }
         }
