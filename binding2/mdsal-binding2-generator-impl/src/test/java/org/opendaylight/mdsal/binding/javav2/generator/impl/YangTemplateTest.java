@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import static org.junit.Assert.assertTrue;
+
 import com.google.common.annotations.Beta;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
