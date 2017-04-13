@@ -61,6 +61,7 @@ class YangModuleInfoTemplate {
 
     def String generate() {
         val body = '''
+            @SuppressWarnings("all")
             public final class «MODULE_INFO_CLASS_NAME» implements «YangModuleInfo.importedName» {
 
                 private static final «YangModuleInfo.importedName» INSTANCE = new «MODULE_INFO_CLASS_NAME»();
@@ -91,6 +92,7 @@ class YangModuleInfoTemplate {
         '''
             package «packageName»;
 
+            @SuppressWarnings("all")
             public final class «MODEL_BINDING_PROVIDER_CLASS_NAME» implements «YangModelBindingProvider.name» {
 
                 public «YangModuleInfo.name» getModuleInfo() {
@@ -302,6 +304,7 @@ class YangModuleInfoTemplate {
 
     private def generateSubInfo(Module module) '''
         «FOR submodule : module.submodules»
+            @SuppressWarnings("all")
             private static final class «getClassName(submodule.name)»Info implements «YangModuleInfo.importedName» {
 
                 private static final «YangModuleInfo.importedName» INSTANCE = new «getClassName(submodule.name)»Info();

@@ -67,6 +67,7 @@ public @{if (isInnerCLass) " static final "
 else if(genType.isAbstract) " abstract "
 else " "
 }
+@@SuppressWarnings("all")
 class @{genType.getName}
 @if(genTo.getSuperType != null) { extends @{importedNames.get("genTypeSuper")}}
 @if(!implementsList.isEmpty) { implements @{implementsList}}

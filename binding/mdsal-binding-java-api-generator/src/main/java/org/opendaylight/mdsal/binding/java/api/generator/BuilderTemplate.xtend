@@ -217,6 +217,7 @@ class BuilderTemplate extends BaseTemplate {
      */
     override body() '''
         «wrapToDocumentation(formatDataForJavaDoc(type))»
+        @SuppressWarnings("all")
         public class «type.name»«BUILDER» implements «BUILDERFOR» <«type.importedName»> {
 
             «generateFields(false)»
@@ -237,6 +238,7 @@ class BuilderTemplate extends BaseTemplate {
                 return new «type.name»«IMPL»(this);
             }
 
+            @SuppressWarnings("all")
             private static final class «type.name»«IMPL» implements «type.name» {
 
                 «implementedInterfaceGetter»
