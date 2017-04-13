@@ -32,6 +32,7 @@ ImportedNamesWithProperties: Map[GeneratedProperty, String], augmentField: Gener
 getterMethods: List[String], parentTypeForBuilderName: String)
 @if(genType != null) {
 @{wrapToDocumentation(formatDataForJavaDocBuilder(importedNames.get("genType")))}
+@@SuppressWarnings("all")
 public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{importedNames.get("genType")}> {
 
     @generateFields(false)
@@ -53,6 +54,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
         return new @{genType.getName}Impl(this);
     }
 
+    @@SuppressWarnings("all")
     private static final class @{genType.getName}Impl implements @{genType.getName} {
 
         @implementedInterfaceGetter()
