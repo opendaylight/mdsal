@@ -21,6 +21,7 @@ generatedConstants: String, innerClasses: String)
 @if(genType != null) {
 @{wrapToDocumentation(formatDataForJavaDoc(genType))}
 @{annotations}
+@SuppressWarnings("all")
 public interface @{genType.getName}
     @if(!generatedImports.isEmpty){extends @{generatedImports}}
 {

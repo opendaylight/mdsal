@@ -16,6 +16,7 @@
 @(genType: GeneratedTransferObject, typeName: String, importedNames: Map[String, String], generatedParameters: Map[String, String])
 @if(genType != null) {
 @{wrapToDocumentation(formatDataForJavaDoc(genType, getClarification))}
+@SuppressWarnings("all")
 public class @{typeName} {
     @for(method <- genType.getMethodDefinitions) {
         @{getAccessModifier(method.getAccessModifier)}
