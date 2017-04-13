@@ -12,6 +12,7 @@
 @(packageName: String, yangModelBindingProviderName: String, yangModuleInfoName: String)
 package @{packageName};
 
+@@SuppressWarnings("all")
 public final class @{MODEL_BINDING_PROVIDER_CLASS_NAME} implements @{yangModelBindingProviderName} {
 
     @@Override
