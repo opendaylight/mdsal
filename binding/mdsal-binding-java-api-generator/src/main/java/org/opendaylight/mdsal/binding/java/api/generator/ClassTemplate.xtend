@@ -379,6 +379,7 @@ class ClassTemplate extends BaseTemplate {
      * @return string with class declaration in JAVA format
      */
     def protected generateClassDeclaration(boolean isInnerClass) '''
+        @SuppressWarnings("all")
         public«
         IF (isInnerClass)»«
             " static final "»«
