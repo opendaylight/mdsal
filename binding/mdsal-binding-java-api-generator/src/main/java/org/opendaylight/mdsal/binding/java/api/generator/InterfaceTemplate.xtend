@@ -66,6 +66,7 @@ class InterfaceTemplate extends BaseTemplate {
      */
     override body() '''
         «wrapToDocumentation(formatDataForJavaDoc(type))»
+        @SuppressWarnings("all")
         «type.annotations.generateAnnotations»
         public interface «type.name»
             «superInterfaces»

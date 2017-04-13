@@ -19,6 +19,7 @@
 
 @(module: Module, ctx: SchemaContext, importedNames: Map[String, String])
 @if(module != null && ctx != null) {
+@@SuppressWarnings("all")
 public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yangModuleInfo")} {
 
     private static final @{importedNames.get("yangModuleInfo")} INSTANCE = new @{MODULE_INFO_CLASS_NAME}();
@@ -40,6 +41,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
 
 @generateSubInfo(module: Module) = {
 @for(submodule <- module.getSubmodules) {
+    @@SuppressWarnings("all")
     private static final class @{normalizeSpecificIdentifier(submodule.getName, CLASS)}Info implements @{importedNames.get("yangModuleInfo")} {
 
         private static final @{importedNames.get("yangModuleInfo")} INSTANCE = new @{normalizeSpecificIdentifier(submodule.getName, CLASS)}Info();
