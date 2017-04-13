@@ -26,6 +26,7 @@ class UnionBuilderTemplate extends ClassTemplate {
 
     def override body() '''
         «wrapToDocumentation(formatDataForJavaDoc(type, getClarification()))»
+        @SuppressWarnings("all")
         public class «type.name» {
 
             «generateMethods»

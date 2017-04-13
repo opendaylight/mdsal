@@ -15,6 +15,7 @@
 @(genType: GeneratedType, importedName: String)
 @if(genType != null) {
 @{wrapToDocumentation(formatDataForJavaDoc(genType))}
+@@SuppressWarnings("all")
 public enum @{genType.getName} {
 @{writeEnumeration(genType.asInstanceOf[Enumeration])}
 
