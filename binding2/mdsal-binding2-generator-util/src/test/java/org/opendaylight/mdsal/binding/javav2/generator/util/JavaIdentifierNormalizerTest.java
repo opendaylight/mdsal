@@ -17,9 +17,64 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 public class JavaIdentifierNormalizerTest {
 
     @Test
-    public void specialWordsTest(){
-        String normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package", "QName");
+    public void specialPathsTest() {
+        // QName - reserved & non reserved
+        String normalizeIdentifier =
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.opendaylight.yangtools.yang.common", "QName");
         assertEquals("QName", normalizeIdentifier);
+        // again reserved
+        normalizeIdentifier =
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.opendaylight.yangtools.yang.common", "QName");
+        assertEquals("QName", normalizeIdentifier);
+        // non reserved
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("qname.non.reserved", "QName");
+        assertEquals("Qname", normalizeIdentifier);
+        // again non reserved
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("qname.non.reserved", "QName");
+        assertEquals("Qname1", normalizeIdentifier);
+
+        // Augmentable - reserved & non reserved
+        normalizeIdentifier = JavaIdentifierNormalizer
+                .normalizeClassIdentifier("org.opendaylight.mdsal.binding.javav2.spec.structural", "Augmentable");
+        assertEquals("Augmentable", normalizeIdentifier);
+        // again reserved
+        normalizeIdentifier = JavaIdentifierNormalizer
+                .normalizeClassIdentifier("org.opendaylight.mdsal.binding.javav2.spec.structural", "Augmentable");
+        assertEquals("Augmentable", normalizeIdentifier);
+        // non reserved
+        normalizeIdentifier = JavaIdentifierNormalizer
+                .normalizeClassIdentifier("augmentable.non.reserved", "Augmentable");
+        assertEquals("Augmentable", normalizeIdentifier);
+        // again non reserved
+        normalizeIdentifier =
+                JavaIdentifierNormalizer.normalizeClassIdentifier("augmentable.non.reserved", "Augmentable");
+        assertEquals("Augmentable1", normalizeIdentifier);
+
+        // List - reserved & non reserved
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.util", "List");
+        assertEquals("List", normalizeIdentifier);
+        // again reserved
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.util", "List");
+        assertEquals("List", normalizeIdentifier);
+        // non reserved
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("list.non.reserved", "List");
+        assertEquals("List", normalizeIdentifier);
+        // again non reserved
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("list.non.reserved", "List");
+        assertEquals("List1", normalizeIdentifier);
+
+        // String - reserved & non reserved
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.lang", "String");
+        assertEquals("String", normalizeIdentifier);
+        // again reserved
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.lang", "String");
+        assertEquals("String", normalizeIdentifier);
+        // non reserved
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("string.non.reserved", "String");
+        assertEquals("String", normalizeIdentifier);
+        // again non reserved
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("string.non.reserved", "String");
+        assertEquals("String1", normalizeIdentifier);
     }
 
     /**
