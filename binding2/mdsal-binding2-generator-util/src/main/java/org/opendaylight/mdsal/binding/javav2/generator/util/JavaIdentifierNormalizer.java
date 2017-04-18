@@ -201,7 +201,9 @@ public final class JavaIdentifierNormalizer {
     private static final String EMPTY_STRING = "";
     private static final String RESERVED_KEYWORD = "reserved_keyword";
     private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
-    public static final Set<String> SPECIAL_RESERVED_WORDS = ImmutableSet.of("QName");
+    public static final Set<String> SPECIAL_RESERVED_PATHS =
+            ImmutableSet.of("org.opendaylight.yangtools.yang.common", "org.opendaylight.mdsal.binding.javav2.spec",
+                    "java", "com");
 
     private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");
@@ -308,6 +310,11 @@ public final class JavaIdentifierNormalizer {
      * @return - java acceptable identifier
      */
     public static String normalizeClassIdentifier(final String packageName, final String className) {
+        for (final String reservedPath : SPECIAL_RESERVED_PATHS) {
+            if (packageName.startsWith(reservedPath)) {
+                return className;
+            }
+        }
         final String convertedClassName = normalizeSpecificIdentifier(className, JavaIdentifier.CLASS);
         return normalizeClassIdentifier(packageName, convertedClassName, convertedClassName, FIRST_INDEX);
     }
@@ -323,10 +330,6 @@ public final class JavaIdentifierNormalizer {
      * @return - java acceptable identifier
      */
     public static String normalizeSpecificIdentifier(final String identifier, final JavaIdentifier javaIdentifier) {
-        if (SPECIAL_RESERVED_WORDS.contains(identifier)) {
-            return identifier;
-        }
-
         final StringBuilder sb = new StringBuilder();
 
         // if identifier isn't PACKAGE type then check it by reserved keywords
