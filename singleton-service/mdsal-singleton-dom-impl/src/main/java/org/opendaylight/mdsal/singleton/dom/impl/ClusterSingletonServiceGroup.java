@@ -70,7 +70,7 @@ interface ClusterSingletonServiceGroup<P extends Path<P>, E extends GenericEntit
      *
      * @param ownershipChange change role for ClusterSingletonServiceGroup
      */
-    void ownershipChanged(final C ownershipChange);
+    void ownershipChanged(C ownershipChange);
 
     /**
      * Closes this service group. All registered service providers are also closed. Please be careful

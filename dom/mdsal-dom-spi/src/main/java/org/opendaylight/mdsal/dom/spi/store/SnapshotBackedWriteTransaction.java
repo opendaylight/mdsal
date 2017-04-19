@@ -188,7 +188,7 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
          *
          * @param tx Transaction which got aborted.
          */
-        protected abstract void transactionAborted(final SnapshotBackedWriteTransaction<T> tx);
+        protected abstract void transactionAborted(SnapshotBackedWriteTransaction<T> tx);
 
         /**
          * Returns a commit coordinator associated with supplied transactions.

@@ -76,7 +76,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher
             return;
         }
 
-        try (final RegistrationTreeSnapshot<AbstractDOMDataTreeChangeListenerRegistration<?>> snapshot
+        try (RegistrationTreeSnapshot<AbstractDOMDataTreeChangeListenerRegistration<?>> snapshot
                 = takeSnapshot()) {
             final List<PathArgument> toLookup = ImmutableList.copyOf(candidate.getRootPath().getPathArguments());
             final Multimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges =
