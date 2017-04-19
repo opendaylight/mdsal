@@ -19,11 +19,11 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
  */
 public interface RpcProviderService {
 
-    <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(final Class<S> type,
-            final T implementation);
+    <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(Class<S> type,
+            T implementation);
 
 
-    <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(final Class<S> type,
-            final T implementation, final Set<InstanceIdentifier<?>> paths);
+    <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(Class<S> type,
+            T implementation, Set<InstanceIdentifier<?>> paths);
 
 }

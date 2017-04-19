@@ -73,8 +73,8 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      *         {@link TransactionCommitFailedException}.
      */
     protected abstract CheckedFuture<Void,TransactionCommitFailedException> submit(
-            final DOMDataTreeWriteTransaction transaction,
-            final Collection<DOMStoreThreePhaseCommitCohort> cohorts);
+            DOMDataTreeWriteTransaction transaction,
+            Collection<DOMStoreThreePhaseCommitCohort> cohorts);
 
     /**
      * Creates a new composite read-only transaction.
@@ -155,7 +155,7 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
         for (final Entry<LogicalDatastoreType, T> store : storeTxFactories.entrySet()) {
             txns.put(store.getKey(), store.getValue().newWriteOnlyTransaction());
         }
-        return new DOMForwardedWriteTransaction<DOMStoreWriteTransaction>(newTransactionIdentifier(), txns, this);
+        return new DOMForwardedWriteTransaction<>(newTransactionIdentifier(), txns, this);
     }
 
     /**

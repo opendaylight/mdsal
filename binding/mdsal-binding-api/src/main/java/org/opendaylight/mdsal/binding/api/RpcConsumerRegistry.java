@@ -7,8 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.api;
 
-
-
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
 /**

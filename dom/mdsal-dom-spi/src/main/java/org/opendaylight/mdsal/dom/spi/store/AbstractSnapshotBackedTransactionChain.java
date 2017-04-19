@@ -145,7 +145,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
         do {
             entry = getSnapshot();
-            ret = new SnapshotBackedReadWriteTransaction<T>(transactionId,
+            ret = new SnapshotBackedReadWriteTransaction<>(transactionId,
                     getDebugTransactions(), entry.getValue(), this);
         } while (!recordTransaction(entry.getKey(), ret));
 
@@ -163,7 +163,7 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
         do {
             entry = getSnapshot();
-            ret = new SnapshotBackedWriteTransaction<T>(transactionId,
+            ret = new SnapshotBackedWriteTransaction<>(transactionId,
                     getDebugTransactions(), entry.getValue(), this);
         } while (!recordTransaction(entry.getKey(), ret));
 
@@ -286,5 +286,5 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
      * @return A {@link DOMStoreThreePhaseCommitCohort} cohort.
      */
     protected abstract DOMStoreThreePhaseCommitCohort createCohort(
-            final SnapshotBackedWriteTransaction<T> transaction, final DataTreeModification modification);
+            SnapshotBackedWriteTransaction<T> transaction, DataTreeModification modification);
 }

@@ -415,7 +415,7 @@ public class ShardedDOMDataTreeTest {
         final InMemoryDOMDataTreeShard outerListShard = InMemoryDOMDataTreeShard.create(OUTER_LIST_ID, executor, 1, 1);
         outerListShard.onGlobalContextUpdated(schemaContext);
 
-        try (final DOMDataTreeProducer producer =
+        try (DOMDataTreeProducer producer =
                      dataTreeService.createProducer(Collections.singletonList(OUTER_LIST_ID))) {
             dataTreeService.registerDataTreeShard(OUTER_LIST_ID, outerListShard, producer);
         }
