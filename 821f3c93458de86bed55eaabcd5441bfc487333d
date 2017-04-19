@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_76b433d1",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMForwardedWriteTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 491
+      },
+      "writtenOn": "2017-04-19T18:36:41Z",
+      "side": 1,
+      "message": "Let\u0027s wait on the relaxation patch to be merged, coming from a C background I do like \u0027while\u0027 on the same line as the right curly better.",
+      "revId": "821f3c93458de86bed55eaabcd5441bfc487333d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
