@@ -118,7 +118,8 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction> extends
         Future<?> future;
         do {
             future = commitFuture;
-        } while (future == null);
+        }
+        while (future == null);
 
         return future.cancel(false);
     }

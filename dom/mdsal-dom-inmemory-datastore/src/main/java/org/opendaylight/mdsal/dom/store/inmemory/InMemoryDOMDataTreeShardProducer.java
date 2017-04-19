@@ -124,7 +124,8 @@ class InMemoryDOMDataTreeShardProducer implements DOMDataTreeShardProducer {
         do {
             localState = state;
             ret = parentShard.createTransaction(transactionId, this, localState.getSnapshot(transactionId));
-        } while (!STATE_UPDATER.compareAndSet(this, localState, new Allocated(ret)));
+        }
+        while (!STATE_UPDATER.compareAndSet(this, localState, new Allocated(ret)));
 
         return ret;
     }

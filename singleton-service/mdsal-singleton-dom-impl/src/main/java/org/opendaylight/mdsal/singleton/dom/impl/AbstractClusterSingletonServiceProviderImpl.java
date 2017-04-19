@@ -157,7 +157,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
      * @param entityOwnershipServiceInst - EOS type
      * @return instance of EntityOwnershipListenerRegistration
      */
-    protected abstract R registerListener(final String entityType, final S entityOwnershipServiceInst);
+    protected abstract R registerListener(String entityType, S entityOwnershipServiceInst);
 
     /**
      * Creates an extended {@link GenericEntity} instance.
@@ -166,7 +166,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
      * @param entityIdentifier the identifier of the entity
      * @return instance of Entity extended GenericEntity type
      */
-    protected abstract E createEntity(final String entityType, final String entityIdentifier);
+    protected abstract E createEntity(String entityType, String entityIdentifier);
 
     /**
      * Method is responsible for parsing ServiceGroupIdentifier from E entity.
@@ -174,7 +174,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
      * @param entity instance of GenericEntity type
      * @return ServiceGroupIdentifier parsed from entity key value.
      */
-    protected abstract String getServiceIdentifierFromEntity(final E entity);
+    protected abstract String getServiceIdentifierFromEntity(E entity);
 
     /**
      * Method is called async. from close method in end of Provider lifecycle.

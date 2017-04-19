@@ -61,7 +61,7 @@ public abstract class AbstractDOMDataTreeServiceTestSuite {
     @Test
     public final void testBasicProducer() throws DOMDataTreeProducerException, TransactionCommitFailedException {
         // Create a producer. It is an AutoCloseable resource, hence the try-with pattern
-        try (final DOMDataTreeProducer prod =
+        try (DOMDataTreeProducer prod =
                 service().createProducer(Collections.singleton(UNORDERED_CONTAINER_TREE))) {
             assertNotNull(prod);
 
