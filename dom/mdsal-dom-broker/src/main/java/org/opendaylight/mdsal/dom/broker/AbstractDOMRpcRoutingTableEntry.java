@@ -115,8 +115,8 @@ abstract class AbstractDOMRpcRoutingTableEntry {
         return v.isEmpty() ? null : newInstance(v);
     }
 
-    protected abstract CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final NormalizedNode<?, ?> input);
+    protected abstract CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(NormalizedNode<?, ?> input);
 
     protected abstract AbstractDOMRpcRoutingTableEntry newInstance(
-            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls);
+            Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls);
 }

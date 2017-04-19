@@ -145,9 +145,10 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
         do {
             entry = getSnapshot();
-            ret = new SnapshotBackedReadWriteTransaction<T>(transactionId,
+            ret = new SnapshotBackedReadWriteTransaction<>(transactionId,
                     getDebugTransactions(), entry.getValue(), this);
-        } while (!recordTransaction(entry.getKey(), ret));
+        }
+        while (!recordTransaction(entry.getKey(), ret));
 
         return ret;
     }
@@ -163,9 +164,10 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
 
         do {
             entry = getSnapshot();
-            ret = new SnapshotBackedWriteTransaction<T>(transactionId,
+            ret = new SnapshotBackedWriteTransaction<>(transactionId,
                     getDebugTransactions(), entry.getValue(), this);
-        } while (!recordTransaction(entry.getKey(), ret));
+        }
+        while (!recordTransaction(entry.getKey(), ret));
 
         return ret;
     }
@@ -216,7 +218,8 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
                 LOG.debug("Ignoring user close in failed state");
                 return;
             }
-        } while (!STATE_UPDATER.compareAndSet(this, localState, CLOSED));
+        }
+        while (!STATE_UPDATER.compareAndSet(this, localState, CLOSED));
     }
 
     /**
@@ -286,5 +289,5 @@ public abstract class AbstractSnapshotBackedTransactionChain<T>
      * @return A {@link DOMStoreThreePhaseCommitCohort} cohort.
      */
     protected abstract DOMStoreThreePhaseCommitCohort createCohort(
-            final SnapshotBackedWriteTransaction<T> transaction, final DataTreeModification modification);
+            SnapshotBackedWriteTransaction<T> transaction, DataTreeModification modification);
 }
