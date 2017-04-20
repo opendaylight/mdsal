@@ -68,7 +68,7 @@ else if(genType.isAbstract) " abstract "
 else " "
 }
 class @{genType.getName}
-@if(genTo.getSuperType != null) { extends @{importedNames.get("genTypeSuper")}}
+@if(genTo.getSuperType != null) { extends @{importedNames.get("superType")}}
 @if(!implementsList.isEmpty) { implements @{implementsList}}
 }
 

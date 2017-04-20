@@ -71,8 +71,7 @@ public final class GeneratorJavaFile {
         generators.add(new EnumGenerator());
         generators.add(new InterfaceGenerator());
         generators.add(new BuilderGenerator());
-        //TODO: finish generators below
-//        generators.add(new TOGenerator());
+        generators.add(new TOGenerator());
     }
 
     /**

@@ -80,8 +80,8 @@ public class ClassRenderer extends BaseRenderer {
         Collections.sort(sorted, function);
         allProperties = ImmutableList.copyOf(sorted);
 
-        if (restrictions != null && !(restrictions.getRangeConstraints() != null && !restrictions.getLengthConstraints
-                ().isEmpty())) {
+        if (restrictions != null && (restrictions.getRangeConstraints() != null && !restrictions.getRangeConstraints()
+                .isEmpty())) {
             rangeGenerator = AbstractRangeGenerator.forType(findProperty(genType, "value").getReturnType());
             Preconditions.checkNotNull(rangeGenerator);
         } else {
@@ -127,7 +127,6 @@ public class ClassRenderer extends BaseRenderer {
     }
 
     protected String generateBody(final boolean isInnerClass) {
-        importedNames.put("genTypeSuper", importedName(genTO.getSuperType()));
         importedNames.put("type", importedName(getType()));
         importedNames.put("arrays", importedName(Arrays.class));
         importedNames.put("objects", importedName(Objects.class));
@@ -254,7 +253,7 @@ public class ClassRenderer extends BaseRenderer {
         final String propertyMethod = sb3.toString();
 
         return classTemplate.render(getType(), genTO, importedNames, implementsList, innerClasses, enumerations,
-                constants, constructors, lengthRangeChecker, fields, (List) allProperties, propertyMethod,
+                constants, constructors, lengthRangeChecker, fields, allProperties, propertyMethod,
                 isInnerClass).body();
     }
 
@@ -282,7 +281,7 @@ public class ClassRenderer extends BaseRenderer {
         final String unionConstructor = sb2.toString();
 
         final String argumentsDeclaration = asArgumentsDeclaration(allProperties);
-        return classTemplateConstructors.render(genTO, (List) allProperties, properties, parentProperties,
+        return classTemplateConstructors.render(genTO, allProperties, properties, parentProperties,
                 importedNames, argumentsDeclaration, unionConstructor, genRestrictions).body();
     }
 
