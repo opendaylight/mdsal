@@ -276,6 +276,9 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
 
         @Override
         public Optional<String> getDescription() {
+            if (description == null) {
+                return Optional.absent();
+            }
             return Optional.of(description);
         }
 
