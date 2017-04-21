@@ -30,7 +30,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.TypeMember;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
-public class TextTemplateUtil {
+public final class TextTemplateUtil {
 
     public static final String DOT = ".";
     public static final String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
@@ -46,7 +46,7 @@ public class TextTemplateUtil {
     private static final Splitter NL_SPLITTER = Splitter.on(NL_MATCHER);
 
     private TextTemplateUtil() {
-        throw new AssertionError("Instantiating utility class.");
+        throw new UnsupportedOperationException("Util class");
     }
 
     /**
