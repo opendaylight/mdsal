@@ -343,33 +343,39 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     @if(properties != null) {
         @@Override
         public @{importedNames.get("string")} toString() {
-            @{importedNames.get("stringBuilder")} builder = new @{importedNames.get("stringBuilder")} ("@{genType.getName} [");
-            boolean first = true;
-            @for(property <- properties) {
+            @{importedNames.get("string")} name = "@{genType.getName} [";
+            @{importedNames.get("stringBuilder")} builder = new @{importedNames.get("stringBuilder")}(name);
+            @for((property, index) <- properties.zipWithIndex) {
                 if (@{fieldName(property)} != null) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        builder.append(", ");
-                    }
                     builder.append("@{fieldName(property)}=");
                     @if(property.getReturnType.getName.contains("[")) {
                         builder.append(@{importedNames.get("arrays")}.toString(@{fieldName(property)}));
                     } else {
                         builder.append(@{fieldName(property)});
                     }
+                    @if(properties.size() > 1 && index < properties.size()-1){
+                        builder.append(", ");
+                    }
                 }
             }
             @if(augmentField != null) {
-                if (first) {
-                    first = false;
-                } @{"else"} {
-                    builder.append(", ");
+                @if(!properties.isEmpty()){
+                    final int builderLength = builder.length();
+                    final int builderAdditionalLength = builder.substring(name.length(), builderLength).length();
+                    if (builderAdditionalLength > 2 && !builder.substring(builderLength - 2, builderLength).equals(", ")) {
+                        builder.append(", ");
+                    }
                 }
                 builder.append("@{augmentField.getName}=");
                 builder.append(@{augmentField.getName}.values());
+                return builder.append(']').toString();
+            } else {
+                @if(properties.isEmpty()){
+                    return builder.append(']').toString();
+                } else {
+                    return builder.append(']').toString();
+                }
             }
-            return builder.append(']').toString();
         }
     }
 }
