@@ -8,6 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.maven.api.gen.plugin;
 
+import static org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer.normalizeFullPackageName;
+import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.getRootPackageName;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -160,7 +163,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         String providerSource = template.generateModelProvider();
 
         final File packageDir = GeneratorJavaFile.packageToDirectory(outputBaseDir,
-                BindingMapping.getRootPackageName(module));
+                normalizeFullPackageName(getRootPackageName(module)));
 
         generatedFiles.add(writeJavaSource(packageDir, BindingMapping.MODULE_INFO_CLASS_NAME, moduleInfoSource));
         generatedFiles

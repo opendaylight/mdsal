@@ -202,8 +202,8 @@ public final class JavaIdentifierNormalizer {
     private static final String RESERVED_KEYWORD = "reserved_keyword";
     private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
     public static final Set<String> SPECIAL_RESERVED_PATHS =
-            ImmutableSet.of("org.opendaylight.yangtools.yang.common", "org.opendaylight.mdsal.binding.javav2.spec",
-                    "java", "com");
+            ImmutableSet.of("org.opendaylight.yangtools.yang.model","org.opendaylight.yangtools.concepts","org.opendaylight.yangtools.yang.common",
+                    "org.opendaylight.mdsal.binding.javav2.spec","java", "com");
 
     private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");

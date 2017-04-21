@@ -8,6 +8,7 @@
 
 @import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier.CLASS
 @import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer.normalizeSpecificIdentifier
+@import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer.normalizeFullPackageName
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.getFormattedRevision
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.getSourcePath
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers.YangModuleInfoTemplateRenderer.getSortedQName
@@ -24,6 +25,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
 
     private final @{importedNames.get("string")} name = "@{module.getName}";
     private final @{importedNames.get("string")} namespace = "@{module.getNamespace.toString}";
+    private final @{importedNames.get("string")} semanticVersion = "@{module.getSemanticVersion}";
     private final @{importedNames.get("string")} revision = "@{getFormattedRevision(module.getRevision)}";
     private final @{importedNames.get("string")} resourcePath = "@{getSourcePath(module)}";
     private final @{importedNames.get("set")}<YangModuleInfo> importedModules;
@@ -43,6 +45,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
         private static final @{importedNames.get("yangModuleInfo")} INSTANCE = new @{normalizeSpecificIdentifier(submodule.getName, CLASS)}Info();
 
         private final @{importedNames.get("string")} name = "@{submodule.getName}";
+        private final @{importedNames.get("string")} semanticVersion = "@{submodule.getSemanticVersion}";
         private final @{importedNames.get("string")} namespace = "@{submodule.getNamespace.toString}";
         private final @{importedNames.get("string")} revision = "@{getFormattedRevision(submodule.getRevision)}";
         private final @{importedNames.get("string")} resourcePath = "@{getSourcePath(submodule)}";
@@ -65,9 +68,11 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
         @if(!module.getImports.isEmpty) {
             @for(moduleImport <- module.getImports) {
                 @if(moduleImport.getRevision == null) {
-                    set.add(@{getRootPackageName(getSortedQName(ctx.getModules, moduleImport.getModuleName))}.@{MODULE_INFO_CLASS_NAME}.getInstance());
+                    set.add(@{normalizeFullPackageName(getRootPackageName(getSortedQName(ctx.getModules, moduleImport
+                    .getModuleName)))}.@{MODULE_INFO_CLASS_NAME}.getInstance());
                 } else {
-                    set.add(@{getRootPackageName(ctx.findModuleByName(moduleImport.getModuleName, moduleImport.getRevision))}.@{MODULE_INFO_CLASS_NAME}.getInstance());
+                    set.add(@{normalizeFullPackageName(getRootPackageName(ctx.findModuleByName(moduleImport
+                    .getModuleName, moduleImport.getRevision)))}.@{MODULE_INFO_CLASS_NAME}.getInstance());
                 }
             }
         }
@@ -76,7 +81,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
                 set.add(@{normalizeSpecificIdentifier(submodule.getName, CLASS)}Info.getInstance());
             }
         }
-        @if(!module.getImports.isEmpty && !module.getSubmodules.isEmpty) {
+        @if(module.getImports.isEmpty && module.getSubmodules.isEmpty) {
             importedModules = @{importedNames.get("collections")}.emptySet();
         } else {
             importedModules = @{importedNames.get("immutableSet")}.copyOf(set);
@@ -109,16 +114,18 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
     }
 
     @@Override
-    public @{importedNames.get("inputStream")} getModuleSourceStream() throws IOException {
-        @{importedNames.get("inputStream")} stream = @{MODULE_INFO_CLASS_NAME}.class.getResourceAsStream(resourcePath);
-        if (stream == null) {
-            throw new @{importedNames.get("iOException")}("Resource " + resourcePath + " is missing");
-        }
-        return stream;
+    public @{importedNames.get("optional")}<@{importedNames.get("semVer")}> getSemanticVersion() {
+        return Optional.of(@{importedNames.get("semVer")}.valueOf(semanticVersion));
     }
 
     @@Override
-    public @{importedNames.get("set")}<@{importedNames.get("YangModuleInfo")}> getImportedModules() {
+    public @{importedNames.get("schemaSourceRepresentation")} getModuleSourceRepresentation() {
+        //TODO implement
+        return null;
+    }
+
+    @@Override
+    public @{importedNames.get("set")}<@{importedNames.get("yangModuleInfo")}> getImportedModules() {
         return importedModules;
     }
 
@@ -128,6 +135,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
         sb.append("[");
         sb.append("name = " + name);
         sb.append(", namespace = " + namespace);
+        sb.append(", semanticVersion = " + semanticVersion);
         sb.append(", revision = " + revision);
         sb.append(", resourcePath = " + resourcePath);
         sb.append(", imports = " + importedModules);
