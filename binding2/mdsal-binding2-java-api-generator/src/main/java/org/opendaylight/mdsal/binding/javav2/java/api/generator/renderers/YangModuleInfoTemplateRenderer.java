@@ -8,9 +8,11 @@
 
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
+import static org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer.normalizeFullPackageName;
 import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME;
 import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.getRootPackageName;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
@@ -20,7 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -32,8 +33,10 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.WildcardType;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModelBindingProvider;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModuleInfo;
+import org.opendaylight.yangtools.concepts.SemVer;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceRepresentation;
 
 public class YangModuleInfoTemplateRenderer {
 
@@ -42,15 +45,16 @@ public class YangModuleInfoTemplateRenderer {
     private final Map<String, String> importMap = new HashMap<>();
     private final String packageName;
     private final String modelBindingProviderName;
-    private final Function<Module, Optional<String>> moduleFilePathResolver;
+    private final Function<Module, java.util.Optional<String>> moduleFilePathResolver;
 
 
-    public YangModuleInfoTemplateRenderer(final Module module, final SchemaContext ctx, final Function<Module, Optional<String>> moduleFilePathResolver) {
+    public YangModuleInfoTemplateRenderer(final Module module, final SchemaContext ctx, final Function<Module,
+            java.util.Optional<String>> moduleFilePathResolver) {
 
         Preconditions.checkArgument(module != null, "Module must not be null.");
         this.module = module;
         this.ctx = ctx;
-        this.packageName = getRootPackageName(module);
+        this.packageName = normalizeFullPackageName(getRootPackageName(module));
         this.moduleFilePathResolver = moduleFilePathResolver;
 
         final StringBuilder sb = new StringBuilder();
@@ -75,6 +79,9 @@ public class YangModuleInfoTemplateRenderer {
         importedNames.put("inputStream", importedName(InputStream.class));
         importedNames.put("iOException", importedName(IOException.class));
         importedNames.put("yangModuleInfo", importedName(YangModuleInfo.class));
+        importedNames.put("optional", importedName(Optional.class));
+        importedNames.put("semVer", importedName(SemVer.class));
+        importedNames.put("schemaSourceRepresentation", importedName(SchemaSourceRepresentation.class));
 
         return yangModuleInfoTemplate.render(module, ctx, importedNames).body();
     }
@@ -89,7 +96,7 @@ public class YangModuleInfoTemplateRenderer {
         final String templateBody = body();
         sb.append("package ")
             .append(packageName)
-            .append(";\n")
+            .append(";\n\n")
             .append(imports())
             .append(templateBody);
         return sb.toString();
@@ -99,6 +106,7 @@ public class YangModuleInfoTemplateRenderer {
         return modelProviderTemplate.render(packageName, YangModelBindingProvider.class.getName(), YangModuleInfo.class
         .getName()).body();
     }
+
 
     /**
      * walks through map of imports
