@@ -135,6 +135,6 @@ public class InterfaceRenderer extends BaseRenderer {
             strings.add(importedName(parameter));
         }
 
-        return String.join(",", strings);
+        return String.join(", ", strings);
     }
 }
