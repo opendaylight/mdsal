@@ -24,6 +24,7 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGenera
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.Beta;
@@ -389,8 +390,15 @@ final class GenHelperUtil {
         if (parent == null) {
             it.addImplementsType(BindingTypes.TREE_NODE);
         } else {
-            it.addImplementsType(BindingTypes.treeChildNode(parent));
+            if (parent instanceof ListSchemaNode) {
+                it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
+                        (BindingTypes.IDENTIFIABLE_ITEM, parent)));
+            } else {
+                it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
+                        (BindingTypes.ITEM, parent)));
+            }
         }
+
         if (!(schemaNode instanceof GroupingDefinition)) {
             it.addImplementsType(BindingTypes.augmentable(it));
         }
