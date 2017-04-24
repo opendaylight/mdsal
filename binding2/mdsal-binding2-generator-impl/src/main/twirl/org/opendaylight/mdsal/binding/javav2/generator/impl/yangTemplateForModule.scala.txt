@@ -39,10 +39,14 @@
             }
         }
         @if(module.getRevision() != null) {
-            revision @{SimpleDateFormatUtil.getRevisionFormat().format(module.getRevision())} {
-                @for(effectiveStatement <- module.asInstanceOf[EffectiveStatement[_, _]].effectiveSubstatements()){
-                    @if(effectiveStatement.getDeclared().isInstanceOf[RevisionStatement]){
-                        description "@{effectiveStatement.asInstanceOf[DocumentedNode].getDescription()}";
+            @for(effectiveStatement <- module.asInstanceOf[EffectiveStatement[_, _]].effectiveSubstatements()){
+                @if(effectiveStatement.getDeclared().isInstanceOf[RevisionStatement]){
+                    @if(effectiveStatement.asInstanceOf[DocumentedNode].getDescription() == null || effectiveStatement.asInstanceOf[DocumentedNode].getDescription().isEmpty()){
+                        revision @{SimpleDateFormatUtil.getRevisionFormat().format(module.getRevision())};
+                    } else {
+                        revision @{SimpleDateFormatUtil.getRevisionFormat().format(module.getRevision())} {
+                            description "@{effectiveStatement.asInstanceOf[DocumentedNode].getDescription()}";
+                        }
                     }
                 }
             }
