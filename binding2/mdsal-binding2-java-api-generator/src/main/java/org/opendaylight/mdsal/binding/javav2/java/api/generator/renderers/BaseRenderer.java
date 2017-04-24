@@ -84,7 +84,7 @@ public abstract class BaseRenderer {
         final StringBuilder sb = new StringBuilder();
         sb.append("package ")
                 .append(type.getPackageName())
-                .append(";\n");
+                .append(";\n\n");
         return sb.toString();
     }
 

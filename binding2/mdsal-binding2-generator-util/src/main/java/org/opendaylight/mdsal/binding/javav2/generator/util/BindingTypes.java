@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Input;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.KeyedInstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
@@ -43,6 +44,7 @@ public final class BindingTypes {
     public static final ConcreteType INPUT = typeForClass(Input.class);
     public static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
     public static final ConcreteType INSTANTIABLE = typeForClass(Instantiable.class);
+    public static final ConcreteType ITEM = typeForClass(Item.class);
     public static final ConcreteType KEYED_INSTANCE_IDENTIFIER = typeForClass(KeyedInstanceIdentifier.class);
     public static final ConcreteType LIST_ACTION = typeForClass(ListAction.class);
     public static final ConcreteType NOTIFICATION = typeForClass(Notification.class);
@@ -52,8 +54,7 @@ public final class BindingTypes {
     public static final ConcreteType RPC_CALLBACK = typeForClass(RpcCallback.class);
     public static final ConcreteType TREE_NODE = typeForClass(TreeNode.class);
     public static final ConcreteType TREE_ROOT = typeForClass(TreeRoot.class);
-
-    private static final ConcreteType TREE_CHILD_NODE = typeForClass(TreeChildNode.class);
+    public static final ConcreteType TREE_CHILD_NODE = typeForClass(TreeChildNode.class);
 
     private BindingTypes() {
         throw new UnsupportedOperationException("Utility class");
@@ -62,9 +63,4 @@ public final class BindingTypes {
     public static ParameterizedType augmentable(Type t) {
         return parameterizedTypeFor(AUGMENTABLE, t);
     }
-
-    public static ParameterizedType treeChildNode(Type t) {
-        return parameterizedTypeFor(TREE_CHILD_NODE, t);
-    }
-
 }
