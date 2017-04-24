@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
@@ -67,6 +66,28 @@ public class BindingGeneratorImplTest {
             }
         }
         assertEquals(7, test_i[0]);
+    }
+
+    @Test
+    public void generateTypesDescriptionsTest() throws Exception {
+        final BindingGenerator bg = new BindingGeneratorImpl(true);
+        final SchemaContext context = YangParserTestUtils.parseYangSources("/base/with_import/");
+        assertNotNull(context);
+
+        final List<Type> generateTypes = bg.generateTypes(context, context.getModules());
+        assertNotNull(generateTypes);
+        assertTrue(!generateTypes.isEmpty());
+
+        for (final Type type : generateTypes) {
+            if (type.getName().equals("TestData")) {
+                final String description = ((GeneratedType) type).getDescription().get();
+                description
+                        .contains("    import test-import { prefix \"imported-test\"; revision-date 2017-04-21; }\n\n");
+                description.contains("    revision 2017-02-06;\n\n");
+                description.contains("    typedef my-type {\n        type int8;\n    }");
+                description.contains("    container *my-cont {\n    }\n");
+            }
+        }
     }
 
     private void testActualType(final GeneratedType t, final int[] test_i) {
