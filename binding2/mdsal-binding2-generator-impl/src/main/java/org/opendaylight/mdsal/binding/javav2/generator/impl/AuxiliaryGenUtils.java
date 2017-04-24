@@ -32,6 +32,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
+import org.opendaylight.mdsal.binding.javav2.generator.util.YangSnippetCleaner;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
@@ -192,7 +193,8 @@ final class AuxiliaryGenUtils {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(yangTemplateForNode.render(schemaNode, module).body()));
+            String formedYang = YangSnippetCleaner.clean(yangTemplateForNode.render(schemaNode, module).body());
+            sb.append(encodeAngleBrackets(formedYang));
             sb.append("</pre>");
             sb.append(NEW_LINE);
             sb.append("The schema path to identify an instance is");
@@ -242,7 +244,8 @@ final class AuxiliaryGenUtils {
             sb.append(NEW_LINE);
             sb.append("<pre>");
             sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(yangTemplateForModule.render(module).body()));
+            String formedYang = YangSnippetCleaner.clean(yangTemplateForModule.render(module).body());
+            sb.append(encodeAngleBrackets(formedYang));
             sb.append("</pre>");
         }
 
