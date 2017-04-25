@@ -48,6 +48,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 
     @generateSetters()
 
+    @@Override
     public @{genType.getName} build() {
         return new @{genType.getName}Impl(this);
     }
