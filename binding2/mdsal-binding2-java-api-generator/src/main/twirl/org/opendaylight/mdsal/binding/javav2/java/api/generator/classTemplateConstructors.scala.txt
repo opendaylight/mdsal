@@ -15,11 +15,11 @@
 @(genTo: GeneratedTransferObject, allProperties: List[GeneratedProperty], properties: List[GeneratedProperty],
 parentProperties: List[GeneratedProperty], importedNames: Map[String, String], argumentsDeclaration: String,
 unionConstructor: String, genRestrictions: String)
-@if(unionConstructor != null) {
+@if(!unionConstructor.isEmpty) {
 @{unionConstructor}
 } else {
     @if(genTo.isTypedef && !allProperties.isEmpty && allProperties.size == 1 && allProperties.get(0).getName.equals("value")) {
-        @@@{importedNames.get("constructorProperties")}("value")
+    @@@{importedNames.get("constructorProperties")}("value")
     }
     public @{genTo.getName}(@{argumentsDeclaration}) {
         @if(!parentProperties.isEmpty) {
@@ -46,7 +46,7 @@ unionConstructor: String, genRestrictions: String)
                     this.@{fieldName(prop)} = @{fieldName(prop)} == null ? null : @{fieldName(prop)}.clone();
                 }
             } else {
-                this.@{fieldName(prop)} = this.@{fieldName(prop)};
+                this.@{fieldName(prop)} = @{fieldName(prop)};
             }
         }
     }
