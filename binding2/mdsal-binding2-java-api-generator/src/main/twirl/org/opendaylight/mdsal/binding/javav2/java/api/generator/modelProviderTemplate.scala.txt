@@ -14,6 +14,7 @@ package @{packageName};
 
 public final class @{MODEL_BINDING_PROVIDER_CLASS_NAME} implements @{yangModelBindingProviderName} {
 
+    @@Override
     public @{yangModuleInfoName} getModuleInfo() {
         return @{MODULE_INFO_CLASS_NAME}.getInstance();
     }
