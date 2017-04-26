@@ -396,6 +396,7 @@ final class GenHelperUtil {
             } else {
                 it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
                         (BindingTypes.ITEM, parent)));
+                it.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, it));
             }
         }
 
