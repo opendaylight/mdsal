@@ -14,11 +14,11 @@ import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.Text
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSortedSet;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,8 +41,12 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.AugmentationHolder;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
@@ -169,7 +173,7 @@ public class BuilderRenderer extends BaseRenderer {
                             importedNames.put("hashMap", importedName(HashMap.class));
                             importedNames.put("class", importedName(Class.class));
 //                            To do This is for third party, is it needed ?
-//                            importedNames.put("augmentationHolder", importedName(AugmentationHolder.class));
+                            importedNames.put("augmentationHolder", importedName(AugmentationHolder.class));
                             importedNames.put("collections", importedName(Collections.class));
                             importedNames.put("augmentFieldReturnType", importedName(augmentField.getReturnType()));
                         }
@@ -237,12 +241,21 @@ public class BuilderRenderer extends BaseRenderer {
     @Override
     protected String body() {
         importedNames.put("genType", importedName(getType()));
-        importedNames.put("arrays", importedName(Arrays.class));
         importedNames.put("objects", importedName(Objects.class));
         importedNames.put("object", importedName(Object.class));
         importedNames.put("string", importedName(String.class));
         importedNames.put("stringBuilder", importedName(StringBuilder.class));
         importedNames.put("treeNode", importedName(TreeNode.class));
+        importedNames.put("instantiable", importedName(Instantiable.class));
+        importedNames.put("item", importedName(Item.class));
+        if (getType().getParentType() != null) {
+            importedNames.put("parent", importedName(getType().getParentType()));
+        } else {
+            //TODO implement - get module as type
+        }
+        importedNames.put("augmentation", importedName(Augmentation.class));
+        importedNames.put("classInstMap", importedName(ClassToInstanceMap.class));
+
         // list for generate copy constructor
         final String copyConstructorHelper = generateListForCopyConstructor();
         List<String> getterMethods = new ArrayList<>(Collections2.transform(properties, this::getterMethod));
