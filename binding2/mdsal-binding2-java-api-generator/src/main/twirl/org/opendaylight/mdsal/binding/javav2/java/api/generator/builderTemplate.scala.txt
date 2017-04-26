@@ -70,6 +70,8 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
         @generateEquals()
 
         @generateToString()
+
+        @generateImplementedMethods()
     }
 }
 }
@@ -105,7 +107,8 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 }
 
 @implementedInterfaceGetter() = {
-    public @{importedNames.get("class")}<@{importedNames.get("genType")}> getImplementedInterface() {
+    @@Override
+    public @{importedNames.get("class")}<@{importedNames.get("genType")}> implementedInterface() {
     return @{importedNames.get("genType")}.class;
     }
 }
@@ -191,12 +194,27 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     }
 }
 
+@generateImplType() = {
+@defining(genType.getName + "Impl") {typeImpl => @typeImpl}
+}
+
+@generateBuilderType() = {
+@defining(genType.getName + "Builder") {typeBuilder => @typeBuilder}
+}
+
+@generateInnerBuilderType() = {
+@defining("(" + genType.getName + "Builder base)") {typeInnerBuilder => @typeInnerBuilder}
+}
+
+@generateInnerType() = {
+@defining("(" + genType.getName + " base)") {innerType => @innerType}
+}
+
 @generateCopyConstructor(impl: Boolean) = {
     @if(impl) {private} else {public}
-    @{genType.getName}
-    @if(impl) {Impl} else {Builder}
-    (@{genType.getName}
-    @if(impl) {Builder} base) {
+    @if(impl) {@generateImplType()} else {@generateBuilderType()}
+    @if(impl) {@generateInnerBuilderType()} else {@generateInnerType()}
+    {
     @{copyConstructorHelper}
     @if(augmentField != null) {
         @if(impl) {
@@ -299,7 +317,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     @if(augmentField != null) {
         @@SuppressWarnings("unchecked")
         @if(addOverride) {@@Override}
-        public <E extends @{importedNames.get("augmentFieldReturnType")}> E get@{toFirstUpper(augmentField.getName)}
+        public <E extends @{importedNames.get("augmentation")}<? super @{genType.getName}>> E get@{toFirstUpper(augmentField.getName)}
         (@{importedNames.get("class")}<E> augmentationType) {
             if (augmentationType == null) {
                 throw new IllegalArgumentException("Augmentation Type reference cannot be NULL!");
@@ -381,6 +399,21 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     }
 }
 
+@generateImplementedMethods() = {
+        @@Override
+        public @{importedNames.get("item")}<@{genType.getParentType.getName}> treeIdentifier() {
+            //TODO implement
+            return null;
+        }
+
+        @@Override
+        public @{importedNames.get("classInstMap")}<@{importedNames.get("augmentation")}<? super @{genType.getName}>>
+        augments() {
+            //TODO implement
+            return null;
+        }
+}
+
 @generateEquals() = {
     @if(!properties.isEmpty || augmentField != null) {
         @@Override
@@ -391,7 +424,11 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
             if (!(obj instanceof @{importedNames.get("treeNode")})) {
                 return false;
             }
-            if (!@{importedNames.get("genType")}.class.equals(((@{importedNames.get("treeNode")})obj).getImplementedInterface)) {
+            if (!(obj instanceof @{importedNames.get("instantiable")})) {
+                return false;
+            }
+            if (!@{importedNames.get("genType")}.class.equals(((@{importedNames.get("instantiable")})obj)
+            .implementedInterface())) {
                 return false;
             }
             @{importedNames.get("genType")} other = (@{importedNames.get("genType")})obj;
