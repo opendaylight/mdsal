@@ -44,19 +44,22 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
         ServiceTrackerCustomizer<SchemaContextListener, SchemaContextListener>, AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(OsgiBundleScanningSchemaService.class);
 
-    private static AtomicReference<OsgiBundleScanningSchemaService> globalInstance = new AtomicReference<>();
+    private static final AtomicReference<OsgiBundleScanningSchemaService> GLOBAL_INSTANCE = new AtomicReference<>();
 
-    @GuardedBy(value = "lock")
+    private static final long FRAMEWORK_BUNDLE_ID = 0;
+
+    @GuardedBy("lock")
     private final ListenerRegistry<SchemaContextListener> listeners = new ListenerRegistry<>();
     private final YangTextSchemaContextResolver contextResolver = YangTextSchemaContextResolver.create("global-bundle");
     private final BundleScanner scanner = new BundleScanner();
+    private final Object lock = new Object();
     private final BundleContext context;
 
     private ServiceTracker<SchemaContextListener, SchemaContextListener> listenerTracker;
     private BundleTracker<Iterable<Registration>> bundleTracker;
     private boolean starting = true;
+
     private volatile boolean stopping;
-    private final Object lock = new Object();
 
     private OsgiBundleScanningSchemaService(final BundleContext context) {
         this.context = Preconditions.checkNotNull(context);
@@ -64,20 +67,20 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
 
     public static OsgiBundleScanningSchemaService createInstance(final BundleContext ctx) {
         OsgiBundleScanningSchemaService instance = new OsgiBundleScanningSchemaService(ctx);
-        Preconditions.checkState(globalInstance.compareAndSet(null, instance));
+        Preconditions.checkState(GLOBAL_INSTANCE.compareAndSet(null, instance));
         instance.start();
         return instance;
     }
 
     public static OsgiBundleScanningSchemaService getInstance() {
-        OsgiBundleScanningSchemaService instance = globalInstance.get();
+        OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.get();
         Preconditions.checkState(instance != null, "Global Instance was not instantiated");
         return instance;
     }
 
     @VisibleForTesting
     public static void destroyInstance() {
-        OsgiBundleScanningSchemaService instance = globalInstance.getAndSet(null);
+        OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.getAndSet(null);
         if (instance != null) {
             instance.close();
         }
@@ -91,8 +94,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
         checkState(context != null);
         LOG.debug("start() starting");
 
-        listenerTracker = new ServiceTracker<>(context, SchemaContextListener.class,
-                OsgiBundleScanningSchemaService.this);
+        listenerTracker = new ServiceTracker<>(context, SchemaContextListener.class, this);
         bundleTracker = new BundleTracker<>(context, Bundle.RESOLVED | Bundle.STARTING
                 | Bundle.STOPPING | Bundle.ACTIVE, scanner);
 
@@ -101,8 +103,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
 
             LOG.debug("BundleTracker.open() complete");
 
-            boolean hasExistingListeners = Iterables.size(listeners.getListeners()) > 0;
-            if (hasExistingListeners) {
+            if (Iterables.size(listeners.getListeners()) > 0) {
                 tryToUpdateSchemaContext();
             }
         }
@@ -142,22 +143,26 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
 
     @Override
     public void close() {
-        stopping = true;
-        if (bundleTracker != null) {
-            bundleTracker.close();
-        }
-        if (listenerTracker != null) {
-            listenerTracker.close();
-        }
+        synchronized (lock) {
+            stopping = true;
+            if (bundleTracker != null) {
+                bundleTracker.close();
+                bundleTracker = null;
+            }
+            if (listenerTracker != null) {
+                listenerTracker.close();
+                listenerTracker = null;
+            }
 
-        for (final ListenerRegistration<SchemaContextListener> l : listeners.getListeners()) {
-            l.close();
+            for (final ListenerRegistration<SchemaContextListener> l : listeners.getListeners()) {
+                l.close();
+            }
         }
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @VisibleForTesting
-    @GuardedBy(value = "lock")
+    @GuardedBy("lock")
     void notifyListeners(final SchemaContext snapshot) {
         final Object[] services = listenerTracker.getServices();
         for (final ListenerRegistration<SchemaContextListener> listener : listeners) {
@@ -184,7 +189,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
         @Override
         public Iterable<Registration> addingBundle(final Bundle bundle, final BundleEvent event) {
 
-            if (bundle.getBundleId() == 0) {
+            if (bundle.getBundleId() == FRAMEWORK_BUNDLE_ID) {
                 return Collections.emptyList();
             }
 
@@ -215,6 +220,13 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
 
         @Override
         public void modifiedBundle(final Bundle bundle, final BundleEvent event, final Iterable<Registration> object) {
+            if (bundle.getBundleId() == FRAMEWORK_BUNDLE_ID) {
+                LOG.debug("Framework bundle {} got event {}", bundle, event.getType());
+                if ((event.getType() & BundleEvent.STOPPING) != 0) {
+                    LOG.info("OSGi framework is being stopped, halting bundle scanning");
+                    stopping = true;
+                }
+            }
         }
 
         /**
