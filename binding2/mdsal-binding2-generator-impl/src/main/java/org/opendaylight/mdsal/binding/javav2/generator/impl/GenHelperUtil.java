@@ -29,6 +29,7 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormal
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
+import org.opendaylight.mdsal.binding.javav2.generator.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
@@ -225,9 +227,10 @@ final class GenHelperUtil {
 
     static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
             schemaNode, final Module module, final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext,
-                                                              final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+            final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+            final TypeProvider typeProvider) {
         return addDefaultInterfaceDefinition(packageName, schemaNode, null, module, genCtx, schemaContext,
-                verboseClassComments, genTypeBuilders);
+                verboseClassComments, genTypeBuilders, typeProvider);
     }
 
     static Map<Module, ModuleContext> processUsesAugments(final SchemaContext schemaContext, final
@@ -289,13 +292,11 @@ final class GenHelperUtil {
      */
     static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
                 final String basePackageName, final Type targetTypeRef, final AugmentationSchema augSchema,
-                final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx) {
+                final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module,
+                ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments, final
+                TypeProvider typeProvider) {
 
-        Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.get(augmentPackageName);
-        if (augmentBuilders == null) {
-            augmentBuilders = new HashMap<>();
-            genTypeBuilders.put(augmentPackageName, augmentBuilders);
-        }
+        Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.computeIfAbsent(augmentPackageName, k -> new HashMap<>());
         String augIdentifier = getAugmentIdentifier(augSchema.getUnknownSchemaNodes());
 
         if (augIdentifier == null) {
@@ -310,7 +311,7 @@ final class GenHelperUtil {
         augTypeBuilder = addImplementedInterfaceFromUses(augSchema, augTypeBuilder, genCtx);
 
         augTypeBuilder = augSchemaNodeToMethods(module, basePackageName, augTypeBuilder, augTypeBuilder, augSchema
-                .getChildNodes());
+                .getChildNodes(), genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders);
         augmentBuilders.put(augTypeBuilder.getName(), augTypeBuilder);
 
         if(!augSchema.getChildNodes().isEmpty()) {
@@ -344,13 +345,15 @@ final class GenHelperUtil {
      *         added to it.
      */
     private static GeneratedTypeBuilder augSchemaNodeToMethods(final Module module, final String basePackageName,
-            final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf,
-            final Iterable<DataSchemaNode> schemaNodes) {
+            final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf, final Iterable<DataSchemaNode> schemaNodes,
+            final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean
+            verboseClassComments, final TypeProvider typeProvider, final Map<String, Map<String,
+            GeneratedTypeBuilder>> genTypeBuilders) {
         if (schemaNodes != null && typeBuilder != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting()) {
-                    //TODO: design decomposition and implement it
-                    //addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, typeBuilder, childOf, module);
+                    addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, typeBuilder, childOf, module, genCtx,
+                            schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
                 }
             }
         }
@@ -383,7 +386,8 @@ final class GenHelperUtil {
      */
     static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
             schemaNode, final Type parent, final Module module, final Map<Module, ModuleContext> genCtx,
-            final SchemaContext schemaContext, final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+            final SchemaContext schemaContext, final boolean verboseClassComments, final Map<String, Map<String,
+            GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
 
         GeneratedTypeBuilder it = addRawInterfaceDefinition(packageName, schemaNode, schemaContext, "",
                 verboseClassComments, genTypeBuilders);
@@ -404,8 +408,8 @@ final class GenHelperUtil {
         }
 
         if (schemaNode instanceof DataNodeContainer) {
-            //TODO: design decomposition and implement it
-            //groupingsToGenTypes(module, ((DataNodeContainer) schemaNode).getGroupings());
+            groupingsToGenTypes(module, ((DataNodeContainer) schemaNode).getGroupings(), genCtx, schemaContext,
+                    verboseClassComments, genTypeBuilders, typeProvider);
             it = addImplementedInterfaceFromUses((DataNodeContainer) schemaNode, it, genCtx);
         }
 
@@ -422,7 +426,7 @@ final class GenHelperUtil {
 
         final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition
                 (basePackageName, notification, null, module, genCtx, schemaContext,
-                        verboseClassComments, genTypeBuilders);
+                        verboseClassComments, genTypeBuilders, typeProvider);
         annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
         notificationInterface.addImplementsType(NOTIFICATION);
         genCtx.get(module).addChildNodeType(notification, notificationInterface);
@@ -458,7 +462,7 @@ final class GenHelperUtil {
      *            builder belongs
      * @param schemaNode
      *            schema node which provide data about the schema node name
-     * @param schemaContext
+     * @param schemaContext schema context
      * @param prefix
      *            return type name prefix
      * @return generated type builder for <code>schemaNode</code>
@@ -766,7 +770,7 @@ final class GenHelperUtil {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static GeneratedTypeBuilder processDataSchemaNode(final Module module, final String basePackageName,
         final GeneratedTypeBuilder childOf, final DataSchemaNode node, final SchemaContext schemaContext,
-        final boolean verboseClassComments, final Map<Module, ModuleContext> genCtx, final Map<String, Map<String,
+        final boolean verboseClassComments, Map<Module, ModuleContext> genCtx, final Map<String, Map<String,
         GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
 
         if (node.isAugmenting() || node.isAddedByUses()) {
@@ -774,7 +778,7 @@ final class GenHelperUtil {
         }
         final String packageName = packageNameForGeneratedType(basePackageName, node.getPath(), BindingNamespaceType.Data);
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, node, childOf, module,
-                genCtx, schemaContext, verboseClassComments, genTypeBuilders);
+                genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
         genType.addComment(node.getDescription());
         annotateDeprecatedIfNecessary(node.getStatus(), genType);
         genType.setDescription(createDescription(node, genType.getFullyQualifiedName(), schemaContext, verboseClassComments));
@@ -783,11 +787,89 @@ final class GenHelperUtil {
         genType.setSchemaPath((List) node.getPath().getPathFromRoot());
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
-            //TODO: implement groupings to GTO building first
-            // groupingsToGenTypes(module, ((DataNodeContainer) node).getGroupings());
+            genCtx = groupingsToGenTypes(module, ((DataNodeContainer) node).getGroupings(), genCtx, schemaContext,
+                    verboseClassComments, genTypeBuilders, typeProvider);
             processUsesAugments(schemaContext, (DataNodeContainer) node, module, genCtx, genTypeBuilders,
                     verboseClassComments, typeProvider);
         }
         return genType;
+    }
+
+    /**
+     * Converts all <b>groupings</b> of the module to the list of
+     * <code>Type</code> objects. Firstly are groupings sorted according mutual
+     * dependencies. At least dependent (independent) groupings are in the list
+     * saved at first positions. For every grouping the record is added to map
+     * {@link ModuleContext#groupings allGroupings}
+     *
+     * @param module
+     *            current module
+     * @param groupings
+     *            collection of groupings from which types will be generated
+     * @param typeProvider
+     *            provider that defines contract for generated types
+     * @param schemaContext
+     *            schema context
+     * @param genCtx
+     *            map of generated entities in context of YANG modules
+     * @param genTypeBuilders
+     *            map of generated type builders
+     * @param verboseClassComments
+     *            generate verbose comments
+     *
+     */
+    static Map<Module, ModuleContext> groupingsToGenTypes(final Module module, final Collection<GroupingDefinition>
+            groupings, Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean
+            verboseClassComments, Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
+        final String basePackageName = BindingMapping.getRootPackageName(module);
+        final List<GroupingDefinition> groupingsSortedByDependencies = new GroupingDefinitionDependencySort()
+                .sort(groupings);
+        for (final GroupingDefinition grouping : groupingsSortedByDependencies) {
+            genCtx = groupingToGenType(basePackageName, grouping, module, genCtx, schemaContext,
+                    verboseClassComments, genTypeBuilders, typeProvider);
+        }
+        return genCtx;
+    }
+
+    /**
+     * Converts individual grouping to GeneratedType. Firstly generated type
+     * builder is created and every child node of grouping is resolved to the
+     * method.
+     *
+     * @param basePackageName
+     *            string contains the module package name
+     * @param grouping
+     *            GroupingDefinition which contains data about grouping
+     * @param module
+     *            current module
+     * @param typeProvider
+     *            provider that defines contract for generated types
+     * @param schemaContext
+     *            schema context
+     * @param genCtx
+     *            map of generated entities in context of YANG modules
+     * @param genTypeBuilders
+     *            map of generated type builders
+     * @param verboseClassComments
+     *            generate verbose comments
+     *
+     * @return GeneratedType which is generated from grouping (object of type
+     *         <code>GroupingDefinition</code>)
+     */
+    private static Map<Module, ModuleContext> groupingToGenType(final String basePackageName, final GroupingDefinition grouping, final Module
+            module, Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean
+            verboseClassComments, Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
+        final String packageName = packageNameForGeneratedType(basePackageName, grouping.getPath(), BindingNamespaceType.Grouping);
+        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, grouping, module, genCtx,
+                schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
+        annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
+        genCtx.get(module).addGroupingType(grouping.getPath(), genType);
+        resolveDataSchemaNodes(module, basePackageName, genType, genType, grouping.getChildNodes(), genCtx,
+                schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
+        genCtx = groupingsToGenTypes(module, grouping.getGroupings(), genCtx, schemaContext, verboseClassComments,
+                genTypeBuilders, typeProvider);
+        genCtx = processUsesAugments(schemaContext, grouping, module, genCtx, genTypeBuilders, verboseClassComments,
+                typeProvider);
+        return genCtx;
     }
 }
