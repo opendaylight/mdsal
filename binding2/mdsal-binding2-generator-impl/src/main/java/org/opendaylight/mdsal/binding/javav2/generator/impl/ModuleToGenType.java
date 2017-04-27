@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.createDescription;
+import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.groupingsToGenTypes;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.resolveNotification;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION_LISTENER;
@@ -46,11 +47,13 @@ final class ModuleToGenType {
 
         genCtx.put(module, new ModuleContext());
         genCtx = allTypeDefinitionsToGenTypes(module, genCtx, typeProvider);
+        genCtx = groupingsToGenTypes(module, module.getGroupings(), genCtx, schemaContext, verboseClassComments,
+                genTypeBuilders, typeProvider);
         genCtx = actionsAndRPCMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
         genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments, typeProvider);
 
-        //TODO: call generate for other entities (groupings, identities)
+        //TODO: call generate for other entities (identities)
 
         if (!module.getChildNodes().isEmpty()) {
             final GeneratedTypeBuilder moduleType = GenHelperUtil.moduleToDataType(module, genCtx, verboseClassComments);
