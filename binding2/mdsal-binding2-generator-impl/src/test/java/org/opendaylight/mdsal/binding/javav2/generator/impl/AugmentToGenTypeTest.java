@@ -1187,6 +1187,8 @@ public class AugmentToGenTypeTest {
         when(module.getName()).thenReturn("test-module-case");
         final DataSchemaNode schemaNode = mock(DataSchemaNode.class);
         when(module.getDataChildByName(qnamePath)).thenReturn(schemaNode);
+        when(module.getRevision()).thenReturn(qnamePath.getRevision());
+        when(module.getNamespace()).thenReturn(qnamePath.getNamespace());
         final String pckgName = "test.augment.choice.cases";
         final Type targetType = mock(Type.class);
         final Set<DataSchemaNode> augmentNodes = new HashSet<>();
@@ -1242,6 +1244,8 @@ public class AugmentToGenTypeTest {
         final ChoiceCaseNode schemaNode = mock(ChoiceCaseNode.class);
         when(schemaNode.getPath()).thenReturn(path);
         when(module.getDataChildByName(qnamePath)).thenReturn(schemaNode);
+        when(module.getRevision()).thenReturn(qnamePath.getRevision());
+        when(module.getNamespace()).thenReturn(qnamePath.getNamespace());
         final String pckgName = "test.augment.choice.cases";
         final Type targetType = mock(Type.class);
         final Set<DataSchemaNode> augmentNodes = new HashSet<>();
