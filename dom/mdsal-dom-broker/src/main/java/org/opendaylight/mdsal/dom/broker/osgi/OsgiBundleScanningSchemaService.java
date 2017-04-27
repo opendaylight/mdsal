@@ -87,7 +87,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
         return context;
     }
 
-    public void start() {
+    private void start() {
         checkState(context != null);
         LOG.debug("start() starting");
 
