@@ -16,7 +16,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import java.lang.reflect.Method;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,10 +65,7 @@ public class OsgiBundleScanningSchemaServiceTest {
         doNothing().when(schemaContextListener).onGlobalContextUpdated(schemaContext);
         osgiService.registerSchemaContextListener(schemaContextListener);
 
-        final Method schemaContextUpdate =
-                OsgiBundleScanningSchemaService.class.getDeclaredMethod("updateContext", SchemaContext.class);
-        schemaContextUpdate.setAccessible(true);
-        schemaContextUpdate.invoke(osgiService, schemaContext);
+        osgiService.notifyListeners(schemaContext);
 
         osgiService.registerSchemaContextListener(schemaContextListener);
         assertNull(osgiService.getSchemaContext());
