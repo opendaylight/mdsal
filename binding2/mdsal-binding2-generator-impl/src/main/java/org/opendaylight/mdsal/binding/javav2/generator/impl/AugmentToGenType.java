@@ -201,7 +201,7 @@ final class AugmentToGenType {
             final Type targetType = new ReferencedTypeImpl(targetTypeBuilder.getPackageName(),
                     targetTypeBuilder.getName());
             generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName, targetType,
-                    augSchema, genTypeBuilders, generatedCtx);
+                    augSchema, genTypeBuilders, generatedCtx, schemaContext, verboseClassComments, typeProvider);
             return generatedCtx;
 
         } else {
@@ -248,7 +248,8 @@ final class AugmentToGenType {
                         ((SchemaNode) usesNodeParent).getPath());
             }
             generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName,
-                    targetTypeBuilder.toInstance(), augSchema, genTypeBuilders, generatedCtx);
+                    targetTypeBuilder.toInstance(), augSchema, genTypeBuilders, generatedCtx, schemaContext,
+                    verboseClassComments, typeProvider);
             return generatedCtx;
         } else {
             generatedCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, augmentPackageName,
@@ -360,7 +361,7 @@ final class AugmentToGenType {
                 final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
                         caseNode.getPath(), null);
                 final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(packageName,
-                        caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders);
+                        caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
                 caseTypeBuilder.addImplementsType(targetType);
 
                 SchemaNode parent;
