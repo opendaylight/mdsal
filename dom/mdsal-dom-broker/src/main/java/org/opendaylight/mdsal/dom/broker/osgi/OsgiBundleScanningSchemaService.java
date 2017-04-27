@@ -50,6 +50,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     private ServiceTracker<SchemaContextListener, SchemaContextListener> listenerTracker;
     private BundleTracker<Iterable<Registration>> bundleTracker;
     private boolean starting = true;
+    private volatile boolean stopping;
     private static OsgiBundleScanningSchemaService instance;
 
     private OsgiBundleScanningSchemaService(final BundleContext context) {
@@ -128,6 +129,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
 
     @Override
     public void close() {
+        stopping = true;
         if (bundleTracker != null) {
             bundleTracker.close();
         }
@@ -241,7 +243,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     }
 
     public synchronized void tryToUpdateSchemaContext() {
-        if (starting) {
+        if (starting || stopping) {
             return;
         }
         final Optional<SchemaContext> schema = contextResolver.getSchemaContext();
