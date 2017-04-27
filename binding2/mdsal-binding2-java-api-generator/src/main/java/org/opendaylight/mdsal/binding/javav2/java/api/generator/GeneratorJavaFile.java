@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.JavaCodePrettyPrint;
 import org.opendaylight.mdsal.binding.javav2.model.api.CodeGenerator;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -68,10 +69,10 @@ public final class GeneratorJavaFile {
     public GeneratorJavaFile(final BuildContext buildContext, final Collection<? extends Type> types) {
         this.buildContext = Preconditions.checkNotNull(buildContext);
         this.types = Preconditions.checkNotNull(types);
-        generators.add(new EnumGenerator());
-        generators.add(new InterfaceGenerator());
-        generators.add(new BuilderGenerator());
-        generators.add(new TOGenerator());
+        this.generators.add(new EnumGenerator());
+        this.generators.add(new InterfaceGenerator());
+        this.generators.add(new BuilderGenerator());
+        this.generators.add(new TOGenerator());
     }
 
     /**
@@ -90,14 +91,14 @@ public final class GeneratorJavaFile {
     public List<File> generateToFile(final File generatedSourcesDirectory, final File persistentSourcesDirectory)
             throws IOException {
         final List<File> result = new ArrayList<>();
-        for (Type type : types) {
+        for (final Type type : this.types) {
             if (type != null) {
-                for (CodeGenerator generator : generators) {
+                for (final CodeGenerator generator : this.generators) {
                     File generatedJavaFile = null;
                     if (type instanceof GeneratedTransferObject
                             && ((GeneratedTransferObject) type).isUnionTypeBuilder()) {
-                        File packageDir = packageToDirectory(persistentSourcesDirectory, type.getPackageName());
-                        File file = new File(packageDir, generator.getUnitName(type) + ".java");
+                        final File packageDir = packageToDirectory(persistentSourcesDirectory, type.getPackageName());
+                        final File file = new File(packageDir, generator.getUnitName(type) + ".java");
                         if (!file.exists()) {
                             generatedJavaFile = generateTypeToJavaFile(persistentSourcesDirectory, type, generator);
                         }
@@ -188,7 +189,7 @@ public final class GeneratorJavaFile {
         }
 
         if (generator.isAcceptable(type)) {
-            final String generatedCode = generator.generate(type);
+            final String generatedCode = JavaCodePrettyPrint.perform(generator.generate(type));
             Preconditions.checkState(!generatedCode.isEmpty(), "Generated code should not be empty!");
             final File file = new File(packageDir, ((UnitName) generator.getUnitName(type)).getValue() + ".java");
 
@@ -198,12 +199,12 @@ public final class GeneratorJavaFile {
                 return null;
             }
 
-            try (final OutputStream stream = buildContext.newFileOutputStream(file)) {
+            try (final OutputStream stream = this.buildContext.newFileOutputStream(file)) {
                 try (final Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
                     try (final BufferedWriter bw = new BufferedWriter(fw)) {
                         bw.write(generatedCode);
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     LOG.error("Failed to write generate output into {}", file.getPath(), e);
                     throw e;
                 }
