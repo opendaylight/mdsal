@@ -71,7 +71,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 
         @generateToString()
 
-        @generateImplementedMethods()
+        @* @generateImplementedMethods() *@
     }
 }
 }
