@@ -13,21 +13,29 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
+import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
+import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
+import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -41,7 +49,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OsgiBundleScanningSchemaService implements SchemaContextProvider, DOMSchemaService,
-        ServiceTrackerCustomizer<SchemaContextListener, SchemaContextListener>, AutoCloseable {
+        ServiceTrackerCustomizer<SchemaContextListener, SchemaContextListener>, DOMYangTextSourceProvider,
+        AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(OsgiBundleScanningSchemaService.class);
 
     private static final AtomicReference<OsgiBundleScanningSchemaService> GLOBAL_INSTANCE = new AtomicReference<>();
@@ -65,7 +74,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
         this.context = Preconditions.checkNotNull(context);
     }
 
-    public static OsgiBundleScanningSchemaService createInstance(final BundleContext ctx) {
+    public static @Nonnull OsgiBundleScanningSchemaService createInstance(final BundleContext ctx) {
         OsgiBundleScanningSchemaService instance = new OsgiBundleScanningSchemaService(ctx);
         Preconditions.checkState(GLOBAL_INSTANCE.compareAndSet(null, instance));
         instance.start();
@@ -295,5 +304,15 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     public void removedService(final ServiceReference<SchemaContextListener> reference,
             final SchemaContextListener service) {
         context.ungetService(reference);
+    }
+
+    @Override
+    public Map<Class<? extends DOMSchemaServiceExtension>, DOMSchemaServiceExtension> getSupportedExtensions() {
+        return ImmutableMap.of(DOMYangTextSourceProvider.class, this);
+    }
+
+    @Override
+    public ListenableFuture<YangTextSchemaSource> getYangTextSource(final SourceIdentifier sourceIdentifier) {
+        return contextResolver.getSource(sourceIdentifier);
     }
 }
