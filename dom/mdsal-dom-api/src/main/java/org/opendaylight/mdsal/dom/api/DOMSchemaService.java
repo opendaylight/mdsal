@@ -7,12 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 
-public interface DOMSchemaService extends DOMService {
-
+public interface DOMSchemaService extends DOMExtensibleService<DOMSchemaService, DOMSchemaServiceExtension> {
     /**
      * Returns session specific YANG schema context.
      *
@@ -34,4 +35,9 @@ public interface DOMSchemaService extends DOMService {
      * @return Listener registration handle
      */
     ListenerRegistration<SchemaContextListener> registerSchemaContextListener(SchemaContextListener listener);
+
+    @Override
+    default Map<Class<? extends DOMSchemaServiceExtension>, DOMSchemaServiceExtension> getSupportedExtensions() {
+        return ImmutableMap.of();
+    }
 }
