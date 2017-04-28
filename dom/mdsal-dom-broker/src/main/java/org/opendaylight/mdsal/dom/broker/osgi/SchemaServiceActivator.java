@@ -14,8 +14,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 public class SchemaServiceActivator implements BundleActivator {
-
-
     private ServiceRegistration<DOMSchemaService> schemaServiceReg;
     private OsgiBundleScanningSchemaService schemaService;
 
@@ -23,11 +21,11 @@ public class SchemaServiceActivator implements BundleActivator {
     public void start(final BundleContext context) {
         schemaService = OsgiBundleScanningSchemaService.createInstance(context);
         schemaServiceReg = context.registerService(DOMSchemaService.class,
-                schemaService, new Hashtable<String,String>());
+                schemaService, new Hashtable<>());
     }
 
     @Override
-    public void stop(final BundleContext context) throws Exception {
+    public void stop(final BundleContext context) {
         schemaServiceReg.unregister();
         schemaService.close();
     }
