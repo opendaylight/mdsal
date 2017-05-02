@@ -786,6 +786,7 @@ final class GenHelperUtil {
         genType.setModuleName(module.getName());
         genType.setReference(node.getReference());
         genType.setSchemaPath((List) node.getPath().getPathFromRoot());
+        genType.setParentTypeForBuilder(childOf);
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
             genCtx = groupingsToGenTypes(module, ((DataNodeContainer) node).getGroupings(), genCtx, schemaContext,
