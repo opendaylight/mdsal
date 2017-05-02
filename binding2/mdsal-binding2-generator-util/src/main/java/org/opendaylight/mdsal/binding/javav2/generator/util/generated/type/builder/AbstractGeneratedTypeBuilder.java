@@ -40,6 +40,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     private List<GeneratedPropertyBuilder> properties = ImmutableList.of();
     private String comment = "";
     private boolean isAbstract;
+    private Type parentTypeForBuilder;
 
     protected AbstractGeneratedTypeBuilder(final String packageName, final String name) {
         super(packageName, name);
@@ -147,6 +148,11 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         return constant;
     }
 
+    @Override
+    public Type setParentTypeForBuilder(Type type) {
+        return this.parentTypeForBuilder = type;
+    }
+
     public boolean containsConstant(final String name) {
         Preconditions.checkArgument(name != null, "Parameter name can't be null");
         for (Constant constant : constants) {
@@ -237,6 +243,10 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
 
     public Type getParent() {
         return null;
+    }
+
+    public Type getParentTypeForBuilder() {
+        return parentTypeForBuilder;
     }
 
     @Override

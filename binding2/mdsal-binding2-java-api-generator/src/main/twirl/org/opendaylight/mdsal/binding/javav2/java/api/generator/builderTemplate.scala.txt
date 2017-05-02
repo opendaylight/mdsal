@@ -29,7 +29,7 @@
 
 @(genType: GeneratedType, properties: Set[GeneratedProperty], importedNames: Map[String, String],
 ImportedNamesWithProperties: Map[GeneratedProperty, String], augmentField: GeneratedProperty, copyConstructorHelper: String,
-getterMethods: List[String])
+getterMethods: List[String], parentTypeForBuilderName: String)
 @if(genType != null) {
 @{wrapToDocumentation(formatDataForJavaDocBuilder(importedNames.get("genType")))}
 public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{importedNames.get("genType")}> {
@@ -401,7 +401,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 
 @generateImplementedMethods() = {
         @@Override
-        public @{importedNames.get("item")}<@{genType.getParentType.getName}> treeIdentifier() {
+        public @{importedNames.get("item")}<@{parentTypeForBuilderName}> treeIdentifier() {
             //TODO implement
             return null;
         }
