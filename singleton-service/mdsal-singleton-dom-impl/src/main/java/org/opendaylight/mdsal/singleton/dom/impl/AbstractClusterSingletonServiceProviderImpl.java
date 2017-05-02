@@ -122,7 +122,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
             listGroupCloseListFuture.add(serviceGroup.closeClusterSingletonGroup());
         }
 
-        final ListenableFuture<List<List<Void>>> finalCloseFuture = Futures.allAsList(listGroupCloseListFuture);
+        final ListenableFuture<List<List<Void>>> finalCloseFuture = Futures.successfulAsList(listGroupCloseListFuture);
         Futures.addCallback(finalCloseFuture, new FutureCallback<List<List<Void>>>() {
 
             @Override

@@ -128,7 +128,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
                 }
                 hasOwnership = false;
             }
-            destroyFuture = Futures.allAsList(serviceCloseFutureList);
+            destroyFuture = Futures.successfulAsList(serviceCloseFutureList);
             final Semaphore finalRelease = needReleaseLock ? clusterLock : null;
             Futures.addCallback(destroyFuture, newAsyncCloseCallback(finalRelease, true));
         }
@@ -344,7 +344,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
                 hasOwnership = false;
             }
 
-            final ListenableFuture<List<Void>> destroyFuture = Futures.allAsList(serviceCloseFutureList);
+            final ListenableFuture<List<Void>> destroyFuture = Futures.successfulAsList(serviceCloseFutureList);
             if (serviceEntityCandidateReg != null) {
                 // we don't want to remove this instance from map
                 Futures.addCallback(destroyFuture, newAsyncCloseCallback(clusterLock, false));
