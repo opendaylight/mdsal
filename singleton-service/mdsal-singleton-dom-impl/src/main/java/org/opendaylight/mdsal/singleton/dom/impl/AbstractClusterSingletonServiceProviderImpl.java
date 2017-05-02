@@ -119,7 +119,13 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
         final List<ListenableFuture<List<Void>>> listGroupCloseListFuture = new ArrayList<>();
 
         for (final ClusterSingletonServiceGroup<P, E, C> serviceGroup : serviceGroupMap.values()) {
-            listGroupCloseListFuture.add(serviceGroup.closeClusterSingletonGroup());
+            try {
+                listGroupCloseListFuture.add(serviceGroup.closeClusterSingletonGroup());
+            } catch (final RuntimeException e) {
+                LOG.warn("Unexpected exception while closing serviceGroup: {}, resuming with next..",
+                        serviceGroup);
+            }
+
         }
 
         final ListenableFuture<List<List<Void>>> finalCloseFuture = Futures.successfulAsList(listGroupCloseListFuture);
