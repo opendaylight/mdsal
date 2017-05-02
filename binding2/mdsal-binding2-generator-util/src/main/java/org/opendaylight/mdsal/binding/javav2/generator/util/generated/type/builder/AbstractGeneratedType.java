@@ -33,6 +33,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignat
 abstract class AbstractGeneratedType extends AbstractBaseType implements GeneratedType {
 
     private final Type parent;
+    private final Type parentTypeForBuilder;
     private final String comment;
     private final List<AnnotationType> annotations;
     private final List<Type> implementsTypes;
@@ -46,6 +47,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     public AbstractGeneratedType(final AbstractGeneratedTypeBuilder<?> builder) {
         super(builder.getPackageName(), builder.getName(), true);
         this.parent = builder.getParent();
+        this.parentTypeForBuilder = builder.getParentTypeForBuilder();
         this.comment = builder.getComment();
         this.annotations = toUnmodifiableAnnotations(builder.getAnnotations());
         this.implementsTypes = makeUnmodifiable(builder.getImplementsTypes());
@@ -63,9 +65,10 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
                                  final List<Type> implementsTypes, final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
                                  final List<GeneratedTOBuilder> enclosedGenTOBuilders, final List<EnumBuilder> enumBuilders,
                                  final List<Constant> constants, final List<MethodSignatureBuilder> methodBuilders,
-                                 final List<GeneratedPropertyBuilder> propertyBuilders) {
+                                 final List<GeneratedPropertyBuilder> propertyBuilders, final Type parentTypeForBuilder) {
         super(packageName, name);
         this.parent = parent;
+        this.parentTypeForBuilder = parentTypeForBuilder;
         this.comment = comment;
         this.annotations = toUnmodifiableAnnotations(annotationBuilders);
         this.implementsTypes = makeUnmodifiable(implementsTypes);
@@ -125,6 +128,11 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     @Override
     public Type getParentType() {
         return this.parent;
+    }
+
+    @Override
+    public Type getParentTypeForBuilder() {
+        return this.parentTypeForBuilder;
     }
 
     @Override

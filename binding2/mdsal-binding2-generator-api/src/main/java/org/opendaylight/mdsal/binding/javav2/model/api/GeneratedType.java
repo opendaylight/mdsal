@@ -116,4 +116,8 @@ public interface GeneratedType extends Type, DocumentedType {
      */
     List<GeneratedProperty> getProperties();
 
+    /**
+     * Returns parent type for data schema node builder
+     */
+    Type getParentTypeForBuilder();
 }

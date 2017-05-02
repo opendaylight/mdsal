@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding.javav2.model.api.type.builder;
 
 import com.google.common.annotations.Beta;
 import java.util.List;
-import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.yangtools.yang.common.QName;
 
 @Beta
@@ -131,6 +131,14 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      * @return <code>new</code> instance of Enumeration Builder.
      */
     EnumBuilder addEnumeration(String name);
+
+    /**
+     * Sets parent type for data schema node node builder
+     *
+     * @param type generated parent type
+     * @return generated type
+     */
+    Type setParentTypeForBuilder(Type type);
 
     List<MethodSignatureBuilder> getMethodDefinitions();
 

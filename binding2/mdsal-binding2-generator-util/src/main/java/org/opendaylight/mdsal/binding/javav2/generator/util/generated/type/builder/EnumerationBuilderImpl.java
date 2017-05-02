@@ -332,5 +332,10 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         public List<GeneratedProperty> getProperties() {
             return ImmutableList.of();
         }
+
+        @Override
+        public Type getParentTypeForBuilder() {
+            return null;
+        }
     }
 }
