@@ -35,6 +35,7 @@
 
         <module>mdsal-binding-test-model</module>
         <module>mdsal-binding-dom-codec</module>
+        <module>mdsal-binding-dom-codec-osgi</module>
 
         <module>mdsal-binding-api</module>
         <module>mdsal-binding-util</module>

@@ -58,6 +58,7 @@
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-impl/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-generator-util/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-dom-codec/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-binding-dom-codec-osgi/{{VERSION}}</bundle>
     </feature>
 
     <feature name='odl-mdsal-binding-api' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Base Concepts'>
