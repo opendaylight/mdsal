@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 
@@ -466,10 +465,6 @@ public class JavaIdentifierNormalizerTest {
         testRealPackageNameExample(tested, expected);
 
         tested = "org.opendaylight.example.test.rev000000.data.con";
-        expected = "org.opendaylight.example.test.rev000000.data.con_";
-        testRealPackageNameExample(tested, expected);
-
-        tested = "org.opendaylight.example.test.rev000000.data.CON";
         expected = "org.opendaylight.example.test.rev000000.data.con_";
         testRealPackageNameExample(tested, expected);
     }
