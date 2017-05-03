@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
@@ -24,6 +25,29 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorImplTest {
+
+    @Test
+    public void generatedTypesEnumTest() throws Exception {
+        final BindingGenerator bg = new BindingGeneratorImpl(false);
+        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/apple-test.yang");
+        final List<Type> generateTypes = bg.generateTypes(context);
+        assertNotNull(generateTypes);
+        assertTrue(!generateTypes.isEmpty());
+        for (final Type type : generateTypes) {
+            if (type.getName().equals("Apple") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.simple.apple.rev170503.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                final Enumeration enumeration = gt.getEnumerations().get(0);
+                assertEquals("Apple1", enumeration.getName());
+                assertEquals("org.opendaylight.mdsal.gen.javav2.urn.test.simple.apple.rev170503.data.Apple",
+                        enumeration.getPackageName());
+                assertEquals("apple", enumeration.getValues().get(0).getName());
+                assertEquals("APPLE", enumeration.getValues().get(0).getMappedName());
+                assertEquals("apple1", enumeration.getValues().get(1).getName());
+                assertEquals("APPLE1", enumeration.getValues().get(1).getMappedName());
+            }
+        }
+    }
 
     @Test
     public void generatedTypesTest() throws Exception {

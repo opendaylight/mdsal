@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration.Pair;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
@@ -250,7 +251,17 @@ public final class JavaIdentifierNormalizer {
         final String[] packageNameParts = fullPackageName.split("\\.");
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < packageNameParts.length; i++) {
-            sb.append(normalizePartialPackageName(packageNameParts[i]));
+            String normalizedPartialPackageName = normalizePartialPackageName(packageNameParts[i]);
+
+            // check if fullPackageName contains class name at the end and
+            // capitalize last part of normalized package name
+            if (packageNameParts.length != 1 && i == packageNameParts.length - 1
+                    && Character.isUpperCase(packageNameParts[i].charAt(FIRST_CHAR))) {
+                normalizedPartialPackageName = StringUtils.capitalize(normalizedPartialPackageName);
+            }
+
+            sb.append(normalizedPartialPackageName);
+
             if (i != (packageNameParts.length - 1)) {
                 sb.append(".");
             }
@@ -316,7 +327,27 @@ public final class JavaIdentifierNormalizer {
             }
         }
         final String convertedClassName = normalizeSpecificIdentifier(className, JavaIdentifier.CLASS);
-        return normalizeClassIdentifier(packageName, convertedClassName, convertedClassName, FIRST_INDEX);
+        // if packageName contains class name at the end, then the className is
+        // name of inner class
+        final String[] packageNameParts = packageName.split("\\.");
+        String suppInnerClassPackageName = packageName;
+        if (packageNameParts.length > 1) {
+            if (Character.isUpperCase(packageNameParts[packageNameParts.length - 1].charAt(FIRST_CHAR))) {
+                final StringBuilder sb = new StringBuilder();
+                // ignore class name in package name - inner class name has
+                // to be normalizing according to original package of parent
+                // class
+                for (int i = 0; i < packageNameParts.length - 1; i++) {
+                    sb.append(packageNameParts[i]);
+                    if (i != (packageNameParts.length - 2)) {
+                        sb.append('.');
+                    }
+                }
+                suppInnerClassPackageName = sb.toString();
+            }
+        }
+
+        return normalizeClassIdentifier(suppInnerClassPackageName, convertedClassName, convertedClassName, FIRST_INDEX);
     }
 
     /**
