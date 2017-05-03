@@ -9,10 +9,10 @@
 package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
@@ -276,15 +276,12 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
 
         @Override
         public Optional<String> getDescription() {
-            if (description == null) {
-                return Optional.absent();
-            }
-            return Optional.of(description);
+            return Optional.ofNullable(this.description);
         }
 
         @Override
         public Optional<String> getReference() {
-            return Optional.of(reference);
+            return Optional.ofNullable(this.reference);
         }
 
         @Override
