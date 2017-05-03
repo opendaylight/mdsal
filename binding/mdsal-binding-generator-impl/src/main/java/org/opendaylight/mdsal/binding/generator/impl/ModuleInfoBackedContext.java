@@ -61,17 +61,20 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
     @Override
     public Class<?> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
-        String modulePackageName = BindingReflections.getModelRootPackageName(fullyQualifiedName);
-
-        WeakReference<ClassLoader> classLoaderRef = packageNameToClassLoader.get(modulePackageName);
-        ClassLoader classloader;
-        if (classLoaderRef != null && (classloader = classLoaderRef.get()) != null) {
-            return ClassLoaderUtils.loadClass(classloader, fullyQualifiedName);
+        final String modulePackageName = BindingReflections.getModelRootPackageName(fullyQualifiedName);
+        final WeakReference<ClassLoader> classLoaderRef = packageNameToClassLoader.get(modulePackageName);
+        if (classLoaderRef != null) {
+            final ClassLoader classLoader = classLoaderRef.get();
+            if (classLoader != null) {
+                return ClassLoaderUtils.loadClass(classLoader, fullyQualifiedName);
+            }
         }
+
         if (backingLoadingStrategy == null) {
             throw new ClassNotFoundException(fullyQualifiedName);
         }
-        Class<?> cls = backingLoadingStrategy.loadClass(fullyQualifiedName);
+
+        final Class<?> cls = backingLoadingStrategy.loadClass(fullyQualifiedName);
         if (BindingReflections.isBindingClass(cls)) {
             resolveModuleInfo(cls);
         }
