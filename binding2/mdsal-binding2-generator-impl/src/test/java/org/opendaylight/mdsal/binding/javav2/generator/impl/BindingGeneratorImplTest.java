@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
@@ -24,6 +23,14 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorImplTest {
+
+    @Test
+    public void generatedTypesEnumTest() throws Exception {
+        final BindingGenerator bg = new BindingGeneratorImpl(false);
+        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/apple-test.yang");
+        final List<Type> generateTypes = bg.generateTypes(context);
+        assertNotNull(generateTypes);
+    }
 
     @Test
     public void generatedTypesTest() throws Exception {
