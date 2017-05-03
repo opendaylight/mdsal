@@ -140,6 +140,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>mdsal-binding-dom-codec</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-binding-dom-codec-osgi</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
