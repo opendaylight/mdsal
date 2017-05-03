@@ -468,10 +468,6 @@ public class JavaIdentifierNormalizerTest {
         tested = "org.opendaylight.example.test.rev000000.data.con";
         expected = "org.opendaylight.example.test.rev000000.data.con_";
         testRealPackageNameExample(tested, expected);
-
-        tested = "org.opendaylight.example.test.rev000000.data.CON";
-        expected = "org.opendaylight.example.test.rev000000.data.con_";
-        testRealPackageNameExample(tested, expected);
     }
 
     private void testRealPackageNameExample(final String tested, final String expected) {
