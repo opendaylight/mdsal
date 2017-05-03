@@ -276,15 +276,18 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
 
         @Override
         public Optional<String> getDescription() {
-            if (description == null) {
+            if (this.description == null) {
                 return Optional.absent();
             }
-            return Optional.of(description);
+            return Optional.of(this.description);
         }
 
         @Override
         public Optional<String> getReference() {
-            return Optional.of(reference);
+            if (this.reference == null) {
+                return Optional.absent();
+            }
+            return Optional.of(this.reference);
         }
 
         @Override

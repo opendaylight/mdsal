@@ -241,6 +241,9 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
 
         @Override
         public Optional<String> getDescription() {
+            if (this.description == null) {
+                return Optional.absent();
+            }
             return Optional.of(this.description);
         }
 
@@ -279,6 +282,9 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
 
         @Override
         public Optional<String> getReference() {
+            if (this.reference == null) {
+                return Optional.absent();
+            }
             return Optional.of(this.reference);
         }
 
