@@ -71,7 +71,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mdsal-binding-dom-codec</artifactId>
+            <artifactId>mdsal-binding-dom-codec-osgi</artifactId>
         </dependency>
     </dependencies>
 
