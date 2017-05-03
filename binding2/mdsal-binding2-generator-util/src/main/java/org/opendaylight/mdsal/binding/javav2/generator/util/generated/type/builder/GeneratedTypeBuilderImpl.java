@@ -9,8 +9,8 @@
 package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -103,12 +103,12 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
 
         @Override
         public Optional<String> getDescription() {
-            return Optional.of(description);
+            return Optional.ofNullable(this.description);
         }
 
         @Override
         public Optional<String> getReference() {
-            return Optional.of(reference);
+            return Optional.ofNullable(this.reference);
         }
 
         @Override

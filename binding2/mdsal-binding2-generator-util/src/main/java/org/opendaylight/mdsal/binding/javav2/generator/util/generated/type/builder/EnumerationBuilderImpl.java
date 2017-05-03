@@ -9,10 +9,10 @@
 package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -241,7 +241,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
 
         @Override
         public Optional<String> getDescription() {
-            return Optional.of(this.description);
+            return Optional.ofNullable(this.description);
         }
 
         @Override
@@ -279,7 +279,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
 
         @Override
         public Optional<String> getReference() {
-            return Optional.of(this.reference);
+            return Optional.ofNullable(this.reference);
         }
 
         @Override
