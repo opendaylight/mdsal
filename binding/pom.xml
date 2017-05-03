@@ -27,6 +27,7 @@
         <module>mdsal-binding-generator-api</module>
         <module>mdsal-binding-generator-util</module>
         <module>mdsal-binding-generator-impl</module>
+        <module>mdsal-binding-generator-osgi</module>
         <module>mdsal-binding-java-api-generator</module>
         <module>maven-sal-api-gen-plugin</module>
         <!-- FIXME: should be probably renamed to mdsal-model-binding-parent -->
