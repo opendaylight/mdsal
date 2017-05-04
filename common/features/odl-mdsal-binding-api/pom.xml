@@ -47,7 +47,7 @@
     <dependencies>
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-common</artifactId>
+            <artifactId>odl-mdsal-common-api</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

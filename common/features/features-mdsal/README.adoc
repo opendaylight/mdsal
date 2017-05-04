@@ -8,7 +8,7 @@
 [odl-yangtools-yang-data] as yang.data
 [odl-yangtools-common] as common
 
-[odl-mdsal-common] as common.api
+[odl-mdsal-common-api] as common.api
 [odl-mdsal-dom] as dom
 [odl-mdsal-dom-api] as dom.api
 [odl-mdsal-dom-broker] as dom.broker

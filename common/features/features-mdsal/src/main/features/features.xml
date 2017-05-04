@@ -23,13 +23,13 @@
         <feature version='${project.version}' dependency="true">odl-mdsal-dom-broker</feature>
     </feature>
 
-    <feature name='odl-mdsal-common' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
+    <feature name='odl-mdsal-common-api' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM Broker'>
         <feature version='${yangtools.version}' dependency="true">odl-yangtools-common</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-common-api/{{VERSION}}</bundle>
     </feature>
 
     <feature name='odl-mdsal-dom-api' version='${project.version}' description='OpenDaylight :: MD-SAL :: DOM API &amp; SPI'>
-        <feature version='${project.version}' dependency="true">odl-mdsal-common</feature>
+        <feature version='${project.version}' dependency="true">odl-mdsal-common-api</feature>
         <feature version='${yangtools.version}' dependency="true">odl-yangtools-yang-data</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-api/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-spi/{{VERSION}}</bundle>
@@ -61,7 +61,7 @@
     </feature>
 
     <feature name='odl-mdsal-binding-api' version='${project.version}' description='OpenDaylight :: MD-SAL :: Binding Base Concepts'>
-        <feature version='${project.version}' dependency="true">odl-mdsal-common</feature>
+        <feature version='${project.version}' dependency="true">odl-mdsal-common-api</feature>
         <feature version='${project.version}' dependency="true">odl-mdsal-binding-base</feature>
         <feature version="${yangtools.version}" dependency="true">odl-yangtools-yang-parser</feature>
         <bundle>mvn:org.opendaylight.mdsal.model/general-entity/{{VERSION}}</bundle>
@@ -103,7 +103,7 @@
     <feature name='odl-mdsal-singleton-dom' version='${project.version}' description='OpenDaylight :: MD-SAL :: Singleton :: DOM'>
         <feature version='${project.version}' dependency="true">odl-mdsal-singleton-common</feature>
         <feature version='${project.version}' dependency="true">odl-mdsal-eos-dom</feature>
-        <feature version="${project.version}" dependency="true">odl-mdsal-common</feature>
+        <feature version="${project.version}" dependency="true">odl-mdsal-common-api</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-singleton-dom-impl/{{VERSION}}</bundle>
     </feature>
 

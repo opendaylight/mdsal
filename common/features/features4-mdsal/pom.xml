@@ -66,7 +66,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>odl-mdsal-common</artifactId>
+            <artifactId>odl-mdsal-common-api</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
