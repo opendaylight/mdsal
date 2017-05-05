@@ -157,7 +157,6 @@ public final class JavaCodePrettyPrint {
             }
         }
 
-        sbLineClass = new StringBuilder();
         for(int i = classStartEnd; i < splittedByNewLine.length; i++){
             i = appendJDoc(splittedByNewLine, fixedLines, i);
             if (!splittedByNewLine[i].startsWith(COMMENTS)
@@ -165,8 +164,10 @@ public final class JavaCodePrettyPrint {
                     && !splittedByNewLine[i].endsWith(String.valueOf(START_BODY))
                     && !splittedByNewLine[i].endsWith(String.valueOf(END_BODY))
                     && !splittedByNewLine[i].startsWith(String.valueOf(AT))) {
+                sbLineClass = new StringBuilder();
                 for (int j = i; j < splittedByNewLine.length; j++) {
-                    if (!splittedByNewLine[j].contains(String.valueOf(START_BODY))) {
+                    if (!splittedByNewLine[j].contains(String.valueOf(START_BODY))
+                            && !splittedByNewLine[j].contains(String.valueOf(END_LINE))) {
                         final String str = splittedByNewLine[j];
                         sbLineClass.append(str).append(SPACE);
                     } else {
