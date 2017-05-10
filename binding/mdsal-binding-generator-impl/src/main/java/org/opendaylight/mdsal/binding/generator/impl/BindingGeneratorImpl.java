@@ -210,7 +210,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
         checkArgument(context != null, "Schema Context reference cannot be NULL.");
         checkState(context.getModules() != null, "Schema Context does not contain defined modules.");
         schemaContext = context;
-        typeProvider = new TypeProviderImpl(context);
         final Set<Module> modules = context.getModules();
         return generateTypes(context, modules);
     }
