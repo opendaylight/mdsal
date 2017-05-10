@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
@@ -55,7 +56,6 @@ import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
-import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 
 /**
  *
@@ -152,9 +152,22 @@ public final class RpcActionGenHelper {
         }
 
         for (final RpcDefinition rpc : rpcDefinitions) {
-            DataSchemaNode parent = (DataSchemaNode) SchemaContextUtil.findDataSchemaNode(schemaContext, rpc.getPath().getParent());
+            //FIXME: get correct parent for routed RPCs only
+            DataSchemaNode parent = null;
+
+            ContainerSchemaNode input = rpc.getInput();
+            boolean isAction = false;
+            if (input != null) {
+                for (DataSchemaNode schemaNode : input.getChildNodes()) {
+                    if (getRoutingContext(schemaNode).isPresent()) {
+                        isAction = true;
+                        break;
+                    }
+                }
+            }
+
             //routedRPC?
-            if (getRoutingContext(parent).isPresent()) {
+            if (isAction) {
                 genCtx.get(module).addChildNodeType(parent, resolveOperation(parent, rpc, module, schemaContext,
                         verboseClassComments, genTypeBuilders, genCtx, typeProvider, true));
             } else {
@@ -197,16 +210,18 @@ public final class RpcActionGenHelper {
 
         //input
         final ContainerSchemaNode input = operation.getInput();
-        final GeneratedTypeBuilder inType = resolveOperationNode(module, operation.getInput(), basePackageName,
-                schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders, genCtx, true);
+        final GeneratedTypeBuilder inType = resolveOperationNode(interfaceBuilder, module, operation.getInput(),
+                basePackageName, schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders, genCtx, true);
         annotateDeprecatedIfNecessary(operation.getStatus(), inType);
+        inType.setParentTypeForBuilder(interfaceBuilder);
         genCtx.get(module).addChildNodeType(input, inType);
 
         //output
         final ContainerSchemaNode output = operation.getOutput();
-        final GeneratedTypeBuilder outType = resolveOperationNode(module, operation.getOutput(), basePackageName,
-                schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders, genCtx, false);
+        final GeneratedTypeBuilder outType = resolveOperationNode(interfaceBuilder, module, operation.getOutput(),
+                basePackageName, schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders, genCtx, false);
         annotateDeprecatedIfNecessary(operation.getStatus(), outType);
+        outType.setParentTypeForBuilder(interfaceBuilder);
         genCtx.get(module).addChildNodeType(output, outType);
 
         final GeneratedType inTypeInstance = inType.toInstance();
@@ -242,6 +257,7 @@ public final class RpcActionGenHelper {
         } else {
             //RPC
             interfaceBuilder.addImplementsType(parameterizedTypeFor(RPC, inType, outType));
+            interfaceBuilder.addImplementsType(TREE_NODE);
         }
 
         operationMethod.addParameter(parameterizedTypeFor(RPC_CALLBACK, outType), "callback");
@@ -252,15 +268,16 @@ public final class RpcActionGenHelper {
         return interfaceBuilder;
     }
 
-    private static GeneratedTypeBuilder resolveOperationNode(final Module module, final ContainerSchemaNode
-            operationNode, final String basePackageName, final SchemaContext schemaContext, final String
+    private static GeneratedTypeBuilder resolveOperationNode(GeneratedTypeBuilder parent, final Module module, final
+            ContainerSchemaNode operationNode, final String basePackageName, final SchemaContext schemaContext, final String
             operationName, final boolean verboseClassComments, TypeProvider typeProvider, Map<String, Map<String,
             GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx, final boolean isInput) {
 
         final GeneratedTypeBuilder nodeType = addRawInterfaceDefinition(basePackageName, operationNode, schemaContext,
                 operationName, verboseClassComments, genTypeBuilders);
         addImplementedInterfaceFromUses(operationNode, nodeType, genCtx);
-        nodeType.addImplementsType(TREE_NODE);
+        nodeType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
+                (BindingTypes.ITEM, parent)));
         if (isInput) {
             nodeType.addImplementsType(parameterizedTypeFor(INPUT, nodeType));
         } else {
