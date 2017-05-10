@@ -70,7 +70,8 @@ public final class TextTemplateUtil {
         if (text.isEmpty()) {
             return "";
         }
-        final StringBuilder sb = new StringBuilder("/**");
+        final StringBuilder sb = new StringBuilder(NEW_LINE);
+        sb.append("/**");
         sb.append(NEW_LINE);
         Iterable<String> lineSplitText = NL_SPLITTER.split(text);
         for (final String t : lineSplitText) {
@@ -82,6 +83,7 @@ public final class TextTemplateUtil {
             }
         }
         sb.append(" */");
+        sb.append(NEW_LINE);
         return sb.toString();
     }
 
@@ -172,7 +174,7 @@ public final class TextTemplateUtil {
 
     private static String formatDataForJavaDoc(TypeMember type, String additionalComment) {
         final StringBuilder javaDoc = new StringBuilder();
-        if (type.getComment() != null || !type.getComment().isEmpty()) {
+        if (type.getComment() != null && !type.getComment().isEmpty()) {
             javaDoc.append(formatToParagraph(type.getComment(), 0))
                     .append(NEW_LINE)
                     .append(NEW_LINE)
@@ -364,7 +366,7 @@ public final class TextTemplateUtil {
         } else if (name.startsWith("get")) {
             prefix = 3;
         } else {
-            throw new IllegalArgumentException("Not a getter");
+            prefix = 0;
         }
         return toFirstLower(name.substring(prefix));
     }
