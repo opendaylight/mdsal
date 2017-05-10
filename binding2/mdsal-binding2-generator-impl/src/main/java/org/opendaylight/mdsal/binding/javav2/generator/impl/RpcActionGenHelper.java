@@ -55,7 +55,6 @@ import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
-import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 
 /**
  *
@@ -152,9 +151,23 @@ public final class RpcActionGenHelper {
         }
 
         for (final RpcDefinition rpc : rpcDefinitions) {
-            DataSchemaNode parent = (DataSchemaNode) SchemaContextUtil.findDataSchemaNode(schemaContext, rpc.getPath().getParent());
+            //FIXME: get correct parent, routed RPCs only
+//            DataSchemaNode parent = (DataSchemaNode) SchemaContextUtil.findDataSchemaNode(schemaContext, rpc.getPath().getParent());
+            DataSchemaNode parent = null;
+
+            ContainerSchemaNode input = rpc.getInput();
+            boolean isAction = false;
+            if (input != null) {
+                for (DataSchemaNode schemaNode : input.getChildNodes()) {
+                    if (getRoutingContext(schemaNode).isPresent()) {
+                        isAction = true;
+                        break;
+                    }
+                }
+            }
+
             //routedRPC?
-            if (getRoutingContext(parent).isPresent()) {
+            if (isAction) {
                 genCtx.get(module).addChildNodeType(parent, resolveOperation(parent, rpc, module, schemaContext,
                         verboseClassComments, genTypeBuilders, genCtx, typeProvider, true));
             } else {
@@ -200,6 +213,7 @@ public final class RpcActionGenHelper {
         final GeneratedTypeBuilder inType = resolveOperationNode(module, operation.getInput(), basePackageName,
                 schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders, genCtx, true);
         annotateDeprecatedIfNecessary(operation.getStatus(), inType);
+        inType.setParentTypeForBuilder(interfaceBuilder);
         genCtx.get(module).addChildNodeType(input, inType);
 
         //output
@@ -207,6 +221,7 @@ public final class RpcActionGenHelper {
         final GeneratedTypeBuilder outType = resolveOperationNode(module, operation.getOutput(), basePackageName,
                 schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders, genCtx, false);
         annotateDeprecatedIfNecessary(operation.getStatus(), outType);
+        outType.setParentTypeForBuilder(interfaceBuilder);
         genCtx.get(module).addChildNodeType(output, outType);
 
         final GeneratedType inTypeInstance = inType.toInstance();

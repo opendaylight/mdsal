@@ -172,7 +172,7 @@ public final class TextTemplateUtil {
 
     private static String formatDataForJavaDoc(TypeMember type, String additionalComment) {
         final StringBuilder javaDoc = new StringBuilder();
-        if (type.getComment() != null || !type.getComment().isEmpty()) {
+        if (type.getComment() != null && !type.getComment().isEmpty()) {
             javaDoc.append(formatToParagraph(type.getComment(), 0))
                     .append(NEW_LINE)
                     .append(NEW_LINE)
@@ -364,7 +364,8 @@ public final class TextTemplateUtil {
         } else if (name.startsWith("get")) {
             prefix = 3;
         } else {
-            throw new IllegalArgumentException("Not a getter");
+            //throw new IllegalArgumentException("Not a getter");
+            prefix = 0;
         }
         return toFirstLower(name.substring(prefix));
     }

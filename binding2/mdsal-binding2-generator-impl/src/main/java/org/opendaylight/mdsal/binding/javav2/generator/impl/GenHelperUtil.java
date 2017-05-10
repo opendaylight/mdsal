@@ -677,7 +677,6 @@ final class GenHelperUtil {
         }
 
         constructGetter(typeBuilder, leafName, leafDesc, returnType, leaf.getStatus());
-        genCtx.get(module).addChildNodeType(leaf, typeBuilder);
         return returnType;
     }
 
