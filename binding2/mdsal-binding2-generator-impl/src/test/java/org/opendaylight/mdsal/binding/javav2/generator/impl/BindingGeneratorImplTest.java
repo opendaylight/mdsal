@@ -57,7 +57,7 @@ public class BindingGeneratorImplTest {
 
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
-        assertEquals(7, generateTypes.size());
+        assertEquals(3, generateTypes.size());
         final int[] test_i = { 0 };
         for (final Type t : generateTypes) {
             if (t instanceof GeneratedTransferObject) {
@@ -90,7 +90,7 @@ public class BindingGeneratorImplTest {
                 testActualType((GeneratedType) t, test_i);
             }
         }
-        assertEquals(7, test_i[0]);
+        assertEquals(3, test_i[0]);
     }
 
     @Test

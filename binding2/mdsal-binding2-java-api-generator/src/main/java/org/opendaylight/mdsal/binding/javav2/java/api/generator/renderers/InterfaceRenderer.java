@@ -23,6 +23,9 @@ import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 
 public class InterfaceRenderer extends BaseRenderer {
+
+    private static final char NEW_LINE = '\n';
+
     /**
      * Creates the instance of this class which is used for generating the interface file source
      * code from <code>type</code>.
@@ -51,7 +54,8 @@ public class InterfaceRenderer extends BaseRenderer {
                 .append(method.getName())
                 .append('(')
                 .append(generateParameters(method.getParameters()))
-                .append(");");
+                .append(");")
+                .append(NEW_LINE);
         }
         final String methodList = sb1.toString();
 
@@ -119,8 +123,11 @@ public class InterfaceRenderer extends BaseRenderer {
                    .append(parameter.getSingleValue());
                 parameterList.add(sb2.toString());
             }
-            sb1.append(String.join(",", parameterList))
-               .append(')');
+            sb1.append(String.join(",", parameterList));
+            if (!annotationType.getParameters().isEmpty()) {
+                sb1.append(')');
+            }
+            sb1.append(NEW_LINE);
         }
         return sb1.toString();
     }
