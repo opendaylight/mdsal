@@ -106,8 +106,10 @@
                     <instructions>
                         <Bundle-Name>${project.groupId}.${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            {local-packages},
-                            org.opendaylight.mdsal.binding2.generator.impl,
+                            play.twirl.api,
+                            play.twirl.api.utils,
+                            scala,
+                            scala.*,
                         </Export-Package>
                     </instructions>
                 </configuration>
