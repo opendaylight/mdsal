@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_ecd1a4ce",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BaseTemplate.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-11T10:55:14Z",
+      "side": 1,
+      "message": "final?",
+      "revId": "2604080daf21f73c68ca428520a732f43309f874",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
