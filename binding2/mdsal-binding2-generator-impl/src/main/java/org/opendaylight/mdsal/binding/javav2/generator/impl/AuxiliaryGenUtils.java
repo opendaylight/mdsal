@@ -52,6 +52,7 @@ import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
+import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -204,7 +205,7 @@ final class AuxiliaryGenUtils {
             sb.append("</i>");
             sb.append(NEW_LINE);
 
-            if (hasBuilderClass(schemaNode)) {
+            if (hasBuilderClass(schemaNode) && !(schemaNode instanceof OperationDefinition)) {
                 sb.append(NEW_LINE);
                 sb.append("<p>To create instances of this class use " + "{@link " + linkToBuilderClass + "}.");
                 sb.append(NEW_LINE);
