@@ -95,7 +95,7 @@ class EnumTemplate extends BaseTemplate {
             }
 
             /**
-             * @param valueArg
+             * @param valueArg integer value
              * @return corresponding «enums.name» item
              */
             public static «enums.name» forValue(int valueArg) {
