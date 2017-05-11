@@ -55,7 +55,7 @@ public final class TextTemplateUtil {
      * @param s getter name without prefix
      * @return getter name starting in LowerCase
      */
-    public static String toFirstLower(String s) {
+    public static String toFirstLower(final String s) {
         return s != null && s.length() != 0 ? (Character.isLowerCase(s.charAt(0)) ? s : (s.length() == 1 ?
                 s.toLowerCase() : s.substring(0, 1).toLowerCase() + s.substring(1))) : s;
     }
@@ -66,14 +66,14 @@ public final class TextTemplateUtil {
      * @param text text for wrapping
      * @return wrapped text
      */
-    public static String wrapToDocumentation(String text) {
+    public static String wrapToDocumentation(final String text) {
         if (text.isEmpty()) {
             return "";
         }
         final StringBuilder sb = new StringBuilder(NEW_LINE);
         sb.append("/**");
         sb.append(NEW_LINE);
-        Iterable<String> lineSplitText = NL_SPLITTER.split(text);
+        final Iterable<String> lineSplitText = NL_SPLITTER.split(text);
         for (final String t : lineSplitText) {
             if (!t.isEmpty()) {
                 sb.append(" *");
@@ -92,7 +92,7 @@ public final class TextTemplateUtil {
      * @param typeName
      * @return formatted Javadoc, based on type
      */
-    public static String formatDataForJavaDocBuilder(String typeName) {
+    public static String formatDataForJavaDocBuilder(final String typeName) {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Class that builds {@link ")
                 .append(typeName)
@@ -109,7 +109,7 @@ public final class TextTemplateUtil {
      * @param additionalComment
      * @return formatted Javadoc with possible additional comment, based on type
      */
-    public static String formatDataForJavaDoc(GeneratedType type, String additionalComment) {
+    public static String formatDataForJavaDoc(final GeneratedType type, final String additionalComment) {
         final StringBuilder javaDoc = new StringBuilder();
         if (type.getDescription().isPresent()) {
             javaDoc.append(type.getDescription())
@@ -127,9 +127,9 @@ public final class TextTemplateUtil {
      * @return properties names in formatted string
      */
     //FIXME: this needs further clarification in future patch
-    public static String valueForBits(List<GeneratedProperty> properties) {
+    public static String valueForBits(final List<GeneratedProperty> properties) {
         final List<String> strings = new LinkedList<>();
-        for (GeneratedProperty property : properties) {
+        for (final GeneratedProperty property : properties) {
             strings.add(fieldName(property));
         }
         return String.join(",", strings);
@@ -140,7 +140,7 @@ public final class TextTemplateUtil {
      * @param type
      * @return formatted type description
      */
-    public static String formatDataForJavaDoc(GeneratedType type) {
+    public static String formatDataForJavaDoc(final GeneratedType type) {
         final String description = type.getDescription().isPresent() ? type.getDescription().get() : "";
         return encodeJavadocSymbols(description);
     }
@@ -151,7 +151,7 @@ public final class TextTemplateUtil {
      * @param paramName
      * @return parameter name, based on given Type
      */
-    public static String paramValue(Type returnType, String paramName) {
+    public static String paramValue(final Type returnType, final String paramName) {
         if (returnType instanceof ConcreteType) {
             return paramName;
         } else {
@@ -165,14 +165,14 @@ public final class TextTemplateUtil {
      * @param comment comment string with the comment for whole JAVA class
      * @return string with comment in JAVA format
      */
-    public static String asJavadoc(String comment) {
+    public static String asJavadoc(final String comment) {
         if (comment == null) {
             return "";
         }
         return wrapToDocumentation(formatToParagraph(comment.trim(), 0));
     }
 
-    private static String formatDataForJavaDoc(TypeMember type, String additionalComment) {
+    private static String formatDataForJavaDoc(final TypeMember type, final String additionalComment) {
         final StringBuilder javaDoc = new StringBuilder();
         if (type.getComment() != null && !type.getComment().isEmpty()) {
             javaDoc.append(formatToParagraph(type.getComment(), 0))
@@ -189,7 +189,10 @@ public final class TextTemplateUtil {
      * @param methodSignature
      * @return related Javadoc
      */
-    public static String getJavaDocForInterface(MethodSignature methodSignature) {
+    public static String getJavaDocForInterface(final MethodSignature methodSignature) {
+        if (methodSignature.getReturnType() == Types.VOID) {
+            return "";
+        }
         final StringBuilder javaDoc = new StringBuilder();
         javaDoc.append("@return ")
                 .append(asCode(methodSignature.getReturnType().getFullyQualifiedName()))
@@ -201,7 +204,7 @@ public final class TextTemplateUtil {
         return formatDataForJavaDoc(methodSignature, javaDoc.toString());
     }
 
-    private static String asCode(String text) {
+    private static String asCode(final String text) {
         return "<code>" + text + "</code>";
     }
 
@@ -223,10 +226,10 @@ public final class TextTemplateUtil {
      * @param properties
      * @return generated properties as formatted String
      */
-    public static String propsAsArgs(Iterable<GeneratedProperty> properties) {
+    public static String propsAsArgs(final Iterable<GeneratedProperty> properties) {
         final List<String> strings = new LinkedList<>();
         if (properties.iterator().hasNext()) {
-            for (GeneratedProperty property : properties) {
+            for (final GeneratedProperty property : properties) {
                 final StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("\"")
                         .append(property.getName())
@@ -243,10 +246,10 @@ public final class TextTemplateUtil {
      * @param booleanName
      * @return Properties as formatted String
      */
-    public static String propsAsList(Iterable<GeneratedProperty> properties, String booleanName) {
+    public static String propsAsList(final Iterable<GeneratedProperty> properties, final String booleanName) {
         final List<String> strings = new LinkedList<>();
         if (properties.iterator().hasNext()) {
-            for (GeneratedProperty property : properties) {
+            for (final GeneratedProperty property : properties) {
                 final StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("properties.get(i++).equals(defaultValue) ? ")
                         .append(booleanName)
@@ -262,7 +265,7 @@ public final class TextTemplateUtil {
      * @param currentType
      * @return restrictions from given type
      */
-    public static Restrictions getRestrictions(Type currentType) {
+    public static Restrictions getRestrictions(final Type currentType) {
         Restrictions restrictions = null;
         if (currentType instanceof ConcreteType) {
             restrictions = ((ConcreteType) currentType).getRestrictions();
@@ -278,7 +281,7 @@ public final class TextTemplateUtil {
      *
      * @param property type from getter
      */
-    public static String fieldName(GeneratedProperty property) {
+    public static String fieldName(final GeneratedProperty property) {
         final String name = Preconditions.checkNotNull(property.getName());
         return UNDERSCORE.concat(name);
     }
@@ -289,10 +292,10 @@ public final class TextTemplateUtil {
      * @param parameters group of generated property instances which are transformed to the sequence of parameter names
      * @return string with the list of the parameter names
      */
-    public static String asArguments(List<GeneratedProperty> parameters) {
+    public static String asArguments(final List<GeneratedProperty> parameters) {
         final List<String> strings = new LinkedList<>();
         if (!parameters.isEmpty()) {
-            for (GeneratedProperty parameter : parameters) {
+            for (final GeneratedProperty parameter : parameters) {
                 strings.add((fieldName(parameter)));
             }
         }
@@ -305,7 +308,7 @@ public final class TextTemplateUtil {
      * @param field property name
      * @return getter for propery
      */
-    public static String getterMethodName(GeneratedProperty field) {
+    public static String getterMethodName(final GeneratedProperty field) {
         final Type type = Preconditions.checkNotNull(field.getReturnType());
         final String name = Preconditions.checkNotNull(field.getName());
         final String prefix = Types.BOOLEAN.equals(type) ? "is" : "get";
@@ -319,7 +322,7 @@ public final class TextTemplateUtil {
      * @param returnTypeName
      * @return built setter method body
      */
-    public static String setterMethod(GeneratedProperty field, String typeName, String returnTypeName) {
+    public static String setterMethod(final GeneratedProperty field, final String typeName, final String returnTypeName) {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("public ")
                 .append(typeName)
@@ -347,7 +350,7 @@ public final class TextTemplateUtil {
      * @param s getter name without prefix
      * @return getter name starting in uppercase
      */
-    public static String toFirstUpper(String s) {
+    public static String toFirstUpper(final String s) {
         return s != null && s.length() != 0 ? (Character.isUpperCase(s.charAt(0)) ? s : (s.length() == 1 ?
                 s.toUpperCase() : s.substring(0, 1).toUpperCase() + s.substring(1))) : s;
     }
@@ -358,7 +361,7 @@ public final class TextTemplateUtil {
      * @param getter getter name
      * @return getter name without prefix
      */
-    public static String propertyNameFromGetter(MethodSignature getter) {
+    public static String propertyNameFromGetter(final MethodSignature getter) {
         final String name = Preconditions.checkNotNull(getter.getName());
         int prefix;
         if (name.startsWith("is")) {
@@ -376,10 +379,10 @@ public final class TextTemplateUtil {
      * @param properties
      * @return formatted property list as String
      */
-    public static String getPropertyList(List<GeneratedProperty> properties) {
+    public static String getPropertyList(final List<GeneratedProperty> properties) {
         final List<String> strings = new LinkedList<>();
         if (!properties.isEmpty()) {
-            for (GeneratedProperty property : properties) {
+            for (final GeneratedProperty property : properties) {
                 final StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("base.")
                         .append(getterMethodName(property))
@@ -411,8 +414,8 @@ public final class TextTemplateUtil {
      * @param revision
      * @return formatted Revision as String
      */
-    public static String getFormattedRevision(Date revision) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public static String getFormattedRevision(final Date revision) {
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return simpleDateFormat.format(revision);
     }
 
@@ -421,7 +424,7 @@ public final class TextTemplateUtil {
      * @param module
      * @return formatted String source path
      */
-    public static String getSourcePath(Module module) {
+    public static String getSourcePath(final Module module) {
         return "/".concat(module.getModuleSourcePath().replace(java.io.File.separatorChar, '/'));
     }
 
@@ -429,7 +432,7 @@ public final class TextTemplateUtil {
      * util method for unionTemplateBuilderTemplate
      * @return needed access modifier
      */
-    public static String getAccessModifier(AccessModifier modifier) {
+    public static String getAccessModifier(final AccessModifier modifier) {
         switch (modifier) {
             case PUBLIC: return "public ";
             case PROTECTED: return "protected ";
@@ -487,7 +490,7 @@ public final class TextTemplateUtil {
         return sb.append(lineBuilder).append('\n').toString();
     }
 
-    private static String encodeJavadocSymbols(String description) {
+    private static String encodeJavadocSymbols(final String description) {
         if (description == null || description.isEmpty()) {
             return description;
         }
