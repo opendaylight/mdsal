@@ -1,0 +1,8 @@
+Code-Review+2: Robert Varga <nite@hq.sk>
+Code-Review+1: Thanh Ha <thanh.ha@linuxfoundation.org>
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Thu, 11 May 2017 14:17:35 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/56856
+Project: mdsal
+Branch: refs/heads/master
