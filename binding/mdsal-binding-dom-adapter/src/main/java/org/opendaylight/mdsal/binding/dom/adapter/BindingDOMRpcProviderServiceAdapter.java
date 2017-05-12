@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
@@ -24,7 +25,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 
-public class BindingDOMRpcProviderServiceAdapter {
+public class BindingDOMRpcProviderServiceAdapter implements RpcProviderService {
 
     private static final Set<YangInstanceIdentifier> GLOBAL = ImmutableSet.of(YangInstanceIdentifier.builder().build());
     private final BindingToNormalizedNodeCodec codec;
@@ -36,18 +37,20 @@ public class BindingDOMRpcProviderServiceAdapter {
         this.domRpcRegistry = domRpcRegistry;
     }
 
+    @Override
     public <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(final Class<S> type,
             final T implementation) {
         return register(type, implementation, GLOBAL);
     }
 
+    @Override
     public <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(final Class<S> type,
             final T implementation, final Set<InstanceIdentifier<?>> paths) {
         return register(type, implementation, toYangInstanceIdentifiers(paths));
     }
 
     private <S extends RpcService, T extends S> ObjectRegistration<T> register(final Class<S> type,
-            final T implementation, final Collection<YangInstanceIdentifier> rpcContextPaths) {
+                                                                               final T implementation, final Collection<YangInstanceIdentifier> rpcContextPaths) {
         final Map<SchemaPath, Method> rpcs = codec.getRpcMethodToSchemaPath(type).inverse();
 
         final BindingDOMRpcImplementationAdapter adapter = new BindingDOMRpcImplementationAdapter(
