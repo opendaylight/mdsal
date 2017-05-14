@@ -233,7 +233,7 @@ public final class TypeProviderImpl implements TypeProvider {
             String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typeDefinition.getPath());
             String genTOName = BindingMapping.getClassName(typedefName);
             String name = packageName + "." + genTOName;
-            if (!(returnType.getFullyQualifiedName().equals(name))) {
+            if (!returnType.getFullyQualifiedName().equals(name)) {
                 returnType = shadedTOWithRestrictions(gto, r);
             }
         }
@@ -299,7 +299,7 @@ public final class TypeProviderImpl implements TypeProvider {
         } else {
             leafRefValueNode = SchemaContextUtil.findDataSchemaNode(schemaContext, parentModule, leafRefStrippedXPath);
         }
-        return (leafRefValueNode != null) ? leafRefValueNode.equals(parentNode) : false;
+        return leafRefValueNode != null ? leafRefValueNode.equals(parentNode) : false;
     }
 
     /**
@@ -735,7 +735,7 @@ public final class TypeProviderImpl implements TypeProvider {
     private Type typedefToGeneratedType(final String basePackageName, final Module module, final TypeDefinition<?> typedef) {
         final String moduleName = module.getName();
         final Date moduleRevision = module.getRevision();
-        if ((basePackageName != null) && (moduleName != null) && (typedef != null) && (typedef.getQName() != null)) {
+        if (basePackageName != null && moduleName != null && typedef != null && typedef.getQName() != null) {
             final String typedefName = typedef.getQName().getLocalName();
             final TypeDefinition<?> innerTypeDefinition = typedef.getBaseType();
             if (!(innerTypeDefinition instanceof LeafrefTypeDefinition)
@@ -909,7 +909,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
         generatedTOBuilders.add(unionGenTOBuilder);
         unionGenTOBuilder.setIsUnion(true);
-        final List<String> regularExpressions = new ArrayList<String>();
+        final List<String> regularExpressions = new ArrayList<>();
         for (final TypeDefinition<?> unionType : unionTypes) {
             final String unionTypeName = unionType.getQName().getLocalName();
             if (unionType.getBaseType() != null) {
@@ -1095,7 +1095,7 @@ public final class TypeProviderImpl implements TypeProvider {
         final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typedef.getPath());
         final String typeDefTOName = typedef.getQName().getLocalName();
 
-        if ((packageName != null) && (typeDefTOName != null)) {
+        if (packageName != null && typeDefTOName != null) {
             final String genTOName = BindingMapping.getClassName(typeDefTOName);
             final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(packageName, genTOName);
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
@@ -1333,10 +1333,10 @@ public final class TypeProviderImpl implements TypeProvider {
 
         Map<Integer, List<TypeDefinition<?>>> typeDefinitionsDepths = new TreeMap<>();
         for (TypeDefinition<?> unsortedTypeDefinition : unsortedTypeDefinitions) {
-            final int depth = getTypeDefinitionDepth(unsortedTypeDefinition);
+            final Integer depth = getTypeDefinitionDepth(unsortedTypeDefinition);
             List<TypeDefinition<?>> typeDefinitionsConcreteDepth = typeDefinitionsDepths.get(depth);
             if (typeDefinitionsConcreteDepth == null) {
-                typeDefinitionsConcreteDepth = new ArrayList<TypeDefinition<?>>();
+                typeDefinitionsConcreteDepth = new ArrayList<>();
                 typeDefinitionsDepths.put(depth, typeDefinitionsConcreteDepth);
             }
             typeDefinitionsConcreteDepth.add(unsortedTypeDefinition);
@@ -1399,11 +1399,11 @@ public final class TypeProviderImpl implements TypeProvider {
     private static String provideAvailableNameForGenTOBuilder(final String name) {
         Matcher mtch = NUMBERS_PATTERN.matcher(name);
         if (mtch.find()) {
-            final int newSuffix = Integer.valueOf(name.substring(mtch.start())) + 1;
+            final int newSuffix = Integer.parseInt(name.substring(mtch.start())) + 1;
             return name.substring(0, mtch.start()) + newSuffix;
-        } else {
-            return name + 1;
         }
+
+        return name + 1;
     }
 
     public static void addUnitsToGenTO(final GeneratedTOBuilder to, final String units) {
@@ -1438,7 +1438,7 @@ public final class TypeProviderImpl implements TypeProvider {
             Module parent = getParentModule(node);
             Iterator<QName> path = node.getPath().getPathFromRoot().iterator();
             path.next();
-            if (!(path.hasNext())) {
+            if (!path.hasNext()) {
                 parentName = BindingMapping.getClassName(parent.getName()) + "Data";
                 String basePackageName = BindingMapping.getRootPackageName(parent.getQNameModule());
                 className = basePackageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
@@ -1656,11 +1656,11 @@ public final class TypeProviderImpl implements TypeProvider {
         } else {
             Iterator<QName> path = node.getPath().getPathFromRoot().iterator();
             QName first = path.next();
-            if (!(path.hasNext())) {
+            if (!path.hasNext()) {
                 URI namespace = first.getNamespace();
                 Date revision = first.getRevision();
                 Module parent = schemaContext.findModuleByNamespaceAndRevision(namespace, revision);
-                parentName = BindingMapping.getClassName((parent).getName()) + "Data";
+                parentName = BindingMapping.getClassName(parent.getName()) + "Data";
                 String basePackageName = BindingMapping.getRootPackageName(parent.getQNameModule());
                 className = basePackageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
             } else {
@@ -1687,11 +1687,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
     @Override
     public String getConstructorPropertyName(final SchemaNode node) {
-        if (node instanceof TypeDefinition<?>) {
-            return "value";
-        } else {
-            return "";
-        }
+        return node instanceof TypeDefinition<?> ? "value" : "";
     }
 
     @Override

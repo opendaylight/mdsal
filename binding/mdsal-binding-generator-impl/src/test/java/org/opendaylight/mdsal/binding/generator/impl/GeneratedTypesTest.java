@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +17,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -315,7 +315,7 @@ public class GeneratedTypesTest {
         assertEquals(1, listKeyClassPropertyCount);
         assertEquals("listKey", listKeyClassPropertyName);
         assertEquals("Byte", listKeyClassPropertyTypeName);
-        assertEquals(true, listKeyClassPropertyReadOnly);
+        assertTrue(listKeyClassPropertyReadOnly);
         assertEquals(1, hashMethodParameterCount);
         assertEquals("listKey", hashMethodParameterName);
         assertEquals("Byte", hashMethodParameterReturnTypeName);

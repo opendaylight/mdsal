@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.util.YangSchemaUtils;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
@@ -59,7 +58,7 @@ public class YangSchemaUtilsTest {
         final DataSchemaNode dataSchemaNode = mock(DataSchemaNode.class);
         doReturn(Q_NAME).when(UNKNOWN_SCHEMA_NODE).getNodeType();
         doReturn(ImmutableList.of(dataSchemaNode)).when(AUGMENTATION_SCHEMA).getChildNodes();
-        doReturn(false).when(dataSchemaNode).isAugmenting();
+        doReturn(Boolean.FALSE).when(dataSchemaNode).isAugmenting();
         doReturn(Q_NAME).when(dataSchemaNode).getQName();
         doReturn(ImmutableList.of(dataSchemaNode)).when(AUGMENTATION_SCHEMA).getChildNodes();
         assertEquals(Q_NAME, YangSchemaUtils.getAugmentationQName(AUGMENTATION_SCHEMA));
@@ -79,7 +78,7 @@ public class YangSchemaUtilsTest {
         final QName qName = QName.create(context.getModules().iterator().next().getNamespace(),
                 context.getModules().iterator().next().getRevision(), context.getModules().iterator().next().getName());
         assertNull(YangSchemaUtils.findTypeDefinition(context, SchemaPath.create(ImmutableList.of(qName), false)));
-        final List qNames = new ArrayList();
+        final List<QName> qNames = new ArrayList<>();
         context.getTypeDefinitions().forEach(typeDefinition -> qNames.add(typeDefinition.getQName()));
         assertNull(YangSchemaUtils.findTypeDefinition(context, SchemaPath.create(qNames, false)));
 
@@ -91,7 +90,7 @@ public class YangSchemaUtilsTest {
 
         final DataSchemaNode node = mock(DataSchemaNode.class);
         doReturn(node).when(container).getDataChildByName((QName) any());
-        final TypeDefinition typeDefinition = mock(TypeDefinition.class);
+        final TypeDefinition<?> typeDefinition = mock(TypeDefinition.class);
         doReturn(Q_NAME).when(typeDefinition).getQName();
         doReturn(ImmutableSet.of(typeDefinition)).when(container).getTypeDefinitions();
         assertEquals(typeDefinition,
