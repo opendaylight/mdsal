@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Constructor;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.impl.CodecTypeUtils;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 
@@ -25,7 +24,7 @@ public class CodecTypeUtilsTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void privateConstructTest() throws Throwable {
-        final Constructor constructor = CodecTypeUtils.class.getDeclaredConstructor();
+        final Constructor<?> constructor = CodecTypeUtils.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();

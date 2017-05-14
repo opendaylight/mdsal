@@ -549,9 +549,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
         genCtx.get(module).addTopLevelNodeType(interfaceBuilder);
     }
 
-    private static boolean isExplicitStatement(ContainerSchemaNode node) {
+    private static boolean isExplicitStatement(final ContainerSchemaNode node) {
         return node instanceof EffectiveStatement
-                && ((EffectiveStatement) node).getDeclared().getStatementSource() == StatementSource.DECLARATION;
+                && ((EffectiveStatement<?, ?>) node).getDeclared().getStatementSource() == StatementSource.DECLARATION;
     }
 
     /**
@@ -723,8 +723,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            GroupingDefinition which contains data about grouping
      * @param module
      *            current module
-     * @return GeneratedType which is generated from grouping (object of type
-     *         <code>GroupingDefinition</code>)
      */
     private void groupingToGenType(final String basePackageName, final GroupingDefinition grouping, final Module module) {
         final String packageName = packageNameForGeneratedType(basePackageName, grouping.getPath());
@@ -943,17 +941,15 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 // The original node is required, but we have only the copy of
                 // the original node.
                 // Maybe this indicates a bug in Yang parser.
-                throw new IllegalStateException(
-                        "Failed to generate code for augment in "
-                                + parentUsesNode);
-            } else {
-                return resultDataSchemaNode;
+                throw new IllegalStateException("Failed to generate code for augment in " + parentUsesNode);
             }
-        } else {
-            throw new IllegalStateException(
-                    "Target node of uses-augment statement must be DataSchemaNode. Failed to generate code for augment in "
-                            + parentUsesNode);
+
+            return resultDataSchemaNode;
         }
+
+        throw new IllegalStateException(
+            "Target node of uses-augment statement must be DataSchemaNode. Failed to generate code for augment in "
+                    + parentUsesNode);
     }
 
     /**
@@ -1111,7 +1107,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private GeneratedTypeBuilder augSchemaNodeToMethods(final Module module, final String basePackageName,
             final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf,
             final Iterable<DataSchemaNode> schemaNodes) {
-        if ((schemaNodes != null) && (typeBuilder != null)) {
+        if (schemaNodes != null && typeBuilder != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting()) {
                     addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, typeBuilder, childOf, module);
@@ -1218,7 +1214,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *            type which represents superior <i>case</i>
      * @param choiceNode
      *            choice case node which is mapped to generated type
-     * @return list of generated types for <code>caseNodes</code>.
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>basePackageName</code> equals null</li>
@@ -1305,8 +1300,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @param augmentedNodes
      *            set of choice case nodes for which is checked if are/aren't
      *            added to choice through augmentation
-     * @return list of generated types which represents augmented cases of
-     *         choice <code>refChoiceType</code>
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if <code>basePackageName</code> is null</li>
@@ -1474,7 +1467,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private static TypeDefinition<?> getBaseOrDeclaredType(final TypeDefinition<?> typeDef) {
         // Returns DerivedType in case of new parser.
         final TypeDefinition<?> baseType = typeDef.getBaseType();
-        return (baseType != null && baseType.getBaseType() != null) ? baseType : typeDef;
+        return baseType != null && baseType.getBaseType() != null ? baseType : typeDef;
     }
 
     private void processContextRefExtension(final LeafSchemaNode leaf, final MethodSignatureBuilder getter,
@@ -1996,7 +1989,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      */
     private static GeneratedTOBuilder resolveListKeyTOBuilder(final String packageName, final ListSchemaNode list) {
         GeneratedTOBuilder genTOBuilder = null;
-        if ((list.getKeyDefinition() != null) && (!list.getKeyDefinition().isEmpty())) {
+        if (list.getKeyDefinition() != null && !list.getKeyDefinition().isEmpty()) {
             final String listName = list.getQName().getLocalName() + "Key";
             final String genTOName = BindingMapping.getClassName(listName);
             genTOBuilder = new GeneratedTOBuilderImpl(packageName, genTOName);
@@ -2032,7 +2025,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final String packageName = typeBuilder.getFullyQualifiedName();
         if (typeDef instanceof UnionTypeDefinition) {
             final List<GeneratedTOBuilder> types = ((TypeProviderImpl) typeProvider)
-                    .provideGeneratedTOBuildersForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
+                    .provideGeneratedTOBuildersForUnionTypeDef(packageName, (UnionTypeDefinition) typeDef,
                             classNameFromLeaf, leaf);
             genTOBuilders.addAll(types);
 
@@ -2052,7 +2045,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             resultTOBuilder.addToStringProperty(genPropBuilder);
 
         } else if (typeDef instanceof BitsTypeDefinition) {
-            genTOBuilders.add((((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
+            genTOBuilders.add(((TypeProviderImpl) typeProvider).provideGeneratedTOBuilderForBitsTypeDefinition(
                     packageName, typeDef, classNameFromLeaf, parentModule.getName()));
         }
         if (!genTOBuilders.isEmpty()) {

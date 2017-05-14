@@ -61,12 +61,12 @@ public class GroupingDefinitionDependencySort {
             throw new IllegalArgumentException("Set of Type Definitions " + "cannot be NULL!");
         }
 
-        final List<GroupingDefinition> resultGroupingDefinitions = new ArrayList<GroupingDefinition>();
+        final List<GroupingDefinition> resultGroupingDefinitions = new ArrayList<>();
         final Set<Node> unsorted = groupingDefinitionsToNodes(groupingDefinitions);
         final List<Node> sortedNodes = TopologicalSort.sort(unsorted);
         for (Node node : sortedNodes) {
             NodeWrappedType nodeWrappedType = (NodeWrappedType) node;
-            resultGroupingDefinitions.add((GroupingDefinition) (nodeWrappedType.getWrappedType()));
+            resultGroupingDefinitions.add((GroupingDefinition) nodeWrappedType.getWrappedType());
         }
         return resultGroupingDefinitions;
 

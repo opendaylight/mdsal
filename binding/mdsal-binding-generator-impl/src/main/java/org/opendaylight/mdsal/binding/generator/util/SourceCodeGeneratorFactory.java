@@ -29,10 +29,9 @@ public class SourceCodeGeneratorFactory {
      * @param generatedSourceDir the directory in which to put generated source files. If null,
      *     a default is used (see DefaultSourceCodeGenerator).
      */
-    public SourceCodeGenerator getInstance(String generatedSourceDir) {
-
-        boolean generateSource = Boolean.valueOf(System.getProperty( GENERATE_CODEC_SOURCE_PROP, "false"));
-        if(generateSource) {
+    public SourceCodeGenerator getInstance(final String generatedSourceDir) {
+        boolean generateSource = Boolean.getBoolean(GENERATE_CODEC_SOURCE_PROP);
+        if (generateSource) {
             return new DefaultSourceCodeGenerator(generatedSourceDir);
         }
 

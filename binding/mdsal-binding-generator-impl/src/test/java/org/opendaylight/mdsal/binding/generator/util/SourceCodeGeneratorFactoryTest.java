@@ -26,10 +26,6 @@ import javassist.CtMethod;
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.ClassFile;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.util.DefaultSourceCodeGenerator;
-import org.opendaylight.mdsal.binding.generator.util.NullSourceCodeGenerator;
-import org.opendaylight.mdsal.binding.generator.util.SourceCodeGenerator;
-import org.opendaylight.mdsal.binding.generator.util.SourceCodeGeneratorFactory;
 
 public class SourceCodeGeneratorFactoryTest {
 
@@ -84,7 +80,7 @@ public class SourceCodeGeneratorFactoryTest {
 
         generator = new DefaultSourceCodeGenerator(dir.getName());
         final CtClass ctClass = mock(CtClass.class, CALLS_REAL_METHODS);
-        doReturn(false).when(ctClass).isFrozen();
+        doReturn(Boolean.FALSE).when(ctClass).isFrozen();
         ctClass.setName("TestClass");
         final ClassPool classPool = mock(ClassPool.class);
         doReturn(ctClass).when(classPool).get((String) any());
@@ -92,12 +88,12 @@ public class SourceCodeGeneratorFactoryTest {
         doReturn(ctClass).when(ctClass).getSuperclass();
         doReturn(new CtClass[] {ctClass,ctClass}).when(ctClass).getInterfaces();
         doReturn(classPool).when(ctClass).getClassPool();
-        doReturn(false).when(ctClass).isArray();
-        doReturn(false).when(ctClass).isPrimitive();
+        doReturn(Boolean.FALSE).when(ctClass).isArray();
+        doReturn(Boolean.FALSE).when(ctClass).isPrimitive();
         doReturn(AccessFlag.toModifier(AccessFlag.PUBLIC)).when(ctClass).getModifiers();
         final ClassFile classFile = new ClassFile(false,"test", null);
         doReturn(classFile).when(ctClass).getClassFile2();
-        doReturn(false).when(ctClass).isFrozen();
+        doReturn(Boolean.FALSE).when(ctClass).isFrozen();
         doReturn("testClass").when(ctClass).getName();
         final CtField ctField = mock(CtField.class);
         doReturn(AccessFlag.toModifier(AccessFlag.PUBLIC)).when(ctField).getModifiers();
@@ -116,8 +112,10 @@ public class SourceCodeGeneratorFactoryTest {
         assertTrue(cleanup(dir));
     }
 
-    private boolean cleanup(File dir) {
-        if (!dir.exists()) return true;
+    private static boolean cleanup(final File dir) {
+        if (!dir.exists()) {
+            return true;
+        }
 
         stream(dir.listFiles()).forEach(File::delete);
         return dir.delete();

@@ -47,7 +47,7 @@ class YangTemplate {
     private static val SKIP = Boolean.getBoolean(SKIP_PROPERTY_NAME);
 
     def static String generateYangSnipet(SchemaNode schemaNode) {
-        if (schemaNode == null)
+        if (schemaNode === null)
             return ''
         if (SKIP)
             return '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
@@ -115,7 +115,7 @@ class YangTemplate {
 
         '''
             «FOR moduleImport : moduleImports SEPARATOR "\n"»
-                «IF moduleImport != null && !moduleImport.moduleName.nullOrEmpty»
+                «IF moduleImport !== null && !moduleImport.moduleName.nullOrEmpty»
                 import «moduleImport.moduleName» { prefix "«moduleImport.prefix»"; }
                 «ENDIF»
             «ENDFOR»
@@ -144,7 +144,7 @@ class YangTemplate {
                 «IF !module.imports.nullOrEmpty»
                 «writeModuleImports(module.imports)»
                 «ENDIF»
-                «IF module.revision != null»
+                «IF module.revision !== null»
                 «writeRevision(module.revision, module.description)»
                 «ENDIF»
                 «IF !module.childNodes.nullOrEmpty»
@@ -198,7 +198,7 @@ class YangTemplate {
     def private static writeRPCs(Set<RpcDefinition> rpcDefs) {
         '''
             «FOR rpc : rpcDefs»
-                «IF rpc != null»
+                «IF rpc !== null»
                 «writeRPC(rpc)»
                 «ENDIF»
             «ENDFOR»
@@ -215,10 +215,10 @@ class YangTemplate {
                 «IF !rpc.groupings.nullOrEmpty»
                     «writeGroupingDefs(rpc.groupings)»
                 «ENDIF»
-                «IF rpc.input != null»
+                «IF rpc.input !== null»
                     «writeRpcInput(rpc.input)»
                 «ENDIF»
-                «IF rpc.output != null»
+                «IF rpc.output !== null»
                     «writeRpcOutput(rpc.output)»
                 «ENDIF»
                 «IF !rpc.reference.nullOrEmpty»
@@ -233,7 +233,7 @@ class YangTemplate {
     }
 
     def private static writeRpcInput(ContainerSchemaNode input) {
-        if(input == null)
+        if (input === null)
             return ''
 
         '''
@@ -247,7 +247,7 @@ class YangTemplate {
     }
 
     def private static writeRpcOutput(ContainerSchemaNode output) {
-        if(output == null)
+        if (output === null)
             return ''
 
         '''
@@ -262,7 +262,7 @@ class YangTemplate {
     def private static writeNotifications(Set<NotificationDefinition> notifications) {
         '''
             «FOR notification : notifications»
-                «IF notification != null»
+                «IF notification !== null»
                 «writeNotification(notification)»
                 «ENDIF»
             «ENDFOR»
@@ -316,13 +316,13 @@ class YangTemplate {
     }
 
     def private static writeUsesNodes(Set<UsesNode> usesNodes) {
-        if (usesNodes == null) {
+        if (usesNodes === null) {
             return ''
         }
 
         '''
             «FOR usesNode : usesNodes»
-                «IF usesNode != null»
+                «IF usesNode !== null»
                 «writeUsesNode(usesNode)»
                 «ENDIF»
             «ENDFOR»
@@ -381,11 +381,11 @@ class YangTemplate {
     }
 
     def private static writeIdentity(IdentitySchemaNode identity) {
-        if (identity == null)
+        if (identity === null)
             return ''
         '''
             identity «identity.QName.localName» {
-                «IF identity.baseIdentity != null»
+                «IF identity.baseIdentity !== null»
                 base "()«identity.baseIdentity»";
                 «ENDIF»
                 «IF !identity.description.nullOrEmpty»
@@ -396,7 +396,7 @@ class YangTemplate {
                 reference
                     "«identity.reference»";
                 «ENDIF»
-                «IF identity.status != null»
+                «IF identity.status !== null»
                 status «identity.status»;
                 «ENDIF»
             }
@@ -406,7 +406,7 @@ class YangTemplate {
     def private static writeFeatures(Set<FeatureDefinition> features) {
         '''
             «FOR feature : features»
-                «IF feature != null»
+                «IF feature !== null»
                 «writeFeature(feature)»
                 «ENDIF»
             «ENDFOR»
@@ -424,7 +424,7 @@ class YangTemplate {
                 reference
                     "«featureDef.reference»";
                 «ENDIF»
-                «IF featureDef.status != null»
+                «IF featureDef.status !== null»
                 status «featureDef.status»;
                 «ENDIF»
             }
@@ -434,7 +434,7 @@ class YangTemplate {
     def private static writeExtensions(List<ExtensionDefinition> extensions) {
         '''
             «FOR anExtension : extensions»
-                «IF anExtension != null»
+                «IF anExtension !== null»
                 «writeExtension(anExtension)»
                 «ENDIF»
             «ENDFOR»
@@ -455,7 +455,7 @@ class YangTemplate {
                 reference
                     "«extensionDef.reference»";
                 «ENDIF»
-                «IF extensionDef.status != null»
+                «IF extensionDef.status !== null»
                 status «extensionDef.status»;
                 «ENDIF»
             }
@@ -465,7 +465,7 @@ class YangTemplate {
     def private static writeDeviations(Set<Deviation> deviations) {
         '''
             «FOR deviation : deviations»
-                «IF deviation != null»
+                «IF deviation !== null»
                 «writeDeviation(deviation)»
                 «ENDIF»
             «ENDFOR»
@@ -480,7 +480,7 @@ class YangTemplate {
                         "«deviation.reference»";
                 «ENDIF»
                 «FOR dev : deviation.deviates»
-                    «IF dev != null && dev.deviateType != null»
+                    «IF dev !== null && dev.deviateType !== null»
                         deviation «dev.deviateType.name»;
                     «ENDIF»
                 «ENDFOR»
@@ -491,7 +491,7 @@ class YangTemplate {
     def private static writeAugments(Set<AugmentationSchema> augments) {
         '''
             «FOR augment : augments»
-                «IF augment != null»
+                «IF augment !== null»
                 «writeAugment(augment)»
                 «ENDIF»
             «ENDFOR»
@@ -509,7 +509,7 @@ class YangTemplate {
     def private static CharSequence writeGroupingDefs(Set<GroupingDefinition> groupingDefs) {
         '''
             «FOR groupingDef : groupingDefs»
-                «IF groupingDef != null»
+                «IF groupingDef !== null»
                 «writeGroupingDef(groupingDef)»
                 «ENDIF»
             «ENDFOR»
@@ -519,7 +519,7 @@ class YangTemplate {
     def private static writeAugment(AugmentationSchema augment) {
         '''
             augment «YangTextTemplate.formatToAugmentPath(augment.targetPath.pathFromRoot)» {
-                «IF augment.whenCondition != null && !augment.whenCondition.toString.nullOrEmpty»
+                «IF augment.whenCondition !== null && !augment.whenCondition.toString.nullOrEmpty»
                 when "«augment.whenCondition.toString»";
                 «ENDIF»
                 «IF !augment.description.nullOrEmpty»
@@ -530,7 +530,7 @@ class YangTemplate {
                 reference
                     "«augment.reference»";
                 «ENDIF»
-                «IF augment.status != null»
+                «IF augment.status !== null»
                 status «augment.status»;
                 «ENDIF»
                 «IF !augment.childNodes.nullOrEmpty»
