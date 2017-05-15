@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Michael Vorburger <vorburger@redhat.com>
+Code-Review+2: Martin Ciglan <mciglan@cisco.com>
+Submitted-by: Martin Ciglan <mciglan@cisco.com>
+Submitted-at: Mon, 15 May 2017 10:22:03 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/56840
+Project: mdsal
+Branch: refs/heads/master
