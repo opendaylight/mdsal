@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_58105f01",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/yangtools/binding/data/codec/gen/impl/DataNodeContainerSerializerSource.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-05-15T09:22:04Z",
+      "side": 1,
+      "message": "\u0027}\u0027",
+      "range": {
+        "startLine": 197,
+        "startChar": 17,
+        "endLine": 197,
+        "endChar": 20
+      },
+      "revId": "bb1a39166b4f7b6b5a32a4c1ac8a857fbfda56b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
