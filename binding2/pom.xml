@@ -27,12 +27,22 @@
     <modules>
       <module>mdsal-binding2-spec</module>
       <module>mdsal-model-binding2-parent</module>
+
+      <!-- binding2 generator -->
       <module>mdsal-binding2-maven-api-gen-plugin</module>
       <module>mdsal-binding2-generator-api</module>
       <module>mdsal-binding2-generator-impl</module>
       <module>mdsal-binding2-java-api-generator</module>
       <module>mdsal-binding2-generator-util</module>
+
+      <!-- binding2 runtime -->
+      <module>mdsal-binding2-api</module>
+      <module>mdsal-binding2-dom-codec</module>
+      <module>mdsal-binding2-dom-adapter</module>
+
+      <!-- binding2 utils and tests -->
       <module>mdsal-binding2-util</module>
+      <module>mdsal-binding2-test-model</module>
     </modules>
 
   <!--
