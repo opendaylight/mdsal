@@ -1,0 +1,29 @@
+module bug8237 {
+    yang-version 1;
+    namespace "bug8237";
+    prefix "bug8237";
+
+    revision "2017-16-05" {
+    }
+
+    container simple-container {
+        list simple-list {
+            key name;
+            leaf name {
+                type string;
+            }
+            container cont-under-list {
+                leaf nested-name {
+                    type string;
+                }
+            }
+
+            list nested-list {
+                key nested-name;
+                leaf nested-name {
+                    type string;
+                }
+            }
+        }
+    }
+}
