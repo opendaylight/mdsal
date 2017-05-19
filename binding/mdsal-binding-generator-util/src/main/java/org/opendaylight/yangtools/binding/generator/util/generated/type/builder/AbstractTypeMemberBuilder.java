@@ -43,7 +43,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
         return builder;
     }
 
-    protected Type getReturnType() {
+    public Type getReturnType() {
         return returnType;
     }
 
@@ -141,13 +141,13 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
         if (getClass() != obj.getClass()) {
             return false;
         }
-        AbstractTypeMemberBuilder<?> other = (AbstractTypeMemberBuilder<?>) obj;
+        final AbstractTypeMemberBuilder<?> other = (AbstractTypeMemberBuilder<?>) obj;
         return Objects.equals(getName(), other.getName()) && Objects.equals(getReturnType(), other.getReturnType());
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("GeneratedPropertyImpl [name=");
         builder.append(getName());
         builder.append(", annotations=");
