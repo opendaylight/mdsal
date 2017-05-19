@@ -14,6 +14,12 @@ module yang-template-test {
         default "simple-typedef";
     }
 
+    deviation /yti:yti-leaf {
+        deviate add {
+            default "def";
+        }
+    }
+
     container simple-container {
     }
 
