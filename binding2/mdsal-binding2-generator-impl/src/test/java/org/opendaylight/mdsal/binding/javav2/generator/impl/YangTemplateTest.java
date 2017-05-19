@@ -40,8 +40,6 @@ public class YangTemplateTest {
         String moduleBody = yangTemplateForModule.render(iterator.next()).body().trim();
         String cleanedModuleBody = YangSnippetCleaner.clean(moduleBody);
         assertTrue(cleanedModuleBody.contains("yang-template-import"));
-        assertTrue(cleanedModuleBody.contains("    deviation /yti:yti-leaf {"));
-        assertTrue(cleanedModuleBody.contains("            default \"def\";"));
         assertTrue(cleanedModuleBody.contains("    extension ext;"));
         assertTrue(cleanedModuleBody.contains("    yti:ext;"));
         assertTrue(cleanedModuleBody.contains("    yti:ext-arg \"arg\""));

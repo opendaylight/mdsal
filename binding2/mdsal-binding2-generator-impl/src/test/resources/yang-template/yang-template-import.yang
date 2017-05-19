@@ -11,12 +11,6 @@ module yang-template-import {
         type string;
     }
 
-    deviation /yti:yti-leaf {
-        deviate add {
-            default "def";
-        }
-    }
-
     extension ext;
 
     extension ext-arg {
