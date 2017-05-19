@@ -81,21 +81,21 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
 
     @Override
     public BindingRuntimeContext getRuntimeContext() {
-        return context;
+        return this.context;
     }
 
     Codec<YangInstanceIdentifier, InstanceIdentifier<?>> getInstanceIdentifierCodec() {
-        return instanceIdentifierCodec;
+        return this.instanceIdentifierCodec;
     }
 
     public Codec<QName, Class<?>> getIdentityCodec() {
-        return identityCodec;
+        return this.identityCodec;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public DataObjectSerializer getEventStreamSerializer(final Class<?> type) {
-        return registry.getSerializer((Class) type);
+        return this.registry.getSerializer((Class) type);
     }
 
     public Entry<YangInstanceIdentifier, BindingStreamEventWriter> newWriter(final InstanceIdentifier<?> path,
@@ -112,17 +112,17 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
 
     BindingStreamEventWriter newRpcWriter(final Class<? extends DataContainer> rpcInputOrOutput,
             final NormalizedNodeStreamWriter domWriter) {
-        return root.getRpc(rpcInputOrOutput).createWriter(domWriter);
+        return this.root.getRpc(rpcInputOrOutput).createWriter(domWriter);
     }
 
     BindingStreamEventWriter newNotificationWriter(final Class<? extends Notification> notification,
             final NormalizedNodeStreamWriter domWriter) {
-        return root.getNotification(notification).createWriter(domWriter);
+        return this.root.getNotification(notification).createWriter(domWriter);
     }
 
     public DataContainerCodecContext<?,?> getCodecContextNode(final InstanceIdentifier<?> binding,
             final List<YangInstanceIdentifier.PathArgument> builder) {
-        DataContainerCodecContext<?,?> currentNode = root;
+        DataContainerCodecContext<?,?> currentNode = this.root;
         for (final InstanceIdentifier.PathArgument bindingArg : binding.getPathArguments()) {
             currentNode = currentNode.bindingPathArgumentChild(bindingArg, builder);
             Preconditions.checkArgument(currentNode != null, "Supplied Instance Identifier %s is not valid.",binding);
@@ -144,7 +144,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
      */
     @Nullable NodeCodecContext<?> getCodecContextNode(final @Nonnull YangInstanceIdentifier dom,
             final @Nullable Collection<InstanceIdentifier.PathArgument> bindingArguments) {
-        NodeCodecContext<?> currentNode = root;
+        NodeCodecContext<?> currentNode = this.root;
         ListNodeCodecContext<?> currentList = null;
 
         for (final YangInstanceIdentifier.PathArgument domArg : dom.getPathArguments()) {
@@ -210,11 +210,11 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
     }
 
     NotificationCodecContext<?> getNotificationContext(final SchemaPath notification) {
-        return root.getNotification(notification);
+        return this.root.getNotification(notification);
     }
 
     RpcInputCodec<?> getRpcInputCodec(final SchemaPath path) {
-        return root.getRpc(path);
+        return this.root.getRpc(path);
     }
 
     @Override
@@ -261,7 +261,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
                 }
                 final Codec<Object, Object> codec = getCodec(valueType, schema);
                 final LeafNodeCodecContext<?> leafNode = new LeafNodeCodecContext<>(schema, codec, method,
-                        context.getSchemaContext());
+                        this.context.getSchemaContext());
                 leaves.put(schema.getQName().getLocalName(), leafNode);
             }
         }
@@ -277,11 +277,11 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
     Codec<Object, Object> getCodec(final Class<?> valueType, final TypeDefinition<?> instantiatedType) {
         if (Class.class.equals(valueType)) {
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            final Codec<Object, Object> casted = (Codec) identityCodec;
+            final Codec<Object, Object> casted = (Codec) this.identityCodec;
             return casted;
         } else if (InstanceIdentifier.class.equals(valueType)) {
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            final Codec<Object, Object> casted = (Codec) instanceIdentifierCodec;
+            final Codec<Object, Object> casted = (Codec) this.instanceIdentifierCodec;
             return casted;
         } else if (Boolean.class.equals(valueType)) {
             if (instantiatedType instanceof EmptyTypeDefinition) {
@@ -293,11 +293,11 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         return ValueTypeCodec.NOOP_CODEC;
     }
 
-    private Codec<Object, Object> getCodecForBindingClass(final Class<?> valueType, final TypeDefinition<?> typeDef) {
+    Codec<Object, Object> getCodecForBindingClass(final Class<?> valueType, final TypeDefinition<?> typeDef) {
         if (typeDef instanceof IdentityrefTypeDefinition) {
-            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, identityCodec);
+            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, this.identityCodec);
         } else if (typeDef instanceof InstanceIdentifierTypeDefinition) {
-            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, instanceIdentifierCodec);
+            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, this.instanceIdentifierCodec);
         } else if (typeDef instanceof UnionTypeDefinition) {
             final Callable<UnionTypeCodec> loader = UnionTypeCodec.loader(valueType, (UnionTypeDefinition) typeDef, this);
             try {
@@ -306,7 +306,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
                 throw new IllegalStateException("Unable to load codec for " + valueType, e);
             }
         } else if (typeDef instanceof LeafrefTypeDefinition) {
-            final Entry<GeneratedType, Object> typeWithSchema = context.getTypeWithSchema(valueType);
+            final Entry<GeneratedType, Object> typeWithSchema = this.context.getTypeWithSchema(valueType);
             final Object schema = typeWithSchema.getValue();
             Preconditions.checkState(schema instanceof TypeDefinition<?>);
             return getCodec(valueType, (TypeDefinition<?>) schema);
