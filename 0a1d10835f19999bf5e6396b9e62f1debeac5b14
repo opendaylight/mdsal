@@ -1,0 +1,28 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_ce2aad8f",
+        "filename": "binding2/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-05-19T08:12:44Z",
+      "side": 1,
+      "message": "sure, rather wrong label, will fix it",
+      "parentUuid": "ba068154_2e1379b9",
+      "range": {
+        "startLine": 43,
+        "startChar": 30,
+        "endLine": 43,
+        "endChar": 35
+      },
+      "revId": "0a1d10835f19999bf5e6396b9e62f1debeac5b14",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
