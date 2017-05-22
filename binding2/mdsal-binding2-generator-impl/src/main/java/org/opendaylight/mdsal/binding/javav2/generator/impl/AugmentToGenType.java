@@ -200,7 +200,7 @@ final class AugmentToGenType {
             final String packageName = augmentPackageName;
             final Type targetType = new ReferencedTypeImpl(targetTypeBuilder.getPackageName(),
                     targetTypeBuilder.getName());
-            generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName, targetType,
+            generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName, null,targetType,
                     augSchema, genTypeBuilders, generatedCtx, schemaContext, verboseClassComments, typeProvider);
             return generatedCtx;
 
@@ -218,14 +218,11 @@ final class AugmentToGenType {
                         Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
                         final boolean verboseClassComments, final TypeProvider typeProvider) {
 
-        Map<Module, ModuleContext> generatedCtx;
         Preconditions.checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
         Preconditions.checkArgument(augSchema != null, "Augmentation Schema cannot be NULL.");
         Preconditions.checkState(augSchema.getTargetPath() != null,
                 "Augmentation Schema does not contain Target Path (Target Path is NULL).");
 
-        generatedCtx = GenHelperUtil.processUsesAugments(schemaContext, augSchema, module, genCtx, genTypeBuilders,
-                verboseClassComments, typeProvider);
         final SchemaPath targetPath = augSchema.getTargetPath();
         final SchemaNode targetSchemaNode = findOriginalTargetFromGrouping(schemaContext, targetPath, usesNode);
         if (targetSchemaNode == null) {
@@ -233,9 +230,9 @@ final class AugmentToGenType {
         }
 
         GeneratedTypeBuilder targetTypeBuilder = GenHelperUtil.findChildNodeByPath(targetSchemaNode.getPath(),
-                generatedCtx);
+                genCtx);
         if (targetTypeBuilder == null) {
-            targetTypeBuilder = GenHelperUtil.findCaseByPath(targetSchemaNode.getPath(), generatedCtx);
+            targetTypeBuilder = GenHelperUtil.findCaseByPath(targetSchemaNode.getPath(), genCtx);
         }
         if (targetTypeBuilder == null) {
             throw new NullPointerException("Target type not yet generated: " + targetSchemaNode);
@@ -243,19 +240,28 @@ final class AugmentToGenType {
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             String packageName = augmentPackageName;
+            Type parentTypeBuiler = null;
             if (usesNodeParent instanceof SchemaNode) {
+                parentTypeBuiler = genCtx.get(module).getGrouping(((SchemaNode) usesNodeParent).getPath());
+                if(parentTypeBuiler == null) {
+                    parentTypeBuiler = genCtx.get(module).getChildNode(((SchemaNode) usesNodeParent).getPath());
+                }
                 packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(augmentPackageName,
                         ((SchemaNode) usesNodeParent).getPath());
+            } else if (usesNodeParent instanceof AugmentationSchema) {
+                parentTypeBuiler = genCtx.get(module).getTypeToAugmentation().inverse().get(usesNodeParent);
+                packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(
+                        parentTypeBuiler.getPackageName(),(AugmentationSchema)usesNodeParent);
             }
-            generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName,
-                    targetTypeBuilder.toInstance(), augSchema, genTypeBuilders, generatedCtx, schemaContext,
+            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName,
+                    parentTypeBuiler,targetTypeBuilder.toInstance(), augSchema, genTypeBuilders, genCtx, schemaContext,
                     verboseClassComments, typeProvider);
-            return generatedCtx;
+            return genCtx;
         } else {
-            generatedCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, augmentPackageName,
+            genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, augmentPackageName,
                     targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes(),
-                    usesNodeParent, generatedCtx, verboseClassComments, genTypeBuilders, typeProvider);
-            return generatedCtx;
+                    usesNodeParent, genCtx, verboseClassComments, genTypeBuilders, typeProvider);
+            return genCtx;
         }
     }
 
