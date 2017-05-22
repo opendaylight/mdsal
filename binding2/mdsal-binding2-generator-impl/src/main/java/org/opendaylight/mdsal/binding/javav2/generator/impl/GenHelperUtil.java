@@ -291,7 +291,7 @@ final class GenHelperUtil {
      * @return generated type builder for augment in genCtx
      */
     static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
-                final String basePackageName, final Type targetTypeRef, final AugmentationSchema augSchema,
+                final String basePackageName, final Type parentTypeForBuilder,final Type targetTypeRef, final AugmentationSchema augSchema,
                 final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module,
                 ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments, final
                 TypeProvider typeProvider) {
@@ -305,6 +305,7 @@ final class GenHelperUtil {
 
         GeneratedTypeBuilder augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augIdentifier);
 
+        augTypeBuilder.setParentTypeForBuilder(parentTypeForBuilder);
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
         augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
