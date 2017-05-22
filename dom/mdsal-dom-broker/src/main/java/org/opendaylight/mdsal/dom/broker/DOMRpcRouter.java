@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
@@ -132,6 +133,16 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     @Override
     public void close() {
         listenerNotifier.shutdown();
+    }
+
+    @VisibleForTesting
+    Collection<?> listeners() {
+        return listeners;
+    }
+
+    @VisibleForTesting
+    DOMRpcRoutingTable routingTable() {
+        return routingTable;
     }
 
     private static final class Registration<T extends DOMRpcAvailabilityListener>

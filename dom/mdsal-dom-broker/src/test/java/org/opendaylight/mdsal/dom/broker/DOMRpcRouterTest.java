@@ -13,72 +13,68 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.concurrent.RejectedExecutionException;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class DOMRpcRouterTest extends TestUtils {
 
     @Test
     public void registerRpcImplementation() throws Exception {
-        final DOMRpcRouter rpcRouter = new DOMRpcRouter();
-        final Field routingTableField = DOMRpcRouter.class.getDeclaredField("routingTable");
-        routingTableField.setAccessible(true);
-        DOMRpcRoutingTable routingTable = (DOMRpcRoutingTable) routingTableField.get(rpcRouter);
-        assertFalse(routingTable.getRpcs().containsKey(SchemaPath.ROOT));
+        try (final DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+            DOMRpcRoutingTable routingTable = rpcRouter.routingTable();
+            assertFalse(routingTable.getRpcs().containsKey(SchemaPath.ROOT));
 
-        rpcRouter.registerRpcImplementation(getTestRpcImplementation(), DOMRpcIdentifier.create(SchemaPath.ROOT, null));
-        routingTable = (DOMRpcRoutingTable) routingTableField.get(rpcRouter);
-        assertTrue(routingTable.getRpcs().containsKey(SchemaPath.ROOT));
+            rpcRouter.registerRpcImplementation(getTestRpcImplementation(),
+                DOMRpcIdentifier.create(SchemaPath.ROOT, null));
+            routingTable = rpcRouter.routingTable();
+            assertTrue(routingTable.getRpcs().containsKey(SchemaPath.ROOT));
 
-        rpcRouter.registerRpcImplementation(getTestRpcImplementation(), DOMRpcIdentifier.create(SchemaPath.SAME, null));
-        routingTable = (DOMRpcRoutingTable) routingTableField.get(rpcRouter);
-        assertTrue(routingTable.getRpcs().containsKey(SchemaPath.SAME));
+            rpcRouter.registerRpcImplementation(getTestRpcImplementation(),
+                DOMRpcIdentifier.create(SchemaPath.SAME, null));
+            routingTable = rpcRouter.routingTable();
+            assertTrue(routingTable.getRpcs().containsKey(SchemaPath.SAME));
+        }
     }
 
     @Test
     public void invokeRpc() throws Exception {
-        final DOMRpcRouter rpcRouter = new DOMRpcRouter();
-        assertNotNull(rpcRouter.invokeRpc(SchemaPath.create(false, TestModel.TEST_QNAME), null));
+        try (final DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+            assertNotNull(rpcRouter.invokeRpc(SchemaPath.create(false, TestModel.TEST_QNAME), null));
+        }
     }
 
     @Test
     public void registerRpcListener() throws Exception {
-        final DOMRpcRouter rpcRouter = new DOMRpcRouter();
-        final DOMRpcAvailabilityListener listener = mock(DOMRpcAvailabilityListener.class);
+        try (final DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+            final DOMRpcAvailabilityListener listener = mock(DOMRpcAvailabilityListener.class);
 
-        final Field listenersField = DOMRpcRouter.class.getDeclaredField("listeners");
-        listenersField.setAccessible(true);
-        final Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> listenersOriginal =
-                (Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>>) listenersField.get(rpcRouter);
+            final Collection<?> listenersOriginal = rpcRouter.listeners();
 
-        assertNotNull(rpcRouter.registerRpcListener(listener));
+            assertNotNull(rpcRouter.registerRpcListener(listener));
 
-        final Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>> listenersChanged =
-                (Collection<ListenerRegistration<? extends DOMRpcAvailabilityListener>>) listenersField.get(rpcRouter);
-        assertNotEquals(listenersOriginal, listenersChanged);
-        assertTrue(listenersOriginal.isEmpty());
-        assertFalse(listenersChanged.isEmpty());
+            final Collection<?> listenersChanged = rpcRouter.listeners();
+            assertNotEquals(listenersOriginal, listenersChanged);
+            assertTrue(listenersOriginal.isEmpty());
+            assertFalse(listenersChanged.isEmpty());
+        }
     }
 
     @Test
     public void onGlobalContextUpdated() throws Exception {
-        final DOMRpcRouter rpcRouter = new DOMRpcRouter();
-        final Field routingTableField = DOMRpcRouter.class.getDeclaredField("routingTable");
-        routingTableField.setAccessible(true);
+        try (final DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
 
-        final DOMRpcRoutingTable routingTableOriginal = (DOMRpcRoutingTable) routingTableField.get(rpcRouter);
+            final DOMRpcRoutingTable routingTableOriginal = rpcRouter.routingTable();
 
-        rpcRouter.onGlobalContextUpdated(TestModel.createTestContext());
+            rpcRouter.onGlobalContextUpdated(TestModel.createTestContext());
 
-        final DOMRpcRoutingTable routingTableChanged = (DOMRpcRoutingTable) routingTableField.get(rpcRouter);
-        assertNotEquals(routingTableOriginal, routingTableChanged);
+            final DOMRpcRoutingTable routingTableChanged = rpcRouter.routingTable();
+            assertNotEquals(routingTableOriginal, routingTableChanged);
+        }
     }
 
     @Test(expected = RejectedExecutionException.class)

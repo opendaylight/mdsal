@@ -14,7 +14,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Multimap;
-import java.lang.reflect.Field;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
@@ -22,7 +21,6 @@ import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListener;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -42,34 +40,23 @@ public class DOMNotificationRouterTest extends TestUtils {
         final DOMNotificationListener domNotificationListener = new TestListener();
         final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1);
 
-        final Field listenersField = DOMNotificationRouter.class.getDeclaredField("listeners");
-        listenersField.setAccessible(true);
-
-        final Field subscriptionListenersField = DOMNotificationRouter.class.getDeclaredField("subscriptionListeners");
-        subscriptionListenersField.setAccessible(true);
-
-        Multimap<SchemaPath, ListenerRegistration<? extends DOMNotificationListener>> listeners =
-                (Multimap<SchemaPath, ListenerRegistration<? extends DOMNotificationListener>>)
-                        listenersField.get(domNotificationRouter);
+        Multimap<SchemaPath, ?> listeners = domNotificationRouter.listeners();
 
         assertTrue(listeners.isEmpty());
         assertNotNull(domNotificationRouter.registerNotificationListener(domNotificationListener, SchemaPath.ROOT));
         assertNotNull(domNotificationRouter.registerNotificationListener(domNotificationListener, SchemaPath.SAME));
 
-        listeners = (Multimap<SchemaPath, ListenerRegistration<? extends DOMNotificationListener>>)
-                        listenersField.get(domNotificationRouter);
+        listeners = domNotificationRouter.listeners();
 
         assertFalse(listeners.isEmpty());
 
         ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
-                (ListenerRegistry<DOMNotificationSubscriptionListener>)
-                        subscriptionListenersField.get(domNotificationRouter);
+                domNotificationRouter.subscriptionListeners();
 
         assertFalse(subscriptionListeners.iterator().hasNext());
         assertNotNull(domNotificationRouter.registerSubscriptionListener(domNotificationSubscriptionListener));
 
-        subscriptionListeners = (ListenerRegistry<DOMNotificationSubscriptionListener>)
-                        subscriptionListenersField.get(domNotificationRouter);
+        subscriptionListeners = domNotificationRouter.subscriptionListeners();
         assertTrue(subscriptionListeners.iterator().hasNext());
 
         final DOMNotification domNotification = mock(DOMNotification.class);
@@ -104,10 +91,7 @@ public class DOMNotificationRouterTest extends TestUtils {
     public void close() throws Exception {
         final DOMNotificationRouter domNotificationRouter = DOMNotificationRouter.create(1);
 
-        final Field executorField = DOMNotificationRouter.class.getDeclaredField("executor");
-        executorField.setAccessible(true);
-
-        final ExecutorService executor = (ExecutorService) executorField.get(domNotificationRouter);
+        final ExecutorService executor = domNotificationRouter.executor();
 
         assertFalse(executor.isShutdown());
         domNotificationRouter.close();
@@ -116,6 +100,6 @@ public class DOMNotificationRouterTest extends TestUtils {
 
     private class TestListener implements DOMNotificationListener {
         @Override
-        public void onNotification(@Nonnull DOMNotification notification) {}
+        public void onNotification(@Nonnull final DOMNotification notification) {}
     }
 }
