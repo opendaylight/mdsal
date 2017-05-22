@@ -57,7 +57,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     }
 
     @Override
-    public <T extends DOMDataTreeShard> ListenerRegistration<T> registerDataTreeShard(
+    public <T extends DOMDataTreeShard> DOMDataTreeShardRegistration<T> registerDataTreeShard(
             final DOMDataTreeIdentifier prefix, final T shard, final DOMDataTreeProducer producer)
                     throws DOMDataTreeShardingConflictException {
 
