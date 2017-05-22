@@ -79,6 +79,7 @@ final class ModuleToGenType {
      *             </ul>
      * @throws IllegalStateException
      *             if set of type definitions from module is null
+     *
      */
     private static Map<Module, ModuleContext> allTypeDefinitionsToGenTypes(final Module module, final Map<Module, ModuleContext> genCtx,
             final TypeProvider typeProvider) {
@@ -146,6 +147,8 @@ final class ModuleToGenType {
             if (notification != null) {
                 resolveNotification(listenerInterface, null, basePackageName, notification, module, schemaContext,
                         verboseClassComments, genTypeBuilders, typeProvider, genCtx);
+                processUsesAugments(schemaContext, notification, module, genCtx, genTypeBuilders,
+                        verboseClassComments, typeProvider);
             }
         }
 
@@ -161,7 +164,10 @@ final class ModuleToGenType {
                         resolveNotification(listenerInterface, potential.getQName().getLocalName(), basePackageName,
                                 tiedNotification, module, schemaContext, verboseClassComments, genTypeBuilders,
                                 typeProvider, genCtx);
+
                         notifications.add(tiedNotification);
+                        processUsesAugments(schemaContext, tiedNotification, module, genCtx, genTypeBuilders,
+                                verboseClassComments, typeProvider);
                     }
                 }
             }
