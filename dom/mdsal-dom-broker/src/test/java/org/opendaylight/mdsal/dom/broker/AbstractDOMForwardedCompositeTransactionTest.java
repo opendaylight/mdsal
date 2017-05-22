@@ -25,18 +25,18 @@ public class AbstractDOMForwardedCompositeTransactionTest {
         doThrow(UnsupportedOperationException.class).when(FAIL_TX1).close();
         doThrow(UnsupportedOperationException.class).when(FAIL_TX2).close();
 
-        final AbstractDOMForwardedCompositeTransaction domForwardedCompositeTransaction =
+        final AbstractDOMForwardedCompositeTransaction<?, ?> domForwardedCompositeTransaction =
                 new DOMForwardedCompositeTransactionTestImpl("testIdent",
                         ImmutableMap.of("testKey1", FAIL_TX1, "testKey2", FAIL_TX2));
 
         domForwardedCompositeTransaction.closeSubtransactions();
     }
 
-    private class DOMForwardedCompositeTransactionTestImpl
+    private static class DOMForwardedCompositeTransactionTestImpl
             extends AbstractDOMForwardedCompositeTransaction<String, DOMStoreTransaction> {
 
-        private DOMForwardedCompositeTransactionTestImpl(Object identifier,
-                                                         Map<String, DOMStoreTransaction> backingTxs) {
+        private DOMForwardedCompositeTransactionTestImpl(final Object identifier,
+                                                         final Map<String, DOMStoreTransaction> backingTxs) {
             super(identifier, backingTxs);
         }
     }
