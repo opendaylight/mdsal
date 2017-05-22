@@ -103,7 +103,7 @@ public class MountPointServiceTest {
                 (ClassToInstanceMap<DOMService>) servicesField.get(mountBuilder);
         assertTrue(services.isEmpty());
         assertFalse(services.containsKey(DOMService.class));
-        mountBuilder.addService(DOMService.class, null);
+        mountBuilder.addService(DOMService.class, mock(DOMService.class));
         assertFalse(services.isEmpty());
         assertTrue(services.containsKey(DOMService.class));
     }

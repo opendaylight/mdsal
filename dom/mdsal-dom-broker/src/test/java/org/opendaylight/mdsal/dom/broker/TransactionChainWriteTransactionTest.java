@@ -17,6 +17,7 @@ import static org.mockito.Mockito.verify;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import org.junit.Test;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 
 public class TransactionChainWriteTransactionTest {
@@ -49,11 +50,11 @@ public class TransactionChainWriteTransactionTest {
         transactionChainWriteTransaction.delete(any(), any());
         verify(writeTransaction).delete(any(), any());
 
-        CheckedFuture writeResult = Futures.immediateCheckedFuture(null);
+        CheckedFuture<Void, TransactionCommitFailedException> writeResult = Futures.immediateCheckedFuture(null);
         doReturn(writeResult).when(writeTransaction).submit();
         assertEquals(writeResult, transactionChainWriteTransaction.submit());
 
-        writeResult = Futures.immediateFailedCheckedFuture(new NullPointerException());
+        writeResult = Futures.immediateFailedCheckedFuture(mock(TransactionCommitFailedException.class));
         doNothing().when(chainAdapter).transactionFailed(any(), any());
         doReturn(writeResult).when(writeTransaction).submit();
         assertEquals(writeResult, transactionChainWriteTransaction.submit());

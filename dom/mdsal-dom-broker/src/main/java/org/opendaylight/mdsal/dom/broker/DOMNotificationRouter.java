@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
@@ -67,21 +68,9 @@ public final class DOMNotificationRouter implements AutoCloseable, DOMNotificati
     private static final WaitStrategy DEFAULT_STRATEGY = PhasedBackoffWaitStrategy.withLock(
             1L, 30L, TimeUnit.MILLISECONDS);
     private static final EventHandler<DOMNotificationRouterEvent> DISPATCH_NOTIFICATIONS =
-            new EventHandler<DOMNotificationRouterEvent>() {
-        @Override
-        public void onEvent(final DOMNotificationRouterEvent event, final long sequence,
-                final boolean endOfBatch) throws Exception {
-            event.deliverNotification();
-
-        }
-    };
+        (event, sequence, endOfBatch) -> event.deliverNotification();
     private static final EventHandler<DOMNotificationRouterEvent> NOTIFY_FUTURE =
-            new EventHandler<DOMNotificationRouterEvent>() {
-        @Override
-        public void onEvent(final DOMNotificationRouterEvent event, final long sequence, final boolean endOfBatch) {
-            event.setFuture();
-        }
-    };
+        (event, sequence, endOfBatch) -> event.setFuture();
 
     private final Disruptor<DOMNotificationRouterEvent> disruptor;
     private final ExecutorService executor;
@@ -255,4 +244,20 @@ public final class DOMNotificationRouter implements AutoCloseable, DOMNotificati
         disruptor.shutdown();
         executor.shutdown();
     }
+
+    @VisibleForTesting
+    ExecutorService executor() {
+        return executor;
+    }
+
+    @VisibleForTesting
+    Multimap<SchemaPath, ?> listeners() {
+        return listeners;
+    }
+
+    @VisibleForTesting
+    ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners() {
+        return subscriptionListeners;
+    }
+
 }
