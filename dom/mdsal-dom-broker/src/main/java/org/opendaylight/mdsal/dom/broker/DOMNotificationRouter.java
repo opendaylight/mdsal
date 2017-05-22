@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
@@ -16,7 +15,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.lmax.disruptor.EventHandler;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.lmax.disruptor.InsufficientCapacityException;
 import com.lmax.disruptor.PhasedBackoffWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
@@ -28,7 +27,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
@@ -67,41 +68,46 @@ public final class DOMNotificationRouter implements AutoCloseable, DOMNotificati
     private static final ListenableFuture<Void> NO_LISTENERS = Futures.immediateFuture(null);
     private static final WaitStrategy DEFAULT_STRATEGY = PhasedBackoffWaitStrategy.withLock(
             1L, 30L, TimeUnit.MILLISECONDS);
-    private static final EventHandler<DOMNotificationRouterEvent> DISPATCH_NOTIFICATIONS =
-        (event, sequence, endOfBatch) -> event.deliverNotification();
-    private static final EventHandler<DOMNotificationRouterEvent> NOTIFY_FUTURE =
-        (event, sequence, endOfBatch) -> event.setFuture();
 
-    private final Disruptor<DOMNotificationRouterEvent> disruptor;
-    private final ExecutorService executor;
-    private volatile Multimap<SchemaPath, ListenerRegistration<? extends
-            DOMNotificationListener>> listeners = ImmutableMultimap.of();
+    @GuardedBy("DOMNotificationRouter.class")
+    private static int FACTORY_COUNTER = 0;
+
     private final ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
             ListenerRegistry.create();
+    private final Disruptor<DOMNotificationRouterEvent> disruptor;
+    private final ExecutorService executor;
+
+    private volatile Multimap<SchemaPath, ListenerRegistration<? extends DOMNotificationListener>> listeners =
+            ImmutableMultimap.of();
 
     @SuppressWarnings("unchecked")
-    private DOMNotificationRouter(final ExecutorService executor, final int queueDepth, final WaitStrategy strategy) {
-        this.executor = Preconditions.checkNotNull(executor);
-
-        disruptor = new Disruptor<>(DOMNotificationRouterEvent.FACTORY,
-                queueDepth, executor, ProducerType.MULTI, strategy);
-        disruptor.handleEventsWith(DISPATCH_NOTIFICATIONS);
-        disruptor.after(DISPATCH_NOTIFICATIONS).handleEventsWith(NOTIFY_FUTURE);
+    private DOMNotificationRouter(final ThreadFactory factory, final int queueDepth, final WaitStrategy strategy) {
+        disruptor = new Disruptor<>(DOMNotificationRouterEvent.FACTORY, queueDepth, factory, ProducerType.MULTI,
+                strategy);
+        disruptor.handleEventsWith((event, sequence, endOfBatch) -> event.deliverNotification())
+            .then((event, sequence, endOfBatch) -> event.setFuture());
         disruptor.start();
+        executor = Executors.newSingleThreadExecutor(factory);
+    }
+
+    private static synchronized ThreadFactory nextThreadFactory() {
+        final int counter;
+        synchronized (DOMNotificationRouter.class) {
+            counter = FACTORY_COUNTER++;
+        }
+
+        return new ThreadFactoryBuilder().setNameFormat("dom-notification-router-" + counter + "-%d")
+                .setDaemon(true).build();
     }
 
     public static DOMNotificationRouter create(final int queueDepth) {
-        final ExecutorService executor = Executors.newCachedThreadPool();
-
-        return new DOMNotificationRouter(executor, queueDepth, DEFAULT_STRATEGY);
+        return new DOMNotificationRouter(nextThreadFactory(), queueDepth, DEFAULT_STRATEGY);
     }
 
-    public static DOMNotificationRouter create(final int queueDepth, final long spinTime,
-            final long parkTime, final TimeUnit unit) {
-        final ExecutorService executor = Executors.newCachedThreadPool();
+    public static DOMNotificationRouter create(final int queueDepth, final long spinTime, final long parkTime,
+            final TimeUnit unit) {
         final WaitStrategy strategy = PhasedBackoffWaitStrategy.withLock(spinTime, parkTime, unit);
-
-        return new DOMNotificationRouter(executor, queueDepth, strategy);
+        return new DOMNotificationRouter(nextThreadFactory(), queueDepth, strategy);
     }
 
     @Override
