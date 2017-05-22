@@ -36,6 +36,7 @@ public interface DataTreeWriteCursor extends DataTreeCursor {
      *
      * @param child Child identifier
      * @param data Data to be merged
+     * @param <T> data type
      * @throws BackendFailedException when implementation-specific errors occurs while servicing the
      *         request.
      */
@@ -46,6 +47,7 @@ public interface DataTreeWriteCursor extends DataTreeCursor {
      *
      * @param child Child identifier
      * @param data New node data
+     * @param <T> data type
      * @throws BackendFailedException when implementation-specific errors occurs while servicing the
      *         request.
      */
