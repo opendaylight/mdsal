@@ -26,6 +26,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.Immutable;
+import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.util.HashCodeBuilder;
 
 /**
@@ -62,7 +63,8 @@ import org.opendaylight.yangtools.util.HashCodeBuilder;
  *
  */
 @Beta
-public class InstanceIdentifier<T extends TreeNode> implements Immutable, Serializable {
+public class InstanceIdentifier<T extends TreeNode> implements Path<InstanceIdentifier<? extends TreeNode>>, Immutable,
+        Serializable {
     private static final Field PATHARGUMENTS_FIELD;
     private static final long serialVersionUID = 2L;
     /*
@@ -285,6 +287,7 @@ public class InstanceIdentifier<T extends TreeNode> implements Immutable, Serial
      * @param other
      * @return
      */
+    @Override
     public final boolean contains(final InstanceIdentifier<? extends TreeNode> other) {
         Preconditions.checkNotNull(other, "other should not be null");
 
