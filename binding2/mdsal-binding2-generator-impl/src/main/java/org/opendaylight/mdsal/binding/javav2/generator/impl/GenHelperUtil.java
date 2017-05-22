@@ -306,6 +306,7 @@ final class GenHelperUtil {
         GeneratedTypeBuilder augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augIdentifier);
 
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
+        augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
         augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
         augTypeBuilder = addImplementedInterfaceFromUses(augSchema, augTypeBuilder, genCtx);
@@ -421,9 +422,6 @@ final class GenHelperUtil {
             parentName, final String basePackageName, final NotificationDefinition notification, final Module module,
             final SchemaContext schemaContext, final boolean verboseClassComments, Map<String, Map<String, GeneratedTypeBuilder>>
             genTypeBuilders, TypeProvider typeProvider, Map<Module, ModuleContext> genCtx) {
-
-        processUsesAugments(schemaContext, notification, module, genCtx, genTypeBuilders,
-                verboseClassComments, typeProvider);
 
         final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition
                 (basePackageName, notification, null, module, genCtx, schemaContext,
