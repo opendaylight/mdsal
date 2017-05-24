@@ -400,11 +400,14 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 }
 
 @generateImplementedMethods() = {
+
+    @if (parentTypeForBuilderName != null) {
         @@Override
         public @{importedNames.get("item")}<@{parentTypeForBuilderName}> treeIdentifier() {
             //TODO implement
             return null;
         }
+    }
 
         @@Override
         public @{importedNames.get("classInstMap")}<@{importedNames.get("augmentation")}<? super @{genType.getName}>>
