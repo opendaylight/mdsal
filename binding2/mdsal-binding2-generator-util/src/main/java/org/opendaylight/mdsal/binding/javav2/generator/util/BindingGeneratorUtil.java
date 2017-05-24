@@ -35,6 +35,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignat
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
@@ -349,6 +350,31 @@ public final class BindingGeneratorUtil {
         return generateNormalizedPackageName(basePackageName, pathFromRoot, size, null);
     }
 
+    /**
+     * Creates package name from <code>parentAugmentPackageName</code> (package
+     * name for direct parent augmentation) and <code>augmentationSchema</code> .
+     *
+     * Resulting package name is concatenation of <code>parentAugmentPackageName</code>
+     * and the local name of <code>schemaPath</code>.
+     *
+     * Based on type of node, there is also possible suffix added in order
+     * to prevent package name conflicts.
+     *
+     * @param parentAugmentPackageName
+     *            string with package name of direct parent augmentation, MUST be normalized,
+     *            otherwise this method may return an invalid string.
+     * @param augmentationSchema
+     *            augmentation schema which is direct son of parent augmentation.
+     * @return string with valid JAVA package name
+     * @throws NullPointerException if any of the arguments are null
+     */
+    public static String packageNameForAugmentedGeneratedType(final String parentAugmentPackageName,
+                                                              final AugmentationSchema augmentationSchema) {
+        final QName last = augmentationSchema.getTargetPath().getLastComponent();
+
+        return generateNormalizedPackageName(parentAugmentPackageName, last);
+    }
+
     private static final ThreadLocal<MessageDigest> SHA1_MD = new ThreadLocal<MessageDigest>() {
         @Override
         protected MessageDigest initialValue() {
@@ -373,6 +399,17 @@ public final class BindingGeneratorUtil {
             builder.append(nodeLocalName);
         }
         final String normalizedPackageName = JavaIdentifierNormalizer.normalizeFullPackageName(builder.toString());
+        // Prevent duplication of input
+        PACKAGE_INTERNER.intern(normalizedPackageName);
+        return normalizedPackageName;
+    }
+
+    private static String generateNormalizedPackageName(final String parent, final QName path) {
+        final StringBuilder sb = new StringBuilder(parent)
+                .append('.')
+                .append(path.getLocalName());
+
+        final String normalizedPackageName = JavaIdentifierNormalizer.normalizeFullPackageName(sb.toString());
         // Prevent duplication of input
         PACKAGE_INTERNER.intern(normalizedPackageName);
         return normalizedPackageName;
