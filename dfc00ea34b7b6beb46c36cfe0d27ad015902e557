@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7af0899e_3504af14",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/builderTemplate.scala.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-05-24T09:25:42Z",
+      "side": 1,
+      "message": "it shouldn\u0027t be here, because then you get uncompilable generated code. In case of builders, parentTypeForBuilderName must be provided.",
+      "revId": "dfc00ea34b7b6beb46c36cfe0d27ad015902e557",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
