@@ -306,6 +306,7 @@ final class GenHelperUtil {
         GeneratedTypeBuilder augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augIdentifier);
 
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
+        augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
         augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
         augTypeBuilder = addImplementedInterfaceFromUses(augSchema, augTypeBuilder, genCtx);
