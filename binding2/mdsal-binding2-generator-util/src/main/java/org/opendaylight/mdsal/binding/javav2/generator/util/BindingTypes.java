@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.typeForClass;
 
-import javax.management.NotificationListener;
 import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -29,6 +28,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeRoot;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.NotificationListener;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
