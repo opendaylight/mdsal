@@ -35,6 +35,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignat
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
@@ -349,6 +350,13 @@ public final class BindingGeneratorUtil {
         return generateNormalizedPackageName(basePackageName, pathFromRoot, size, null);
     }
 
+    public static String packageNameForAugmentedGeneratedType(final String parentAugmentPackageName,
+                                                              final AugmentationSchema augmentationSchema) {
+        final QName last = augmentationSchema.getTargetPath().getLastComponent();
+
+        return generateNormalizedPackageName(parentAugmentPackageName, last);
+    }
+
     private static final ThreadLocal<MessageDigest> SHA1_MD = new ThreadLocal<MessageDigest>() {
         @Override
         protected MessageDigest initialValue() {
@@ -372,6 +380,17 @@ public final class BindingGeneratorUtil {
             final String nodeLocalName = iterator.next().getLocalName();
             builder.append(nodeLocalName);
         }
+        final String normalizedPackageName = JavaIdentifierNormalizer.normalizeFullPackageName(builder.toString());
+        // Prevent duplication of input
+        PACKAGE_INTERNER.intern(normalizedPackageName);
+        return normalizedPackageName;
+    }
+
+    private static String generateNormalizedPackageName(final String parent, final QName path) {
+        final StringBuilder builder = new StringBuilder(parent);
+        builder.append('.');
+        final String nodeLocalName = path.getLocalName();
+        builder.append(nodeLocalName);
         final String normalizedPackageName = JavaIdentifierNormalizer.normalizeFullPackageName(builder.toString());
         // Prevent duplication of input
         PACKAGE_INTERNER.intern(normalizedPackageName);
