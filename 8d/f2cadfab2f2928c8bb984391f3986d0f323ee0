@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Jakub Toth <jakub.toth@pantheon.tech>
+Code-Review+2: Robert Varga <nite@hq.sk>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Sun, 28 May 2017 14:55:34 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/57418
+Project: mdsal
+Branch: refs/heads/stable/carbon
