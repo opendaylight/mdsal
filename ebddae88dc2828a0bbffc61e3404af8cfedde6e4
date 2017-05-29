@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_2fee258c",
+        "filename": "binding2/mdsal-binding2-api/src/main/java/org/opendaylight/mdsal/binding/javav2/api/DataObjectModification.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-05-29T09:12:18Z",
+      "side": 1,
+      "message": "does this needs APPEARED/DISAPPEARED?",
+      "range": {
+        "startLine": 39,
+        "startChar": 4,
+        "endLine": 39,
+        "endChar": 27
+      },
+      "revId": "ebddae88dc2828a0bbffc61e3404af8cfedde6e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_cfe1619c",
+        "filename": "binding2/mdsal-binding2-api/src/main/java/org/opendaylight/mdsal/binding/javav2/api/DataTreeChangeListener.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-05-29T09:12:18Z",
+      "side": 1,
+      "message": "? extends DataTreeModification\u003cT\u003e",
+      "range": {
+        "startLine": 47,
+        "startChar": 47,
+        "endLine": 47,
+        "endChar": 70
+      },
+      "revId": "ebddae88dc2828a0bbffc61e3404af8cfedde6e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_0ff36974",
+        "filename": "binding2/mdsal-binding2-api/src/main/java/org/opendaylight/mdsal/binding/javav2/api/ReadTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-05-29T09:12:18Z",
+      "side": 1,
+      "message": "CheckedFuture is going away, do not expose it.",
+      "range": {
+        "startLine": 75,
+        "startChar": 27,
+        "endLine": 75,
+        "endChar": 40
+      },
+      "revId": "ebddae88dc2828a0bbffc61e3404af8cfedde6e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
