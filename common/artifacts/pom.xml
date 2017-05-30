@@ -152,6 +152,11 @@
             <!-- Binding specification version 2-->
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-binding2-maven-api-gen-plugin</artifactId>
+                <version>0.11.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-binding2-dom-codec</artifactId>
                 <version>0.11.0-SNAPSHOT</version>
             </dependency>
