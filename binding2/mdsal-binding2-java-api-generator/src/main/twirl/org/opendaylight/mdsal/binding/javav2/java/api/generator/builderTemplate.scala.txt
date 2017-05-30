@@ -54,9 +54,9 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     }
 
     private static final class @{genType.getName}Impl implements @{genType.getName} {
-
+    @if(parentTypeForBuilderName != null) {
         @implementedInterfaceGetter()
-
+    }
         @generateFields(true)
 
         @generateAugmentField(true)
@@ -400,12 +400,13 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 }
 
 @generateImplementedMethods() = {
+    @if(parentTypeForBuilderName != null) {
         @@Override
         public @{importedNames.get("item")}<@{parentTypeForBuilderName}> treeIdentifier() {
             //TODO implement
             return null;
         }
-
+    }
         @@Override
         public @{importedNames.get("classInstMap")}<@{importedNames.get("augmentation")}<? super @{genType.getName}>>
         augments() {
@@ -424,6 +425,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
             if (!(obj instanceof @{importedNames.get("treeNode")})) {
                 return false;
             }
+        @if(parentTypeForBuilderName != null) {
             if (!(obj instanceof @{importedNames.get("instantiable")})) {
                 return false;
             }
@@ -431,6 +433,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
             .implementedInterface())) {
                 return false;
             }
+        }
             @{importedNames.get("genType")} other = (@{importedNames.get("genType")})obj;
             @for(property <- properties) {
                 @if(property.getReturnType.getName.contains("[")) {
