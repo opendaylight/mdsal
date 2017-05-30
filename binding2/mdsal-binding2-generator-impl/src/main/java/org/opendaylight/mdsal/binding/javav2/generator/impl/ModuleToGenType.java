@@ -17,6 +17,7 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -151,23 +152,28 @@ final class ModuleToGenType {
 
         //YANG 1.1 allows notifications be tied to containers and lists
         final Collection<DataSchemaNode> potentials = module.getChildNodes();
+        Set<NotificationDefinition> tiedNotifications = null;
 
         for (final DataSchemaNode potential : potentials) {
             if (potential instanceof NotificationNodeContainer) {
-                final Set<NotificationDefinition> tiedNotifications = ((NotificationNodeContainer) potential)
+                tiedNotifications = ((NotificationNodeContainer) potential)
                         .getNotifications();
                 for (final NotificationDefinition tiedNotification: tiedNotifications) {
                     if (tiedNotification != null) {
                         resolveNotification(listenerInterface, potential.getQName().getLocalName(), basePackageName,
                                 tiedNotification, module, schemaContext, verboseClassComments, genTypeBuilders,
                                 typeProvider, genCtx);
-                        notifications.add(tiedNotification);
                     }
                 }
             }
         }
 
-        listenerInterface.setDescription(createDescription(notifications, module, verboseClassComments));
+        if (tiedNotifications != null) {
+            listenerInterface.setDescription(createDescription(ImmutableSet.<NotificationDefinition>builder()
+                .addAll(notifications).addAll(tiedNotifications).build(), module, verboseClassComments));
+        } else {
+            listenerInterface.setDescription(createDescription(notifications, module, verboseClassComments));
+        }
 
         genCtx.get(module).addTopLevelNodeType(listenerInterface);
 

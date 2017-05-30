@@ -240,7 +240,7 @@ public class BuilderRenderer extends BaseRenderer {
 
     @Override
     protected String body() {
-        String parentTypeForBuilderName;
+        final String parentTypeForBuilderName;
         importedNames.put("genType", importedName(getType()));
         importedNames.put("objects", importedName(Objects.class));
         importedNames.put("object", importedName(Object.class));
@@ -252,9 +252,11 @@ public class BuilderRenderer extends BaseRenderer {
         if (getType().getParentType() != null) {
             importedNames.put("parent", importedName(getType().getParentType()));
             parentTypeForBuilderName = getType().getParentType().getName();
-        } else {
+        } else if (getType().getParentTypeForBuilder() != null) {
             importedNames.put("parentTypeForBuilder", importedName(getType().getParentTypeForBuilder()));
             parentTypeForBuilderName = getType().getParentTypeForBuilder().getName();
+        } else {
+            parentTypeForBuilderName = null;
         }
         importedNames.put("augmentation", importedName(Augmentation.class));
         importedNames.put("classInstMap", importedName(ClassToInstanceMap.class));
