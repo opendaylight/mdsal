@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_4179c0fb",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-05-31T03:25:17Z",
+      "side": 1,
+      "message": "You can remove the FIXME",
+      "revId": "7ec01c6752795bccb44f5c7e7e3bffcb4ffd2747",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_8183a8cb",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-05-31T03:25:17Z",
+      "side": 1,
+      "message": "Should follow class javadoc conventions.",
+      "revId": "7ec01c6752795bccb44f5c7e7e3bffcb4ffd2747",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_217e34e5",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-05-31T03:25:17Z",
+      "side": 1,
+      "message": "Should be static",
+      "revId": "7ec01c6752795bccb44f5c7e7e3bffcb4ffd2747",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_e11c2cc4",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-05-31T03:25:17Z",
+      "side": 1,
+      "message": "We really shouldn\u0027t create threads without bound.  I would suggest using a ScheduledExecutorService to schedule a task that performs the interrupt when it triggers",
+      "revId": "7ec01c6752795bccb44f5c7e7e3bffcb4ffd2747",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
