@@ -12,14 +12,14 @@ import com.google.common.annotations.Beta;
 import java.io.IOException;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
-/*
+/**
  * A serializer which writes TreeNode to supplied stream event writer.
  */
 @Beta
 public interface TreeNodeSerializer {
 
     /**
-     * Writes stream events representing object to supplied stream
+     * Writes stream events representing object to supplied stream.
      *
      * @param obj
      *            Source of stream events
