@@ -28,7 +28,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
@@ -41,6 +43,7 @@ import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Joint implementation of {@link DOMNotificationPublishService} and {@link DOMNotificationService}. Provides
@@ -232,11 +235,48 @@ public final class DOMNotificationRouter implements AutoCloseable, DOMNotificati
             return noBlock;
         }
 
-        /*
-         * FIXME: we need a background thread, which will watch out for blocking too long. Here
-         *        we will arm a tasklet for it and synchronize delivery of interrupt properly.
-         */
-        throw new UnsupportedOperationException("Not implemented yet");
+        final PublishObserver publishObserver = new PublishObserver(timeout, unit, Thread.currentThread());
+        try {
+            final ListenableFuture<?> withBlock = putNotification(notification);
+            publishObserver.start();
+            return withBlock;
+        } catch (InterruptedException e) {
+            return DOMNotificationPublishService.REJECTED;
+        }
+    }
+    /**
+     *   Create a publishObserver to watch out for blocking to long, if so,
+     *  we will interrupt the offerNotification operation.
+     */
+
+    private static final class PublishObserver {
+        final ScheduledExecutorService observer = Executors.newScheduledThreadPool(1);
+        final long timeout;
+        final TimeUnit unit;
+        final Thread publish;
+
+        PublishObserver(final long timeout, final TimeUnit unit, final Thread publish) {
+            this.timeout = timeout;
+            this.unit = unit;
+            this.publish = publish;
+        }
+
+        void start() {
+            observer.schedule(new TaskLet(publish), timeout, unit);
+        }
+    }
+
+    private static final class TaskLet implements Runnable {
+        final Thread publishThread;
+
+        private TaskLet(@Nonnull final Thread publishThread) {
+            this.publishThread = publishThread;
+        }
+
+        @Override
+        public void run() {
+            publishThread.interrupt();
+        }
     }
 
     @Override
