@@ -60,6 +60,10 @@ public abstract class BaseRenderer {
         importMap.put(typeName, typePackageName);
     }
 
+    protected void putAllToImportMap(@NonNull Map<String, String> imports) {
+        importMap.putAll(imports);
+    }
+
     protected Map<String, String> getImportMap() {
         return ImmutableMap.copyOf(importMap);
     }
