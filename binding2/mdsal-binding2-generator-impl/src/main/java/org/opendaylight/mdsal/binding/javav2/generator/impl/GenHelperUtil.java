@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
@@ -40,6 +41,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
+import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
@@ -52,6 +54,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.base.BaseIdentity;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
@@ -62,6 +65,7 @@ import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
+import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -871,6 +875,82 @@ final class GenHelperUtil {
                 genTypeBuilders, typeProvider);
         genCtx = processUsesAugments(schemaContext, grouping, module, genCtx, genTypeBuilders, verboseClassComments,
                 typeProvider);
+        return genCtx;
+    }
+
+    /**
+     * //TODO: add information about multiple base identities in YANG 1.1
+     * Converts the <b>identity</b> object to GeneratedType. Firstly it is
+     * created transport object builder. If identity contains base identity then
+     * reference to base identity is added to superior identity as its extend.
+     * If identity doesn't contain base identity then only reference to abstract
+     * class {@link org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode
+     * BaseIdentity} is added
+     *
+     * @param module
+     *            current module
+     * @param basePackageName
+     *            string contains the module package name
+     * @param identity
+     *            IdentitySchemaNode which contains data about identity
+     * @param schemaContext
+     *            SchemaContext which is used to get package and name
+     *            information about base of identity
+     * @param genCtx generated context
+     * @return returns generated context
+     */
+    static Map<Module, ModuleContext> identityToGenType(final Module module, final String basePackageName,
+            final IdentitySchemaNode identity, final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx,
+            boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+            final TypeProvider typeProvider, Map<QName, GeneratedTOBuilderImpl> generatedIdentities) {
+
+        final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, identity.getPath(),
+            BindingNamespaceType.Identity);
+        final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(packageName,
+                identity.getQName().getLocalName());
+
+        final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
+        if (baseIdentities.size() == 0) {
+            //no base - abstract
+            final GeneratedTOBuilderImpl gto = new GeneratedTOBuilderImpl(BaseIdentity.class.getPackage().getName(),
+                BaseIdentity.class.getSimpleName());
+            newType.setExtendsType(gto.toInstance());
+            generatedIdentities.put(identity.getQName(), newType);
+        } else {
+            //one base - inheritance
+            final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
+            final Module baseIdentityParentModule = SchemaContextUtil.findParentModule(schemaContext, baseIdentity);
+            final String returnTypePkgName = new StringBuilder(BindingMapping.getRootPackageName
+                    (baseIdentityParentModule))
+                    .append('.')
+                    .append(BindingNamespaceType.Identity.getPackagePrefix())
+                    .toString();
+
+            final GeneratedTOBuilderImpl existingIdentityGto = generatedIdentities.get(baseIdentity.getQName());
+            if (existingIdentityGto != null) {
+                newType.setExtendsType(existingIdentityGto.toInstance());
+            } else {
+                final GeneratedTOBuilderImpl gto = new GeneratedTOBuilderImpl(returnTypePkgName,
+                        baseIdentity.getQName().getLocalName());
+                newType.setExtendsType(gto.toInstance());
+                generatedIdentities.put(baseIdentity.getQName(), gto);
+            }
+
+            //FIXME: more bases - possible composition, multiple inheritance not possible
+        }
+        generatedIdentities.put(identity.getQName(), newType);
+
+        newType.setAbstract(true);
+        newType.addComment(identity.getDescription());
+        newType.setDescription(createDescription(identity, newType.getFullyQualifiedName(), schemaContext,
+                verboseClassComments));
+        newType.setReference(identity.getReference());
+        newType.setModuleName(module.getName());
+        newType.setSchemaPath((List) identity.getPath().getPathFromRoot());
+
+        qNameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, identity.getQName());
+
+        genCtx.get(module).addIdentityType(identity.getQName(), newType);
         return genCtx;
     }
 }
