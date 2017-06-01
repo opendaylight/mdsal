@@ -270,10 +270,21 @@ final class AugmentToGenType {
      */
     private static DataSchemaNode findOriginalTargetFromGrouping(final SchemaContext schemaContext, final SchemaPath targetPath,
                                           final UsesNode parentUsesNode) {
-        final SchemaNode targetGrouping = SchemaContextUtil.findNodeInSchemaContext(schemaContext, parentUsesNode
-                .getGroupingPath()
-                .getPathFromRoot());
-        if (!(targetGrouping instanceof GroupingDefinition)) {
+        SchemaNode targetGrouping = null;
+        QName current = parentUsesNode.getGroupingPath().getPathFromRoot().iterator().next();
+        Module module = schemaContext.findModuleByNamespaceAndRevision(current.getNamespace(), current.getRevision());
+        if(module == null) {
+            throw new NullPointerException("Fialed to find module for grouping in: " + parentUsesNode);
+        } else {
+            for (GroupingDefinition group : module.getGroupings()) {
+                if (group.getQName().equals(current)) {
+                    targetGrouping = group;
+                    break;
+                }
+            }
+        }
+
+        if (targetGrouping == null) {
             throw new IllegalArgumentException("Failed to generate code for augment in " + parentUsesNode);
         }
 
