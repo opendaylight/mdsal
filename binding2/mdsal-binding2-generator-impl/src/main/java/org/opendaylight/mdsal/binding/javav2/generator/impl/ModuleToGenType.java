@@ -18,15 +18,19 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
@@ -51,9 +55,8 @@ final class ModuleToGenType {
                 genTypeBuilders, typeProvider);
         genCtx = actionsAndRPCMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
+        genCtx = allIdentitiesToGenTypes(module, schemaContext, genCtx, verboseClassComments,  genTypeBuilders, typeProvider);
         genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments, typeProvider);
-
-        //TODO: call generate for other entities (identities)
 
         if (!module.getChildNodes().isEmpty()) {
             final GeneratedTypeBuilder moduleType = GenHelperUtil.moduleToDataType(module, genCtx, verboseClassComments);
@@ -108,6 +111,38 @@ final class ModuleToGenType {
                 genTypeBuilders, typeProvider);
         genCtx = RpcActionGenHelper.actionMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
+
+        return genCtx;
+    }
+
+    /**
+     * Converts all <b>identities</b> of the module to the list of
+     * <code>Type</code> objects.
+     *
+     * @param module
+     *            module from which is obtained set of all identity objects to
+     *            iterate over them
+     * @param schemaContext
+     *            schema context only used as input parameter for method
+     *            {@link GenHelperUtil#identityToGenType(Module, String, IdentitySchemaNode, SchemaContext, Map, boolean, Map, TypeProvider, Map)}
+     * @param genCtx generated context
+     * @return returns generated context
+     *
+     */
+    private static Map<Module, ModuleContext> allIdentitiesToGenTypes(final Module module,
+            final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx, boolean verboseClassComments,
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
+
+        final Set<IdentitySchemaNode> schemaIdentities = module.getIdentities();
+        final String basePackageName = BindingMapping.getRootPackageName(module);
+
+        if (schemaIdentities != null && !schemaIdentities.isEmpty()) {
+            Map<QName, GeneratedTOBuilderImpl> generatedIdentities = new HashMap<>();
+            for (final IdentitySchemaNode identity : schemaIdentities) {
+                GenHelperUtil.identityToGenType(module, basePackageName, identity, schemaContext, genCtx,
+                    verboseClassComments, genTypeBuilders, typeProvider, generatedIdentities);
+            }
+        }
 
         return genCtx;
     }
