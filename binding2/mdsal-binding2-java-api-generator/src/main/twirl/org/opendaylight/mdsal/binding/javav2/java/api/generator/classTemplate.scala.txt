@@ -63,8 +63,8 @@ fields: String, allProperties: List[GeneratedProperty], propertyMethod: String, 
 }
 
 @generateClassDeclaration(isInnerCLass: Boolean) = {
-public @{if (isInnerCLass) " static final "
-else if(genType.isAbstract) " abstract "
+public @{if (isInnerCLass) "static final "
+else if(genType.isAbstract) "abstract "
 else " "
 }
 class @{genType.getName}
