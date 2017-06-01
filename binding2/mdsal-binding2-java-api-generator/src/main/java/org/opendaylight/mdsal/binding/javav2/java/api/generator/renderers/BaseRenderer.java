@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -61,7 +60,7 @@ public abstract class BaseRenderer {
     }
 
     protected Map<String, String> getImportMap() {
-        return ImmutableMap.copyOf(importMap);
+        return importMap;
     }
 
     /**
