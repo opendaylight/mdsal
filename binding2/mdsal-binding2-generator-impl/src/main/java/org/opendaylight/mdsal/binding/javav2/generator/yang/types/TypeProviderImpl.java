@@ -23,7 +23,6 @@ import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.getRootP
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
-
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -457,8 +456,9 @@ public final class TypeProviderImpl implements TypeProvider {
             final String basePackageName = BindingMapping.getRootPackageName(module);
             final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typeDefinition
                     .getPath(), BindingNamespaceType.Typedef);
-            final String genTOName = JavaIdentifierNormalizer.normalizeClassIdentifier(packageName, typedefName);
-            final String name = packageName + "." + genTOName;
+            final String genTOName =
+                    JavaIdentifierNormalizer.normalizeSpecificIdentifier(typedefName, JavaIdentifier.CLASS);
+            final String name = new StringBuilder(packageName).append('.').append(genTOName).toString();
             if (!(returnType.getFullyQualifiedName().equals(name))) {
                 returnType = shadedTOWithRestrictions(gto, r);
             }

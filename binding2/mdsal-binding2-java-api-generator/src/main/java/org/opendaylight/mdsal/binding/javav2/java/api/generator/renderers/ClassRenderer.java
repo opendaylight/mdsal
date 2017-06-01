@@ -295,7 +295,7 @@ public class ClassRenderer extends BaseRenderer {
      *         set to true
      */
     private List<GeneratedProperty> resolveReadOnlyPropertiesFromTO(final List<GeneratedProperty> properties) {
-        return new ArrayList(Collections2.transform(properties, GeneratedProperty::isReadOnly));
+        return new ArrayList<>(Collections2.filter(properties, GeneratedProperty::isReadOnly));
     }
 
     /**
