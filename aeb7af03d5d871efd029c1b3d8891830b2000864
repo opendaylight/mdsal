@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_7db578cc",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-01T12:09:45Z",
+      "side": 1,
+      "message": "This should be part of DOMNotificationRouter and reused . In fact you don\u0027t need this class a at all. In the above code, you can do:\n\n try {\n     final publishThread \u003d Thread.currentThread();\n     ScheduledFuture\u003c?\u003e timerTask \u003d scheduler.schedule(\n             () -\u003e publishThread.interrupt(), timeout,  unit);\n     \n     final ListenableFuture\u003c?\u003e withBlock \u003d putNotification(notification);\n     timerTask.cancel(true);\n     return withBlock;\n } catch (InterruptedException e) {\n     return DOMNotificationPublishService.REJECTED;\n }",
+      "revId": "aeb7af03d5d871efd029c1b3d8891830b2000864",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
