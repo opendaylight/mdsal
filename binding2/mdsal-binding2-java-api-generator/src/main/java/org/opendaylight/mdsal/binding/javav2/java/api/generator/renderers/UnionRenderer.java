@@ -10,9 +10,8 @@ package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.BOOLEAN;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Collections2;
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,12 +100,9 @@ public class UnionRenderer extends ClassRenderer {
             return super.getterMethod(field);
         }
 
-        final Function<GeneratedProperty, Boolean> tempFunction = (GeneratedProperty p) -> {
-            String name = p.getName();
-            return !"value".equals(name);
-        };
-        List<GeneratedProperty> filtered = (List) Iterables.filter(this.getFinalProperties(),
-                (Predicate<? super GeneratedProperty>) tempFunction);
+        Predicate<GeneratedProperty> predicate = input -> !"value".equals(input.getName());
+        final List<GeneratedProperty> filtered = new ArrayList<>(Collections2.filter(this.getFinalProperties(),
+            predicate));
 
         final List<CharSequence> strings = new ArrayList<>(filtered.size());
 
