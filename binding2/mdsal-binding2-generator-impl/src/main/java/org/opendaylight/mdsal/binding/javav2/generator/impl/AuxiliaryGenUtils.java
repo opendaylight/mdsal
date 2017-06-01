@@ -419,8 +419,7 @@ final class AuxiliaryGenUtils {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     static Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final TypeDefinition<?> typeDef,
             final GeneratedTypeBuilder typeBuilder, final Module parentModule, final TypeProvider typeProvider) {
-        final GeneratedTOBuilderImpl returnType = new GeneratedTOBuilderImpl(genTOBuilder.getPackageName(),
-                genTOBuilder.getName());
+        final GeneratedTOBuilderImpl returnType = (GeneratedTOBuilderImpl) genTOBuilder;
         final String typedefDescription = encodeAngleBrackets(typeDef.getDescription());
 
         returnType.setDescription(typedefDescription);
