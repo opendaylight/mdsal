@@ -240,7 +240,8 @@ public class ClassRenderer extends BaseRenderer {
         }
         final String fields = sb2.toString();
         importedNames.put("baseEncoding", importedName(BaseEncoding.class));
-        importedNames.put("defProp", importedName(((GeneratedProperty)((List) allProperties).get(0)).getReturnType()));
+        if (!allProperties.isEmpty())
+            importedNames.put("defProp", importedName(((GeneratedProperty)((List) allProperties).get(0)).getReturnType()));
 
         final StringBuilder sb3 = new StringBuilder();
         for (GeneratedProperty property : properties) {
