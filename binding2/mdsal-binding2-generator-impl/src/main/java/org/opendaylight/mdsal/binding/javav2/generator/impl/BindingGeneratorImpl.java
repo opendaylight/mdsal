@@ -75,7 +75,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @throws IllegalStateException if <code>context</code> contain no modules
      */
     @Override
-    public List<Type> generateTypes(SchemaContext context) {
+    public List<Type> generateTypes(final SchemaContext context) {
         Preconditions.checkArgument(context != null, "Schema Context reference cannot be NULL.");
         Preconditions.checkState(context.getModules() != null, "Schema Context does not contain defined modules.");
         final Set<Module> modules = context.getModules();
@@ -111,37 +111,49 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *             if <code>context</code> contain no modules
      */
     @Override
-    public List<Type> generateTypes(SchemaContext context, Set<Module> modules) {
+    public List<Type> generateTypes(final SchemaContext context, final Set<Module> modules) {
         Preconditions.checkArgument(context != null, "Schema Context reference cannot be NULL.");
         Preconditions.checkState(context.getModules() != null, "Schema Context does not contain defined modules.");
         Preconditions.checkArgument(modules != null, "Set of Modules cannot be NULL.");
 
-        typeProvider = new TypeProviderImpl(context);
+        this.typeProvider = new TypeProviderImpl(context);
         final Module[] modulesArray = new Module[context.getModules().size()];
         context.getModules().toArray(modulesArray);
         final List<Module> contextModules = ModuleDependencySort.sort(modulesArray);
-        genTypeBuilders = new HashMap<>();
+        this.genTypeBuilders = new HashMap<>();
 
         for (final Module contextModule : contextModules) {
-            genCtx = ModuleToGenType.generate(contextModule, genTypeBuilders, context, typeProvider,
-                    genCtx, verboseClassComments);
+            this.genCtx = ModuleToGenType.generate(contextModule, this.genTypeBuilders, context, this.typeProvider,
+                    this.genCtx, this.verboseClassComments);
         }
         for (final Module contextModule : contextModules) {
-            genCtx = AugmentToGenType.generate(contextModule, context, typeProvider, genCtx,
-                    genTypeBuilders, verboseClassComments);
+            this.genCtx = AugmentToGenType.generate(contextModule, context, this.typeProvider, this.genCtx,
+                    this.genTypeBuilders, this.verboseClassComments);
         }
 
         final List<Type> filteredGenTypes = new ArrayList<>();
         for (final Module m : modules) {
-            final ModuleContext ctx = Preconditions.checkNotNull(genCtx.get(m),
+            final ModuleContext ctx = Preconditions.checkNotNull(this.genCtx.get(m),
                     "Module context not found for module %s", m);
             filteredGenTypes.addAll(ctx.getGeneratedTypes());
-            final Set<Type> additionalTypes = ((TypeProviderImpl) typeProvider).getAdditionalTypes().get(m);
+            final Set<Type> additionalTypes = ((TypeProviderImpl) this.typeProvider).getAdditionalTypes().get(m);
             if (additionalTypes != null) {
                 filteredGenTypes.addAll(additionalTypes);
             }
         }
 
         return filteredGenTypes;
+    }
+
+    /**
+     * Return module contexts from generated types according to context.
+     *
+     * @param schemaContext
+     *            - for generating types
+     * @return module contexts
+     */
+    public Map<Module, ModuleContext> getModuleContexts(final SchemaContext schemaContext) {
+        generateTypes(schemaContext);
+        return this.genCtx;
     }
 }
