@@ -457,7 +457,8 @@ public final class TypeProviderImpl implements TypeProvider {
             final String basePackageName = BindingMapping.getRootPackageName(module);
             final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typeDefinition
                     .getPath(), BindingNamespaceType.Typedef);
-            final String genTOName = JavaIdentifierNormalizer.normalizeClassIdentifier(packageName, typedefName);
+            final String genTOName =
+                    JavaIdentifierNormalizer.normalizeSpecificIdentifier(typedefName, JavaIdentifier.CLASS);
             final String name = packageName + "." + genTOName;
             if (!(returnType.getFullyQualifiedName().equals(name))) {
                 returnType = shadedTOWithRestrictions(gto, r);
