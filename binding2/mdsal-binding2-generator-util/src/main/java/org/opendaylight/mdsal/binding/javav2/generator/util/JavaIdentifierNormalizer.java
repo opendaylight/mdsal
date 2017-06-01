@@ -202,9 +202,10 @@ public final class JavaIdentifierNormalizer {
     private static final String EMPTY_STRING = "";
     private static final String RESERVED_KEYWORD = "reserved_keyword";
     private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
+    private static final Set<String> PRIMITIVE_TYPES = ImmutableSet.of("char[]", "byte[]");
     public static final Set<String> SPECIAL_RESERVED_PATHS =
             ImmutableSet.of("org.opendaylight.yangtools.yang.model","org.opendaylight.yangtools.concepts","org.opendaylight.yangtools.yang.common",
-                    "org.opendaylight.mdsal.binding.javav2.spec","java", "com");
+                    "org.opendaylight.mdsal.binding.javav2.spec", "java", "com");
 
     private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");
@@ -321,6 +322,13 @@ public final class JavaIdentifierNormalizer {
      * @return - java acceptable identifier
      */
     public static String normalizeClassIdentifier(final String packageName, final String className) {
+        if (packageName.isEmpty()) {
+            for (final String primitiveType : PRIMITIVE_TYPES) {
+                if (className.equals(primitiveType)) {
+                    return className;
+                }
+            }
+        }
         for (final String reservedPath : SPECIAL_RESERVED_PATHS) {
             if (packageName.startsWith(reservedPath)) {
                 return className;

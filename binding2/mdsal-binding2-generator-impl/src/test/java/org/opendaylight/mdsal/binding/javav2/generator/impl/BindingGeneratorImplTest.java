@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
@@ -25,6 +24,25 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorImplTest {
+
+    @Test
+    public void genTypesTypeDefTest() throws Exception {
+        final BindingGeneratorImpl bg = new BindingGeneratorImpl(false);
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangSource("/generator/test-typedef.yang");
+        final List<Type> generateTypes = bg.generateTypes(schemaContext);
+        assertNotNull(generateTypes);
+        for (final Type genType : generateTypes) {
+            if (genType.getName().equals("MyInnerCont") && genType.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.rev170206.data.asteriskmy_cont")) {
+                final GeneratedType gt = (GeneratedType) genType;
+                for (final MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                    if (methodSignature.getName().equals("getMyLeaf2")) {
+                        assertEquals(methodSignature.getReturnType().getName(), "MyType");
+                    }
+                }
+            }
+        }
+    }
 
     @Test
     public void generatedTypesEnumTest() throws Exception {
