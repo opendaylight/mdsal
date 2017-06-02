@@ -198,10 +198,9 @@ final class AugmentToGenType {
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             final String packageName = augmentPackageName;
-            final Type targetType = new ReferencedTypeImpl(targetTypeBuilder.getPackageName(),
-                    targetTypeBuilder.getName());
-            generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName, targetType,
-                    augSchema, genTypeBuilders, generatedCtx, schemaContext, verboseClassComments, typeProvider);
+            generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName,
+                    targetTypeBuilder.toInstance(),augSchema, genTypeBuilders, generatedCtx, schemaContext,
+                    verboseClassComments, typeProvider);
             return generatedCtx;
 
         } else {
