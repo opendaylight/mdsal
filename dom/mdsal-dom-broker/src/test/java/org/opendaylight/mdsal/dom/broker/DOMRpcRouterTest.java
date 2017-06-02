@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -25,7 +25,7 @@ public class DOMRpcRouterTest extends TestUtils {
 
     @Test
     public void registerRpcImplementation() throws Exception {
-        try (final DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
             DOMRpcRoutingTable routingTable = rpcRouter.routingTable();
             assertFalse(routingTable.getRpcs().containsKey(SchemaPath.ROOT));
 
@@ -43,14 +43,14 @@ public class DOMRpcRouterTest extends TestUtils {
 
     @Test
     public void invokeRpc() throws Exception {
-        try (final DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
             assertNotNull(rpcRouter.invokeRpc(SchemaPath.create(false, TestModel.TEST_QNAME), null));
         }
     }
 
     @Test
     public void registerRpcListener() throws Exception {
-        try (final DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
             final DOMRpcAvailabilityListener listener = mock(DOMRpcAvailabilityListener.class);
 
             final Collection<?> listenersOriginal = rpcRouter.listeners();
@@ -66,7 +66,7 @@ public class DOMRpcRouterTest extends TestUtils {
 
     @Test
     public void onGlobalContextUpdated() throws Exception {
-        try (final DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
+        try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
 
             final DOMRpcRoutingTable routingTableOriginal = rpcRouter.routingTable();
 
