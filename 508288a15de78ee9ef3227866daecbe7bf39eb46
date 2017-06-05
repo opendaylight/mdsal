@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_b9d6c6c3",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-05T18:37:19Z",
+      "side": 1,
+      "message": "The ScheduledExecutorService is not shutdown. But you should reuse the ScheduledExecutorService rather than creating a new one each time as it will create a new thread for the task which more than likely won\u0027t even run.",
+      "revId": "508288a15de78ee9ef3227866daecbe7bf39eb46",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_d9d112cf",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-05T18:37:19Z",
+      "side": 1,
+      "message": "This can be shortened/simplified to publishThread::interrupt.",
+      "range": {
+        "startLine": 244,
+        "startChar": 61,
+        "endLine": 244,
+        "endChar": 90
+      },
+      "revId": "508288a15de78ee9ef3227866daecbe7bf39eb46",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_79c1fee3",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouterTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-05T18:37:19Z",
+      "side": 1,
+      "message": "It seems you\u0027re expecting it to never throw  REJECTED here - which is fine for the other code paths but doesn\u0027t cover the code you added. I realize it\u0027s hard to force that path normally but you could do it by subclassing and overriding methods, eg putNotification, to control the code path.",
+      "revId": "508288a15de78ee9ef3227866daecbe7bf39eb46",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_d9e8f27e",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouterTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-05T18:37:19Z",
+      "side": 1,
+      "message": "This should be synchronized.",
+      "revId": "508288a15de78ee9ef3227866daecbe7bf39eb46",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
