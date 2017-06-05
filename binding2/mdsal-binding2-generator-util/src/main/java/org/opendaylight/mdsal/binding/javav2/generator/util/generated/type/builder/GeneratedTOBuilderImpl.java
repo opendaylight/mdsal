@@ -49,6 +49,10 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
         setAbstract(false);
     }
 
+    public GeneratedTOBuilderImpl(final String packageName, final String name, final boolean isNormalized) {
+        super(packageName, name, true);
+    }
+
     @Override
     public GeneratedTOBuilder setExtendsType(GeneratedTransferObject genTransObj) {
         Preconditions.checkArgument(genTransObj != null, "Generated Transfer Object cannot be null!");
