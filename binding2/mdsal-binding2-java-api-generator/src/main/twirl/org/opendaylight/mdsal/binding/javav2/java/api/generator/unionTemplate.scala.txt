@@ -26,7 +26,7 @@ parentProperties: List[GeneratedProperty], properties: List[GeneratedProperty], 
      * construction new object of this union type.
      */
     @@@{importedNames.get("constructorProperties")}("@{property.getName}")
-    public @{baseType.getName}({importedNames.get(property.getName)} @{fieldName(property)}) {
+    public @{baseType.getName}(@{importedNames.get(property.getName)} @{fieldName(property)}) {
         @{importedNames.get("string")} defVal = new @{importedNames.get("string")}(@{fieldName(property)});
         @{baseType.getName} defInst = @{typeBuilder}.getDefaultInstance(defVal);
         @for(otherProperty <- finalProperties) {
@@ -55,7 +55,7 @@ parentProperties: List[GeneratedProperty], properties: List[GeneratedProperty], 
         }
     }
 }
-@if(!properties.isEmpty && !parentProperties.isEmpty) {
+@if(!properties.isEmpty) {
     /**
      * Creates a copy from Source Object.
      *
