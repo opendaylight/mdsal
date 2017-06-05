@@ -431,10 +431,7 @@ final class AuxiliaryGenUtils {
         genTOBuilder.setIsUnion(true);
         TypeProviderImpl.addUnitsToGenTO(genTOBuilder, typeDef.getUnits());
 
-
-
-        final GeneratedTOBuilder unionBuilder = createUnionBuilder(genTOBuilder,typeBuilder);
-
+        final GeneratedTOBuilder unionBuilder = createUnionBuilder(genTOBuilder, typeBuilder);
 
         final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
         method.setReturnType(returnType);
@@ -462,7 +459,8 @@ final class AuxiliaryGenUtils {
         }
         name.append(genTOBuilder.getName());
         name.append("Builder");
-        final GeneratedTOBuilderImpl unionBuilder = new GeneratedTOBuilderImpl(typeBuilder.getPackageName(),name.toString());
+        final GeneratedTOBuilderImpl unionBuilder = new GeneratedTOBuilderImpl(typeBuilder.getPackageName(),
+            name.toString(), true);
         unionBuilder.setIsUnionBuilder(true);
         return unionBuilder;
     }
