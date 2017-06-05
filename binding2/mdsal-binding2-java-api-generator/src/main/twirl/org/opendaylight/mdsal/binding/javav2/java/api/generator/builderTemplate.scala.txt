@@ -407,12 +407,15 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
             return null;
         }
     }
+
+    @if(augmentField != null) {
         @@Override
         public @{importedNames.get("classInstMap")}<@{importedNames.get("augmentation")}<? super @{genType.getName}>>
         augments() {
             //TODO implement
             return null;
         }
+    }
 }
 
 @generateEquals() = {
