@@ -16,6 +16,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.InsufficientCapacityException;
 import com.lmax.disruptor.PhasedBackoffWaitStrategy;
@@ -28,6 +29,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
@@ -41,6 +44,7 @@ import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Joint implementation of {@link DOMNotificationPublishService} and {@link DOMNotificationService}. Provides
@@ -78,11 +82,13 @@ public final class DOMNotificationRouter implements AutoCloseable, DOMNotificati
             DOMNotificationListener>> listeners = ImmutableMultimap.of();
     private final ListenerRegistry<DOMNotificationSubscriptionListener> subscriptionListeners =
             ListenerRegistry.create();
+    private final ScheduledExecutorService observer;
 
     @SuppressWarnings("unchecked")
     private DOMNotificationRouter(final ExecutorService executor, final int queueDepth, final WaitStrategy strategy) {
         this.executor = Preconditions.checkNotNull(executor);
-
+        this.observer = Executors.newScheduledThreadPool(1, new ThreadFactoryBuilder()
+                .setDaemon(true).setNameFormat("DOMNotificationRouter-%d").build());
         disruptor = new Disruptor<>(DOMNotificationRouterEvent.FACTORY,
                 queueDepth, executor, ProducerType.MULTI, strategy);
         disruptor.handleEventsWith(DISPATCH_NOTIFICATIONS);
@@ -232,69 +238,20 @@ public final class DOMNotificationRouter implements AutoCloseable, DOMNotificati
             return noBlock;
         }
 
-        /*
-         * FIXME: we need a background thread, which will watch out for blocking too long. Here
-         *        we will arm a tasklet for it and synchronize delivery of interrupt properly.
-         */
-        final PublishObserver publishObserver = new PublishObserver(timeout, unit, Thread.currentThread());
-        publishObserver.start();
         try {
+            final Thread publishThread = Thread.currentThread();
+            ScheduledFuture<?> timerTask = observer.schedule(publishThread::interrupt, timeout, unit);
             final ListenableFuture<?> withBlock = putNotification(notification);
-            publishObserver.exit();
+            timerTask.cancel(true);
             return withBlock;
         } catch (InterruptedException e) {
             return DOMNotificationPublishService.REJECTED;
         }
     }
-    /*
-        Create a publishObserver to watch out for blocking to long, if so,
-        we will interrupt the offerNotification operation.
-     */
-
-    private final class PublishObserver {
-        final long timeout;
-        final TimeUnit unit;
-        final Thread observer;
-
-        PublishObserver(final long timeout, final TimeUnit unit, final Thread publish) {
-            this.timeout = timeout;
-            this.unit = unit;
-            this.observer = new Thread(new TaskLet(timeout, unit, publish));
-        }
-
-        void start() {
-            observer.start();
-        }
-
-        void exit() {
-            observer.interrupt();
-        }
-    }
-
-    private final class TaskLet implements Runnable {
-        final long timeout;
-        final TimeUnit unit;
-        final Thread publishThread;
-
-        private TaskLet(final long timeout, final TimeUnit unit, final Thread publishThread) {
-            this.timeout = timeout;
-            this.unit = unit;
-            this.publishThread = publishThread;
-        }
-
-        @Override
-        public void run() {
-            try {
-                Thread.currentThread().sleep(unit.toMillis(timeout));
-                publishThread.interrupt();
-            } catch (InterruptedException e) {
-                LOG.warn("InterruptedException happened during taskLet running {}", e);
-            }
-        }
-    }
 
     @Override
     public void close() {
+        observer.shutdown();
         disruptor.shutdown();
         executor.shutdown();
     }
