@@ -46,6 +46,10 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         super(packageName, name);
     }
 
+    protected AbstractGeneratedTypeBuilder(final String packageName, final String name, final boolean isNormalized) {
+        super(packageName, name, true);
+    }
+
     protected String getComment() {
         return comment;
     }
