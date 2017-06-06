@@ -44,6 +44,7 @@ public interface BindingTreeNodeCodec<T extends TreeNode> extends BindingNormali
      *
      * @param childClass
      *            - child class by Biding Stream navigation
+     * @param <E> data type
      * @return context of child
      * @throws IllegalArgumentException
      *             - if supplied child class is not valid in specified context
@@ -64,6 +65,7 @@ public interface BindingTreeNodeCodec<T extends TreeNode> extends BindingNormali
      *
      * @param childClass
      *            - child class by Binding Stream navigation
+     * @param <E> data type
      * @return context of child or Optional absent if supplied is not applicable
      *         in context
      */
