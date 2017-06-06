@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.cache.CacheBuilder;
@@ -45,12 +46,13 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Beta
 public abstract class AbstractStreamWriterGenerator extends AbstractGenerator implements TreeNodeSerializerGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractStreamWriterGenerator.class);
 
     public static final String SERIALIZE_METHOD_NAME = "serialize";
-    protected static final AugmentableDispatchSerializer AUGMENTABLE = new AugmentableDispatchSerializer();
+    public static final AugmentableDispatchSerializer AUGMENTABLE = new AugmentableDispatchSerializer();
     private static final Field FIELD_MODIFIERS;
 
     private final LoadingCache<Class<?>, TreeNodeSerializerImplementation> implementations;

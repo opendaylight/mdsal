@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator.AbstractGenerator;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator.AbstractStreamWriterGenerator;
@@ -18,14 +19,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerRegistry;
 
-/**
- * @author ary
- *
- */
-/**
- * @author ary
- *
- */
+@Beta
 public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
 
     private static final ClassLoadingStrategy STRATEGY = GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
@@ -257,9 +251,9 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      * Invoking anyxmlNode method of stream with arguments localname and
      * expected.
      *
-     * @param localName
+     * @param name
      *            - argument for invoking anyxmlNode
-     * @param expected
+     * @param value
      *            - argument for invoking anyxmlNode
      * @return invoking anyxmlNode method as String
      */
