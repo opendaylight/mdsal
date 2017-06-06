@@ -90,7 +90,7 @@ public class UnionRenderer extends ClassRenderer {
                 .append(name)
                 .append(".clone()");
         }
-        sb.append(';');
+        sb.append(";\n");
         return sb.toString();
     }
 
