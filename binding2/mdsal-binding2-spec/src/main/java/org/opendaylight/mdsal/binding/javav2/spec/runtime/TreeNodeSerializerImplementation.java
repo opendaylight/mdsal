@@ -19,11 +19,10 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 public interface TreeNodeSerializerImplementation {
 
     /**
-     * Writes stream events for supplied data object to provided stream.
+     * Writes stream events for supplied tree node to provided stream.
      *
-     * DataObjectSerializerRegistry may be used to lookup serializers
-     * for other generated classes  in order to support writing
-     * their events.
+     * TreeNodeSerializerRegistry may be used to lookup serializers for other generated classes in order to
+     * support writing their events.
      */
     void serialize(TreeNodeSerializerRegistry reg, TreeNode obj, BindingStreamEventWriter stream) throws IOException;
 }
