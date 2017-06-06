@@ -11,15 +11,29 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.binding.javav2.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.yangtools.util.ClassLoaderUtils;
 
 @Beta
 public abstract class GeneratedClassLoadingStrategy implements ClassLoadingStrategy {
 
+    private static final GeneratedClassLoadingStrategy TCCL_STRATEGY = new TCCLClassLoadingStrategy();
+
     @Override
-    public Class<?> loadClass(Type type) throws ClassNotFoundException {
+    public Class<?> loadClass(final Type type) throws ClassNotFoundException {
         return loadClass(type.getFullyQualifiedName());
     }
 
     @Override
     public abstract Class<?> loadClass(String fqcn) throws ClassNotFoundException;
+
+    public static ClassLoadingStrategy getTCCLClassLoadingStrategy() {
+        return TCCL_STRATEGY;
+    }
+
+    private static final class TCCLClassLoadingStrategy extends GeneratedClassLoadingStrategy {
+        @Override
+        public Class<?> loadClass(final String fullyQualifiedName) throws ClassNotFoundException {
+            return ClassLoaderUtils.loadClassWithTCCL(fullyQualifiedName);
+        }
+    }
 }
