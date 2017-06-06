@@ -50,7 +50,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
     private static final Logger LOG = LoggerFactory.getLogger(AbstractStreamWriterGenerator.class);
 
     public static final String SERIALIZE_METHOD_NAME = "serialize";
-    protected static final AugmentableDispatchSerializer AUGMENTABLE = new AugmentableDispatchSerializer();
+    public static final AugmentableDispatchSerializer AUGMENTABLE = new AugmentableDispatchSerializer();
     private static final Field FIELD_MODIFIERS;
 
     private final LoadingCache<Class<?>, TreeNodeSerializerImplementation> implementations;

@@ -18,14 +18,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerRegistry;
 
-/**
- * @author ary
- *
- */
-/**
- * @author ary
- *
- */
 public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
 
     private static final ClassLoadingStrategy STRATEGY = GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
@@ -257,9 +249,9 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      * Invoking anyxmlNode method of stream with arguments localname and
      * expected.
      *
-     * @param localName
+     * @param name
      *            - argument for invoking anyxmlNode
-     * @param expected
+     * @param value
      *            - argument for invoking anyxmlNode
      * @return invoking anyxmlNode method as String
      */
