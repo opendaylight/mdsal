@@ -353,7 +353,7 @@ public abstract class BaseRenderer {
                     .append(name)
                     .append(".clone()");
         }
-        sb.append(";}");
+        sb.append(";}\n");
         return sb.toString();
     }
 

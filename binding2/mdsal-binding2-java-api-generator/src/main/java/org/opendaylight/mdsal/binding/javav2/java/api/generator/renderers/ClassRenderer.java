@@ -235,7 +235,7 @@ public class ClassRenderer extends BaseRenderer {
                         .append(importedName(property.getReturnType()))
                         .append(' ')
                         .append(fieldName(property))
-                        .append(';');
+                        .append(";\n");
             }
         }
         final String fields = sb2.toString();
