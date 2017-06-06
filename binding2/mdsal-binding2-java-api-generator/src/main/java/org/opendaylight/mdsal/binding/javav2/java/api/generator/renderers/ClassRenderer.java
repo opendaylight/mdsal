@@ -235,13 +235,15 @@ public class ClassRenderer extends BaseRenderer {
                         .append(importedName(property.getReturnType()))
                         .append(' ')
                         .append(fieldName(property))
-                        .append(';');
+                        .append(';')
+                        .append("\n");
             }
         }
         final String fields = sb2.toString();
         importedNames.put("baseEncoding", importedName(BaseEncoding.class));
-        if (!allProperties.isEmpty())
+        if (!allProperties.isEmpty()) {
             importedNames.put("defProp", importedName(((GeneratedProperty)((List) allProperties).get(0)).getReturnType()));
+        }
 
         final StringBuilder sb3 = new StringBuilder();
         for (GeneratedProperty property : properties) {
