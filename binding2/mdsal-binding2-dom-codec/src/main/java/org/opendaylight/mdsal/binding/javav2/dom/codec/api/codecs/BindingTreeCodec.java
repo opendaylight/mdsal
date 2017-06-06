@@ -29,6 +29,7 @@ public interface BindingTreeCodec {
      *
      * @param path
      *            - {@link InstanceIdentifier} path
+     * @param <T> data type
      * @return subtree codec
      */
     @Nullable
