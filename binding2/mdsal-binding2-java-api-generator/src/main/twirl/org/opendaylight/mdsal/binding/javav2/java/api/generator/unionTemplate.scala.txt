@@ -19,39 +19,35 @@ parentProperties: List[GeneratedProperty], properties: List[GeneratedProperty], 
         super(@{fieldName(property)});
     }
 }
+
 @for(property <- finalProperties) {
-    @if("char[]".equals(property.getReturnType.getName)) {
-    /**
-     * Constructor provided only for using in JMX. Don't use it for
-     * construction new object of this union type.
-     */
-    @@@{importedNames.get("constructorProperties")}("@{property.getName}")
+    @*TO DO parentProperties + #[property] as argument to method below see  unionTemplate 84 *@
     public @{baseType.getName}(@{importedNames.get(property.getName)} @{fieldName(property)}) {
-        @{importedNames.get("string")} defVal = new @{importedNames.get("string")}(@{fieldName(property)});
-        @{baseType.getName} defInst = @{typeBuilder}.getDefaultInstance(defVal);
+        super();
+        this.@{fieldName(property)} = @{fieldName(property)};
         @for(otherProperty <- finalProperties) {
-            this.@{fieldName(otherProperty)} =
-            @if("value".equals(otherProperty.getName)) {
-                @if(importedNames.get(otherProperty.getName).contains("[]")) {
-                    @{fieldName(otherProperty)} == null ? null : @{fieldName(otherProperty)}.clone();
-                } else {
-                    @{fieldName(otherProperty)};
-                }
-            } else {
-                defInst.@{fieldName(otherProperty)};
+            @if(property != otherProperty && !"value".equals(otherProperty.getName)) {
+                this.@{fieldName(otherProperty)} = null;
             }
         }
     }
-    } else {
-        @*TO DO parentProperties + #[property] as argument to method below see  unionTemplate 84 *@
-        public @{baseType.getName}() {
-            super(@{asArguments(parentProperties)});
-            this.@{fieldName(property)} = @{fieldName(property)};
+}
+
+@for(property <- properties) {
+    @if("char[]".equals(property.getReturnType.getName)) {
+        /**
+         * Constructor provided only for using in JMX. Don't use it for
+         * construction new object of this union type.
+         */
+        @@@{importedNames.get("constructorProperties")}("@{property.getName}")
+        public @{baseType.getName}(@{importedNames.get(property.getName)} @{fieldName(property)}) {
+            @{importedNames.get("string")} defVal = new @{importedNames.get("string")}(@{fieldName(property)});
+            @{baseType.getName} defInst = @{typeBuilder}.getDefaultInstance(defVal);
             @for(otherProperty <- finalProperties) {
-                @if(property != otherProperty && !"value".equals(otherProperty.getName)) {
-                    this.@{fieldName(otherProperty)} = null;
-                }
+                this.@{fieldName(otherProperty)} = defInst.@{fieldName(otherProperty)};
             }
+
+            this.@{fieldName(property)} = @{fieldName(property)} == null ? null : @{fieldName(property)}.clone();
         }
     }
 }
