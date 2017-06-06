@@ -138,7 +138,7 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      *            - argument for invoking startContainerNode
      * @return invoking startContainerNode method as String
      */
-    static final CharSequence startContainerNode(final CharSequence type, final CharSequence expected) {
+    public static final CharSequence startContainerNode(final CharSequence type, final CharSequence expected) {
         return invoke(STREAM, "startContainerNode", type, expected);
     }
 
@@ -163,7 +163,7 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      *            - argument for invoking startUnkeyedListItem
      * @return invoking startUnkeyedListItem method as String
      */
-    static final CharSequence startUnkeyedListItem(final CharSequence expected) {
+    protected static final CharSequence startUnkeyedListItem(final CharSequence expected) {
         return invoke(STREAM, "startUnkeyedListItem", expected);
     }
 
@@ -204,7 +204,7 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      *            - argument for invoking startMapEntryNode
      * @return invoking startMapEntryNode method as String
      */
-    static final CharSequence startMapEntryNode(final CharSequence key, final CharSequence expected) {
+    protected static final CharSequence startMapEntryNode(final CharSequence key, final CharSequence expected) {
         return invoke(STREAM, "startMapEntryNode", key, expected);
     }
 
@@ -215,7 +215,7 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      *            - argument for invoking startAugmentationNode
      * @return invoking startAugmentationNode method as String
      */
-    static final CharSequence startAugmentationNode(final CharSequence key) {
+    protected static final CharSequence startAugmentationNode(final CharSequence key) {
         return invoke(STREAM, "startAugmentationNode", key);
     }
 
@@ -243,7 +243,7 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      *            - argument for invoking startCaseNode
      * @return invoking startCaseNode method as String
      */
-    static final CharSequence startCaseNode(final CharSequence localName, final CharSequence expected) {
+    protected static final CharSequence startCaseNode(final CharSequence localName, final CharSequence expected) {
         return invoke(STREAM, "startCase", localName, expected);
     }
 
@@ -308,7 +308,7 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      *            - type for referencing class
      * @return referenced class of type
      */
-    static final CharSequence classReference(final Type type) {
+    protected static final CharSequence classReference(final Type type) {
         return type.getFullyQualifiedName() + ".class";
     }
 
