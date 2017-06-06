@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.BOOLEAN;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import java.beans.ConstructorProperties;
@@ -86,7 +87,7 @@ public class UnionRenderer extends ClassRenderer {
             .append(" = source.")
             .append(name);
         if (!"value".equals(name) && importedName(generatedProperty.getReturnType()).contains("[]")) {
-            sb.append(" == null ? null : source._")
+            sb.append(" == null ? null : source.")
                 .append(name)
                 .append(".clone()");
         }
@@ -99,6 +100,15 @@ public class UnionRenderer extends ClassRenderer {
         if (!"value".equals(field.getName())) {
             return super.getterMethod(field);
         }
+
+        final StringBuilder sb1 = new StringBuilder();
+        final String name = TextTemplateUtil.fieldName(field);
+        final String importedName = Preconditions.checkNotNull(importedName(field.getReturnType()));
+        sb1.append("public ")
+                .append(importedName)
+                .append(' ')
+                .append(TextTemplateUtil.getterMethodName(field))
+                .append("() {\n");
 
         Predicate<GeneratedProperty> predicate = input -> !"value".equals(input.getName());
         final List<GeneratedProperty> filtered = new ArrayList<>(Collections2.filter(this.getFinalProperties(),
@@ -169,6 +179,19 @@ public class UnionRenderer extends ClassRenderer {
             sb.append("}");
             strings.add(sb);
         }
-        return String.join(" else ", strings);
+
+        sb1.append(String.join(" else ", strings))
+                .append("\n");
+
+        sb1.append("return ")
+                .append(name);
+        if (importedName.contains("[]")) {
+            sb1.append(" == null ? null : ")
+                    .append(name)
+                    .append(".clone()");
+        }
+        sb1.append(";\n}\n");
+
+        return sb1.toString();
     }
 }
