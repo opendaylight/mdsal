@@ -18,14 +18,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerRegistry;
 
-/**
- * @author ary
- *
- */
-/**
- * @author ary
- *
- */
 public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
 
     private static final ClassLoadingStrategy STRATEGY = GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy();
