@@ -72,6 +72,7 @@ public interface BindingNormalizedNodeSerializer {
      *            - Binding Instance Identifier pointing to data
      * @param data
      *            - representing Data Tree
+     * @param <T> data type
      * @return NormalizedNode representation
      * @throws IllegalArgumentException
      *             - if supplied Instance Identifier is not valid.
