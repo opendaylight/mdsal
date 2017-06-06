@@ -19,13 +19,13 @@ import com.google.common.base.Preconditions;
  * <li>value - value to which property should be initialized</li>
  * </ul>
  */
-public class StaticBindingProperty {
+public class StaticConstant {
 
     private final String name;
     private final Class<?> type;
     private final Object value;
 
-    public StaticBindingProperty(final String name, final Class<?> type, final Object value) {
+    public StaticConstant(final String name, final Class<?> type, final Object value) {
         super();
         this.name = Preconditions.checkNotNull(name);
         this.type = Preconditions.checkNotNull(type);
@@ -63,7 +63,7 @@ public class StaticBindingProperty {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final StaticBindingProperty other = (StaticBindingProperty) obj;
+        final StaticConstant other = (StaticConstant) obj;
         if (!this.name.equals(other.name)) {
             return false;
         }
