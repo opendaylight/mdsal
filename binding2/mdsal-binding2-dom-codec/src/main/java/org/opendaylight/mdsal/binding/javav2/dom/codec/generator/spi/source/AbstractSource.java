@@ -94,7 +94,7 @@ abstract class AbstractSource {
      *            - arguments of method
      * @return invoking method on object with more arguments as String
      */
-    static final CharSequence invoke(final CharSequence object, final String methodName,
+    protected static final CharSequence invoke(final CharSequence object, final String methodName,
             final Object... args) {
         final StringBuilder sb = prepareCommonInvokePart(object, methodName);
 
