@@ -251,9 +251,9 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      * Invoking anyxmlNode method of stream with arguments localname and
      * expected.
      *
-     * @param localName
+     * @param name
      *            - argument for invoking anyxmlNode
-     * @param expected
+     * @param value
      *            - argument for invoking anyxmlNode
      * @return invoking anyxmlNode method as String
      */
