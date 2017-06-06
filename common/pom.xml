@@ -20,6 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>common-agreggator</artifactId>
+    <version>1.9.0-SNAPSHOT</version>
     <name>md-sal</name> <!-- Used by Sonar to set project name -->
     <packaging>pom</packaging>
 
