@@ -32,7 +32,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @Beta
-abstract class DataContainerCodecContext<D extends TreeNode, T> extends NodeCodecContext<D> {
+public abstract class DataContainerCodecContext<D extends TreeNode, T> extends NodeCodecContext<D> {
 
     private final DataContainerCodecPrototype<T> prototype;
     private volatile TreeNodeSerializer eventStreamSerializer;
@@ -187,7 +187,7 @@ abstract class DataContainerCodecContext<D extends TreeNode, T> extends NodeCode
         throw IncorrectNestingException.create(message, args);
     }
 
-    TreeNodeSerializer eventStreamSerializer() {
+    public TreeNodeSerializer eventStreamSerializer() {
         if(eventStreamSerializer == null) {
             eventStreamSerializer = factory().getEventStreamSerializer(getBindingClass());
         }
