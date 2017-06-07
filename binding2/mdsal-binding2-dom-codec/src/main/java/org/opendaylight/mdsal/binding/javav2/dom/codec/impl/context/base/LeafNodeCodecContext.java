@@ -41,7 +41,7 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 
 @Beta
-final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecContext<D> implements NodeContextSupplier {
+public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecContext<D> implements NodeContextSupplier {
 
     private final YangInstanceIdentifier.PathArgument yangIdentifier;
     private final Codec<Object, Object> valueCodec;
@@ -129,11 +129,11 @@ final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecContext<D>
     }
 
     @Override
-    protected YangInstanceIdentifier.PathArgument getDomPathArgument() {
+    public YangInstanceIdentifier.PathArgument getDomPathArgument() {
         return yangIdentifier;
     }
 
-    protected Codec<Object, Object> getValueCodec() {
+    public Codec<Object, Object> getValueCodec() {
         return valueCodec;
     }
 

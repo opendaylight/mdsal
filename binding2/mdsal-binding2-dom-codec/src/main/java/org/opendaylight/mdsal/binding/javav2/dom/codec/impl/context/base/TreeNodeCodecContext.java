@@ -57,7 +57,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
-abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNodeContainer>
+public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNodeContainer>
         extends DataContainerCodecContext<D, T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TreeNodeCodecContext.class);
@@ -203,7 +203,7 @@ abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNodeContai
                 "Argument %s is not valid child of %s", arg, getSchema()).get();
     }
 
-    protected final LeafNodeCodecContext<?> getLeafChild(final String name) {
+    public final LeafNodeCodecContext<?> getLeafChild(final String name) {
         final LeafNodeCodecContext<?> value = leafChild.get(name);
         return IncorrectNestingException.checkNonNull(value, "Leaf %s is not valid for %s", name, getBindingClass());
     }
@@ -315,7 +315,7 @@ abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNodeContai
     }
 
     @SuppressWarnings("rawtypes")
-    Object getBindingChildValue(final Method method, final NormalizedNodeContainer domData) {
+    public Object getBindingChildValue(final Method method, final NormalizedNodeContainer domData) {
         final NodeCodecContext<?> childContext = byMethod.get(method).get();
         @SuppressWarnings("unchecked")
         final Optional<NormalizedNode<?, ?>> domChild = domData.getChild(childContext.getDomPathArgument());
