@@ -41,7 +41,7 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
  *
  */
 @Beta
-abstract class NodeCodecContext<D extends TreeNode> implements BindingTreeNodeCodec<D>{
+public abstract class NodeCodecContext<D extends TreeNode> implements BindingTreeNodeCodec<D> {
     /**
      * Returns Yang Instance Identifier Path Argument of current node
      *
