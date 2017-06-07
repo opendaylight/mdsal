@@ -26,7 +26,7 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-final class DataContainerCodecPrototype<T> implements NodeContextSupplier {
+public final class DataContainerCodecPrototype<T> implements NodeContextSupplier {
 
     private final T schema;
     private final QNameModule namespace;
