@@ -36,6 +36,7 @@ import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
+import org.w3c.dom.Document;
 
 @Beta
 public final class Types {
@@ -55,6 +56,7 @@ public final class Types {
     public static final ConcreteType CLASS = typeForClass(Class.class);
     public static final ConcreteType STRING = typeForClass(String.class);
     public static final ConcreteType VOID = typeForClass(Void.class);
+    public static final ConcreteType DOCUMENT = typeForClass(Document.class);
 
     public static final ConcreteType BYTE_ARRAY = primitiveType("byte[]", null);
     public static final ConcreteType CHAR_ARRAY = primitiveType("char[]", null);
