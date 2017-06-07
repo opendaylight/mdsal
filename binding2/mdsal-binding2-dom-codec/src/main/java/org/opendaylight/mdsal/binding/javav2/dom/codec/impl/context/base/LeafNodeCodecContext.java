@@ -41,7 +41,7 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 
 @Beta
-final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecContext<D> implements NodeContextSupplier {
+public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecContext<D> implements NodeContextSupplier {
 
     private final YangInstanceIdentifier.PathArgument yangIdentifier;
     private final Codec<Object, Object> valueCodec;
@@ -89,22 +89,22 @@ final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecContext<D>
 
     private static Object qnameDomValueFromString(final Codec<Object, Object> codec, final DataSchemaNode schema,
             final String defaultValue, final SchemaContext schemaContext) {
-        int prefixEndIndex = defaultValue.indexOf(':');
+        final int prefixEndIndex = defaultValue.indexOf(':');
         QName qname;
         if (prefixEndIndex != -1) {
-            String defaultValuePrefix = defaultValue.substring(0, prefixEndIndex);
+            final String defaultValuePrefix = defaultValue.substring(0, prefixEndIndex);
 
-            Module module = schemaContext.findModuleByNamespaceAndRevision(schema.getQName().getNamespace(),
+            final Module module = schemaContext.findModuleByNamespaceAndRevision(schema.getQName().getNamespace(),
                     schema.getQName().getRevision());
 
             if (module.getPrefix().equals(defaultValuePrefix)) {
                 qname = QName.create(module.getQNameModule(), defaultValue.substring(prefixEndIndex + 1));
                 return codec.deserialize(qname);
             } else {
-                Set<ModuleImport> imports = module.getImports();
-                for (ModuleImport moduleImport : imports) {
+                final Set<ModuleImport> imports = module.getImports();
+                for (final ModuleImport moduleImport : imports) {
                     if (moduleImport.getPrefix().equals(defaultValuePrefix)) {
-                        Module importedModule = schemaContext.findModuleByName(moduleImport.getModuleName(),
+                        final Module importedModule = schemaContext.findModuleByName(moduleImport.getModuleName(),
                                 moduleImport.getRevision());
                         qname = QName.create(importedModule.getQNameModule(), defaultValue.substring(prefixEndIndex + 1));
                         return codec.deserialize(qname);
@@ -119,10 +119,10 @@ final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecContext<D>
     }
 
     private static Object domValueFromString(final Codec<Object, Object> codec, final TypeDefinition<?> type,
-            Object defaultValue) {
-        TypeDefinitionAwareCodec<?, ?> typeDefAwareCodec = TypeDefinitionAwareCodec.from(type);
+            final Object defaultValue) {
+        final TypeDefinitionAwareCodec<?, ?> typeDefAwareCodec = TypeDefinitionAwareCodec.from(type);
         if (typeDefAwareCodec != null) {
-            Object castedDefaultValue = typeDefAwareCodec.deserialize((String) defaultValue);
+            final Object castedDefaultValue = typeDefAwareCodec.deserialize((String) defaultValue);
             return codec.deserialize(castedDefaultValue);
         }
         // FIXME: BUG-4647 Refactor / redesign this to throw hard error,
@@ -131,11 +131,11 @@ final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecContext<D>
     }
 
     @Override
-    protected YangInstanceIdentifier.PathArgument getDomPathArgument() {
+    public YangInstanceIdentifier.PathArgument getDomPathArgument() {
         return yangIdentifier;
     }
 
-    protected Codec<Object, Object> getValueCodec() {
+    public Codec<Object, Object> getValueCodec() {
         return valueCodec;
     }
 
