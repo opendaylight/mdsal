@@ -47,7 +47,7 @@ public abstract class NodeCodecContext<D extends TreeNode> implements BindingTre
      *
      * @return DOM Path Argument of node
      */
-    protected abstract YangInstanceIdentifier.PathArgument getDomPathArgument();
+    public abstract YangInstanceIdentifier.PathArgument getDomPathArgument();
 
     /**
      *
