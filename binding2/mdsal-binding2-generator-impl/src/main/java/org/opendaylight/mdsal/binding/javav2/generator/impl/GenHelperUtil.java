@@ -60,6 +60,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
@@ -80,6 +81,7 @@ import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
+import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 
 /**
  * Helper util class used for generation of types in Binding spec v2.
@@ -532,6 +534,9 @@ final class GenHelperUtil {
             } else if (node instanceof ListSchemaNode) {
                 listToGenType(module, basePackageName, typeBuilder, childOf, (ListSchemaNode) node, schemaContext,
                         verboseClassComments, genCtx, genTypeBuilders, typeProvider);
+            } else if (node instanceof AnyXmlSchemaNode) {
+                resolveAnyxmlNodeAsMethod(schemaContext, typeBuilder, genCtx, (AnyXmlSchemaNode) node, module,
+                        typeProvider);
             }
         }
 
@@ -683,6 +688,28 @@ final class GenHelperUtil {
         constructGetter(typeBuilder, leafName, leafDesc, returnType, leaf.getStatus());
         return returnType;
     }
+
+    private static Type resolveAnyxmlNodeAsMethod(final SchemaContext schemaContext, final GeneratedTypeBuilder
+            typeBuilder, final Map<Module, ModuleContext> genCtx, final AnyXmlSchemaNode anyxml, final Module module,
+            final TypeProvider typeProvider) {
+
+        final String anyxmlName = anyxml.getQName().getLocalName();
+        if (anyxmlName == null) {
+            return null;
+        }
+
+        String anyxmlDesc = anyxml.getDescription();
+        if (anyxmlDesc == null) {
+            anyxmlDesc = "";
+        }
+
+        final TypeDefinition<?> typeDef = BaseTypes.stringType(); //for start, return anyxml as raw string
+        Type returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, anyxml);
+
+        constructGetter(typeBuilder, anyxmlName, anyxmlDesc, returnType, anyxml.getStatus());
+        return returnType;
+    }
+
 
     /**
      * Adds <code>schemaNode</code> to <code>typeBuilder</code> as getter method
