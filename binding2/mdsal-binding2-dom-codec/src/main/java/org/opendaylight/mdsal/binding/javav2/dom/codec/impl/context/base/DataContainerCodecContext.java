@@ -11,12 +11,15 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.codecs.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.MissingSchemaException;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.cache.CachingNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.NonCachingCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.BindingToNormalizedStreamWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeArgument;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
@@ -30,7 +33,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @Beta
 public abstract class DataContainerCodecContext<D extends TreeNode, T> extends NodeCodecContext<D> {
@@ -80,6 +82,7 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
      * @return Context of child or null if supplied {@code arg} does not represent valid child.
      * @throws IllegalArgumentException If supplied argument does not represent valid child.
      */
+    @SuppressWarnings("unchecked")
     @Nonnull
     @Override
     public DataContainerCodecContext<?,?> bindingPathArgumentChild(@Nonnull final TreeArgument<?> arg,
@@ -95,12 +98,15 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
      * Returns deserialized Binding Path Argument from YANG instance identifier.
      *
      * @param domArg
-     * @return
+     *            - DOM identifier
+     * @return Binding identifier
      */
+    @SuppressWarnings("rawtypes")
     protected TreeArgument getBindingPathArgument(final YangInstanceIdentifier.PathArgument domArg) {
         return bindingArg();
     }
 
+    @SuppressWarnings("rawtypes")
     protected final TreeArgument bindingArg() {
         return prototype.getBindingArg();
     }
@@ -146,9 +152,10 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
     @Override
     public BindingNormalizedNodeCachingCodec<D> createCachingCodec(
             @Nonnull final ImmutableCollection<Class<? extends TreeNode>> cacheSpecifier) {
-
-        //TODO: implement in cache-related patches to come
-        throw new NotImplementedException();
+        if (cacheSpecifier.isEmpty()) {
+            return new NonCachingCodec<D>(this);
+        }
+        return new CachingNormalizedNodeCodec<D>(this, ImmutableSet.copyOf(cacheSpecifier));
     }
 
     BindingStreamEventWriter createWriter(final NormalizedNodeStreamWriter domWriter) {
