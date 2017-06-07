@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.codecs.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.MissingSchemaException;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.BindingToNormalizedStreamWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeArgument;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
@@ -151,9 +152,7 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
     }
 
     BindingStreamEventWriter createWriter(final NormalizedNodeStreamWriter domWriter) {
-
-        //TODO: streamWriter to come
-        throw new NotImplementedException();
+        return BindingToNormalizedStreamWriter.create(this, domWriter);
     }
 
     @Nonnull
