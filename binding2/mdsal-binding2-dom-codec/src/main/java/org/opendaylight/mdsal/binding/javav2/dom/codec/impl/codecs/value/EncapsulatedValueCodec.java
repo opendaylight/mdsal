@@ -24,7 +24,7 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.codecs.value.ValueTy
  * types, which are same as in NormalizedNode model.
  */
 @Beta
-final class EncapsulatedValueCodec extends ReflectionBasedCodec implements SchemaUnawareCodec {
+public final class EncapsulatedValueCodec extends ReflectionBasedCodec implements SchemaUnawareCodec {
 
     private static final Lookup LOOKUP = MethodHandles.publicLookup();
     private static final MethodType OBJ_METHOD = MethodType.methodType(Object.class, Object.class);
@@ -59,24 +59,24 @@ final class EncapsulatedValueCodec extends ReflectionBasedCodec implements Schem
      * @param value Value to be checked
      * @return True if the value can be encapsulated
      */
-    boolean canAcceptObject(final Object value) {
+    public boolean canAcceptObject(final Object value) {
         return valueType.isInstance(value);
     }
 
     @Override
-    public Object deserialize(Object input) {
+    public Object deserialize(final Object input) {
         try {
             return constructor.invokeExact(input);
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             throw Throwables.propagate(e);
         }
     }
 
     @Override
-    public Object serialize(Object input) {
+    public Object serialize(final Object input) {
         try {
             return getter.invokeExact(input);
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             throw Throwables.propagate(e);
         }
     }
