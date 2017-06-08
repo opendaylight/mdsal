@@ -42,7 +42,7 @@ public final class KeyedListNodeCodecContext<D extends TreeNode & Identifiable<?
      * @param prototype
      *            - codec prototype of keyed list node
      */
-    KeyedListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
+    public KeyedListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
         super(prototype);
         this.codec = factory().getPathArgumentCodec(getBindingClass(), getSchema());
         try {
