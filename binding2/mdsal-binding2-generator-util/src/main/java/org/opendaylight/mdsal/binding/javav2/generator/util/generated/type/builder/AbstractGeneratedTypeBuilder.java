@@ -242,7 +242,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         }
 
         AbstractGeneratedTypeBuilder<?> other = (AbstractGeneratedTypeBuilder<?>) obj;
-        return Objects.equals(this, other);
+        return Objects.equals(getFullyQualifiedName(), other.getFullyQualifiedName());
     }
 
     public Type getParent() {
