@@ -126,6 +126,13 @@ public class ClassRenderer extends BaseRenderer {
         return generateBody(false);
     }
 
+    protected String generateInnerClassBody(GeneratedTransferObject innerClass) {
+        final ClassRenderer classRenderer = new ClassRenderer((GeneratedTransferObject) innerClass);
+        final String body = classRenderer.generateAsInnerClass();
+        this.putAllToImportMap(classRenderer.getImportMap());
+        return body;
+    }
+
     protected String generateBody(final boolean isInnerClass) {
         importedNames.put("type", importedName(getType()));
         importedNames.put("arrays", importedName(Arrays.class));
@@ -153,7 +160,7 @@ public class ClassRenderer extends BaseRenderer {
         if (!enclosedGeneratedTypes.isEmpty()) {
             for (GeneratedType innerClass : enclosedGeneratedTypes) {
                 if (innerClass instanceof GeneratedTransferObject) {
-                    classTemplateBuilder.add(new ClassRenderer((GeneratedTransferObject) innerClass).generateAsInnerClass());
+                    classTemplateBuilder.add(generateInnerClassBody((GeneratedTransferObject)innerClass));
                 }
             }
         }
