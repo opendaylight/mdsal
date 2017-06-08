@@ -194,4 +194,9 @@ public class UnionRenderer extends ClassRenderer {
 
         return sb1.toString();
     }
+
+    @Override
+    protected String generateInnerClassBody(GeneratedTransferObject innerClass) {
+        return new UnionRenderer(innerClass).generateAsInnerClass();
+    }
 }

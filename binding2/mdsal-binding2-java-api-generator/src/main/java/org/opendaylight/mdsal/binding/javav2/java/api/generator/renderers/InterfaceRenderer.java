@@ -82,7 +82,7 @@ public class InterfaceRenderer extends BaseRenderer {
             if (innerClass instanceof GeneratedTransferObject) {
                 if (((GeneratedTransferObject) innerClass).isUnionType()) {
                     final UnionRenderer unionRenderer = new UnionRenderer((GeneratedTransferObject) innerClass);
-                    innerClasses.add(unionRenderer.body());
+                    innerClasses.add(unionRenderer.generateAsInnerClass());
                     this.putAllToImportMap(unionRenderer.getImportMap());
                 } else {
                     final ClassRenderer classRenderer = new ClassRenderer((GeneratedTransferObject) innerClass);
