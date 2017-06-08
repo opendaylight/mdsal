@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
  * Value codec, which serializes / de-serializes values from DOM simple values.
  */
 @Beta
-abstract class ValueTypeCodec implements Codec<Object, Object> {
+public abstract class ValueTypeCodec implements Codec<Object, Object> {
 
     private static final Cache<Class<?>, SchemaUnawareCodec> staticCodecs = CacheBuilder.newBuilder().weakKeys()
             .build();
@@ -94,7 +94,7 @@ abstract class ValueTypeCodec implements Codec<Object, Object> {
     private static SchemaUnawareCodec getCachedSchemaUnawareCodec(final Class<?> typeClz, final Callable<? extends SchemaUnawareCodec> loader) {
         try {
             return staticCodecs.get(typeClz, loader);
-        } catch (ExecutionException e) {
+        } catch (final ExecutionException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -116,8 +116,8 @@ abstract class ValueTypeCodec implements Codec<Object, Object> {
     }
 
     @SuppressWarnings("rawtypes")
-    static ValueTypeCodec encapsulatedValueCodecFor(final Class<?> typeClz, final Codec delegate) {
-        SchemaUnawareCodec extractor = getCachedSchemaUnawareCodec(typeClz, EncapsulatedValueCodec.loader(typeClz));
+    public static ValueTypeCodec encapsulatedValueCodecFor(final Class<?> typeClz, final Codec delegate) {
+        final SchemaUnawareCodec extractor = getCachedSchemaUnawareCodec(typeClz, EncapsulatedValueCodec.loader(typeClz));
         return new CompositeValueCodec(extractor, delegate);
     }
 }

@@ -34,7 +34,7 @@ public class ContainerNodeCodecContext<D extends TreeNode> extends TreeNodeCodec
      * @param prototype
      *            - codec prototype of container node
      */
-    ContainerNodeCodecContext(final DataContainerCodecPrototype<ContainerSchemaNode> prototype) {
+    public ContainerNodeCodecContext(final DataContainerCodecPrototype<ContainerSchemaNode> prototype) {
         super(prototype);
     }
 
