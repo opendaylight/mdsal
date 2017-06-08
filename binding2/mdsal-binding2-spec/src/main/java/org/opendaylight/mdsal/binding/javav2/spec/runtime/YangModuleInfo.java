@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.javav2.spec.runtime;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
+import java.io.InputStream;
 import java.util.Set;
 import org.opendaylight.yangtools.concepts.SemVer;
 import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceRepresentation;
@@ -59,5 +60,12 @@ public interface YangModuleInfo {
      * @return YangModuleInfo source representation
      */
     SchemaSourceRepresentation getModuleSourceRepresentation();
+
+    /**
+     * Get stream of module source
+     *
+     * @return input stream of module source
+     */
+    InputStream getModuleSourceStream();
 
 }
