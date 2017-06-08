@@ -11,7 +11,7 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
-import org.opendaylight.mdsal.binding.javav2.dom.codec.api.codecs.BindingTreeNodeCodec;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingTreeNodeCodec;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeArgument;

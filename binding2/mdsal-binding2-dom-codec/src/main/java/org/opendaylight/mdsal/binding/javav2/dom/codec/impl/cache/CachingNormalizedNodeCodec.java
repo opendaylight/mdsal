@@ -11,7 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.binding.javav2.dom.codec.api.codecs.BindingNormalizedNodeCachingCodec;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingNormalizedNodeCachingCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.DataContainerCodecContext;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.CachingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
