@@ -70,6 +70,24 @@ public abstract class AbstractBaseType implements Type {
         }
     }
 
+
+    protected AbstractBaseType(final String pkName, final String name,final boolean isPkNameNormalized,
+                               final boolean isTypeNormalized) {
+        Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
+        Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
+        if (isPkNameNormalized) {
+            this.packageName = pkName;
+        } else {
+            this.packageName = JavaIdentifierNormalizer.normalizeFullPackageName(pkName);
+        }
+
+        if (isTypeNormalized) {
+            this.name = name;
+        } else {
+            this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name);
+        }
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.packageName);
