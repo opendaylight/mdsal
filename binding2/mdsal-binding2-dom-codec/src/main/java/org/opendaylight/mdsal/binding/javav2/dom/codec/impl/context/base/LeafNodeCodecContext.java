@@ -149,7 +149,7 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
         return this;
     }
 
-    final Method getGetter() {
+    public final Method getGetter() {
         return getter;
     }
 
