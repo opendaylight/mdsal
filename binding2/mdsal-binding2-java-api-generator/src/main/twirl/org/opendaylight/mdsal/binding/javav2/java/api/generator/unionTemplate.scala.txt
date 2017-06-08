@@ -44,8 +44,8 @@ parentProperties: List[GeneratedProperty], properties: List[GeneratedProperty], 
     }
     } else {
         @*TO DO parentProperties + #[property] as argument to method below see  unionTemplate 84 *@
-        public @{baseType.getName}() {
-            super(@{asArguments(parentProperties)});
+        public @{baseType.getName}(@{importedNames.get(property.getName)} @{fieldName(property)}) {
+            super();
             this.@{fieldName(property)} = @{fieldName(property)};
             @for(otherProperty <- finalProperties) {
                 @if(property != otherProperty && !"value".equals(otherProperty.getName)) {
@@ -55,19 +55,20 @@ parentProperties: List[GeneratedProperty], properties: List[GeneratedProperty], 
         }
     }
 }
-@if(!properties.isEmpty) {
-    /**
-     * Creates a copy from Source Object.
-     *
-     * @@param source Source object
-     */
-    public @{baseType.getName}
-    (@{baseType.getName}
-     source) {
-    @if(!parentProperties.isEmpty()) {super(source);}
-    @{propertyList}
+
+/**
+ * Creates a copy from Source Object.
+ *
+ * @@param source Source object
+ */
+public @{baseType.getName}(@{baseType.getName} source) {
+    @if(!parentProperties.isEmpty()) {
+        super(source);
+    } else {
+        @{propertyList}
     }
 }
+
 @if(properties.isEmpty && !parentProperties.isEmpty) {
     /**
      * Creates a new instance from @{importedNames.get("superType")}
