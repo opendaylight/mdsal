@@ -22,6 +22,30 @@
       "revId": "7eb194c73ef0681486b5adf4a318e8f4fde5fd62",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_1cf53683",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-08T12:45:22Z",
+      "side": 0,
+      "message": "yes, it\u0027s a parent class for nested class to be attached, so this is valid and that\u0027s why you got verified-1 by deleting this part.",
+      "parentUuid": "3afa9182_862f17a1",
+      "range": {
+        "startLine": 260,
+        "startChar": 15,
+        "endLine": 260,
+        "endChar": 67
+      },
+      "revId": "7eb194c73ef0681486b5adf4a318e8f4fde5fd62",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
