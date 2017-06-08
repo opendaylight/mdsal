@@ -303,7 +303,7 @@ public final class TypeProviderImpl implements TypeProvider {
         if (typeDef instanceof BitsTypeDefinition) {
             final BitsTypeDefinition bitsTypeDefinition = (BitsTypeDefinition) typeDef;
 
-            final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName);
+            final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName,true, false);
             final String typedefDescription = encodeAngleBrackets(typeDef.getDescription());
 
             genTOBuilder.setDescription(typedefDescription);
@@ -365,7 +365,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
         final GeneratedTOBuilderImpl unionGenTOBuilder;
         if (typeDefName != null && !typeDefName.isEmpty()) {
-            unionGenTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName);
+            unionGenTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName,true,false);
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
             unionGenTOBuilder.setDescription(typedefDescription);
             unionGenTOBuilder.setReference(typedef.getReference());
@@ -385,7 +385,7 @@ public final class TypeProviderImpl implements TypeProvider {
                         parentNode, schemaContext, genTypeDefsContextMap);
             } else if (unionType instanceof UnionTypeDefinition) {
                 generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionTypeDefinition) unionType,
-                        basePackageName, parentNode, schemaContext, genTypeDefsContextMap));
+                        unionGenTOBuilder.getFullyQualifiedName(), parentNode, schemaContext, genTypeDefsContextMap));
             } else if (unionType instanceof EnumTypeDefinition) {
                 final Enumeration enumeration = addInnerEnumerationToTypeBuilder((EnumTypeDefinition) unionType,
                         unionTypeName, unionGenTOBuilder);
@@ -932,7 +932,8 @@ public final class TypeProviderImpl implements TypeProvider {
             resultTOBuilder.addEnclosingTransferObject(genTOBuilder);
         }
 
-        resultTOBuilder.addProperty("value").setReturnType(Types.CHAR_ARRAY);
+        resultTOBuilder.addProperty("value").setReturnType(Types.CHAR_ARRAY).setReadOnly(false);
+
         return resultTOBuilder;
     }
 
