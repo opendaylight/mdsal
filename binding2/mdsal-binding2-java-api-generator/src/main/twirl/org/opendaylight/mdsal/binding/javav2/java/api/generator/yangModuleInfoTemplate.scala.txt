@@ -125,6 +125,15 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
     }
 
     @@Override
+    public @{importedNames.get("inputStream")} getModuleSourceStream() {
+        @{importedNames.get("inputStream")} stream = @{MODULE_INFO_CLASS_NAME}.class.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new IllegalStateException("Resource '" + resourcePath + "' is missing");
+        }
+        return stream;
+    }
+
+    @@Override
     public @{importedNames.get("set")}<@{importedNames.get("yangModuleInfo")}> getImportedModules() {
         return importedModules;
     }
