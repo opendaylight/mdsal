@@ -11,20 +11,29 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 import com.google.common.collect.Iterables;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.AugmentationNodeContext;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.CaseNodeCodecContext;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.ChoiceNodeCodecContext;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.ContainerNodeCodecContext;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.KeyedListNodeCodecContext;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.ListNodeCodecContext;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeRoot;
+import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public final class DataContainerCodecPrototype<T> implements NodeContextSupplier {
 
@@ -121,8 +130,22 @@ public final class DataContainerCodecPrototype<T> implements NodeContextSupplier
     @GuardedBy("this")
     @SuppressWarnings({"rawtypes", "unchecked"})
     protected DataContainerCodecContext<?, T> createInstance() {
-        //TODO - implement it
-        throw new NotImplementedException();
+        if (schema instanceof ContainerSchemaNode) {
+            return new ContainerNodeCodecContext(this);
+        } else if (schema instanceof ListSchemaNode) {
+            if (Identifiable.class.isAssignableFrom(getBindingClass())) {
+                return new KeyedListNodeCodecContext(this);
+            } else {
+                return new ListNodeCodecContext(this);
+            }
+        } else if (schema instanceof ChoiceSchemaNode) {
+            return new ChoiceNodeCodecContext(this);
+        } else if (schema instanceof AugmentationSchema) {
+            return new AugmentationNodeContext(this);
+        } else if (schema instanceof ChoiceCaseNode) {
+            return new CaseNodeCodecContext(this);
+        }
+        throw new IllegalArgumentException("Unsupported type " + bindingClass + " " + schema);
     }
 
     boolean isChoice() {

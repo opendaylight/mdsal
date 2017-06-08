@@ -118,25 +118,26 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
     }
 
     /**
-     *
-     * Returns child context as if it was walked by
-     * {@link BindingStreamEventWriter}. This means that to enter case, one
-     * must issue getChild(ChoiceClass).getChild(CaseClass).
+     * Returns child context as if it was walked by {@link BindingStreamEventWriter}. This means that to enter
+     * case, one must issue getChild(ChoiceClass).getChild(CaseClass).
      *
      * @param childClass
+     *            - child class
      * @return Context of child node or null, if supplied class is not subtree child
-     * @throws IllegalArgumentException If supplied child class is not valid in specified context.
+     * @throws IllegalArgumentException
+     *             If supplied child class is not valid in specified context.
      */
     @Nonnull
     @Override
     public abstract <DV extends TreeNode> DataContainerCodecContext<DV,?> streamChild(@Nonnull final Class<DV> childClass) throws IllegalArgumentException;
+    
     /**
      *
-     * Returns child context as if it was walked by
-     * {@link BindingStreamEventWriter}. This means that to enter case, one
-     * must issue getChild(ChoiceClass).getChild(CaseClass).
+     * Returns child context as if it was walked by {@link BindingStreamEventWriter}. This means that to enter
+     * case, one must issue getChild(ChoiceClass).getChild(CaseClass).
      *
      * @param childClass
+     *            - child class
      * @return Context of child or Optional absent is supplied class is not applicable in context.
      */
     @Override
@@ -158,7 +159,7 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
         return new CachingNormalizedNodeCodec<D>(this, ImmutableSet.copyOf(cacheSpecifier));
     }
 
-    BindingStreamEventWriter createWriter(final NormalizedNodeStreamWriter domWriter) {
+    public BindingStreamEventWriter createWriter(final NormalizedNodeStreamWriter domWriter) {
         return BindingToNormalizedStreamWriter.create(this, domWriter);
     }
 

@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
  *            - type of tree node
  */
 @Beta
-class ListNodeCodecContext<D extends TreeNode> extends TreeNodeCodecContext<D, ListSchemaNode> {
+public class ListNodeCodecContext<D extends TreeNode> extends TreeNodeCodecContext<D, ListSchemaNode> {
 
     /**
      * Prepare context for list node from prototype.
@@ -36,7 +36,7 @@ class ListNodeCodecContext<D extends TreeNode> extends TreeNodeCodecContext<D, L
      * @param prototype
      *            - codec prototype of list node
      */
-    protected ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
+    public ListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
         super(prototype);
     }
 
