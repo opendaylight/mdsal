@@ -151,7 +151,7 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
         return this;
     }
 
-    final Method getGetter() {
+    public final Method getGetter() {
         return getter;
     }
 
@@ -221,12 +221,14 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
         return null;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public TreeArgument deserializePathArgument(final YangInstanceIdentifier.PathArgument arg) {
         Preconditions.checkArgument(getDomPathArgument().equals(arg));
         return null;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public YangInstanceIdentifier.PathArgument serializePathArgument(final TreeArgument arg) {
         return getDomPathArgument();
