@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.value;
+package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.codecs.value;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
@@ -26,7 +26,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
-import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.value.ValueTypeCodec.SchemaUnawareCodec;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.codecs.value.ValueTypeCodec.SchemaUnawareCodec;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;

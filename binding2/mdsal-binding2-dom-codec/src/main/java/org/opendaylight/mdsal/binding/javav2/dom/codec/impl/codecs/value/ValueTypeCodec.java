@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.value;
+package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.codecs.value;
 
 import com.google.common.annotations.Beta;
 import com.google.common.cache.Cache;
