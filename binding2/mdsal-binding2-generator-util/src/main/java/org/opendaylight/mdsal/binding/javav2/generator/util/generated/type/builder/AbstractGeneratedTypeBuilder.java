@@ -50,6 +50,12 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         super(packageName, name, true);
     }
 
+    protected AbstractGeneratedTypeBuilder(final String packageName, final String name,
+                                           final boolean isPkNameNormalized,
+                                           final boolean isTypeNormalized) {
+        super(packageName, name, isPkNameNormalized,isTypeNormalized);
+    }
+
     protected String getComment() {
         return comment;
     }
@@ -242,7 +248,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         }
 
         AbstractGeneratedTypeBuilder<?> other = (AbstractGeneratedTypeBuilder<?>) obj;
-        return Objects.equals(this, other);
+        return Objects.equals(getFullyQualifiedName(), other.getFullyQualifiedName());
     }
 
     public Type getParent() {

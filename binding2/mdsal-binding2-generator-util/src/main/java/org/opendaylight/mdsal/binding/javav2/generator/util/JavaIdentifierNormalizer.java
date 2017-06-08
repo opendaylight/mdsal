@@ -341,9 +341,14 @@ public final class JavaIdentifierNormalizer {
                 // to be normalizing according to original package of parent
                 // class
                 for (int i = 0; i < packageNameParts.length - 1; i++) {
-                    sb.append(packageNameParts[i]);
-                    if (i != (packageNameParts.length - 2)) {
-                        sb.append('.');
+                    if (!Character.isUpperCase(packageNameParts[i].charAt(FIRST_CHAR))) {
+                        sb.append(packageNameParts[i]);
+                        if (i != (packageNameParts.length - 2) &&
+                                !Character.isUpperCase(packageNameParts[i+1].charAt(FIRST_CHAR))) {
+                            sb.append('.');
+                        }
+                    } else {
+                        break;
                     }
                 }
                 suppInnerClassPackageName = sb.toString();
