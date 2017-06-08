@@ -128,5 +128,5 @@ public interface BindingNormalizedNodeSerializer {
      * @return NormalizedNode representation of operation data
      */
     @Nonnull
-    ContainerNode toNormalizedNodeRpcData(@Nonnull Instantiable<?> data);
+    ContainerNode toNormalizedNodeOperationData(@Nonnull Instantiable<?> data);
 }
