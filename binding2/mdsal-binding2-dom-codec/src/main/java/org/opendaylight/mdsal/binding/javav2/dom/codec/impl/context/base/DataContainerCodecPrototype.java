@@ -54,12 +54,12 @@ public final class DataContainerCodecPrototype<T> implements NodeContextSupplier
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    static <T extends DataSchemaNode> DataContainerCodecPrototype<T> from(final Class<?> cls, final T schema,
+    public static <T extends DataSchemaNode> DataContainerCodecPrototype<T> from(final Class<?> cls, final T schema,
             final CodecContextFactory factory) {
         return new DataContainerCodecPrototype(cls, NodeIdentifier.create(schema.getQName()), schema, factory);
     }
 
-    static DataContainerCodecPrototype<SchemaContext> rootPrototype(final CodecContextFactory factory) {
+    public static DataContainerCodecPrototype<SchemaContext> rootPrototype(final CodecContextFactory factory) {
         final SchemaContext schema = factory.getRuntimeContext().getSchemaContext();
         final NodeIdentifier arg = NodeIdentifier.create(schema.getQName());
         return new DataContainerCodecPrototype<>(TreeRoot.class, arg, schema, factory);
@@ -71,12 +71,13 @@ public final class DataContainerCodecPrototype<T> implements NodeContextSupplier
         return new DataContainerCodecPrototype(augClass, arg, schema, factory);
     }
 
-    static DataContainerCodecPrototype<NotificationDefinition> from(final Class<?> augClass, final NotificationDefinition schema, final CodecContextFactory factory) {
+    public static DataContainerCodecPrototype<NotificationDefinition> from(final Class<?> augClass,
+            final NotificationDefinition schema, final CodecContextFactory factory) {
         final PathArgument arg = NodeIdentifier.create(schema.getQName());
         return new DataContainerCodecPrototype<>(augClass, arg, schema, factory);
     }
 
-    protected T getSchema() {
+    public T getSchema() {
         return schema;
     }
 
@@ -88,7 +89,7 @@ public final class DataContainerCodecPrototype<T> implements NodeContextSupplier
         return factory;
     }
 
-    protected Class<?> getBindingClass() {
+    public Class<?> getBindingClass() {
         return bindingClass;
     }
 
