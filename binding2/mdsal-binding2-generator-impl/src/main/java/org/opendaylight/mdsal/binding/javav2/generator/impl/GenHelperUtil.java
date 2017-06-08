@@ -65,6 +65,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.AnyDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
@@ -546,12 +547,11 @@ final class GenHelperUtil {
             } else if (node instanceof ListSchemaNode) {
                 listToGenType(module, basePackageName, typeBuilder, childOf, (ListSchemaNode) node, schemaContext,
                         verboseClassComments, genCtx, genTypeBuilders, typeProvider);
-            } else if (node instanceof AnyXmlSchemaNode) {
-                resolveAnyxmlNodeAsMethod(schemaContext, typeBuilder, genCtx, (AnyXmlSchemaNode) node, module,
-                        typeProvider);
             } else if (node instanceof ChoiceSchemaNode) {
                 choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, childOf,
                         (ChoiceSchemaNode) node, genTypeBuilders, genCtx, typeProvider);
+            } else if (node instanceof AnyXmlSchemaNode || node instanceof AnyDataSchemaNode) {
+                resolveAnyNodeAsMethod(schemaContext, typeBuilder, genCtx, node, module, typeProvider);
             }
         }
     }
@@ -915,26 +915,25 @@ final class GenHelperUtil {
         }
     }
 
-    private static Type resolveAnyxmlNodeAsMethod(final SchemaContext schemaContext, final GeneratedTypeBuilder
-            typeBuilder, final Map<Module, ModuleContext> genCtx, final AnyXmlSchemaNode anyxml, final Module module,
+    private static Type resolveAnyNodeAsMethod(final SchemaContext schemaContext, final GeneratedTypeBuilder
+            typeBuilder, final Map<Module, ModuleContext> genCtx, final DataSchemaNode node, final Module module,
             final TypeProvider typeProvider) {
 
-        final String anyxmlName = anyxml.getQName().getLocalName();
-        if (anyxmlName == null) {
+        final String anyName = node.getQName().getLocalName();
+        if (anyName == null) {
             return null;
         }
 
-        String anyxmlDesc = anyxml.getDescription();
-        if (anyxmlDesc == null) {
-            anyxmlDesc = "";
+        String anyDesc = node.getDescription();
+        if (anyDesc == null) {
+            anyDesc = "";
         }
 
         Type returnType = Types.DOCUMENT;
 
-        constructGetter(typeBuilder, anyxmlName, anyxmlDesc, returnType, anyxml.getStatus());
+        constructGetter(typeBuilder, anyName, anyDesc, returnType, node.getStatus());
         return returnType;
     }
-
 
     /**
      * Adds <code>schemaNode</code> to <code>typeBuilder</code> as getter method
