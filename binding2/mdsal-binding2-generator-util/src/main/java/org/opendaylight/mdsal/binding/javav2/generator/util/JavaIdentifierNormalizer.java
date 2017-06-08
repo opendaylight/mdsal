@@ -252,14 +252,6 @@ public final class JavaIdentifierNormalizer {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < packageNameParts.length; i++) {
             String normalizedPartialPackageName = normalizePartialPackageName(packageNameParts[i]);
-
-            // check if fullPackageName contains class name at the end and
-            // capitalize last part of normalized package name
-            if (packageNameParts.length != 1 && i == packageNameParts.length - 1
-                    && Character.isUpperCase(packageNameParts[i].charAt(FIRST_CHAR))) {
-                normalizedPartialPackageName = packageNameParts[i];
-            }
-
             sb.append(normalizedPartialPackageName);
 
             if (i != (packageNameParts.length - 1)) {
