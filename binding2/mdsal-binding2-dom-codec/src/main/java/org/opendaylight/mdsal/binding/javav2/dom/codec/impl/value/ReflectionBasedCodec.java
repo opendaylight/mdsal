@@ -12,11 +12,11 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 
 @Beta
-abstract class ReflectionBasedCodec extends ValueTypeCodec {
+public abstract class ReflectionBasedCodec extends ValueTypeCodec {
 
     private final Class<?> typeClass;
 
-    ReflectionBasedCodec(final Class<?> typeClass) {
+    protected ReflectionBasedCodec(final Class<?> typeClass) {
         this.typeClass = Preconditions.checkNotNull(typeClass);
     }
 
