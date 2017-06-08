@@ -303,7 +303,7 @@ public final class TypeProviderImpl implements TypeProvider {
         if (typeDef instanceof BitsTypeDefinition) {
             final BitsTypeDefinition bitsTypeDefinition = (BitsTypeDefinition) typeDef;
 
-            final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName);
+            final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName, true, false);
             final String typedefDescription = encodeAngleBrackets(typeDef.getDescription());
 
             genTOBuilder.setDescription(typedefDescription);
@@ -365,7 +365,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
         final GeneratedTOBuilderImpl unionGenTOBuilder;
         if (typeDefName != null && !typeDefName.isEmpty()) {
-            unionGenTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName);
+            unionGenTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName,true,false);
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
             unionGenTOBuilder.setDescription(typedefDescription);
             unionGenTOBuilder.setReference(typedef.getReference());
@@ -384,8 +384,8 @@ public final class TypeProviderImpl implements TypeProvider {
                 resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, regularExpressions,
                         parentNode, schemaContext, genTypeDefsContextMap);
             } else if (unionType instanceof UnionTypeDefinition) {
-                generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionTypeDefinition) unionType,
-                        basePackageName, parentNode, schemaContext, genTypeDefsContextMap));
+                generatedTOBuilders.add(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionTypeDefinition) unionType,
+                        unionGenTOBuilder.getFullyQualifiedName(), parentNode, schemaContext, genTypeDefsContextMap));
             } else if (unionType instanceof EnumTypeDefinition) {
                 final Enumeration enumeration = addInnerEnumerationToTypeBuilder((EnumTypeDefinition) unionType,
                         unionTypeName, unionGenTOBuilder);
@@ -887,22 +887,22 @@ public final class TypeProviderImpl implements TypeProvider {
      *         bigger one due to recursive call of
      *         <code>provideGeneratedTOBuildersForUnionTypeDef</code> method.
      */
-    private List<GeneratedTOBuilder> resolveUnionSubtypeAsUnion(final GeneratedTOBuilder
+    private GeneratedTOBuilder resolveUnionSubtypeAsUnion(final GeneratedTOBuilder
         parentUnionGenTOBuilder, final UnionTypeDefinition unionSubtype, final String basePackageName,
         final SchemaNode parentNode, final SchemaContext schemaContext, final Map<String, Map<Date, Map<String, Type>>> genTypeDefsContextMap) {
 
         final String newTOBuilderName = provideAvailableNameForGenTOBuilder(parentUnionGenTOBuilder.getName());
-        final List<GeneratedTOBuilder> subUnionGenTOBUilders = provideGeneratedTOBuildersForUnionTypeDef(
+        final GeneratedTOBuilder subUnionGenTOBUilder = provideGeneratedTOBuilderForUnionTypeDef(
                 basePackageName, unionSubtype, newTOBuilderName, parentNode, schemaContext, genTypeDefsContextMap);
 
         final GeneratedPropertyBuilder propertyBuilder;
         propertyBuilder = parentUnionGenTOBuilder
                 .addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(newTOBuilderName, JavaIdentifier.METHOD));
-        propertyBuilder.setReturnType(subUnionGenTOBUilders.get(0));
+        propertyBuilder.setReturnType(subUnionGenTOBUilder);
         parentUnionGenTOBuilder.addEqualsIdentity(propertyBuilder);
         parentUnionGenTOBuilder.addToStringProperty(propertyBuilder);
 
-        return subUnionGenTOBUilders;
+        return subUnionGenTOBUilder;
     }
 
     /**
@@ -919,7 +919,7 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return generated TO builder with the list of enclosed generated TO
      *         builders
      */
-    private GeneratedTOBuilder provideGeneratedTOBuilderForUnionTypeDef(final String basePackageName,
+    public GeneratedTOBuilder provideGeneratedTOBuilderForUnionTypeDef(final String basePackageName,
         final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode, final SchemaContext
               schemaContext, final Map<String, Map<Date, Map<String, Type>>> genTypeDefsContextMap) {
 
@@ -932,7 +932,13 @@ public final class TypeProviderImpl implements TypeProvider {
             resultTOBuilder.addEnclosingTransferObject(genTOBuilder);
         }
 
-        resultTOBuilder.addProperty("value").setReturnType(Types.CHAR_ARRAY);
+        final GeneratedPropertyBuilder genPropBuilder;
+
+        genPropBuilder = resultTOBuilder.addProperty("value").setReturnType(Types.CHAR_ARRAY).setReadOnly(false);
+        resultTOBuilder.addEqualsIdentity(genPropBuilder);
+        resultTOBuilder.addHashIdentity(genPropBuilder);
+        resultTOBuilder.addToStringProperty(genPropBuilder);
+
         return resultTOBuilder;
     }
 
