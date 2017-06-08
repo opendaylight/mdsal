@@ -379,38 +379,20 @@ final class AuxiliaryGenUtils {
             typeBuilder, final DataSchemaNode leaf, final Module parentModule, final TypeProvider typeProvider,
             final SchemaContext schemaContext) {
         final String classNameFromLeaf = leaf.getQName().getLocalName();
-        final List<GeneratedTOBuilder> genTOBuilders = new ArrayList<>();
+        GeneratedTOBuilder genTOBuilder = null;
         final String packageName = typeBuilder.getFullyQualifiedName();
         if (typeDef instanceof UnionTypeDefinition) {
-            final List<GeneratedTOBuilder> types = ((TypeProviderImpl) typeProvider)
-                    .provideGeneratedTOBuildersForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
-                            classNameFromLeaf, leaf, schemaContext, ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap());
-            genTOBuilders.addAll(types);
-
-            GeneratedTOBuilder resultTOBuilder;
-            if (types.isEmpty()) {
-                throw new IllegalStateException("No GeneratedTOBuilder objects generated from union " + typeDef);
-            }
-            resultTOBuilder = types.remove(0);
-            for (final GeneratedTOBuilder genTOBuilder : types) {
-                resultTOBuilder.addEnclosingTransferObject(genTOBuilder);
-            }
-
-            final GeneratedPropertyBuilder genPropBuilder = resultTOBuilder.addProperty("value");
-            genPropBuilder.setReturnType(Types.CHAR_ARRAY);
-            resultTOBuilder.addEqualsIdentity(genPropBuilder);
-            resultTOBuilder.addHashIdentity(genPropBuilder);
-            resultTOBuilder.addToStringProperty(genPropBuilder);
-
+            genTOBuilder = ((TypeProviderImpl) typeProvider)
+                    .provideGeneratedTOBuilderForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
+                            classNameFromLeaf, leaf, schemaContext,
+                            ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap());
         } else if (typeDef instanceof BitsTypeDefinition) {
-            genTOBuilders.add((((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
-                    packageName, typeDef, classNameFromLeaf, parentModule.getName()));
+            genTOBuilder = (((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
+                    packageName, typeDef, classNameFromLeaf, parentModule.getName());
         }
-        if (!genTOBuilders.isEmpty()) {
-            for (final GeneratedTOBuilder genTOBuilder : genTOBuilders) {
-                typeBuilder.addEnclosingTransferObject(genTOBuilder);
-            }
-            return genTOBuilders.get(0);
+        if (genTOBuilder != null) {
+            typeBuilder.addEnclosingTransferObject(genTOBuilder);
+            return genTOBuilder;
         }
         return null;
 
