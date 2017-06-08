@@ -20,6 +20,9 @@ import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 
 /**
  * Context for prototype of augmentation node.
+ *
+ * @param <D>
+ *            - type of tree node
  */
 @Beta
 public final class AugmentationNodeContext<D extends TreeNode & Augmentation<?>>
