@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.value;
+package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.codecs.value;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
@@ -17,7 +17,7 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
-import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.value.ValueTypeCodec.SchemaUnawareCodec;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.codecs.value.ValueTypeCodec.SchemaUnawareCodec;
 
 /**
  * Derived YANG types are just immutable value holders for simple value
