@@ -5,24 +5,24 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.generator.impl.util.javassist;
+package org.opendaylight.mdsal.binding.javav2.runtime.javassist;
 
 import com.google.common.annotations.Beta;
-import javassist.CannotCompileException;
 import javassist.CtClass;
 
 /**
- * Interface allowing generate new classes.
+ * Interface allowing customization of classes after loading.
  */
 @Beta
-public interface ClassGenerator {
+public interface ClassCustomizer {
 
     /**
-     * Process class.
+     * Customize a class.
      *
-     * @param baseClass
-     *            - class to be generated
-     * @throws CannotCompileException
+     * @param cls
+     *            - class to be customized
+     * @throws Exception
+     *             - when a problem ensues
      */
-    void process(CtClass baseClass) throws CannotCompileException;
+    void customizeClass(CtClass cls) throws Exception;
 }
