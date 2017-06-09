@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_d65546c7",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-09T01:10:51Z",
+      "side": 1,
+      "message": "We expect most tasks to be cancelled and never run. One thing with ScheduledThreadPoolExecutor is that cancelled tasks that haven\u0027t run yet aren\u0027t removed right away and can accumulate in the queue. In such cases, I\u0027ve found it useful to check the queue size and manually purge, ie\n\n  if (observer.getQueue().size() \u003e 50) {\n      observer.purge();\n  }",
+      "revId": "a2f36e0427c1954c22fd8f4886992eba789933e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
