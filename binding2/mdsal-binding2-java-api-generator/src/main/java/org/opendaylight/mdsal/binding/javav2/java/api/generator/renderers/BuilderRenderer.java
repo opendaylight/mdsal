@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
@@ -258,6 +259,12 @@ public class BuilderRenderer extends BaseRenderer {
         } else {
             parentTypeForBuilderName = null;
         }
+
+        boolean childTreeNode = false;
+        if (getType().getImplements().contains(BindingTypes.TREE_CHILD_NODE)) {
+            childTreeNode = true;
+        }
+
         importedNames.put("augmentation", importedName(Augmentation.class));
         importedNames.put("classInstMap", importedName(ClassToInstanceMap.class));
 
@@ -266,7 +273,7 @@ public class BuilderRenderer extends BaseRenderer {
         List<String> getterMethods = new ArrayList<>(Collections2.transform(properties, this::getterMethod));
 
         return builderTemplate.render(getType(), properties, importedNames, importedNamesForProperties, augmentField,
-                copyConstructorHelper, getterMethods, parentTypeForBuilderName)
+            copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode)
                 .body();
     }
 
