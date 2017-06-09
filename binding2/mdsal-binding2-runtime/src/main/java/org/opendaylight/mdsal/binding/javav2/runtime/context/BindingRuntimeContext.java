@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.generator.impl.util;
+package org.opendaylight.mdsal.binding.javav2.runtime.context;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
@@ -38,6 +38,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.runtime.context.util.BindingSchemaContextUtils;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.util.BindingReflections;
 import org.opendaylight.yangtools.concepts.Immutable;
@@ -77,6 +78,7 @@ import org.slf4j.LoggerFactory;
  */
 @Beta
 public class BindingRuntimeContext implements Immutable {
+
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeContext.class);
     private static final char DOT = '.';
     private final ClassLoadingStrategy strategy;
