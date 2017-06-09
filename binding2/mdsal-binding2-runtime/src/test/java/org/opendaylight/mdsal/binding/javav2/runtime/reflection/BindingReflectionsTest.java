@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.spec.util;
+package org.opendaylight.mdsal.binding.javav2.runtime.reflection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.javav2.runtime.reflection.test.mock.FooChild;
+import org.opendaylight.mdsal.binding.javav2.runtime.reflection.test.mock.GroupingFoo;
 import org.opendaylight.mdsal.binding.javav2.spec.base.BaseIdentity;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Input;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
@@ -25,8 +27,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
-import org.opendaylight.mdsal.binding.javav2.spec.util.test.mock.FooChild;
-import org.opendaylight.mdsal.binding.javav2.spec.util.test.mock.GroupingFoo;
 import org.opendaylight.yangtools.yang.common.QName;
 
 public class BindingReflectionsTest {
