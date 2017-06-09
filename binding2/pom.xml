@@ -37,6 +37,7 @@
 
       <!-- binding2 runtime -->
       <module>mdsal-binding2-api</module>
+      <module>mdsal-binding2-runtime</module>
       <module>mdsal-binding2-dom-codec</module>
       <module>mdsal-binding2-dom-adapter</module>
 
