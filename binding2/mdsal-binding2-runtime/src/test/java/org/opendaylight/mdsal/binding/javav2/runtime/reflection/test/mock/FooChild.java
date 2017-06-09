@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.spec.util.test.mock;
+package org.opendaylight.mdsal.binding.javav2.runtime.reflection.test.mock;
 
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeArgument;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
