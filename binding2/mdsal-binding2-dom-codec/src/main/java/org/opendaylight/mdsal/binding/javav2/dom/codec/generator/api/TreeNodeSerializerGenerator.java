@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.api;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.util.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImplementation;
 
 /**

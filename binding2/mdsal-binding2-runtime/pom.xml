@@ -43,6 +43,10 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-generator-impl</artifactId>
+        </dependency>
         <dependency><groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
