@@ -23,12 +23,15 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INSTANTIABLE;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
+import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -62,9 +65,12 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
+import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
@@ -536,9 +542,57 @@ final class GenHelperUtil {
             } else if (node instanceof AnyXmlSchemaNode) {
                 resolveAnyxmlNodeAsMethod(schemaContext, typeBuilder, genCtx, (AnyXmlSchemaNode) node, module,
                         typeProvider);
+            } else if (node instanceof ChoiceSchemaNode) {
+                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, childOf,
+                        (ChoiceSchemaNode) node, genTypeBuilders, genCtx, typeProvider);
             }
         }
 
+    }
+
+    /**
+     * Converts <code>choiceNode</code> to the list of generated types for
+     * choice and its cases.
+     *
+     * The package names for choice and for its cases are created as
+     * concatenation of the module package (<code>basePackageName</code>) and
+     * names of all parents node.
+     *
+     * @param module
+     *            current module
+     * @param basePackageName
+     *            string with the module package name
+     * @param parent
+     *            parent type
+     * @param choiceNode
+     *            choice node which is mapped to generated type. Also child
+     *            nodes - cases are mapped to generated types.
+     * @throws IllegalArgumentException
+     *             <ul>
+     *             <li>if <code>basePackageName</code> is null</li>
+     *             <li>if <code>choiceNode</code> is null</li>
+     *             </ul>
+     */
+    private static void choiceToGenType(final Module module, final SchemaContext schemaContext, final boolean
+            verboseClasssComments, final String basePackageName, final GeneratedTypeBuilder parent, final
+            ChoiceSchemaNode choiceNode, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+            final Map<Module, ModuleContext> genCtx, final TypeProvider typeProvider) {
+        checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
+        checkArgument(choiceNode != null, "Choice Schema Node cannot be NULL.");
+
+        if (!choiceNode.isAddedByUses()) {
+            final String packageName = packageNameForGeneratedType(basePackageName, choiceNode.getPath(),
+                    BindingNamespaceType.Data);
+            final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(packageName, choiceNode,
+                    schemaContext, "", verboseClasssComments, genTypeBuilders);
+            constructGetter(parent, choiceNode.getQName().getLocalName(),
+                    choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus());
+            choiceTypeBuilder.addImplementsType(INSTANTIABLE);
+            annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
+            genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
+            generateTypesFromChoiceCases(module, schemaContext, genCtx, basePackageName, choiceTypeBuilder.toInstance(),
+                choiceNode, verboseClasssComments, typeProvider, genTypeBuilders);
+        }
     }
 
     private static void containerToGenType(final Module module, final String basePackageName,
@@ -688,6 +742,107 @@ final class GenHelperUtil {
         return returnType;
     }
 
+    /**
+     * Converts <code>caseNodes</code> set to list of corresponding generated
+     * types.
+     *
+     * For every <i>case</i> which isn't added through augment or <i>uses</i> is
+     * created generated type builder. The package names for the builder is
+     * created as concatenation of the module package (
+     * <code>basePackageName</code>) and names of all parents nodes of the
+     * concrete <i>case</i>. There is also relation "<i>implements type</i>"
+     * between every case builder and <i>choice</i> type
+     *
+     * @param module
+     *            current module
+     * @param schemaContext
+     *            current schema context
+     * @param genCtx
+     *            actual generated context
+     * @param basePackageName
+     *            string with the module package name
+     * @param refChoiceType
+     *            type which represents superior <i>case</i>
+     * @param choiceNode
+     *            choice case node which is mapped to generated type
+     * @param verboseClassComments
+     *            Javadoc verbosity switch
+     * @throws IllegalArgumentException
+     *             <ul>
+     *             <li>if <code>basePackageName</code> equals null</li>
+     *             <li>if <code>refChoiceType</code> equals null</li>
+     *             <li>if <code>caseNodes</code> equals null</li>
+     *             </ul>
+     */
+    private static void generateTypesFromChoiceCases(final Module module, final SchemaContext schemaContext,
+            final Map<Module, ModuleContext> genCtx, final String basePackageName, final Type refChoiceType,
+            final ChoiceSchemaNode choiceNode, final boolean verboseClassComments, final TypeProvider typeProvider,
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders) {
+        checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
+        checkArgument(refChoiceType != null, "Referenced Choice Type cannot be NULL.");
+        checkArgument(choiceNode != null, "ChoiceNode cannot be NULL.");
+
+        final Set<ChoiceCaseNode> caseNodes = choiceNode.getCases();
+        if (caseNodes == null) {
+            return;
+        }
+
+        for (final ChoiceCaseNode caseNode : caseNodes) {
+            if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
+                final String packageName = packageNameForGeneratedType(basePackageName, caseNode.getPath(),
+                    BindingNamespaceType.Data);
+                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode,
+                    module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
+                caseTypeBuilder.addImplementsType(refChoiceType);
+                caseTypeBuilder.setParentTypeForBuilder(refChoiceType);
+                annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
+                genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
+                genCtx.get(module).addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
+                final Iterable<DataSchemaNode> caseChildNodes = caseNode.getChildNodes();
+                if (caseChildNodes != null) {
+                    final SchemaPath choiceNodeParentPath = choiceNode.getPath().getParent();
+
+                    if (!Iterables.isEmpty(choiceNodeParentPath.getPathFromRoot())) {
+                        SchemaNode parent = findDataSchemaNode(schemaContext, choiceNodeParentPath);
+
+                        if (parent instanceof AugmentationSchema) {
+                            final AugmentationSchema augSchema = (AugmentationSchema) parent;
+                            final SchemaPath targetPath = augSchema.getTargetPath();
+                            SchemaNode targetSchemaNode = findDataSchemaNode(schemaContext, targetPath);
+                            if (targetSchemaNode instanceof DataSchemaNode
+                                    && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
+                                if (targetSchemaNode instanceof DerivableSchemaNode) {
+                                    targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orNull();
+                                }
+                                if (targetSchemaNode == null) {
+                                    throw new IllegalStateException(
+                                            "Failed to find target node from grouping for augmentation " + augSchema
+                                                    + " in module " + module.getName());
+                                }
+                            }
+                            parent = targetSchemaNode;
+                        }
+
+                        Preconditions.checkState(parent != null, "Could not find Choice node parent %s",
+                                choiceNodeParentPath);
+                        GeneratedTypeBuilder childOfType = findChildNodeByPath(parent.getPath(), genCtx);
+                        if (childOfType == null) {
+                            childOfType = findGroupingByPath(parent.getPath(), genCtx);
+                        }
+                        resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType, caseChildNodes,
+                                genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
+                    } else {
+                        resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, moduleToDataType(module,
+                                genCtx, verboseClassComments), caseChildNodes, genCtx, schemaContext,
+                                verboseClassComments, genTypeBuilders, typeProvider);
+                    }
+                }
+            }
+            processUsesAugments(schemaContext, caseNode, module, genCtx, genTypeBuilders, verboseClassComments,
+                    typeProvider);
+        }
+    }
+
     private static Type resolveAnyxmlNodeAsMethod(final SchemaContext schemaContext, final GeneratedTypeBuilder
             typeBuilder, final Map<Module, ModuleContext> genCtx, final AnyXmlSchemaNode anyxml, final Module module,
             final TypeProvider typeProvider) {
@@ -780,13 +935,15 @@ final class GenHelperUtil {
             }
         } else if (!schemaNode.isAddedByUses()) {
             //TODO: implement leaf list to generated type
-            //TODO: implement choice to generated type
             if (schemaNode instanceof ContainerSchemaNode) {
                 containerToGenType(module, basePackageName, typeBuilder, typeBuilder, (ContainerSchemaNode) schemaNode,
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider);
             } else if (schemaNode instanceof ListSchemaNode) {
                 listToGenType(module, basePackageName, typeBuilder, typeBuilder, (ListSchemaNode) schemaNode,
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider);
+            } else if (schemaNode instanceof ChoiceSchemaNode) {
+                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, typeBuilder,
+                        (ChoiceSchemaNode) schemaNode, genTypeBuilders, genCtx, typeProvider);
             }
         }
     }
