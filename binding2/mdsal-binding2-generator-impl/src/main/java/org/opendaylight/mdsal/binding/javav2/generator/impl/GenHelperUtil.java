@@ -42,6 +42,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
+import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
@@ -51,6 +52,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderIm
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
@@ -73,6 +75,7 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
+import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -395,7 +398,7 @@ final class GenHelperUtil {
      * @param schemaContext schema context
      * @return generated type builder <code>schemaNode</code>
      */
-    static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
+    private static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
             schemaNode, final Type parent, final Module module, final Map<Module, ModuleContext> genCtx,
             final SchemaContext schemaContext, final boolean verboseClassComments, final Map<String, Map<String,
             GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
@@ -528,11 +531,14 @@ final class GenHelperUtil {
         final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf, final Module module,
         final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments,
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
-        //TODO: implement rest of schema nodes GTO building
+
         if (node != null && typeBuilder != null) {
             if (node instanceof ContainerSchemaNode) {
                 containerToGenType(module, basePackageName, typeBuilder, childOf, (ContainerSchemaNode) node,
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider);
+            } else if (node instanceof LeafListSchemaNode) {
+                resolveLeafListSchemaNode(schemaContext, typeBuilder, (LeafListSchemaNode) node, module,
+                            typeProvider, genCtx);
             } else if (node instanceof LeafSchemaNode) {
                 resolveLeafSchemaNodeAsMethod(schemaContext, typeBuilder, genCtx, (LeafSchemaNode) node, module,
                         typeProvider);
@@ -547,7 +553,6 @@ final class GenHelperUtil {
                         (ChoiceSchemaNode) node, genTypeBuilders, genCtx, typeProvider);
             }
         }
-
     }
 
     /**
@@ -743,6 +748,72 @@ final class GenHelperUtil {
     }
 
     /**
+     * Converts <code>node</code> leaf list schema node to getter method of
+     * <code>typeBuilder</code>.
+     *
+     * @param typeBuilder
+     *            generated type builder to which is <code>node</code> added as
+     *            getter method
+     * @param node
+     *            leaf list schema node which is added to
+     *            <code>typeBuilder</code> as getter method
+     * @param module module
+     * @param typeProvider type provider instance
+     * @param genCtx actual generated context
+     * @param genCtx actual generated context
+     * @return boolean value
+     *         <ul>
+     *         <li>true - if <code>node</code>, <code>typeBuilder</code>,
+     *         nodeName equal null or <code>node</code> is added by <i>uses</i></li>
+     *         <li>false - other cases</li>
+     *         </ul>
+     */
+    private static boolean resolveLeafListSchemaNode(final SchemaContext schemaContext, final GeneratedTypeBuilder
+            typeBuilder, final LeafListSchemaNode node, final Module module, final TypeProvider typeProvider,
+            final Map<Module, ModuleContext> genCtx) {
+        if (node == null || typeBuilder == null || node.isAddedByUses()) {
+            return false;
+        }
+
+        final QName nodeName = node.getQName();
+
+        final TypeDefinition<?> typeDef = node.getType();
+        final Module parentModule = findParentModule(schemaContext, node);
+
+        Type returnType = null;
+        if (typeDef.getBaseType() == null) {
+            if (typeDef instanceof EnumTypeDefinition) {
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node);
+                final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
+                final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, nodeName,
+                        genCtx, typeBuilder, module);
+                returnType = new ReferencedTypeImpl(enumBuilder.getPackageName(), enumBuilder.getName());
+                ((TypeProviderImpl) typeProvider).putReferencedType(node.getPath(), returnType);
+            } else if (typeDef instanceof UnionTypeDefinition) {
+                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule,
+                        typeProvider, schemaContext);
+                if (genTOBuilder != null) {
+                    returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule, typeProvider);
+                }
+            } else if (typeDef instanceof BitsTypeDefinition) {
+                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule,
+                        typeProvider, schemaContext);
+                returnType = genTOBuilder.toInstance();
+            } else {
+                final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions);
+            }
+        } else {
+            final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
+            returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions);
+        }
+
+        final ParameterizedType listType = Types.listTypeFor(returnType);
+        constructGetter(typeBuilder, nodeName.getLocalName(), node.getDescription(), listType, node.getStatus());
+        return true;
+    }
+
+    /**
      * Converts <code>caseNodes</code> set to list of corresponding generated
      * types.
      *
@@ -934,8 +1005,10 @@ final class GenHelperUtil {
                 AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, leafGTp, true);
             }
         } else if (!schemaNode.isAddedByUses()) {
-            //TODO: implement leaf list to generated type
-            if (schemaNode instanceof ContainerSchemaNode) {
+            if (schemaNode instanceof LeafListSchemaNode) {
+                resolveLeafListSchemaNode(schemaContext, typeBuilder, (LeafListSchemaNode) schemaNode, module,
+                        typeProvider, genCtx);
+            } else if (schemaNode instanceof ContainerSchemaNode) {
                 containerToGenType(module, basePackageName, typeBuilder, typeBuilder, (ContainerSchemaNode) schemaNode,
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider);
             } else if (schemaNode instanceof ListSchemaNode) {
