@@ -32,12 +32,12 @@ import org.opendaylight.mdsal.binding.javav2.generator.impl.util.javassist.Javas
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImplementation;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerRegistry;
-import org.opendaylight.mdsal.binding.javav2.spec.util.BindingReflections;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;

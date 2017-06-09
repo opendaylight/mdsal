@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.AugmentationReader;
+import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializer;
@@ -23,7 +24,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImpl
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerRegistry;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
-import org.opendaylight.mdsal.binding.javav2.spec.util.BindingReflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
