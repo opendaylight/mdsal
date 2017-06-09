@@ -28,10 +28,10 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.impl.StaticBind
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.impl.TreeNodeSerializerPrototype;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source.AbstractTreeNodeSerializerSource;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.AugmentableDispatchSerializer;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.util.javassist.JavassistUtils;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
