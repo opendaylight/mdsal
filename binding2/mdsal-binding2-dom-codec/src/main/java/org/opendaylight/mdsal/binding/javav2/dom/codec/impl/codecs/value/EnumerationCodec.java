@@ -35,14 +35,14 @@ final class EnumerationCodec extends ReflectionBasedCodec implements SchemaUnawa
         @SuppressWarnings({ "rawtypes", "unchecked" })
         final Class<? extends Enum<?>> enumType = (Class) returnType;
         return () -> {
-            Map<String, Enum<?>> nameToValue = new HashMap<>();
-            for (Enum<?> enumValue : enumType.getEnumConstants()) {
+            final Map<String, Enum<?>> nameToValue = new HashMap<>();
+            for (final Enum<?> enumValue : enumType.getEnumConstants()) {
                 nameToValue.put(enumValue.toString(), enumValue);
             }
-            Map<String, Enum<?>> yangNameToBinding = new HashMap<>();
-            for (EnumPair yangValue : enumSchema.getValues()) {
+            final Map<String, Enum<?>> yangNameToBinding = new HashMap<>();
+            for (final EnumPair yangValue : enumSchema.getValues()) {
                 final String bindingName = JavaIdentifierNormalizer.normalizeSpecificIdentifier(yangValue.getName(),
-                        JavaIdentifier.CLASS);
+                        JavaIdentifier.ENUM_VALUE);
                 final Enum<?> bindingVal = nameToValue.get(bindingName);
                 yangNameToBinding.put(yangValue.getName(), bindingVal);
             }
@@ -51,15 +51,15 @@ final class EnumerationCodec extends ReflectionBasedCodec implements SchemaUnawa
     }
 
     @Override
-    public Object deserialize(Object input) {
-        Enum<?> value = yangValueToBinding.get(input);
+    public Object deserialize(final Object input) {
+        final Enum<?> value = yangValueToBinding.get(input);
         Preconditions.checkArgument(value != null, "Invalid enumeration value %s. Valid values are %s", input,
                 yangValueToBinding.keySet());
         return value;
     }
 
     @Override
-    public Object serialize(Object input) {
+    public Object serialize(final Object input) {
         Preconditions.checkArgument(getTypeClass().isInstance(input), "Input must be instance of %s", getTypeClass());
         return yangValueToBinding.inverse().get(input);
     }
