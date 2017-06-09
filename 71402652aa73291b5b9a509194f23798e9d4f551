@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_9c891fcd",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-09T12:00:30Z",
+      "side": 1,
+      "message": "I would suggest to avoid casting here in case the implementation of newScheduledThreadPool ever changed to return a different type - unlikely but you never know. Plus it\u0027s not clean. You can just create ScheduledThreadPoolExecutor directly (this is what newScheduledThreadPool does anyway):\n\n  new ScheduledThreadPoolExecutor(corePoolSize, threadFactory)",
+      "revId": "71402652aa73291b5b9a509194f23798e9d4f551",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
