@@ -48,6 +48,12 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         super(packageName, name);
     }
 
+    public EnumerationBuilderImpl(final String packageName, final String name,
+                                  final boolean isPkNameNormalized,
+                                  final boolean isTypeNormalized) {
+        super(packageName, name, isPkNameNormalized, isTypeNormalized);
+    }
+
     public void setReference(final String reference) {
         this.reference = reference;
     }
