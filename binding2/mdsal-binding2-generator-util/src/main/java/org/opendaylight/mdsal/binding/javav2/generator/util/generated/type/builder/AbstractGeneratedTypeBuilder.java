@@ -176,7 +176,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     @Override
     public EnumBuilder addEnumeration(final String name) {
         Preconditions.checkArgument(name != null, "Name of enumeration cannot be null!");
-        final EnumBuilder builder = new EnumerationBuilderImpl(getFullyQualifiedName(), name);
+        final EnumBuilder builder = new EnumerationBuilderImpl(getFullyQualifiedName(), name, true, false);
 
         Preconditions.checkArgument(!enumDefinitions.contains(builder), "This generated type already contains equal enumeration.");
         enumDefinitions = LazyCollections.lazyAdd(enumDefinitions, builder);
