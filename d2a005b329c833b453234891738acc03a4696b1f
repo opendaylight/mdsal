@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_b4f8a6c5",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/renderers/UnionRenderer.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-06-12T12:02:49Z",
+      "side": 1,
+      "message": "There are two implements for \u0027byte[]\u0027 as before,  any difference ?",
+      "range": {
+        "startLine": 150,
+        "startChar": 9,
+        "endLine": 152,
+        "endChar": 48
+      },
+      "revId": "d2a005b329c833b453234891738acc03a4696b1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
