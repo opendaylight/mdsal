@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_74b47ef2",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T12:15:24Z",
+      "side": 1,
+      "message": "please allow empty space among these ones",
+      "range": {
+        "startLine": 368,
+        "startChar": 87,
+        "endLine": 368,
+        "endChar": 98
+      },
+      "revId": "5c0f2636cb6afc11ff9674b70ab53af239048f24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_54b982e8",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/AbstractBaseType.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T12:15:24Z",
+      "side": 1,
+      "message": "please allow empty space here",
+      "revId": "5c0f2636cb6afc11ff9674b70ab53af239048f24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_b4cd4689",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/renderers/ClassRenderer.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T12:15:24Z",
+      "side": 1,
+      "message": "final",
+      "revId": "5c0f2636cb6afc11ff9674b70ab53af239048f24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_94caca6c",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/renderers/ClassRenderer.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-12T12:15:24Z",
+      "side": 1,
+      "message": "redundant",
+      "range": {
+        "startLine": 130,
+        "startChar": 62,
+        "endLine": 130,
+        "endChar": 87
+      },
+      "revId": "5c0f2636cb6afc11ff9674b70ab53af239048f24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
