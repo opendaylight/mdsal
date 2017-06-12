@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_0ef36b74",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/renderers/UnionRenderer.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-06-12T09:18:50Z",
+      "side": 1,
+      "message": "For comment:\n2. source.__value.clone() - one extra underscore - class not compilable\n\nand other updates for the last comment:\n2. proper getValue() still missing - class not compilable",
+      "range": {
+        "startLine": 91,
+        "startChar": 11,
+        "endLine": 91,
+        "endChar": 50
+      },
+      "revId": "f93aac2bdc64ebdbc50201319f2a825236088cfe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
