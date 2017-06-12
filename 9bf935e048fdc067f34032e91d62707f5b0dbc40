@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_34e9561b",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/java/org/opendaylight/mdsal/binding/javav2/generator/impl/Bug8542Test.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-06-12T11:39:47Z",
+      "side": 1,
+      "message": "To Jakub , \nSorry for adopting your correcting last patch, I am just not familiar with \u0027parseYangSource\u0027 then, but not late this time :)",
+      "range": {
+        "startLine": 28,
+        "startChar": 58,
+        "endLine": 28,
+        "endChar": 115
+      },
+      "revId": "9bf935e048fdc067f34032e91d62707f5b0dbc40",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
