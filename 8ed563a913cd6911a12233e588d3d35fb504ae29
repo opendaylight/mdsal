@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_cee1639c",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 940,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-06-12T09:13:31Z",
+      "side": 1,
+      "message": "Sorry, Martin, \nthis comment was implemented here:\n1. we need generated \u0027private final char[] _value;\u0027 not to be final",
+      "range": {
+        "startLine": 935,
+        "startChar": 1,
+        "endLine": 940,
+        "endChar": 60
+      },
+      "revId": "8ed563a913cd6911a12233e588d3d35fb504ae29",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
