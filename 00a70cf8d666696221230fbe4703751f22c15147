@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_2e5e27ea",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-06-12T08:30:06Z",
+      "side": 0,
+      "message": "This doesn\u0027t work for recursive nested classes, a nested class\u0027s package name should be its parent class\u0027s  fully qualified name + self class name.",
+      "range": {
+        "startLine": 255,
+        "startChar": 0,
+        "endLine": 261,
+        "endChar": 13
+      },
+      "revId": "00a70cf8d666696221230fbe4703751f22c15147",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
