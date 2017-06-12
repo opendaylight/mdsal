@@ -74,6 +74,9 @@ public final class YangSnippetCleaner {
                 }
             }
         }
+        if (sb.toString().isEmpty()) {
+            return sb.toString();
+        }
         if (sb.charAt(sb.length() - 4) == NEW_LINE && sb.charAt(sb.length() - 3) == NEW_LINE) {
             sb.deleteCharAt(sb.length() - 3);
         }
