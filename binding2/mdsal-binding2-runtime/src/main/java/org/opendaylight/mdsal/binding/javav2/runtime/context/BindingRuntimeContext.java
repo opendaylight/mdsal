@@ -19,6 +19,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
+import java.lang.reflect.Method;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,12 +49,16 @@ import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.AugmentationTarget;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.EffectiveAugmentationSchema;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
@@ -473,5 +478,23 @@ public class BindingRuntimeContext implements Immutable {
 
     public Class<?> getIdentityClass(final QName input) {
         return this.identityClasses.getUnchecked(input);
+    }
+
+    public Method findOperationMethod(final Class<?> key, final OperationDefinition operationDef)
+            throws NoSuchMethodException {
+        final String methodName =
+                JavaIdentifierNormalizer.normalizeSpecificIdentifier(operationDef.getQName().getLocalName(),
+                JavaIdentifier.METHOD);
+        if (operationDef.getInput() != null && isExplicitStatement(operationDef.getInput())) {
+            final Class<?> inputClz = this.getClassForSchema(operationDef.getInput());
+            return key.getMethod(methodName, inputClz);
+        }
+        return key.getMethod(methodName);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static boolean isExplicitStatement(final ContainerSchemaNode node) {
+        return node instanceof EffectiveStatement
+                && ((EffectiveStatement) node).getDeclared().getStatementSource() == StatementSource.DECLARATION;
     }
 }
