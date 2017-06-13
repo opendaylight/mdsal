@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
@@ -81,21 +82,21 @@ public class BindingGeneratorImplTest {
             if (t instanceof GeneratedTransferObject) {
                 final GeneratedTransferObject genTransferObj = (GeneratedTransferObject) t;
                 assertBaseGeneratedType(genTransferObj, "MyListKey",
-                        "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list.wrapper");
+                        "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list");
                 assertEquals(3, genTransferObj.getProperties().size());
                 int test_j = 0;
                 for (final GeneratedProperty generatedProperty : genTransferObj.getProperties()) {
                     switch (generatedProperty.getName()) {
                         case "key":
-                            assertEquals("MyListKey", generatedProperty.getReturnType().getName());
+                            assertEquals("String", generatedProperty.getReturnType().getName());
                             test_j++;
                             break;
                         case "key1":
-                            assertEquals("MyListKey1", generatedProperty.getReturnType().getName());
+                            assertEquals("String", generatedProperty.getReturnType().getName());
                             test_j++;
                             break;
                         case "key2":
-                            assertEquals("MyListKey2", generatedProperty.getReturnType().getName());
+                            assertEquals("String", generatedProperty.getReturnType().getName());
                             test_j++;
                             break;
                         default:
@@ -180,32 +181,24 @@ public class BindingGeneratorImplTest {
                     switch (m.getName()) {
                         case "getKey":
                                 assertMethod(t, "getKey", "MyListKey",
-                                        "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list.wrapper",
+                                        "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list",
                                         m);
                             test_j++;
                             break;
                         case "getMyListKey1":
-                            assertMethod(t, "getMyListKey1", "MyListKey1",
-                                    "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list",
-                                    m);
+                            assertMethod(t, "getMyListKey1", "String","java.lang", m);
                             test_j++;
                             break;
                         case "getMyListKey2":
-                            assertMethod(t, "getMyListKey2", "MyListKey2",
-                                    "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list",
-                                    m);
+                            assertMethod(t, "getMyListKey2", "String","java.lang", m);
                             test_j++;
                             break;
                         case "getMyListFoo":
-                            assertMethod(t, "getMyListFoo", "MyListFoo",
-                                    "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.data.my_list",
-                                    m);
+                            assertMethod(t, "getMyListFoo", "String","java.lang", m);
                             test_j++;
                             break;
                         case "getMyListKey":
-                            assertMethod(t, "getMyListKey", "MyListKey",
-                                    "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list",
-                                    m);
+                            assertMethod(t, "getMyListKey", "String","java.lang", m);
                             test_j++;
                             break;
                         default:

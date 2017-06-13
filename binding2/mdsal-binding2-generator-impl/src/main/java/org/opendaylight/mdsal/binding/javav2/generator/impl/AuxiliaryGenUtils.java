@@ -496,7 +496,7 @@ final class AuxiliaryGenUtils {
                     new StringBuilder(list.getQName().getLocalName()).append('_').append(BindingNamespaceType.Key)
                             .toString();
             genTOBuilder =
-                    new GeneratedTOBuilderImpl(new StringBuilder(packageName).append(".wrapper").toString(), genTOName);
+                    new GeneratedTOBuilderImpl(new StringBuilder(packageName).toString(), genTOName);
         }
         return genTOBuilder;
     }
