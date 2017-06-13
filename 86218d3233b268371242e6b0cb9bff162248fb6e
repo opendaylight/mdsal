@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_b469c127",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/builderTemplate.scala.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-06-13T03:13:42Z",
+      "side": 0,
+      "message": "Since all Data Object implement the interface \u0027Instantiable\u0027,  this could be eliminated.",
+      "range": {
+        "startLine": 57,
+        "startChar": 4,
+        "endLine": 57,
+        "endChar": 43
+      },
+      "revId": "86218d3233b268371242e6b0cb9bff162248fb6e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
