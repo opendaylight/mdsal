@@ -179,6 +179,8 @@ public class BuilderRenderer extends BaseRenderer {
                             importedNames.put("augmentFieldReturnType", importedName(augmentField.getReturnType()));
                         }
                     }
+                } else if (Instantiable.class.getName().equals(implementedIfc.getFullyQualifiedName())) {
+                    importedNames.put("class", importedName(Class.class));
                 }
             }
         }
