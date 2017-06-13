@@ -445,6 +445,7 @@ final class GenHelperUtil {
                 (basePackageName, notification, null, module, genCtx, schemaContext,
                         verboseClassComments, genTypeBuilders, typeProvider);
         annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
+        notificationInterface.addImplementsType(parameterizedTypeFor(INSTANTIABLE,notificationInterface));
         notificationInterface.addImplementsType(NOTIFICATION);
         genCtx.get(module).addChildNodeType(notification, notificationInterface);
 
