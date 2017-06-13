@@ -54,9 +54,9 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     }
 
     private static final class @{genType.getName}Impl implements @{genType.getName} {
-    @if(parentTypeForBuilderName != null) {
+
         @implementedInterfaceGetter()
-    }
+
         @generateFields(true)
 
         @generateAugmentField(true)
