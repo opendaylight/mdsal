@@ -179,6 +179,8 @@ public class BuilderRenderer extends BaseRenderer {
                             importedNames.put("augmentFieldReturnType", importedName(augmentField.getReturnType()));
                         }
                     }
+                } else if (Instantiable.class.getName().equals(implementedIfc.getFullyQualifiedName())) {
+                    importedNames.put("class", importedName(Class.class));
                 }
             }
         }
@@ -265,6 +267,11 @@ public class BuilderRenderer extends BaseRenderer {
             childTreeNode = true;
         }
 
+        boolean instantiable = false;
+        if (getType().getImplements().contains(BindingTypes.INSTANTIABLE)) {
+            instantiable = true;
+        }
+
         importedNames.put("augmentation", importedName(Augmentation.class));
         importedNames.put("classInstMap", importedName(ClassToInstanceMap.class));
 
@@ -273,7 +280,7 @@ public class BuilderRenderer extends BaseRenderer {
         List<String> getterMethods = new ArrayList<>(Collections2.transform(properties, this::getterMethod));
 
         return builderTemplate.render(getType(), properties, importedNames, importedNamesForProperties, augmentField,
-            copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode)
+            copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, instantiable)
                 .body();
     }
 
