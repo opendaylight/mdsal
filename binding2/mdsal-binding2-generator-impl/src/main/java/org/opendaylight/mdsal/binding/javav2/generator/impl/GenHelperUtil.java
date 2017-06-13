@@ -91,6 +91,7 @@ import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
+import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 
 /**
  * Helper util class used for generation of types in Binding spec v2.
@@ -619,12 +620,12 @@ final class GenHelperUtil {
             parent, final GeneratedTypeBuilder childOf, final ListSchemaNode node, final SchemaContext schemaContext,
             final boolean verboseClassComments, final Map<Module, ModuleContext> genCtx,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
+
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node,
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider);
         if (genType != null) {
             final String nodeName = node.getQName().getLocalName();
-            constructGetter(parent, nodeName, node.getDescription(),
-                    Types.listTypeFor(genType), node.getStatus());
+            constructGetter(parent, nodeName, node.getDescription(), Types.listTypeFor(genType), node.getStatus());
             final List<QName> listKeys = node.getKeyDefinition();
             final String packageName = new StringBuilder(packageNameForGeneratedType(basePackageName, node.getPath(),
                     BindingNamespaceType.Key)).append('.').append(nodeName).toString();
@@ -982,27 +983,15 @@ final class GenHelperUtil {
         if (schemaNode instanceof LeafSchemaNode) {
             final LeafSchemaNode leaf = (LeafSchemaNode) schemaNode;
             final QName leafQName = leaf.getQName();
-            final String leafName = leafQName.getLocalName();
-            String leafPckgName = basePackageName;
-            boolean isKeyPart = false;
+
+            final Type type = resolveLeafSchemaNodeAsMethod(schemaContext, typeBuilder, genCtx, leaf, module, typeProvider);
             if (listKeys.contains(leafQName)) {
-                leafPckgName = new StringBuilder(leafPckgName).append('.').append(BindingNamespaceType.Key).append('.')
-                        .append(nodeName).toString();
-                isKeyPart = true;
-            } else {
-                leafPckgName = new StringBuilder(leafPckgName).append('.').append(BindingNamespaceType.Data).append('.')
-                        .append(nodeName).toString();
-            }
-
-            final String leafGTOName = new StringBuilder(nodeName).append('_').append(leafName).toString();
-            final GeneratedTypeBuilder leafGTp = new GeneratedTypeBuilderImpl(leafPckgName, leafGTOName);
-            resolveLeafSchemaNodeAsMethod(schemaContext, leafGTp, genCtx, leaf, module,
-                    typeProvider);
-
-            constructGetter(typeBuilder, leafGTOName, schemaNode.getDescription(), leafGTp, Status.CURRENT);
-
-            if (isKeyPart) {
-                AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, leafGTp, true);
+                if (type == null) {
+                    resolveLeafSchemaNodeAsProperty(schemaContext, typeProvider, genCtx, genTOBuilder, leaf, true,
+                        module);
+                } else {
+                    AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, type, true);
+                }
             }
         } else if (!schemaNode.isAddedByUses()) {
             if (schemaNode instanceof LeafListSchemaNode) {
@@ -1019,6 +1008,36 @@ final class GenHelperUtil {
                         (ChoiceSchemaNode) schemaNode, genTypeBuilders, genCtx, typeProvider);
             }
         }
+    }
+
+    private static boolean resolveLeafSchemaNodeAsProperty(final SchemaContext schemaContext, final TypeProvider
+            typeProvider, final Map<Module, ModuleContext> genCtx, final GeneratedTOBuilder
+            toBuilder, final LeafSchemaNode leaf, final boolean isReadOnly, final Module module) {
+
+        if (leaf != null && toBuilder != null) {
+            Type returnType;
+            final TypeDefinition<?> typeDef = leaf.getType();
+            if (typeDef instanceof UnionTypeDefinition) {
+                // GeneratedType for this type definition should be already
+                // created
+                final QName qname = typeDef.getQName();
+                final Module unionModule = schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
+                        qname.getRevision());
+                final ModuleContext mc = genCtx.get(unionModule);
+                returnType = mc.getTypedefs().get(typeDef.getPath());
+            } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
+                // Annonymous enumeration (already generated, since it is inherited via uses).
+                LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
+                QName qname = originalLeaf.getQName();
+                final Module enumModule =  schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
+                        qname.getRevision());
+                returnType = genCtx.get(enumModule).getInnerType(originalLeaf.getType().getPath());
+            } else {
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
+            }
+            return AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(toBuilder, leaf, returnType, isReadOnly);
+        }
+        return false;
     }
 
     private static TypeDefinition<?> getBaseOrDeclaredType(final TypeDefinition<?> typeDef) {
