@@ -5,14 +5,14 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.dom.codec;
+package org.opendaylight.mdsal.binding.javav2.dom.codec.impl;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingNormalizedNodeCodec;
-import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.NonCachingCodec;
 
 public class NonCachingCodecTest {
 

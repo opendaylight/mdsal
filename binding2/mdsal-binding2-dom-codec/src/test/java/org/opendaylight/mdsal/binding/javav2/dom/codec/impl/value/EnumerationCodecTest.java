@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.value;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
