@@ -252,10 +252,10 @@ public class BuilderRenderer extends BaseRenderer {
         importedNames.put("item", importedName(Item.class));
         if (getType().getParentType() != null) {
             importedNames.put("parent", importedName(getType().getParentType()));
-            parentTypeForBuilderName = getType().getParentType().getName();
+            parentTypeForBuilderName = getType().getParentType().getFullyQualifiedName();
         } else if (getType().getParentTypeForBuilder() != null) {
             importedNames.put("parentTypeForBuilder", importedName(getType().getParentTypeForBuilder()));
-            parentTypeForBuilderName = getType().getParentTypeForBuilder().getName();
+            parentTypeForBuilderName = getType().getParentTypeForBuilder().getFullyQualifiedName();
         } else {
             parentTypeForBuilderName = null;
         }
