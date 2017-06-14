@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.generator.yang.types;
 
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.getOuterClassPackageName;
 import static org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeGenHelper.addStringRegExAsConstant;
 import static org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeGenHelper.baseTypeDefForExtendedType;
 import static org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeGenHelper.getAllTypedefs;
@@ -504,22 +505,6 @@ public final class TypeProviderImpl implements TypeProvider {
                     addUnitsToGenTO(genTOBuilder, typedef.getUnits());
                     makeSerializable((GeneratedTOBuilderImpl) genTOBuilder);
                     returnType = genTOBuilder.toInstance();
-                    // union builder
-                    final GeneratedTOBuilder unionBuilder = new GeneratedTOBuilderImpl(genTOBuilder.getPackageName(),
-                            genTOBuilder.getName() + "Builder", true, true);
-                    unionBuilder.setIsUnionBuilder(true);
-                    final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
-                    method.setReturnType(returnType);
-                    method.addParameter(Types.STRING, "defaultValue");
-                    method.setAccessModifier(AccessModifier.PUBLIC);
-                    method.setStatic(true);
-                    Set<Type> types = additionalTypes.get(module);
-                    if (types == null) {
-                        types = Sets.newHashSet(unionBuilder.toInstance());
-                        additionalTypes.put(module, types);
-                    } else {
-                        types.add(unionBuilder.toInstance());
-                    }
                 } else if (innerTypeDefinition instanceof EnumTypeDefinition) {
                     // enums are automatically Serializable
                     final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) innerTypeDefinition;
@@ -939,7 +924,42 @@ public final class TypeProviderImpl implements TypeProvider {
         resultTOBuilder.addHashIdentity(genPropBuilder);
         resultTOBuilder.addToStringProperty(genPropBuilder);
 
+        provideGeneratedTOBuilderForUnionBuilder(findParentModule(schemaContext, parentNode), resultTOBuilder);
+
         return resultTOBuilder;
+    }
+
+
+    private GeneratedTOBuilder provideGeneratedTOBuilderForUnionBuilder(final Module parentModule,
+                                                 final GeneratedTOBuilder genTOBuilder) {
+        final String outerCls = Types.getOuterClassName(genTOBuilder);
+        final StringBuilder name;
+        if (outerCls != null) {
+            name = new StringBuilder(outerCls);
+        } else {
+            name = new StringBuilder();
+        }
+        name.append(genTOBuilder.getName());
+        name.append("Builder");
+        final GeneratedTOBuilderImpl unionBuilder = new GeneratedTOBuilderImpl(getOuterClassPackageName(genTOBuilder),
+                name.toString(), true);
+        unionBuilder.setIsUnionBuilder(true);
+
+        final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
+        method.setReturnType(genTOBuilder);
+        method.addParameter(Types.STRING, "defaultValue");
+        method.setAccessModifier(AccessModifier.PUBLIC);
+        method.setStatic(true);
+
+        final Set<Type> types = this.getAdditionalTypes().get(parentModule);
+        if (types == null) {
+            this.getAdditionalTypes().put(parentModule,
+                    Sets.newHashSet(unionBuilder.toInstance()));
+        } else {
+            types.add(unionBuilder.toInstance());
+        }
+
+        return unionBuilder;
     }
 
     /**

@@ -231,11 +231,22 @@ public final class Types {
     @Nullable
     public static String getOuterClassName(final Type valueType) {
         final String pkgName = valueType.getPackageName();
-        if(CharMatcher.JAVA_UPPER_CASE.indexIn(pkgName) >= 0) {
+        final int index = CharMatcher.JAVA_UPPER_CASE.indexIn(pkgName);
+        if (index >= 0) {
             // It is inner class.
-            return Iterables.getLast(DOT_SPLITTER.split(pkgName));
+            return Iterables.getFirst(DOT_SPLITTER.split(pkgName.substring(index)), null);
         }
         return null;
+    }
+
+    @Nullable
+    public static String getOuterClassPackageName(final Type valueType) {
+        final String pkgName = valueType.getPackageName();
+        final int index = CharMatcher.JAVA_UPPER_CASE.indexIn(pkgName);
+        if (index >= 1) {
+            return pkgName.substring(0, index - 1);
+        }
+        return pkgName;
     }
 
     /**
