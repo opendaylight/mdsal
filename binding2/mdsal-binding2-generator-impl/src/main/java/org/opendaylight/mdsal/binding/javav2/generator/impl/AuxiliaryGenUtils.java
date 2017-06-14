@@ -17,8 +17,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +33,6 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.YangSnippetCleaner;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
-import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
@@ -413,38 +410,7 @@ final class AuxiliaryGenUtils {
         genTOBuilder.setIsUnion(true);
         TypeProviderImpl.addUnitsToGenTO(genTOBuilder, typeDef.getUnits());
 
-        final GeneratedTOBuilder unionBuilder = createUnionBuilder(genTOBuilder, typeBuilder);
-
-        final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
-        method.setReturnType(returnType);
-        method.addParameter(Types.STRING, "defaultValue");
-        method.setAccessModifier(AccessModifier.PUBLIC);
-        method.setStatic(true);
-
-        final Set<Type> types = ((TypeProviderImpl) typeProvider).getAdditionalTypes().get(parentModule);
-        if (types == null) {
-            ((TypeProviderImpl) typeProvider).getAdditionalTypes().put(parentModule,
-                    Sets.newHashSet(unionBuilder.toInstance()));
-        } else {
-            types.add(unionBuilder.toInstance());
-        }
         return returnType.toInstance();
-    }
-
-    private static GeneratedTOBuilder createUnionBuilder(final GeneratedTOBuilder genTOBuilder, final GeneratedTypeBuilder typeBuilder) {
-        final String outerCls = Types.getOuterClassName(genTOBuilder);
-        final StringBuilder name;
-        if (outerCls != null) {
-            name = new StringBuilder(outerCls);
-        } else {
-            name = new StringBuilder();
-        }
-        name.append(genTOBuilder.getName());
-        name.append("Builder");
-        final GeneratedTOBuilderImpl unionBuilder = new GeneratedTOBuilderImpl(typeBuilder.getPackageName(),
-            name.toString(), true);
-        unionBuilder.setIsUnionBuilder(true);
-        return unionBuilder;
     }
 
     static boolean isInnerType(final LeafSchemaNode leaf, final TypeDefinition<?> type) {
