@@ -193,6 +193,27 @@ public final class Types {
     }
 
     /**
+     * Creates instance of type
+     * {@link WildcardType
+     * WildcardType}
+     *
+     * @param packageName
+     *            string with the package name
+     * @param typeName
+     *            string with the type name
+     * @param isPkNameNormalized
+     *            if the package name has been normalized
+     * @param isTypeNormalized
+     *            if the type name has been normalized
+     * @return <code>WildcardType</code> representation of
+     *         <code>packageName</code> and <code>typeName</code>
+     */
+    public static WildcardType wildcardTypeFor(final String packageName, final String typeName,
+                                               final boolean isPkNameNormalized, final boolean isTypeNormalized) {
+        return new WildcardTypeImpl(packageName, typeName, isPkNameNormalized, isTypeNormalized);
+    }
+
+    /**
      * Creates instance of
      * {@link ParameterizedType
      * ParameterizedType} where raw type is
@@ -365,6 +386,23 @@ public final class Types {
          */
         public WildcardTypeImpl(final String packageName, final String typeName) {
             super(packageName, typeName);
+        }
+
+        /**
+         * Creates instance of this class with concrete package and type name.
+         *
+         * @param packageName
+         *            string with the package name
+         * @param typeName
+         *            string with the name of type
+         * @param isPkNameNormalized
+         *            if the package name has been normalized
+         * @param isTypeNormalized
+         *            if the type name has been normalized
+         */
+        public WildcardTypeImpl(final String packageName, final String typeName, final boolean isPkNameNormalized,
+                                final boolean isTypeNormalized) {
+            super(packageName, typeName, isPkNameNormalized, isTypeNormalized);
         }
     }
 
