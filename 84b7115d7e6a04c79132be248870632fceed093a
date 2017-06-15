@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_5a907295",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/AugmentToGenType.java",
+        "patchSetId": 23
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-15T14:07:22Z",
+      "side": 1,
+      "message": "please allow empty space here",
+      "revId": "84b7115d7e6a04c79132be248870632fceed093a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_9ae93a1d",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/test/resources/bug-8542/recursive-uses-augment.yang",
+        "patchSetId": 23
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-15T14:07:22Z",
+      "side": 1,
+      "message": "container my-cont {\n    uses D;\n}",
+      "revId": "84b7115d7e6a04c79132be248870632fceed093a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_9ad01a55",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 23
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-15T14:07:22Z",
+      "side": 1,
+      "message": "final StringBuilder sb \u003d new StringBuilder(parent)\n    .append(\u0027.\u0027)\n    .append(path.getLocalName());\n\nfinal String normalizedPackageName \u003d JavaIdentifierNormalizer.normalizeFullPackageName(sb.toString());",
+      "range": {
+        "startLine": 408,
+        "startChar": 7,
+        "endLine": 412,
+        "endChar": 115
+      },
+      "revId": "84b7115d7e6a04c79132be248870632fceed093a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
