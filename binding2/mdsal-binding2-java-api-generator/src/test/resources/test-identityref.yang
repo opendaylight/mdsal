@@ -1,0 +1,24 @@
+module test-identityref{
+    namespace "urn:test:identityref";
+    prefix idref;
+    revision 2017-01-01;
+
+    identity alg {
+    }
+
+    typedef my-identityref {
+        type identityref {
+            base alg;
+        }
+    }
+
+    leaf ext-identityref {
+        type my-identityref;
+    }
+
+    leaf leaf-identityref {
+        type identityref {
+            base alg;
+        }
+    }
+}
