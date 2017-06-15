@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_3a9c8669",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-15T14:47:54Z",
+      "side": 1,
+      "message": "Minor thing but we don\u0027t need synchronized here since we synchronize below.",
+      "range": {
+        "startLine": 93,
+        "startChar": 19,
+        "endLine": 93,
+        "endChar": 31
+      },
+      "revId": "f2d452b7d2f10f91768b03e7b02fef41df390a7b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
