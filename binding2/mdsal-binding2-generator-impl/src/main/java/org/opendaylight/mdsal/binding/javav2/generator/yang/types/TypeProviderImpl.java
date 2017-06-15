@@ -765,12 +765,13 @@ public final class TypeProviderImpl implements TypeProvider {
 
         final String basePackageName = BindingMapping.getRootPackageName(module);
         final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, identity.getPath
-                (), BindingNamespaceType.Typedef);
-        final String genTypeName =
-                JavaIdentifierNormalizer.normalizeClassIdentifier(packageName, identity.getQName().getLocalName());
+                (), BindingNamespaceType.Identity);
+
+        final String genTypeName = JavaIdentifierNormalizer.normalizeSpecificIdentifier(identity.getQName().getLocalName(),
+                JavaIdentifier.CLASS);
 
         final Type baseType = Types.typeForClass(Class.class);
-        final Type paramType = Types.wildcardTypeFor(packageName, genTypeName);
+        final Type paramType = Types.wildcardTypeFor(packageName, genTypeName, true, true);
         return Types.parameterizedTypeFor(baseType, paramType);
     }
 
