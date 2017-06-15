@@ -9,7 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.api;
 
 import com.google.common.annotations.Beta;
-import java.util.Optional;
+import com.google.common.base.Optional;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
