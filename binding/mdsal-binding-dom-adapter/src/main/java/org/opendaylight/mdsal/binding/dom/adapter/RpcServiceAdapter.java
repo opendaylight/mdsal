@@ -12,14 +12,13 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map.Entry;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
@@ -144,7 +143,7 @@ class RpcServiceAdapter implements InvocationHandler {
         }
 
         private ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final NormalizedNode<?, ?> input) {
-            final CheckedFuture<DOMRpcResult, DOMRpcException> result = delegate.invokeRpc(schemaPath, input);
+            final ListenableFuture<DOMRpcResult> result = delegate.invokeRpc(schemaPath, input);
             if (result instanceof LazyDOMRpcResultFuture) {
                 return ((LazyDOMRpcResultFuture) result).getBindingFuture();
             }
@@ -164,7 +163,7 @@ class RpcServiceAdapter implements InvocationHandler {
                     bindingResult = null;
                 }
                 return RpcResult.class.cast(RpcResultBuilder.success(bindingResult).build());
-            });
+            }, MoreExecutors.directExecutor());
         }
 
     }

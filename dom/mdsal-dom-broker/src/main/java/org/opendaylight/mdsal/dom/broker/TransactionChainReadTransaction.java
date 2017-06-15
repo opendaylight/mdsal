@@ -14,6 +14,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -47,19 +48,19 @@ public class TransactionChainReadTransaction implements DOMDataTreeReadTransacti
             @Override
             public void onSuccess(@Nullable final Void result) {
                 Futures.addCallback(delegateReadTx.read(store, path),
-                        new FutureCallback<Optional<NormalizedNode<?, ?>>>() {
+                    new FutureCallback<Optional<NormalizedNode<?, ?>>>() {
 
-                            @Override
-                            public void onSuccess(@Nullable final Optional<NormalizedNode<?, ?>> result) {
-                                readResult.set(result);
-                            }
+                        @Override
+                        public void onSuccess(@Nullable final Optional<NormalizedNode<?, ?>> result) {
+                            readResult.set(result);
+                        }
 
-                            @Override
-                            public void onFailure(final Throwable throwable) {
-                                txChain.transactionFailed(TransactionChainReadTransaction.this, throwable);
-                                readResult.setException(throwable);
-                            }
-                        });
+                        @Override
+                        public void onFailure(final Throwable throwable) {
+                            txChain.transactionFailed(TransactionChainReadTransaction.this, throwable);
+                            readResult.setException(throwable);
+                        }
+                    }, MoreExecutors.directExecutor());
             }
 
             @Override
@@ -68,7 +69,7 @@ public class TransactionChainReadTransaction implements DOMDataTreeReadTransacti
                 // failed write transaction should do this
                 readResult.setException(throwable);
             }
-        });
+        }, MoreExecutors.directExecutor());
 
         return Futures.makeChecked(readResult, ReadFailedException.MAPPER);
     }
@@ -78,7 +79,8 @@ public class TransactionChainReadTransaction implements DOMDataTreeReadTransacti
                                                               final YangInstanceIdentifier path) {
         final Function<Optional<NormalizedNode<?, ?>>, Boolean> transform =
             optionalNode -> optionalNode.isPresent() ? Boolean.TRUE : Boolean.FALSE;
-        final ListenableFuture<Boolean> existsResult = Futures.transform(read(store, path), transform);
+        final ListenableFuture<Boolean> existsResult = Futures.transform(read(store, path), transform,
+            MoreExecutors.directExecutor());
         return Futures.makeChecked(existsResult, ReadFailedException.MAPPER);
     }
 

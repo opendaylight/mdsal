@@ -158,17 +158,19 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         final YangModuleInfo yangModuleInfo = sourceIdentifierToModuleInfo.get(sourceIdentifier);
 
         if (yangModuleInfo == null) {
-            LOG.debug("Unknown schema source requested: {}, available sources: {}", sourceIdentifier, sourceIdentifierToModuleInfo.keySet());
-            return Futures
-                .immediateFailedCheckedFuture(new SchemaSourceException("Unknown schema source: " + sourceIdentifier));
+            LOG.debug("Unknown schema source requested: {}, available sources: {}", sourceIdentifier,
+                sourceIdentifierToModuleInfo.keySet());
+            return Futures.immediateFailedCheckedFuture(new SchemaSourceException(
+                "Unknown schema source: " + sourceIdentifier));
         }
 
-        return Futures
-            .immediateCheckedFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier, new ByteSource() {
-                @Override public InputStream openStream() throws IOException {
-                    return yangModuleInfo.getModuleSourceStream();
-                }
-            }));
+        return Futures.immediateCheckedFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier,
+            new ByteSource() {
+            @Override
+            public InputStream openStream() throws IOException {
+                return yangModuleInfo.getModuleSourceStream();
+            }
+        }));
     }
 
     private static class YangModuleInfoRegistration extends AbstractObjectRegistration<YangModuleInfo> {

@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
@@ -63,7 +64,7 @@ abstract class AbstractForwardedTransaction<T extends AsyncTransaction<YangInsta
 
         return MappingCheckedFuture.create(
                     Futures.transform(readTx.read(store, codec.toYangInstanceIdentifierBlocking(path)),
-                                      codec.deserializeFunction(path)),
+                                      codec.deserializeFunction(path), MoreExecutors.directExecutor()),
                     ReadFailedException.MAPPER);
     }
 }

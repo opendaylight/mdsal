@@ -16,6 +16,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Collection;
 import java.util.Collections;
@@ -98,7 +99,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
             public void onFailure(final Throwable throwable) {
                 reg.close();
             }
-        });
+        }, MoreExecutors.directExecutor());
 
         return Futures.makeChecked(initialDataTreeChangeFuture, ReadFailedException.MAPPER);
     }
@@ -110,7 +111,8 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
         LOG.debug("{}: Invoking exists at {}:{}", txIdentifier, store, path);
         final Function<Optional<NormalizedNode<?, ?>>, Boolean> transform =
             optionalNode -> optionalNode.isPresent() ? Boolean.TRUE : Boolean.FALSE;
-        final ListenableFuture<Boolean> existsResult = Futures.transform(read(store, path), transform);
+        final ListenableFuture<Boolean> existsResult = Futures.transform(read(store, path), transform,
+            MoreExecutors.directExecutor());
         return Futures.makeChecked(existsResult, ReadFailedException.MAPPER);
     }
 

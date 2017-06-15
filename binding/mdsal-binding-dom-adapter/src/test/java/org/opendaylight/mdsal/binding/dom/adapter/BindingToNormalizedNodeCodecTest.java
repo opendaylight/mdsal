@@ -101,7 +101,7 @@ public class BindingToNormalizedNodeCodecTest {
         }
     }
 
-    private NormalizedNode<?, ?> prepareData(final SchemaContext schemaCtx, final Object value) {
+    private static NormalizedNode<?, ?> prepareData(final SchemaContext schemaCtx, final Object value) {
         final DataSchemaNode dataChildByName =
                 schemaCtx.getDataChildByName(QName.create("urn:test", "2017-01-01", "cont"));
         final DataSchemaNode leaf = ((ContainerSchemaNode) dataChildByName)
@@ -113,7 +113,7 @@ public class BindingToNormalizedNodeCodecTest {
         return data;
     }
 
-    private Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode<?, ?> data,
+    private static Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode<?, ?> data,
             final SchemaContext schemaCtx) throws Exception {
         final DataObjectSerializerGenerator serializerGenerator =
                 StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()));
