@@ -285,6 +285,56 @@ final class GenHelperUtil {
         return null;
     }
 
+    static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
+            final Type targetTypeRef, final List<AugmentationSchema> schemaPathAugmentListEntry,
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx,
+            final SchemaContext schemaContext, final boolean verboseClassComments, final TypeProvider typeProvider) {
+
+        //pick augmentation grouped by augmentation target, there is always at least one
+        final AugmentationSchema augSchema = schemaPathAugmentListEntry.get(0);
+
+        final String augmentNamespacePackageName = BindingGeneratorUtil.packageNameForGeneratedType(augmentPackageName,
+                augSchema.getTargetPath(), BindingNamespaceType.Data);
+
+        Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.computeIfAbsent(
+                augmentNamespacePackageName, k -> new HashMap<>());
+
+        //this requires valid semantics in YANG model
+        String augIdentifier = null;
+        for (AugmentationSchema aug : schemaPathAugmentListEntry) {
+            augIdentifier = getAugmentIdentifier(aug.getUnknownSchemaNodes());
+            break;
+        }
+
+        if (augIdentifier == null) {
+            augIdentifier = augGenTypeName(augmentBuilders, targetTypeRef.getName());
+        }
+
+        GeneratedTypeBuilder augTypeBuilder = new GeneratedTypeBuilderImpl(augmentNamespacePackageName, augIdentifier);
+
+        augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
+        augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
+        augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
+        annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
+
+        //produces getters for augTypeBuilder eventually
+        for (AugmentationSchema aug : schemaPathAugmentListEntry) {
+            //apply all uses
+            addImplementedInterfaceFromUses(aug, augTypeBuilder, genCtx);
+            augSchemaNodeToMethods(module, augmentNamespacePackageName, augTypeBuilder, augTypeBuilder, aug.getChildNodes(),
+               genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders);
+        }
+
+        augmentBuilders.put(augTypeBuilder.getName(), augTypeBuilder);
+
+        if(!augSchema.getChildNodes().isEmpty()) {
+            genCtx.get(module).addTypeToAugmentation(augTypeBuilder, augSchema);
+        }
+        genCtx.get(module).addAugmentType(augTypeBuilder);
+        return genCtx;
+    }
+
+    //TODO: delete this method eventually when uses-augments & augmented choice cases are implemented
     /**
      * Returns a generated type builder for an augmentation.
      *
@@ -306,6 +356,7 @@ final class GenHelperUtil {
      *            and uses of augment
      * @return generated type builder for augment in genCtx
      */
+    @Deprecated
     static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
                 final String basePackageName, final Type targetTypeRef, final AugmentationSchema augSchema,
                 final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module,
