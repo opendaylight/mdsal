@@ -9,10 +9,10 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.Iterables;
-import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -78,8 +78,8 @@ public interface DOMDataTreeCommitCohort {
      */
     @Deprecated
     @Nonnull
-    default CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(@Nonnull Object txId,
-            @Nonnull DOMDataTreeCandidate candidate, @Nonnull SchemaContext ctx) {
+    default CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(@Nonnull final Object txId,
+            @Nonnull final DOMDataTreeCandidate candidate, @Nonnull final SchemaContext ctx) {
         LoggerFactory.getLogger(getClass()).error(
                 "The default implementation of DOMDataTreeCommitCohort#canCommit(Object, DOMDataTreeCandidate, "
                 + "SchemaContext) was invoked on {}", getClass());
@@ -117,22 +117,21 @@ public interface DOMDataTreeCommitCohort {
      *         validation failure reason.
      */
     @Nonnull
-    default CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(@Nonnull Object txId,
-            @Nonnull Collection<DOMDataTreeCandidate> candidates, @Nonnull SchemaContext ctx) {
+    default CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(@Nonnull final Object txId,
+            @Nonnull final Collection<DOMDataTreeCandidate> candidates, @Nonnull final SchemaContext ctx) {
         LoggerFactory.getLogger(getClass()).warn("DOMDataTreeCommitCohort implementation {} should override "
                 + "canCommit(Object, Collection, SchemaContext)", getClass());
 
         // For backwards compatibility, the default implementation is to invoke the deprecated
         // canCommit(Object, DOMDataTreeCandidate, SchemaContext) method for each DOMDataTreeCandidate and return the
         // last PostCanCommitStep.
-        List<CheckedFuture<PostCanCommitStep, DataValidationFailedException>> futures = new ArrayList<>();
+        List<ListenableFuture<PostCanCommitStep>> futures = new ArrayList<>();
         for (DOMDataTreeCandidate candidate : candidates) {
             futures.add(canCommit(txId, candidate, ctx));
         }
 
         final ListenableFuture<PostCanCommitStep> resultFuture = Futures.transform(Futures.allAsList(futures),
-            (AsyncFunction<List<PostCanCommitStep>, PostCanCommitStep>)input ->
-                Futures.immediateFuture(input.get(input.size() - 1)));
+            input -> input.get(input.size() - 1), MoreExecutors.directExecutor());
         return MappingCheckedFuture.create(resultFuture, new DataValidationFailedExceptionMapper("canCommit",
                 Iterables.getLast(candidates).getRootPath()));
     }
@@ -143,13 +142,13 @@ public interface DOMDataTreeCommitCohort {
     class DataValidationFailedExceptionMapper extends ExceptionMapper<DataValidationFailedException> {
         private final DOMDataTreeIdentifier failedTreeId;
 
-        public DataValidationFailedExceptionMapper(String opName, DOMDataTreeIdentifier failedTreeId) {
+        public DataValidationFailedExceptionMapper(final String opName, final DOMDataTreeIdentifier failedTreeId) {
             super(opName, DataValidationFailedException.class);
             this.failedTreeId = failedTreeId;
         }
 
         @Override
-        protected DataValidationFailedException newWithCause(String message, Throwable cause) {
+        protected DataValidationFailedException newWithCause(final String message, final Throwable cause) {
             return new DataValidationFailedException(DOMDataTreeIdentifier.class, failedTreeId, message, cause);
         }
     }

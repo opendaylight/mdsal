@@ -9,7 +9,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
@@ -78,7 +77,7 @@ final class LazyDOMRpcResultFuture implements CheckedFuture<DOMRpcResult, DOMRpc
             return get();
         } catch (InterruptedException | ExecutionException e) {
             // FIXME: Add exception mapping
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -88,7 +87,7 @@ final class LazyDOMRpcResultFuture implements CheckedFuture<DOMRpcResult, DOMRpc
             return get(timeout, unit);
         } catch (InterruptedException | ExecutionException e) {
             // FIXME: Add exception mapping
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

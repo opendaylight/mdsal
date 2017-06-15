@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -150,7 +151,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             public void onFailure(final Throwable exp) {
                 failure.accept(ShardedDOMDataTreeWriteTransaction.this, exp);
             }
-        });
+        }, MoreExecutors.directExecutor());
     }
 
     void onTransactionSuccess(final Void result) {

@@ -9,7 +9,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.SettableFuture;
 import java.net.URI;
 import java.util.Collection;
@@ -99,7 +98,7 @@ class FutureSchema implements AutoCloseable {
                 schemaPromise.get(duration, unit);
                 return true;
             } catch (final InterruptedException | ExecutionException e) {
-                throw Throwables.propagate(e);
+                throw new RuntimeException(e);
             } catch (final TimeoutException e) {
                 return false;
             } finally {
