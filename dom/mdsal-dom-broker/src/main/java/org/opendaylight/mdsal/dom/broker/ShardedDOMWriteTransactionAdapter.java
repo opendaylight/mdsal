@@ -12,6 +12,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
@@ -89,7 +90,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
         finished = true;
 
         return Futures.makeChecked(
-                Futures.transform(aggregatedSubmit, (List<Void> input) -> input.get(0)),
+                Futures.transform(aggregatedSubmit, input -> input.get(0), MoreExecutors.directExecutor()),
                 TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER);
     }
 

@@ -103,5 +103,7 @@ public class SnapshotBackedWriteTransactionTest {
         snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.EMPTY);
     }
 
-    private static final class TestException extends Exception {}
+    private static final class TestException extends Exception {
+        private static final long serialVersionUID = 1L;
+    }
 }
