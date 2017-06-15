@@ -303,7 +303,7 @@ final class AuxiliaryGenUtils {
     }
 
     /**
-     * @param unknownSchemaNodes unknows schema nodes
+     * @param unknownSchemaNodes unknown schema nodes
      * @return nodeParameter of UnknownSchemaNode
      */
     static String getAugmentIdentifier(final List<UnknownSchemaNode> unknownSchemaNodes) {
