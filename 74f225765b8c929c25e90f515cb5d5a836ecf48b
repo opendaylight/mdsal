@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_3fb6383e",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 768,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-06-15T11:25:24Z",
+      "side": 1,
+      "message": "In \u0027identityToGenType\u0027 line 1193 is still \u0027identity\u0027, but a identityref does not produce a Class.",
+      "parentUuid": "1af78d9a_7c4f2e93",
+      "range": {
+        "startLine": 768,
+        "startChar": 41,
+        "endLine": 768,
+        "endChar": 49
+      },
+      "revId": "74f225765b8c929c25e90f515cb5d5a836ecf48b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_1c5eea45",
         "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
         "patchSetId": 1
