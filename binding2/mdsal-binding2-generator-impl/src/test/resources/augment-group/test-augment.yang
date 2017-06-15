@@ -1,0 +1,22 @@
+module augment-test {
+    prefix "foo";
+    namespace "org.test.augment";
+
+    container foo1 {
+        leaf my-leaf {
+            type string;
+        }
+    }
+
+    augment /foo:foo1 {
+        leaf bar {
+            type string;
+        }
+    }
+
+    augment /foo:foo1 {
+        leaf baz {
+            type string;
+        }
+    }
+}
