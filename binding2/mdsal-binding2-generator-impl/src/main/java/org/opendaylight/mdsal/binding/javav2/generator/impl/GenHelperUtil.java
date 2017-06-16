@@ -37,6 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
@@ -255,11 +257,16 @@ final class GenHelperUtil {
                         final boolean verboseClassComments, final TypeProvider typeProvider) {
         final String basePackageName = BindingMapping.getRootPackageName(module);
         for (final UsesNode usesNode : node.getUses()) {
-            for (final AugmentationSchema augment : usesNode.getAugmentations()) {
-                genCtx = AugmentToGenType.usesAugmentationToGenTypes(schemaContext, basePackageName, augment, module,
+            Map<SchemaPath, List<AugmentationSchema>> augmentationsGrouped =
+                    usesNode.getAugmentations().stream().collect(Collectors.groupingBy(AugmentationSchema::getTargetPath));
+            for (Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry : augmentationsGrouped.entrySet()) {
+                genCtx = AugmentToGenType.usesAugmentationToGenTypes(schemaContext, basePackageName,
+                        schemaPathAugmentListEntry.getValue(), module,
                         usesNode, node, genCtx, genTypeBuilders, verboseClassComments, typeProvider);
-                genCtx = processUsesAugments(schemaContext, augment, module, genCtx, genTypeBuilders,
-                        verboseClassComments, typeProvider);
+                for (AugmentationSchema augSchema : schemaPathAugmentListEntry.getValue()) {
+                    genCtx = processUsesAugments(schemaContext, augSchema, module, genCtx, genTypeBuilders,
+                            verboseClassComments, typeProvider);
+                }
             }
         }
         return genCtx;
@@ -293,11 +300,8 @@ final class GenHelperUtil {
         //pick augmentation grouped by augmentation target, there is always at least one
         final AugmentationSchema augSchema = schemaPathAugmentListEntry.get(0);
 
-        final String augmentNamespacePackageName = BindingGeneratorUtil.packageNameForGeneratedType(augmentPackageName,
-                augSchema.getTargetPath(), BindingNamespaceType.Data);
-
         Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.computeIfAbsent(
-                augmentNamespacePackageName, k -> new HashMap<>());
+                augmentPackageName, k -> new HashMap<>());
 
         //this requires valid semantics in YANG model
         String augIdentifier = null;
@@ -310,7 +314,8 @@ final class GenHelperUtil {
             augIdentifier = augGenTypeName(augmentBuilders, targetTypeRef.getName());
         }
 
-        GeneratedTypeBuilder augTypeBuilder = new GeneratedTypeBuilderImpl(augmentNamespacePackageName, augIdentifier);
+        GeneratedTypeBuilder augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augIdentifier,
+                false, true);
 
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
         augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
@@ -321,7 +326,7 @@ final class GenHelperUtil {
         for (AugmentationSchema aug : schemaPathAugmentListEntry) {
             //apply all uses
             addImplementedInterfaceFromUses(aug, augTypeBuilder, genCtx);
-            augSchemaNodeToMethods(module, augmentNamespacePackageName, augTypeBuilder, augTypeBuilder, aug.getChildNodes(),
+            augSchemaNodeToMethods(module, augmentPackageName, augTypeBuilder, augTypeBuilder, aug.getChildNodes(),
                genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders);
         }
 
@@ -329,6 +334,7 @@ final class GenHelperUtil {
 
         if(!augSchema.getChildNodes().isEmpty()) {
             genCtx.get(module).addTypeToAugmentation(augTypeBuilder, augSchema);
+            genCtx.get(module).addTargetToAugmentation(augTypeBuilder, augSchema.getTargetPath());
         }
         genCtx.get(module).addAugmentType(augTypeBuilder);
         return genCtx;
