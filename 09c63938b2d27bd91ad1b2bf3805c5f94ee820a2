@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_10f9abc8",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/classTemplate.scala.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-06-16T06:31:53Z",
+      "side": 1,
+      "message": "Type Decimal* would match this case",
+      "range": {
+        "startLine": 169,
+        "startChar": 20,
+        "endLine": 169,
+        "endChar": 48
+      },
+      "revId": "09c63938b2d27bd91ad1b2bf3805c5f94ee820a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_b046d721",
         "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/classTemplate.scala.txt",
         "patchSetId": 1
@@ -60,6 +83,30 @@
       "side": 1,
       "message": "I just make size \u003e 1 be a separate if branch to be clear, and this has been eliminated by my subsequent patch, and what\u0027s opinion?",
       "parentUuid": "1af78d9a_b046d721",
+      "range": {
+        "startLine": 185,
+        "startChar": 24,
+        "endLine": 192,
+        "endChar": 34
+      },
+      "revId": "09c63938b2d27bd91ad1b2bf3805c5f94ee820a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_b01417f6",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/classTemplate.scala.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-06-16T06:31:53Z",
+      "side": 1,
+      "message": "And it\u0027s wrong here for Decimal*, It will match the boolean case upside .",
+      "parentUuid": "1af78d9a_10724b7c",
       "range": {
         "startLine": 185,
         "startChar": 24,
