@@ -24,6 +24,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
@@ -110,6 +111,12 @@ final class AugmentToGenType {
         for (Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry : augmentationsGrouped.entrySet()) {
             resultCtx = augmentationToGenTypes(basePackageName, schemaPathAugmentListEntry, module, schemaContext,
                     verboseClassComments, resultCtx, genTypeBuilders, typeProvider);
+
+            for (AugmentationSchema augSchema : schemaPathAugmentListEntry.getValue()) {
+                GenHelperUtil.processUsesAugments(schemaContext, augSchema, module, genCtx,
+                        genTypeBuilders, verboseClassComments, typeProvider);
+            }
+
         }
 
         return resultCtx;
@@ -164,18 +171,16 @@ final class AugmentToGenType {
      *             if augment target path is null
      * @return generated context
      */
-    private static Map<Module, ModuleContext> augmentationToGenTypes(final String augmentPackageName,
+    private static Map<Module, ModuleContext> augmentationToGenTypes(final String basePackageName,
             final Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry, final Module module,
             final SchemaContext schemaContext, final boolean verboseClassComments,
             Map<Module, ModuleContext> genCtx, Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
             final TypeProvider typeProvider) {
 
         final SchemaPath targetPath = schemaPathAugmentListEntry.getKey();
-        Preconditions.checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
+        Preconditions.checkArgument(basePackageName != null, "Package Name cannot be NULL.");
         Preconditions.checkState(targetPath != null,
                 "Augmentation Schema does not contain Target Path (Target Path is NULL).");
-
-        //TODO: implement uses-augment scenario
 
         SchemaNode targetSchemaNode;
 
@@ -194,7 +199,7 @@ final class AugmentToGenType {
             throw new IllegalArgumentException("augment target not found: " + targetPath);
         }
 
-        //TODO: loose this assignment afterwards
+        //TODO: loose this assignment afterwards #2 done
         Map<Module, ModuleContext> generatedCtx = genCtx;
 
         GeneratedTypeBuilder targetTypeBuilder = GenHelperUtil.findChildNodeByPath(targetSchemaNode.getPath(),
@@ -206,21 +211,72 @@ final class AugmentToGenType {
             throw new NullPointerException("Target type not yet generated: " + targetSchemaNode);
         }
 
+        final String augmentNamespacePackageName =
+                BindingGeneratorUtil.packageNameForAugmentedGeneratedType(basePackageName, targetPath);
+
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentPackageName,
+            generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentNamespacePackageName,
                     targetTypeBuilder.toInstance(), schemaPathAugmentListEntry.getValue(), genTypeBuilders, generatedCtx,
                     schemaContext, verboseClassComments, typeProvider);
         } else {
-            //TODO: implement augmented choice cases scenario
+            //TODO: #3 implement augmented choice cases scenario
         }
         return generatedCtx;
     }
 
     static Map<Module, ModuleContext> usesAugmentationToGenTypes(final SchemaContext schemaContext,
-           final String augmentPackageName, final AugmentationSchema augSchema, final Module module,
+           final String augmentPackageName, final List<AugmentationSchema> schemaPathAugmentListEntry, final Module module,
            final UsesNode usesNode, final DataNodeContainer usesNodeParent, Map<Module, ModuleContext> genCtx,
            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments,
            final TypeProvider typeProvider) {
+
+        Preconditions.checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
+
+        final SchemaPath targetPath = schemaPathAugmentListEntry.get(0).getTargetPath();
+        final SchemaNode targetSchemaNode = findOriginalTargetFromGrouping(schemaContext, targetPath, usesNode);
+        if (targetSchemaNode == null) {
+            throw new IllegalArgumentException("augment target not found: " + targetPath);
+        }
+
+        GeneratedTypeBuilder targetTypeBuilder = GenHelperUtil.findChildNodeByPath(targetSchemaNode.getPath(),
+                genCtx);
+        if (targetTypeBuilder == null) {
+            targetTypeBuilder = GenHelperUtil.findCaseByPath(targetSchemaNode.getPath(), genCtx);
+        }
+        if (targetTypeBuilder == null) {
+            throw new NullPointerException("Target type not yet generated: " + targetSchemaNode);
+        }
+
+        if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
+            String packageName = augmentPackageName;
+            if (usesNodeParent instanceof SchemaNode) {
+                packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(augmentPackageName,
+                        ((SchemaNode) usesNodeParent).getPath());
+            } else if (usesNodeParent instanceof AugmentationSchema) {
+                Type parentTypeBuilder = genCtx.get(module).getTargetToAugmentation()
+                        .get(((AugmentationSchema) usesNodeParent).getTargetPath());
+                packageName = parentTypeBuilder.getFullyQualifiedName();
+            }
+            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName,
+                    targetTypeBuilder.toInstance(), schemaPathAugmentListEntry, genTypeBuilders, genCtx,
+                    schemaContext, verboseClassComments, typeProvider);
+            return genCtx;
+        } else {
+            genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, augmentPackageName,
+                    targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode,
+                    schemaPathAugmentListEntry.get(0).getChildNodes(),
+                    usesNodeParent, genCtx, verboseClassComments, genTypeBuilders, typeProvider);
+            return genCtx;
+        }
+    }
+
+    //TODO: delete this method eventually when uses-augments & augmented choice cases are implemented
+    @Deprecated
+    public static Map<Module, ModuleContext> usesAugmentationToGenTypes(final SchemaContext schemaContext, final String
+            augmentPackageName, final AugmentationSchema augSchema, final Module module, final UsesNode usesNode, final DataNodeContainer
+                                                                                usesNodeParent, Map<Module, ModuleContext> genCtx,
+                                                                        Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+                                                                        final boolean verboseClassComments, final TypeProvider typeProvider) {
 
         Preconditions.checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
         Preconditions.checkArgument(augSchema != null, "Augmentation Schema cannot be NULL.");

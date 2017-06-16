@@ -655,7 +655,7 @@ public class AugmentToGenTypeTest {
     @Test
     public void usesAugmentationToGenTypesNullPckgNameTest() throws Exception {
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(null, null, null, null, null, null, null, null, false, null);
+            AugmentToGenType.usesAugmentationToGenTypes(null, null, (AugmentationSchema) null, null, null, null, null, null, false, null);
         } catch (final Exception e) {
             assertNotNull(e);
             assertTrue(e instanceof IllegalArgumentException);
@@ -666,7 +666,7 @@ public class AugmentToGenTypeTest {
     @Test
     public void usesAugmentationToGenTypesNullAugSchemaNodeTest() throws Exception {
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(null, "", null, null, null, null, null, null, false, null);
+            AugmentToGenType.usesAugmentationToGenTypes(null, "", (AugmentationSchema) null, null, null, null, null, null, false, null);
         } catch (final Exception e) {
             assertNotNull(e);
             assertTrue(e instanceof IllegalArgumentException);
