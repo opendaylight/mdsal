@@ -130,7 +130,9 @@ final class TypeGenHelper {
 
         final String typedefName = typedef.getQName().getLocalName();
         final String innerTypeDef = innerExtendedType.getQName().getLocalName();
-        final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typedefName);
+        final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typedef.getPath
+                (), BindingNamespaceType.Typedef);
+        final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(packageName, typedefName);
         final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
 
         genTOBuilder.setDescription(typedefDescription);
@@ -444,8 +446,9 @@ final class TypeGenHelper {
                 "Local Name in EnumTypeDefinition QName cannot be NULL!");
         final Module module = findParentModule(schemaContext, parentNode);
         final String basePackageName = BindingMapping.getRootPackageName(module);
-
-        final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(basePackageName, enumName);
+        final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, parentNode.getPath
+                (), BindingNamespaceType.Typedef);
+        final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(packageName, enumName);
         final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
         enumBuilder.setDescription(enumTypedefDescription);
         enumBuilder.setReference(enumTypeDef.getReference());
