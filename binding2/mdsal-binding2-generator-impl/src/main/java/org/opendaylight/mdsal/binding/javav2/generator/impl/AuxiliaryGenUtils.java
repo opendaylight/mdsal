@@ -385,7 +385,7 @@ final class AuxiliaryGenUtils {
                             ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap());
         } else if (typeDef instanceof BitsTypeDefinition) {
             genTOBuilder = (((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
-                    packageName, typeDef, classNameFromLeaf, parentModule.getName());
+                    packageName, typeDef, classNameFromLeaf, leaf, parentModule.getName());
         }
         if (genTOBuilder != null) {
             typeBuilder.addEnclosingTransferObject(genTOBuilder);

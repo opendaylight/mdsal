@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.generator.yang.types;
 
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.getOuterClassName;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.getOuterClassPackageName;
 import static org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeGenHelper.addStringRegExAsConstant;
 import static org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeGenHelper.baseTypeDefForExtendedType;
@@ -84,6 +85,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.collection.mutable.Leaf;
 
 @Beta
 public final class TypeProviderImpl implements TypeProvider {
@@ -296,15 +298,16 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final String basePackageName, final
-    TypeDefinition<?> typeDef, final String typeDefName, final String moduleName) {
+    TypeDefinition<?> typeDef, final String typeDefName, final SchemaNode parentNode, final String moduleName) {
 
         Preconditions.checkArgument(typeDef != null, "typeDef cannot be NULL!");
         Preconditions.checkArgument(basePackageName != null, "Base Package Name cannot be NULL!");
 
         if (typeDef instanceof BitsTypeDefinition) {
             final BitsTypeDefinition bitsTypeDefinition = (BitsTypeDefinition) typeDef;
-
-            final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName, true, false);
+            final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, parentNode.getPath
+                    (), BindingNamespaceType.Typedef);
+            final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(packageName, typeDefName, true, false);
             final String typedefDescription = encodeAngleBrackets(typeDef.getDescription());
 
             genTOBuilder.setDescription(typedefDescription);
@@ -366,7 +369,19 @@ public final class TypeProviderImpl implements TypeProvider {
 
         final GeneratedTOBuilderImpl unionGenTOBuilder;
         if (typeDefName != null && !typeDefName.isEmpty()) {
-            unionGenTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName, true, false);
+            final String packageName;
+            if (parentNode instanceof TypeDefinition) {
+                final String rootPackageName = BindingMapping.getRootPackageName(module);
+                final StringBuilder sb = new StringBuilder();
+                sb.append(rootPackageName)
+                        .append('.')
+                        .append(BindingNamespaceType.Typedef.getPackagePrefix());
+                packageName = sb.toString();
+
+            } else {
+                packageName = basePackageName;
+            }
+            unionGenTOBuilder = new GeneratedTOBuilderImpl(packageName, typeDefName, true, false);
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
             unionGenTOBuilder.setDescription(typedefDescription);
             unionGenTOBuilder.setReference(typedef.getReference());
@@ -514,7 +529,7 @@ public final class TypeProviderImpl implements TypeProvider {
                     final BitsTypeDefinition bitsTypeDefinition = (BitsTypeDefinition) innerTypeDefinition;
                     final GeneratedTOBuilder genTOBuilder =
                             provideGeneratedTOBuilderForBitsTypeDefinition(
-                                    basePackageName, bitsTypeDefinition, typedefName, module.getName());
+                                    basePackageName, bitsTypeDefinition, typedefName, typedef, module.getName());
                     genTOBuilder.setTypedef(true);
                     addUnitsToGenTO(genTOBuilder, typedef.getUnits());
                     makeSerializable((GeneratedTOBuilderImpl) genTOBuilder);
