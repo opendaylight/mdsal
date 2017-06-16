@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.generator.yang.types;
 
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameWithNamespacePrefix;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.getOuterClassPackageName;
 import static org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeGenHelper.addStringRegExAsConstant;
 import static org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeGenHelper.baseTypeDefForExtendedType;
@@ -206,7 +207,8 @@ public final class TypeProviderImpl implements TypeProvider {
         }
 
         modulesSortedByDependency.stream().filter(module -> module != null).forEach(module -> {
-            final String basePackageName = getRootPackageName(module);
+            final String basePackageName = packageNameWithNamespacePrefix(getRootPackageName(module),
+                    BindingNamespaceType.Typedef);
             final List<TypeDefinition<?>> typeDefinitions = getAllTypedefs(module);
             final List<TypeDefinition<?>> listTypeDefinitions = sortTypeDefinitionAccordingDepth(typeDefinitions);
             if (listTypeDefinitions != null) {
@@ -365,16 +367,12 @@ public final class TypeProviderImpl implements TypeProvider {
         final Module module = findParentModule(schemaContext, parentNode);
 
         final GeneratedTOBuilderImpl unionGenTOBuilder;
-        if (typeDefName != null && !typeDefName.isEmpty()) {
-            unionGenTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName, true, false);
-            final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
-            unionGenTOBuilder.setDescription(typedefDescription);
-            unionGenTOBuilder.setReference(typedef.getReference());
-            unionGenTOBuilder.setSchemaPath((List) typedef.getPath().getPathFromRoot());
-            unionGenTOBuilder.setModuleName(module.getName());
-        } else {
-            unionGenTOBuilder = typedefToTransferObject(basePackageName, typedef, module.getName());
-        }
+        unionGenTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeDefName, true, false);
+        final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
+        unionGenTOBuilder.setDescription(typedefDescription);
+        unionGenTOBuilder.setReference(typedef.getReference());
+        unionGenTOBuilder.setSchemaPath((List) typedef.getPath().getPathFromRoot());
+        unionGenTOBuilder.setModuleName(module.getName());
 
         generatedTOBuilders.add(unionGenTOBuilder);
         unionGenTOBuilder.setIsUnion(true);
