@@ -182,16 +182,7 @@ class @{genType.getName}
                         return new @{genTo.getName}(@{importedNames.get("long")}.valueOf(defaultValue));
                     }
                     case _ => {
-                        @if(allProperties.size > 1) {
-                            @{importedNames.get("list")}<@{importedNames.get("string")}> properties = @{importedNames.get("lists")}.newArrayList(@{propsAsArgs(allProperties)});
-                            if (!properties.contains(defaultValue)) {
-                                throw new @{importedNames.get("illegalArgumentException")}("invalid default parameter");
-                            }
-                            int i = 0;
-                                    return new @{genTo.getName}(propsAsList(allProperties, importedNames.get("boolean")));
-                                } else {
-                                    return new @{genTo.getName}(@{importedNames.get("defProp")}.valueOf(defaultValue));
-                                }
+                        return new @{genTo.getName}(new @{allProperties.get(0).getReturnType.getName}(defaultValue));
                     }
                     }
                 }
