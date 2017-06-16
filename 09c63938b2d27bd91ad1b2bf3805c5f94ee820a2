@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_d041e30c",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/classTemplate.scala.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T06:11:37Z",
+      "side": 1,
+      "message": "can you re-use it?",
+      "range": {
+        "startLine": 153,
+        "startChar": 11,
+        "endLine": 159,
+        "endChar": 103
+      },
+      "revId": "09c63938b2d27bd91ad1b2bf3805c5f94ee820a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_b046d721",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/classTemplate.scala.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-16T06:11:37Z",
+      "side": 1,
+      "message": "with this one?",
+      "range": {
+        "startLine": 185,
+        "startChar": 24,
+        "endLine": 192,
+        "endChar": 34
+      },
+      "revId": "09c63938b2d27bd91ad1b2bf3805c5f94ee820a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
