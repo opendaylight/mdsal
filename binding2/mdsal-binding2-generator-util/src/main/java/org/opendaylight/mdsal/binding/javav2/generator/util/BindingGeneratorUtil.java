@@ -371,7 +371,7 @@ public final class BindingGeneratorUtil {
             return basePackageName;
         }
 
-        return generateNormalizedPackageName(basePackageName, pathFromRoot, size, null);
+        return generateNormalizedPackageName(basePackageName, pathFromRoot, size, BindingNamespaceType.Data);
     }
 
     /**

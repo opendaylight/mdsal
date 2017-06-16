@@ -29,6 +29,13 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         setAbstract(true);
     }
 
+    public GeneratedTypeBuilderImpl(final String packageName, final String name,
+                                    final boolean isPkNameNormalized,
+                                    final boolean isTypeNormalized) {
+        super(packageName, name, isPkNameNormalized, isTypeNormalized);
+        setAbstract(true);
+    }
+
     @Override
     public GeneratedType toInstance() {
         return new GeneratedTypeImpl(this);

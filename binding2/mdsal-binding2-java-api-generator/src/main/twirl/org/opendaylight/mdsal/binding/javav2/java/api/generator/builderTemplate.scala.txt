@@ -131,7 +131,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     @if(genType.isInstanceOf[GeneratedType] && !genType.isInstanceOf[GeneratedTransferObject]) {
         @if(hasImplementsFromUses(genType.asInstanceOf[GeneratedType])) {
             /**
-             *Set fields from given grouping argument. Valid argument is instance of one of following types:
+             * Set fields from given grouping argument. Valid argument is instance of one of following types:
              * <ul>
              @for(impl <- getAllIfcs(genType.asInstanceOf[GeneratedType])) {
              * <li>@{impl.getFullyQualifiedName}</li>
@@ -147,8 +147,8 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
                 @for(impl <- getAllIfcs(genType.asInstanceOf[GeneratedType])) {
                     @if(impl.isInstanceOf[GeneratedType] && !impl.asInstanceOf[GeneratedType].getMethodDefinitions.isEmpty) {
                         if (arg instanceof @{impl.asInstanceOf[GeneratedType].getFullyQualifiedName}) {
-                            @if(!impl.isInstanceOf[GeneratedTransferObject]) {
-                                @for(getter <- genType.asInstanceOf[GeneratedType].getMethodDefinitions) {
+                            @if(impl.isInstanceOf[GeneratedType] && !impl.isInstanceOf[GeneratedTransferObject]) {
+                                @for(getter <- impl.asInstanceOf[GeneratedType].getMethodDefinitions) {
                                     this._@{propertyNameFromGetter(getter)} = ((@{impl.asInstanceOf[GeneratedType].getFullyQualifiedName})arg).@{getter.getName}();
                                 }
                             }
