@@ -175,7 +175,7 @@ final class AugmentToGenType {
         Preconditions.checkState(targetPath != null,
                 "Augmentation Schema does not contain Target Path (Target Path is NULL).");
 
-        //TODO: implement uses-augment scenario
+        //TODO: #2 implement uses-augment scenario (in groupings used by augment)
 
         SchemaNode targetSchemaNode;
 
@@ -194,7 +194,7 @@ final class AugmentToGenType {
             throw new IllegalArgumentException("augment target not found: " + targetPath);
         }
 
-        //TODO: loose this assignment afterwards
+        //TODO: loose this assignment afterwards #2 done
         Map<Module, ModuleContext> generatedCtx = genCtx;
 
         GeneratedTypeBuilder targetTypeBuilder = GenHelperUtil.findChildNodeByPath(targetSchemaNode.getPath(),
@@ -211,7 +211,7 @@ final class AugmentToGenType {
                     targetTypeBuilder.toInstance(), schemaPathAugmentListEntry.getValue(), genTypeBuilders, generatedCtx,
                     schemaContext, verboseClassComments, typeProvider);
         } else {
-            //TODO: implement augmented choice cases scenario
+            //TODO: #3 implement augmented choice cases scenario
         }
         return generatedCtx;
     }
