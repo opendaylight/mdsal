@@ -50,10 +50,12 @@ public final class ModuleContext {
     private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<>();
     private final List<GeneratedTypeBuilder> augmentations = new ArrayList<>();
     private final BiMap<Type,AugmentationSchema> typeToAugmentation = HashBiMap.create();
+    private final BiMap<SchemaPath,Type> targetToAugmentation = HashBiMap.create();
     private final Map<Type,Object> typeToSchema = new HashMap<>();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final BiMap<Type,ChoiceCaseNode> caseTypeToSchema = HashBiMap.create();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
+
 
     List<Type> getGeneratedTypes() {
         final List<Type> result = new ArrayList<>();
@@ -163,9 +165,17 @@ public final class ModuleContext {
         return Maps.unmodifiableBiMap(this.typeToAugmentation);
     }
 
+    public BiMap<SchemaPath, Type> getTargetToAugmentation() {
+        return Maps.unmodifiableBiMap(this.targetToAugmentation);
+    }
+
     public void addTypeToAugmentation(final GeneratedTypeBuilder builder, final AugmentationSchema schema) {
         this.typeToAugmentation.put(builder, schema);
         this.typeToSchema.put(builder, schema);
+    }
+
+    public void addTargetToAugmentation(final GeneratedTypeBuilder builder, final SchemaPath augmentTarget) {
+        this.targetToAugmentation.put(augmentTarget, builder);
     }
 
     public void addChoiceToCaseMapping(final Type choiceType, final Type caseType, final ChoiceCaseNode schema) {
