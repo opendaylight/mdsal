@@ -444,8 +444,17 @@ final class TypeGenHelper {
                 "Local Name in EnumTypeDefinition QName cannot be NULL!");
         final Module module = findParentModule(schemaContext, parentNode);
         final String basePackageName = BindingMapping.getRootPackageName(module);
+        final String packageName;
 
-        final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(basePackageName, enumName);
+        if (parentNode instanceof TypeDefinition) {
+            packageName = BindingGeneratorUtil.packageNameWithNamespacePrefix(
+                    BindingMapping.getRootPackageName(module),
+                    BindingNamespaceType.Typedef);
+        } else {
+            packageName = basePackageName;
+        }
+
+        final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(packageName, enumName);
         final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
         enumBuilder.setDescription(enumTypedefDescription);
         enumBuilder.setReference(enumTypeDef.getReference());
@@ -467,13 +476,10 @@ final class TypeGenHelper {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static GeneratedTOBuilderImpl typedefToTransferObject(final String basePackageName, final TypeDefinition<?> typedef, final String moduleName) {
-
-        final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typedef.getPath
-                (), BindingNamespaceType.Typedef);
         final String typeDefTOName = typedef.getQName().getLocalName();
 
-        if ((packageName != null) && (typeDefTOName != null)) {
-            final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(packageName, typeDefTOName);
+        if ((basePackageName != null) && (typeDefTOName != null)) {
+            final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(basePackageName, typeDefTOName);
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
 
             newType.setDescription(typedefDescription);

@@ -181,6 +181,30 @@ public final class BindingGeneratorUtil {
         return generateNormalizedPackageName(basePackageName, pathFromRoot, size, namespaceType);
     }
 
+    /**
+     * Creates package name from specified <code>basePackageName</code> (package
+     * name for module) and <code>namespaceType</code>.
+     *
+     * Resulting package name is concatenation of <code>basePackageName</code>
+     * and prefix of <code>namespaceType</code>.
+     *
+     * @param basePackageName
+     *            string with package name of the module, MUST be normalized,
+     *            otherwise this method may return an invalid string.
+     * @param namespaceType
+     *            the namespace that type belongs
+     * @return string with valid JAVA package name
+     * @throws NullPointerException if any of the arguments are null
+     */
+    public static String packageNameWithNamespacePrefix(final String basePackageName, final
+    BindingNamespaceType namespaceType) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(basePackageName)
+                .append('.')
+                .append(namespaceType.getPackagePrefix());
+        return JavaIdentifierNormalizer.normalizeFullPackageName(sb.toString());
+    }
+
     public static Restrictions getRestrictions(final TypeDefinition<?> type) {
         if ((type == null) || (type.getBaseType() == null)) {
             if (type instanceof DecimalTypeDefinition) {
