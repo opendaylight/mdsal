@@ -175,7 +175,11 @@ final class AugmentToGenType {
         Preconditions.checkState(targetPath != null,
                 "Augmentation Schema does not contain Target Path (Target Path is NULL).");
 
-        //TODO: implement uses-augment scenario
+        //TODO: #2 finish uses-augment scenario (in groupings used by augment)
+        for (AugmentationSchema augSchema : schemaPathAugmentListEntry.getValue()) {
+            GenHelperUtil.processUsesAugments(schemaContext, augSchema, module, genCtx,
+                    genTypeBuilders, verboseClassComments, typeProvider);
+        }
 
         SchemaNode targetSchemaNode;
 
@@ -194,7 +198,7 @@ final class AugmentToGenType {
             throw new IllegalArgumentException("augment target not found: " + targetPath);
         }
 
-        //TODO: loose this assignment afterwards
+        //TODO: loose this assignment afterwards #2 done
         Map<Module, ModuleContext> generatedCtx = genCtx;
 
         GeneratedTypeBuilder targetTypeBuilder = GenHelperUtil.findChildNodeByPath(targetSchemaNode.getPath(),
@@ -211,7 +215,7 @@ final class AugmentToGenType {
                     targetTypeBuilder.toInstance(), schemaPathAugmentListEntry.getValue(), genTypeBuilders, generatedCtx,
                     schemaContext, verboseClassComments, typeProvider);
         } else {
-            //TODO: implement augmented choice cases scenario
+            //TODO: #3 implement augmented choice cases scenario
         }
         return generatedCtx;
     }
@@ -248,9 +252,9 @@ final class AugmentToGenType {
                 packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(augmentPackageName,
                         ((SchemaNode) usesNodeParent).getPath());
             } else if (usesNodeParent instanceof AugmentationSchema) {
-                Type parentTypeBuiler = genCtx.get(module).getTypeToAugmentation().inverse().get(usesNodeParent);
+                Type parentTypeBuilder = genCtx.get(module).getTypeToAugmentation().inverse().get(usesNodeParent);
                 packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(
-                        parentTypeBuiler.getPackageName(), (AugmentationSchema)usesNodeParent);
+                        parentTypeBuilder.getPackageName(), (AugmentationSchema)usesNodeParent);
             }
             genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName,
                     targetTypeBuilder.toInstance(), augSchema, genTypeBuilders, genCtx, schemaContext,
