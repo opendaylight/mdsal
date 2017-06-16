@@ -14,7 +14,11 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.api.BindingService;
 import org.opendaylight.mdsal.binding.javav2.api.DataBroker;
+import org.opendaylight.mdsal.binding.javav2.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.javav2.api.NotificationService;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.data.BindingDOMDataBrokerAdapter;
+import org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.notification.BindingDOMNotificationPublishServiceAdapter;
+import org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.notification.BindingDOMNotificationServiceAdapter;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.builder.AdapterBuilder;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.builder.BindingDOMAdapterBuilder;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.builder.BindingDOMAdapterBuilder.Factory;
@@ -32,6 +36,8 @@ public abstract class BindingDOMAdapterLoader extends AdapterLoader<BindingServi
     private static final Map<Class<?>, BindingDOMAdapterBuilder.Factory<?>> FACTORIES =
             ImmutableMap.<Class<?>, BindingDOMAdapterBuilder.Factory<?>> builder()
                     .put(DataBroker.class, BindingDOMDataBrokerAdapter.BUILDER_FACTORY)
+                    .put(NotificationPublishService.class, BindingDOMNotificationPublishServiceAdapter.BUILDER_FACTORY)
+                    .put(NotificationService.class, BindingDOMNotificationServiceAdapter.BUILDER_FACTORY)
                     .build();
 
     private final BindingToNormalizedNodeCodec codec;

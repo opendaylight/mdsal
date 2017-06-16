@@ -12,10 +12,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.TimeUnit;
-import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
-import org.opendaylight.mdsal.binding.javav2.spec.base.KeyedInstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
-import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
 /**
  * A {@link NotificationService} which also allows its users to submit YANG-modeled notifications for delivery.
@@ -41,35 +38,16 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
  */
 
 @Beta
-public interface NotificationPublishService {
+public interface NotificationPublishService extends BindingService {
 
     ListenableFuture<Object> REJECTED = Futures.immediateFailedFuture(
         new NotificationRejectedException("Rejected due to resource constraints."));
 
-    void putNotification(Notification notification) throws InterruptedException;
+    void putNotification(Notification<?> notification) throws InterruptedException;
 
-    ListenableFuture<?> offerNotification(Notification notification);
+    ListenableFuture<?> offerNotification(Notification<?> notification);
 
-    ListenableFuture<?> offerNotification(Notification notification, int timeout, TimeUnit unit)
+    ListenableFuture<?> offerNotification(Notification<?> notification, int timeout, TimeUnit unit)
         throws InterruptedException;
 
-
-    <T extends TreeNode> void putContainerNotification(Notification notification, InstanceIdentifier<T> ii)
-        throws InterruptedException;
-
-    <T extends TreeNode> ListenableFuture<?> offerContainerNotification(Notification notification,
-        InstanceIdentifier<T> ii);
-
-    <T extends TreeNode> ListenableFuture<?> offerContainerNotification(Notification notification, int timeout,
-        TimeUnit unit, InstanceIdentifier<T> ii) throws InterruptedException;
-
-
-    <T extends TreeNode, K> void putListNotification(Notification notification, KeyedInstanceIdentifier<T, K> kii)
-        throws InterruptedException;
-
-    <T extends TreeNode, K> ListenableFuture<?> offerListNotification(Notification notification,
-        KeyedInstanceIdentifier<T, K> kii);
-
-    <T extends TreeNode, K> ListenableFuture<?> offerListNotification(Notification notification, int timeout,
-        TimeUnit unit, KeyedInstanceIdentifier<T, K> kii) throws InterruptedException;
 }
