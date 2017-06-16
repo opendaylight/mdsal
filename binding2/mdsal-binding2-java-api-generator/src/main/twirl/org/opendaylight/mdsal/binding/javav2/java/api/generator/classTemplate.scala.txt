@@ -150,44 +150,53 @@ class @{genType.getName}
 @if(genTo.isTypedef && !allProperties.isEmpty && !genTo.isUnionType) {
     @if(!"org.opendaylight.yangtools.yang.binding.InstanceIdentifier".equals(allProperties.get(0).getReturnType.getFullyQualifiedName)) {
         public static @{genTo.getName} getDefaultInstance(String defaultValue) {
-            @if("byte[]".equals(allProperties.get(0).getReturnType.getName)) {
-                @{importedNames.get("baseEncoding")} baseEncoding = @{importedNames.get("baseEncoding")}.base64();
-                return new @{genTo.getName}(baseEncoding.decode(defaultValue));
+            @if(allProperties.size > 1) {
+                @{importedNames.get("list")}<@{importedNames.get("string")}> properties = @{importedNames.get("lists")}.newArrayList(@{propsAsArgs(allProperties)});
+                if (!properties.contains(defaultValue)) {
+                    throw new @{importedNames.get("illegalArgumentException")}("invalid default parameter");
+                }
+                int i = 0;
+                return new @{genTo.getName}(@propsAsList(allProperties, importedNames.get("boolean")));
             } else {
-                @allProperties.get(0).getReturnType.getFullyQualifiedName match {
-                case "java.lang.String" => {
-                    return new @{genTo.getName}(defaultValue);
-                }
-                case "java.lang.Boolean" => {
-                    return new @{genTo.getName}(@{importedNames.get("boolean")}.valueOf(defaultValue));
-                }
-                case "java.lang.Byte" => {
-                    return new @{genTo.getName}(@{importedNames.get("byte")}.valueOf(defaultValue));
-                }
-                case "java.lang.Short" => {
-                    return new @{genTo.getName}(@{importedNames.get("short")}.valueOf(defaultValue));
-                }
-                case "java.lang.Integer" => {
-                    return new @{genTo.getName}(@{importedNames.get("integer")}.valueOf(defaultValue));
-                }
-                case "java.lang.Long" => {
-                    return new @{genTo.getName}(@{importedNames.get("long")}.valueOf(defaultValue));
-                }
-                case _ => {
-                    @if(allProperties.size > 1) {
-                        @{importedNames.get("list")}<@{importedNames.get("string")}> properties = @{importedNames.get("lists")}.newArrayList(@{propsAsArgs(allProperties)});
-                        if (!properties.contains(defaultValue)) {
-                            throw new @{importedNames.get("illegalArgumentException")}("invalid default parameter");
-                        }
-                        int i = 0;
-                        return new @{genTo.getName}(propsAsList(allProperties, importedNames.get("boolean")));
-                    } else {
-                        return new @{genTo.getName}(@{importedNames.get("defProp")}.valueOf(defaultValue));
+                @if("byte[]".equals(allProperties.get(0).getReturnType.getName)) {
+                    @{importedNames.get("baseEncoding")} baseEncoding = @{importedNames.get("baseEncoding")}.base64();
+                    return new @{genTo.getName}(baseEncoding.decode(defaultValue));
+                } else {
+                    @allProperties.get(0).getReturnType.getFullyQualifiedName match {
+                    case "java.lang.String" => {
+                        return new @{genTo.getName}(defaultValue);
                     }
-                }
+                    case "java.lang.Boolean" => {
+                        return new @{genTo.getName}(@{importedNames.get("boolean")}.valueOf(defaultValue));
+                    }
+                    case "java.lang.Byte" => {
+                        return new @{genTo.getName}(@{importedNames.get("byte")}.valueOf(defaultValue));
+                    }
+                    case "java.lang.Short" => {
+                        return new @{genTo.getName}(@{importedNames.get("short")}.valueOf(defaultValue));
+                    }
+                    case "java.lang.Integer" => {
+                        return new @{genTo.getName}(@{importedNames.get("integer")}.valueOf(defaultValue));
+                    }
+                    case "java.lang.Long" => {
+                        return new @{genTo.getName}(@{importedNames.get("long")}.valueOf(defaultValue));
+                    }
+                    case _ => {
+                        @if(allProperties.size > 1) {
+                            @{importedNames.get("list")}<@{importedNames.get("string")}> properties = @{importedNames.get("lists")}.newArrayList(@{propsAsArgs(allProperties)});
+                            if (!properties.contains(defaultValue)) {
+                                throw new @{importedNames.get("illegalArgumentException")}("invalid default parameter");
+                            }
+                            int i = 0;
+                                    return new @{genTo.getName}(propsAsList(allProperties, importedNames.get("boolean")));
+                                } else {
+                                    return new @{genTo.getName}(@{importedNames.get("defProp")}.valueOf(defaultValue));
+                                }
+                    }
+                    }
                 }
             }
         }
-        }
     }
+}
 }
