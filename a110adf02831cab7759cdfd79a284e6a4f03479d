@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_984e5dc0",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouterTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-19T03:20:07Z",
+      "side": 1,
+      "message": "It\u0027s better to use \n\n  assertEquals(\"Received notifications\", 0, \n               testListener.getReceivedNotifications().size())\n\nThat way if it fails it will print the actual size which could be helpful (I also a fan of specifying textual context with assertions).",
+      "revId": "a110adf02831cab7759cdfd79a284e6a4f03479d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
