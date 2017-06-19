@@ -217,6 +217,11 @@
                 <version>0.10.1-SNAPSHOT</version>
             </dependency>
             <dependency>
+                <groupId>org.opendaylight.mdsal.model.binding2</groupId>
+                <artifactId>yang-ext</artifactId>
+                <version>2013.09.07.10.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-eos-common-api</artifactId>
                 <version>${project.version}</version>
