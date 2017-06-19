@@ -8,22 +8,23 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.registration;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 
 /**
- * Registration of Binding - DOM RPC adapter.
+ * Registration of Binding - DOM Operation adapter.
  *
  * @param <T>
- *            - {@link Rpc} type
+ *            - {@link Operation} type
  */
 @Beta
-public class BindingDOMRpcAdapterRegistration<T extends Rpc<?, ?>> extends AbstractObjectRegistration<T> {
+public class BindingDOMOperationAdapterRegistration<T extends Operation> extends AbstractObjectRegistration<T> {
 
     private final DOMRpcImplementationRegistration<?> reg;
 
-    public BindingDOMRpcAdapterRegistration(final T instance, final DOMRpcImplementationRegistration<?> reg) {
+    // FIXME : DOM part doesn't work with Yang 1.1 - Action registration isn't implemented yet.
+    public BindingDOMOperationAdapterRegistration(final T instance, final DOMRpcImplementationRegistration<?> reg) {
         super(instance);
         this.reg = reg;
     }

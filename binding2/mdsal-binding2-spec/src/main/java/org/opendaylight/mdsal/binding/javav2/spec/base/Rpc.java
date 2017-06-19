@@ -17,7 +17,7 @@ package org.opendaylight.mdsal.binding.javav2.spec.base;
  *
  */
 @FunctionalInterface
-public interface Rpc<I extends Input<I> & Instantiable<I>, O extends Output<O> & Instantiable<O>> {
+public interface Rpc<I extends Input<I> & Instantiable<I>, O extends Output<O> & Instantiable<O>> extends Operation {
 
     /**
      * @param input Rpc input schema node
