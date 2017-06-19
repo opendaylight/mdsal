@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.javav2.runtime.reflection;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
-
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
@@ -34,11 +33,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
 import org.opendaylight.mdsal.binding.javav2.spec.base.BaseIdentity;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModelBindingProvider;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModuleInfo;
@@ -58,7 +56,7 @@ public final class BindingReflections {
 
     private static final long EXPIRATION_TIME = 60;
     private static final String QNAME_STATIC_FIELD_NAME = "QNAME";
-    private static final String RPC_ACTION_OUTPUT_SUFFIX = "Output";
+    private static final String OPERATION_ACTION_OUTPUT_SUFFIX = "Output";
     private static final String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
     private static final String PACKAGE_PREFIX = "org.opendaylight.mdsal.gen.javav2";
     private static final String ROOT_PACKAGE_PATTERN_STRING =
@@ -127,13 +125,13 @@ public final class BindingReflections {
      *            - method to check
      * @return true if method is RPC or Action invocation, false otherwise.
      */
-    public static boolean isRpcOrActionMethod(final Method possibleMethod) {
-        return possibleMethod != null && (Rpc.class.isAssignableFrom(possibleMethod.getDeclaringClass())
-                || Action.class.isAssignableFrom(possibleMethod.getDeclaringClass()))
+    public static boolean isOperationMethod(final Method possibleMethod) {
+        return possibleMethod != null && Operation.class.isAssignableFrom(possibleMethod.getDeclaringClass())
                 && Future.class.isAssignableFrom(possibleMethod.getReturnType())
-                // length <= 2: it seemed to be impossible to get correct RpcMethodInvoker because of
-                // resolveRpcInputClass() check.While RpcMethodInvoker counts with one argument for
-                // non input type and two arguments for input type, resolveRpcInputClass() counting
+                // length <= 2: it seemed to be impossible to get correct OperationMethodInvoker because of
+                // resolveOperationInputClass() check.While OperationMethodInvoker counts with one argument
+                // for
+                // non input type and two arguments for input type, resolveOperationInputClass() counting
                 // with zero for non input and one for input type
                 && possibleMethod.getParameterTypes().length <= 2;
     }
@@ -147,13 +145,13 @@ public final class BindingReflections {
      *         is Void.
      */
     @SuppressWarnings("rawtypes")
-    public static Optional<Class<?>> resolveRpcOutputClass(final Method targetMethod) {
-        checkState(isRpcOrActionMethod(targetMethod), "Supplied method is not a RPC or Action invocation method");
+    public static Optional<Class<?>> resolveOperationOutputClass(final Method targetMethod) {
+        checkState(isOperationMethod(targetMethod), "Supplied method is not a RPC or Action invocation method");
         final Type futureType = targetMethod.getGenericReturnType();
-        final Type rpcResultType = ClassLoaderUtils.getFirstGenericParameter(futureType);
-        final Type rpcResultArgument = ClassLoaderUtils.getFirstGenericParameter(rpcResultType);
-        if (rpcResultArgument instanceof Class && !Void.class.equals(rpcResultArgument)) {
-            return Optional.of((Class) rpcResultArgument);
+        final Type operationResultType = ClassLoaderUtils.getFirstGenericParameter(futureType);
+        final Type operationResultArgument = ClassLoaderUtils.getFirstGenericParameter(operationResultType);
+        if (operationResultArgument instanceof Class && !Void.class.equals(operationResultArgument)) {
+            return Optional.of((Class) operationResultArgument);
         }
         return Optional.absent();
     }
@@ -167,7 +165,7 @@ public final class BindingReflections {
      *         otherwise.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static Optional<Class<? extends Instantiable<?>>> resolveRpcInputClass(final Method targetMethod) {
+    public static Optional<Class<? extends Instantiable<?>>> resolveOperationInputClass(final Method targetMethod) {
         for (final Class clazz : targetMethod.getParameterTypes()) {
             if (Instantiable.class.isAssignableFrom(clazz)) {
                 return Optional.of(clazz);
@@ -403,7 +401,7 @@ public final class BindingReflections {
      *            - class to be checked
      * @return true if class represents RPC or Action input/output class
      */
-    public static boolean isRpcOrActionType(final Class<? extends TreeNode> targetType) {
+    public static boolean isOperationType(final Class<? extends TreeNode> targetType) {
         return Instantiable.class.isAssignableFrom(targetType) && !TreeChildNode.class.isAssignableFrom(targetType)
                 && !Notification.class.isAssignableFrom(targetType)
                 && (targetType.getName().endsWith("Input") || targetType.getName().endsWith("Output"));
@@ -564,9 +562,9 @@ public final class BindingReflections {
                 final QName module = getModuleQName(moduleInfo).intern();
                 if (Augmentation.class.isAssignableFrom(key)) {
                     return module;
-                } else if (isRpcOrActionType(key)) {
+                } else if (isOperationType(key)) {
                     final String className = key.getSimpleName();
-                    if (className.endsWith(RPC_ACTION_OUTPUT_SUFFIX)) {
+                    if (className.endsWith(OPERATION_ACTION_OUTPUT_SUFFIX)) {
                         return QName.create(module, "output").intern();
                     } else {
                         return QName.create(module, "input").intern();
