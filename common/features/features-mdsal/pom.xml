@@ -186,6 +186,22 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding2-util</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-dom-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding2-dom-adapter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model.binding2</groupId>
+            <artifactId>yang-ext</artifactId>
+        </dependency>
     </dependencies>
 
   <!--
