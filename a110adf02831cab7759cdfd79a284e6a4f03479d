@@ -16,6 +16,24 @@
       "revId": "a110adf02831cab7759cdfd79a284e6a4f03479d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_b86879f6",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouterTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 6744
+      },
+      "writtenOn": "2017-06-19T06:11:54Z",
+      "side": 1,
+      "message": "Yep,I\u0027m agree with you.",
+      "parentUuid": "1af78d9a_984e5dc0",
+      "revId": "a110adf02831cab7759cdfd79a284e6a4f03479d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
