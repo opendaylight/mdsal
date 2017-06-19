@@ -38,7 +38,7 @@ public class BindingReflectionsTest {
         assertEquals("ModuleInfoClassName should be equal to string", "test.$YangModuleInfoImpl",
                 BindingReflections.getModuleInfoClassName("test"));
         assertEquals("Module info should be empty Set", Collections.EMPTY_SET, BindingReflections.loadModuleInfos());
-        assertFalse("Should not be RpcType", BindingReflections.isRpcOrActionType(TreeNode.class));
+        assertFalse("Should not be RpcType", BindingReflections.isOperationType(TreeNode.class));
         assertFalse("Should not be AugmentationChild", BindingReflections.isAugmentationChild(TreeNode.class));
         assertTrue("Should be BindingClass", BindingReflections.isBindingClass(TreeNode.class));
         assertFalse("Should not be Notification", BindingReflections.isNotification(TreeNode.class));
@@ -47,13 +47,13 @@ public class BindingReflectionsTest {
 
         assertEquals(GroupingFoo.class, BindingReflections.findHierarchicalParent(FooChild.class));
 
-        assertTrue(BindingReflections.isRpcOrActionMethod(TestImplementation.class.getDeclaredMethod("rpcMethodTest")));
+        assertTrue(BindingReflections.isOperationMethod(TestImplementation.class.getDeclaredMethod("rpcMethodTest")));
         assertEquals(TestImplementation.class, BindingReflections.findAugmentationTarget(TestImplementation.class));
 
         assertEquals(Object.class, BindingReflections
-                .resolveRpcOutputClass(TestImplementation.class.getDeclaredMethod("rpcMethodTest")).get());
+                .resolveOperationOutputClass(TestImplementation.class.getDeclaredMethod("rpcMethodTest")).get());
         assertFalse(BindingReflections
-                .resolveRpcOutputClass(TestImplementation.class.getDeclaredMethod("rpcMethodTest2")).isPresent());
+                .resolveOperationOutputClass(TestImplementation.class.getDeclaredMethod("rpcMethodTest2")).isPresent());
 
         assertTrue(BindingReflections.getQName(TestImplementation.class).toString().equals("test"));
     }
