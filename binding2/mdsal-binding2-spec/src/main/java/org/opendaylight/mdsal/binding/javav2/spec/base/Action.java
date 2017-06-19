@@ -24,7 +24,8 @@ package org.opendaylight.mdsal.binding.javav2.spec.base;
  *
  */
 @FunctionalInterface
-public interface Action<P extends TreeNode, I extends Input<I> & Instantiable<I>, O extends Output<O> & Instantiable<O>> {
+public interface Action<P extends TreeNode, I extends Input<I> & Instantiable<I>, O extends Output<O> & Instantiable<O>>
+        extends Operation {
 
     /**
      * @param input Action input schema node
