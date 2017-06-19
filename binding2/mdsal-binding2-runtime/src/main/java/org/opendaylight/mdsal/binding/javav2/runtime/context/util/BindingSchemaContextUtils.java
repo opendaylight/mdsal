@@ -63,7 +63,7 @@ public final class BindingSchemaContextUtils {
         Optional<DataNodeContainer> currentContainer = Optional.absent();
         if (BindingReflections.isNotification(currentArg.getType())) {
             currentContainer = findNotification(ctx, currentQName);
-        } else if (BindingReflections.isRpcOrActionType(currentArg.getType())) {
+        } else if (BindingReflections.isOperationType(currentArg.getType())) {
             currentContainer = findFirstDataNodeContainerInRpcOrAction(ctx, currentArg.getType());
             if(currentQName == null && currentContainer.isPresent()) {
                 currentQName = ((DataSchemaNode) currentContainer.get()).getQName();
