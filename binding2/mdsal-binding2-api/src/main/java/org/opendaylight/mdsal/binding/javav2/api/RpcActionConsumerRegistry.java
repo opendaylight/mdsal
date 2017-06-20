@@ -12,6 +12,7 @@ import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
 import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
 /**
  * Provides access to registered Remote Procedure Call (RPC) and Action service implementations.
@@ -34,7 +35,7 @@ public interface RpcActionConsumerRegistry extends BindingService {
      * @param <T> interface type
      * @return returns proxy for the requested RPC
      */
-    <T extends Rpc> T getRpcService(Class<T> serviceInterface);
+    <T extends Rpc<?, ?>> T getRpcService(Class<T> serviceInterface);
 
     /**
      * Returns an implementation of a requested Action service.
@@ -47,7 +48,7 @@ public interface RpcActionConsumerRegistry extends BindingService {
      * @param <T> interface type
      * @return returns proxy for the requested Action
      */
-    <T extends Action> T getActionService(Class<T> serviceInterface);
+    <T extends Action<? extends TreeNode, ?, ?>> T getActionService(Class<T> serviceInterface);
 
     /**
      * Returns an implementation of a requested ListAction service.
@@ -60,6 +61,6 @@ public interface RpcActionConsumerRegistry extends BindingService {
      * @param <T> interface type
      * @return returns proxy for the requested ListAction
      */
-    <T extends ListAction> T getListActionService(Class<T> serviceInterface);
+    <T extends ListAction<? extends TreeNode, ?, ?>> T getListActionService(Class<T> serviceInterface);
 
 }
