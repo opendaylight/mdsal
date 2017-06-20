@@ -34,6 +34,24 @@
       "revId": "f31c3ee816be089f79f8fa0a659bf3ead62f2ef8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_b82b54ea",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-20T02:23:50Z",
+      "side": 0,
+      "message": "I\u0027m not really familiar with how the Disruptor works but it looks similar to an offer to a queue where it fails if there\u0027s no capacity. I assume it\u0027s an uncommon scenario and nobody\u0027s hit the UnsupportedOperationException path below yet but the possibility is there. Robert wrote this so he could better answer if tryPublish is really needed but I suspect it\u0027s a faster path.",
+      "parentUuid": "1af78d9a_b804f47e",
+      "revId": "f31c3ee816be089f79f8fa0a659bf3ead62f2ef8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
