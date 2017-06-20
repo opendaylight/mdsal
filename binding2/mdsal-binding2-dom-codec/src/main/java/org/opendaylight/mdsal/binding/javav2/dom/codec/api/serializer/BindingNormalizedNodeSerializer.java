@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -128,5 +127,5 @@ public interface BindingNormalizedNodeSerializer {
      * @return NormalizedNode representation of operation data
      */
     @Nonnull
-    ContainerNode toNormalizedNodeOperationData(@Nonnull Instantiable<?> data);
+    ContainerNode toNormalizedNodeOperationData(@Nonnull TreeNode data);
 }

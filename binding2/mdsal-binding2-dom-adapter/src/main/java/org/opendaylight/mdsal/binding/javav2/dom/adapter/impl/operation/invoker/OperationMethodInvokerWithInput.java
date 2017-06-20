@@ -16,6 +16,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 @Beta
@@ -31,7 +32,7 @@ class OperationMethodInvokerWithInput extends OperationMethodInvoker {
     }
 
     @Override
-    public <T extends Operation> Future<RpcResult<?>> invokeOn(final T impl, final Instantiable<?> input) {
+    public <T extends Operation> Future<RpcResult<?>> invokeOn(final T impl, final TreeNode input) {
         return invoking(handle, impl, input);
     }
 }
