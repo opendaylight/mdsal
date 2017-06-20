@@ -31,10 +31,10 @@ public class Bug8542Test {
                 assertEquals("org.opendaylight.mdsal.gen.javav2.yang.test.uses.augment.recursive.rev170519.data.d",
                         type.getPackageName());
             } else if (type.getName().equals("B11")) {
-                assertEquals("org.opendaylight.mdsal.gen.javav2.yang.test.uses.augment.recursive.rev170519.data.d.a11",
+                assertEquals("org.opendaylight.mdsal.gen.javav2.yang.test.uses.augment.recursive.rev170519.data.d.a1",
                         type.getPackageName());
             } else if (type.getName().equals("C11")) {
-                assertEquals("org.opendaylight.mdsal.gen.javav2.yang.test.uses.augment.recursive.rev170519.data.d.a11.b11",
+                assertEquals("org.opendaylight.mdsal.gen.javav2.yang.test.uses.augment.recursive.rev170519.data.d.a1.b1",
                         type.getPackageName());
             }
         }

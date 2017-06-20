@@ -20,6 +20,6 @@ import com.google.common.annotations.Beta;
 public interface Instantiable<T extends Instantiable<T>> {
 
     // REPLACES: DataObject#getImplementedInterface()
-    Class<T> implementedInterface();
+    Class<? extends T> implementedInterface();
 
 }
