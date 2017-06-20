@@ -18,9 +18,9 @@
 
 @(unknownSchemaNode: UnknownSchemaNode, module: Module)
 @if(unknownSchemaNode != null) {
-    @if(unknownSchemaNode.getExtensionDefinition().getArgument() == null || unknownSchemaNode.getExtensionDefinition().getArgument().isEmpty()){
-        @{module.getPrefix}:@{unknownSchemaNode.getNodeType().getLocalName()};
-    } else {
+    @if(unknownSchemaNode.getExtensionDefinition().getArgument() != null && !unknownSchemaNode.getExtensionDefinition().getArgument().isEmpty()){
         @{module.getPrefix}:@{unknownSchemaNode.getNodeType().getLocalName()} "@{unknownSchemaNode.getNodeParameter()}";
+    } else {
+        @{module.getPrefix}:@{unknownSchemaNode.getNodeType().getLocalName()};
     }
 }
