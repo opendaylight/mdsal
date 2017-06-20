@@ -326,7 +326,7 @@ final class GenHelperUtil {
         for (AugmentationSchema aug : schemaPathAugmentListEntry) {
             //apply all uses
             addImplementedInterfaceFromUses(aug, augTypeBuilder, genCtx);
-            augSchemaNodeToMethods(module, augmentPackageName, augTypeBuilder, augTypeBuilder, aug.getChildNodes(),
+            augSchemaNodeToMethods(module, BindingMapping.getRootPackageName(module), augTypeBuilder, augTypeBuilder, aug.getChildNodes(),
                genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders);
         }
 
@@ -651,7 +651,7 @@ final class GenHelperUtil {
                     schemaContext, "", verboseClasssComments, genTypeBuilders);
             constructGetter(parent, choiceNode.getQName().getLocalName(),
                     choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus());
-            choiceTypeBuilder.addImplementsType(INSTANTIABLE);
+            choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
             annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
             genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
             generateTypesFromChoiceCases(module, schemaContext, genCtx, basePackageName, choiceTypeBuilder.toInstance(),
