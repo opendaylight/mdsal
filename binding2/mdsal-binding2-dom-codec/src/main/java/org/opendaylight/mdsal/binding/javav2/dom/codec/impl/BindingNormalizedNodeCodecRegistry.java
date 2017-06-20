@@ -169,16 +169,16 @@ public class BindingNormalizedNodeCodecRegistry implements TreeNodeSerializerReg
     @Nonnull
     @SuppressWarnings("unchecked")
     @Override
-    public ContainerNode toNormalizedNodeOperationData(@Nonnull final Instantiable<?> data) {
+    public ContainerNode toNormalizedNodeOperationData(@Nonnull final TreeNode data) {
         final NormalizedNodeResult result = new NormalizedNodeResult();
         // We create DOM stream writer which produces normalized nodes
         final NormalizedNodeStreamWriter domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
         @SuppressWarnings("rawtypes")
-        final Class<? extends TreeNode> type = (Class) data.implementedInterface();
+        final Class<? extends TreeNode> type = data.getClass();
         final Class<? extends Instantiable<?>> instData = (Class<? extends Instantiable<?>>) data.getClass();
         final BindingStreamEventWriter writer = newOperationWriter(instData, domWriter);
         try {
-            getSerializer(type).serialize((TreeNode) data, writer);
+            getSerializer(type).serialize(data, writer);
         } catch (final IOException e) {
             LOG.error("Unexpected failure while serializing data {}", data, e);
             throw new IllegalStateException("Failed to create normalized node", e);
