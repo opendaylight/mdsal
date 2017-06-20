@@ -23,7 +23,6 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
-import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INSTANTIABLE;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
@@ -38,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
@@ -310,12 +308,14 @@ final class GenHelperUtil {
             break;
         }
 
+        boolean isTypeNormalized = false;
         if (augIdentifier == null) {
             augIdentifier = augGenTypeName(augmentBuilders, targetTypeRef.getName());
+            isTypeNormalized = true;
         }
 
         GeneratedTypeBuilder augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augIdentifier,
-                false, true);
+                false, isTypeNormalized);
 
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
         augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
@@ -335,62 +335,6 @@ final class GenHelperUtil {
         if(!augSchema.getChildNodes().isEmpty()) {
             genCtx.get(module).addTypeToAugmentation(augTypeBuilder, augSchema);
             genCtx.get(module).addTargetToAugmentation(augTypeBuilder, augSchema.getTargetPath());
-        }
-        genCtx.get(module).addAugmentType(augTypeBuilder);
-        return genCtx;
-    }
-
-    //TODO: delete this method eventually when uses-augments & augmented choice cases are implemented
-    /**
-     * Returns a generated type builder for an augmentation.
-     *
-     * The name of the type builder is equal to the name of augmented node with
-     * serial number as suffix.
-     *
-     * @param module
-     *            current module
-     * @param augmentPackageName
-     *            string with contains the package name to which the augment
-     *            belongs
-     * @param basePackageName
-     *            string with the package name to which the augmented node
-     *            belongs
-     * @param targetTypeRef
-     *            target type
-     * @param augSchema
-     *            augmentation schema which contains data about the child nodes
-     *            and uses of augment
-     * @return generated type builder for augment in genCtx
-     */
-    @Deprecated
-    static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
-                final String basePackageName, final Type targetTypeRef, final AugmentationSchema augSchema,
-                final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module,
-                ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments, final
-                TypeProvider typeProvider) {
-
-        Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.computeIfAbsent(augmentPackageName, k -> new HashMap<>());
-        String augIdentifier = getAugmentIdentifier(augSchema.getUnknownSchemaNodes());
-
-        if (augIdentifier == null) {
-            augIdentifier = augGenTypeName(augmentBuilders, targetTypeRef.getName());
-        }
-
-        GeneratedTypeBuilder augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augIdentifier);
-
-        augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
-        augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
-        augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
-        annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
-        augTypeBuilder = addImplementedInterfaceFromUses(augSchema, augTypeBuilder, genCtx);
-
-        augTypeBuilder = augSchemaNodeToMethods(module, basePackageName, augTypeBuilder, augTypeBuilder, augSchema
-                .getChildNodes(), genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders);
-        augmentBuilders.put(augTypeBuilder.getName(), augTypeBuilder);
-
-        if(!augSchema.getChildNodes().isEmpty()) {
-            genCtx.get(module).addTypeToAugmentation(augTypeBuilder, augSchema);
-
         }
         genCtx.get(module).addAugmentType(augTypeBuilder);
         return genCtx;
