@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_f8e79ce2",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouterTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-20T01:34:10Z",
+      "side": 1,
+      "message": "You should use a timeout here otherwise test will wait forever on failure, ie:\n\n  assertTrue(\"Listener was not notified\", \n             latch.await(5, TimeUnit.SECONDS));",
+      "revId": "c2ea0535f6b81cffb6f978194e7726a6cc9e66a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
