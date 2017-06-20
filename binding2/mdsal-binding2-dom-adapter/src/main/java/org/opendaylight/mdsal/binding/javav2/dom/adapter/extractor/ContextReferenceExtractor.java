@@ -84,14 +84,14 @@ public abstract class ContextReferenceExtractor {
     /**
      * Extract context-reference (Instance Identifier) from Binding TreeNode.
      *
-     * @param obj
+     * @param input
      *            - TreeNode from which context reference should be extracted.
      *
      * @return Instance Identifier representing context reference or null, if tree node does not contain
      *         context reference.
      */
     @Nullable
-    public abstract InstanceIdentifier<? extends TreeNode> extract(TreeNode obj);
+    public abstract InstanceIdentifier<? extends TreeNode> extract(TreeNode input);
 
     /**
      * Method for return specific extractor of input object.

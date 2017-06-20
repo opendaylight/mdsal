@@ -18,8 +18,8 @@ import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ abstract class AbstractMappedOperationInvoker<T> extends OperationServiceInvoker
 
     @Override
     public final <I extends Operation> Future<RpcResult<?>> invoke(@Nonnull final I impl,
-            @Nonnull final QName operationName, @Nullable final Instantiable<?> input) {
+            @Nonnull final QName operationName, @Nullable final TreeNode input) {
 
         Preconditions.checkNotNull(impl, "Implementation must be supplied");
 

@@ -18,6 +18,7 @@ import java.util.concurrent.Future;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 @Beta
@@ -25,7 +26,7 @@ abstract class OperationMethodInvoker {
 
     private static final Lookup LOOKUP = MethodHandles.publicLookup();
 
-    protected abstract <T extends Operation> Future<RpcResult<?>> invokeOn(T impl, Instantiable<?> input);
+    protected abstract <T extends Operation> Future<RpcResult<?>> invokeOn(T impl, TreeNode input);
 
     protected static OperationMethodInvoker from(final Method method) {
         final Optional<Class<? extends Instantiable<?>>> input = BindingReflections.resolveOperationInputClass(method);
