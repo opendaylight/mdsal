@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
+import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -28,12 +28,12 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 public class LazySerializedContainerNode implements ContainerNode {
 
     private final NodeIdentifier identifier;
-    private final Instantiable<?> bindingData;
+    private final TreeNode bindingData;
 
     private BindingNormalizedNodeCodecRegistry registry;
     private ContainerNode domData;
 
-    private LazySerializedContainerNode(final QName identifier, final Instantiable<?> binding,
+    private LazySerializedContainerNode(final QName identifier, final TreeNode binding,
             final BindingNormalizedNodeCodecRegistry registry) {
         this.identifier = NodeIdentifier.create(identifier);
         this.bindingData = binding;
@@ -52,7 +52,7 @@ public class LazySerializedContainerNode implements ContainerNode {
      *            - specifc codec for operation
      * @return instance of lazy serialized container node
      */
-    public static NormalizedNode<?, ?> create(final SchemaPath operationName, final Instantiable<?> data,
+    public static NormalizedNode<?, ?> create(final SchemaPath operationName, final TreeNode data,
             final BindingNormalizedNodeCodecRegistry codec) {
         return new LazySerializedContainerNode(operationName.getLastComponent(), data, codec);
     }
@@ -71,7 +71,7 @@ public class LazySerializedContainerNode implements ContainerNode {
      *            - specific codec
      * @return insntance of lazy serialized container node with pre-cached serialized leaf
      */
-    public static NormalizedNode<?, ?> withContextRef(final SchemaPath operationName, final Instantiable<?> data,
+    public static NormalizedNode<?, ?> withContextRef(final SchemaPath operationName, final TreeNode data,
             final LeafNode<?> contextRef, final BindingNormalizedNodeCodecRegistry codec) {
         return new WithContextRef(operationName.getLastComponent(), data, contextRef, codec);
     }
@@ -120,7 +120,7 @@ public class LazySerializedContainerNode implements ContainerNode {
      *
      * @return binding data.
      */
-    public final Instantiable<?> bindingData() {
+    public final TreeNode bindingData() {
         return bindingData;
     }
 
@@ -132,7 +132,7 @@ public class LazySerializedContainerNode implements ContainerNode {
 
         private final LeafNode<?> contextRef;
 
-        private WithContextRef(final QName identifier, final Instantiable<?> binding, final LeafNode<?> contextRef,
+        private WithContextRef(final QName identifier, final TreeNode binding, final LeafNode<?> contextRef,
                 final BindingNormalizedNodeCodecRegistry registry) {
             super(identifier, binding, registry);
             this.contextRef = contextRef;

@@ -33,7 +33,7 @@ public interface RpcActionProviderService {
      * @param <T> service implementation type
      * @return returns class representing a RPC registration
      */
-    <S extends Rpc, T extends S> ObjectRegistration<T> registerRpcImplementation(Class<S> type,
+    <S extends Rpc<?, ?>, T extends S> ObjectRegistration<T> registerRpcImplementation(Class<S> type,
         T implementation);
 
     /**
@@ -45,7 +45,7 @@ public interface RpcActionProviderService {
      * @param <T> service implementation type
      * @return returns class representing a RPC registration
      */
-    <S extends Rpc, T extends S> ObjectRegistration<T> registerRpcImplementation(Class<S> type,
+    <S extends Rpc<?, ?>, T extends S> ObjectRegistration<T> registerRpcImplementation(Class<S> type,
         T implementation, Set<InstanceIdentifier<?>> paths);
 
     /**
@@ -58,7 +58,8 @@ public interface RpcActionProviderService {
      * @param <T> service implementation type
      * @return returns class representing a Action registration
      */
-    <S extends Action, T extends S, P extends TreeNode> ObjectRegistration<T> registerActionImplementation(
+    <S extends Action<? extends TreeNode, ?, ?>, T extends S, P extends TreeNode> ObjectRegistration<T>
+            registerActionImplementation(
         Class<S> type, InstanceIdentifier<P> parent, T implementation);
 
     /**
@@ -72,6 +73,7 @@ public interface RpcActionProviderService {
      * @param <T> service implementation type
      * @return returns class representing a ListAction registration
      */
-    <S extends ListAction, T extends S, P extends TreeNode, K> ObjectRegistration<T> registerListActionImplementation(
+    <S extends ListAction<? extends TreeNode, ?, ?>, T extends S, P extends TreeNode, K> ObjectRegistration<T>
+            registerListActionImplementation(
             Class<S> type, KeyedInstanceIdentifier<P, K> parent, T implementation);
 }

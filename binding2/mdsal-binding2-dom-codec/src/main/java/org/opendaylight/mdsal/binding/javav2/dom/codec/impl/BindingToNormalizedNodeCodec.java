@@ -36,7 +36,6 @@ import org.opendaylight.mdsal.binding.javav2.generator.impl.GeneratedClassLoadin
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeArgument;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
@@ -228,7 +227,7 @@ public final class BindingToNormalizedNodeCodec
 
     @Nonnull
     @Override
-    public ContainerNode toNormalizedNodeOperationData(@Nonnull final Instantiable<?> data) {
+    public ContainerNode toNormalizedNodeOperationData(@Nonnull final TreeNode data) {
         return codecRegistry.toNormalizedNodeOperationData(data);
     }
 
