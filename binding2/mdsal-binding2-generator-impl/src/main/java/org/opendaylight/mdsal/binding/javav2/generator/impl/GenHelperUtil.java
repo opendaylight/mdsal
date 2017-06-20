@@ -108,8 +108,8 @@ final class GenHelperUtil {
      *
      * @param module
      *            Module object from which builder will be created
-     * @param genCtx
-     * @param verboseClassComments
+     * @param genCtx generated context
+     * @param verboseClassComments verbosity switch
      *
      * @return <code>GeneratedTypeBuilder</code> which is internal
      *         representation of the module
@@ -137,7 +137,7 @@ final class GenHelperUtil {
      * @param postfix
      *            string which is added to the module class name representation
      *            as suffix
-     * @param verboseClassComments
+     * @param verboseClassComments verbosity switch
      * @return instance of GeneratedTypeBuilder which represents
      *         <code>module</code>.
      * @throws IllegalArgumentException
@@ -773,7 +773,6 @@ final class GenHelperUtil {
      * @param module module
      * @param typeProvider type provider instance
      * @param genCtx actual generated context
-     * @param genCtx actual generated context
      * @return boolean value
      *         <ul>
      *         <li>true - if <code>node</code>, <code>typeBuilder</code>,
@@ -1190,10 +1189,14 @@ final class GenHelperUtil {
             boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
             final TypeProvider typeProvider, Map<QName, GeneratedTOBuilderImpl> generatedIdentities) {
 
-        final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, identity.getPath(),
-            BindingNamespaceType.Identity);
-        final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(packageName,
-                identity.getQName().getLocalName());
+        //check first if identity has been resolved as base identity of some other one
+        GeneratedTOBuilderImpl newType = generatedIdentities.get(identity.getQName());
+
+        if (newType == null) {
+            final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, identity.getPath(),
+                    BindingNamespaceType.Identity);
+            newType = new GeneratedTOBuilderImpl(packageName, identity.getQName().getLocalName(), true, false);
+        }
 
         final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
         if (baseIdentities.size() == 0) {
