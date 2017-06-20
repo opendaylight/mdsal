@@ -16,6 +16,24 @@
       "revId": "f31c3ee816be089f79f8fa0a659bf3ead62f2ef8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_b804f47e",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 6744
+      },
+      "writtenOn": "2017-06-20T01:59:19Z",
+      "side": 0,
+      "message": "Everytime I used tryPublish method,it always succeed.Everything it does is inside the try/catch,is it necessary to keep it?",
+      "parentUuid": "1af78d9a_d8ec60ca",
+      "revId": "f31c3ee816be089f79f8fa0a659bf3ead62f2ef8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
