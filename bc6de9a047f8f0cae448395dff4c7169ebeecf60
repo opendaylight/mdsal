@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_fbfe766a",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/AugmentToGenType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 337,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-20T09:10:45Z",
+      "side": 1,
+      "message": "SchemaNode result \u003d targetGrouping;",
+      "range": {
+        "startLine": 336,
+        "startChar": 7,
+        "endLine": 337,
+        "endChar": 37
+      },
+      "revId": "bc6de9a047f8f0cae448395dff4c7169ebeecf60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
