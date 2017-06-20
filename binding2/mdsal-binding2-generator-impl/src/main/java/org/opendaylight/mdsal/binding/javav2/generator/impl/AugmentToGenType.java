@@ -24,6 +24,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
@@ -50,6 +51,27 @@ final class AugmentToGenType {
     private static final Comparator<AugmentationSchema> AUGMENT_COMP = (o1, o2) -> {
         final Iterator<QName> thisIt = o1.getTargetPath().getPathFromRoot().iterator();
         final Iterator<QName> otherIt = o2.getTargetPath().getPathFromRoot().iterator();
+
+        while (thisIt.hasNext()) {
+            if (!otherIt.hasNext()) {
+                return 1;
+            }
+
+            final int comp = thisIt.next().compareTo(otherIt.next());
+            if (comp != 0) {
+                return comp;
+            }
+        }
+
+        return otherIt.hasNext() ? -1 : 0;
+    };
+
+    /**
+     * Comparator based on augment target path.
+     */
+    private static final Comparator<Map.Entry<SchemaPath, List<AugmentationSchema>>> AUGMENTS_COMP = (o1, o2) -> {
+        final Iterator<QName> thisIt = o1.getKey().getPathFromRoot().iterator();
+        final Iterator<QName> otherIt = o2.getKey().getPathFromRoot().iterator();
 
         while (thisIt.hasNext()) {
             if (!otherIt.hasNext()) {
@@ -106,8 +128,12 @@ final class AugmentToGenType {
         Map<SchemaPath, List<AugmentationSchema>> augmentationsGrouped =
                 augmentations.stream().collect(Collectors.groupingBy(AugmentationSchema::getTargetPath));
 
+        List<Map.Entry<SchemaPath, List<AugmentationSchema>>> sortedAugmentationsGrouped =
+                new ArrayList<>(augmentationsGrouped.entrySet());
+        Collections.sort(sortedAugmentationsGrouped, AUGMENTS_COMP);
+
         //process child nodes of grouped augment entries
-        for (Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry : augmentationsGrouped.entrySet()) {
+        for (Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry : sortedAugmentationsGrouped) {
             resultCtx = augmentationToGenTypes(basePackageName, schemaPathAugmentListEntry, module, schemaContext,
                     verboseClassComments, resultCtx, genTypeBuilders, typeProvider);
 
@@ -153,7 +179,7 @@ final class AugmentToGenType {
      * <code>augSchema</code> node or a generated types for cases are added if
      * augmented node is choice.
      *
-     * @param augmentPackageName
+     * @param basePackageName
      *            string with the name of the package to which the augmentation
      *            belongs
      * @param schemaPathAugmentListEntry
@@ -175,15 +201,17 @@ final class AugmentToGenType {
             final SchemaContext schemaContext, final boolean verboseClassComments,
             Map<Module, ModuleContext> genCtx, Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
             final TypeProvider typeProvider) {
-
-        final SchemaPath targetPath = schemaPathAugmentListEntry.getKey();
         Preconditions.checkArgument(basePackageName != null, "Package Name cannot be NULL.");
+        Preconditions.checkArgument(schemaPathAugmentListEntry != null, "Augmentation List Entry cannot be NULL.");
+        final SchemaPath targetPath = schemaPathAugmentListEntry.getKey();
         Preconditions.checkState(targetPath != null,
-                "Augmentation Schema does not contain Target Path (Target Path is NULL).");
+                "Augmentation List Entry does not contain Target Path (Target Path is NULL).");
 
-        SchemaNode targetSchemaNode;
+        final List<AugmentationSchema> augmentationSchemaList = schemaPathAugmentListEntry.getValue();
+        Preconditions.checkState(augmentationSchemaList.size() > 0,
+                "Augmentation List cannot be empty.");
 
-        targetSchemaNode = SchemaContextUtil.findDataSchemaNode(schemaContext, targetPath);
+        SchemaNode targetSchemaNode = SchemaContextUtil.findDataSchemaNode(schemaContext, targetPath);
         if (targetSchemaNode instanceof DataSchemaNode && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
             if (targetSchemaNode instanceof DerivableSchemaNode) {
                 targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orNull();
@@ -198,13 +226,10 @@ final class AugmentToGenType {
             throw new IllegalArgumentException("augment target not found: " + targetPath);
         }
 
-        //TODO: loose this assignment afterwards #2 done
-        Map<Module, ModuleContext> generatedCtx = genCtx;
-
         GeneratedTypeBuilder targetTypeBuilder = GenHelperUtil.findChildNodeByPath(targetSchemaNode.getPath(),
-                generatedCtx);
+                genCtx);
         if (targetTypeBuilder == null) {
-            targetTypeBuilder = GenHelperUtil.findCaseByPath(targetSchemaNode.getPath(), generatedCtx);
+            targetTypeBuilder = GenHelperUtil.findCaseByPath(targetSchemaNode.getPath(), genCtx);
         }
         if (targetTypeBuilder == null) {
             throw new NullPointerException("Target type not yet generated: " + targetSchemaNode);
@@ -214,13 +239,16 @@ final class AugmentToGenType {
                 BindingGeneratorUtil.packageNameForAugmentedGeneratedType(basePackageName, targetPath);
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            generatedCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentNamespacePackageName,
-                    targetTypeBuilder.toInstance(), schemaPathAugmentListEntry.getValue(), genTypeBuilders, generatedCtx,
+            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentNamespacePackageName,
+                    targetTypeBuilder.toInstance(), schemaPathAugmentListEntry.getValue(), genTypeBuilders, genCtx,
                     schemaContext, verboseClassComments, typeProvider);
         } else {
-            //TODO: #3 implement augmented choice cases scenario
+            genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, basePackageName,
+                    targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode,
+                    schemaPathAugmentListEntry.getValue(),
+                    null, genCtx, verboseClassComments, genTypeBuilders, typeProvider);
         }
-        return generatedCtx;
+        return genCtx;
     }
 
     static Map<Module, ModuleContext> usesAugmentationToGenTypes(final SchemaContext schemaContext,
@@ -230,8 +258,15 @@ final class AugmentToGenType {
            final TypeProvider typeProvider) {
 
         Preconditions.checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
+        Preconditions.checkArgument(schemaPathAugmentListEntry != null,
+                "Augmentation Schema List Entry cannot be NULL.");
+        Preconditions.checkState(schemaPathAugmentListEntry.size() > 0,
+                "Augmentation Schema List cannot be empty");
 
         final SchemaPath targetPath = schemaPathAugmentListEntry.get(0).getTargetPath();
+        Preconditions.checkState(targetPath != null,
+                "Augmentation Schema does not contain Target Path (Target Path is NULL).");
+
         final SchemaNode targetSchemaNode = findOriginalTargetFromGrouping(schemaContext, targetPath, usesNode);
         if (targetSchemaNode == null) {
             throw new IllegalArgumentException("augment target not found: " + targetPath);
@@ -254,7 +289,8 @@ final class AugmentToGenType {
             } else if (usesNodeParent instanceof AugmentationSchema) {
                 Type parentTypeBuilder = genCtx.get(module).getTargetToAugmentation()
                         .get(((AugmentationSchema) usesNodeParent).getTargetPath());
-                packageName = parentTypeBuilder.getFullyQualifiedName();
+                packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(parentTypeBuilder.getPackageName(),
+                        (AugmentationSchema)usesNodeParent);
             }
             genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName,
                     targetTypeBuilder.toInstance(), schemaPathAugmentListEntry, genTypeBuilders, genCtx,
@@ -263,57 +299,7 @@ final class AugmentToGenType {
         } else {
             genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, augmentPackageName,
                     targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode,
-                    schemaPathAugmentListEntry.get(0).getChildNodes(),
-                    usesNodeParent, genCtx, verboseClassComments, genTypeBuilders, typeProvider);
-            return genCtx;
-        }
-    }
-
-    //TODO: delete this method eventually when uses-augments & augmented choice cases are implemented
-    @Deprecated
-    public static Map<Module, ModuleContext> usesAugmentationToGenTypes(final SchemaContext schemaContext, final String
-            augmentPackageName, final AugmentationSchema augSchema, final Module module, final UsesNode usesNode, final DataNodeContainer
-                                                                                usesNodeParent, Map<Module, ModuleContext> genCtx,
-                                                                        Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
-                                                                        final boolean verboseClassComments, final TypeProvider typeProvider) {
-
-        Preconditions.checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
-        Preconditions.checkArgument(augSchema != null, "Augmentation Schema cannot be NULL.");
-        Preconditions.checkState(augSchema.getTargetPath() != null,
-                "Augmentation Schema does not contain Target Path (Target Path is NULL).");
-
-        final SchemaPath targetPath = augSchema.getTargetPath();
-        final SchemaNode targetSchemaNode = findOriginalTargetFromGrouping(schemaContext, targetPath, usesNode);
-        if (targetSchemaNode == null) {
-            throw new IllegalArgumentException("augment target not found: " + targetPath);
-        }
-
-        GeneratedTypeBuilder targetTypeBuilder = GenHelperUtil.findChildNodeByPath(targetSchemaNode.getPath(),
-                genCtx);
-        if (targetTypeBuilder == null) {
-            targetTypeBuilder = GenHelperUtil.findCaseByPath(targetSchemaNode.getPath(), genCtx);
-        }
-        if (targetTypeBuilder == null) {
-            throw new NullPointerException("Target type not yet generated: " + targetSchemaNode);
-        }
-
-        if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            String packageName = augmentPackageName;
-            if (usesNodeParent instanceof SchemaNode) {
-                packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(augmentPackageName,
-                        ((SchemaNode) usesNodeParent).getPath());
-            } else if (usesNodeParent instanceof AugmentationSchema) {
-                Type parentTypeBuilder = genCtx.get(module).getTypeToAugmentation().inverse().get(usesNodeParent);
-                packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(
-                        parentTypeBuilder.getPackageName(), (AugmentationSchema)usesNodeParent);
-            }
-            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName,
-                    targetTypeBuilder.toInstance(), augSchema, genTypeBuilders, genCtx, schemaContext,
-                    verboseClassComments, typeProvider);
-            return genCtx;
-        } else {
-            genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, augmentPackageName,
-                    targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes(),
+                    schemaPathAugmentListEntry,
                     usesNodeParent, genCtx, verboseClassComments, genTypeBuilders, typeProvider);
             return genCtx;
         }
@@ -348,8 +334,7 @@ final class AugmentToGenType {
             throw new IllegalArgumentException("Failed to generate code for augment in " + parentUsesNode);
         }
 
-        final GroupingDefinition grouping = (GroupingDefinition) targetGrouping;
-        SchemaNode result = grouping;
+        SchemaNode result = targetGrouping;
         for (final QName node : targetPath.getPathFromRoot()) {
             if (result instanceof DataNodeContainer) {
                 final QName resultNode = QName.create(result.getQName().getModule(), node.getLocalName());
@@ -406,9 +391,8 @@ final class AugmentToGenType {
      *            Type which represents target choice
      * @param targetNode
      *            node which represents target choice
-     * @param augmentedNodes
-     *            set of choice case nodes for which is checked if are/aren't
-     *            added to choice through augmentation
+     * @param schemaPathAugmentListEntry
+     *            list of AugmentationSchema nodes grouped by target path
      * @return list of generated types which represents augmented cases of
      *         choice <code>refChoiceType</code>
      * @throws IllegalArgumentException
@@ -418,65 +402,70 @@ final class AugmentToGenType {
      *             <li>if <code>augmentedNodes</code> is null</li>
      *             </ul>
      */
-    private static Map<Module, ModuleContext> generateTypesFromAugmentedChoiceCases(final SchemaContext schemaContext, final Module module,
-                          final String basePackageName, final Type targetType, final ChoiceSchemaNode targetNode,
-                          final Iterable<DataSchemaNode> augmentedNodes, final DataNodeContainer usesNodeParent,
-                          Map<Module, ModuleContext> genCtx, final boolean verboseClassComments,
-                          Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
+    private static Map<Module, ModuleContext> generateTypesFromAugmentedChoiceCases(
+            final SchemaContext schemaContext, final Module module,
+            final String basePackageName, final Type targetType, final ChoiceSchemaNode targetNode,
+            final List<AugmentationSchema> schemaPathAugmentListEntry,
+            final DataNodeContainer usesNodeParent,
+            Map<Module, ModuleContext> genCtx, final boolean verboseClassComments,
+            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
         Preconditions.checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         Preconditions.checkArgument(targetType != null, "Referenced Choice Type cannot be NULL.");
-        Preconditions.checkArgument(augmentedNodes != null, "Set of Choice Case Nodes cannot be NULL.");
+        Preconditions.checkArgument(schemaPathAugmentListEntry != null, "Set of Choice Case Nodes cannot be NULL.");
 
-        for (final DataSchemaNode caseNode : augmentedNodes) {
-            if (caseNode != null) {
-                final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                        caseNode.getPath(), null);
-                final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(packageName,
-                        caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
-                caseTypeBuilder.addImplementsType(targetType);
 
-                SchemaNode parent;
-                final SchemaPath nodeSp = targetNode.getPath();
-                parent = SchemaContextUtil.findDataSchemaNode(schemaContext, nodeSp.getParent());
+        for (final AugmentationSchema augmentationSchema : schemaPathAugmentListEntry) {
+            for (final DataSchemaNode caseNode : augmentationSchema.getChildNodes()) {
+                if (caseNode != null) {
+                    final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
+                            caseNode.getPath(), BindingNamespaceType.Data);
+                    final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(packageName,
+                            caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
+                    caseTypeBuilder.addImplementsType(targetType);
 
-                GeneratedTypeBuilder childOfType = null;
-                if (parent instanceof Module) {
-                    childOfType = genCtx.get(parent).getModuleNode();
-                } else if (parent instanceof ChoiceCaseNode) {
-                    childOfType = GenHelperUtil.findCaseByPath(parent.getPath(), genCtx);
-                } else if (parent instanceof DataSchemaNode || parent instanceof NotificationDefinition) {
-                    childOfType = GenHelperUtil.findChildNodeByPath(parent.getPath(), genCtx);
-                } else if (parent instanceof GroupingDefinition) {
-                    childOfType = GenHelperUtil.findGroupingByPath(parent.getPath(), genCtx);
-                }
+                    SchemaNode parent;
+                    final SchemaPath nodeSp = targetNode.getPath();
+                    parent = SchemaContextUtil.findDataSchemaNode(schemaContext, nodeSp.getParent());
 
-                if (childOfType == null) {
-                    throw new IllegalArgumentException("Failed to find parent type of choice " + targetNode);
-                }
-
-                ChoiceCaseNode node = null;
-                final String caseLocalName = caseNode.getQName().getLocalName();
-                if (caseNode instanceof ChoiceCaseNode) {
-                    node = (ChoiceCaseNode) caseNode;
-                } else if (targetNode.getCaseNodeByName(caseLocalName) == null) {
-                    final String targetNodeLocalName = targetNode.getQName().getLocalName();
-                    for (DataSchemaNode dataSchemaNode : usesNodeParent.getChildNodes()) {
-                        if (dataSchemaNode instanceof ChoiceSchemaNode && targetNodeLocalName.equals(dataSchemaNode.getQName
-                                ().getLocalName())) {
-                            node = ((ChoiceSchemaNode) dataSchemaNode).getCaseNodeByName(caseLocalName);
-                            break;
-                        }
+                    GeneratedTypeBuilder childOfType = null;
+                    if (parent instanceof Module) {
+                        childOfType = genCtx.get(parent).getModuleNode();
+                    } else if (parent instanceof ChoiceCaseNode) {
+                        childOfType = GenHelperUtil.findCaseByPath(parent.getPath(), genCtx);
+                    } else if (parent instanceof DataSchemaNode || parent instanceof NotificationDefinition) {
+                        childOfType = GenHelperUtil.findChildNodeByPath(parent.getPath(), genCtx);
+                    } else if (parent instanceof GroupingDefinition) {
+                        childOfType = GenHelperUtil.findGroupingByPath(parent.getPath(), genCtx);
                     }
-                } else {
-                    node = targetNode.getCaseNodeByName(caseLocalName);
+
+                    if (childOfType == null) {
+                        throw new IllegalArgumentException("Failed to find parent type of choice " + targetNode);
+                    }
+
+                    ChoiceCaseNode node = null;
+                    final String caseLocalName = caseNode.getQName().getLocalName();
+                    if (caseNode instanceof ChoiceCaseNode) {
+                        node = (ChoiceCaseNode) caseNode;
+                    } else if (targetNode.getCaseNodeByName(caseLocalName) == null) {
+                        final String targetNodeLocalName = targetNode.getQName().getLocalName();
+                        for (DataSchemaNode dataSchemaNode : usesNodeParent.getChildNodes()) {
+                            if (dataSchemaNode instanceof ChoiceSchemaNode && targetNodeLocalName.equals(dataSchemaNode.getQName
+                                    ().getLocalName())) {
+                                node = ((ChoiceSchemaNode) dataSchemaNode).getCaseNodeByName(caseLocalName);
+                                break;
+                            }
+                        }
+                    } else {
+                        node = targetNode.getCaseNodeByName(caseLocalName);
+                    }
+                    final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
+                    if (childNodes != null) {
+                        GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType,
+                                childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
+                    }
+                    genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
+                    genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
                 }
-                final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
-                if (childNodes != null) {
-                    GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType,
-                            childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
-                }
-                genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
-                genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
             }
         }
         return genCtx;

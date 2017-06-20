@@ -73,6 +73,8 @@ public class BuilderRenderer extends BaseRenderer {
      */
     private GeneratedProperty augmentField;
 
+    boolean instantiable = false;
+
     public BuilderRenderer(final GeneratedType type) {
         super(type);
         this.properties = propertiesFromMethods(createMethods());
@@ -181,6 +183,7 @@ public class BuilderRenderer extends BaseRenderer {
                     }
                 } else if (Instantiable.class.getName().equals(implementedIfc.getFullyQualifiedName())) {
                     importedNames.put("class", importedName(Class.class));
+                    instantiable = true;
                 }
             }
         }
@@ -265,11 +268,6 @@ public class BuilderRenderer extends BaseRenderer {
         boolean childTreeNode = false;
         if (getType().getImplements().contains(BindingTypes.TREE_CHILD_NODE)) {
             childTreeNode = true;
-        }
-
-        boolean instantiable = false;
-        if (getType().getImplements().contains(BindingTypes.INSTANTIABLE)) {
-            instantiable = true;
         }
 
         importedNames.put("augmentation", importedName(Augmentation.class));
