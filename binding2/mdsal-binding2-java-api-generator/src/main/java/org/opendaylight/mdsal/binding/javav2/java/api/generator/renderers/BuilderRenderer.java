@@ -19,6 +19,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSortedSet;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -251,6 +252,7 @@ public class BuilderRenderer extends BaseRenderer {
         importedNames.put("objects", importedName(Objects.class));
         importedNames.put("object", importedName(Object.class));
         importedNames.put("string", importedName(String.class));
+        importedNames.put("arrays", importedName(Arrays.class));
         importedNames.put("stringBuilder", importedName(StringBuilder.class));
         importedNames.put("treeNode", importedName(TreeNode.class));
         importedNames.put("instantiable", importedName(Instantiable.class));
