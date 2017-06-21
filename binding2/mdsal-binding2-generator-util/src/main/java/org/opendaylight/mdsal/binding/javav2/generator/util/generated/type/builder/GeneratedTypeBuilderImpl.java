@@ -11,8 +11,12 @@ package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.buil
 import com.google.common.annotations.Beta;
 import java.util.List;
 import java.util.Optional;
+import com.google.common.base.Preconditions;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
 
 @Beta
@@ -38,7 +42,11 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
 
     @Override
     public GeneratedType toInstance() {
-        return new GeneratedTypeImpl(this);
+        if (this.isDataObjectType()) {
+            return new GeneratedTypeWithBuilderImpl(this);
+        } else {
+            return new GeneratedTypeImpl(this);
+        }
     }
 
     @Override
@@ -92,7 +100,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         return this;
     }
 
-    private static final class GeneratedTypeImpl extends AbstractGeneratedType {
+    private static class GeneratedTypeImpl extends AbstractGeneratedType {
 
         private final String description;
         private final String reference;
@@ -126,6 +134,46 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         @Override
         public String getModuleName() {
             return moduleName;
+        }
+    }
+
+    private static final class GeneratedTypeWithBuilderImpl extends GeneratedTypeImpl
+            implements GeneratedTypeForBuilder {
+
+        private final String basePackageName;
+        private final String builderPackageName;
+
+        public GeneratedTypeWithBuilderImpl(GeneratedTypeBuilderImpl builder) {
+            super(builder);
+            this.basePackageName = builder.getBasePackageName();
+            this.builderPackageName = generatePackageNameForBuilder();
+        }
+
+        private String generatePackageNameForBuilder() {
+            Preconditions.checkArgument(this.basePackageName != null);
+            String normalizeBasePackageName = JavaIdentifierNormalizer.normalizeFullPackageName(this.basePackageName);
+
+            if (!normalizeBasePackageName.equals(this.getPackageName())) {
+                final String baseName = new StringBuilder(normalizeBasePackageName)
+                        .append(".").append(BindingNamespaceType.Data.getPackagePrefix()).toString();
+
+                Preconditions.checkState(this.getPackageName().contains(baseName),
+                        "Package name does not contain base name!");
+
+                return new StringBuilder(normalizeBasePackageName)
+                        .append(".")
+                        .append(BindingNamespaceType.Builder.getPackagePrefix())
+                        .append(this.getPackageName().substring(baseName.length()))
+                        .toString();
+            } else {
+                return new StringBuilder(normalizeBasePackageName)
+                        .append(".").append(BindingNamespaceType.Builder.getPackagePrefix()).toString();
+            }
+        }
+
+        @Override
+        public String getPackageNameForBuilder() {
+            return this.builderPackageName;
         }
     }
 }
