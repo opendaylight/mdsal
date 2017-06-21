@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa2559ec_0a36bb03",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/GeneratorJavaFile.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-21T06:47:09Z",
+      "side": 1,
+      "message": "please set up your IDE, don\u0027t use asterisk convention",
+      "range": {
+        "startLine": 26,
+        "startChar": 55,
+        "endLine": 26,
+        "endChar": 56
+      },
+      "revId": "34174b20ef7e90958ac76d4383a2bc105fbc0b30",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
