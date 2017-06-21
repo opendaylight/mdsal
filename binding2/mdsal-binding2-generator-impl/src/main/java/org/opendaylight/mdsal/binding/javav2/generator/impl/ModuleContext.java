@@ -31,6 +31,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -44,6 +45,7 @@ public final class ModuleContext {
     private final List<GeneratedTOBuilder> genTOs = new ArrayList<>();
     private final Map<SchemaPath, Type> typedefs = new HashMap<>();
     private final Map<SchemaPath, GeneratedTypeBuilder> childNodes = new HashMap<>();
+    private final BiMap<String, GeneratedTypeBuilder> dataTypes = HashBiMap.create();
     private final Map<SchemaPath, GeneratedTypeBuilder> groupings = new HashMap<>();
     private final Map<SchemaPath, GeneratedTypeBuilder> cases = new HashMap<>();
     private final Map<QName,GeneratedTOBuilder> identities = new HashMap<>();
@@ -66,7 +68,7 @@ public final class ModuleContext {
 
         result.addAll(this.genTOs.stream().map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.typedefs.values().stream().filter(b -> b != null).collect(Collectors.toList()));
-        result.addAll(this.childNodes.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
+        result.addAll(this.dataTypes.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.groupings.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.cases.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.identities.values().stream().map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
@@ -107,10 +109,12 @@ public final class ModuleContext {
     public void addChildNodeType(final SchemaNode p, final GeneratedTypeBuilder b) {
         this.childNodes.put(p.getPath(), b);
         this.typeToSchema.put(b,p);
+        this.dataTypes.put(b.getFullyQualifiedName(),b);
     }
 
-    public void addGroupingType(final SchemaPath p, final GeneratedTypeBuilder b) {
-        this.groupings.put(p, b);
+    public void addGroupingType(final GroupingDefinition p, final GeneratedTypeBuilder b) {
+        this.groupings.put(p.getPath(), b);
+        this.typeToSchema.put(b, p);
     }
 
     public void addTypedefType(final SchemaPath p, final Type t) {
