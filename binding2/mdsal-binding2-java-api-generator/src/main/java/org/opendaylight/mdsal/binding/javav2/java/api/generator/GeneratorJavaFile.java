@@ -182,13 +182,20 @@ public final class GeneratorJavaFile {
             LOG.error("Cannot generate Type into Java File because " + "Code Generator instance is NULL!");
             throw new IllegalArgumentException("Code Generator Cannot be NULL!");
         }
-        final File packageDir = packageToDirectory(parentDir, type.getPackageName());
-
-        if (!packageDir.exists()) {
-            packageDir.mkdirs();
-        }
 
         if (generator.isAcceptable(type)) {
+            File packageDir;
+            if (generator instanceof BuilderGenerator) {
+                Preconditions.checkState(type instanceof GeneratedTypeForBuilder);
+                packageDir = packageToDirectory(parentDir, ((GeneratedTypeForBuilder)type).getPackageNameForBuilder());
+            } else {
+                packageDir = packageToDirectory(parentDir, type.getPackageName());
+            }
+
+            if (!packageDir.exists()) {
+                packageDir.mkdirs();
+            }
+
             final String generatedCode = JavaCodePrettyPrint.perform(generator.generate(type));
             Preconditions.checkState(!generatedCode.isEmpty(), "Generated code should not be empty!");
             final File file = new File(packageDir, ((UnitName) generator.getUnitName(type)).getValue() + ".java");
