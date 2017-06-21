@@ -32,6 +32,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.build
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
@@ -1301,6 +1302,7 @@ public class AugmentToGenTypeTest {
         when(module.getNamespace()).thenReturn(qnamePath.getNamespace());
         final String pckgName = "test.augment.choice.cases";
         final Type targetType = mock(Type.class);
+        when(targetType.getFullyQualifiedName()).thenReturn(Augmentable.class.getName());
         final Set<DataSchemaNode> augmentNodes = new HashSet<>();
         final ChoiceCaseNode caseNode = mock(ChoiceCaseNode.class);
         when(caseNode.getPath()).thenReturn(path);
@@ -1364,6 +1366,7 @@ public class AugmentToGenTypeTest {
         when(module.getNamespace()).thenReturn(qnamePath.getNamespace());
         final String pckgName = "test.augment.choice.cases";
         final Type targetType = mock(Type.class);
+        when(targetType.getFullyQualifiedName()).thenReturn(Augmentable.class.getName());
         final Set<DataSchemaNode> augmentNodes = new HashSet<>();
         final ChoiceCaseNode caseNode = mock(ChoiceCaseNode.class);
         when(caseNode.getPath()).thenReturn(path);
