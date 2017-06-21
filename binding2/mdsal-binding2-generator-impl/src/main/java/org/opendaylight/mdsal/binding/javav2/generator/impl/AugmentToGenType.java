@@ -139,7 +139,7 @@ final class AugmentToGenType {
 
             for (AugmentationSchema augSchema : schemaPathAugmentListEntry.getValue()) {
                 GenHelperUtil.processUsesAugments(schemaContext, augSchema, module, genCtx,
-                        genTypeBuilders, verboseClassComments, typeProvider);
+                        genTypeBuilders, verboseClassComments, typeProvider, BindingNamespaceType.Data);
             }
 
         }
@@ -241,12 +241,13 @@ final class AugmentToGenType {
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentNamespacePackageName,
                     targetTypeBuilder.toInstance(), schemaPathAugmentListEntry.getValue(), genTypeBuilders, genCtx,
-                    schemaContext, verboseClassComments, typeProvider);
+                    schemaContext, verboseClassComments, typeProvider, BindingNamespaceType.Data);
         } else {
             genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, basePackageName,
                     targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode,
                     schemaPathAugmentListEntry.getValue(),
-                    null, genCtx, verboseClassComments, genTypeBuilders, typeProvider);
+                    null, genCtx, verboseClassComments, genTypeBuilders, typeProvider,
+                    BindingNamespaceType.Data);
         }
         return genCtx;
     }
@@ -255,7 +256,7 @@ final class AugmentToGenType {
            final String augmentPackageName, final List<AugmentationSchema> schemaPathAugmentListEntry, final Module module,
            final UsesNode usesNode, final DataNodeContainer usesNodeParent, Map<Module, ModuleContext> genCtx,
            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments,
-           final TypeProvider typeProvider) {
+           final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
 
         Preconditions.checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
         Preconditions.checkArgument(schemaPathAugmentListEntry != null,
@@ -294,13 +295,13 @@ final class AugmentToGenType {
             }
             genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName,
                     targetTypeBuilder.toInstance(), schemaPathAugmentListEntry, genTypeBuilders, genCtx,
-                    schemaContext, verboseClassComments, typeProvider);
+                    schemaContext, verboseClassComments, typeProvider, namespaceType);
             return genCtx;
         } else {
             genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, augmentPackageName,
                     targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode,
                     schemaPathAugmentListEntry,
-                    usesNodeParent, genCtx, verboseClassComments, genTypeBuilders, typeProvider);
+                    usesNodeParent, genCtx, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
             return genCtx;
         }
     }
@@ -408,7 +409,8 @@ final class AugmentToGenType {
             final List<AugmentationSchema> schemaPathAugmentListEntry,
             final DataNodeContainer usesNodeParent,
             Map<Module, ModuleContext> genCtx, final boolean verboseClassComments,
-            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
+            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider,
+            final BindingNamespaceType namespaceType) {
         Preconditions.checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         Preconditions.checkArgument(targetType != null, "Referenced Choice Type cannot be NULL.");
         Preconditions.checkArgument(schemaPathAugmentListEntry != null, "Set of Choice Case Nodes cannot be NULL.");
@@ -461,7 +463,8 @@ final class AugmentToGenType {
                     final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
                     if (childNodes != null) {
                         GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType,
-                                childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
+                                childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
+                                namespaceType);
                     }
                     genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
                     genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
