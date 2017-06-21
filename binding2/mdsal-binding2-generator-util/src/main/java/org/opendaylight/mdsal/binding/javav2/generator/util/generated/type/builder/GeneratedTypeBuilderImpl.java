@@ -157,7 +157,8 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
                 final String baseName = new StringBuilder(normalizeBasePackageName)
                         .append(".").append(BindingNamespaceType.Data.getPackagePrefix()).toString();
 
-                Preconditions.checkState(this.getPackageName().contains(baseName),
+                Preconditions.checkState(this.getPackageName().equals(baseName)
+                                || this.getPackageName().contains(baseName),
                         "Package name does not contain base name!");
 
                 return new StringBuilder(normalizeBasePackageName)
