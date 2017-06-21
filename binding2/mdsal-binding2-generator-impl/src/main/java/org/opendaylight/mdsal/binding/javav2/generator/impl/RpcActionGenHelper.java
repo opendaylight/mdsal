@@ -232,7 +232,7 @@ public final class RpcActionGenHelper {
             String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, parent.getPath(),
                     BindingNamespaceType.Data);
             GeneratedTypeBuilder parentType = addRawInterfaceDefinition(packageName, parent, schemaContext,
-                    parent.getQName().getLocalName(), verboseClassComments, genTypeBuilders);
+                    parent.getQName().getLocalName(), "", verboseClassComments, genTypeBuilders);
             parentType.addImplementsType(TREE_NODE);
             parentType.addImplementsType(augmentable(parentType));
             annotateDeprecatedIfNecessary(parent.getStatus(), parentType);
@@ -250,7 +250,7 @@ public final class RpcActionGenHelper {
                 //Action
                 GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, parentType, parentType,
                         ((ContainerSchemaNode) parent).getChildNodes(), genCtx, schemaContext, verboseClassComments,
-                        genTypeBuilders, typeProvider);
+                        genTypeBuilders, typeProvider, BindingNamespaceType.Data);
                 operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
                 interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
             }
@@ -274,7 +274,7 @@ public final class RpcActionGenHelper {
             GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx, final boolean isInput) {
 
         final GeneratedTypeBuilder nodeType = addRawInterfaceDefinition(basePackageName, operationNode, schemaContext,
-                operationName, verboseClassComments, genTypeBuilders);
+                operationName, "", verboseClassComments, genTypeBuilders);
         addImplementedInterfaceFromUses(operationNode, nodeType, genCtx);
         nodeType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
                 (BindingTypes.ITEM, parent)));
@@ -286,7 +286,7 @@ public final class RpcActionGenHelper {
         nodeType.addImplementsType(parameterizedTypeFor(INSTANTIABLE, nodeType));
         nodeType.addImplementsType(augmentable(nodeType));
         GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, nodeType, nodeType, operationNode.getChildNodes(), genCtx,
-                schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
+                schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
 
         final MethodSignatureBuilder nodeMethod = nodeType.addMethod("implementedInterface");
         nodeMethod.setReturnType(parameterizedTypeFor(CLASS, nodeType));
