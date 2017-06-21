@@ -28,6 +28,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.build
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -64,7 +65,8 @@ final class ModuleToGenType {
             genCtx.get(module).addModuleNode(moduleType);
             final String basePackageName = BindingMapping.getRootPackageName(module);
             GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
-                    .getChildNodes(), genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
+                    .getChildNodes(), genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
+                    BindingNamespaceType.Data);
         }
 
         return genCtx;
