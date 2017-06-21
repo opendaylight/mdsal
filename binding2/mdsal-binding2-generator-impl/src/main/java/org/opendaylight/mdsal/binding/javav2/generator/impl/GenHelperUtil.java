@@ -154,7 +154,7 @@ final class GenHelperUtil {
         moduleBuilder.setDescription(createDescription(module, verboseClassComments));
         moduleBuilder.setReference(module.getReference());
         moduleBuilder.setModuleName(moduleName);
-
+        moduleBuilder.setBasePackageName(packageName);
         return moduleBuilder;
     }
 
@@ -320,6 +320,7 @@ final class GenHelperUtil {
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
         augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
         augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
+        augTypeBuilder.setBasePackageName(BindingMapping.getRootPackageName(module));
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
 
         //produces getters for augTypeBuilder eventually
@@ -339,7 +340,7 @@ final class GenHelperUtil {
         genCtx.get(module).addAugmentType(augTypeBuilder);
         return genCtx;
     }
-
+    
     /**
      * Adds the methods to <code>typeBuilder</code> what represents subnodes of
      * node for which <code>typeBuilder</code> was created.
@@ -516,6 +517,7 @@ final class GenHelperUtil {
         newType.setReference(schemaNode.getReference());
         newType.setSchemaPath((List<QName>) schemaNode.getPath().getPathFromRoot());
         newType.setModuleName(module.getName());
+        newType.setBasePackageName(BindingMapping.getRootPackageName(module));
 
         if (!genTypeBuilders.containsKey(packageName)) {
             final Map<String, GeneratedTypeBuilder> builders = new HashMap<>();
