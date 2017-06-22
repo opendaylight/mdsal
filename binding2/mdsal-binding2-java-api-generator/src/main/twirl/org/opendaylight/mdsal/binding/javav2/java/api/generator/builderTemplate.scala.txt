@@ -261,7 +261,8 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
                 getRestrictions(field.getReturnType).getLengthConstraints)}
             }
         }
-        public @{genType.getName}Builder set@{toFirstUpper(field.getName)}(final @{field.getReturnType.getName} value) {
+        
+        public @{genType.getName}Builder set@{toFirstUpper(field.getName)}(final @{field.getReturnType.getFullyQualifiedName} value) {
         @if(!field.getReturnType.isInstanceOf[GeneratedType] && getRestrictions(field.getReturnType) != null) {
             if (value != null) {
             @if(getRestrictions(field.getReturnType).getRangeConstraints != null && !getRestrictions(field.getReturnType).getRangeConstraints.isEmpty) {
