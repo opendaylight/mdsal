@@ -54,8 +54,6 @@ final class ModuleToGenType {
         genCtx = allTypeDefinitionsToGenTypes(module, genCtx, typeProvider);
         genCtx = groupingsToGenTypes(module, module.getGroupings(), genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
-        genCtx = actionsAndRPCMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
-                genTypeBuilders, typeProvider);
         genCtx = allIdentitiesToGenTypes(module, schemaContext, genCtx, verboseClassComments,  genTypeBuilders, typeProvider);
         genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments, typeProvider);
 
@@ -66,6 +64,10 @@ final class ModuleToGenType {
             GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
                     .getChildNodes(), genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider);
         }
+
+        //after potential parent data schema nodes
+        genCtx = actionsAndRPCMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
+                genTypeBuilders, typeProvider);
 
         return genCtx;
     }

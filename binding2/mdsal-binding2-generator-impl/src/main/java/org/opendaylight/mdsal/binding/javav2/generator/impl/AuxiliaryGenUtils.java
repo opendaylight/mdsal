@@ -443,8 +443,7 @@ final class AuxiliaryGenUtils {
             final String genTOName =
                     new StringBuilder(list.getQName().getLocalName()).append('_').append(BindingNamespaceType.Key)
                             .toString();
-            genTOBuilder =
-                    new GeneratedTOBuilderImpl(new StringBuilder(packageName).toString(), genTOName);
+            genTOBuilder = new GeneratedTOBuilderImpl(packageName, genTOName);
         }
         return genTOBuilder;
     }
