@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Interner;
@@ -36,6 +37,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.TypeMemberBu
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
@@ -397,6 +399,39 @@ public final class BindingGeneratorUtil {
         final QName last = augmentationSchema.getTargetPath().getLastComponent();
 
         return generateNormalizedPackageName(parentAugmentPackageName, last);
+    }
+
+    public static String packageNameForSubGeneratedType(final String parentPackageName,
+        final SchemaNode node) {
+        final QName last = node.getPath().getLastComponent();
+
+        return generateNormalizedPackageName(parentPackageName, last);
+    }
+
+    public static String replacePackageTopNamespace(final String basePackageName,
+            final String toReplacePackageName,
+            final BindingNamespaceType toReplaceNameSpace,
+            final BindingNamespaceType replacedNameSpace) {
+        Preconditions.checkArgument(basePackageName != null);
+        String normalizeBasePackageName = JavaIdentifierNormalizer.normalizeFullPackageName(basePackageName);
+
+        if (!normalizeBasePackageName.equals(toReplacePackageName)) {
+            final String topPackageName = new StringBuilder(normalizeBasePackageName)
+                    .append('.').append(toReplaceNameSpace.getPackagePrefix()).toString();
+
+            Preconditions.checkState(toReplacePackageName.equals(topPackageName)
+                            || toReplacePackageName.contains(topPackageName),
+                    "Package name to replace does not belong to the given namespace to replace!");
+
+            return new StringBuilder(normalizeBasePackageName)
+                    .append('.')
+                    .append(replacedNameSpace.getPackagePrefix())
+                    .append(toReplacePackageName.substring(topPackageName.length()))
+                    .toString();
+        } else {
+            return new StringBuilder(normalizeBasePackageName)
+                    .append('.').append(replacedNameSpace.getPackagePrefix()).toString();
+        }
     }
 
     private static final ThreadLocal<MessageDigest> SHA1_MD = new ThreadLocal<MessageDigest>() {
