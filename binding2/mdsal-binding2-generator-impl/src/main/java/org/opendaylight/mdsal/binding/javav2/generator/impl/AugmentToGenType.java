@@ -463,7 +463,7 @@ final class AugmentToGenType {
                     }
                     final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
                     if (childNodes != null) {
-                        GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType,
+                        GenHelperUtil.resolveDataSchemaNodesEx(module, node, caseTypeBuilder, childOfType,
                                 childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
                                 namespaceType);
                     }
