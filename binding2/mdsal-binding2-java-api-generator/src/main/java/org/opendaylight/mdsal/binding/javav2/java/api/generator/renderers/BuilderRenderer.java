@@ -40,6 +40,7 @@ import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.Alphabetica
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -80,6 +81,22 @@ public class BuilderRenderer extends BaseRenderer {
         super(type);
         this.properties = propertiesFromMethods(createMethods());
         putToImportMap(Builder.class.getSimpleName(), Builder.class.getPackage().getName());
+        putToImportMap(type.getName(), type.getPackageName());
+    }
+
+    @Override
+    protected String packageDefinition() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("package ")
+                .append(((GeneratedTypeForBuilder)getType()).getPackageNameForBuilder())
+                .append(";\n\n");
+        return sb.toString();
+    }
+
+    @Override
+    protected boolean hasSamePackage(final String importedTypePackageName) {
+        return ((GeneratedTypeForBuilder)getType()).getPackageNameForBuilder()
+                .equals(importedTypePackageName);
     }
 
     /**
