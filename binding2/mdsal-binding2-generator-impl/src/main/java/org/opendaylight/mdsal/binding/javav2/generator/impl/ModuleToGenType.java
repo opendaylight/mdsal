@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -63,8 +64,10 @@ final class ModuleToGenType {
         if (!module.getChildNodes().isEmpty()) {
             final GeneratedTypeBuilder moduleType = GenHelperUtil.moduleToDataType(module, genCtx, verboseClassComments);
             genCtx.get(module).addModuleNode(moduleType);
-            final String basePackageName = BindingMapping.getRootPackageName(module);
-            GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
+            final String packageName = BindingGeneratorUtil
+                    .packageNameWithNamespacePrefix(BindingMapping.getRootPackageName(module), BindingNamespaceType.Data);
+
+            GenHelperUtil.resolveDataSchemaNodes(module, packageName, moduleType, moduleType, module
                     .getChildNodes(), genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
                     BindingNamespaceType.Data);
         }

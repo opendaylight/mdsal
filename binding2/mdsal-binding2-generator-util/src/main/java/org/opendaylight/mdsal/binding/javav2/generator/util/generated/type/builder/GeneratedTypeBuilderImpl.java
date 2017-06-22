@@ -12,6 +12,7 @@ import com.google.common.annotations.Beta;
 import java.util.List;
 import java.util.Optional;
 import com.google.common.base.Preconditions;
+import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
@@ -150,26 +151,8 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         }
 
         private String generatePackageNameForBuilder() {
-            Preconditions.checkArgument(this.basePackageName != null);
-            String normalizeBasePackageName = JavaIdentifierNormalizer.normalizeFullPackageName(this.basePackageName);
-
-            if (!normalizeBasePackageName.equals(this.getPackageName())) {
-                final String baseName = new StringBuilder(normalizeBasePackageName)
-                        .append(".").append(BindingNamespaceType.Data.getPackagePrefix()).toString();
-
-                Preconditions.checkState(this.getPackageName().equals(baseName)
-                                || this.getPackageName().contains(baseName),
-                        "Package name does not contain base name!");
-
-                return new StringBuilder(normalizeBasePackageName)
-                        .append(".")
-                        .append(BindingNamespaceType.Builder.getPackagePrefix())
-                        .append(this.getPackageName().substring(baseName.length()))
-                        .toString();
-            } else {
-                return new StringBuilder(normalizeBasePackageName)
-                        .append(".").append(BindingNamespaceType.Builder.getPackagePrefix()).toString();
-            }
+            return BindingGeneratorUtil.replacePackageTopNamespace(this.basePackageName, this.getPackageName(),
+                    BindingNamespaceType.Data, BindingNamespaceType.Builder);
         }
 
         @Override

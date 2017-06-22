@@ -84,7 +84,7 @@ public abstract class BaseRenderer {
     /**
      * @return package definition for template
      */
-    private String packageDefinition() {
+    protected String packageDefinition() {
         final StringBuilder sb = new StringBuilder();
         sb.append("package ")
                 .append(type.getPackageName())
@@ -138,7 +138,7 @@ public abstract class BaseRenderer {
      * @param importedTypePackageName imported types package name
      * @return equals packages
      */
-    private boolean hasSamePackage(final String importedTypePackageName) {
+    protected boolean hasSamePackage(final String importedTypePackageName) {
         return type.getPackageName().equals(importedTypePackageName);
     }
 
