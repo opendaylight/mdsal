@@ -16,7 +16,9 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addImplementedInterfaceFromUses;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addRawInterfaceDefinition;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.ACTION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INPUT;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INSTANCE_IDENTIFIER;
@@ -38,9 +40,15 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
-import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
+import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
+import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
@@ -64,7 +72,7 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
  *
  */
 @Beta
-public final class RpcActionGenHelper {
+final class RpcActionGenHelper {
 
     private static final QName CONTEXT_REFERENCE =
             QName.create("urn:opendaylight:yang:extension:yang-ext", "2013-07-09", "context-reference").intern();
@@ -110,7 +118,7 @@ public final class RpcActionGenHelper {
             if (potential instanceof ActionNodeContainer) {
                 final Set<ActionDefinition> actions = ((ActionNodeContainer) potential).getActions();
                 for (ActionDefinition action: actions) {
-                    genCtx.get(module).addChildNodeType(potential, resolveOperation(potential, action, module,
+                    genCtx.get(module).addTopLevelNodeType(resolveOperation(potential, action, module,
                             schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider, true));
                 }
             }
@@ -168,7 +176,7 @@ public final class RpcActionGenHelper {
 
             //routedRPC?
             if (isAction) {
-                genCtx.get(module).addChildNodeType(parent, resolveOperation(parent, rpc, module, schemaContext,
+                genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
                         verboseClassComments, genTypeBuilders, genCtx, typeProvider, true));
             } else {
                 //global RPC only
@@ -229,22 +237,23 @@ public final class RpcActionGenHelper {
 
         if (isAction) {
             //action, routed RPC
-            String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, parent.getPath(),
-                    BindingNamespaceType.Data);
-            GeneratedTypeBuilder parentType = addRawInterfaceDefinition(packageName, parent, schemaContext,
-                    parent.getQName().getLocalName(), verboseClassComments, genTypeBuilders);
-            parentType.addImplementsType(TREE_NODE);
-            parentType.addImplementsType(augmentable(parentType));
+            checkState(parent != null, "Parent node of " + operation.getQName().getLocalName() + "can't be NULL");
+            GeneratedTypeBuilder parentType = genCtx.get(module).getChildNode(parent.getPath());
+            checkState(parentType != null, "Parent generated type for " + parent
+                    + "data schema node must have been generated already");
             annotateDeprecatedIfNecessary(parent.getStatus(), parentType);
-
-            operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
 
             if (parent instanceof ListSchemaNode) {
                 //ListAction
-                final GeneratedTOBuilder keyType = resolveListKeyTOBuilder(basePackageName, (ListSchemaNode) parent);
+                GeneratedTransferObject keyType = null;
+                for (MethodSignatureBuilder method : parentType.getMethodDefinitions()) {
+                    if (method.getName().equals("getKey")) {
+                        keyType = (GeneratedTransferObject) method.toInstance(parentType).getReturnType();
+                    }
+                }
+
                 operationMethod.addParameter(
                         parameterizedTypeFor(KEYED_INSTANCE_IDENTIFIER, parentType, keyType), "kii");
-                operationMethod.setReturnType(keyType);
                 interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
             } else {
                 //Action
@@ -257,9 +266,9 @@ public final class RpcActionGenHelper {
         } else {
             //RPC
             interfaceBuilder.addImplementsType(parameterizedTypeFor(RPC, inType, outType));
-            interfaceBuilder.addImplementsType(TREE_NODE);
         }
 
+        interfaceBuilder.addImplementsType(TREE_NODE);
         operationMethod.addParameter(parameterizedTypeFor(RPC_CALLBACK, outType), "callback");
 
         operationMethod.setComment(operationComment);
