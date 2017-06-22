@@ -23,7 +23,8 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
-import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INSTANTIABLE;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForSubGeneratedType;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.replacePackageTopNamespace;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
@@ -209,8 +210,8 @@ final class GenHelperUtil {
      *
      * @param module
      *            current module
-     * @param basePackageName
-     *            string contains the module package name
+     * @param packageName
+     *            the package name for data schema nodes
      * @param parent
      *            generated type builder which represents any node. The subnodes
      *            of this node are added to the <code>typeBuilder</code> as
@@ -225,22 +226,35 @@ final class GenHelperUtil {
      *         parameter. The getter methods (representing child nodes) could be
      *         added to it.
      */
-    static GeneratedTypeBuilder resolveDataSchemaNodes(final Module module, final String basePackageName,
-                          final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf,
-                          final Iterable<DataSchemaNode> schemaNodes, final Map<Module, ModuleContext> genCtx,
-                          final SchemaContext schemaContext, final boolean verboseClassComments,
-                          final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
-                          final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
+    static GeneratedTypeBuilder resolveDataSchemaNodes(final Module module, final String packageName,
+                                                               final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf,
+                                                               final Iterable<DataSchemaNode> schemaNodes, final Map<Module, ModuleContext> genCtx,
+                                                               final SchemaContext schemaContext, final boolean verboseClassComments,
+                                                               final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+                                                               final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
 
         if (schemaNodes != null && parent != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting()) {
-                    addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, parent, childOf, module, genCtx,
+                    addSchemaNodeToBuilderAsMethod(packageName, schemaNode, parent, childOf, module, genCtx,
                             schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                 }
             }
         }
         return parent;
+    }
+
+    static GeneratedTypeBuilder resolveDataSchemaNodesEx(final Module module, final SchemaNode parentNode,
+                                                         final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf,
+                                                         final Iterable<DataSchemaNode> schemaNodes, final Map<Module, ModuleContext> genCtx,
+                                                         final SchemaContext schemaContext, final boolean verboseClassComments,
+                                                         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+                                                         final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
+
+        final String subNodePackageName =
+                BindingGeneratorUtil.packageNameForSubGeneratedType(parent.getPackageName(), parentNode);
+        return resolveDataSchemaNodes(module, subNodePackageName, parent, childOf, schemaNodes,
+                genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
     }
 
     static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode
@@ -432,7 +446,7 @@ final class GenHelperUtil {
             }
         }
 
-        if (namespaceType.equals(BindingNamespaceType.Data)) {
+        if (namespaceType.equals(BindingNamespaceType.Data) && !(schemaNode instanceof GroupingDefinition)) {
             it.addImplementsType(BindingTypes.augmentable(it));
         }
 
@@ -462,7 +476,7 @@ final class GenHelperUtil {
         genCtx.get(module).addChildNodeType(notification, notificationInterface);
 
         // Notification object
-        resolveDataSchemaNodes(module, basePackageName, notificationInterface,
+        resolveDataSchemaNodesEx(module, notification, notificationInterface,
                 notificationInterface, notification.getChildNodes(), genCtx, schemaContext,
                 verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
 
@@ -548,7 +562,7 @@ final class GenHelperUtil {
 
     }
 
-    private static void addSchemaNodeToBuilderAsMethod(final String basePackageName, final DataSchemaNode node,
+    private static void addSchemaNodeToBuilderAsMethod(final String packageName, final DataSchemaNode node,
         final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf, final Module module,
         final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments,
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider,
@@ -556,7 +570,7 @@ final class GenHelperUtil {
 
         if (node != null && typeBuilder != null) {
             if (node instanceof ContainerSchemaNode) {
-                containerToGenType(module, basePackageName, typeBuilder, childOf, (ContainerSchemaNode) node,
+                containerToGenType(module, packageName, typeBuilder, childOf, (ContainerSchemaNode) node,
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (node instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(schemaContext, typeBuilder, (LeafListSchemaNode) node, module,
@@ -565,10 +579,10 @@ final class GenHelperUtil {
                 resolveLeafSchemaNodeAsMethod("", schemaContext, typeBuilder, genCtx, (LeafSchemaNode) node, module,
                         typeProvider);
             } else if (node instanceof ListSchemaNode) {
-                listToGenType(module, basePackageName, typeBuilder, childOf, (ListSchemaNode) node, schemaContext,
+                listToGenType(module, packageName, typeBuilder, childOf, (ListSchemaNode) node, schemaContext,
                         verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (node instanceof ChoiceSchemaNode) {
-                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, childOf,
+                choiceToGenType(module, schemaContext, verboseClassComments, packageName, childOf,
                         (ChoiceSchemaNode) node, genTypeBuilders, genCtx, typeProvider, namespaceType);
             } else if (node instanceof AnyXmlSchemaNode || node instanceof AnyDataSchemaNode) {
                 resolveAnyNodeAsMethod(schemaContext, typeBuilder, genCtx, node, module, typeProvider);
@@ -621,41 +635,55 @@ final class GenHelperUtil {
         }
     }
 
-    private static void containerToGenType(final Module module, final String basePackageName,
+    private static void containerToGenType(final Module module, final String packageName,
         final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf, final ContainerSchemaNode node,
         final SchemaContext schemaContext, final boolean verboseClassComments, final Map<Module, ModuleContext> genCtx,
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider,
         final BindingNamespaceType namespaceType) {
 
-        final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node,
+        final GeneratedTypeBuilder genType = processDataSchemaNode(module, packageName, childOf, node,
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
         if (genType != null) {
             constructGetter(parent, node.getQName().getLocalName(), node.getDescription(), genType, node.getStatus());
-            resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
+
+            resolveDataSchemaNodesEx(module, node, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
+            /*
+            for (final UsesNode usesNode : node.getUses()) {
+                final GeneratedType groupingGenType = findGroupingByPath(usesNode.getGroupingPath(), genCtx).toInstance();
+                final SchemaNode groupingNode = (SchemaNode) genCtx.get(module).getTypeToSchema().get(groupingGenType);
+                Preconditions.checkState(groupingNode instanceof GroupingDefinition, "Node is not instance of grouping!");
+                resolveDataSchemaNodesEx(module, node, genType, genType,
+                        ((GroupingDefinition)groupingNode).getChildNodes(), genCtx,
+                        schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
+            }*/
         }
     }
 
-    private static void listToGenType(final Module module, final String basePackageName, final GeneratedTypeBuilder
+    private static void listToGenType(final Module module, final String packageName, final GeneratedTypeBuilder
             parent, final GeneratedTypeBuilder childOf, final ListSchemaNode node, final SchemaContext schemaContext,
             final boolean verboseClassComments, final Map<Module, ModuleContext> genCtx,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider,
             final BindingNamespaceType namespaceType) {
 
-        final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node,
+        final GeneratedTypeBuilder genType = processDataSchemaNode(module, packageName, childOf, node,
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
         if (genType != null) {
             final String nodeName = node.getQName().getLocalName();
             constructGetter(parent, nodeName, node.getDescription(), Types.listTypeFor(genType), node.getStatus());
             final List<QName> listKeys = node.getKeyDefinition();
-            final String packageName = new StringBuilder(packageNameForGeneratedType(basePackageName, node.getPath(),
-                    BindingNamespaceType.Key)).append('.').append(nodeName).toString();
 
-            final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node);
+
+            final String replacedPackageNameOfList = replacePackageTopNamespace(BindingMapping.getRootPackageName(module),
+                    genType.getPackageName(), namespaceType, BindingNamespaceType.Key);
+
+            final String packageNameOfKey = packageNameForSubGeneratedType(replacedPackageNameOfList, node);
+
+            final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageNameOfKey, node);
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
                 if (!schemaNode.isAugmenting()) {
-                    addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
+                    addSchemaNodeToListBuilders(nodeName, packageName, schemaNode, genType, genTOBuilder, listKeys,
                             module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
                 }
             }
@@ -933,10 +961,10 @@ final class GenHelperUtil {
                         if (childOfType == null) {
                             childOfType = findGroupingByPath(parent.getPath(), genCtx);
                         }
-                        resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType, caseChildNodes,
+                        resolveDataSchemaNodesEx(module, caseNode, caseTypeBuilder, childOfType, caseChildNodes,
                                 genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                     } else {
-                        resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, moduleToDataType(module,
+                        resolveDataSchemaNodesEx(module, caseNode, caseTypeBuilder, moduleToDataType(module,
                                 genCtx, verboseClassComments), caseChildNodes, genCtx, schemaContext,
                                 verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                     }
@@ -1079,15 +1107,15 @@ final class GenHelperUtil {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static GeneratedTypeBuilder processDataSchemaNode(final Module module, final String basePackageName,
+    private static GeneratedTypeBuilder processDataSchemaNode(final Module module, final String packageName,
         final GeneratedTypeBuilder childOf, final DataSchemaNode node, final SchemaContext schemaContext,
         final boolean verboseClassComments, Map<Module, ModuleContext> genCtx, final Map<String, Map<String,
         GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
 
-        if (node.isAugmenting() || node.isAddedByUses()) {
+        if (node.isAugmenting()) {
             return null;
         }
-        final String packageName = packageNameForGeneratedType(basePackageName, node.getPath(), namespaceType);
+
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, node, childOf, module,
                 genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
         genType.addComment(node.getDescription());
@@ -1176,7 +1204,8 @@ final class GenHelperUtil {
                 schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Grouping);
         annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
         genCtx.get(module).addGroupingType(grouping, genType);
-        resolveDataSchemaNodes(module, basePackageName, genType, genType, grouping.getChildNodes(), genCtx,
+
+        resolveDataSchemaNodesEx(module, grouping, genType, genType, grouping.getChildNodes(), genCtx,
                 schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Grouping);
         genCtx = groupingsToGenTypes(module, grouping.getGroupings(), genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
