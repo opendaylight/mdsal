@@ -61,6 +61,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.base.BaseIdentity;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
@@ -432,7 +433,8 @@ final class GenHelperUtil {
             }
         }
 
-        if (namespaceType.equals(BindingNamespaceType.Data)) {
+        //TODO: it's not correct for some special cases
+        if (namespaceType.equals(BindingNamespaceType.Data) && !(schemaNode instanceof GroupingDefinition)) {
             it.addImplementsType(BindingTypes.augmentable(it));
         }
 
@@ -630,7 +632,14 @@ final class GenHelperUtil {
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node,
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
         if (genType != null) {
-            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(), genType, node.getStatus());
+            StringBuilder getterName = new StringBuilder(node.getQName().getLocalName());
+            if (!namespaceType.equals(BindingNamespaceType.Data)) {
+                getterName.append('_').append(BindingNamespaceType.Data);
+            }
+            final MethodSignatureBuilder getter = constructGetter(parent, getterName.toString(), node.getDescription(), genType, node.getStatus());
+            if (!namespaceType.equals(BindingNamespaceType.Data)) {
+                getter.setAccessModifier(AccessModifier.DEFAULT);
+            }
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
         }
@@ -703,7 +712,7 @@ final class GenHelperUtil {
     private static Type resolveLeafSchemaNodeAsMethod(final String nodeName, final SchemaContext schemaContext,
             final GeneratedTypeBuilder typeBuilder, final Map<Module, ModuleContext> genCtx, final LeafSchemaNode leaf,
             final Module module, final TypeProvider typeProvider) {
-        if (leaf == null || typeBuilder == null || leaf.isAddedByUses()) {
+        if (leaf == null || typeBuilder == null) {
             return null;
         }
 
@@ -1084,7 +1093,7 @@ final class GenHelperUtil {
         final boolean verboseClassComments, Map<Module, ModuleContext> genCtx, final Map<String, Map<String,
         GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
 
-        if (node.isAugmenting() || node.isAddedByUses()) {
+        if (node.isAugmenting()) {
             return null;
         }
         final String packageName = packageNameForGeneratedType(basePackageName, node.getPath(), namespaceType);
