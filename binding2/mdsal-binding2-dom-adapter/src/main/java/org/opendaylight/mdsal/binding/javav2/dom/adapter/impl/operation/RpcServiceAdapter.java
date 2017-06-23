@@ -12,9 +12,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -28,7 +29,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
@@ -149,13 +149,13 @@ class RpcServiceAdapter implements InvocationHandler {
         }
 
         private ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final NormalizedNode<?, ?> input) {
-            final CheckedFuture<DOMRpcResult, DOMRpcException> result = delegate.invokeRpc(schemaPath, input);
-
-            if (result instanceof LazyDOMOperationResultFuture) {
-                return ((LazyDOMOperationResultFuture) result).getBindingFuture();
+            final ListenableFuture<DOMRpcResult> listenInPoolThread =
+                    JdkFutureAdapters.listenInPoolThread(delegate.invokeRpc(schemaPath, input));
+            if (listenInPoolThread instanceof LazyDOMOperationResultFuture) {
+                return ((LazyDOMOperationResultFuture) listenInPoolThread).getBindingFuture();
             }
 
-            return transformFuture(schemaPath, result, codec.getCodecFactory());
+            return transformFuture(schemaPath, listenInPoolThread, codec.getCodecFactory());
         }
 
         private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
@@ -170,7 +170,7 @@ class RpcServiceAdapter implements InvocationHandler {
                     bindingResult = null;
                 }
                 return RpcResult.class.cast(RpcResultBuilder.success(bindingResult).build());
-            });
+            }, MoreExecutors.directExecutor());
         }
 
     }
