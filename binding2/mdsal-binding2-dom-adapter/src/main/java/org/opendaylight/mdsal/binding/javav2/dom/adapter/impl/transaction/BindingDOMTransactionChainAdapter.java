@@ -12,7 +12,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import javax.annotation.Nonnull;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.opendaylight.mdsal.binding.javav2.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.javav2.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.javav2.api.WriteTransaction;
@@ -74,19 +75,18 @@ public final class BindingDOMTransactionChainAdapter
         };
     }
 
-    private CheckedFuture<Void, TransactionCommitFailedException> listenForFailure(final WriteTransaction tx,
-            final CheckedFuture<Void, TransactionCommitFailedException> future) {
-        Futures.addCallback(future, new FutureCallback<Void>() {
+    private <T, F extends ListenableFuture<T>> F listenForFailure(final WriteTransaction tx, final F future) {
+        Futures.addCallback(future, new FutureCallback<T>() {
             @Override
-            public void onFailure(@Nonnull final Throwable throwable) {
+            public void onFailure(final Throwable throwable) {
                 failTransactionChain(tx, throwable);
             }
 
             @Override
-            public void onSuccess(final Void result) {
+            public void onSuccess(final T result) {
                 // Intentionally NOOP
             }
-        });
+        }, MoreExecutors.directExecutor());
 
         return future;
     }
