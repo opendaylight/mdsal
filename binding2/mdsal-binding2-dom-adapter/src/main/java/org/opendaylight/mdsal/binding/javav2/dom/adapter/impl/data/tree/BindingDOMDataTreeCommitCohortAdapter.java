@@ -9,10 +9,10 @@ package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.data.tree;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -59,8 +59,8 @@ public class BindingDOMDataTreeCommitCohortAdapter<T extends TreeNode> implement
                             new DataValidationFailedExceptionMapper("canCommit", candidate.getRootPath())));
         };
         final ListenableFuture<PostCanCommitStep> resultFuture =
-                Futures.transform(Futures.allAsList(futures), (AsyncFunction<List<PostCanCommitStep>,
-                        PostCanCommitStep>) input -> Futures.immediateFuture(input.get(input.size() - 1)));
+                Futures.transform(Futures.allAsList(futures), input -> input.get(input.size() - 1),
+                        MoreExecutors.directExecutor());
         cohort.canCommit(txId, modification, biConsumer);
         return MappingCheckedFuture.create(resultFuture,
                 new DataValidationFailedExceptionMapper("canCommit", candidate.getRootPath()));

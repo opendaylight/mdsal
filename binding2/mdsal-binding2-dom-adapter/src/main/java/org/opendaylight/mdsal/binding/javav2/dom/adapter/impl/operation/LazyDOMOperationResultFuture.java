@@ -9,8 +9,6 @@ package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.operation;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -19,7 +17,6 @@ import java.util.concurrent.TimeoutException;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -30,7 +27,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * DOM operation result from Binding.
  */
 @Beta
-final class LazyDOMOperationResultFuture implements CheckedFuture<DOMRpcResult, DOMRpcException> {
+final class LazyDOMOperationResultFuture implements ListenableFuture<DOMRpcResult> {
 
     private final ListenableFuture<RpcResult<?>> bindingFuture;
     private final BindingNormalizedNodeCodecRegistry codec;
@@ -42,7 +39,7 @@ final class LazyDOMOperationResultFuture implements CheckedFuture<DOMRpcResult, 
         this.codec = Preconditions.checkNotNull(codec, "codec");
     }
 
-    static CheckedFuture<DOMRpcResult, DOMRpcException> create(final BindingNormalizedNodeCodecRegistry codec,
+    static ListenableFuture<DOMRpcResult> create(final BindingNormalizedNodeCodecRegistry codec,
             final ListenableFuture<RpcResult<?>> bindingResult) {
         return new LazyDOMOperationResultFuture(bindingResult, codec);
     }
@@ -76,27 +73,6 @@ final class LazyDOMOperationResultFuture implements CheckedFuture<DOMRpcResult, 
             return result;
         }
         return transformIfNecessary(bindingFuture.get(timeout, unit));
-    }
-
-    @Override
-    public DOMRpcResult checkedGet() throws DOMRpcException {
-        try {
-            return get();
-        } catch (InterruptedException | ExecutionException e) {
-            // FIXME: Add exception mapping
-            throw Throwables.propagate(e);
-        }
-    }
-
-    @Override
-    public DOMRpcResult checkedGet(@Nonnull final long timeout, final TimeUnit unit)
-            throws TimeoutException, DOMRpcException {
-        try {
-            return get(timeout, unit);
-        } catch (InterruptedException | ExecutionException e) {
-            // FIXME: Add exception mapping
-            throw Throwables.propagate(e);
-        }
     }
 
     @Override
