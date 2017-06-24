@@ -38,6 +38,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOB
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -186,7 +187,8 @@ public class AuxiliaryGenUtilsTest {
     @SuppressWarnings("rawtypes")
     @Test
     public void createDescriptionWithSchemaNodeTest() throws Exception {
-        final Class[] parameterTypes = { SchemaNode.class, String.class, SchemaContext.class, boolean.class };
+        final Class[] parameterTypes = { SchemaNode.class, String.class, SchemaContext.class, boolean.class,
+        BindingNamespaceType.class};
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("createDescription", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -194,9 +196,10 @@ public class AuxiliaryGenUtilsTest {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangSource("/generator/test-list.yang");
         final ListSchemaNode containerSchemaNode =
                 (ListSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
-        final String fullyQualifiedName = "test.base.cont.with.leaf.MyList";
+        final String fullyQualifiedName =
+                "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.data.MyList";
 
-        final Object[] args = { containerSchemaNode, fullyQualifiedName, schemaContext, true };
+        final Object[] args = { containerSchemaNode, fullyQualifiedName, schemaContext, true, BindingNamespaceType.Data };
         final String result = (String) generate.invoke(AuxiliaryGenUtils.class, args);
         assertNotNull(result);
         assertTrue(result.contains("list my-list"));
@@ -204,14 +207,15 @@ public class AuxiliaryGenUtilsTest {
         assertTrue(result.contains("leaf key1"));
         assertTrue(result.contains("leaf key2"));
         assertTrue(result.contains("leaf foo"));
-        assertTrue(result.contains("@see test.base.cont.with.leaf.MyListBuilder"));
-        assertTrue(result.contains("@see test.base.cont.with.leaf.MyListKey"));
+        assertTrue(result.contains("@see org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.dto.MyListBuilder"));
+        assertTrue(result.contains("@see org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list.MyListKey"));
     }
 
     @SuppressWarnings("rawtypes")
     @Test
     public void createDescriptionWithSchemaNodeWithDescriptionTest() throws Exception {
-        final Class[] parameterTypes = { SchemaNode.class, String.class, SchemaContext.class, boolean.class };
+        final Class[] parameterTypes = { SchemaNode.class, String.class, SchemaContext.class, boolean.class,
+                BindingNamespaceType.class};
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("createDescription", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -222,7 +226,7 @@ public class AuxiliaryGenUtilsTest {
                 (LeafSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
         final String fullyQualifiedName = "test.base.cont.with.leaf.MyList";
 
-        final Object[] args = { containerSchemaNode, fullyQualifiedName, schemaContext, true };
+        final Object[] args = { containerSchemaNode, fullyQualifiedName, schemaContext, true, BindingNamespaceType.Data};
         final String result = (String) generate.invoke(AuxiliaryGenUtils.class, args);
         assertNotNull(result);
         assertTrue(result.contains("I am leaf."));
@@ -660,14 +664,14 @@ public class AuxiliaryGenUtilsTest {
 
     @SuppressWarnings("rawtypes")
     private <T extends SchemaNode> boolean hasBuilderClass(final Class<T> clazz) throws Exception {
-        final Class[] parameterTypes = { SchemaNode.class };
+        final Class[] parameterTypes = { SchemaNode.class, BindingNamespaceType.class };
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("hasBuilderClass", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
 
         final T schemaNode = mock(clazz);
 
-        final Object[] args = { schemaNode };
+        final Object[] args = { schemaNode, BindingNamespaceType.Data };
         return (boolean) generate.invoke(AuxiliaryGenUtils.class, args);
     }
 }

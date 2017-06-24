@@ -24,8 +24,6 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOB
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
-import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
-import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.util.LazyCollections;
 
 @Beta
@@ -43,8 +41,6 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     private String comment = "";
     private boolean isAbstract;
     private Type parentTypeForBuilder;
-    private boolean isDataObjectType = false;
-    private String basePackageName = null;
 
     protected AbstractGeneratedTypeBuilder(final String packageName, final String name) {
         super(packageName, name);
@@ -99,14 +95,6 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         return enclosedTransferObjects;
     }
 
-    protected boolean isDataObjectType() {
-        return isDataObjectType;
-    }
-
-    protected String getBasePackageName() {
-        return basePackageName;
-    }
-
     protected abstract T thisInstance();
 
     @Override
@@ -152,20 +140,10 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     @Override
-    public void setBasePackageName(String basePackageName) {
-        this.basePackageName = basePackageName;
-    }
-
-    @Override
     public T addImplementsType(final Type genType) {
         Preconditions.checkArgument(genType != null, "Type cannot be null");
         Preconditions.checkArgument(!implementsTypes.contains(genType), "This generated type already contains equal implements type.");
         implementsTypes = LazyCollections.lazyAdd(implementsTypes, genType);
-
-        if (genType.getFullyQualifiedName().equals(Augmentable.class.getName())
-                || genType.getFullyQualifiedName().equals(Augmentation.class.getName())) {
-            this.isDataObjectType = true;
-        }
         return thisInstance();
     }
 

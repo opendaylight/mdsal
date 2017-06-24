@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
-import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
@@ -28,6 +27,8 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
     private String reference;
     private String moduleName;
     private List<QName> schemaPath;
+    private boolean isWithBuilder = false;
+    private String basePackageName = null;
 
     public GeneratedTypeBuilderImpl(final String packageName, final String name) {
         super(packageName, name);
@@ -43,7 +44,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
 
     @Override
     public GeneratedType toInstance() {
-        if (this.isDataObjectType()) {
+        if (this.isWithBuilder()) {
             return new GeneratedTypeWithBuilderImpl(this);
         } else {
             return new GeneratedTypeImpl(this);
@@ -101,6 +102,22 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         return this;
     }
 
+    public boolean isWithBuilder() {
+        return isWithBuilder;
+    }
+
+    public void setWithBuilder(boolean withBuilder) {
+        isWithBuilder = withBuilder;
+    }
+
+    public String getBasePackageName() {
+        return basePackageName;
+    }
+
+    public void setBasePackageName(String basePackageName) {
+        this.basePackageName = basePackageName;
+    }
+
     private static class GeneratedTypeImpl extends AbstractGeneratedType {
 
         private final String description;
@@ -146,6 +163,8 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
 
         public GeneratedTypeWithBuilderImpl(GeneratedTypeBuilderImpl builder) {
             super(builder);
+            Preconditions.checkState(builder.getBasePackageName() != null,
+                    "Base package name can not be null for type with builder!");
             this.basePackageName = builder.getBasePackageName();
             this.builderPackageName = generatePackageNameForBuilder();
         }

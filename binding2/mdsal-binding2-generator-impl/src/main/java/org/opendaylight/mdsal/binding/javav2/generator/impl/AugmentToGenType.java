@@ -419,9 +419,7 @@ final class AugmentToGenType {
         for (final AugmentationSchema augmentationSchema : schemaPathAugmentListEntry) {
             for (final DataSchemaNode caseNode : augmentationSchema.getChildNodes()) {
                 if (caseNode != null) {
-                    final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-                            caseNode.getPath(), BindingNamespaceType.Data);
-                    final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(packageName,
+                    final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(basePackageName,
                             caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
                             namespaceType);
                     caseTypeBuilder.addImplementsType(targetType);
