@@ -208,16 +208,7 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      *            the name of the module
      */
     void setModuleName(String moduleName);
-
-    /**
-     * Set the base package name of the module, used to generate package name for
-     * builders by reusing the original package name.
-     *
-     * @param basePackageName
-     *            the base package name of the module
-     */
-    void setBasePackageName(String basePackageName);
-
+	
     /**
      * Set a list of QNames which represent schema path in schema tree from
      * actual concrete type to the root.
