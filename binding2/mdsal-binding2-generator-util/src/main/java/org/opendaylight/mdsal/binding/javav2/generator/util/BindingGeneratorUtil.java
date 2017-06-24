@@ -401,11 +401,12 @@ public final class BindingGeneratorUtil {
         return generateNormalizedPackageName(parentAugmentPackageName, last);
     }
 
-    public static String packageNameForSubGeneratedType(final String parentPackageName,
-                                                              final SchemaNode node) {
+    public static String packageNameForSubGeneratedType(final String basePackageName, final SchemaNode node,
+                                                        final BindingNamespaceType namespaceType) {
+        final String parent = packageNameForGeneratedType(basePackageName, node.getPath(), namespaceType);
         final QName last = node.getPath().getLastComponent();
 
-        return generateNormalizedPackageName(parentPackageName, last);
+        return generateNormalizedPackageName(parent, last);
     }
 
     public static String replacePackageTopNamespace(final String basePackageName,
