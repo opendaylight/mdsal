@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.replacePackageTopNamespace;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.BOOLEAN;
 
 import com.google.common.annotations.Beta;
@@ -22,11 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNode;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNodes;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
@@ -42,6 +45,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTyp
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
+import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -67,7 +71,7 @@ import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 @Beta
 final class AuxiliaryGenUtils {
 
-    private static final Splitter BSDOT_SPLITTER = Splitter.on("\\.");
+    private static final Splitter BSDOT_SPLITTER = Splitter.on(".");
     private static final char NEW_LINE = '\n';
     private static final Pattern UNICODE_CHAR_PATTERN = Pattern.compile("\\\\+u");
 
@@ -91,9 +95,10 @@ final class AuxiliaryGenUtils {
         }
     }
 
-    private static boolean hasBuilderClass(final SchemaNode schemaNode) {
-        if (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode ||
-                schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition) {
+    public static boolean hasBuilderClass(final SchemaNode schemaNode, final BindingNamespaceType namespaceType) {
+        if ((namespaceType.equals(BindingNamespaceType.Data)
+        && schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode ||
+                schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition)) {
             return true;
         }
         return false;
@@ -163,7 +168,8 @@ final class AuxiliaryGenUtils {
     }
 
     static String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName,
-                                    final SchemaContext schemaContext, final boolean verboseClassComments) {
+                                    final SchemaContext schemaContext, final boolean verboseClassComments,
+                                    final BindingNamespaceType namespaceType) {
         final StringBuilder sb = new StringBuilder();
         final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription());
         final String formattedDescription = YangTextTemplate.formatToParagraph(nodeDescription, 0);
@@ -173,17 +179,8 @@ final class AuxiliaryGenUtils {
             sb.append(NEW_LINE);
         }
 
+        final Module module = SchemaContextUtil.findParentModule(schemaContext, schemaNode);
         if (verboseClassComments) {
-            final Module module = SchemaContextUtil.findParentModule(schemaContext, schemaNode);
-            final StringBuilder linkToBuilderClass = new StringBuilder();
-            final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
-            final String className = namespace[namespace.length - 1];
-
-            if (hasBuilderClass(schemaNode)) {
-                linkToBuilderClass.append(className);
-                linkToBuilderClass.append("Builder");
-            }
-
             sb.append("<p>");
             sb.append("This class represents the following YANG schema fragment defined in module <b>");
             sb.append(module.getName());
@@ -202,7 +199,14 @@ final class AuxiliaryGenUtils {
             sb.append("</i>");
             sb.append(NEW_LINE);
 
-            if (hasBuilderClass(schemaNode) && !(schemaNode instanceof OperationDefinition)) {
+            if (hasBuilderClass(schemaNode, namespaceType) && !(schemaNode instanceof OperationDefinition)) {
+                final StringBuilder linkToBuilderClass = new StringBuilder();
+                final String basePackageName = BindingMapping.getRootPackageName(module);
+
+                linkToBuilderClass
+                        .append(replacePackageTopNamespace(basePackageName, fullyQualifiedName,
+                                namespaceType, BindingNamespaceType.Builder))
+                        .append("Builder");
                 sb.append(NEW_LINE);
                 sb.append("<p>To create instances of this class use " + "{@link " + linkToBuilderClass + "}.");
                 sb.append(NEW_LINE);
@@ -210,11 +214,21 @@ final class AuxiliaryGenUtils {
                 sb.append(linkToBuilderClass);
                 sb.append(NEW_LINE);
                 if (schemaNode instanceof ListSchemaNode) {
+                    final StringBuilder linkToKeyClass = new StringBuilder();
+
+                    final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
+                    final String className = namespace[namespace.length - 1];
+
+                    linkToKeyClass.append(BindingGeneratorUtil.packageNameForSubGeneratedType(basePackageName, schemaNode,
+                            BindingNamespaceType.Key))
+                            .append('.')
+                            .append(className)
+                            .append("Key");
+
                     final List<QName> keyDef = ((ListSchemaNode)schemaNode).getKeyDefinition();
                     if (keyDef != null && !keyDef.isEmpty()) {
                         sb.append("@see ");
-                        sb.append(className);
-                        sb.append("Key");
+                        sb.append(linkToKeyClass).append(className).append("Key");
                     }
                     sb.append(NEW_LINE);
                 }

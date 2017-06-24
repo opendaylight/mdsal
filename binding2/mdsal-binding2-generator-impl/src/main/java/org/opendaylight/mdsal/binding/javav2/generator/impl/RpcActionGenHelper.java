@@ -17,6 +17,7 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addRawInterfaceDefinition;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.ACTION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INPUT;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INSTANCE_IDENTIFIER;
@@ -111,7 +112,8 @@ public final class RpcActionGenHelper {
                 final Set<ActionDefinition> actions = ((ActionNodeContainer) potential).getActions();
                 for (ActionDefinition action: actions) {
                     genCtx.get(module).addChildNodeType(potential, resolveOperation(potential, action, module,
-                            schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider, true));
+                            schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
+                            BindingNamespaceType.Data));
                 }
             }
         }
@@ -169,11 +171,13 @@ public final class RpcActionGenHelper {
             //routedRPC?
             if (isAction) {
                 genCtx.get(module).addChildNodeType(parent, resolveOperation(parent, rpc, module, schemaContext,
-                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, true));
+                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
+                        BindingNamespaceType.Data));
             } else {
                 //global RPC only
                 genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
-                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, false));
+                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, false,
+                        BindingNamespaceType.Data));
 
             }
         }
@@ -187,7 +191,7 @@ public final class RpcActionGenHelper {
     private static GeneratedTypeBuilder resolveOperation(final DataSchemaNode parent, final OperationDefinition operation,
             final Module module, final SchemaContext schemaContext, final boolean verboseClassComments,
             Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx,
-            TypeProvider typeProvider, final boolean isAction) {
+            TypeProvider typeProvider, final boolean isAction, final BindingNamespaceType namespaceType) {
 
         //operation name
         final String operationName = operation.getQName().getLocalName();
@@ -204,14 +208,15 @@ public final class RpcActionGenHelper {
         final String basePackageName = interfaceBuilder.getPackageName();
 
         interfaceBuilder.setDescription(createDescription(operation, interfaceBuilder.getFullyQualifiedName(),
-                schemaContext, verboseClassComments));
+                schemaContext, verboseClassComments, namespaceType));
         final String operationComment = encodeAngleBrackets(operation.getDescription());
         final MethodSignatureBuilder operationMethod = interfaceBuilder.addMethod("invoke");
 
         //input
         final ContainerSchemaNode input = operation.getInput();
         final GeneratedTypeBuilder inType = resolveOperationNode(interfaceBuilder, module, operation.getInput(),
-                basePackageName, schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders, genCtx, true);
+                basePackageName, schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders,
+                genCtx, true, namespaceType);
         annotateDeprecatedIfNecessary(operation.getStatus(), inType);
         inType.setParentTypeForBuilder(interfaceBuilder);
         genCtx.get(module).addChildNodeType(input, inType);
@@ -219,7 +224,8 @@ public final class RpcActionGenHelper {
         //output
         final ContainerSchemaNode output = operation.getOutput();
         final GeneratedTypeBuilder outType = resolveOperationNode(interfaceBuilder, module, operation.getOutput(),
-                basePackageName, schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders, genCtx, false);
+                basePackageName, schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders,
+                genCtx, false, namespaceType);
         annotateDeprecatedIfNecessary(operation.getStatus(), outType);
         outType.setParentTypeForBuilder(interfaceBuilder);
         genCtx.get(module).addChildNodeType(output, outType);
@@ -229,10 +235,8 @@ public final class RpcActionGenHelper {
 
         if (isAction) {
             //action, routed RPC
-            String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, parent.getPath(),
-                    BindingNamespaceType.Data);
-            GeneratedTypeBuilder parentType = addRawInterfaceDefinition(packageName, parent, schemaContext,
-                    parent.getQName().getLocalName(), "", verboseClassComments, genTypeBuilders);
+            GeneratedTypeBuilder parentType = addRawInterfaceDefinition(basePackageName, parent, schemaContext,
+                    parent.getQName().getLocalName(), "", verboseClassComments, genTypeBuilders, namespaceType);
             parentType.addImplementsType(TREE_NODE);
             parentType.addImplementsType(augmentable(parentType));
             annotateDeprecatedIfNecessary(parent.getStatus(), parentType);
@@ -250,7 +254,7 @@ public final class RpcActionGenHelper {
                 //Action
                 GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, parentType, parentType,
                         ((ContainerSchemaNode) parent).getChildNodes(), genCtx, schemaContext, verboseClassComments,
-                        genTypeBuilders, typeProvider, BindingNamespaceType.Data);
+                        genTypeBuilders, typeProvider, namespaceType);
                 operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
                 interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
             }
@@ -271,10 +275,10 @@ public final class RpcActionGenHelper {
     private static GeneratedTypeBuilder resolveOperationNode(GeneratedTypeBuilder parent, final Module module, final
             ContainerSchemaNode operationNode, final String basePackageName, final SchemaContext schemaContext, final String
             operationName, final boolean verboseClassComments, TypeProvider typeProvider, Map<String, Map<String,
-            GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx, final boolean isInput) {
-
+            GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx, final boolean isInput,
+            final BindingNamespaceType namespaceType) {
         final GeneratedTypeBuilder nodeType = addRawInterfaceDefinition(basePackageName, operationNode, schemaContext,
-                operationName, "", verboseClassComments, genTypeBuilders);
+                operationName, "", verboseClassComments, genTypeBuilders, namespaceType);
         addImplementedInterfaceFromUses(operationNode, nodeType, genCtx);
         nodeType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
                 (BindingTypes.ITEM, parent)));
@@ -286,7 +290,7 @@ public final class RpcActionGenHelper {
         nodeType.addImplementsType(parameterizedTypeFor(INSTANTIABLE, nodeType));
         nodeType.addImplementsType(augmentable(nodeType));
         GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, nodeType, nodeType, operationNode.getChildNodes(), genCtx,
-                schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
+                schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
 
         final MethodSignatureBuilder nodeMethod = nodeType.addMethod("implementedInterface");
         nodeMethod.setReturnType(parameterizedTypeFor(CLASS, nodeType));
