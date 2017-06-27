@@ -24,8 +24,8 @@ abstract class ForwardingBindingStreamEventWriter implements BindingStreamEventW
     protected abstract BindingStreamEventWriter delegate();
 
     @Override
-    public void startleafNode(final String localName, final Object value) throws IOException {
-        delegate().startleafNode(localName, value);
+    public void leafNode(final String localName, final Object value) throws IOException {
+        delegate().leafNode(localName, value);
     }
 
     @Override
@@ -39,8 +39,8 @@ abstract class ForwardingBindingStreamEventWriter implements BindingStreamEventW
     }
 
     @Override
-    public void startleafSetEntryNode(final Object value) throws IOException {
-        delegate().startleafSetEntryNode(value);
+    public void leafSetEntryNode(final Object value) throws IOException {
+        delegate().leafSetEntryNode(value);
     }
 
     @Override
