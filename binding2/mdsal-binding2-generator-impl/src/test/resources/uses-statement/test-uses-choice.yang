@@ -1,0 +1,22 @@
+module test-uses-choice {
+    yang-version 1.1;
+
+    namespace "urn:test:uses:choice";
+    prefix test-uses-choice;
+    organization "test.type.org";
+    revision "2017-06-30";
+
+    grouping my-grouping {
+        choice my-choice {
+            case my-case {
+                leaf my-leaf {
+                    type string;
+                }
+            }
+        }
+    }
+
+    container my-cont {
+        uses my-grouping;
+    }
+}

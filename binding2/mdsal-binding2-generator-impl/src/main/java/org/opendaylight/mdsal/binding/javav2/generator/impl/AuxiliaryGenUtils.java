@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNode;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNodes;
