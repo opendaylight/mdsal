@@ -177,8 +177,8 @@ public class BuilderRenderer extends BaseRenderer {
                     final GeneratedType ifc = (GeneratedType) implementedIfc;
                     if (implementedIfc instanceof GeneratedTypeForBuilder) {
                         methods.addAll(ifc.getMethodDefinitions());
-                        collectImplementedMethods(methods, ifc.getImplements());
                     }
+                    collectImplementedMethods(methods, ifc.getImplements());
                 } else if (Augmentable.class.getName().equals(implementedIfc.getFullyQualifiedName())) {
                     for (Method method : Augmentable.class.getMethods()) {
                         if ("getAugmentation".equals(method.getName())) {
