@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_9df5d3cd",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-06-27T08:41:10Z",
+      "side": 1,
+      "message": "My bad, I just use java only for less then half year, for last 10 years I used C, I would learn these rules gradually.",
+      "parentUuid": "da2a55be_5d46bb24",
+      "range": {
+        "startLine": 412,
+        "startChar": 8,
+        "endLine": 414,
+        "endChar": 55
+      },
+      "revId": "5e57eaff9d0c6ad7629069301d399a9e4d21ba3d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da2a55be_9d47931d",
         "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/BindingGeneratorUtil.java",
         "patchSetId": 20
