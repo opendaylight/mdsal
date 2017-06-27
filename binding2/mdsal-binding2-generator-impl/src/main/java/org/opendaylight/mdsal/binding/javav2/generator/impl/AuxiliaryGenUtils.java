@@ -35,6 +35,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormal
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.YangSnippetCleaner;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
+import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -97,13 +98,10 @@ final class AuxiliaryGenUtils {
     }
 
     public static boolean hasBuilderClass(final SchemaNode schemaNode, final BindingNamespaceType namespaceType) {
-        if ((namespaceType.equals(BindingNamespaceType.Data)
-        && (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode
+        return (namespaceType.equals(BindingNamespaceType.Data)
+                && (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode
                 || schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition
-                || schemaNode instanceof ChoiceCaseNode))) {
-            return true;
-        }
-        return false;
+                || schemaNode instanceof ChoiceCaseNode));
     }
 
     static Constant qNameConstant(final GeneratedTypeBuilderBase<?> toBuilder, final String constantName,
@@ -230,7 +228,7 @@ final class AuxiliaryGenUtils {
                     final List<QName> keyDef = ((ListSchemaNode)schemaNode).getKeyDefinition();
                     if (keyDef != null && !keyDef.isEmpty()) {
                         sb.append("@see ");
-                        sb.append(linkToKeyClass).append(className).append("Key");
+                        sb.append(linkToKeyClass);
                     }
                     sb.append(NEW_LINE);
                 }
@@ -430,14 +428,8 @@ final class AuxiliaryGenUtils {
     }
 
     static boolean isInnerType(final LeafSchemaNode leaf, final TypeDefinition<?> type) {
-        if (leaf.getPath().equals(type.getPath())) {
-            return true;
-        }
-        if (leaf.getPath().equals(type.getPath().getParent())) {
-            return true;
-        }
+        return leaf.getPath().equals(type.getPath()) || leaf.getPath().equals(type.getPath().getParent());
 
-        return false;
     }
 
     /**
@@ -464,6 +456,18 @@ final class AuxiliaryGenUtils {
         return genTOBuilder;
     }
 
+    static GeneratedTypeBuilder resolveListKeyTypeBuilder(final String packageName, final ListSchemaNode list) {
+        GeneratedTypeBuilder genTypeBuilder = null;
+        if ((list.getKeyDefinition() != null) && (!list.getKeyDefinition().isEmpty())) {
+            // underscore used as separator for distinction of class name parts
+            final String genTOName =
+                    new StringBuilder(list.getQName().getLocalName()).append('_').append(BindingNamespaceType.Key)
+                            .toString();
+            genTypeBuilder = new GeneratedTypeBuilderImpl(packageName, genTOName);
+        }
+        return genTypeBuilder;
+    }
+
     /**
      * Converts <code>leaf</code> schema node to property of generated TO
      * builder.
@@ -485,16 +489,23 @@ final class AuxiliaryGenUtils {
      *         <li>true - other cases</li>
      *         </ul>
      */
-    static boolean resolveLeafSchemaNodeAsProperty(final GeneratedTOBuilder toBuilder, final LeafSchemaNode leaf,
+    static boolean resolveLeafSchemaNodeAsProperty(final String nodeName, final GeneratedTOBuilder toBuilder, final LeafSchemaNode leaf,
         final Type returnType, final boolean isReadOnly) {
 
         if (returnType == null) {
             return false;
         }
         final String leafName = leaf.getQName().getLocalName();
+        final String leafGetterName;
+
+        StringBuilder sb = new StringBuilder(nodeName)
+                .append('_')
+                .append(leafName);
+        leafGetterName = sb.toString();
+
         final String leafDesc = encodeAngleBrackets(leaf.getDescription());
         final GeneratedPropertyBuilder propBuilder =
-                toBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafName, JavaIdentifier.METHOD));
+                toBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafGetterName, JavaIdentifier.METHOD));
         propBuilder.setReadOnly(isReadOnly);
         propBuilder.setReturnType(returnType);
         propBuilder.setComment(leafDesc);
