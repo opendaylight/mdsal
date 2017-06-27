@@ -274,52 +274,71 @@ final class GenHelperUtil {
         return genCtx;
     }
 
-    static void addUsesImplements(final DataNodeContainer superNode, final Module superModule,
-            final DataNodeContainer node, final Module module,
+    static void addUsesImplements(final SchemaNode superNode, final Module superModule,
+            final SchemaNode node, final Module module,
             final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType ) {
-        for (SchemaNode superChildNode : superNode.getChildNodes()) {
-            if (superChildNode instanceof DataNodeContainer) {
-                final QName childQName = QName.create(((SchemaNode)node).getQName(), superChildNode.getQName().getLocalName());
-                DataSchemaNode childNode = node.getDataChildByName(childQName);
-                Preconditions.checkNotNull(childNode, ((SchemaNode) node).getPath() + "->" + childQName.toString());
 
-                final GeneratedTypeBuilder type = genCtx.get(module).getChildNode(childNode.getPath());
-                final GeneratedTypeBuilder superType = genCtx.get(superModule).getChildNode(superChildNode.getPath());
+        if (superNode instanceof DataNodeContainer) {
+            for (DataSchemaNode superChildNode : ((DataNodeContainer)superNode).getChildNodes()) {
+                if (superChildNode instanceof DataNodeContainer || superChildNode instanceof ChoiceSchemaNode) {
+                    final QName childQName = QName.create(node.getQName(), superChildNode.getQName().getLocalName());
+                    DataSchemaNode childNode = ((DataNodeContainer)node).getDataChildByName(childQName);
+                    Preconditions.checkNotNull(childNode, node.getPath() + "->" + childQName.toString());
 
-                //TODO:delete this after supporting uses augment
-                if (type == null || superType == null) {
-                    return;
-                }
-                Preconditions.checkNotNull(type, module.toString() + "->" + childNode.getPath().toString());
-                Preconditions.checkNotNull(superType, superModule.toString() + "->" + superChildNode.getPath().toString());
-                type.addImplementsType(superType);
-                if (superChildNode instanceof ListSchemaNode
-                        && !((ListSchemaNode)superChildNode).getKeyDefinition().isEmpty()) {
-                    if (namespaceType.equals(BindingNamespaceType.Grouping)) {
-                        genCtx.get(module).getKeyType(childNode.getPath())
-                                .addImplementsType(genCtx.get(superModule).getKeyType(superChildNode.getPath()));
-                    } else if (namespaceType.equals(BindingNamespaceType.Data)){
-                        genCtx.get(module).getKeyGenTO(childNode.getPath())
-                                .addImplementsType(genCtx.get(superModule).getKeyType(superChildNode.getPath()));
+                    final GeneratedTypeBuilder type = genCtx.get(module).getChildNode(childNode.getPath());
+                    final GeneratedTypeBuilder superType = genCtx.get(superModule).getChildNode(superChildNode.getPath());
+
+                    //TODO:delete this after supporting uses augment
+                    if (type == null || superType == null) {
+                        return;
                     }
+                    Preconditions.checkNotNull(type, module.toString() + "->" + childNode.getPath().toString());
+                    Preconditions.checkNotNull(superType, superModule.toString() + "->" + superChildNode.getPath().toString());
+                    type.addImplementsType(superType);
+                    if (superChildNode instanceof ListSchemaNode
+                            && !((ListSchemaNode) superChildNode).getKeyDefinition().isEmpty()) {
+                        if (namespaceType.equals(BindingNamespaceType.Grouping)) {
+                            genCtx.get(module).getKeyType(childNode.getPath())
+                                    .addImplementsType(genCtx.get(superModule).getKeyType(superChildNode.getPath()));
+                        } else if (namespaceType.equals(BindingNamespaceType.Data)) {
+                            genCtx.get(module).getKeyGenTO(childNode.getPath())
+                                    .addImplementsType(genCtx.get(superModule).getKeyType(superChildNode.getPath()));
+                        }
+                    }
+                    addUsesImplements(superChildNode, superModule, childNode, module, schemaContext, genCtx, namespaceType);
                 }
-                addUsesImplements((DataNodeContainer)superChildNode, superModule, (DataNodeContainer)childNode, module, schemaContext, genCtx, namespaceType);
             }
+        } else if (superNode instanceof ChoiceSchemaNode) {
+            for (ChoiceCaseNode superCaseNode : ((ChoiceSchemaNode)superNode).getCases()) {
+                final QName childQName = QName.create(node.getQName(), superCaseNode.getQName().getLocalName());
+                ChoiceCaseNode caseNode = ((ChoiceSchemaNode)node).getCaseNodeByName(childQName);
+                Preconditions.checkNotNull(caseNode, node.getPath() + "->" + childQName.toString());
+
+                final GeneratedTypeBuilder type = genCtx.get(module).getCase(caseNode.getPath());
+                final GeneratedTypeBuilder superType = genCtx.get(superModule).getCase(superCaseNode.getPath());
+                Preconditions.checkNotNull(type, module.toString() + "->" + caseNode.getPath().toString());
+                Preconditions.checkNotNull(superType, superModule.toString() + "->" + superCaseNode.getPath().toString());
+                type.addImplementsType(superType);
+                addUsesImplements(superCaseNode, superModule, caseNode, module, schemaContext, genCtx, namespaceType);
+            }
+        } else {
+            throw new IllegalArgumentException("Not support node :" + node.getPath().toString());
         }
     }
 
-    static Map<Module, ModuleContext> processUsesImplements(final DataNodeContainer node, final Module module,
+    static Map<Module, ModuleContext> processUsesImplements(final SchemaNode node, final Module module,
             final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
-
-        for (final UsesNode usesNode : node.getUses()) {
-            final SchemaNode groupingNode =  SchemaContextUtil.findDataSchemaNode(schemaContext, usesNode.getGroupingPath());
-            Preconditions.checkNotNull(groupingNode, module.toString() + "->"
-                    + usesNode.getGroupingPath().toString());
-            Preconditions.checkState(groupingNode instanceof GroupingDefinition,
-                    module.toString() + "->" + usesNode.getGroupingPath().toString());
-            final Module superModule = SchemaContextUtil.findParentModule(schemaContext, groupingNode);
-            GroupingDefinition grouping = (GroupingDefinition)groupingNode;
-            addUsesImplements(grouping, superModule, node, module, schemaContext, genCtx, namespaceType);
+        if (node instanceof DataNodeContainer) {
+            for (final UsesNode usesNode : ((DataNodeContainer)node).getUses()) {
+                final SchemaNode groupingNode = SchemaContextUtil.findDataSchemaNode(schemaContext, usesNode.getGroupingPath());
+                Preconditions.checkNotNull(groupingNode, module.toString() + "->"
+                        + usesNode.getGroupingPath().toString());
+                Preconditions.checkState(groupingNode instanceof GroupingDefinition,
+                        module.toString() + "->" + usesNode.getGroupingPath().toString());
+                final Module superModule = SchemaContextUtil.findParentModule(schemaContext, groupingNode);
+                GroupingDefinition grouping = (GroupingDefinition) groupingNode;
+                addUsesImplements(grouping, superModule, node, module, schemaContext, genCtx, namespaceType);
+            }
         }
         return genCtx;
     }
@@ -674,12 +693,14 @@ final class GenHelperUtil {
             final Map<Module, ModuleContext> genCtx, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
         checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         checkArgument(choiceNode != null, "Choice Schema Node cannot be NULL.");
-        
+
         final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(basePackageName, choiceNode,
                 schemaContext, "", "", verboseClasssComments, genTypeBuilders, namespaceType);
         constructGetter(parent, choiceNode.getQName().getLocalName(),
                 choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus());
-        choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
+        if (namespaceType.equals(BindingNamespaceType.Data)) {
+            choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
+        }
         annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
         genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
         generateTypesFromChoiceCases(module, schemaContext, genCtx, basePackageName, choiceTypeBuilder.toInstance(),
