@@ -42,7 +42,7 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 @Beta
 public final class ModuleContext {
     private GeneratedTypeBuilder moduleNode;
-    private final List<GeneratedTOBuilder> genTOs = new ArrayList<>();
+    private final Map<SchemaPath,GeneratedTOBuilder> genTOs = new HashMap<>();
     private final Map<SchemaPath, Type> typedefs = new HashMap<>();
     private final Map<SchemaPath, GeneratedTypeBuilder> childNodes = new HashMap<>();
     private final BiMap<String, GeneratedTypeBuilder> dataTypes = HashBiMap.create();
@@ -57,7 +57,7 @@ public final class ModuleContext {
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final BiMap<Type,ChoiceCaseNode> caseTypeToSchema = HashBiMap.create();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
-
+    private final Map<SchemaPath,GeneratedTypeBuilder> keyTypes = new HashMap<>();
 
     List<Type> getGeneratedTypes() {
         final List<Type> result = new ArrayList<>();
@@ -66,7 +66,7 @@ public final class ModuleContext {
             result.add(this.moduleNode.toInstance());
         }
 
-        result.addAll(this.genTOs.stream().map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
+        result.addAll(this.genTOs.values().stream().map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.typedefs.values().stream().filter(b -> b != null).collect(Collectors.toList()));
         result.addAll(this.dataTypes.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.groupings.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
@@ -74,7 +74,7 @@ public final class ModuleContext {
         result.addAll(this.identities.values().stream().map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.topLevelNodes.stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.augmentations.stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
-
+        result.addAll(this.keyTypes.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         return ImmutableList.copyOf(result);
     }
 
@@ -102,8 +102,8 @@ public final class ModuleContext {
         this.moduleNode = moduleNode;
     }
 
-    public void addGeneratedTOBuilder(final GeneratedTOBuilder b) {
-        this.genTOs.add(b);
+    public void addGeneratedTOBuilder(final SchemaPath schemaPath, final GeneratedTOBuilder b) {
+        this.genTOs.put(schemaPath, b);
     }
 
     public void addChildNodeType(final SchemaNode p, final GeneratedTypeBuilder b) {
@@ -222,4 +222,16 @@ public final class ModuleContext {
         return this.innerTypes.get(path);
     }
 
+
+    void addKeyType(final SchemaPath path, final GeneratedTypeBuilder genType) {
+        this.keyTypes.put(path, genType);
+    }
+
+    public GeneratedTypeBuilder getKeyType(final SchemaPath path) {
+        return this.keyTypes.get(path);
+    }
+
+    public GeneratedTOBuilder getKeyGenTO(final SchemaPath path) {
+        return this.genTOs.get(path);
+    }
 }
