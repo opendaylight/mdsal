@@ -144,7 +144,7 @@ public final class BindingToNormalizedStreamWriter
     }
 
     @Override
-    public void startleafNode(final String localName, final Object value) throws IOException {
+    public void leafNode(final String localName, final Object value) throws IOException {
         final Entry<NodeIdentifier, Object> dom = serializeLeaf(localName, value);
         getDelegate().leafNode(dom.getKey(), dom.getValue());
     }
@@ -156,7 +156,7 @@ public final class BindingToNormalizedStreamWriter
     }
 
     @Override
-    public void startleafSetEntryNode(final Object value) throws IOException {
+    public void leafSetEntryNode(final Object value) throws IOException {
         final LeafNodeCodecContext<?> ctx = (LeafNodeCodecContext<?>) current();
         getDelegate().leafSetEntryNode(ctx.getSchema().getQName(), ctx.getValueCodec().serialize(value));
     }
