@@ -69,6 +69,30 @@
       "revId": "171e8202838d3bfeacf6fa0d89e3a8280969f3b7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_3d9b07cb",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-27T07:52:20Z",
+      "side": 1,
+      "message": "OK, makes sense. I suggest to put TODO here with explanation. Thank you.",
+      "parentUuid": "da2a55be_d2a61a53",
+      "range": {
+        "startLine": 192,
+        "startChar": 63,
+        "endLine": 192,
+        "endChar": 103
+      },
+      "revId": "171e8202838d3bfeacf6fa0d89e3a8280969f3b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
