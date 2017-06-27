@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_d24a9aab",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding/javav2/model/api/type/builder/GeneratedTypeBuilderBase.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-27T06:24:46Z",
+      "side": 1,
+      "message": "trailling white spaces",
+      "range": {
+        "startLine": 211,
+        "startChar": 0,
+        "endLine": 211,
+        "endChar": 1
+      },
+      "revId": "171e8202838d3bfeacf6fa0d89e3a8280969f3b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_92502260",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-27T06:24:46Z",
+      "side": 1,
+      "message": "it looks like it\u0027s always set to BindingNamespaceType.Data",
+      "range": {
+        "startLine": 192,
+        "startChar": 63,
+        "endLine": 192,
+        "endChar": 103
+      },
+      "revId": "171e8202838d3bfeacf6fa0d89e3a8280969f3b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
