@@ -441,13 +441,19 @@ final class GenHelperUtil {
 
             if (schemaNode instanceof DerivableSchemaNode
                     && ((DerivableSchemaNode) schemaNode).isAddedByUses()) {
-                //TODO: The schema path of child node is not unique for YANG 1.1
-                final GeneratedTypeBuilder originalType =
-                        findChildNodeByPath(((DerivableSchemaNode) schemaNode).getOriginal().get().getPath(), genCtx);
+                GeneratedTypeBuilder originalType;
+                if (!(schemaNode instanceof ChoiceCaseNode)) {
+                    //TODO: The schema path of child node is not unique for YANG 1.1
+                    originalType =
+                            findChildNodeByPath(((DerivableSchemaNode) schemaNode).getOriginal().get().getPath(), genCtx);
+                }else {
+                    originalType =
+                            (GeneratedTypeBuilder)genCtx.get(module).getCaseTypeToSchemas().inverse()
+                                    .get(((DerivableSchemaNode) schemaNode).getOriginal().get());
+                }
                 Preconditions.checkState(originalType != null, "Original type can not be null!");
                 it.addImplementsType(originalType.toInstance());
             }
-
         } else {
             it.addImplementsType(BindingTypes.TREE_NODE);
         }
@@ -624,17 +630,24 @@ final class GenHelperUtil {
         checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         checkArgument(choiceNode != null, "Choice Schema Node cannot be NULL.");
 
-        if (!choiceNode.isAddedByUses()) {
-            final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(basePackageName, choiceNode,
-                    schemaContext, "", "", verboseClasssComments, genTypeBuilders, namespaceType);
-            constructGetter(parent, choiceNode.getQName().getLocalName(),
-                    choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus());
-            choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
-            annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
-            genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
-            generateTypesFromChoiceCases(module, schemaContext, genCtx, basePackageName, choiceTypeBuilder.toInstance(),
-                choiceNode, verboseClasssComments, typeProvider, genTypeBuilders, namespaceType);
+        final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(basePackageName, choiceNode,
+                schemaContext, "", "", verboseClasssComments, genTypeBuilders, namespaceType);
+        StringBuilder getterName = new StringBuilder(choiceNode.getQName().getLocalName());
+        if (!namespaceType.equals(BindingNamespaceType.Data)) {
+            getterName.append('_').append(BindingNamespaceType.Data);
         }
+        final MethodSignatureBuilder getter = constructGetter(parent, getterName.toString(),
+                choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus());
+        if (!namespaceType.equals(BindingNamespaceType.Data)) {
+            getter.setAccessModifier(AccessModifier.DEFAULT);
+        }
+        if (!choiceNode.isAddedByUses()) {
+            choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
+        }
+        annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
+        genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
+        generateTypesFromChoiceCases(module, schemaContext, genCtx, basePackageName, choiceTypeBuilder.toInstance(),
+            choiceNode, verboseClasssComments, typeProvider, genTypeBuilders, namespaceType);
     }
 
     private static void containerToGenType(final Module module, final String basePackageName,
@@ -922,7 +935,7 @@ final class GenHelperUtil {
         }
 
         for (final ChoiceCaseNode caseNode : caseNodes) {
-            if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
+            if (caseNode != null && !caseNode.isAugmenting()) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(basePackageName, caseNode,
                     module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                 caseTypeBuilder.addImplementsType(refChoiceType);
