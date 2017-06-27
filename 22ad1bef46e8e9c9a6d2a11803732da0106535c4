@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_fd2e8fa4",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/RpcActionGenHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-27T10:17:11Z",
+      "side": 1,
+      "message": "The \"action\" statement is used to define an operation connected to a specific container or list data node, not really top-level (do you mean module root?)\n\nSo, I would mention literally grouping in this TODO",
+      "range": {
+        "startLine": 185,
+        "startChar": 12,
+        "endLine": 185,
+        "endChar": 93
+      },
+      "revId": "22ad1bef46e8e9c9a6d2a11803732da0106535c4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
