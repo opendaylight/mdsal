@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_f2e4fead",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/ModuleContext.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-27T06:30:36Z",
+      "side": 1,
+      "message": "allow empty space here",
+      "revId": "d209c9bc96b6a9085d9f2606696b5dec4caa6c1d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
