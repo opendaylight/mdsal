@@ -88,15 +88,15 @@ public class BindingGeneratorImplTest {
                 int test_j = 0;
                 for (final GeneratedProperty generatedProperty : genTransferObj.getProperties()) {
                     switch (generatedProperty.getName()) {
-                        case "key":
+                        case "myListKey":
                             assertEquals("String", generatedProperty.getReturnType().getName());
                             test_j++;
                             break;
-                        case "key1":
+                        case "myListKey1":
                             assertEquals("String", generatedProperty.getReturnType().getName());
                             test_j++;
                             break;
-                        case "key2":
+                        case "myListKey2":
                             assertEquals("String", generatedProperty.getReturnType().getName());
                             test_j++;
                             break;
