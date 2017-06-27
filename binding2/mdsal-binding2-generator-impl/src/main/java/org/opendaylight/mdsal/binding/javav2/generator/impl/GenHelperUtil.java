@@ -669,7 +669,15 @@ final class GenHelperUtil {
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
         if (genType != null) {
             final String nodeName = node.getQName().getLocalName();
-            constructGetter(parent, nodeName, node.getDescription(), Types.listTypeFor(genType), node.getStatus());
+            StringBuilder getterName = new StringBuilder(nodeName);
+            if (!namespaceType.equals(BindingNamespaceType.Data)) {
+                getterName.append('_').append(BindingNamespaceType.Data);
+            }
+            final MethodSignatureBuilder getter = constructGetter(parent, getterName.toString(), node.getDescription(),
+                    Types.listTypeFor(genType), node.getStatus());
+            if (!namespaceType.equals(BindingNamespaceType.Data)) {
+                getter.setAccessModifier(AccessModifier.DEFAULT);
+            }
             final List<QName> listKeys = node.getKeyDefinition();
             final String packageName = new StringBuilder(packageNameForGeneratedType(basePackageName, node.getPath(),
                     BindingNamespaceType.Key)).append('.').append(nodeName).toString();
@@ -1046,7 +1054,7 @@ final class GenHelperUtil {
                     AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, type, true);
                 }
             }
-        } else if (!schemaNode.isAddedByUses()) {
+        } else {
             if (schemaNode instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(schemaContext, typeBuilder, (LeafListSchemaNode) schemaNode, module,
                         typeProvider, genCtx);
