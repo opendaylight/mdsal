@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_52d6aac6",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/builderTemplate.scala.txt",
+        "patchSetId": 17
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-06-27T06:26:29Z",
+      "side": 1,
+      "message": "trailling whitespaces",
+      "range": {
+        "startLine": 264,
+        "startChar": 0,
+        "endLine": 264,
+        "endChar": 8
+      },
+      "revId": "23b2301ce263f7ff84a95db1507041d8aac349db",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
