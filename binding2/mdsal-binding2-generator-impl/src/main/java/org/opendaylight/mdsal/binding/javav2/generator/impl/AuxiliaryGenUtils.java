@@ -228,7 +228,7 @@ final class AuxiliaryGenUtils {
                     final List<QName> keyDef = ((ListSchemaNode)schemaNode).getKeyDefinition();
                     if (keyDef != null && !keyDef.isEmpty()) {
                         sb.append("@see ");
-                        sb.append(linkToKeyClass).append(className).append("Key");
+                        sb.append(linkToKeyClass);
                     }
                     sb.append(NEW_LINE);
                 }
