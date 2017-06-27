@@ -287,12 +287,13 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     private static Type referencedType(final Class<?> type) {
-        return new ReferencedTypeImpl(type.getPackage().getName(), type.getSimpleName());
+        return new ReferencedTypeImpl(type.getPackage().getName(), type.getSimpleName(), true);
     }
 
     static Type referencedType(final String type) {
         final int packageClassSeparator = type.lastIndexOf(DOT);
-        return new ReferencedTypeImpl(type.substring(0, packageClassSeparator), type.substring(packageClassSeparator + 1));
+        return new ReferencedTypeImpl(type.substring(0, packageClassSeparator),
+            type.substring(packageClassSeparator + 1), true);
     }
 
     /**

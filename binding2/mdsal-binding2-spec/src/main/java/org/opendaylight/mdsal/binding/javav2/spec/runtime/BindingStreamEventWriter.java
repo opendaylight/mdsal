@@ -14,8 +14,8 @@ import java.io.Flushable;
 import java.io.IOException;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
-import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 
 /**
  * Event Stream Writer for Binding version 2 Representation
@@ -46,13 +46,13 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
  * </ul></li>
  *
  * <li><code>leaf</code> - Leaf node event is emitted using
- * {@link #startleafNode(String, Object)}. {@link #endNode()} MUST NOT be emitted for
+ * {@link #leafNode(String, Object)}. {@link #endNode()} MUST NOT be emitted for
  * leaf node.</li>
  *
  * <li><code>leaf-list</code> - Leaf list start is emitted using
  * {@link #startLeafSet(String, int)}. Leaf list end is emitted using
  * {@link #endNode()}. Leaf list entries are emitted using
- * {@link #startleafSetEntryNode(Object)}.
+ * {@link #leafSetEntryNode(Object)}.
  *
  * <li><code>anyxml - Anyxml node event is emitted using
  * {@link #startAnyxmlNode(String, Object)}. {@link #endNode()} MUST NOT be emitted
@@ -132,14 +132,14 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *             <code>choice</code> <code>unkeyed list</code> node.
      * @throws IOException if an underlying IO error occurs
      */
-    void startleafNode(String localName, Object value) throws IOException;
+    void leafNode(String localName, Object value) throws IOException;
 
     /**
      *
      * Emits a start of leaf set (leaf-list).
      * <p>
      * Emits start of leaf set, during writing leaf set event, only
-     * {@link #startleafSetEntryNode(Object)} calls are valid. Leaf set event is
+     * {@link #leafSetEntryNode(Object)} calls are valid. Leaf set event is
      * finished by calling {@link #endNode()}.
      *
      * @param localName
@@ -165,7 +165,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * Emits a start of leaf set (leaf-list).
      * <p>
      * Emits start of leaf set, during writing leaf set event, only
-     * {@link #startleafSetEntryNode(Object)} calls are valid. Leaf set event is
+     * {@link #leafSetEntryNode(Object)} calls are valid. Leaf set event is
      * finished by calling {@link #endNode()}.
      *
      * @param localName
@@ -197,7 +197,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *             If node was emitted outside <code>leaf set</code> node.
      * @throws IOException if an underlying IO error occurs
      */
-    void startleafSetEntryNode(Object value) throws IOException;
+    void leafSetEntryNode(Object value) throws IOException;
 
     /**
      *
@@ -209,7 +209,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <p>
      * Valid sub-events are:
      * <ul>
-     * <li>{@link #startleafNode(String, Object)}</li>
+     * <li>{@link #leafNode(String, Object)}</li>
      * <li>{@link #startContainerNode(Class, int)}</li>
      * <li>{@link #startChoiceNode(Item, int)}</li>
      * <li>{@link #startLeafSet(String, int)}</li>
@@ -272,7 +272,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * Valid sub-events are:
      *
      * <ul>
-     * <li>{@link #startleafNode(String, Object)}</li>
+     * <li>{@link #leafNode(String, Object)}</li>
      * <li>{@link #startContainerNode(Class, int)}</li>
      * <li>{@link #startChoiceNode(Item, int)}</li>
      * <li>{@link #startLeafSet(String, int)}</li>
@@ -353,7 +353,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <p>
      * Valid sub-events are:
      * <ul>
-     * <li>{@link #startleafNode(String, Object)}</li>
+     * <li>{@link #leafNode(String, Object)}</li>
      * <li>{@link #startContainerNode(Class, int)}</li>
      * <li>{@link #startChoiceNode(Item, int)}</li>
      * <li>{@link #startLeafSet(String, int)}</li>
@@ -407,7 +407,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <p>
      * Valid sub-events are:
      * <ul>
-     * <li>{@link #startleafNode(String, Object)}</li>
+     * <li>{@link #leafNode(String, Object)}</li>
      * <li>{@link #startContainerNode(Class, int)}</li>
      * <li>{@link #startChoiceNode(Item, int)}</li>
      * <li>{@link #startLeafSet(String, int)}</li>
@@ -432,7 +432,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * Valid sub-events are:
      *
      * <ul>
-     * <li>{@link #startleafNode(String, Object)}</li>
+     * <li>{@link #leafNode(String, Object)}</li>
      * <li>{@link #startContainerNode(Class, int)}</li>
      * <li>{@link #startChoiceNode(Item, int)}</li>
      * <li>{@link #startLeafSet(String, int)}</li>
