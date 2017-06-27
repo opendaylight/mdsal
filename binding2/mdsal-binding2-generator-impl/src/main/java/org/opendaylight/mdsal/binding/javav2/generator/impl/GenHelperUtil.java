@@ -20,11 +20,13 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.qNameConstant;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.resolveInnerEnumFromTypeDefinition;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.resolveListKeyTOBuilder;
+import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.resolveListKeyTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.wildcardTypeFor;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
@@ -291,6 +293,16 @@ final class GenHelperUtil {
         return null;
     }
 
+    static GeneratedTypeBuilder findKeyByPath(final SchemaPath path, final Map<Module, ModuleContext> genCtx) {
+        for (final ModuleContext ctx : genCtx.values()) {
+            final GeneratedTypeBuilder result = ctx.getKeyType(path);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
     static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
             final Type targetTypeRef, final List<AugmentationSchema> schemaPathAugmentListEntry,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx,
@@ -448,8 +460,6 @@ final class GenHelperUtil {
                 it.addImplementsType(originalType.toInstance());
             }
 
-        } else {
-            it.addImplementsType(BindingTypes.TREE_NODE);
         }
 
         if (schemaNode instanceof DataNodeContainer) {
@@ -669,37 +679,67 @@ final class GenHelperUtil {
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
         if (genType != null) {
             final String nodeName = node.getQName().getLocalName();
-            constructGetter(parent, nodeName, node.getDescription(), Types.listTypeFor(genType), node.getStatus());
+
+            Type getterReturnType = Types.listTypeFor(genType);
+            if (namespaceType.equals(BindingNamespaceType.Grouping)) {
+                getterReturnType = Types.listTypeFor(wildcardTypeFor(genType.getPackageName(), genType.getName(),
+                                true, true));
+            }
+            constructGetter(parent, nodeName, node.getDescription(), getterReturnType, node.getStatus());
+
             final List<QName> listKeys = node.getKeyDefinition();
             final String packageName = new StringBuilder(packageNameForGeneratedType(basePackageName, node.getPath(),
                     BindingNamespaceType.Key)).append('.').append(nodeName).toString();
 
-            final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node);
-
-            for (final DataSchemaNode schemaNode : node.getChildNodes()) {
-                if (!schemaNode.isAugmenting()) {
-                    addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
-                            module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
+            if (namespaceType.equals(BindingNamespaceType.Grouping)) {
+                final GeneratedTypeBuilder genTypeBuilder = resolveListKeyTypeBuilder(packageName, node);
+                for (final DataSchemaNode schemaNode : node.getChildNodes()) {
+                    if (!schemaNode.isAugmenting()) {
+                        addSchemaNodeToListKeyBuilder(nodeName, basePackageName, schemaNode, genTypeBuilder, genTypeBuilder, listKeys,
+                                module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
+                    }
                 }
+                genCtx.get(module).addKeyType(node.getPath(), genTypeBuilder);
+            } else {
+                final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node);
+                if (node.isAddedByUses()) {
+                    final GeneratedTypeBuilder superType = findKeyByPath(((DerivableSchemaNode) node).getOriginal().get().getPath(), genCtx);
+                    Preconditions.checkState(superType != null, "Original type can not be null!");
+                    genTOBuilder.addImplementsType(superType.toInstance());
+                }
+
+                for (final DataSchemaNode schemaNode : node.getChildNodes()) {
+                    if (!schemaNode.isAugmenting()) {
+                        addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
+                                module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
+                    }
+                }
+
+                // serialVersionUID
+                if (genTOBuilder != null) {
+                    final GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("serialVersionUID");
+                    prop.setValue(Long.toString(computeDefaultSUID(genTOBuilder)));
+                    genTOBuilder.setSUID(prop);
+                }
+
+                typeBuildersToGenTypes(module, node, genType, genTOBuilder, genCtx, namespaceType);
             }
 
-            // serialVersionUID
-            if (genTOBuilder != null) {
-                final GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("serialVersionUID");
-                prop.setValue(Long.toString(computeDefaultSUID(genTOBuilder)));
-                genTOBuilder.setSUID(prop);
-            }
 
-            typeBuildersToGenTypes(module, genType, genTOBuilder, genCtx);
         }
     }
 
-    private static void typeBuildersToGenTypes(final Module module, final GeneratedTypeBuilder typeBuilder,
-            final GeneratedTOBuilder genTOBuilder, final Map<Module, ModuleContext> genCtx) {
+    private static void typeBuildersToGenTypes(final Module module, final SchemaNode listNode, final GeneratedTypeBuilder typeBuilder,
+            final GeneratedTOBuilder genTOBuilder, final Map<Module, ModuleContext> genCtx,
+            final BindingNamespaceType namespaceType) {
         checkArgument(typeBuilder != null, "Generated Type Builder cannot be NULL.");
         if (genTOBuilder != null) {
-            final GeneratedTransferObject genTO = genTOBuilder.toInstance();
-            constructGetter(typeBuilder, "key", "Returns Primary Key of Yang List Type", genTO, Status.CURRENT);
+            Type returnKeyType = genTOBuilder.toInstance();
+            if (namespaceType.equals(BindingNamespaceType.Grouping)) {
+                returnKeyType = wildcardTypeFor(genTOBuilder.getPackageName(), genTOBuilder.getName(),
+                        true, true);
+            }
+            constructGetter(typeBuilder, "key", "Returns Primary Key of Yang List Type", returnKeyType, Status.CURRENT);
             genCtx.get(module).addGeneratedTOBuilder(genTOBuilder);
         }
     }
@@ -1040,10 +1080,10 @@ final class GenHelperUtil {
                     typeProvider);
             if (listKeys.contains(leafQName)) {
                 if (type == null) {
-                    resolveLeafSchemaNodeAsProperty(schemaContext, typeProvider, genCtx, genTOBuilder, leaf, true,
+                    resolveLeafSchemaNodeAsProperty(nodeName, schemaContext, typeProvider, genCtx, genTOBuilder, leaf, true,
                         module);
                 } else {
-                    AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, type, true);
+                    AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(nodeName, genTOBuilder, leaf, type, true);
                 }
             }
         } else if (!schemaNode.isAddedByUses()) {
@@ -1063,7 +1103,26 @@ final class GenHelperUtil {
         }
     }
 
-    private static boolean resolveLeafSchemaNodeAsProperty(final SchemaContext schemaContext, final TypeProvider
+    private static void addSchemaNodeToListKeyBuilder(final String nodeName, final String basePackageName,
+                                                    final DataSchemaNode schemaNode, final GeneratedTypeBuilder typeBuilder,
+                                                    final GeneratedTypeBuilder genTypeBuilder, final List<QName> listKeys, final Module module,
+                                                    final TypeProvider typeProvider, final SchemaContext schemaContext, final Map<Module, ModuleContext> genCtx,
+                                                    final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments,
+                                                    final BindingNamespaceType namespaceType) {
+        checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
+        checkArgument(typeBuilder != null, "Generated Type Builder cannot be NULL.");
+
+        if (schemaNode instanceof LeafSchemaNode) {
+            final LeafSchemaNode leaf = (LeafSchemaNode) schemaNode;
+            final QName leafQName = leaf.getQName();
+            if (listKeys.contains(leafQName)) {
+                resolveLeafSchemaNodeAsMethod(nodeName, schemaContext, typeBuilder, genCtx, leaf, module,
+                        typeProvider);
+            }
+        }
+    }
+
+    private static boolean resolveLeafSchemaNodeAsProperty(final String nodeName, final SchemaContext schemaContext, final TypeProvider
             typeProvider, final Map<Module, ModuleContext> genCtx, final GeneratedTOBuilder
             toBuilder, final LeafSchemaNode leaf, final boolean isReadOnly, final Module module) {
 
@@ -1088,7 +1147,7 @@ final class GenHelperUtil {
             } else {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
             }
-            return AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(toBuilder, leaf, returnType, isReadOnly);
+            return AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(nodeName, toBuilder, leaf, returnType, isReadOnly);
         }
         return false;
     }
