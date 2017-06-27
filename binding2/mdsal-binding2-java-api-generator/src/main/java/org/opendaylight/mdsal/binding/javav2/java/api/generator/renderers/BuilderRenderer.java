@@ -175,8 +175,11 @@ public class BuilderRenderer extends BaseRenderer {
             for (Type implementedIfc : implementedIfcs) {
                 if ((implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))) {
                     final GeneratedType ifc = (GeneratedType) implementedIfc;
-                    methods.addAll(ifc.getMethodDefinitions());
-                    collectImplementedMethods(methods, ifc.getImplements());
+                    //TODO:temporarily eliminated for through compiling, to be restored in "support choice" patch.
+                  //  if (implementedIfc instanceof GeneratedTypeForBuilder) {
+                        methods.addAll(ifc.getMethodDefinitions());
+                        collectImplementedMethods(methods, ifc.getImplements());
+                  //  }
                 } else if (Augmentable.class.getName().equals(implementedIfc.getFullyQualifiedName())) {
                     for (Method method : Augmentable.class.getMethods()) {
                         if ("getAugmentation".equals(method.getName())) {

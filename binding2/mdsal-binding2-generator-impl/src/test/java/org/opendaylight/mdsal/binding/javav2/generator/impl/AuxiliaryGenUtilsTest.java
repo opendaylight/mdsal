@@ -597,7 +597,7 @@ public class AuxiliaryGenUtilsTest {
     @SuppressWarnings({ "rawtypes" })
     @Test
     public void resolveLeafSchemaNodeAsPropertyFalseTest() throws Exception {
-        final Class[] parameterTypes = { GeneratedTOBuilder.class, LeafSchemaNode.class, Type.class, boolean.class };
+        final Class[] parameterTypes = { String.class, GeneratedTOBuilder.class, LeafSchemaNode.class, Type.class, boolean.class };
         final Method generate =
                 AuxiliaryGenUtils.class.getDeclaredMethod("resolveLeafSchemaNodeAsProperty", parameterTypes);
         assertNotNull(generate);
@@ -608,7 +608,7 @@ public class AuxiliaryGenUtilsTest {
         final boolean isReadOnly = true;
         final Type type = null;
 
-        final Object[] args2 = { gtob, leaf, type, isReadOnly };
+        final Object[] args2 = { "list", gtob, leaf, type, isReadOnly };
         final boolean result = (boolean) generate.invoke(AuxiliaryGenUtils.class, args2);
         assertNotNull(result);
         assertTrue(!result);
@@ -617,7 +617,7 @@ public class AuxiliaryGenUtilsTest {
     @SuppressWarnings({ "rawtypes" })
     @Test
     public void resolveLeafSchemaNodeAsPropertyTrueTest() throws Exception {
-        final Class[] parameterTypes = { GeneratedTOBuilder.class, LeafSchemaNode.class, Type.class, boolean.class };
+        final Class[] parameterTypes = { String.class, GeneratedTOBuilder.class, LeafSchemaNode.class, Type.class, boolean.class };
         final Method generate =
                 AuxiliaryGenUtils.class.getDeclaredMethod("resolveLeafSchemaNodeAsProperty", parameterTypes);
         assertNotNull(generate);
@@ -629,7 +629,7 @@ public class AuxiliaryGenUtilsTest {
         final Type type = mock(Type.class);
         when(leaf.getQName()).thenReturn(QName.create("ns", "2017-12-04", "ln"));
 
-        final Object[] args2 = { gtob, leaf, type, isReadOnly };
+        final Object[] args2 = { "list", gtob, leaf, type, isReadOnly };
         final boolean result = (boolean) generate.invoke(AuxiliaryGenUtils.class, args2);
         assertNotNull(result);
         assertTrue(result);

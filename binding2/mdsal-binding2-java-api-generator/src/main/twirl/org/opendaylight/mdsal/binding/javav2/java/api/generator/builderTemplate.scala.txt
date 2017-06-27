@@ -22,6 +22,7 @@
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.LengthGenerator
 @import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty
 @import org.opendaylight.mdsal.binding.javav2.model.api.Type
@@ -128,7 +129,8 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 }
 
 @generateMethodFieldsFrom() = {
-    @if(genType.isInstanceOf[GeneratedType] && !genType.isInstanceOf[GeneratedTransferObject]) {
+    @if(genType.isInstanceOf[GeneratedType] && genType.isInstanceOf[GeneratedTypeForBuilder]
+            && !genType.isInstanceOf[GeneratedTransferObject]) {
         @if(hasImplementsFromUses(genType.asInstanceOf[GeneratedType])) {
             /**
              * Set fields from given grouping argument. Valid argument is instance of one of following types:
@@ -145,9 +147,11 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
             public void fieldsFrom(@{importedNames.get("treeNode")} arg) {
                 boolean isValidArg = false;
                 @for(impl <- getAllIfcs(genType.asInstanceOf[GeneratedType])) {
-                    @if(impl.isInstanceOf[GeneratedType] && !impl.asInstanceOf[GeneratedType].getMethodDefinitions.isEmpty) {
+                    @if(impl.isInstanceOf[GeneratedType] && impl.isInstanceOf[GeneratedTypeForBuilder]
+                            && !impl.asInstanceOf[GeneratedType].getMethodDefinitions.isEmpty) {
                         if (arg instanceof @{impl.asInstanceOf[GeneratedType].getFullyQualifiedName}) {
-                            @if(impl.isInstanceOf[GeneratedType] && !impl.isInstanceOf[GeneratedTransferObject]) {
+                            @if(impl.isInstanceOf[GeneratedType] && impl.isInstanceOf[GeneratedTypeForBuilder]
+                                    && !impl.isInstanceOf[GeneratedTransferObject]) {
                                 @for(getter <- impl.asInstanceOf[GeneratedType].getMethodDefinitions) {
                                     this._@{propertyNameFromGetter(getter)} = ((@{impl.asInstanceOf[GeneratedType].getFullyQualifiedName})arg).@{getter.getName}();
                                 }
@@ -171,7 +175,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
  * Generate constructor with argument of given type.
  *@
 @generateConstructorFromIfc(impl: Type) = {
-    @if(impl.isInstanceOf[GeneratedType]) {
+    @if(impl.isInstanceOf[GeneratedType] && impl.isInstanceOf[GeneratedTypeForBuilder]) {
         @if(!impl.asInstanceOf[GeneratedType].getMethodDefinitions.isEmpty) {
             public @{genType.getName}Builder(
             @{impl.getFullyQualifiedName} arg) {
