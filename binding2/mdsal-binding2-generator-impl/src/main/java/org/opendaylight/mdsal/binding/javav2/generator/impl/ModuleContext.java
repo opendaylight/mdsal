@@ -57,7 +57,7 @@ public final class ModuleContext {
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final BiMap<Type,ChoiceCaseNode> caseTypeToSchema = HashBiMap.create();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
-
+    private final Map<SchemaPath,GeneratedTypeBuilder>keyTypes = new HashMap<>();
 
     List<Type> getGeneratedTypes() {
         final List<Type> result = new ArrayList<>();
@@ -74,7 +74,7 @@ public final class ModuleContext {
         result.addAll(this.identities.values().stream().map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.topLevelNodes.stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.augmentations.stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
-
+        result.addAll(this.keyTypes.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         return ImmutableList.copyOf(result);
     }
 
@@ -222,4 +222,12 @@ public final class ModuleContext {
         return this.innerTypes.get(path);
     }
 
+
+    void addKeyType(final SchemaPath path, final GeneratedTypeBuilder genType) {
+        this.keyTypes.put(path, genType);
+    }
+
+    GeneratedTypeBuilder getKeyType(final SchemaPath path) {
+        return this.keyTypes.get(path);
+    }
 }
