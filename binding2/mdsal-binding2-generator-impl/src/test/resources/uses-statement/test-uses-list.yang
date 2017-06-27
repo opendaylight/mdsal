@@ -1,0 +1,25 @@
+module test-uses-list {
+    yang-version 1.1;
+
+    namespace "urn:test:uses:list";
+    prefix test-uses-list;
+    organization "test.type.org";
+    revision "2017-06-30";
+
+    grouping my-grouping {
+        list my-list {
+            key "my-leaf";
+            leaf my-leaf {
+                type string;
+            }
+
+            leaf my-leaf-two {
+                type string;
+            }
+        }
+    }
+
+    container my-cont {
+        uses my-grouping;
+    }
+}
