@@ -236,7 +236,8 @@ final class AugmentToGenType {
         }
 
         final String augmentNamespacePackageName =
-                BindingGeneratorUtil.packageNameForAugmentedGeneratedType(basePackageName, targetPath);
+                BindingGeneratorUtil.packageNameForAugmentedGeneratedType(basePackageName, targetPath,
+                        BindingNamespaceType.Data);
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentNamespacePackageName,
@@ -286,7 +287,7 @@ final class AugmentToGenType {
             String packageName = augmentPackageName;
             if (usesNodeParent instanceof SchemaNode) {
                 packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(augmentPackageName,
-                        ((SchemaNode) usesNodeParent).getPath());
+                        ((SchemaNode) usesNodeParent).getPath(), namespaceType);
             } else if (usesNodeParent instanceof AugmentationSchema) {
                 Type parentTypeBuilder = genCtx.get(module).getTargetToAugmentation()
                         .get(((AugmentationSchema) usesNodeParent).getTargetPath());
