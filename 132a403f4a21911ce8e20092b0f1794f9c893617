@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_f52b4392",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-28T13:03:38Z",
+      "side": 1,
+      "message": "This doesn\u0027t need to be public - make it package-scoped so only the the local unit tests can override.",
+      "range": {
+        "startLine": 203,
+        "startChar": 4,
+        "endLine": 203,
+        "endChar": 10
+      },
+      "revId": "132a403f4a21911ce8e20092b0f1794f9c893617",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_351ddb74",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-28T13:03:38Z",
+      "side": 1,
+      "message": "Please add blank line to separate code blocks.",
+      "revId": "132a403f4a21911ce8e20092b0f1794f9c893617",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_4874329c",
+        "filename": "dom/mdsal-dom-broker/src/test/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouterTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-28T13:03:38Z",
+      "side": 1,
+      "message": "It\u0027s not clear from the method name what this test does (ie what does \"Complex\" mean). The intent should be to add a test case  for the code you added. I would call it something like \"testOfferNotificationWithBlocking\".   Also it seems like this method is testing more than it needs to, ie registering and verifying notification and subscription listeners and also testing putNotification.  It should only setup and test what it needs to execute and verify the blocking code path you added to offerNofification. You can setup a listener to receive the notification as further verification.",
+      "range": {
+        "startLine": 108,
+        "startChar": 16,
+        "endLine": 108,
+        "endChar": 40
+      },
+      "revId": "132a403f4a21911ce8e20092b0f1794f9c893617",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
