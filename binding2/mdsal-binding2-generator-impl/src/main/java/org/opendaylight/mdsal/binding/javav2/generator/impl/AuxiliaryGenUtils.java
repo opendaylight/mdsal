@@ -168,9 +168,10 @@ final class AuxiliaryGenUtils {
         return JavaIdentifierNormalizer.normalizeSpecificIdentifier(method.toString(), JavaIdentifier.METHOD);
     }
 
-    static String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName,
-                                    final SchemaContext schemaContext, final boolean verboseClassComments,
-                                    final BindingNamespaceType namespaceType) {
+    static String createDescription(final SchemaNode schemaNode,
+                final String basePackageName, final String fullyQualifiedName,
+                final SchemaContext schemaContext, final boolean verboseClassComments,
+                final BindingNamespaceType namespaceType) {
         final StringBuilder sb = new StringBuilder();
         final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription());
         final String formattedDescription = YangTextTemplate.formatToParagraph(nodeDescription, 0);
@@ -202,7 +203,6 @@ final class AuxiliaryGenUtils {
 
             if (hasBuilderClass(schemaNode, namespaceType) && !(schemaNode instanceof OperationDefinition)) {
                 final StringBuilder linkToBuilderClass = new StringBuilder();
-                final String basePackageName = BindingMapping.getRootPackageName(module);
 
                 linkToBuilderClass
                         .append(replacePackageTopNamespace(basePackageName, fullyQualifiedName,
