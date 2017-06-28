@@ -206,7 +206,7 @@ final class RpcActionGenHelper {
 
         final String basePackageName = interfaceBuilder.getPackageName();
 
-        interfaceBuilder.setDescription(createDescription(operation, interfaceBuilder.getFullyQualifiedName(),
+        interfaceBuilder.setDescription(createDescription(operation, basePackageName, interfaceBuilder.getFullyQualifiedName(),
                 schemaContext, verboseClassComments, namespaceType));
         final String operationComment = encodeAngleBrackets(operation.getDescription());
         final MethodSignatureBuilder operationMethod = interfaceBuilder.addMethod("invoke");
