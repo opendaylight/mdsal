@@ -34,4 +34,7 @@ grouping @{groupingDef.getQName().getLocalName()} {
     @if(groupingDef.getActions() != null && !groupingDef.getActions().isEmpty()) {
         @yangTemplateWriteActions(groupingDef.getActions(), module)
     }
+    @if(groupingDef.getUses() != null && !groupingDef.getUses().isEmpty()) {
+        @yangTemplateWriteUsesNodes(groupingDef.getUses(), module)
+    }
 }
