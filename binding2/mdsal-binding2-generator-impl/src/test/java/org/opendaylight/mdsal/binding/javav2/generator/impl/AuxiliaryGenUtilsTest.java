@@ -187,7 +187,7 @@ public class AuxiliaryGenUtilsTest {
     @SuppressWarnings("rawtypes")
     @Test
     public void createDescriptionWithSchemaNodeTest() throws Exception {
-        final Class[] parameterTypes = { SchemaNode.class, String.class, SchemaContext.class, boolean.class,
+        final Class[] parameterTypes = { SchemaNode.class, String.class, String.class, SchemaContext.class, boolean.class,
         BindingNamespaceType.class};
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("createDescription", parameterTypes);
         assertNotNull(generate);
@@ -198,8 +198,10 @@ public class AuxiliaryGenUtilsTest {
                 (ListSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
         final String fullyQualifiedName =
                 "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.data.MyList";
+        final String basePackageName =
+                "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314";
 
-        final Object[] args = { containerSchemaNode, fullyQualifiedName, schemaContext, true, BindingNamespaceType.Data };
+        final Object[] args = { containerSchemaNode, basePackageName, fullyQualifiedName, schemaContext, true, BindingNamespaceType.Data };
         final String result = (String) generate.invoke(AuxiliaryGenUtils.class, args);
         assertNotNull(result);
         assertTrue(result.contains("list my-list"));
@@ -214,7 +216,7 @@ public class AuxiliaryGenUtilsTest {
     @SuppressWarnings("rawtypes")
     @Test
     public void createDescriptionWithSchemaNodeWithDescriptionTest() throws Exception {
-        final Class[] parameterTypes = { SchemaNode.class, String.class, SchemaContext.class, boolean.class,
+        final Class[] parameterTypes = { SchemaNode.class, String.class, String.class, SchemaContext.class, boolean.class,
                 BindingNamespaceType.class};
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("createDescription", parameterTypes);
         assertNotNull(generate);
@@ -225,8 +227,9 @@ public class AuxiliaryGenUtilsTest {
         final LeafSchemaNode containerSchemaNode =
                 (LeafSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
         final String fullyQualifiedName = "test.base.cont.with.leaf.MyList";
+        final String basePackageName = "test.base.cont.with.leaf";
 
-        final Object[] args = { containerSchemaNode, fullyQualifiedName, schemaContext, true, BindingNamespaceType.Data};
+        final Object[] args = { containerSchemaNode, basePackageName, fullyQualifiedName, schemaContext, true, BindingNamespaceType.Data};
         final String result = (String) generate.invoke(AuxiliaryGenUtils.class, args);
         assertNotNull(result);
         assertTrue(result.contains("I am leaf."));
