@@ -320,11 +320,11 @@ final class GenHelperUtil {
                 false, isTypeNormalized);
 
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
-        augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
-        augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
-        augTypeBuilder.setBasePackageName(BindingMapping.getRootPackageName(module));
         if (namespaceType.equals(BindingNamespaceType.Data)) {
+            augTypeBuilder.setBasePackageName(BindingMapping.getRootPackageName(module));
             augTypeBuilder.setWithBuilder(true);
+            augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
+            augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
         }
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
 
