@@ -232,7 +232,8 @@ final class GenHelperUtil {
 
         if (schemaNodes != null && parent != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
-                if (!schemaNode.isAugmenting()) {
+                if (!(schemaNode.isAugmenting() && namespaceType.equals(BindingNamespaceType.Grouping))
+                        && !(schemaNode.isAddedByUses() && namespaceType.equals(BindingNamespaceType.Grouping))) {
                     addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, parent, childOf, module, genCtx,
                             schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                 }
@@ -375,7 +376,7 @@ final class GenHelperUtil {
             GeneratedTypeBuilder>> genTypeBuilders, final BindingNamespaceType namespaceType) {
         if (schemaNodes != null && typeBuilder != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
-                if (!schemaNode.isAugmenting()) {
+                if (!(schemaNode.isAugmenting() && namespaceType.equals(BindingNamespaceType.Grouping))) {
                     addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, typeBuilder, childOf, module, genCtx,
                             schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                 }
@@ -446,7 +447,7 @@ final class GenHelperUtil {
                     //TODO: The schema path of child node is not unique for YANG 1.1
                     originalType =
                             findChildNodeByPath(((DerivableSchemaNode) schemaNode).getOriginal().get().getPath(), genCtx);
-                }else {
+                } else {
                     originalType =
                             (GeneratedTypeBuilder)genCtx.get(module).getCaseTypeToSchemas().inverse()
                                     .get(((DerivableSchemaNode) schemaNode).getOriginal().get());
@@ -663,10 +664,13 @@ final class GenHelperUtil {
             if (!namespaceType.equals(BindingNamespaceType.Data)) {
                 getterName.append('_').append(BindingNamespaceType.Data);
             }
-            final MethodSignatureBuilder getter = constructGetter(parent, getterName.toString(), node.getDescription(), genType, node.getStatus());
-            if (!namespaceType.equals(BindingNamespaceType.Data)) {
-                getter.setAccessModifier(AccessModifier.DEFAULT);
+            if (!(node.isAddedByUses() && namespaceType.equals(BindingNamespaceType.Grouping))) {
+                final MethodSignatureBuilder getter = constructGetter(parent, getterName.toString(), node.getDescription(), genType, node.getStatus());
+                if (!namespaceType.equals(BindingNamespaceType.Data)) {
+                    getter.setAccessModifier(AccessModifier.DEFAULT);
+                }
             }
+
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
         }
@@ -698,7 +702,7 @@ final class GenHelperUtil {
             final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node);
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
-                if (!schemaNode.isAugmenting()) {
+                if (!(schemaNode.isAugmenting() && namespaceType.equals(BindingNamespaceType.Grouping))) {
                     addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
                             module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
                 }
@@ -935,7 +939,9 @@ final class GenHelperUtil {
         }
 
         for (final ChoiceCaseNode caseNode : caseNodes) {
-            if (caseNode != null && !caseNode.isAugmenting()) {
+            if (caseNode != null
+                    && !(caseNode.isAddedByUses() && namespaceType.equals(BindingNamespaceType.Grouping))
+                    && !(caseNode.isAugmenting() && namespaceType.equals(BindingNamespaceType.Grouping))) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(basePackageName, caseNode,
                     module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                 caseTypeBuilder.addImplementsType(refChoiceType);
@@ -1067,7 +1073,7 @@ final class GenHelperUtil {
                     AuxiliaryGenUtils.resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, type, true);
                 }
             }
-        } else {
+        } else if (!(schemaNode.isAddedByUses() && namespaceType.equals(BindingNamespaceType.Grouping))) {
             if (schemaNode instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(schemaContext, typeBuilder, (LeafListSchemaNode) schemaNode, module,
                         typeProvider, genCtx);
@@ -1124,10 +1130,6 @@ final class GenHelperUtil {
         final GeneratedTypeBuilder childOf, final DataSchemaNode node, final SchemaContext schemaContext,
         final boolean verboseClassComments, Map<Module, ModuleContext> genCtx, final Map<String, Map<String,
         GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
-
-        if (node.isAugmenting()) {
-            return null;
-        }
 
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(basePackageName, node, childOf, module,
                 genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);

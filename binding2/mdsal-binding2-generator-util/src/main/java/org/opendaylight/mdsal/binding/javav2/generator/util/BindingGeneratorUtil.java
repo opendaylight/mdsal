@@ -365,7 +365,8 @@ public final class BindingGeneratorUtil {
      * @return string with valid JAVA package name
      * @throws NullPointerException if any of the arguments are null
      */
-    public static String packageNameForAugmentedGeneratedType(final String basePackageName, final SchemaPath schemaPath) {
+    public static String packageNameForAugmentedGeneratedType(final String basePackageName, final SchemaPath schemaPath,
+                                                              final BindingNamespaceType namespaceType) {
         final Iterable<QName> pathTowardsRoot = schemaPath.getPathTowardsRoot();
         final Iterable<QName> pathFromRoot = schemaPath.getPathFromRoot();
         final int size = Iterables.size(pathTowardsRoot);
@@ -373,7 +374,7 @@ public final class BindingGeneratorUtil {
             return basePackageName;
         }
 
-        return generateNormalizedPackageName(basePackageName, pathFromRoot, size, BindingNamespaceType.Data);
+        return generateNormalizedPackageName(basePackageName, pathFromRoot, size, namespaceType);
     }
 
     /**
