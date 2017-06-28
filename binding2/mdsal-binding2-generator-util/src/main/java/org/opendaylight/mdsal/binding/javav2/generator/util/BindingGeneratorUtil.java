@@ -365,7 +365,8 @@ public final class BindingGeneratorUtil {
      * @return string with valid JAVA package name
      * @throws NullPointerException if any of the arguments are null
      */
-    public static String packageNameForAugmentedGeneratedType(final String basePackageName, final SchemaPath schemaPath) {
+    public static String packageNameForAugmentedGeneratedType(final String basePackageName, final SchemaPath schemaPath,
+                                                              final BindingNamespaceType namespaceType) {
         final Iterable<QName> pathTowardsRoot = schemaPath.getPathTowardsRoot();
         final Iterable<QName> pathFromRoot = schemaPath.getPathFromRoot();
         final int size = Iterables.size(pathTowardsRoot);
@@ -373,7 +374,7 @@ public final class BindingGeneratorUtil {
             return basePackageName;
         }
 
-        return generateNormalizedPackageName(basePackageName, pathFromRoot, size, BindingNamespaceType.Data);
+        return generateNormalizedPackageName(basePackageName, pathFromRoot, size, namespaceType);
     }
 
     /**
@@ -421,8 +422,8 @@ public final class BindingGeneratorUtil {
                     .append('.').append(toReplaceNameSpace.getPackagePrefix()).toString();
 
             Preconditions.checkState(toReplacePackageName.equals(topPackageName)
-                            || toReplacePackageName.contains(topPackageName),
-                    "Package name to replace does not belong to the given namespace to replace!");
+                            || toReplacePackageName.contains(topPackageName), toReplacePackageName
+                            + " cannot be replaced with "  + topPackageName + "!");
 
             return new StringBuilder(normalizeBasePackageName)
                     .append('.')
