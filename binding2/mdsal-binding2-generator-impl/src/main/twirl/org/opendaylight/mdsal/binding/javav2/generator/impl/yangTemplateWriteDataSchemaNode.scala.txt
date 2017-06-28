@@ -24,10 +24,13 @@
 @import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.Module
 @import org.opendaylight.yangtools.yang.model.api.SchemaNode
+@import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.Status
 @import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode
 
 @(dataSchemaNode: DataSchemaNode, module: Module)
+@if(!(dataSchemaNode.isInstanceOf[DerivableSchemaNode]
+    && dataSchemaNode.asInstanceOf[DerivableSchemaNode].isAddedByUses())) {
 @if(dataSchemaNode.isInstanceOf[ContainerSchemaNode]) {
     @writeContSchemaNode(dataSchemaNode.asInstanceOf[ContainerSchemaNode], module)
 }
@@ -106,6 +109,7 @@
 }
 @if(dataSchemaNode.isInstanceOf[ListSchemaNode]) {
     @writeListSchemaNode(dataSchemaNode.asInstanceOf[ListSchemaNode], module)
+}
 }
 
 @writeContSchemaNode(container: ContainerSchemaNode, module: Module) = {
