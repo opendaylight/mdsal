@@ -32,6 +32,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
 
     private List<AnnotationTypeBuilder> annotationBuilders = ImmutableList.of();
     private List<Type> implementsTypes = ImmutableList.of();
+    private List<Type> outerImplementsTypes = ImmutableList.of();
     private List<EnumBuilder> enumDefinitions = ImmutableList.of();
     private List<Constant> constants = ImmutableList.of();
     private List<MethodSignatureBuilder> methodDefinitions = ImmutableList.of();
