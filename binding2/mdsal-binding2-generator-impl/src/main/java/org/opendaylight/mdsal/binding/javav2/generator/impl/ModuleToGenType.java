@@ -51,7 +51,7 @@ final class ModuleToGenType {
             genTypeBuilders, final SchemaContext schemaContext, final TypeProvider typeProvider, Map<Module,
             ModuleContext> genCtx, final boolean verboseClassComments) {
 
-        genCtx.put(module, new ModuleContext());
+        genCtx.computeIfAbsent(module, k -> new ModuleContext());
         genCtx = allTypeDefinitionsToGenTypes(module, genCtx, typeProvider);
         genCtx = groupingsToGenTypes(module, module.getGroupings(), genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
@@ -59,7 +59,8 @@ final class ModuleToGenType {
         genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments, typeProvider);
 
         if (!module.getChildNodes().isEmpty()) {
-            final GeneratedTypeBuilder moduleType = GenHelperUtil.moduleToDataType(module, genCtx, verboseClassComments);
+            final GeneratedTypeBuilder moduleType =
+                    GenHelperUtil.moduleToDataType(module, schemaContext, genCtx, verboseClassComments);
             genCtx.get(module).addModuleNode(moduleType);
             final String basePackageName = BindingMapping.getRootPackageName(module);
             GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
@@ -71,6 +72,7 @@ final class ModuleToGenType {
         genCtx = actionsAndRPCMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
 
+        genCtx.get(module).processReferTypeImplements();
         return genCtx;
     }
 
