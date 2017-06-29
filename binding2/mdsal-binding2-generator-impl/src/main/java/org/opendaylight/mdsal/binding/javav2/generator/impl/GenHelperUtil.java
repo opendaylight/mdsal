@@ -210,6 +210,16 @@ final class GenHelperUtil {
         return null;
      }
 
+    static GeneratedTOBuilder findIdentityByQname(final QName qname, final Map<Module, ModuleContext> genCtx) {
+        for (final ModuleContext ctx : genCtx.values()) {
+            final GeneratedTOBuilder result = ctx.getIdentities().get(qname);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
     /**
      * Adds the methods to <code>typeBuilder</code> which represent subnodes of
      * node for which <code>typeBuilder</code> was created.
@@ -1298,7 +1308,7 @@ final class GenHelperUtil {
                     .append(BindingNamespaceType.Identity.getPackagePrefix())
                     .toString();
 
-            final GeneratedTOBuilderImpl existingIdentityGto = generatedIdentities.get(baseIdentity.getQName());
+            final GeneratedTOBuilder existingIdentityGto = findIdentityByQname(baseIdentity.getQName(), genCtx);
             if (existingIdentityGto != null) {
                 newType.setExtendsType(existingIdentityGto.toInstance());
             } else {
