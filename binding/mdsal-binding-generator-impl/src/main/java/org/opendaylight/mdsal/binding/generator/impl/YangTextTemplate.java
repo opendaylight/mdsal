@@ -70,7 +70,7 @@ final class YangTextTemplate {
                 }
 
                 // Trim leading whitespace
-                while (lineBuilder.charAt(0) == ' ') {
+                while (lineBuilder.length() > 0 && lineBuilder.charAt(0) == ' ') {
                     lineBuilder.deleteCharAt(0);
                 }
 
