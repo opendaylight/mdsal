@@ -281,7 +281,7 @@ final class RpcActionGenHelper {
             final BindingNamespaceType namespaceType) {
         final GeneratedTypeBuilder nodeType = addRawInterfaceDefinition(basePackageName, operationNode, schemaContext,
                 operationName, "", verboseClassComments, genTypeBuilders, namespaceType);
-        addImplementedInterfaceFromUses(operationNode, nodeType, genCtx);
+        addImplementedInterfaceFromUses(module, schemaContext, operationNode, nodeType, genCtx);
         nodeType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
                 (BindingTypes.ITEM, parent)));
         if (isInput) {
