@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
@@ -57,6 +58,7 @@ public final class ModuleContext {
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final BiMap<Type,ChoiceCaseNode> caseTypeToSchema = HashBiMap.create();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
+    private Multimap<SchemaPath, GeneratedTypeBuilder> referTypes = HashMultimap.create();
 
 
     List<Type> getGeneratedTypes() {
@@ -220,6 +222,21 @@ public final class ModuleContext {
 
     public Type getInnerType(final SchemaPath path) {
         return this.innerTypes.get(path);
+    }
+
+
+    public void addReferTypes(final SchemaPath schemaPath, final GeneratedTypeBuilder referType) {
+        this.referTypes.put(schemaPath, referType);
+    }
+
+    public void processReferTypeImplements() {
+        if (!this.referTypes.isEmpty()) {
+            for (Map.Entry<SchemaPath, GeneratedTypeBuilder> groupEntry : this.groupings.entrySet()) {
+                for (GeneratedTypeBuilder referType : this.referTypes.get(groupEntry.getKey())) {
+                    ((GeneratedTypeBuilderImpl) referType).addImplementsType(groupEntry.getValue());
+                }
+            }
+        }
     }
 
 }
