@@ -1327,6 +1327,7 @@ public class AugmentToGenTypeTest {
         when(targetNode.getPath()).thenReturn(path);
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext moduleContext = new ModuleContext();
+        genCtx.put(module, moduleContext);
         final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment");
         moduleContext.addCaseType(path, gtb);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
