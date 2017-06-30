@@ -143,10 +143,9 @@ final class ModuleToGenType {
         final String basePackageName = BindingMapping.getRootPackageName(module);
 
         if (schemaIdentities != null && !schemaIdentities.isEmpty()) {
-            Map<QName, GeneratedTOBuilderImpl> generatedIdentities = new HashMap<>();
             for (final IdentitySchemaNode identity : schemaIdentities) {
                 GenHelperUtil.identityToGenType(module, basePackageName, identity, schemaContext, genCtx,
-                    verboseClassComments, genTypeBuilders, typeProvider, generatedIdentities);
+                    verboseClassComments);
             }
         }
 
