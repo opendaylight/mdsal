@@ -614,18 +614,18 @@ final class GenHelperUtil {
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (node instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(schemaContext, typeBuilder, (LeafListSchemaNode) node, module,
-                            typeProvider, genCtx);
+                    typeProvider, genCtx, namespaceType);
             } else if (node instanceof LeafSchemaNode) {
                 resolveLeafSchemaNodeAsMethod("", schemaContext, typeBuilder, genCtx, (LeafSchemaNode) node, module,
-                        typeProvider);
+                    typeProvider, namespaceType);
             } else if (node instanceof ListSchemaNode) {
                 listToGenType(module, basePackageName, typeBuilder, childOf, (ListSchemaNode) node, schemaContext,
-                        verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
+                    verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (node instanceof ChoiceSchemaNode) {
                 choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, childOf,
-                        (ChoiceSchemaNode) node, genTypeBuilders, genCtx, typeProvider, namespaceType);
+                    (ChoiceSchemaNode) node, genTypeBuilders, genCtx, typeProvider, namespaceType);
             } else if (node instanceof AnyXmlSchemaNode || node instanceof AnyDataSchemaNode) {
-                resolveAnyNodeAsMethod(schemaContext, typeBuilder, genCtx, node, module, typeProvider);
+                resolveAnyNodeAsMethod(schemaContext, typeBuilder, genCtx, node, module, typeProvider, namespaceType);
             }
         }
     }
@@ -662,15 +662,8 @@ final class GenHelperUtil {
 
         final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(basePackageName, choiceNode,
                 schemaContext, "", "", verboseClasssComments, genTypeBuilders, namespaceType);
-        StringBuilder getterName = new StringBuilder(choiceNode.getQName().getLocalName());
-        if (!namespaceType.equals(BindingNamespaceType.Data)) {
-            getterName.append('_').append(BindingNamespaceType.Data);
-        }
-        final MethodSignatureBuilder getter = constructGetter(parent, getterName.toString(),
-                choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus());
-        if (!namespaceType.equals(BindingNamespaceType.Data)) {
-            getter.setAccessModifier(AccessModifier.DEFAULT);
-        }
+        constructGetter(parent, choiceNode.getQName().getLocalName(),
+                choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus(), namespaceType);
         if (namespaceType.equals(BindingNamespaceType.Data)) {
             choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
         }
@@ -689,18 +682,10 @@ final class GenHelperUtil {
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node,
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
         if (genType != null) {
-            StringBuilder getterName = new StringBuilder(node.getQName().getLocalName());
-            if (!namespaceType.equals(BindingNamespaceType.Data)) {
-                getterName.append('_').append(BindingNamespaceType.Data);
-            }
-
-            final MethodSignatureBuilder getter = constructGetter(parent, getterName.toString(), node.getDescription(), genType, node.getStatus());
-            if (!namespaceType.equals(BindingNamespaceType.Data)) {
-                getter.setAccessModifier(AccessModifier.DEFAULT);
-            }
-
+            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(), genType, node.getStatus(),
+                namespaceType);
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
-                    schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
+                schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
         }
     }
 
@@ -713,25 +698,17 @@ final class GenHelperUtil {
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node,
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
         if (genType != null) {
-            final String nodeName = node.getQName().getLocalName();
-            StringBuilder getterName = new StringBuilder(nodeName);
-            if (!namespaceType.equals(BindingNamespaceType.Data)) {
-                getterName.append('_').append(BindingNamespaceType.Data);
-            }
-            final MethodSignatureBuilder getter = constructGetter(parent, getterName.toString(), node.getDescription(),
-                    Types.listTypeFor(genType), node.getStatus());
-            if (!namespaceType.equals(BindingNamespaceType.Data)) {
-                getter.setAccessModifier(AccessModifier.DEFAULT);
-            }
+            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(),
+                Types.listTypeFor(genType), node.getStatus(), namespaceType);
             final List<QName> listKeys = node.getKeyDefinition();
             final String packageName = new StringBuilder(packageNameForGeneratedType(basePackageName, node.getPath(),
-                    BindingNamespaceType.Key)).append('.').append(nodeName).toString();
+                    BindingNamespaceType.Key)).append('.').append(node.getQName().getLocalName()).toString();
 
             final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node);
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
                 if (resolveDataSchemaNodeAccept(schemaNode, namespaceType)) {
-                    addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
+                    addSchemaNodeToListBuilders(node.getQName().getLocalName(), basePackageName, schemaNode, genType, genTOBuilder, listKeys,
                             module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
                 }
             }
@@ -752,16 +729,9 @@ final class GenHelperUtil {
             final BindingNamespaceType namespaceType) {
         checkArgument(typeBuilder != null, "Generated Type Builder cannot be NULL.");
         if (genTOBuilder != null) {
-            final String nodeName = "key";
-            StringBuilder getterName = new StringBuilder(nodeName);
             final GeneratedTransferObject genTO = genTOBuilder.toInstance();
-            if (!namespaceType.equals(BindingNamespaceType.Data)) {
-                getterName.append('_').append(BindingNamespaceType.Data);
-            }
-            final MethodSignatureBuilder getter = constructGetter(typeBuilder, getterName.toString(), "Returns Primary Key of Yang List Type", genTO, Status.CURRENT);
-            if (!namespaceType.equals(BindingNamespaceType.Data)) {
-                getter.setAccessModifier(AccessModifier.DEFAULT);
-            }
+            constructGetter(typeBuilder, "key",
+                    "Returns Primary Key of Yang List Type", genTO, Status.CURRENT, namespaceType);
             genCtx.get(module).addGeneratedTOBuilder(genTOBuilder);
         }
     }
@@ -787,7 +757,7 @@ final class GenHelperUtil {
      */
     private static Type resolveLeafSchemaNodeAsMethod(final String nodeName, final SchemaContext schemaContext,
             final GeneratedTypeBuilder typeBuilder, final Map<Module, ModuleContext> genCtx, final LeafSchemaNode leaf,
-            final Module module, final TypeProvider typeProvider) {
+            final Module module, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
         if (leaf == null || typeBuilder == null) {
             return null;
         }
@@ -861,7 +831,7 @@ final class GenHelperUtil {
             leafGetterName = leafName;
         }
 
-        constructGetter(typeBuilder, leafGetterName, leafDesc, returnType, leaf.getStatus());
+        constructGetter(typeBuilder, leafGetterName, leafDesc, returnType, leaf.getStatus(), namespaceType);
         return returnType;
     }
 
@@ -887,7 +857,7 @@ final class GenHelperUtil {
      */
     private static boolean resolveLeafListSchemaNode(final SchemaContext schemaContext, final GeneratedTypeBuilder
             typeBuilder, final LeafListSchemaNode node, final Module module, final TypeProvider typeProvider,
-            final Map<Module, ModuleContext> genCtx) {
+            final Map<Module, ModuleContext> genCtx,  final BindingNamespaceType namespaceType) {
         if (node == null || typeBuilder == null || node.isAddedByUses()) {
             return false;
         }
@@ -926,7 +896,8 @@ final class GenHelperUtil {
         }
 
         final ParameterizedType listType = Types.listTypeFor(returnType);
-        constructGetter(typeBuilder, nodeName.getLocalName(), node.getDescription(), listType, node.getStatus());
+        constructGetter(typeBuilder, nodeName.getLocalName(), node.getDescription(), listType, node.getStatus(),
+            namespaceType);
         return true;
     }
 
@@ -1032,7 +1003,7 @@ final class GenHelperUtil {
 
     private static Type resolveAnyNodeAsMethod(final SchemaContext schemaContext, final GeneratedTypeBuilder
             typeBuilder, final Map<Module, ModuleContext> genCtx, final DataSchemaNode node, final Module module,
-            final TypeProvider typeProvider) {
+            final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
 
         final String anyName = node.getQName().getLocalName();
         if (anyName == null) {
@@ -1046,7 +1017,7 @@ final class GenHelperUtil {
 
         Type returnType = Types.DOCUMENT;
 
-        constructGetter(typeBuilder, anyName, anyDesc, returnType, node.getStatus());
+        constructGetter(typeBuilder, anyName, anyDesc, returnType, node.getStatus(), namespaceType);
         return returnType;
     }
 
@@ -1100,7 +1071,7 @@ final class GenHelperUtil {
             final QName leafQName = leaf.getQName();
 
             final Type type = resolveLeafSchemaNodeAsMethod(nodeName, schemaContext, typeBuilder, genCtx, leaf, module,
-                    typeProvider);
+                    typeProvider, namespaceType);
             if (listKeys.contains(leafQName)) {
                 if (type == null) {
                     resolveLeafSchemaNodeAsProperty(schemaContext, typeProvider, genCtx, genTOBuilder, leaf, true,
@@ -1112,16 +1083,16 @@ final class GenHelperUtil {
         } else {
             if (schemaNode instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(schemaContext, typeBuilder, (LeafListSchemaNode) schemaNode, module,
-                        typeProvider, genCtx);
+                    typeProvider, genCtx, namespaceType);
             } else if (schemaNode instanceof ContainerSchemaNode) {
                 containerToGenType(module, basePackageName, typeBuilder, typeBuilder, (ContainerSchemaNode) schemaNode,
-                        schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
+                    schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (schemaNode instanceof ListSchemaNode) {
                 listToGenType(module, basePackageName, typeBuilder, typeBuilder, (ListSchemaNode) schemaNode,
-                        schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
+                    schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (schemaNode instanceof ChoiceSchemaNode) {
                 choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, typeBuilder,
-                        (ChoiceSchemaNode) schemaNode, genTypeBuilders, genCtx, typeProvider, namespaceType);
+                    (ChoiceSchemaNode) schemaNode, genTypeBuilders, genCtx, typeProvider, namespaceType);
             }
         }
     }
