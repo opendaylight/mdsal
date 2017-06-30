@@ -29,7 +29,7 @@
 
 @(genType: GeneratedType, properties: Set[GeneratedProperty], importedNames: Map[String, String],
 ImportedNamesWithProperties: Map[GeneratedProperty, String], augmentField: GeneratedProperty, copyConstructorHelper: String,
-getterMethods: List[String], parentTypeForBuilderName: String, childTreeNode: Boolean, instantiable: Boolean)
+getterMethods: List[String], parentTypeForBuilderName: String, childTreeNode: Boolean, implementedIfcs: Set[Type], instantiable: Boolean)
 @if(genType != null) {
 @{wrapToDocumentation(formatDataForJavaDocBuilder(importedNames.get("genType")))}
 public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{importedNames.get("genType")}> {
@@ -121,7 +121,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     public @{genType.getName}Builder() {
     }
     @if(genType.isInstanceOf[GeneratedType] && !genType.isInstanceOf[GeneratedTransferObject]) {
-        @for(impl <- genType.asInstanceOf[GeneratedType].getImplements) {
+        @for(impl <- implementedIfcs) {
             @generateConstructorFromIfc(impl)
         }
     }
@@ -177,9 +177,6 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
             @{impl.getFullyQualifiedName} arg) {
             @{printConstructorPropertySetter(impl)}
             }
-        }
-        @for(implTypeImplement <- impl.asInstanceOf[GeneratedType].getImplements) {
-            @generateConstructorFromIfc(implTypeImplement)
         }
     }
 }

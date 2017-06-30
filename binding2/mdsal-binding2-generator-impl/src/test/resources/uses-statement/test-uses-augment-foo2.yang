@@ -1,0 +1,28 @@
+module test-uses-augment-foo2 {
+    namespace "urn:test:uses:augment:foo2";
+    prefix foo2;
+
+    revision 2017-06-30 {
+    }
+
+    import test-uses-augment-foo1 {
+        prefix mod1;
+        revision-date 2017-06-30;
+    }
+
+    grouping grouping-module2-two {
+        container container-module2-two {
+
+        }
+    }
+
+    grouping grouping-module2 {
+        container container-module2 {
+           uses grouping-module2-two;
+        }
+    }
+
+    augment "/mod1:notification-module1/mod1:list-module1-1/mod1:list-module1-2/mod1:container-module1" {
+        uses grouping-module2;
+    }
+}
