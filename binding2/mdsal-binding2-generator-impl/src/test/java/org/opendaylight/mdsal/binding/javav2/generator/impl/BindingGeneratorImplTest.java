@@ -21,6 +21,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -130,6 +131,40 @@ public class BindingGeneratorImplTest {
                 description.contains("    revision 2017-02-06;\n\n");
                 description.contains("    typedef my-type {\n        type int8;\n    }");
                 description.contains("    container *my-cont {\n    }\n");
+            }
+        }
+    }
+
+    @Test
+    public void generateTypesIdentityTest() throws Exception {
+        final BindingGenerator bg = new BindingGeneratorImpl(true);
+        final SchemaContext context = YangParserTestUtils.parseYangSources("/identity/");
+        assertNotNull(context);
+
+        final List<Type> generateTypes = bg.generateTypes(context, context.getModules());
+        assertNotNull(generateTypes);
+        assertTrue(!generateTypes.isEmpty());
+        for (final Type type : generateTypes) {
+            if (type.getFullyQualifiedName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.identity3.module.rev170708.ident.Iden1")) {
+                final GeneratedTransferObject genTO = (GeneratedTransferObject)type;
+                assertEquals("org.opendaylight.mdsal.gen.javav2.identity3.module.rev170708.ident.Iden2",
+                        genTO.getSuperType().getFullyQualifiedName());
+
+            }
+            if (type.getFullyQualifiedName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.identity3.module.rev170708.ident.Iden2")) {
+                final GeneratedTransferObject genTO = (GeneratedTransferObject)type;
+                assertEquals("org.opendaylight.mdsal.gen.javav2.identity.import_.rev170602.ident.Iden1",
+                        genTO.getSuperType().getFullyQualifiedName());
+
+            }
+            if (type.getFullyQualifiedName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.identity3.module.rev170708.ident.Iden3")) {
+                final GeneratedTransferObject genTO = (GeneratedTransferObject)type;
+                assertEquals("org.opendaylight.mdsal.gen.javav2.identity3.module.rev170708.ident.Iden1",
+                        genTO.getSuperType().getFullyQualifiedName());
+
             }
         }
     }

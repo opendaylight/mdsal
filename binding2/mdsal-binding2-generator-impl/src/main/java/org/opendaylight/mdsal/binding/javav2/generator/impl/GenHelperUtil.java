@@ -198,6 +198,16 @@ final class GenHelperUtil {
         return null;
      }
 
+    static GeneratedTOBuilder findIdentityByQname(final QName qname, final Map<Module, ModuleContext> genCtx) {
+        for (final ModuleContext ctx : genCtx.values()) {
+            final GeneratedTOBuilder result = ctx.getIdentities().get(qname);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
     /**
      * Adds the methods to <code>typeBuilder</code> which represent subnodes of
      * node for which <code>typeBuilder</code> was created.
@@ -1216,60 +1226,55 @@ final class GenHelperUtil {
      */
     static Map<Module, ModuleContext> identityToGenType(final Module module, final String basePackageName,
             final IdentitySchemaNode identity, final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx,
-            boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
-            final TypeProvider typeProvider, Map<QName, GeneratedTOBuilderImpl> generatedIdentities) {
+            boolean verboseClassComments) {
+
+        resolveIdentitySchemaNode(basePackageName, schemaContext, identity, module, verboseClassComments, genCtx);
+        return genCtx;
+    }
+
+    private static GeneratedTOBuilder resolveIdentitySchemaNode(final String basePackageName, final SchemaContext schemaContext,
+            final IdentitySchemaNode identity, final Module module, final boolean verboseClassComments,
+            final Map<Module, ModuleContext> genCtx) {
+        Preconditions.checkNotNull(identity,"Identity can not be null!");
 
         //check first if identity has been resolved as base identity of some other one
-        GeneratedTOBuilderImpl newType = generatedIdentities.get(identity.getQName());
-
+        GeneratedTOBuilder newType = findIdentityByQname(identity.getQName(), genCtx);
         if (newType == null) {
+            final Module parentModule = SchemaContextUtil.findParentModule(schemaContext, identity);
+            Preconditions.checkState(module.equals(parentModule),
+                    "If the type is null ,it must be in the same module, otherwise it must has been"
+                            + "resolved by an imported module.");
+
             final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, identity.getPath(),
                     BindingNamespaceType.Identity);
             newType = new GeneratedTOBuilderImpl(packageName, identity.getQName().getLocalName(), true, false);
-        }
 
-        final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
-        if (baseIdentities.size() == 0) {
-            //no base - abstract
-            final GeneratedTOBuilderImpl gto = new GeneratedTOBuilderImpl(BaseIdentity.class.getPackage().getName(),
-                BaseIdentity.class.getSimpleName());
-            newType.setExtendsType(gto.toInstance());
-            generatedIdentities.put(identity.getQName(), newType);
-        } else {
-            //one base - inheritance
-            final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
-            final Module baseIdentityParentModule = SchemaContextUtil.findParentModule(schemaContext, baseIdentity);
-            final String returnTypePkgName = new StringBuilder(BindingMapping.getRootPackageName
-                    (baseIdentityParentModule))
-                    .append('.')
-                    .append(BindingNamespaceType.Identity.getPackagePrefix())
-                    .toString();
-
-            final GeneratedTOBuilderImpl existingIdentityGto = generatedIdentities.get(baseIdentity.getQName());
-            if (existingIdentityGto != null) {
-                newType.setExtendsType(existingIdentityGto.toInstance());
-            } else {
-                final GeneratedTOBuilderImpl gto = new GeneratedTOBuilderImpl(returnTypePkgName,
-                        baseIdentity.getQName().getLocalName());
+            final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
+            if (baseIdentities.size() == 0) {
+                //no base - abstract
+                final GeneratedTOBuilderImpl gto = new GeneratedTOBuilderImpl(BaseIdentity.class.getPackage().getName(),
+                        BaseIdentity.class.getSimpleName());
                 newType.setExtendsType(gto.toInstance());
-                generatedIdentities.put(baseIdentity.getQName(), gto);
+            } else {
+                //one base - inheritance
+                final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
+                GeneratedTOBuilder baseType = resolveIdentitySchemaNode(basePackageName, schemaContext,
+                    baseIdentity, module, verboseClassComments, genCtx);
+                newType.setExtendsType(baseType.toInstance());
             }
 
-            //FIXME: more bases - possible composition, multiple inheritance not possible
+            newType.setAbstract(true);
+            newType.addComment(identity.getDescription());
+            newType.setDescription(createDescription(identity, newType.getFullyQualifiedName(), schemaContext,
+                    verboseClassComments, BindingNamespaceType.Identity));
+            newType.setReference(identity.getReference());
+            newType.setModuleName(module.getName());
+            newType.setSchemaPath((List) identity.getPath().getPathFromRoot());
+
+            qNameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, identity.getQName());
+
+            genCtx.get(module).addIdentityType(identity.getQName(), newType);
         }
-        generatedIdentities.put(identity.getQName(), newType);
-
-        newType.setAbstract(true);
-        newType.addComment(identity.getDescription());
-        newType.setDescription(createDescription(identity, newType.getFullyQualifiedName(), schemaContext,
-                verboseClassComments, BindingNamespaceType.Identity));
-        newType.setReference(identity.getReference());
-        newType.setModuleName(module.getName());
-        newType.setSchemaPath((List) identity.getPath().getPathFromRoot());
-
-        qNameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, identity.getQName());
-
-        genCtx.get(module).addIdentityType(identity.getQName(), newType);
-        return genCtx;
+        return newType;
     }
 }

@@ -1,0 +1,23 @@
+module test-identity-base {
+    yang-version 1.1;
+
+    namespace "urn:test:identity:base";
+    prefix test-identity-base;
+
+    organization "test.type.org";
+    revision "2017-06-30";
+
+    identity test-root;
+
+    identity test-one {
+        base test-root;
+    }
+
+    identity test-two {
+        base test-root;
+    }
+
+    container base-cont {
+
+    }
+}
