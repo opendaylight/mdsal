@@ -75,6 +75,8 @@ public class BuilderRenderer extends BaseRenderer {
      */
     private GeneratedProperty augmentField;
 
+    private final Set<Type> implementedIfcs = new LinkedHashSet<>();
+
     boolean instantiable = false;
 
     public BuilderRenderer(final GeneratedType type) {
@@ -173,6 +175,7 @@ public class BuilderRenderer extends BaseRenderer {
     private void collectImplementedMethods(final Set<MethodSignature> methods, List<Type> implementedIfcs) {
         if (implementedIfcs != null && !implementedIfcs.isEmpty()) {
             for (Type implementedIfc : implementedIfcs) {
+                this.implementedIfcs.add(implementedIfc);
                 if ((implementedIfc instanceof GeneratedType && !(implementedIfc instanceof GeneratedTransferObject))) {
                     final GeneratedType ifc = (GeneratedType) implementedIfc;
                     methods.addAll(ifc.getMethodDefinitions());
@@ -297,7 +300,7 @@ public class BuilderRenderer extends BaseRenderer {
         List<String> getterMethods = new ArrayList<>(Collections2.transform(properties, this::getterMethod));
 
         return builderTemplate.render(getType(), properties, importedNames, importedNamesForProperties, augmentField,
-            copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, instantiable)
+            copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, implementedIfcs, instantiable)
                 .body();
     }
 
