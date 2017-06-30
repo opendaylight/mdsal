@@ -1,0 +1,25 @@
+module identity3-module {
+    yang-version 1.1;
+    namespace "identity3:module";
+
+    prefix "ide3mod";
+
+    revision 2017-07-08;
+
+    import identity-import {
+        prefix "ideimp";
+    }
+
+    identity iden1 {
+        base iden2;
+    }
+
+    identity iden2 {
+        base "ideimp:iden1";
+    }
+
+    identity iden3 {
+        base iden1;
+    }
+
+}
