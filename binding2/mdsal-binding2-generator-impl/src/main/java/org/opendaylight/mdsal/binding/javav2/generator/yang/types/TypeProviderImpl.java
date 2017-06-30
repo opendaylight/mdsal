@@ -453,13 +453,14 @@ public final class TypeProviderImpl implements TypeProvider {
         if (r != null && !r.isEmpty() && returnType instanceof GeneratedTransferObject) {
             final GeneratedTransferObject gto = (GeneratedTransferObject) returnType;
             final Module module = findParentModule(schemaContext, parentNode);
+            final Module module1 = findParentModule(schemaContext, typeDefinition);
             final String basePackageName = BindingMapping.getRootPackageName(module);
             final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typeDefinition
                     .getPath(), BindingNamespaceType.Typedef);
             final String genTOName =
                     JavaIdentifierNormalizer.normalizeSpecificIdentifier(typedefName, JavaIdentifier.CLASS);
             final String name = packageName + "." + genTOName;
-            if (!(returnType.getFullyQualifiedName().equals(name))) {
+            if (module.equals(module1) && !(returnType.getFullyQualifiedName().equals(name))) {
                 returnType = shadedTOWithRestrictions(gto, r);
             }
         }
