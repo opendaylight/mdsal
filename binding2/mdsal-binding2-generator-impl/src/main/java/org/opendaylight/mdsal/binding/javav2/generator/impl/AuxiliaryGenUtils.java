@@ -35,6 +35,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.YangSnippetCleaner;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
+import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
@@ -134,10 +135,20 @@ final class AuxiliaryGenUtils {
      *         <code>interfaceBuilder</code>
      */
     static MethodSignatureBuilder constructGetter(final GeneratedTypeBuilder interfaceBuilder,
-                                                  final String schemaNodeName, final String comment, final Type returnType, final Status status) {
+            final String schemaNodeName, final String comment, final Type returnType, final Status status,
+            final BindingNamespaceType namespaceType) {
+        StringBuilder getterName = new StringBuilder(schemaNodeName);
+        if (!namespaceType.equals(BindingNamespaceType.Data)) {
+            getterName.append('_').append(BindingNamespaceType.Data);
+        }
 
         final MethodSignatureBuilder getMethod = interfaceBuilder
-                .addMethod(getterMethodName(schemaNodeName, returnType));
+                .addMethod(getterMethodName(getterName.toString(), returnType));
+
+        if (!namespaceType.equals(BindingNamespaceType.Data)) {
+            getMethod.setAccessModifier(AccessModifier.DEFAULT);
+        }
+
         if (status == Status.DEPRECATED) {
             getMethod.addAnnotation("", "Deprecated");
         }
