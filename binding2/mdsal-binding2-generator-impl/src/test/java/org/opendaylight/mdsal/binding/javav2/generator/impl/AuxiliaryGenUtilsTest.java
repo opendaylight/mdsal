@@ -157,7 +157,7 @@ public class AuxiliaryGenUtilsTest {
     @Test
     public void constructGetterTest() throws Exception {
         final Class[] parameterTypes =
-                { GeneratedTypeBuilder.class, String.class, String.class, Type.class, Status.class };
+                { GeneratedTypeBuilder.class, String.class, String.class, Type.class, Status.class, BindingNamespaceType.class };
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("constructGetter", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -168,7 +168,7 @@ public class AuxiliaryGenUtilsTest {
         final Type returnType = Types.STRING;
         final Status status = Status.DEPRECATED;
 
-        final Object[] args = { gtb, schemaNodeName, comment, returnType, status };
+        final Object[] args = { gtb, schemaNodeName, comment, returnType, status, BindingNamespaceType.Data };
         final MethodSignatureBuilder result = (MethodSignatureBuilder) generate.invoke(AuxiliaryGenUtils.class, args);
         assertEquals(new StringBuilder("get").append("SchemaNodeGetter").toString(),
                 result.toInstance(returnType).getName());
