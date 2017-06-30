@@ -1,0 +1,30 @@
+module test-typeref2 {
+    yang-version 1.1;
+
+    namespace "urn:test:typeref2";
+    prefix test-typeref2;
+
+    typedef lsp-flag {
+        type enumeration {
+            enum unprotected {
+                value 0;
+            }
+            enum full-rerouting {
+                value 1;
+            }
+        }
+    }
+
+    grouping protection-subobject {
+        container protection-subobject {
+            leaf lsp-flag {
+                type lsp-flag;
+                mandatory true;
+            }
+        }
+    }
+
+    container my-cont {
+        uses protection-subobject;
+    }
+}
