@@ -198,6 +198,16 @@ final class GenHelperUtil {
         return null;
      }
 
+    static GeneratedTOBuilder findIdentityByQname(final QName qname, final Map<Module, ModuleContext> genCtx) {
+        for (final ModuleContext ctx : genCtx.values()) {
+            final GeneratedTOBuilder result = ctx.getIdentities().get(qname);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
     /**
      * Adds the methods to <code>typeBuilder</code> which represent subnodes of
      * node for which <code>typeBuilder</code> was created.
@@ -1217,10 +1227,10 @@ final class GenHelperUtil {
     static Map<Module, ModuleContext> identityToGenType(final Module module, final String basePackageName,
             final IdentitySchemaNode identity, final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx,
             boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
-            final TypeProvider typeProvider, Map<QName, GeneratedTOBuilderImpl> generatedIdentities) {
+            final TypeProvider typeProvider) {
 
         //check first if identity has been resolved as base identity of some other one
-        GeneratedTOBuilderImpl newType = generatedIdentities.get(identity.getQName());
+        GeneratedTOBuilder newType = findIdentityByQname(identity.getQName(), genCtx);
 
         if (newType == null) {
             final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, identity.getPath(),
@@ -1234,7 +1244,6 @@ final class GenHelperUtil {
             final GeneratedTOBuilderImpl gto = new GeneratedTOBuilderImpl(BaseIdentity.class.getPackage().getName(),
                 BaseIdentity.class.getSimpleName());
             newType.setExtendsType(gto.toInstance());
-            generatedIdentities.put(identity.getQName(), newType);
         } else {
             //one base - inheritance
             final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
@@ -1245,19 +1254,17 @@ final class GenHelperUtil {
                     .append(BindingNamespaceType.Identity.getPackagePrefix())
                     .toString();
 
-            final GeneratedTOBuilderImpl existingIdentityGto = generatedIdentities.get(baseIdentity.getQName());
+            final GeneratedTOBuilder existingIdentityGto = findIdentityByQname(baseIdentity.getQName(), genCtx);
             if (existingIdentityGto != null) {
                 newType.setExtendsType(existingIdentityGto.toInstance());
             } else {
                 final GeneratedTOBuilderImpl gto = new GeneratedTOBuilderImpl(returnTypePkgName,
                         baseIdentity.getQName().getLocalName());
                 newType.setExtendsType(gto.toInstance());
-                generatedIdentities.put(baseIdentity.getQName(), gto);
             }
 
             //FIXME: more bases - possible composition, multiple inheritance not possible
         }
-        generatedIdentities.put(identity.getQName(), newType);
 
         newType.setAbstract(true);
         newType.addComment(identity.getDescription());
