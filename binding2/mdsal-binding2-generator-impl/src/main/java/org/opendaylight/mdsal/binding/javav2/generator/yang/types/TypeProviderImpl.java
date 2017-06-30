@@ -453,13 +453,14 @@ public final class TypeProviderImpl implements TypeProvider {
         if (r != null && !r.isEmpty() && returnType instanceof GeneratedTransferObject) {
             final GeneratedTransferObject gto = (GeneratedTransferObject) returnType;
             final Module module = findParentModule(schemaContext, parentNode);
+            final Module module1 = findParentModule(schemaContext, typeDefinition);
             final String basePackageName = BindingMapping.getRootPackageName(module);
             final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typeDefinition
                     .getPath(), BindingNamespaceType.Typedef);
             final String genTOName =
                     JavaIdentifierNormalizer.normalizeSpecificIdentifier(typedefName, JavaIdentifier.CLASS);
             final String name = packageName + "." + genTOName;
-            if (!(returnType.getFullyQualifiedName().equals(name))) {
+            if (module.equals(module1) && !(returnType.getFullyQualifiedName().equals(name))) {
                 returnType = shadedTOWithRestrictions(gto, r);
             }
         }
@@ -554,22 +555,17 @@ public final class TypeProviderImpl implements TypeProvider {
         final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
         Type returnType = javaTypeForLeafrefOrIdentityRef(baseTypeDef, typeDefinition, schemaContext, genTypeDefsContextMap);
         if (returnType == null) {
-            if (baseTypeDef instanceof EnumTypeDefinition) {
-                final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) baseTypeDef;
-                returnType = provideTypeForEnum(enumTypeDef, typedefName, typeDefinition, schemaContext);
-            } else {
-                final Module module = findParentModule(schemaContext, typeDefinition);
-                final Restrictions r = BindingGeneratorUtil.getRestrictions(typeDefinition);
-                if (module != null) {
-                    final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
-                    final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
-                    if (genTOs != null) {
-                        returnType = genTOs.get(typedefName);
-                    }
-                    if (returnType == null) {
-                        returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(
-                                baseTypeDef, typeDefinition, r);
-                    }
+            final Module module = findParentModule(schemaContext, typeDefinition);
+            final Restrictions r = BindingGeneratorUtil.getRestrictions(typeDefinition);
+            if (module != null) {
+                final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
+                final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
+                if (genTOs != null) {
+                    returnType = genTOs.get(typedefName);
+                }
+                if (returnType == null) {
+                    returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(
+                            baseTypeDef, typeDefinition, r);
                 }
             }
         }
