@@ -1,0 +1,32 @@
+module test-typeref {
+    yang-version 1.1;
+
+    namespace "urn:test:typeref";
+    prefix test-typeref;
+
+    import test-typeref-base {
+        prefix base;
+        revision-date 2017-06-30;
+    }
+
+    organization "test.type.org";
+    revision "2017-06-30";
+
+    typedef local-as-number {
+        type uint32;
+    }
+
+    grouping as-number-subobject {
+        leaf as-number {
+            type base:as-number;
+        }
+
+        leaf local-as-number {
+            type local-as-number;
+        }
+    }
+
+    container my-cont {
+        uses as-number-subobject;
+    }
+}
