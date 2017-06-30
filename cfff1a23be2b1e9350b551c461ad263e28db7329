@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_cc3dc9bd",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-30T18:22:38Z",
+      "side": 1,
+      "message": "Since there\u0027s a static create method, the intent is hide the ctor from normal users so this should be package-scoped for the unit test. Also add @VisibleForTesting annotation to indicate that.",
+      "range": {
+        "startLine": 88,
+        "startChar": 4,
+        "endLine": 88,
+        "endChar": 10
+      },
+      "revId": "cfff1a23be2b1e9350b551c461ad263e28db7329",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_2c4bc55a",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMNotificationRouter.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-06-30T18:22:38Z",
+      "side": 1,
+      "message": "This should be package-scoped only for the unit test. Also add @VisibleForTesting annotation to indicate that.",
+      "revId": "cfff1a23be2b1e9350b551c461ad263e28db7329",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
