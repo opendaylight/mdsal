@@ -1,0 +1,22 @@
+module test-identity {
+    yang-version 1.1;
+
+    namespace "urn:test:identity";
+    prefix test-identity;
+
+    import test-identity-base {
+        prefix base;
+        revision-date 2017-06-30;
+    }
+
+    organization "test.type.org";
+    revision "2017-06-30";
+
+    identity third-party {
+        base base:test-root;
+    }
+
+    container my-cont {
+
+    }
+}
