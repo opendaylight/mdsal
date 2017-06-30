@@ -1,0 +1,17 @@
+module test-typeref-base {
+    yang-version 1.1;
+
+    namespace "urn:test:typeref:base";
+    prefix test-typeref-base;
+
+    organization "test.type.org";
+    revision "2017-06-30";
+
+    typedef as-number {
+        type uint32;
+    }
+
+    container base-cont {
+
+    }
+}
