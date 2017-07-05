@@ -409,11 +409,8 @@ public final class JavaIdentifierNormalizer {
                 }
             }
             if (!Character.isJavaIdentifierPart(actualChar)) {
-                // prepare actual string of sb for checking if underscore exist on position of the
-                // last char
-                final String partialConvertedIdentifier = sb.toString();
-                sb.append(convert(actualChar, existNext(identifier, i),
-                        partialConvertedIdentifier.charAt(partialConvertedIdentifier.length() - 1)));
+                // prepare actual string of sb for checking if underscore exist on position of the last char
+                sb.append(convert(actualChar, existNext(identifier, i), sb.charAt(sb.length() - 1)));
             } else {
                 sb.append(actualChar);
             }
