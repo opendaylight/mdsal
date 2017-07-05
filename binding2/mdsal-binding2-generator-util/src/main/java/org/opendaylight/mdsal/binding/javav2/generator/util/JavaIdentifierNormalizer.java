@@ -209,13 +209,13 @@ public final class JavaIdentifierNormalizer {
     private static final int FIRST_INDEX = 1;
     private static final char UNDERSCORE = '_';
     private static final char DASH = '-';
-    private static final String EMPTY_STRING = "";
     private static final String RESERVED_KEYWORD = "reserved_keyword";
     private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
     private static final Set<String> PRIMITIVE_TYPES = ImmutableSet.of("char[]", "byte[]");
 
     private static final CharMatcher DASH_MATCHER = CharMatcher.is(DASH);
     private static final CharMatcher DASH_OR_SPACE_MATCHER = CharMatcher.anyOf(" -");
+    private static final CharMatcher UNDERSCORE_MATCHER = CharMatcher.is(UNDERSCORE);
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
 
     private JavaIdentifierNormalizer() {
@@ -472,7 +472,7 @@ public final class JavaIdentifierNormalizer {
             case VARIABLE:
                 return fixCases(convertedIdentifier);
             case PACKAGE:
-                return convertedIdentifier.replaceAll(String.valueOf(UNDERSCORE), EMPTY_STRING);
+                return UNDERSCORE_MATCHER.removeFrom(convertedIdentifier);
             default:
                 throw new IllegalArgumentException("Unknown java type of identifier : " + javaIdentifier.toString());
         }
