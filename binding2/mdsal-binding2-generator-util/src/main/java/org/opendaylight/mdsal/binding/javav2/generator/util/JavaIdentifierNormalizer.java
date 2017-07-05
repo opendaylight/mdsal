@@ -558,12 +558,10 @@ public final class JavaIdentifierNormalizer {
             final int rank) {
         String newName = name;
         for (final Pair pair : values) {
-            if (pair.getName().toLowerCase().equals(name.toLowerCase())
-                    || pair.getMappedName().toLowerCase().equals(name.toLowerCase())) {
+            if (name.equalsIgnoreCase(pair.getName()) || name.equalsIgnoreCase(pair.getMappedName())) {
                 int actualRank = rank;
-                final StringBuilder actualNameBuilder =
-                        new StringBuilder(origName).append(UNDERSCORE).append(actualRank);
-                newName = convertIdentifierEnumValue(actualNameBuilder.toString(), origName, values, ++actualRank);
+                final String actualName = origName + UNDERSCORE + actualRank;
+                newName = convertIdentifierEnumValue(actualName, origName, values, ++actualRank);
             }
         }
         return normalizeSpecificIdentifier(newName, JavaIdentifier.ENUM_VALUE);
