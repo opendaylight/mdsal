@@ -66,6 +66,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
 import org.opendaylight.yangtools.yang.model.api.AnyDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
@@ -265,6 +266,29 @@ final class GenHelperUtil {
                 for (AugmentationSchema augSchema : schemaPathAugmentListEntry.getValue()) {
                     genCtx = processUsesAugments(schemaContext, augSchema, module, genCtx, genTypeBuilders,
                             verboseClassComments, typeProvider, namespaceType);
+                }
+            }
+        }
+        return genCtx;
+    }
+
+    static Map<Module, ModuleContext> processUsesImplements(final DataNodeContainer node,
+            final Module module, final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx) {
+
+        for (final UsesNode usesNode : node.getUses()) {
+            final SchemaNode groupingNode =  SchemaContextUtil.findDataSchemaNode(schemaContext, usesNode.getGroupingPath());
+            Preconditions.checkNotNull(groupingNode, module.toString() + "->"
+                    + usesNode.getGroupingPath().toString());
+            Preconditions.checkState(groupingNode instanceof GroupingDefinition,
+                    module.toString() + "->" + usesNode.getGroupingPath().toString());
+            final Module grpModule = SchemaContextUtil.findParentModule(schemaContext, groupingNode);
+            GroupingDefinition grouping = (GroupingDefinition)groupingNode;
+            for (SchemaNode grpChildNode : grouping.getChildNodes()) {
+                if (grpChildNode instanceof DataNodeContainer) {
+                    final QName childQName = QName.create(((SchemaNode)node).getQName(), grpChildNode.getQName().getLocalName());
+                    DataSchemaNode childNode = node.getDataChildByName(childQName);
+                    genCtx.get(module).getChildNode(childNode.getPath())
+                            .addImplementsType(genCtx.get(grpModule).getChildNode(grpChildNode.getPath()));
                 }
             }
         }
@@ -644,6 +668,7 @@ final class GenHelperUtil {
             }
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
+            processUsesImplements(node, module, schemaContext, genCtx);
         }
     }
 
@@ -1108,8 +1133,6 @@ final class GenHelperUtil {
         genType.setParentTypeForBuilder(childOf);
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
-            genCtx = groupingsToGenTypes(module, ((DataNodeContainer) node).getGroupings(), genCtx, schemaContext,
-                    verboseClassComments, genTypeBuilders, typeProvider);
             processUsesAugments(schemaContext, (DataNodeContainer) node, module, genCtx, genTypeBuilders,
                     verboseClassComments, typeProvider, namespaceType);
         }
@@ -1186,10 +1209,9 @@ final class GenHelperUtil {
         genCtx.get(module).addGroupingType(grouping, genType);
         resolveDataSchemaNodes(module, basePackageName, genType, genType, grouping.getChildNodes(), genCtx,
                 schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Grouping);
-        genCtx = groupingsToGenTypes(module, grouping.getGroupings(), genCtx, schemaContext, verboseClassComments,
-                genTypeBuilders, typeProvider);
         genCtx = processUsesAugments(schemaContext, grouping, module, genCtx, genTypeBuilders, verboseClassComments,
                 typeProvider, BindingNamespaceType.Grouping);
+        genCtx = processUsesImplements(grouping, module, schemaContext, genCtx);
         return genCtx;
     }
 
