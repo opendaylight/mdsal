@@ -206,12 +206,9 @@ public final class JavaIdentifierNormalizer {
         "java",
         "com");
 
-    private static final int FIRST_CHAR = 0;
-    private static final int FIRST_INDEX = 1;
     private static final char UNDERSCORE = '_';
     private static final char DASH = '-';
     private static final String RESERVED_KEYWORD = "reserved_keyword";
-    private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
     private static final Set<String> PRIMITIVE_TYPES = ImmutableSet.of("char[]", "byte[]");
 
     private static final CharMatcher DASH_MATCHER = CharMatcher.is(DASH);
@@ -223,6 +220,9 @@ public final class JavaIdentifierNormalizer {
     // Converted to lower case
     private static final Set<String> WINDOWS_RESERVED_WORDS = BindingMapping.WINDOWS_RESERVED_WORDS.stream()
             .map(String::toLowerCase).collect(Collectors.collectingAndThen(Collectors.toSet(), ImmutableSet::copyOf));
+
+    // FIXME: this thing makes this class non-threadsafe and leak memory
+    private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
 
     private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");
@@ -255,7 +255,7 @@ public final class JavaIdentifierNormalizer {
      * @return converted and fixed name of new enum value
      */
     public static String normalizeEnumValueIdentifier(final String name, final List<Pair> values) {
-        return convertIdentifierEnumValue(name, name, values, FIRST_INDEX);
+        return convertIdentifierEnumValue(name, name, values, 1);
     }
 
     /**
@@ -349,12 +349,12 @@ public final class JavaIdentifierNormalizer {
         if (lastDot != -1 && Character.isUpperCase(packageName.charAt(lastDot + 1))) {
             // ignore class name in package name - inner class name has to be normalized according to original package
             // of parent class
-            basePackageName = packageName.substring(FIRST_CHAR, lastDot);
+            basePackageName = packageName.substring(0, lastDot);
         } else {
             basePackageName = packageName;
         }
 
-        return normalizeClassIdentifier(basePackageName, convertedClassName, convertedClassName, FIRST_INDEX);
+        return normalizeClassIdentifier(basePackageName, convertedClassName, convertedClassName, 1);
     }
 
     /**
@@ -378,10 +378,10 @@ public final class JavaIdentifierNormalizer {
 
         // check and convert first char in identifier if there is non-java char
         final StringBuilder sb = new StringBuilder();
-        final char firstChar = identifier.charAt(FIRST_CHAR);
+        final char firstChar = identifier.charAt(0);
         if (!Character.isJavaIdentifierStart(firstChar)) {
             // converting first char of identifier
-            sb.append(convertFirst(firstChar, existNext(identifier, FIRST_CHAR)));
+            sb.append(convertFirst(firstChar, existNext(identifier, 0)));
         } else {
             sb.append(firstChar);
         }
@@ -390,7 +390,7 @@ public final class JavaIdentifierNormalizer {
             final char actualChar = identifier.charAt(i);
             // ignore single dash as non java char - if there is more dashes in a row or dash is as
             // the last char in identifier then parse these dashes as non java chars
-            if (actualChar == '-' && existNext(identifier, i)) {
+            if (actualChar == DASH && existNext(identifier, i)) {
                 if (identifier.charAt(i - 1) != DASH && identifier.charAt(i + 1) != DASH) {
                     sb.append(UNDERSCORE);
                     continue;
@@ -536,7 +536,7 @@ public final class JavaIdentifierNormalizer {
      *            - string to be capitalized
      */
     private static String capitalize(final String identifier) {
-        return identifier.substring(FIRST_CHAR, FIRST_CHAR + 1).toUpperCase() + identifier.substring(1);
+        return identifier.substring(0, 1).toUpperCase() + identifier.substring(1);
     }
 
     private static String convertIdentifierEnumValue(final String name, final String origName, final List<Pair> values,
