@@ -1,0 +1,19 @@
+module test-uses-statement1 {
+    yang-version 1.1;
+
+    namespace "urn:test:uses:statement1";
+    prefix test-uses-statement1;
+    organization "test.type.org";
+    revision "2017-06-30";
+
+    grouping simple {
+        container foo;
+        leaf bar {
+            type string;
+        }
+    }
+
+    container top {
+        uses simple;
+    }
+}
