@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_eef877e7",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-07-05T11:53:37Z",
+      "side": 1,
+      "message": "this has to absolutely fixed, as it makes performance regress:\n\n# Warmup Iteration   2: 34.534 ops/s\n# Warmup Iteration   3: 20.596 ops/s\n# Warmup Iteration   4: 15.770 ops/s\n# Warmup Iteration   5: 13.092 ops/s",
+      "range": {
+        "startLine": 223,
+        "startChar": 4,
+        "endLine": 224,
+        "endChar": 96
+      },
+      "revId": "bf299360e52243c4a187e214666a2344b9987d9a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
