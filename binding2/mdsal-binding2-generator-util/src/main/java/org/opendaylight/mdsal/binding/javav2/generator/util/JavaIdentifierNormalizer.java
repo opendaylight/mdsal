@@ -194,6 +194,14 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 @Beta
 public final class JavaIdentifierNormalizer {
 
+    public static final Set<String> SPECIAL_RESERVED_PATHS = ImmutableSet.of(
+        "org.opendaylight.yangtools.concepts",
+        "org.opendaylight.yangtools.yang.common",
+        "org.opendaylight.yangtools.yang.model",
+        "org.opendaylight.mdsal.binding.javav2.spec",
+        "java",
+        "com");
+
     private static final int FIRST_CHAR = 0;
     private static final int FIRST_INDEX = 1;
     private static final char UNDERSCORE = '_';
@@ -202,9 +210,6 @@ public final class JavaIdentifierNormalizer {
     private static final String RESERVED_KEYWORD = "reserved_keyword";
     private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
     private static final Set<String> PRIMITIVE_TYPES = ImmutableSet.of("char[]", "byte[]");
-    public static final Set<String> SPECIAL_RESERVED_PATHS =
-            ImmutableSet.of("org.opendaylight.yangtools.yang.model","org.opendaylight.yangtools.concepts","org.opendaylight.yangtools.yang.common",
-                    "org.opendaylight.mdsal.binding.javav2.spec", "java", "com");
 
     private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");
@@ -254,7 +259,7 @@ public final class JavaIdentifierNormalizer {
             String normalizedPartialPackageName = normalizePartialPackageName(packageNameParts[i]);
             sb.append(normalizedPartialPackageName);
 
-            if (i != (packageNameParts.length - 1)) {
+            if (i != packageNameParts.length - 1) {
                 sb.append(".");
             }
         }
@@ -335,7 +340,7 @@ public final class JavaIdentifierNormalizer {
                 for (int i = 0; i < packageNameParts.length - 1; i++) {
                     if (!Character.isUpperCase(packageNameParts[i].charAt(FIRST_CHAR))) {
                         sb.append(packageNameParts[i]);
-                        if (i != (packageNameParts.length - 2) &&
+                        if (i != packageNameParts.length - 2 &&
                                 !Character.isUpperCase(packageNameParts[i+1].charAt(FIRST_CHAR))) {
                             sb.append('.');
                         }
@@ -386,8 +391,8 @@ public final class JavaIdentifierNormalizer {
             final char actualChar = identifier.charAt(i);
             // ignore single dash as non java char - if there is more dashes in a row or dash is as
             // the last char in identifier then parse these dashes as non java chars
-            if ((actualChar == '-') && existNext(identifier, i)) {
-                if ((identifier.charAt(i - 1) != DASH) && (identifier.charAt(i + 1) != DASH)) {
+            if (actualChar == '-' && existNext(identifier, i)) {
+                if (identifier.charAt(i - 1) != DASH && identifier.charAt(i + 1) != DASH) {
                     sb.append(UNDERSCORE);
                     continue;
                 }
@@ -498,7 +503,7 @@ public final class JavaIdentifierNormalizer {
      * @return true if there is another char, false otherwise
      */
     private static boolean existNext(final String identifier, final int actual) {
-      return (identifier.length() - 1) < (actual + 1) ? false : true;
+        return identifier.length() - 1 < actual + 1 ? false : true;
     }
 
     /**
@@ -516,7 +521,7 @@ public final class JavaIdentifierNormalizer {
         if (name.contains(String.valueOf(DASH))) {
             name = name.replaceAll(String.valueOf(DASH), String.valueOf(UNDERSCORE));
         }
-        name = existNext ? (name + "_") : name;
+        name = existNext ? name + "_" : name;
         return name.contains(" ") ? name.replaceAll(" ", "_") : name;
     }
 
