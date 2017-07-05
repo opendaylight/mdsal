@@ -8,9 +8,11 @@
 package org.opendaylight.mdsal.binding.javav2.generator.util;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
@@ -211,6 +213,8 @@ public final class JavaIdentifierNormalizer {
     private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
     private static final Set<String> PRIMITIVE_TYPES = ImmutableSet.of("char[]", "byte[]");
 
+    private static final Splitter DOT_SPLITTER = Splitter.on('.');
+
     private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");
     }
@@ -253,17 +257,19 @@ public final class JavaIdentifierNormalizer {
      * @return normalized name
      */
     public static String normalizeFullPackageName(final String fullPackageName) {
-        final String[] packageNameParts = fullPackageName.split("\\.");
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < packageNameParts.length; i++) {
-            String normalizedPartialPackageName = normalizePartialPackageName(packageNameParts[i]);
-            sb.append(normalizedPartialPackageName);
-
-            if (i != packageNameParts.length - 1) {
-                sb.append(".");
-            }
+        final Iterator<String> it = DOT_SPLITTER.split(fullPackageName).iterator();
+        if (!it.hasNext()) {
+            return fullPackageName;
         }
-        return sb.toString();
+
+        final StringBuilder sb = new StringBuilder(fullPackageName.length());
+        while (true) {
+            sb.append(normalizePartialPackageName(it.next()));
+            if (!it.hasNext()) {
+                return sb.toString();
+            }
+            sb.append('.');
+        }
     }
 
     /**
