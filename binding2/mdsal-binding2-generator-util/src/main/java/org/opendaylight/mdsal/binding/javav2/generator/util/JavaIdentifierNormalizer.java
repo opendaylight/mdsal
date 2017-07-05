@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.javav2.generator.util;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -213,6 +214,7 @@ public final class JavaIdentifierNormalizer {
     private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
     private static final Set<String> PRIMITIVE_TYPES = ImmutableSet.of("char[]", "byte[]");
 
+    private static final CharMatcher DASH_MATCHER = CharMatcher.is(DASH);
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
 
     private JavaIdentifierNormalizer() {
@@ -282,29 +284,30 @@ public final class JavaIdentifierNormalizer {
     public static String normalizePartialPackageName(final String packageNamePart) {
         // if part of package name consist from java or windows reserved word, return it with
         // underscore at the end and in lower case
-        if (BindingMapping.JAVA_RESERVED_WORDS.contains(packageNamePart.toLowerCase())
+        final String lowerPart = packageNamePart.toLowerCase();
+        if (BindingMapping.JAVA_RESERVED_WORDS.contains(lowerPart)
                 || BindingMapping.WINDOWS_RESERVED_WORDS.contains(packageNamePart.toUpperCase())) {
-            return new StringBuilder(packageNamePart).append(UNDERSCORE).toString().toLowerCase();
+            return lowerPart + UNDERSCORE;
         }
-        String normalizedPackageNamePart = packageNamePart;
-        if (packageNamePart.contains(String.valueOf(DASH))) {
-            normalizedPackageNamePart = packageNamePart.replaceAll(String.valueOf(DASH), String.valueOf(UNDERSCORE));
-        }
+
+        final String normalizedPart = DASH_MATCHER.replaceFrom(packageNamePart, UNDERSCORE);
+
         final StringBuilder sb = new StringBuilder();
-        StringBuilder innserSb = new StringBuilder();
-        for (int i = 0; i < normalizedPackageNamePart.length(); i++) {
-            if (normalizedPackageNamePart.charAt(i) == UNDERSCORE) {
-                if (!innserSb.toString().isEmpty()) {
-                    sb.append(normalizeSpecificIdentifier(innserSb.toString(), JavaIdentifier.PACKAGE));
-                    innserSb = new StringBuilder();
+        final StringBuilder innerSb = new StringBuilder();
+        for (int i = 0; i < normalizedPart.length(); i++) {
+            final char c = normalizedPart.charAt(i);
+            if (c == UNDERSCORE) {
+                if (innerSb.length() != 0) {
+                    sb.append(normalizeSpecificIdentifier(innerSb.toString(), JavaIdentifier.PACKAGE));
+                    innerSb.setLength(0);
                 }
                 sb.append(UNDERSCORE);
             } else {
-                innserSb.append(normalizedPackageNamePart.charAt(i));
+                innerSb.append(c);
             }
         }
-        if (!innserSb.toString().isEmpty()) {
-            sb.append(normalizeSpecificIdentifier(innserSb.toString(), JavaIdentifier.PACKAGE));
+        if (innerSb.length() != 0) {
+            sb.append(normalizeSpecificIdentifier(innerSb.toString(), JavaIdentifier.PACKAGE));
         }
         // returned normalized part of package name
         return sb.toString();
