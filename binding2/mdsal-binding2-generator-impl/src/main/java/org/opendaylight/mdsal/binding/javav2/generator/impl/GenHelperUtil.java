@@ -66,6 +66,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
 import org.opendaylight.yangtools.yang.model.api.AnyDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
@@ -267,6 +268,47 @@ final class GenHelperUtil {
                             verboseClassComments, typeProvider, namespaceType);
                 }
             }
+        }
+        return genCtx;
+    }
+
+
+    static void addUsesImplements(final DataNodeContainer superNode, final Module superModule,
+            final DataNodeContainer node, final Module module,
+            final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType ) {
+        for (SchemaNode superChildNode : superNode.getChildNodes()) {
+            if (superChildNode instanceof DataNodeContainer) {
+                final QName childQName = QName.create(((SchemaNode)node).getQName(), superChildNode.getQName().getLocalName());
+                DataSchemaNode childNode = node.getDataChildByName(childQName);
+                Preconditions.checkNotNull(childNode, ((SchemaNode) node).getPath() + "->" + childQName.toString());
+
+                final GeneratedTypeBuilder type = genCtx.get(module).getChildNode(childNode.getPath());
+                final GeneratedTypeBuilder superType = genCtx.get(superModule).getChildNode(superChildNode.getPath());
+
+                //TODO:delete this after supporting uses augment
+                if (type == null || superType == null) {
+                    return;
+                }
+                Preconditions.checkNotNull(type, module.toString() + "->" + childNode.getPath().toString());
+                Preconditions.checkNotNull(superType, superModule.toString() + "->" + superChildNode.getPath().toString());
+                type.addImplementsType(superType);
+                addUsesImplements((DataNodeContainer)superChildNode, superModule, (DataNodeContainer)childNode, module, schemaContext, genCtx, namespaceType);
+            }
+        }
+    }
+
+    static Map<Module, ModuleContext> processUsesImplements(final DataNodeContainer node, final Module module,
+            final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
+
+        for (final UsesNode usesNode : node.getUses()) {
+            final SchemaNode groupingNode =  SchemaContextUtil.findDataSchemaNode(schemaContext, usesNode.getGroupingPath());
+            Preconditions.checkNotNull(groupingNode, module.toString() + "->"
+                    + usesNode.getGroupingPath().toString());
+            Preconditions.checkState(groupingNode instanceof GroupingDefinition,
+                    module.toString() + "->" + usesNode.getGroupingPath().toString());
+            final Module superModule = SchemaContextUtil.findParentModule(schemaContext, groupingNode);
+            GroupingDefinition grouping = (GroupingDefinition)groupingNode;
+            addUsesImplements(grouping, superModule, node, module, schemaContext, genCtx, namespaceType);
         }
         return genCtx;
     }
@@ -644,6 +686,7 @@ final class GenHelperUtil {
             }
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
+            processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
         }
     }
 
@@ -1108,8 +1151,6 @@ final class GenHelperUtil {
         genType.setParentTypeForBuilder(childOf);
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
-            genCtx = groupingsToGenTypes(module, ((DataNodeContainer) node).getGroupings(), genCtx, schemaContext,
-                    verboseClassComments, genTypeBuilders, typeProvider);
             processUsesAugments(schemaContext, (DataNodeContainer) node, module, genCtx, genTypeBuilders,
                     verboseClassComments, typeProvider, namespaceType);
         }
@@ -1186,10 +1227,9 @@ final class GenHelperUtil {
         genCtx.get(module).addGroupingType(grouping, genType);
         resolveDataSchemaNodes(module, basePackageName, genType, genType, grouping.getChildNodes(), genCtx,
                 schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Grouping);
-        genCtx = groupingsToGenTypes(module, grouping.getGroupings(), genCtx, schemaContext, verboseClassComments,
-                genTypeBuilders, typeProvider);
         genCtx = processUsesAugments(schemaContext, grouping, module, genCtx, genTypeBuilders, verboseClassComments,
                 typeProvider, BindingNamespaceType.Grouping);
+        genCtx = processUsesImplements(grouping, module, schemaContext, genCtx, BindingNamespaceType.Grouping);
         return genCtx;
     }
 
