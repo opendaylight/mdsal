@@ -503,7 +503,7 @@ public final class JavaIdentifierNormalizer {
      * @return true if there is another char, false otherwise
      */
     private static boolean existNext(final String identifier, final int actual) {
-        return identifier.length() - 1 < actual + 1 ? false : true;
+        return identifier.length() > actual + 1;
     }
 
     /**
