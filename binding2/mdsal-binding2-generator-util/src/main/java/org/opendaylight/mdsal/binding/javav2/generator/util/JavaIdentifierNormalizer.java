@@ -438,12 +438,12 @@ public final class JavaIdentifierNormalizer {
      */
     private static String normalizeClassIdentifier(final String packageName, final String origClassName,
             final String actualClassName, final int rank) {
+
+        // FIXME: this does not look thread-safe and seems to leak memory
         if (PACKAGES_MAP.containsKey(packageName)) {
             for (final String existingName : PACKAGES_MAP.get(packageName)) {
-                if (existingName.toLowerCase().equals(actualClassName.toLowerCase())) {
-                    final int nextRank = rank + 1;
-                    return normalizeClassIdentifier(packageName, origClassName,
-                            new StringBuilder(origClassName).append(rank).toString(), nextRank);
+                if (actualClassName.equalsIgnoreCase(existingName)) {
+                    return normalizeClassIdentifier(packageName, origClassName, origClassName + rank, rank + 1);
                 }
             }
         }
