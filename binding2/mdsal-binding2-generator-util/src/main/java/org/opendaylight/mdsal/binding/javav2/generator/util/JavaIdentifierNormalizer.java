@@ -16,6 +16,7 @@ import com.google.common.collect.ListMultimap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration.Pair;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
@@ -218,6 +219,10 @@ public final class JavaIdentifierNormalizer {
     private static final CharMatcher DASH_OR_SPACE_MATCHER = CharMatcher.anyOf(" -");
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
 
+    // Converted to lower case
+    private static final Set<String> WINDOWS_RESERVED_WORDS = BindingMapping.WINDOWS_RESERVED_WORDS.stream()
+            .map(String::toLowerCase).collect(Collectors.collectingAndThen(Collectors.toSet(), ImmutableSet::copyOf));
+
     private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");
     }
@@ -286,8 +291,7 @@ public final class JavaIdentifierNormalizer {
         // if part of package name consist from java or windows reserved word, return it with
         // underscore at the end and in lower case
         final String lowerPart = packageNamePart.toLowerCase();
-        if (BindingMapping.JAVA_RESERVED_WORDS.contains(lowerPart)
-                || BindingMapping.WINDOWS_RESERVED_WORDS.contains(packageNamePart.toUpperCase())) {
+        if (BindingMapping.JAVA_RESERVED_WORDS.contains(lowerPart) || WINDOWS_RESERVED_WORDS.contains(lowerPart)) {
             return lowerPart + UNDERSCORE;
         }
 
@@ -376,19 +380,16 @@ public final class JavaIdentifierNormalizer {
      * @return - java acceptable identifier
      */
     public static String normalizeSpecificIdentifier(final String identifier, final JavaIdentifier javaIdentifier) {
-        final StringBuilder sb = new StringBuilder();
-
         // if identifier isn't PACKAGE type then check it by reserved keywords
-        if(javaIdentifier != JavaIdentifier.PACKAGE) {
-            if (BindingMapping.JAVA_RESERVED_WORDS.contains(identifier.toLowerCase())
-                    || BindingMapping.WINDOWS_RESERVED_WORDS.contains(identifier.toUpperCase())) {
-                return fixCasesByJavaType(
-                        sb.append(identifier).append(UNDERSCORE).append(RESERVED_KEYWORD).toString().toLowerCase(),
-                        javaIdentifier);
+        if (javaIdentifier != JavaIdentifier.PACKAGE) {
+            final String lower = identifier.toLowerCase();
+            if (BindingMapping.JAVA_RESERVED_WORDS.contains(lower) || WINDOWS_RESERVED_WORDS.contains(lower)) {
+                return fixCasesByJavaType(lower + UNDERSCORE + RESERVED_KEYWORD, javaIdentifier);
             }
         }
 
         // check and convert first char in identifier if there is non-java char
+        final StringBuilder sb = new StringBuilder();
         final char firstChar = identifier.charAt(FIRST_CHAR);
         if (!Character.isJavaIdentifierStart(firstChar)) {
             // converting first char of identifier
@@ -453,7 +454,7 @@ public final class JavaIdentifierNormalizer {
     /**
      * Fix cases of converted identifiers by Java type
      *
-     * @param string
+     * @param convertedIdentifier
      *            - converted identifier
      * @param javaIdentifier
      *            - java type of identifier
