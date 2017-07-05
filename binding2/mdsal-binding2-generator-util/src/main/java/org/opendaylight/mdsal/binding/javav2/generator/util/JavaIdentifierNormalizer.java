@@ -217,6 +217,7 @@ public final class JavaIdentifierNormalizer {
     private static final CharMatcher DASH_MATCHER = CharMatcher.is(DASH);
     private static final CharMatcher DASH_OR_SPACE_MATCHER = CharMatcher.anyOf(" -");
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
+    private static final Splitter UNDERSCORE_SPLITTER = Splitter.on(UNDERSCORE);
 
     private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");
@@ -486,19 +487,15 @@ public final class JavaIdentifierNormalizer {
      * @return resolved identifier
      */
     private static String fixCases(final String convertedIdentifier) {
-        final StringBuilder sb = new StringBuilder();
-        if (convertedIdentifier.contains(String.valueOf(UNDERSCORE))) {
-            boolean isFirst = true;
-            for (final String part : convertedIdentifier.split(String.valueOf(UNDERSCORE))) {
-                if (isFirst) {
-                    isFirst = false;
-                    sb.append(part);
-                } else {
-                    sb.append(capitalize(part));
-                }
-            }
-        } else {
-            sb.append(convertedIdentifier);
+        if (convertedIdentifier.indexOf(UNDERSCORE) == -1) {
+            return convertedIdentifier;
+        }
+
+        final StringBuilder sb = new StringBuilder(convertedIdentifier.length());
+        final Iterator<String> it = UNDERSCORE_SPLITTER.split(convertedIdentifier).iterator();
+        sb.append(it.next());
+        while (it.hasNext()) {
+            sb.append(capitalize(it.next()));
         }
         return sb.toString();
     }
