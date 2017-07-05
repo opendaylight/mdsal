@@ -215,6 +215,7 @@ public final class JavaIdentifierNormalizer {
     private static final Set<String> PRIMITIVE_TYPES = ImmutableSet.of("char[]", "byte[]");
 
     private static final CharMatcher DASH_MATCHER = CharMatcher.is(DASH);
+    private static final CharMatcher DASH_OR_SPACE_MATCHER = CharMatcher.anyOf(" -");
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
 
     private JavaIdentifierNormalizer() {
@@ -526,12 +527,8 @@ public final class JavaIdentifierNormalizer {
      * @return converted char
      */
     private static String convertFirst(final char c, final boolean existNext) {
-        String name = Character.getName(c);
-        if (name.contains(String.valueOf(DASH))) {
-            name = name.replaceAll(String.valueOf(DASH), String.valueOf(UNDERSCORE));
-        }
-        name = existNext ? name + "_" : name;
-        return name.contains(" ") ? name.replaceAll(" ", "_") : name;
+        final String name = DASH_OR_SPACE_MATCHER.replaceFrom(Character.getName(c), UNDERSCORE);
+        return existNext ? name + '_' : name;
     }
 
     /**
