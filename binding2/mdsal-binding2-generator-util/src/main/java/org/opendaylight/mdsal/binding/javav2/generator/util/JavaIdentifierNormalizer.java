@@ -337,32 +337,19 @@ public final class JavaIdentifierNormalizer {
             }
         }
         final String convertedClassName = normalizeSpecificIdentifier(className, JavaIdentifier.CLASS);
-        // if packageName contains class name at the end, then the className is
-        // name of inner class
-        final String[] packageNameParts = packageName.split("\\.");
-        String suppInnerClassPackageName = packageName;
-        if (packageNameParts.length > 1) {
-            if (Character.isUpperCase(packageNameParts[packageNameParts.length - 1].charAt(FIRST_CHAR))) {
-                final StringBuilder sb = new StringBuilder();
-                // ignore class name in package name - inner class name has
-                // to be normalizing according to original package of parent
-                // class
-                for (int i = 0; i < packageNameParts.length - 1; i++) {
-                    if (!Character.isUpperCase(packageNameParts[i].charAt(FIRST_CHAR))) {
-                        sb.append(packageNameParts[i]);
-                        if (i != packageNameParts.length - 2 &&
-                                !Character.isUpperCase(packageNameParts[i+1].charAt(FIRST_CHAR))) {
-                            sb.append('.');
-                        }
-                    } else {
-                        break;
-                    }
-                }
-                suppInnerClassPackageName = sb.toString();
-            }
+
+        // if packageName contains class name at the end, then the className is name of inner class
+        final String basePackageName;
+        final int lastDot = packageName.lastIndexOf('.');
+        if (lastDot != -1 && Character.isUpperCase(packageName.charAt(lastDot + 1))) {
+            // ignore class name in package name - inner class name has to be normalized according to original package
+            // of parent class
+            basePackageName = packageName.substring(FIRST_CHAR, lastDot);
+        } else {
+            basePackageName = packageName;
         }
 
-        return normalizeClassIdentifier(suppInnerClassPackageName, convertedClassName, convertedClassName, FIRST_INDEX);
+        return normalizeClassIdentifier(basePackageName, convertedClassName, convertedClassName, FIRST_INDEX);
     }
 
     /**
