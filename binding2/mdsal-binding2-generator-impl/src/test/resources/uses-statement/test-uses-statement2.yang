@@ -1,0 +1,18 @@
+module test-uses-statement2 {
+    yang-version 1.1;
+
+    namespace "urn:test:uses:statement2";
+    prefix test-uses-statement2;
+    organization "test.type.org";
+    revision "2017-06-30";
+
+    grouping with-inner {
+        grouping inner {
+            container cont;
+        }
+        uses inner;
+    }
+    container top {
+        uses with-inner;
+    }
+}
