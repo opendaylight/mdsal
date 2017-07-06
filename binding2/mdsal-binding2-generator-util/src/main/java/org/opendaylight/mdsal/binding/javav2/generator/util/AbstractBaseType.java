@@ -11,6 +11,7 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.Objects;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 
 /**
@@ -39,11 +40,13 @@ public abstract class AbstractBaseType implements Type {
      * @param name
      *            string with the name for this <code>Type</code>
      */
-    protected AbstractBaseType(final String pkName, final String name) {
+    protected AbstractBaseType(final String pkName, final String name, ModuleContext context) {
         Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
         Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
         this.packageName = JavaIdentifierNormalizer.normalizeFullPackageName(pkName);
-        this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name);
+        Preconditions.checkNotNull(context, "In case of not having identifiers normalized, " +
+                "ModuleContext instance must be provided.");
+        this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name, context);
     }
 
     /**
@@ -58,7 +61,8 @@ public abstract class AbstractBaseType implements Type {
      * @param isNormalized
      *            true if pkName and name are normalized
      */
-    protected AbstractBaseType(final String pkName, final String name, final boolean isNormalized) {
+    protected AbstractBaseType(final String pkName, final String name, final boolean isNormalized,
+            ModuleContext context) {
         Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
         Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
         if (isNormalized) {
@@ -66,13 +70,14 @@ public abstract class AbstractBaseType implements Type {
             this.name = name;
         } else {
             this.packageName = JavaIdentifierNormalizer.normalizeFullPackageName(pkName);
-            this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name);
+            Preconditions.checkNotNull(context, "In case of not having identifiers normalized, " +
+                    "ModuleContext instance must be provided.");
+            this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name, context);
         }
     }
 
-
     protected AbstractBaseType(final String pkName, final String name, final boolean isPkNameNormalized,
-                               final boolean isTypeNormalized) {
+            final boolean isTypeNormalized, ModuleContext context ) {
         Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
         Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
         if (isPkNameNormalized) {
@@ -84,7 +89,9 @@ public abstract class AbstractBaseType implements Type {
         if (isTypeNormalized) {
             this.name = name;
         } else {
-            this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name);
+            Preconditions.checkNotNull(context, "In case of not having identifiers normalized, " +
+                    "ModuleContext instance must be provided.");
+            this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name, context);
         }
     }
 

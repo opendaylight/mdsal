@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.TypeConstants;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
@@ -123,14 +124,15 @@ final class TypeGenHelper {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef, final
             TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName, final SchemaContext
-            schemaContext, final Map<String, Map<Date, Map<String, Type>>> genTypeDefsContextMap) {
+            schemaContext, final Map<String, Map<Date, Map<String, Type>>> genTypeDefsContextMap,
+            ModuleContext context) {
 
         Preconditions.checkArgument(innerExtendedType != null, "Extended type cannot be NULL!");
         Preconditions.checkArgument(basePackageName != null, "String with base package name cannot be NULL!");
 
         final String typedefName = typedef.getQName().getLocalName();
         final String innerTypeDef = innerExtendedType.getQName().getLocalName();
-        final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typedefName);
+        final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typedefName, context);
         final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
 
         genTOBuilder.setDescription(typedefDescription);
@@ -179,11 +181,12 @@ final class TypeGenHelper {
      *            JAVA <code>Type</code> to which is <code>typedef</code> mapped
      * @return generated transfer object which represent<code>javaType</code>
      */
-    static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef, final Type javaType, final String moduleName) {
+    static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
+           final Type javaType, final String moduleName, ModuleContext context) {
         Preconditions.checkNotNull(javaType, "javaType cannot be null");
         final String propertyName = "value";
 
-        final GeneratedTOBuilder genTOBuilder = typedefToTransferObject(basePackageName, typedef, moduleName);
+        final GeneratedTOBuilder genTOBuilder = typedefToTransferObject(basePackageName, typedef, moduleName, context);
         genTOBuilder.setRestrictions(BindingGeneratorUtil.getRestrictions(typedef));
         final GeneratedPropertyBuilder genPropBuilder = genTOBuilder.addProperty(propertyName);
         genPropBuilder.setReturnType(javaType);
@@ -437,8 +440,8 @@ final class TypeGenHelper {
      *             </ul>
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    static Enumeration provideTypeForEnum(final EnumTypeDefinition enumTypeDef, final String enumName, final
-    SchemaNode parentNode, final SchemaContext schemaContext) {
+    static Enumeration provideTypeForEnum(final EnumTypeDefinition enumTypeDef, final String enumName,
+           final SchemaNode parentNode, final SchemaContext schemaContext, ModuleContext context) {
         Preconditions.checkArgument(enumTypeDef != null, "EnumTypeDefinition reference cannot be NULL!");
         Preconditions.checkArgument(enumTypeDef.getQName().getLocalName() != null,
                 "Local Name in EnumTypeDefinition QName cannot be NULL!");
@@ -454,7 +457,7 @@ final class TypeGenHelper {
             packageName = basePackageName;
         }
 
-        final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(packageName, enumName);
+        final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(packageName, enumName, context);
         final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
         enumBuilder.setDescription(enumTypedefDescription);
         enumBuilder.setReference(enumTypeDef.getReference());
@@ -475,11 +478,12 @@ final class TypeGenHelper {
      *         <code>typedef</code> and <code>basePackageName</code>
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static GeneratedTOBuilderImpl typedefToTransferObject(final String basePackageName, final TypeDefinition<?> typedef, final String moduleName) {
+    private static GeneratedTOBuilderImpl typedefToTransferObject(final String basePackageName,
+            final TypeDefinition<?> typedef, final String moduleName, ModuleContext context) {
         final String typeDefTOName = typedef.getQName().getLocalName();
 
         if ((basePackageName != null) && (typeDefTOName != null)) {
-            final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(basePackageName, typeDefTOName);
+            final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(basePackageName, typeDefTOName, context);
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
 
             newType.setDescription(typedefDescription);

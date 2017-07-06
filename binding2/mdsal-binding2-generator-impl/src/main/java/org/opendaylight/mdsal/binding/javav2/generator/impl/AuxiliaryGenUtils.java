@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNode;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNodes;
@@ -350,9 +351,9 @@ final class AuxiliaryGenUtils {
      *         <code>enumTypeDef</code>
      */
     static EnumBuilder resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
-        final Map<Module, ModuleContext> genCtx, final GeneratedTypeBuilder typeBuilder, final Module module) {
+            final Map<Module, ModuleContext> genCtx, final GeneratedTypeBuilder typeBuilder, final Module module) {
         if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
-            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumName.getLocalName());
+            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumName.getLocalName(), genCtx.get(module));
             final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
             enumBuilder.setDescription(enumTypedefDescription);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
@@ -387,7 +388,7 @@ final class AuxiliaryGenUtils {
      */
     static GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef, final GeneratedTypeBuilder
             typeBuilder, final DataSchemaNode leaf, final Module parentModule, final TypeProvider typeProvider,
-            final SchemaContext schemaContext) {
+            final SchemaContext schemaContext, ModuleContext context) {
         final String classNameFromLeaf = leaf.getQName().getLocalName();
         GeneratedTOBuilder genTOBuilder = null;
         final String packageName = typeBuilder.getFullyQualifiedName();
@@ -395,10 +396,10 @@ final class AuxiliaryGenUtils {
             genTOBuilder = ((TypeProviderImpl) typeProvider)
                     .provideGeneratedTOBuilderForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
                             classNameFromLeaf, leaf, schemaContext,
-                            ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap());
+                            ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap(), context);
         } else if (typeDef instanceof BitsTypeDefinition) {
             genTOBuilder = (((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
-                    packageName, typeDef, classNameFromLeaf, parentModule.getName());
+                    packageName, typeDef, classNameFromLeaf, parentModule.getName(), context);
         }
         if (genTOBuilder != null) {
             typeBuilder.addEnclosingTransferObject(genTOBuilder);
@@ -443,26 +444,28 @@ final class AuxiliaryGenUtils {
      *         <code>list</code> or empty TO builder if <code>list</code> is null or list of
      *         key definitions is null or empty.
      */
-    static GeneratedTOBuilder resolveListKeyTOBuilder(final String packageName, final ListSchemaNode list) {
+    static GeneratedTOBuilder resolveListKeyTOBuilder(final String packageName, final ListSchemaNode list,
+            ModuleContext context) {
         GeneratedTOBuilder genTOBuilder = null;
         if ((list.getKeyDefinition() != null) && (!list.getKeyDefinition().isEmpty())) {
             // underscore used as separator for distinction of class name parts
             final String genTOName =
                     new StringBuilder(list.getQName().getLocalName()).append('_').append(BindingNamespaceType.Key)
                             .toString();
-            genTOBuilder = new GeneratedTOBuilderImpl(packageName, genTOName);
+            genTOBuilder = new GeneratedTOBuilderImpl(packageName, genTOName, context);
         }
         return genTOBuilder;
     }
 
-    static GeneratedTypeBuilder resolveListKeyTypeBuilder(final String packageName, final ListSchemaNode list) {
+    static GeneratedTypeBuilder resolveListKeyTypeBuilder(final String packageName, final ListSchemaNode list,
+            ModuleContext context) {
         GeneratedTypeBuilder genTypeBuilder = null;
         if ((list.getKeyDefinition() != null) && (!list.getKeyDefinition().isEmpty())) {
             // underscore used as separator for distinction of class name parts
             final String genTOName =
                     new StringBuilder(list.getQName().getLocalName()).append('_').append(BindingNamespaceType.Key)
                             .toString();
-            genTypeBuilder = new GeneratedTypeBuilderImpl(packageName, genTOName);
+            genTypeBuilder = new GeneratedTypeBuilderImpl(packageName, genTOName, context);
         }
         return genTypeBuilder;
     }

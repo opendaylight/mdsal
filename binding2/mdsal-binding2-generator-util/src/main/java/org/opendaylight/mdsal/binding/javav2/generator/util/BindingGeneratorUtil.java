@@ -517,6 +517,4 @@ public final class BindingGeneratorUtil {
 
         return false;
     }
-
-    //TODO: further implementation of static util methods...
 }

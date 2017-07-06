@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
@@ -44,19 +45,18 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
     private String moduleName;
     private List<QName> schemaPath;
 
-    public GeneratedTOBuilderImpl(final String packageName, final String name) {
-        super(packageName, name);
+    public GeneratedTOBuilderImpl(final String packageName, final String name, ModuleContext context) {
+        super(packageName, name, context);
         setAbstract(false);
     }
 
     public GeneratedTOBuilderImpl(final String packageName, final String name, final boolean isNormalized) {
-        super(packageName, name, true);
+        super(packageName, name, true, null);
     }
 
-    public GeneratedTOBuilderImpl(final String packageName, final String name,
-                                  final boolean isPkNameNormalized,
-                                  final boolean isTypeNormalized) {
-        super(packageName, name, isPkNameNormalized, isTypeNormalized);
+    public GeneratedTOBuilderImpl(final String packageName, final String name, final boolean isPkNameNormalized,
+            final boolean isTypeNormalized, ModuleContext context) {
+        super(packageName, name, isPkNameNormalized, isTypeNormalized, context);
         setAbstract(false);
     }
 
