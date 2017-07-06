@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_f4e20a02",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-07-06T03:28:51Z",
+      "side": 0,
+      "message": "Keep original logic here, to be supported in subsequent \"uses statement\" patches.",
+      "range": {
+        "startLine": 326,
+        "startChar": 7,
+        "endLine": 326,
+        "endChar": 62
+      },
+      "revId": "2b91c8403d04cf7848eda74f061a480aa03f79bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_14debe3f",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-07-06T03:28:51Z",
+      "side": 0,
+      "message": "not correct, replaced by:\nhttps://git.opendaylight.org/gerrit/#/c/59976/",
+      "range": {
+        "startLine": 442,
+        "startChar": 0,
+        "endLine": 449,
+        "endChar": 13
+      },
+      "revId": "2b91c8403d04cf7848eda74f061a480aa03f79bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
