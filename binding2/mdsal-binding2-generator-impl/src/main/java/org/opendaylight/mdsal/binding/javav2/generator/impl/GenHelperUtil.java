@@ -323,9 +323,7 @@ final class GenHelperUtil {
         augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
         augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
         augTypeBuilder.setBasePackageName(BindingMapping.getRootPackageName(module));
-        if (namespaceType.equals(BindingNamespaceType.Data)) {
-            augTypeBuilder.setWithBuilder(true);
-        }
+        augTypeBuilder.setWithBuilder(true);
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
 
         //produces getters for augTypeBuilder eventually
@@ -438,16 +436,6 @@ final class GenHelperUtil {
             if (!(schemaNode instanceof GroupingDefinition)) {
                 it.addImplementsType(BindingTypes.augmentable(it));
             }
-
-            if (schemaNode instanceof DerivableSchemaNode
-                    && ((DerivableSchemaNode) schemaNode).isAddedByUses()) {
-                //TODO: The schema path of child node is not unique for YANG 1.1
-                final GeneratedTypeBuilder originalType =
-                        findChildNodeByPath(((DerivableSchemaNode) schemaNode).getOriginal().get().getPath(), genCtx);
-                Preconditions.checkState(originalType != null, "Original type can not be null!");
-                it.addImplementsType(originalType.toInstance());
-            }
-
         } else {
             it.addImplementsType(BindingTypes.TREE_NODE);
         }

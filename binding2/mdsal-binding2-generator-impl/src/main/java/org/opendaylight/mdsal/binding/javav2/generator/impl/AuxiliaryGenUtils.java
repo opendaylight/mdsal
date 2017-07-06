@@ -47,6 +47,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignat
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
@@ -97,8 +98,9 @@ final class AuxiliaryGenUtils {
 
     public static boolean hasBuilderClass(final SchemaNode schemaNode, final BindingNamespaceType namespaceType) {
         if ((namespaceType.equals(BindingNamespaceType.Data)
-        && (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode ||
-                schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition))) {
+        && (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode
+                || schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition
+                || schemaNode instanceof ChoiceCaseNode))) {
             return true;
         }
         return false;
