@@ -9,9 +9,10 @@
 package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Optional;
-import com.google.common.base.Preconditions;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
@@ -30,15 +31,14 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
     private boolean isWithBuilder = false;
     private String basePackageName = null;
 
-    public GeneratedTypeBuilderImpl(final String packageName, final String name) {
-        super(packageName, name);
+    public GeneratedTypeBuilderImpl(final String packageName, final String name, ModuleContext context) {
+        super(packageName, name, context);
         setAbstract(true);
     }
 
-    public GeneratedTypeBuilderImpl(final String packageName, final String name,
-                                    final boolean isPkNameNormalized,
-                                    final boolean isTypeNormalized) {
-        super(packageName, name, isPkNameNormalized, isTypeNormalized);
+    public GeneratedTypeBuilderImpl(final String packageName, final String name, final boolean isPkNameNormalized,
+            final boolean isTypeNormalized, ModuleContext context) {
+        super(packageName, name, isPkNameNormalized, isTypeNormalized, context);
         setAbstract(true);
     }
 
