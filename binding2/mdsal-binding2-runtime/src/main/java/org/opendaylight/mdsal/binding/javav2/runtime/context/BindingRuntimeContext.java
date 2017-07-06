@@ -30,7 +30,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.BindingGeneratorImpl;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.ModuleContext;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
@@ -287,13 +287,13 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     private static Type referencedType(final Class<?> type) {
-        return new ReferencedTypeImpl(type.getPackage().getName(), type.getSimpleName(), true);
+        return new ReferencedTypeImpl(type.getPackage().getName(), type.getSimpleName(), true, null);
     }
 
     static Type referencedType(final String type) {
         final int packageClassSeparator = type.lastIndexOf(DOT);
         return new ReferencedTypeImpl(type.substring(0, packageClassSeparator),
-            type.substring(packageClassSeparator + 1), true);
+            type.substring(packageClassSeparator + 1), true, null);
     }
 
     /**
@@ -447,7 +447,7 @@ public class BindingRuntimeContext implements Immutable {
         if (type instanceof ReferencedTypeImpl) {
             return type;
         }
-        return new ReferencedTypeImpl(type.getPackageName(), type.getName());
+        return new ReferencedTypeImpl(type.getPackageName(), type.getName(), null);
     }
 
     private static Set<Type> collectAllContainerTypes(final GeneratedType type, final Set<Type> collection) {
