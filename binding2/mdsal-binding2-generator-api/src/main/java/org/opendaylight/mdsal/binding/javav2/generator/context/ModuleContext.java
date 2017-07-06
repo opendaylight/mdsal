@@ -1,17 +1,19 @@
 /*
- * Copyright (c) 2017 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2017 Pantheon Technologies s.r.o. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.generator.impl;
+package org.opendaylight.mdsal.binding.javav2.generator.context;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -58,8 +60,11 @@ public final class ModuleContext {
     private final BiMap<Type,ChoiceCaseNode> caseTypeToSchema = HashBiMap.create();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
     private final Map<SchemaPath,GeneratedTypeBuilder> keyTypes = new HashMap<>();
+    //map is getting manipulated based on unique YANG module namespace rule
+    private final ListMultimap<String, String> packagesMap = Multimaps.synchronizedListMultimap
+            (ArrayListMultimap.create());
 
-    List<Type> getGeneratedTypes() {
+    public List<Type> getGeneratedTypes() {
         final List<Type> result = new ArrayList<>();
 
         if (this.moduleNode != null) {
@@ -204,7 +209,7 @@ public final class ModuleContext {
         return Collections.unmodifiableMap(this.typeToSchema);
     }
 
-    protected void addTypeToSchema(final Type type, final TypeDefinition<?> typedef) {
+    public void addTypeToSchema(final Type type, final TypeDefinition<?> typedef) {
         this.typeToSchema.put(type, typedef);
     }
 
@@ -214,7 +219,7 @@ public final class ModuleContext {
      * @param path
      * @param enumBuilder
      */
-    void addInnerTypedefType(final SchemaPath path, final EnumBuilder enumBuilder) {
+    public void addInnerTypedefType(final SchemaPath path, final EnumBuilder enumBuilder) {
         this.innerTypes.put(path, enumBuilder);
     }
 
@@ -223,7 +228,7 @@ public final class ModuleContext {
     }
 
 
-    void addKeyType(final SchemaPath path, final GeneratedTypeBuilder genType) {
+    public void addKeyType(final SchemaPath path, final GeneratedTypeBuilder genType) {
         this.keyTypes.put(path, genType);
     }
 
@@ -233,5 +238,17 @@ public final class ModuleContext {
 
     public GeneratedTOBuilder getKeyGenTO(final SchemaPath path) {
         return this.genTOs.get(path);
+    }
+
+    public ListMultimap<String, String> getPackagesMap() {
+        return Multimaps.unmodifiableListMultimap(packagesMap);
+    }
+
+    public void putToPackagesMap(final String packageName, final String actualClassName) {
+        this.packagesMap.put(packageName, actualClassName);
+    }
+
+    public void cleanPackagesMap() {
+        this.packagesMap.clear();
     }
 }

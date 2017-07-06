@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -113,8 +114,8 @@ final class AugmentToGenType {
      *             if set of augmentations from module is null
      */
     static Map<Module, ModuleContext> generate(final Module module, final SchemaContext schemaContext,
-            final TypeProvider typeProvider, final Map<Module, ModuleContext> genCtx,
-            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments) {
+                                               final TypeProvider typeProvider, final Map<Module, ModuleContext> genCtx,
+                                               Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments) {
 
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         Preconditions.checkArgument(module.getName() != null, "Module name cannot be NULL.");

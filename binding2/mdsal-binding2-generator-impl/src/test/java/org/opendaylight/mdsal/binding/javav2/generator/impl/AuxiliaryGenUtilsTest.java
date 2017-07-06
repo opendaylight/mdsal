@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
@@ -84,7 +85,7 @@ public class AuxiliaryGenUtilsTest {
         generate.setAccessible(true);
 
         final GeneratedTypeBuilderImpl generatedTypeBuilder =
-                new GeneratedTypeBuilderImpl("test.deprecated", "Non_Deprecated");
+                new GeneratedTypeBuilderImpl("test.deprecated", "Non_Deprecated", new ModuleContext());
         final Status status = Status.CURRENT;
 
         final Object[] args = { status, generatedTypeBuilder };
@@ -102,7 +103,7 @@ public class AuxiliaryGenUtilsTest {
         generate.setAccessible(true);
 
         final GeneratedTypeBuilderImpl generatedTypeBuilder =
-                new GeneratedTypeBuilderImpl("test.deprecated", "Deprecated");
+                new GeneratedTypeBuilderImpl("test.deprecated", "Deprecated", new ModuleContext());
         final Status status = Status.DEPRECATED;
 
         final Object[] args = { status, generatedTypeBuilder };
@@ -144,7 +145,7 @@ public class AuxiliaryGenUtilsTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final GeneratedTypeBuilderBase gtbb = new GeneratedTypeBuilderImpl("test", "qname_constants");
+        final GeneratedTypeBuilderBase gtbb = new GeneratedTypeBuilderImpl("test", "qname_constants", new ModuleContext());
         final String constantName = "ConstantName";
         final QName constantQName = QName.create("urn:constant", "2017-04-06", constantName);
 
@@ -162,7 +163,7 @@ public class AuxiliaryGenUtilsTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("test", "Getter_of");
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("test", "Getter_of", new ModuleContext());
         final String schemaNodeName = "schema_node_getter";
         final String comment = null;
         final Type returnType = Types.STRING;
@@ -337,8 +338,8 @@ public class AuxiliaryGenUtilsTest {
         generate.setAccessible(true);
 
         final Map<String, GeneratedTypeBuilder> builders = new HashMap<>();
-        builders.put("genTypeName1", new GeneratedTypeBuilderImpl("pckg.a1", "gen_a_1"));
-        builders.put("genTypeName2", new GeneratedTypeBuilderImpl("pckg.a2", "gen_a_2"));
+        builders.put("genTypeName1", new GeneratedTypeBuilderImpl("pckg.a1", "gen_a_1", new ModuleContext()));
+        builders.put("genTypeName2", new GeneratedTypeBuilderImpl("pckg.a2", "gen_a_2", new ModuleContext()));
         final String genTypeName = "genTypeName";
 
         final Object[] args_n = { builders, genTypeName };
@@ -424,7 +425,7 @@ public class AuxiliaryGenUtilsTest {
         when(enumTypeDefinition.getQName()).thenReturn(enumQName);
         final SchemaPath schemaPath = SchemaPath.create(true, enumQName);
         when(enumTypeDefinition.getPath()).thenReturn(schemaPath);
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("urn.enum.test.pckg", "enum-test");
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("urn.enum.test.pckg", "enum-test", new ModuleContext());
         final Map<Module, ModuleContext> map = new HashMap<>();
         final Module module = mock(Module.class);
         final ModuleContext moduleContext = new ModuleContext();
@@ -447,7 +448,7 @@ public class AuxiliaryGenUtilsTest {
 
         final BooleanTypeDefinition typeDef = mock(BooleanTypeDefinition.class);
         final GeneratedTypeBuilder typeBuilder =
-                new GeneratedTypeBuilderImpl("test.boolean.type.def", "boolean-type-def");
+                new GeneratedTypeBuilderImpl("test.boolean.type.def", "boolean-type-def", new ModuleContext());
         final DataSchemaNode leaf = mock(DataSchemaNode.class);
         final QName qnameLeaf = QName.create("urn:leaf:qname:test", "2017-12-04", "leaf-qname-test");
         when(leaf.getQName()).thenReturn(qnameLeaf);
@@ -483,7 +484,7 @@ public class AuxiliaryGenUtilsTest {
         generate.setAccessible(true);
 
         final GeneratedTypeBuilder typeBuilder =
-                new GeneratedTypeBuilderImpl("test.boolean.spc.def", "spec-type-def");
+                new GeneratedTypeBuilderImpl("test.boolean.spc.def", "spec-type-def", new ModuleContext());
         final SchemaContext schemaContext = YangParserTestUtils.parseYangSource(yangPath);
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
         final LeafSchemaNode leafSchemaNode =
@@ -503,7 +504,8 @@ public class AuxiliaryGenUtilsTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final GeneratedTypeBuilder typeBuilder = new GeneratedTypeBuilderImpl("test.boolean.spc.def", "spec-type-def");
+        final GeneratedTypeBuilder typeBuilder = new GeneratedTypeBuilderImpl("test.boolean.spc.def",
+                "spec-type-def", new ModuleContext());
         final SchemaContext schemaContext = YangParserTestUtils.parseYangSource("/base/test-union.yang");
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
         final LeafSchemaNode leafSchemaNode =
@@ -623,7 +625,7 @@ public class AuxiliaryGenUtilsTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final GeneratedTOBuilder gtob = new GeneratedTOBuilderImpl("pckg.name.gto.tst", "gto_name");
+        final GeneratedTOBuilder gtob = new GeneratedTOBuilderImpl("pckg.name.gto.tst", "gto_name", true);
         final LeafSchemaNode leaf = mock(LeafSchemaNode.class);
         final boolean isReadOnly = true;
         final Type type = mock(Type.class);

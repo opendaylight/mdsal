@@ -25,8 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
@@ -34,7 +34,6 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
-import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
@@ -195,7 +194,7 @@ public class AugmentToGenTypeTest {
         final QName create = QName.create("urn:test:simple:test", "2017-02-06", "my-cont");
         final SchemaNode schemaNode = mock(SchemaNode.class);
         when(schemaNode.getPath()).thenReturn(SchemaPath.create(true, create));
-        moduleContext.addChildNodeType(schemaNode, new GeneratedTypeBuilderImpl("test", "Test"));
+        moduleContext.addChildNodeType(schemaNode, new GeneratedTypeBuilderImpl("test", "Test", moduleContext));
         when(genCtx.values()).thenReturn(moduleContexts);
         when(genCtx.get(context.getModules().iterator().next())).thenReturn(moduleContext);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
@@ -642,7 +641,7 @@ public class AugmentToGenTypeTest {
         final Map genCtx = mock(Map.class);
         final Collection<ModuleContext> moduleContexts = new ArrayList<>();
         final ModuleContext mc = new ModuleContext();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(augmPackName, "augm");
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(augmPackName, "augm", mc);
         mc.addChildNodeType(targetSchNode, gtb);
         moduleContexts.add(mc);
         when(genCtx.values()).thenReturn(moduleContexts);
@@ -706,7 +705,7 @@ public class AugmentToGenTypeTest {
 
         final Collection<ModuleContext> moduleContexts = new ArrayList<>();
         final ModuleContext mc = new ModuleContext();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(augmPackName, "augm");
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(augmPackName, "augm", mc);
         mc.addChildNodeType(targetSchNode, gtb);
         moduleContexts.add(mc);
         genCtx.put(moduleAug, mc);
@@ -910,7 +909,7 @@ public class AugmentToGenTypeTest {
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext mc = new ModuleContext();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("pckg.test.augm", "GtbAugm");
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("pckg.test.augm", "GtbAugm", mc);
         mc.addChildNodeType(schNode, gtb);
         genCtx.put(moduleAug, mc);
 
@@ -960,7 +959,7 @@ public class AugmentToGenTypeTest {
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext mc = new ModuleContext();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("pckg.test.augm", "GtbAugm");
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("pckg.test.augm", "GtbAugm", mc);
         mc.addChildNodeType(schNode, gtb);
         genCtx.put(moduleAug, mc);
 
@@ -1344,7 +1343,7 @@ public class AugmentToGenTypeTest {
         when(targetNode.getPath()).thenReturn(path);
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext moduleContext = new ModuleContext();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment");
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", moduleContext);
         moduleContext.addCaseType(path, gtb);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
@@ -1409,7 +1408,7 @@ public class AugmentToGenTypeTest {
         when(targetNode.getPath()).thenReturn(path);
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext moduleContext = new ModuleContext();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment");
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", moduleContext);
         moduleContext.addCaseType(path, gtb);
         genCtx.put(module, moduleContext);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
