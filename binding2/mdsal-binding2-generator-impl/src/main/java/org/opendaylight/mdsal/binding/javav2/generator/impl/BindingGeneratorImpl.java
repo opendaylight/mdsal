@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
@@ -125,10 +126,12 @@ public class BindingGeneratorImpl implements BindingGenerator {
         for (final Module contextModule : contextModules) {
             this.genCtx = ModuleToGenType.generate(contextModule, this.genTypeBuilders, context, this.typeProvider,
                     this.genCtx, this.verboseClassComments);
+            JavaIdentifierNormalizer.cleanMultimap();
         }
         for (final Module contextModule : contextModules) {
             this.genCtx = AugmentToGenType.generate(contextModule, context, this.typeProvider, this.genCtx,
                     this.genTypeBuilders, this.verboseClassComments);
+            JavaIdentifierNormalizer.cleanMultimap();
         }
 
         final List<Type> filteredGenTypes = new ArrayList<>();
