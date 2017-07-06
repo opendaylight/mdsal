@@ -29,7 +29,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
     private List<AnnotationType.Parameter> parameters = ImmutableList.of();
 
     public AnnotationTypeBuilderImpl(final String packageName, final String name) {
-        super(packageName, name);
+        super(packageName, name, null);
         this.packageName = packageName;
         this.name = name;
     }
