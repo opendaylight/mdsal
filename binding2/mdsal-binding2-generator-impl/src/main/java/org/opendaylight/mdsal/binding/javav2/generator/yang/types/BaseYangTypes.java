@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
@@ -154,7 +155,8 @@ public final class BaseYangTypes {
          *         returned.
          */
         @Override
-        public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode) {
+        public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
+                                                    ModuleContext context) {
             if (type != null) {
                 return TYPE_MAP.get(type.getQName().getLocalName());
             }
@@ -164,7 +166,7 @@ public final class BaseYangTypes {
 
         @Override
         public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
-                final Restrictions restrictions) {
+                                                    final Restrictions restrictions, ModuleContext context) {
 
             final String typeName = type.getQName().getLocalName();
             switch (typeName) {
@@ -195,7 +197,7 @@ public final class BaseYangTypes {
                 case "union" :
                     return UNION_TYPE;
                 default:
-                    return javaTypeForSchemaDefinitionType(type, parentNode);
+                    return javaTypeForSchemaDefinitionType(type, parentNode, context);
             }
         }
 

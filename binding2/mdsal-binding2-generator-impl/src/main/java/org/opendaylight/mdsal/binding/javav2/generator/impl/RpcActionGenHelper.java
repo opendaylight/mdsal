@@ -17,7 +17,6 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.processUsesImplements;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
-import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.ACTION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INPUT;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INSTANCE_IDENTIFIER;
@@ -38,6 +37,7 @@ import com.google.common.base.Optional;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
@@ -101,7 +101,7 @@ final class RpcActionGenHelper {
      * @return generated context
      */
     static Map<Module, ModuleContext> actionMethodsToGenType(final Module module, Map<Module, ModuleContext> genCtx,
-            final SchemaContext schemaContext, final boolean verboseClassComments, Map<String, Map<String,
+                                                             final SchemaContext schemaContext, final boolean verboseClassComments, Map<String, Map<String,
             GeneratedTypeBuilder>> genTypeBuilders, TypeProvider typeProvider) {
 
         checkModuleAndModuleName(module);
@@ -203,7 +203,7 @@ final class RpcActionGenHelper {
             sb.append("Rpc");
         }
         final GeneratedTypeBuilder interfaceBuilder = moduleTypeBuilder(module, sb.toString(),
-                verboseClassComments);
+                verboseClassComments, genCtx.get(module));
 
         final String basePackageName = interfaceBuilder.getPackageName();
 
@@ -281,7 +281,7 @@ final class RpcActionGenHelper {
             GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx, final boolean isInput,
             final BindingNamespaceType namespaceType) {
         final GeneratedTypeBuilder nodeType = addRawInterfaceDefinition(basePackageName, operationNode, schemaContext,
-                operationName, "", verboseClassComments, genTypeBuilders, namespaceType);
+                operationName, "", verboseClassComments, genTypeBuilders, namespaceType, genCtx.get(module));
         addImplementedInterfaceFromUses(operationNode, nodeType, genCtx);
         nodeType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
                 (BindingTypes.ITEM, parent)));

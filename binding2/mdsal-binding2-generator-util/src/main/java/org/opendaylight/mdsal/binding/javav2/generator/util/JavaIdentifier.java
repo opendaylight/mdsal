@@ -19,6 +19,7 @@ import com.google.common.annotations.Beta;
  * <li>method</li>
  * <li>variable</li>
  * <li>constant</li>
+ * <li>package</li>
  * </ul>
  */
 @Beta

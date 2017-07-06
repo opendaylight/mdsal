@@ -138,7 +138,7 @@ public class BuilderRenderer extends BaseRenderer {
         final String prefix = Types.BOOLEAN.equals(method.getReturnType()) ? "is" : "get";
         if (method.getName().startsWith(prefix)) {
             final String fieldName = toFirstLower(method.getName().substring(prefix.length()));
-            final GeneratedTOBuilderImpl tmpGenTO = new GeneratedTOBuilderImpl("foo", "foo");
+            final GeneratedTOBuilderImpl tmpGenTO = new GeneratedTOBuilderImpl("foo", "foo", true);
             tmpGenTO.addProperty(fieldName)
                     .setReturnType(method.getReturnType());
             return tmpGenTO.toInstance().getProperties().get(0);
@@ -185,10 +185,12 @@ public class BuilderRenderer extends BaseRenderer {
                             final String fullyQualifiedName = method.getReturnType().getName();
                             final String aPackage = getPackage(fullyQualifiedName);
                             final String name = getName(fullyQualifiedName);
-                            final GeneratedTOBuilderImpl generatedTOBuilder = new GeneratedTOBuilderImpl(aPackage, name);
-                            final ReferencedTypeImpl referencedType = new ReferencedTypeImpl(aPackage, name, true);
+                            final GeneratedTOBuilderImpl generatedTOBuilder = new GeneratedTOBuilderImpl(aPackage,
+                                    name, true);
+                            final ReferencedTypeImpl referencedType = new ReferencedTypeImpl(aPackage, name, true,
+                                    null);
                             final ReferencedTypeImpl generic = new ReferencedTypeImpl(getType().getPackageName(),
-                                    getType().getName(), true);
+                                    getType().getName(), true, null);
                             final ParameterizedType parametrizedReturnType = Types.parameterizedTypeFor(referencedType, generic);
                             generatedTOBuilder.addMethod(method.getName()).setReturnType(parametrizedReturnType);
                             augmentField = propertyFromGetter(generatedTOBuilder.toInstance().getMethodDefinitions().get(0));
