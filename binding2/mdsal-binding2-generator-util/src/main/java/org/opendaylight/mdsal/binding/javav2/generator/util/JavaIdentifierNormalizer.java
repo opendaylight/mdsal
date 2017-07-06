@@ -10,13 +10,13 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration.Pair;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
@@ -221,9 +221,6 @@ public final class JavaIdentifierNormalizer {
     private static final Set<String> WINDOWS_RESERVED_WORDS = BindingMapping.WINDOWS_RESERVED_WORDS.stream()
             .map(String::toLowerCase).collect(Collectors.collectingAndThen(Collectors.toSet(), ImmutableSet::copyOf));
 
-    // FIXME: this thing makes this class non-threadsafe and leak memory
-    private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
-
     private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");
     }
@@ -288,7 +285,7 @@ public final class JavaIdentifierNormalizer {
      *            - part of package name
      * @return normalized name
      */
-    public static String normalizePartialPackageName(final String packageNamePart) {
+    static String normalizePartialPackageName(final String packageNamePart) {
         // if part of package name consist from java or windows reserved word, return it with
         // underscore at the end and in lower case
         final String lowerPart = packageNamePart.toLowerCase();
@@ -332,7 +329,8 @@ public final class JavaIdentifierNormalizer {
      *            - name of identifier
      * @return - java acceptable identifier
      */
-    public static String normalizeClassIdentifier(final String packageName, final String className) {
+    static String normalizeClassIdentifier(final String packageName, final String className,
+            ModuleContext context) {
         if (packageName.isEmpty() && PRIMITIVE_TYPES.contains(className)) {
             return className;
         }
@@ -354,7 +352,7 @@ public final class JavaIdentifierNormalizer {
             basePackageName = packageName;
         }
 
-        return normalizeClassIdentifier(basePackageName, convertedClassName, convertedClassName, 1);
+        return normalizeClassIdentifier(basePackageName, convertedClassName, convertedClassName, 1, context);
     }
 
     /**
@@ -422,18 +420,22 @@ public final class JavaIdentifierNormalizer {
      * @return converted identifier
      */
     private static String normalizeClassIdentifier(final String packageName, final String origClassName,
-            final String actualClassName, final int rank) {
+            final String actualClassName, final int rank, ModuleContext context) {
 
-        // FIXME: this does not look thread-safe and seems to leak memory
-        if (PACKAGES_MAP.containsKey(packageName)) {
-            for (final String existingName : PACKAGES_MAP.get(packageName)) {
-                if (actualClassName.equalsIgnoreCase(existingName)) {
-                    return normalizeClassIdentifier(packageName, origClassName, origClassName + rank, rank + 1);
+        final ListMultimap<String, String> packagesMap = context.getPackagesMap();
+
+        synchronized (packagesMap) {
+            if (packagesMap.containsKey(packageName)) {
+                for (final String existingName : packagesMap.get(packageName)) {
+                    if (actualClassName.equalsIgnoreCase(existingName)) {
+                       return normalizeClassIdentifier(packageName, origClassName, origClassName + rank,
+                     rank + 1, context);
+                    }
                 }
             }
+            context.putToPackagesMap(packageName, actualClassName);
+            return actualClassName;
         }
-        PACKAGES_MAP.put(packageName, actualClassName);
-        return actualClassName;
     }
 
     /**

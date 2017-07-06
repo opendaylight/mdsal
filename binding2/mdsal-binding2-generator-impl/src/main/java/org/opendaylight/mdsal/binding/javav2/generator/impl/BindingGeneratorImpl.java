@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -117,18 +118,18 @@ public class BindingGeneratorImpl implements BindingGenerator {
         Preconditions.checkArgument(modules != null, "Set of Modules cannot be NULL.");
 
         this.typeProvider = new TypeProviderImpl(context);
-        final Module[] modulesArray = new Module[context.getModules().size()];
-        context.getModules().toArray(modulesArray);
-        final List<Module> contextModules = ModuleDependencySort.sort(modulesArray);
+        final List<Module> contextModules = ModuleDependencySort.sort(context.getModules());
         this.genTypeBuilders = new HashMap<>();
 
         for (final Module contextModule : contextModules) {
             this.genCtx = ModuleToGenType.generate(contextModule, this.genTypeBuilders, context, this.typeProvider,
                     this.genCtx, this.verboseClassComments);
+            this.genCtx.get(contextModule).cleanPackagesMap();
         }
         for (final Module contextModule : contextModules) {
             this.genCtx = AugmentToGenType.generate(contextModule, context, this.typeProvider, this.genCtx,
                     this.genTypeBuilders, this.verboseClassComments);
+            this.genCtx.get(contextModule).cleanPackagesMap();
         }
 
         final List<Type> filteredGenTypes = new ArrayList<>();

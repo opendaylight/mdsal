@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 
@@ -17,7 +18,7 @@ public class GeneratedClassLoadingStrategyTest {
     @Test
     public void loadClassTest() throws Exception {
         final Dummy dummy = new Dummy();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("test", "dummy");
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("test", "dummy", new ModuleContext());
         final Class<?> loadClass = dummy.loadClass(gtb.toInstance());
         Assert.assertNotNull(loadClass);
     }

@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.util;
 
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
+
 /**
  *
  * Wraps combination of <code>packageName</code> and <code>name</code> to the
@@ -24,8 +26,8 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
      * @param name
      *            string with the name for referenced type
      */
-    public ReferencedTypeImpl(String packageName, String name) {
-        super(packageName, name);
+    public ReferencedTypeImpl(String packageName, String name, ModuleContext context) {
+        super(packageName, name, context);
     }
 
     /**
@@ -39,8 +41,8 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
      * @param isNormalized
      *            indicates if identifier name is normalized
      */
-    public ReferencedTypeImpl(String packageName, String name, boolean isNormalized) {
-        super(packageName, name, isNormalized);
+    public ReferencedTypeImpl(String packageName, String name, boolean isNormalized, ModuleContext context) {
+        super(packageName, name, isNormalized, context);
     }
 
     @Override
@@ -50,7 +52,7 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
         builder.append(getPackageName());
         builder.append(", name=");
         builder.append(getName());
-        builder.append("]");
+        builder.append(']');
         return builder.toString();
     }
 }
