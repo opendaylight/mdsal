@@ -653,18 +653,16 @@ final class GenHelperUtil {
             final Map<Module, ModuleContext> genCtx, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
         checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         checkArgument(choiceNode != null, "Choice Schema Node cannot be NULL.");
-
-        if (!choiceNode.isAddedByUses()) {
-            final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(basePackageName, choiceNode,
-                    schemaContext, "", "", verboseClasssComments, genTypeBuilders, namespaceType);
-            constructGetter(parent, choiceNode.getQName().getLocalName(),
-                    choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus());
-            choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
-            annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
-            genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
-            generateTypesFromChoiceCases(module, schemaContext, genCtx, basePackageName, choiceTypeBuilder.toInstance(),
-                choiceNode, verboseClasssComments, typeProvider, genTypeBuilders, namespaceType);
-        }
+        
+        final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(basePackageName, choiceNode,
+                schemaContext, "", "", verboseClasssComments, genTypeBuilders, namespaceType);
+        constructGetter(parent, choiceNode.getQName().getLocalName(),
+                choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus());
+        choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
+        annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
+        genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
+        generateTypesFromChoiceCases(module, schemaContext, genCtx, basePackageName, choiceTypeBuilder.toInstance(),
+            choiceNode, verboseClasssComments, typeProvider, genTypeBuilders, namespaceType);
     }
 
     private static void containerToGenType(final Module module, final String basePackageName,
@@ -857,7 +855,7 @@ final class GenHelperUtil {
     private static boolean resolveLeafListSchemaNode(final SchemaContext schemaContext, final GeneratedTypeBuilder
             typeBuilder, final LeafListSchemaNode node, final Module module, final TypeProvider typeProvider,
             final Map<Module, ModuleContext> genCtx) {
-        if (node == null || typeBuilder == null || node.isAddedByUses()) {
+        if (node == null || typeBuilder == null) {
             return false;
         }
 
@@ -945,7 +943,7 @@ final class GenHelperUtil {
         }
 
         for (final ChoiceCaseNode caseNode : caseNodes) {
-            if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
+            if (caseNode != null && !caseNode.isAugmenting()) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(basePackageName, caseNode,
                     module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                 caseTypeBuilder.addImplementsType(refChoiceType);
