@@ -727,13 +727,7 @@ final class GenHelperUtil {
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
         if (genType != null) {
             StringBuilder getterName = new StringBuilder(node.getQName().getLocalName());
-            if (!namespaceType.equals(BindingNamespaceType.Data)) {
-                getterName.append('_').append(BindingNamespaceType.Data);
-            }
             final MethodSignatureBuilder getter = constructGetter(parent, getterName.toString(), node.getDescription(), genType, node.getStatus());
-            if (!namespaceType.equals(BindingNamespaceType.Data)) {
-                getter.setAccessModifier(AccessModifier.DEFAULT);
-            }
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
             processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
