@@ -13,6 +13,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -221,7 +222,8 @@ public final class JavaIdentifierNormalizer {
             .map(String::toLowerCase).collect(ImmutableSet.toImmutableSet());
 
     // FIXME: this thing makes this class non-threadsafe and leak memory
-    private static final ListMultimap<String, String> PACKAGES_MAP = ArrayListMultimap.create();
+    private static final ListMultimap<String, String> PACKAGES_MAP = Multimaps.synchronizedListMultimap
+            (ArrayListMultimap.create());
 
     private JavaIdentifierNormalizer() {
         throw new UnsupportedOperationException("Util class");
@@ -424,15 +426,17 @@ public final class JavaIdentifierNormalizer {
             final String actualClassName, final int rank) {
 
         // FIXME: this does not look thread-safe and seems to leak memory
-        if (PACKAGES_MAP.containsKey(packageName)) {
-            for (final String existingName : PACKAGES_MAP.get(packageName)) {
-                if (actualClassName.equalsIgnoreCase(existingName)) {
-                    return normalizeClassIdentifier(packageName, origClassName, origClassName + rank, rank + 1);
+        synchronized (PACKAGES_MAP) {
+            if (PACKAGES_MAP.containsKey(packageName)) {
+                for (final String existingName : PACKAGES_MAP.get(packageName)) {
+                    if (actualClassName.equalsIgnoreCase(existingName)) {
+                        return normalizeClassIdentifier(packageName, origClassName, origClassName + rank, rank + 1);
+                    }
                 }
             }
+            PACKAGES_MAP.put(packageName, actualClassName);
+            return actualClassName;
         }
-        PACKAGES_MAP.put(packageName, actualClassName);
-        return actualClassName;
     }
 
     /**
