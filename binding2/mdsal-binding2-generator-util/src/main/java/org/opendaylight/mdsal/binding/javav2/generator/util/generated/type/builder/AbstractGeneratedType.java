@@ -45,7 +45,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     private final boolean isAbstract;
 
     public AbstractGeneratedType(final AbstractGeneratedTypeBuilder<?> builder) {
-        super(builder.getPackageName(), builder.getName(), true);
+        super(builder.getPackageName(), builder.getName(), true, null);
         this.parent = builder.getParent();
         this.parentTypeForBuilder = builder.getParentTypeForBuilder();
         this.comment = builder.getComment();
@@ -66,7 +66,8 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
                                  final List<GeneratedTOBuilder> enclosedGenTOBuilders, final List<EnumBuilder> enumBuilders,
                                  final List<Constant> constants, final List<MethodSignatureBuilder> methodBuilders,
                                  final List<GeneratedPropertyBuilder> propertyBuilders, final Type parentTypeForBuilder) {
-        super(packageName, name);
+        //TODO: not called by actual codebase, fix this up (provide context) if needed - 07/20/2017
+        super(packageName, name, null);
         this.parent = parent;
         this.parentTypeForBuilder = parentTypeForBuilder;
         this.comment = comment;

@@ -20,18 +20,16 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
-import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -131,7 +129,7 @@ final class ModuleToGenType {
      *            iterate over them
      * @param schemaContext
      *            schema context only used as input parameter for method
-     *            {@link GenHelperUtil#identityToGenType(Module, String, IdentitySchemaNode, SchemaContext, Map, boolean, Map, TypeProvider, Map)}
+     *            {@link GenHelperUtil#identityToGenType(Module, String, IdentitySchemaNode, SchemaContext, Map, boolean)}
      * @param genCtx generated context
      * @return returns generated context
      *
@@ -179,7 +177,8 @@ final class ModuleToGenType {
             return genCtx;
         }
 
-        final GeneratedTypeBuilder listenerInterface = moduleTypeBuilder(module, "Listener", verboseClassComments);
+        final GeneratedTypeBuilder listenerInterface = moduleTypeBuilder(module, "Listener", verboseClassComments,
+                genCtx.get(module));
         listenerInterface.addImplementsType(NOTIFICATION_LISTENER);
         final String basePackageName = BindingMapping.getRootPackageName(module);
 

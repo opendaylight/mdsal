@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.AbstractBaseType;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.model.api.AnnotationType;
@@ -44,14 +45,13 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
     private String moduleName;
     private List<QName> schemaPath;
 
-    public EnumerationBuilderImpl(final String packageName, final String name) {
-        super(packageName, name);
+    public EnumerationBuilderImpl(final String packageName, final String name, ModuleContext context) {
+        super(packageName, name, context);
     }
 
-    public EnumerationBuilderImpl(final String packageName, final String name,
-                                  final boolean isPkNameNormalized,
-                                  final boolean isTypeNormalized) {
-        super(packageName, name, isPkNameNormalized, isTypeNormalized);
+    public EnumerationBuilderImpl(final String packageName, final String name, final boolean isPkNameNormalized,
+            final boolean isTypeNormalized, ModuleContext context) {
+        super(packageName, name, isPkNameNormalized, isTypeNormalized, context);
     }
 
     public void setReference(final String reference) {
@@ -222,7 +222,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         public EnumerationImpl(final Type definingType, final List<AnnotationTypeBuilder> annotationBuilders,
                                final String packageName, final String name, final List<Pair> values, final String description,
                 final String reference, final String moduleName, final List<QName> schemaPath) {
-            super(packageName, name, true);
+            super(packageName, name, true, null);
             this.definingType = definingType;
             this.values = values;
             this.description = description;

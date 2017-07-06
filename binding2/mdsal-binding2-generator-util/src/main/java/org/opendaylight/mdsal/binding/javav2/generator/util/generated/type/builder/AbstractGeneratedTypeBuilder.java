@@ -13,7 +13,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Objects;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.AbstractBaseType;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -42,18 +44,18 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     private boolean isAbstract;
     private Type parentTypeForBuilder;
 
-    protected AbstractGeneratedTypeBuilder(final String packageName, final String name) {
-        super(packageName, name);
+    protected AbstractGeneratedTypeBuilder(final String packageName, final String name, ModuleContext context) {
+        super(packageName, name, context);
     }
 
-    protected AbstractGeneratedTypeBuilder(final String packageName, final String name, final boolean isNormalized) {
-        super(packageName, name, true);
+    protected AbstractGeneratedTypeBuilder(final String packageName, final String name, final boolean isNormalized,
+            ModuleContext context) {
+        super(packageName, name, true, null);
     }
 
-    protected AbstractGeneratedTypeBuilder(final String packageName, final String name,
-                                           final boolean isPkNameNormalized,
-                                           final boolean isTypeNormalized) {
-        super(packageName, name, isPkNameNormalized, isTypeNormalized);
+    protected AbstractGeneratedTypeBuilder(final String packageName, final String name, final boolean isPkNameNormalized,
+            final boolean isTypeNormalized, ModuleContext context) {
+        super(packageName, name, isPkNameNormalized, isTypeNormalized, context);
     }
 
     protected String getComment() {
@@ -100,7 +102,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     @Override
     public GeneratedTOBuilder addEnclosingTransferObject(final String name) {
         Preconditions.checkArgument(name != null, "Name for Enclosing Generated Transfer Object cannot be null!");
-        GeneratedTOBuilder builder = new GeneratedTOBuilderImpl(getFullyQualifiedName(), name);
+        GeneratedTOBuilder builder = new GeneratedTOBuilderImpl(getFullyQualifiedName(), name, true);
 
         Preconditions.checkArgument(!enclosedTransferObjects.contains(builder), "This generated type already contains equal enclosing transfer object.");
         enclosedTransferObjects = LazyCollections.lazyAdd(enclosedTransferObjects, builder);
@@ -174,9 +176,10 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     @Override
-    public EnumBuilder addEnumeration(final String name) {
+    public EnumBuilder addEnumeration(final String name, ModuleContext context) {
         Preconditions.checkArgument(name != null, "Name of enumeration cannot be null!");
-        final EnumBuilder builder = new EnumerationBuilderImpl(getFullyQualifiedName(), name, true, false);
+        final EnumBuilder builder = new EnumerationBuilderImpl(getFullyQualifiedName(), name, true, false,
+                context);
 
         Preconditions.checkArgument(!enumDefinitions.contains(builder), "This generated type already contains equal enumeration.");
         enumDefinitions = LazyCollections.lazyAdd(enumDefinitions, builder);
