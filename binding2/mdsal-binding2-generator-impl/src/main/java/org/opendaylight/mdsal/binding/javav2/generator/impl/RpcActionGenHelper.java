@@ -15,6 +15,7 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addImplementedInterfaceFromUses;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addRawInterfaceDefinition;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
+import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.processUsesImplements;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.ACTION;
@@ -297,6 +298,8 @@ final class RpcActionGenHelper {
         final MethodSignatureBuilder nodeMethod = nodeType.addMethod("implementedInterface");
         nodeMethod.setReturnType(parameterizedTypeFor(CLASS, nodeType));
         nodeMethod.addAnnotation("", "Override");
+
+        processUsesImplements(operationNode, module, schemaContext, genCtx, namespaceType);
 
         return nodeType;
     }
