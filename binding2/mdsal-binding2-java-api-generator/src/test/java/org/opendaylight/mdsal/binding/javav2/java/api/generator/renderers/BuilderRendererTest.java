@@ -14,6 +14,7 @@ import static org.mockito.Mockito.spy;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
@@ -34,7 +35,7 @@ public class BuilderRendererTest {
         assertTrue(generateToString.contains("builder.append(_test);"));
         assertTrue(generateToString.contains("return builder.append(']').toString();"));
     }
-
+;
     @Test
     public void builderTemplateGenerateToStringWithoutAnyPropertyTest() throws Exception {
         final GeneratedType genType = mockGenType(TEST);
@@ -123,7 +124,8 @@ public class BuilderRendererTest {
         final GeneratedType genType = spy(GeneratedType.class);
         doReturn(TEST).when(genType).getName();
         doReturn(TEST).when(genType).getPackageName();
-        doReturn(new GeneratedTypeBuilderImpl(new StringBuilder(methodeName).append("test").toString(), methodeName)
+        doReturn(new GeneratedTypeBuilderImpl(new StringBuilder(methodeName).append("test").toString(), methodeName,
+                new ModuleContext())
                 .toInstance()).when(genType).getParentTypeForBuilder();
 
         final List<MethodSignature> listMethodSign = new ArrayList<>();
@@ -147,7 +149,8 @@ public class BuilderRendererTest {
         final GeneratedType genType = spy(GeneratedType.class);
         doReturn(TEST).when(genType).getName();
         doReturn(TEST).when(genType).getPackageName();
-        doReturn(new GeneratedTypeBuilderImpl(new StringBuilder(methodeName).append("test").toString(), methodeName)
+        doReturn(new GeneratedTypeBuilderImpl(new StringBuilder(methodeName).append("test").toString(), methodeName,
+                new ModuleContext())
                 .toInstance()).when(genType).getParentTypeForBuilder();
 
         final List<MethodSignature> listMethodSign = new ArrayList<>();

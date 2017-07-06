@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
@@ -209,8 +210,9 @@ public final class Types {
      *         <code>packageName</code> and <code>typeName</code>
      */
     public static WildcardType wildcardTypeFor(final String packageName, final String typeName,
-                                               final boolean isPkNameNormalized, final boolean isTypeNormalized) {
-        return new WildcardTypeImpl(packageName, typeName, isPkNameNormalized, isTypeNormalized);
+                                               final boolean isPkNameNormalized, final boolean isTypeNormalized,
+                                               ModuleContext context) {
+        return new WildcardTypeImpl(packageName, typeName, isPkNameNormalized, isTypeNormalized, context);
     }
 
     /**
@@ -289,7 +291,7 @@ public final class Types {
          *            string with the name of the type
          */
         private ConcreteTypeImpl(final String pkName, final String name, final Restrictions restrictions) {
-            super(pkName, name);
+            super(pkName, name, true,null);
             this.restrictions = restrictions;
         }
 
@@ -317,7 +319,7 @@ public final class Types {
          *            string with the name of the type
          */
         private BaseTypeWithRestrictionsImpl(final String pkName, final String name, final Restrictions restrictions) {
-            super(pkName, name);
+            super(pkName, name, null);
             this.restrictions = Preconditions.checkNotNull(restrictions);
         }
 
@@ -353,7 +355,7 @@ public final class Types {
          *            array of actual parameters
          */
         public ParameterizedTypeImpl(final Type rawType, final Type[] actTypes) {
-            super(rawType.getPackageName(), rawType.getName(), true);
+            super(rawType.getPackageName(), rawType.getName(), true, null);
             this.rawType = rawType;
             this.actualTypes = actTypes.clone();
         }
@@ -384,8 +386,9 @@ public final class Types {
          * @param typeName
          *            string with the name of type
          */
+        //FIXME: doesn't seem to be called at all
         public WildcardTypeImpl(final String packageName, final String typeName) {
-            super(packageName, typeName);
+            super(packageName, typeName, null);
         }
 
         /**
@@ -401,8 +404,8 @@ public final class Types {
          *            if the type name has been normalized
          */
         public WildcardTypeImpl(final String packageName, final String typeName, final boolean isPkNameNormalized,
-                                final boolean isTypeNormalized) {
-            super(packageName, typeName, isPkNameNormalized, isTypeNormalized);
+                                final boolean isTypeNormalized, ModuleContext context) {
+            super(packageName, typeName, isPkNameNormalized, isTypeNormalized, context);
         }
     }
 
