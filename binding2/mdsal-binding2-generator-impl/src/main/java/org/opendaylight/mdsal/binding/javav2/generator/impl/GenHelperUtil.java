@@ -891,15 +891,13 @@ final class GenHelperUtil {
         }
 
         final String leafGetterName;
-        if (!"".equals(nodeName)) {
-            StringBuilder sb = new StringBuilder(nodeName)
-                .append('_')
-                .append(leafName);
+        if ("key".equals(leafName.toLowerCase())) {
+            StringBuilder sb = new StringBuilder(leafName)
+                .append('_').append("RESERVED_WORD");
             leafGetterName = sb.toString();
         } else {
             leafGetterName = leafName;
         }
-
         constructGetter(typeBuilder, leafGetterName, leafDesc, returnType, leaf.getStatus());
         return returnType;
     }
