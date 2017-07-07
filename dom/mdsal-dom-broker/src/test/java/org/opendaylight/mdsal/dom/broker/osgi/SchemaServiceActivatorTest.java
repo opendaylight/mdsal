@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -54,6 +55,13 @@ public class SchemaServiceActivatorTest {
         schemaServiceField.setAccessible(true);
         schemaServiceField.set(schemaServiceActivator, osgiBundle);
 
+        final ServiceRegistration<DOMRpcProviderService> domRpcProviderService =
+                mock(ServiceRegistration.class);
+        doNothing().when(domRpcProviderService).unregister();
+        final Field domRpcService = SchemaServiceActivator.class.getDeclaredField("domRpcService");
+        domRpcService.setAccessible(true);
+        domRpcService.set(schemaServiceActivator, domRpcProviderService);
+
         doNothing().when(registration).unregister();
         doNothing().when(osgiBundle).close();
 
@@ -69,7 +77,7 @@ public class SchemaServiceActivatorTest {
         try {
             OsgiBundleScanningSchemaService.getInstance();
             OsgiBundleScanningSchemaService.destroyInstance();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             assertTrue(e instanceof IllegalStateException);
         }
     }

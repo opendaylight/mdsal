@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,8 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNod
 import org.opendaylight.mdsal.binding.javav2.dom.codec.serialized.LazySerializedContainerNode;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -34,13 +37,16 @@ import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
  * Operation implementation adapter.
+ *
  */
 @Beta
 public class BindingDOMOperationImplementationAdapter implements DOMRpcImplementation {
@@ -53,7 +59,7 @@ public class BindingDOMOperationImplementationAdapter implements DOMRpcImplement
 
     private final BindingNormalizedNodeCodecRegistry codec;
     private final OperationServiceInvoker invoker;
-    private final Operation delegate;
+    private final Rpc<?, ?> delegate;
     private final QName inputQname;
 
     <T extends Operation> BindingDOMOperationImplementationAdapter(final BindingNormalizedNodeCodecRegistry codec,
@@ -72,7 +78,7 @@ public class BindingDOMOperationImplementationAdapter implements DOMRpcImplement
         }
 
         this.codec = Preconditions.checkNotNull(codec);
-        this.delegate = Preconditions.checkNotNull(delegate);
+        this.delegate = (Rpc<?, ?>) Preconditions.checkNotNull(delegate);
         inputQname = QName.create(BindingReflections.getQNameModule(type), "input").intern();
     }
 
@@ -118,7 +124,21 @@ public class BindingDOMOperationImplementationAdapter implements DOMRpcImplement
     }
 
     private ListenableFuture<RpcResult<?>> invoke(final SchemaPath schemaPath, final TreeNode input) {
-        return JdkFutureAdapters.listenInPoolThread(invoker.invoke(delegate, schemaPath.getLastComponent(), input));
+        final SettableFuture<RpcResult<?>> futureRpcResult = SettableFuture.create();
+        invoker.invoke(delegate, schemaPath.getLastComponent(), input, new RpcCallback<TreeNode>() {
+
+            @Override
+            public void onSuccess(final TreeNode output) {
+                futureRpcResult.set(RpcResultBuilder.success(output).build());
+            }
+
+            @Override
+            public void onFailure(final Throwable throwable) {
+                futureRpcResult.set(
+                        RpcResultBuilder.failed().withError(ErrorType.RPC, throwable.getMessage(), throwable).build());
+            }
+        });
+        return JdkFutureAdapters.listenInPoolThread(futureRpcResult);
     }
 
     private ListenableFuture<DOMRpcResult>

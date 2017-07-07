@@ -34,11 +34,13 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.api.factory.BindingTreeCo
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.serializer.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.javav2.runtime.context.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeArgument;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModuleInfo;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -325,7 +327,15 @@ public final class BindingToNormalizedNodeCodec
         final ImmutableBiMap.Builder<Method, SchemaPath> ret = ImmutableBiMap.builder();
         try {
             for (final RpcDefinition rpcDef : module.getRpcs()) {
-                final Method method = runtimeContext.findOperationMethod(key, rpcDef);
+                YangModuleInfo modInfo;
+                try {
+                    modInfo = BindingReflections.getModuleInfo(key);
+                } catch (final Exception e) {
+                    throw new IllegalStateException(e);
+                }
+
+                ((ModuleInfoBackedContext) classLoadingStrategy).registerModuleInfo(modInfo);
+                final Method method = runtimeContext.findRpcMethod(key, rpcDef);
                 ret.put(method, rpcDef.getPath());
             }
         } catch (final NoSuchMethodException e) {
@@ -373,7 +383,7 @@ public final class BindingToNormalizedNodeCodec
         final ImmutableBiMap.Builder<Method, OperationDefinition> ret = ImmutableBiMap.builder();
         try {
             for (final RpcDefinition rpcDef : module.getRpcs()) {
-                final Method method = runtimeContext.findOperationMethod(key, rpcDef);
+                final Method method = runtimeContext.findRpcMethod(key, rpcDef);
                 ret.put(method, rpcDef);
             }
         } catch (final NoSuchMethodException e) {

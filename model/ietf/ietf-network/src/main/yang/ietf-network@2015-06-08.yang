@@ -39,7 +39,7 @@ module ietf-network {
        for example an underlay network.";
     leaf network-ref {
       type leafref {
-        path "/network/network-id";
+        path "/nd:network/nd:network-id";
       }
       description
         "Used to reference a network, for example an underlay
@@ -101,7 +101,7 @@ module ietf-network {
          topologies.";
       leaf network-ref {
         type leafref {
-          path "/network/network-id";
+          path "/nd:network/nd:network-id";
         }
         description
           "References the underlay network.";
