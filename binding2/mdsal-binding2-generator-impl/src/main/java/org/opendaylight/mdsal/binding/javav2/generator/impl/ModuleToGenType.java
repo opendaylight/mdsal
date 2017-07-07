@@ -66,6 +66,7 @@ final class ModuleToGenType {
             GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
                     .getChildNodes(), genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
                     BindingNamespaceType.Data);
+            processUsesImplements(module, module, schemaContext, genCtx, BindingNamespaceType.Data);
         }
 
         //after potential parent data schema nodes
