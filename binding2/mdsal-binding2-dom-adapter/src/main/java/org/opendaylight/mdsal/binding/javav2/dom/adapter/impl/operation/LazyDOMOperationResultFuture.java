@@ -16,10 +16,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
-import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -95,7 +95,7 @@ final class LazyDOMOperationResultFuture implements ListenableFuture<DOMRpcResul
     private DOMRpcResult transform(final RpcResult<?> input) {
         if (input.isSuccessful()) {
             final Object inputData = input.getResult();
-            if (inputData instanceof DataContainer) {
+            if (inputData instanceof Instantiable) {
                 return new DefaultDOMRpcResult(codec.toNormalizedNodeOperationData((TreeNode) inputData));
             } else {
                 return new DefaultDOMRpcResult((NormalizedNode<?, ?>) null);

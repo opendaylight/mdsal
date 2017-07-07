@@ -41,6 +41,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.util.BindingSchemaContextUtils;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -54,6 +55,7 @@ import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
+import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -90,7 +92,7 @@ public class BindingRuntimeContext implements Immutable {
     private final SchemaContext schemaContext;
 
     private final Map<Type, AugmentationSchema> augmentationToSchema = new HashMap<>();
-    private final BiMap<Type, Object> typeToDefiningSchema = HashBiMap.create();
+    private final Map<Type, Object> typeToDefiningSchema = new HashMap<>();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final Map<QName, Type> identities = new HashMap<>();
 
@@ -316,16 +318,22 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     private Entry<GeneratedType, Object> getTypeWithSchema(final Type referencedType) {
-        final Object schema = this.typeToDefiningSchema.get(referencedType);
+        Object schema = null;
+        Type definedType = null;
+        for (final Entry<Type, Object> entry : typeToDefiningSchema.entrySet()) {
+            if (entry.getKey().getFullyQualifiedName().equals(referencedType.getFullyQualifiedName())) {
+                schema = entry.getValue();
+                definedType = entry.getKey();
+                break;
+            }
+        }
         Preconditions.checkNotNull(schema, "Failed to find schema for type %s", referencedType);
 
-        final Type definedType = this.typeToDefiningSchema.inverse().get(schema);
-        Preconditions.checkNotNull(definedType, "Failed to find defined type for %s schema %s", referencedType, schema);
 
         if (definedType instanceof GeneratedTypeBuilder) {
             return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).toInstance(), schema);
         }
-        Preconditions.checkArgument(definedType instanceof GeneratedType,"Type {} is not GeneratedType", referencedType);
+        Preconditions.checkArgument(definedType instanceof GeneratedType, "Type {} is not GeneratedType", definedType);
         return new SimpleEntry<>((GeneratedType) definedType,schema);
     }
 
@@ -333,7 +341,12 @@ public class BindingRuntimeContext implements Immutable {
         final Map<Type,Entry<Type,Type>> childToCase = new HashMap<>();
         for (final ChoiceSchemaNode choice :  FluentIterable.from(schema.getChildNodes()).filter(ChoiceSchemaNode.class)) {
             final ChoiceSchemaNode originalChoice = getOriginalSchema(choice);
-            final Type choiceType = referencedType(this.typeToDefiningSchema.inverse().get(originalChoice));
+            Type choiceType = null;
+            for (final Entry<Type, Object> entry : typeToDefiningSchema.entrySet()) {
+                if (entry.getValue().equals(originalChoice)) {
+                    choiceType = referencedType(entry.getKey());
+                }
+            }
             final Collection<Type> cases = this.choiceToCases.get(choiceType);
 
             for (Type caze : cases) {
@@ -404,12 +417,16 @@ public class BindingRuntimeContext implements Immutable {
 
     public Class<?> getClassForSchema(final SchemaNode childSchema) {
         final SchemaNode origSchema = getOriginalSchema(childSchema);
-        final Type clazzType = this.typeToDefiningSchema.inverse().get(origSchema);
-        try {
-            return this.strategy.loadClass(clazzType);
-        } catch (final ClassNotFoundException e) {
-            throw new IllegalStateException(e);
+        for (final Entry<Type, Object> entry : typeToDefiningSchema.entrySet()) {
+            if (entry.getValue() == origSchema) {
+                try {
+                    return this.strategy.loadClass(entry.getKey());
+                } catch (final ClassNotFoundException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
         }
+        throw new IllegalStateException();
     }
 
     public ImmutableMap<AugmentationIdentifier,Type> getAvailableAugmentationTypes(final DataNodeContainer container) {
@@ -424,7 +441,14 @@ public class BindingRuntimeContext implements Immutable {
                 }
 
                 if (!augment.getChildNodes().isEmpty()) {
-                    final Type augType = this.typeToDefiningSchema.inverse().get(augOrig);
+
+                    Type augType = null;
+                    for (final Entry<Type, Object> entry : typeToDefiningSchema.entrySet()) {
+                        if (entry.getValue() == augOrig) {
+                            augType = entry.getKey();
+                            break;
+                        }
+                    }
                     if (augType != null) {
                         identifierToType.put(getAugmentationIdentifier(augment),augType);
                     }
@@ -497,5 +521,11 @@ public class BindingRuntimeContext implements Immutable {
     private static boolean isExplicitStatement(final ContainerSchemaNode node) {
         return node instanceof EffectiveStatement
                 && ((EffectiveStatement) node).getDeclared().getStatementSource() == StatementSource.DECLARATION;
+    }
+
+    public Method findRpcMethod(final Class<?> key, final RpcDefinition rpcDef)
+            throws NoSuchMethodException, SecurityException {
+        final Class<?> inputClz = this.getClassForSchema(rpcDef.getInput());
+        return key.getMethod("invoke", inputClz, RpcCallback.class);
     }
 }

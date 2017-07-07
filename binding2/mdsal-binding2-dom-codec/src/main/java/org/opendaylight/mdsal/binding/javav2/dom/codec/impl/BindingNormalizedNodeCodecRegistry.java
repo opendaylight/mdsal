@@ -84,9 +84,14 @@ public class BindingNormalizedNodeCodecRegistry implements TreeNodeSerializerReg
         this.serializers = CacheBuilder.newBuilder().weakKeys().build(new GeneratorLoader());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public TreeNodeSerializer getSerializer(final Class<? extends TreeNode> type) {
-        return serializers.getUnchecked(type);
+        Class<? extends TreeNode> actualType = type;
+        if (type.getSimpleName().endsWith("Impl")) {
+            actualType = (Class<? extends TreeNode>) type.getInterfaces()[0];
+        }
+        return serializers.getUnchecked(actualType);
     }
 
     /**
