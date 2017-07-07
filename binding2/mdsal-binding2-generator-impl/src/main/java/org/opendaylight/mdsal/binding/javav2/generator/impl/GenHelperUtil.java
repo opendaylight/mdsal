@@ -284,16 +284,30 @@ final class GenHelperUtil {
         return genCtx;
     }
 
-    static void addUsesImplements(final SchemaNode superNode, final Module superModule,
-            final SchemaNode node, final Module module,
-            final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType ) {
+    private static QName createQNameFromSuperNode(final Object node, final SchemaNode superChildNode) {
+        QName childNodeQName = null;
+        if (node instanceof Module) {
+            childNodeQName = QName.create(((Module)node).getNamespace(), ((Module)node).getRevision(),
+                    superChildNode.getQName().getLocalName());
+        } else if (node instanceof SchemaNode) {
+            childNodeQName = QName.create(((SchemaNode)node).getQName(), superChildNode.getQName().getLocalName());
+        } else {
+            throw new IllegalArgumentException("Not support node type:" + node.toString());
+        }
+
+        return childNodeQName;
+    }
+
+    private static void addUsesImplements(final SchemaNode superNode, final Module superModule,
+            final Object node, final Module module, final SchemaContext schemaContext,
+            Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
 
         if (superNode instanceof DataNodeContainer) {
             for (DataSchemaNode superChildNode : ((DataNodeContainer)superNode).getChildNodes()) {
                 if (superChildNode instanceof DataNodeContainer || superChildNode instanceof ChoiceSchemaNode) {
-                    final QName childQName = QName.create(node.getQName(), superChildNode.getQName().getLocalName());
+                    final QName childQName = createQNameFromSuperNode(node, superChildNode);
                     DataSchemaNode childNode = ((DataNodeContainer)node).getDataChildByName(childQName);
-                    Preconditions.checkNotNull(childNode, node.getPath() + "->" + childQName.toString());
+                    Preconditions.checkNotNull(childNode, node.toString() + "->" + childQName.toString());
 
                     final GeneratedTypeBuilder type = genCtx.get(module).getChildNode(childNode.getPath());
                     final GeneratedTypeBuilder superType = genCtx.get(superModule).getChildNode(superChildNode.getPath());
@@ -320,9 +334,9 @@ final class GenHelperUtil {
             }
         } else if (superNode instanceof ChoiceSchemaNode) {
             for (ChoiceCaseNode superCaseNode : ((ChoiceSchemaNode)superNode).getCases()) {
-                final QName childQName = QName.create(node.getQName(), superCaseNode.getQName().getLocalName());
+                final QName childQName = createQNameFromSuperNode(node, superCaseNode);
                 ChoiceCaseNode caseNode = ((ChoiceSchemaNode)node).getCaseNodeByName(childQName);
-                Preconditions.checkNotNull(caseNode, node.getPath() + "->" + childQName.toString());
+                Preconditions.checkNotNull(caseNode, node.toString() + "->" + childQName.toString());
 
                 final GeneratedTypeBuilder type = genCtx.get(module).getCase(caseNode.getPath());
                 final GeneratedTypeBuilder superType = genCtx.get(superModule).getCase(superCaseNode.getPath());
@@ -332,21 +346,37 @@ final class GenHelperUtil {
                 addUsesImplements(superCaseNode, superModule, caseNode, module, schemaContext, genCtx, namespaceType);
             }
         } else {
-            throw new IllegalArgumentException("Not support node :" + node.getPath().toString());
+            throw new IllegalArgumentException("Not support super node :" + superNode.toString());
         }
     }
 
-    static Map<Module, ModuleContext> processUsesImplements(final SchemaNode node, final Module module,
+    private static GroupingDefinition findGroupingNodeFromUses(final Module module, final SchemaContext schemaContext,
+            final Object parentNode, final UsesNode usesNode) {
+        SchemaNode groupingNode;
+        if (parentNode instanceof Module) {
+            final Module superModule = schemaContext.findModuleByNamespaceAndRevision(
+                    usesNode.getGroupingPath().getLastComponent().getModule().getNamespace(),
+                    usesNode.getGroupingPath().getLastComponent().getModule().getRevision());
+            groupingNode = superModule.getGroupings()
+                    .stream().filter(grouping -> grouping.getPath().equals(usesNode.getGroupingPath()))
+                    .findFirst().orElse(null);
+        } else {
+            //FIXME: Schema path is not unique for Yang 1.1, findDataSchemaNode always does search from data node first.
+            groupingNode = SchemaContextUtil.findDataSchemaNode(schemaContext, usesNode.getGroupingPath());
+        }
+        Preconditions.checkNotNull(groupingNode, module.toString() + "->"
+                + usesNode.getGroupingPath().toString());
+        Preconditions.checkState(groupingNode instanceof GroupingDefinition,
+                module.toString() + "->" + usesNode.getGroupingPath().toString());
+        return (GroupingDefinition) groupingNode;
+    }
+
+    private static Map<Module, ModuleContext> processUsesImplements(final Object node, final Module module,
             final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
         if (node instanceof DataNodeContainer) {
             for (final UsesNode usesNode : ((DataNodeContainer)node).getUses()) {
-                final SchemaNode groupingNode = SchemaContextUtil.findDataSchemaNode(schemaContext, usesNode.getGroupingPath());
-                Preconditions.checkNotNull(groupingNode, module.toString() + "->"
-                        + usesNode.getGroupingPath().toString());
-                Preconditions.checkState(groupingNode instanceof GroupingDefinition,
-                        module.toString() + "->" + usesNode.getGroupingPath().toString());
-                final Module superModule = SchemaContextUtil.findParentModule(schemaContext, groupingNode);
-                GroupingDefinition grouping = (GroupingDefinition) groupingNode;
+                final GroupingDefinition grouping = findGroupingNodeFromUses(module, schemaContext, node, usesNode);
+                final Module superModule = SchemaContextUtil.findParentModule(schemaContext, grouping);
                 addUsesImplements(grouping, superModule, node, module, schemaContext, genCtx, namespaceType);
             }
         }
