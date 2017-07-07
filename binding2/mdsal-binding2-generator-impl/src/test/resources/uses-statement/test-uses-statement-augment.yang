@@ -1,0 +1,25 @@
+module test-uses-statement-augment {
+    yang-version 1.1;
+
+    namespace "urn:test:uses:statement:augment";
+    prefix test-uses-augment;
+    organization "test.type.org";
+    revision "2017-07-07";
+
+    grouping example {
+        container nested {
+            leaf foo {
+                type string;
+            }
+        }
+    }
+
+    container top {
+        uses example {
+            augment nested {
+                container bar {
+                }
+            }
+        }
+    }
+}
