@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_27f8ed7b",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-07-07T12:23:56Z",
+      "side": 1,
+      "message": "this is good approach, but you should replace/get rid of generatedIdentities completely in this class",
+      "range": {
+        "startLine": 201,
+        "startChar": 30,
+        "endLine": 201,
+        "endChar": 49
+      },
+      "revId": "02c5e73805ddecd55cb5414019337684aec49fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_67f2e59b",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 1230,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-07-07T12:23:56Z",
+      "side": 1,
+      "message": "shouldn\u0027t exist anymore",
+      "range": {
+        "startLine": 1230,
+        "startChar": 45,
+        "endLine": 1230,
+        "endChar": 100
+      },
+      "revId": "02c5e73805ddecd55cb5414019337684aec49fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_47efe1b0",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 1233,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-07-07T12:23:56Z",
+      "side": 1,
+      "message": "findIdentityByQname() ?",
+      "revId": "02c5e73805ddecd55cb5414019337684aec49fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
