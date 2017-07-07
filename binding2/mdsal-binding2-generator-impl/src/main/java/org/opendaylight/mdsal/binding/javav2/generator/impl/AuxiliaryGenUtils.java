@@ -497,10 +497,13 @@ final class AuxiliaryGenUtils {
         final String leafName = leaf.getQName().getLocalName();
         final String leafGetterName;
 
-        StringBuilder sb = new StringBuilder(nodeName)
-                .append('_')
-                .append(leafName);
-        leafGetterName = sb.toString();
+        if ("key".equals(leafName.toLowerCase())) {
+            StringBuilder sb = new StringBuilder(leafName)
+                    .append('_').append("RESERVED_WORD");
+            leafGetterName = sb.toString();
+        } else {
+            leafGetterName = leafName;
+        }
 
         final String leafDesc = encodeAngleBrackets(leaf.getDescription());
         final GeneratedPropertyBuilder propBuilder =
