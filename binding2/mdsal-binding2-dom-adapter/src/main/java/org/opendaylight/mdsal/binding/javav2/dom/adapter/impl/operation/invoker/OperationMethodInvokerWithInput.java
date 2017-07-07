@@ -10,20 +10,15 @@ package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.operation.invoker
 import com.google.common.annotations.Beta;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
-import java.util.concurrent.Future;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
-import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 
 @Beta
 class OperationMethodInvokerWithInput extends OperationMethodInvoker {
 
     private static final MethodType INVOCATION_SIGNATURE =
-            MethodType.methodType(Future.class, Rpc.class, Action.class, ListAction.class, Instantiable.class);
+            MethodType.methodType(void.class, Rpc.class, TreeNode.class, RpcCallback.class);
 
     private final MethodHandle handle;
 
@@ -32,7 +27,7 @@ class OperationMethodInvokerWithInput extends OperationMethodInvoker {
     }
 
     @Override
-    public <T extends Operation> Future<RpcResult<?>> invokeOn(final T impl, final TreeNode input) {
-        return invoking(handle, impl, input);
+    public void invokeOn(final Rpc<?, ?> impl, final TreeNode input, final RpcCallback<?> callback) {
+        invoking(handle, impl, input, callback);
     }
 }

@@ -26,7 +26,7 @@ public abstract class GeneratedClassLoadingStrategy implements ClassLoadingStrat
     @Override
     public abstract Class<?> loadClass(String fqcn) throws ClassNotFoundException;
 
-    public static ClassLoadingStrategy getTCCLClassLoadingStrategy() {
+    public static GeneratedClassLoadingStrategy getTCCLClassLoadingStrategy() {
         return TCCL_STRATEGY;
     }
 

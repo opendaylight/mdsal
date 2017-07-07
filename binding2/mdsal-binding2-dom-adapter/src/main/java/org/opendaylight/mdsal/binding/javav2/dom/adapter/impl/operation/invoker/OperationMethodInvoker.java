@@ -14,19 +14,18 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Method;
-import java.util.concurrent.Future;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 
 @Beta
 abstract class OperationMethodInvoker {
 
     private static final Lookup LOOKUP = MethodHandles.publicLookup();
 
-    protected abstract <T extends Operation> Future<RpcResult<?>> invokeOn(T impl, TreeNode input);
+    protected abstract void invokeOn(Rpc<?, ?> impl, TreeNode input, RpcCallback<?> callback);
 
     protected static OperationMethodInvoker from(final Method method) {
         final Optional<Class<? extends Instantiable<?>>> input = BindingReflections.resolveOperationInputClass(method);
@@ -42,9 +41,10 @@ abstract class OperationMethodInvoker {
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    protected Future<RpcResult<?>> invoking(final MethodHandle handle, final Object... args) {
+    protected void invoking(final MethodHandle handle, final Rpc<?, ?> impl, final TreeNode input,
+            final RpcCallback<?> callback) {
         try {
-            return (Future<RpcResult<?>>) handle.invokeExact(args);
+            handle.invokeExact(impl, input, callback);
         } catch (final Throwable e) {
             throw Throwables.propagate(e);
         }

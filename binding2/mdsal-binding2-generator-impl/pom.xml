@@ -110,6 +110,8 @@
                             play.twirl.api.utils,
                             scala,
                             scala.*,
+                            {local-packages},
+                            org.opendaylight.mdsal.binding.javav2.generator.impl.*
                         </Export-Package>
                     </instructions>
                 </configuration>
