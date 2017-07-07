@@ -105,14 +105,13 @@
                     <instructions>
                         <Bundle-Name>${project.groupId}.${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.opendaylight.mdsal.binding2.dom.codec.*
+                            org.opendaylight.mdsal.binding.javav2.dom.codec.*
                         </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
     <!--
         Maven Site Configuration
 

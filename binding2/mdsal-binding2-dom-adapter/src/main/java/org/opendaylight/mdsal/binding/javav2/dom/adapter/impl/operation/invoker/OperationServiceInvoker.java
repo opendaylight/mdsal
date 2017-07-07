@@ -11,14 +11,14 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * <p>
  * Operation Service invoker provides common invocation interface for any subtype of operation. via
- * {@link #invoke(Operation, QName, TreeNode)} method.
+ * {@link #invoke(Rpc, QName, TreeNode, RpcCallback)} method.
  */
 @Beta
 public abstract class OperationServiceInvoker {
@@ -76,16 +76,13 @@ public abstract class OperationServiceInvoker {
     /**
      * Invokes supplied operation on provided implementation of Operation Service.
      *
-     * @param <T>
-     *            - operation type
      * @param impl
      *            Implementation on which operation should be invoked.
      * @param operationName
      *            Name of operation to be invoked.
      * @param input
      *            Input data for operation.
-     * @return Future which will complete once operation processing is finished.
      */
-    public abstract <T extends Operation> Future<RpcResult<?>> invoke(@Nonnull T impl, @Nonnull QName operationName,
-            @Nullable TreeNode input);
+    public abstract void invoke(@Nonnull Rpc<?, ?> impl, @Nonnull QName operationName, @Nullable TreeNode input,
+            RpcCallback<?> callback);
 }

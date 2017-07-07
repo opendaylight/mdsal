@@ -297,7 +297,11 @@ public final class SchemaRootCodecContext<D extends TreeNode> extends DataContai
                                                                            // qname);
         Preconditions.checkArgument(schema != null, "Schema for %s does not define input / output.",
                 operation.getQName());
-        return (ContainerNodeCodecContext<?>) DataContainerCodecPrototype.from(key, schema, factory()).get();
+        Class<?> actualKey = key;
+        if (key.getSimpleName().endsWith("Impl")) {
+            actualKey = key.getInterfaces()[0];
+        }
+        return (ContainerNodeCodecContext<?>) DataContainerCodecPrototype.from(actualKey, schema, factory()).get();
     }
 
     private ContainerSchemaNode getOperationDataSchema(final OperationDefinition operation, final QName qname) {
@@ -331,7 +335,10 @@ public final class SchemaRootCodecContext<D extends TreeNode> extends DataContai
             final String keyClassName =
                     JavaIdentifierNormalizer.normalizeSpecificIdentifier(qname.getLocalName(), JavaIdentifier.CLASS);
             if (module.equals(potentialQName.getModule())
-                    && key.getSimpleName().equals(moduleClassName + keyClassName)) {
+                    && (key.getSimpleName().equals(
+                            new StringBuilder(moduleClassName).append(keyClassName).append("Impl").toString())
+                            || key.getSimpleName()
+                                    .equals(new StringBuilder(moduleClassName).append(keyClassName).toString()))) {
                 operation = potential;
                 break;
             }

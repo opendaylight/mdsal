@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -126,14 +125,7 @@ public final class BindingReflections {
      * @return true if method is RPC or Action invocation, false otherwise.
      */
     public static boolean isOperationMethod(final Method possibleMethod) {
-        return possibleMethod != null && Operation.class.isAssignableFrom(possibleMethod.getDeclaringClass())
-                && Future.class.isAssignableFrom(possibleMethod.getReturnType())
-                // length <= 2: it seemed to be impossible to get correct OperationMethodInvoker because of
-                // resolveOperationInputClass() check.While OperationMethodInvoker counts with one argument
-                // for
-                // non input type and two arguments for input type, resolveOperationInputClass() counting
-                // with zero for non input and one for input type
-                && possibleMethod.getParameterTypes().length <= 2;
+        return possibleMethod != null && Operation.class.isAssignableFrom(possibleMethod.getDeclaringClass());
     }
 
     /**
