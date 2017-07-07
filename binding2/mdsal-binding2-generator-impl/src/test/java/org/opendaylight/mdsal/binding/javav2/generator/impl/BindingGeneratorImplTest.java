@@ -88,15 +88,15 @@ public class BindingGeneratorImplTest {
                 int test_j = 0;
                 for (final GeneratedProperty generatedProperty : genTransferObj.getProperties()) {
                     switch (generatedProperty.getName()) {
-                        case "myListKey":
+                        case "keyReservedWord":
                             assertEquals("String", generatedProperty.getReturnType().getName());
                             test_j++;
                             break;
-                        case "myListKey1":
+                        case "key1":
                             assertEquals("String", generatedProperty.getReturnType().getName());
                             test_j++;
                             break;
-                        case "myListKey2":
+                        case "key2":
                             assertEquals("String", generatedProperty.getReturnType().getName());
                             test_j++;
                             break;
@@ -220,20 +220,20 @@ public class BindingGeneratorImplTest {
                                         m);
                             test_j++;
                             break;
-                        case "getMyListKey1":
-                            assertMethod(t, "getMyListKey1", "String","java.lang", m);
+                        case "getKey1":
+                            assertMethod(t, "getKey1", "String","java.lang", m);
                             test_j++;
                             break;
-                        case "getMyListKey2":
-                            assertMethod(t, "getMyListKey2", "String","java.lang", m);
+                        case "getKey2":
+                            assertMethod(t, "getKey2", "String","java.lang", m);
                             test_j++;
                             break;
-                        case "getMyListFoo":
-                            assertMethod(t, "getMyListFoo", "String","java.lang", m);
+                        case "getFoo":
+                            assertMethod(t, "getFoo", "String","java.lang", m);
                             test_j++;
                             break;
-                        case "getMyListKey":
-                            assertMethod(t, "getMyListKey", "String","java.lang", m);
+                        case "getKeyReservedWord":
+                            assertMethod(t, "getKeyReservedWord", "String","java.lang", m);
                             test_j++;
                             break;
                         default:
