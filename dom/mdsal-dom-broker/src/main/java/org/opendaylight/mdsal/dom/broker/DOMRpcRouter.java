@@ -35,6 +35,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -54,6 +55,12 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     private Collection<Registration<?>> listeners = Collections.emptyList();
 
     private volatile DOMRpcRoutingTable routingTable = DOMRpcRoutingTable.EMPTY;
+
+    public static DOMRpcRouter newInstance(final DOMSchemaService schemaService) {
+        final DOMRpcRouter rpcRouter = new DOMRpcRouter();
+        schemaService.registerSchemaContextListener(rpcRouter);
+        return rpcRouter;
+    }
 
     @Override
     public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
@@ -98,13 +105,13 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     }
 
     private synchronized void notifyAdded(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
-        for (Registration<?> l : listeners) {
+        for (final Registration<?> l : listeners) {
             l.addRpc(newTable, impl);
         }
     }
 
     private synchronized void notifyRemoved(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
-        for (Registration<?> l : listeners) {
+        for (final Registration<?> l : listeners) {
             l.removeRpc(newTable, impl);
         }
     }
@@ -159,7 +166,7 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
 
             final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = newTable.getRpcs(l);
             final Collection<DOMRpcIdentifier> added = new ArrayList<>();
-            for (Entry<SchemaPath, Set<YangInstanceIdentifier>> e : rpcs.entrySet()) {
+            for (final Entry<SchemaPath, Set<YangInstanceIdentifier>> e : rpcs.entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
             prevRpcs = rpcs;
@@ -178,12 +185,12 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
             final MapDifference<SchemaPath, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
             final Collection<DOMRpcIdentifier> added = new ArrayList<>();
-            for (Entry<SchemaPath, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnRight().entrySet()) {
+            for (final Entry<SchemaPath, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnRight().entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
-            for (Entry<SchemaPath, ValueDifference<Set<YangInstanceIdentifier>>> e :
+            for (final Entry<SchemaPath, ValueDifference<Set<YangInstanceIdentifier>>> e :
                     diff.entriesDiffering().entrySet()) {
-                for (YangInstanceIdentifier i : Sets.difference(e.getValue().rightValue(), e.getValue().leftValue())) {
+                for (final YangInstanceIdentifier i : Sets.difference(e.getValue().rightValue(), e.getValue().leftValue())) {
                     added.add(DOMRpcIdentifier.create(e.getKey(), i));
                 }
             }
@@ -204,12 +211,12 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
             final MapDifference<SchemaPath, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
             final Collection<DOMRpcIdentifier> removed = new ArrayList<>();
-            for (Entry<SchemaPath, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnLeft().entrySet()) {
+            for (final Entry<SchemaPath, Set<YangInstanceIdentifier>> e : diff.entriesOnlyOnLeft().entrySet()) {
                 removed.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
-            for (Entry<SchemaPath, ValueDifference<Set<YangInstanceIdentifier>>> e :
+            for (final Entry<SchemaPath, ValueDifference<Set<YangInstanceIdentifier>>> e :
                     diff.entriesDiffering().entrySet()) {
-                for (YangInstanceIdentifier i : Sets.difference(e.getValue().leftValue(), e.getValue().rightValue())) {
+                for (final YangInstanceIdentifier i : Sets.difference(e.getValue().leftValue(), e.getValue().rightValue())) {
                     removed.add(DOMRpcIdentifier.create(e.getKey(), i));
                 }
             }
