@@ -138,8 +138,7 @@ final class AugmentToGenType {
                     verboseClassComments, resultCtx, genTypeBuilders, typeProvider);
 
             for (AugmentationSchema augSchema : schemaPathAugmentListEntry.getValue()) {
-                GenHelperUtil.processUsesAugments(schemaContext, augSchema, module, genCtx,
-                        genTypeBuilders, verboseClassComments, typeProvider, BindingNamespaceType.Data);
+                GenHelperUtil.processUsesImplements(augSchema, module, schemaContext, genCtx, BindingNamespaceType.Data);
             }
 
         }
