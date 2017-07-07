@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.dom.broker.osgi;
 
 import static com.google.common.base.Preconditions.checkState;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -76,21 +75,21 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     }
 
     public static @Nonnull OsgiBundleScanningSchemaService createInstance(final BundleContext ctx) {
-        OsgiBundleScanningSchemaService instance = new OsgiBundleScanningSchemaService(ctx);
+        final OsgiBundleScanningSchemaService instance = new OsgiBundleScanningSchemaService(ctx);
         Preconditions.checkState(GLOBAL_INSTANCE.compareAndSet(null, instance));
         instance.start();
         return instance;
     }
 
     public static OsgiBundleScanningSchemaService getInstance() {
-        OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.get();
+        final OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.get();
         Preconditions.checkState(instance != null, "Global Instance was not instantiated");
         return instance;
     }
 
     @VisibleForTesting
     public static void destroyInstance() {
-        OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.getAndSet(null);
+        final OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.getAndSet(null);
         if (instance != null) {
             instance.close();
         }
