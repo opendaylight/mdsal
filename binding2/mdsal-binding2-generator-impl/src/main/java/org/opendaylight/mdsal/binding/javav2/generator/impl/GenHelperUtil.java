@@ -245,7 +245,7 @@ final class GenHelperUtil {
 
         if (schemaNodes != null && parent != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
-                if (!schemaNode.isAugmenting()) {
+                if (resolveDataSchemaNodesCheck(schemaNode)) {
                     addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, parent, childOf, module, genCtx,
                             schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                 }
@@ -254,34 +254,20 @@ final class GenHelperUtil {
         return parent;
     }
 
+    static boolean resolveDataSchemaNodesCheck(final DataSchemaNode schemaNode) {
+        if (!(schemaNode.isAugmenting() && !schemaNode.isAddedByUses())) {
+            return true;
+        }
+
+        return false;
+    }
+
     static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String basePackageName, final SchemaNode
             schemaNode, final Module module, final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext,
             final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
             final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
         return addDefaultInterfaceDefinition(basePackageName, schemaNode, null, module, genCtx, schemaContext,
                 verboseClassComments, genTypeBuilders, typeProvider , namespaceType);
-    }
-
-    static Map<Module, ModuleContext> processUsesAugments(final SchemaContext schemaContext, final
-                        DataNodeContainer node, final Module module, Map<Module, ModuleContext> genCtx,
-                        final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
-                        final boolean verboseClassComments, final TypeProvider typeProvider,
-                        final BindingNamespaceType namespaceType) {
-        final String basePackageName = BindingMapping.getRootPackageName(module);
-        for (final UsesNode usesNode : node.getUses()) {
-            Map<SchemaPath, List<AugmentationSchema>> augmentationsGrouped =
-                    usesNode.getAugmentations().stream().collect(Collectors.groupingBy(AugmentationSchema::getTargetPath));
-            for (Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry : augmentationsGrouped.entrySet()) {
-                genCtx = AugmentToGenType.usesAugmentationToGenTypes(schemaContext, basePackageName,
-                        schemaPathAugmentListEntry.getValue(), module,
-                        usesNode, node, genCtx, genTypeBuilders, verboseClassComments, typeProvider, namespaceType);
-                for (AugmentationSchema augSchema : schemaPathAugmentListEntry.getValue()) {
-                    genCtx = processUsesAugments(schemaContext, augSchema, module, genCtx, genTypeBuilders,
-                            verboseClassComments, typeProvider, namespaceType);
-                }
-            }
-        }
-        return genCtx;
     }
 
     private static QName createQNameFromSuperNode(final Object node, final SchemaNode superChildNode) {
@@ -574,10 +560,6 @@ final class GenHelperUtil {
             parentName, final String basePackageName, final NotificationDefinition notification, final Module module,
             final SchemaContext schemaContext, final boolean verboseClassComments, Map<String, Map<String, GeneratedTypeBuilder>>
             genTypeBuilders, TypeProvider typeProvider, Map<Module, ModuleContext> genCtx) {
-
-        processUsesAugments(schemaContext, notification, module, genCtx, genTypeBuilders,
-                verboseClassComments, typeProvider, BindingNamespaceType.Data);
-
         final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition
                 (basePackageName, notification, null, module, genCtx, schemaContext,
                         verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
@@ -788,7 +770,7 @@ final class GenHelperUtil {
             if (namespaceType.equals(BindingNamespaceType.Grouping)) {
                 final GeneratedTypeBuilder genTypeBuilder = resolveListKeyTypeBuilder(packageName, node);
                 for (final DataSchemaNode schemaNode : node.getChildNodes()) {
-                    if (!schemaNode.isAugmenting()) {
+                    if (resolveDataSchemaNodesCheck(schemaNode)) {
                         addSchemaNodeToListTypeBuilders(nodeName, basePackageName, schemaNode, genType, genTypeBuilder, listKeys,
                                 module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
                     }
@@ -800,7 +782,7 @@ final class GenHelperUtil {
             } else {
                 final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node);
                 for (final DataSchemaNode schemaNode : node.getChildNodes()) {
-                    if (!schemaNode.isAugmenting()) {
+                    if (resolveDataSchemaNodesCheck(schemaNode)) {
                         addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
                                 module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
                     }
@@ -1042,7 +1024,7 @@ final class GenHelperUtil {
         }
 
         for (final ChoiceCaseNode caseNode : caseNodes) {
-            if (caseNode != null && !caseNode.isAugmenting()) {
+            if (caseNode != null && resolveDataSchemaNodesCheck(caseNode)) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(basePackageName, caseNode,
                     module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                 caseTypeBuilder.addImplementsType(refChoiceType);
@@ -1090,8 +1072,6 @@ final class GenHelperUtil {
                     }
                 }
             }
-            processUsesAugments(schemaContext, caseNode, module, genCtx, genTypeBuilders, verboseClassComments,
-                    typeProvider, namespaceType);
         }
     }
 
@@ -1267,10 +1247,6 @@ final class GenHelperUtil {
         final boolean verboseClassComments, Map<Module, ModuleContext> genCtx, final Map<String, Map<String,
         GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
 
-        if (node.isAugmenting()) {
-            return null;
-        }
-
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(basePackageName, node, childOf, module,
                 genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
         genType.addComment(node.getDescription());
@@ -1283,8 +1259,6 @@ final class GenHelperUtil {
         genType.setParentTypeForBuilder(childOf);
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
-            processUsesAugments(schemaContext, (DataNodeContainer) node, module, genCtx, genTypeBuilders,
-                    verboseClassComments, typeProvider, namespaceType);
         }
         return genType;
     }
@@ -1359,8 +1333,6 @@ final class GenHelperUtil {
         genCtx.get(module).addGroupingType(grouping, genType);
         resolveDataSchemaNodes(module, basePackageName, genType, genType, grouping.getChildNodes(), genCtx,
                 schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Grouping);
-        genCtx = processUsesAugments(schemaContext, grouping, module, genCtx, genTypeBuilders, verboseClassComments,
-                typeProvider, BindingNamespaceType.Grouping);
         genCtx = processUsesImplements(grouping, module, schemaContext, genCtx, BindingNamespaceType.Grouping);
         return genCtx;
     }
