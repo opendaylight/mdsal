@@ -270,13 +270,15 @@ final class GenHelperUtil {
                 verboseClassComments, genTypeBuilders, typeProvider , namespaceType);
     }
 
-    private static QName createQNameFromSuperNode(final Object node, final SchemaNode superChildNode) {
+    private static QName createQNameFromSuperNode(final Module module, final Object node, final SchemaNode superChildNode) {
         QName childNodeQName = null;
         if (node instanceof Module) {
             childNodeQName = QName.create(((Module)node).getNamespace(), ((Module)node).getRevision(),
                     superChildNode.getQName().getLocalName());
         } else if (node instanceof SchemaNode) {
             childNodeQName = QName.create(((SchemaNode)node).getQName(), superChildNode.getQName().getLocalName());
+        } else if (node instanceof AugmentationSchema) {
+            childNodeQName = QName.create(module.getNamespace(), module.getRevision(), superChildNode.getQName().getLocalName());
         } else {
             throw new IllegalArgumentException("Not support node type:" + node.toString());
         }
@@ -291,7 +293,7 @@ final class GenHelperUtil {
         if (superNode instanceof DataNodeContainer) {
             for (DataSchemaNode superChildNode : ((DataNodeContainer)superNode).getChildNodes()) {
                 if (superChildNode instanceof DataNodeContainer || superChildNode instanceof ChoiceSchemaNode) {
-                    final QName childQName = createQNameFromSuperNode(node, superChildNode);
+                    final QName childQName = createQNameFromSuperNode(module, node, superChildNode);
                     DataSchemaNode childNode = ((DataNodeContainer)node).getDataChildByName(childQName);
                     Preconditions.checkNotNull(childNode, node.toString() + "->" + childQName.toString());
 
@@ -320,7 +322,7 @@ final class GenHelperUtil {
             }
         } else if (superNode instanceof ChoiceSchemaNode) {
             for (ChoiceCaseNode superCaseNode : ((ChoiceSchemaNode)superNode).getCases()) {
-                final QName childQName = createQNameFromSuperNode(node, superCaseNode);
+                final QName childQName = createQNameFromSuperNode(module, node, superCaseNode);
                 ChoiceCaseNode caseNode = ((ChoiceSchemaNode)node).getCaseNodeByName(childQName);
                 Preconditions.checkNotNull(caseNode, node.toString() + "->" + childQName.toString());
 
