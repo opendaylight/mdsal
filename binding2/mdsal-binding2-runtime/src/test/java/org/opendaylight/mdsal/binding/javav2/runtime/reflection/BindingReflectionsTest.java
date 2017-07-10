@@ -9,12 +9,12 @@ package org.opendaylight.mdsal.binding.javav2.runtime.reflection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Constructor;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 import org.junit.Test;
@@ -37,7 +37,6 @@ public class BindingReflectionsTest {
                 BindingReflections.getModelRootPackageName("org.opendaylight.mdsal.gen.javav2.test.rev990939"));
         assertEquals("ModuleInfoClassName should be equal to string", "test.$YangModuleInfoImpl",
                 BindingReflections.getModuleInfoClassName("test"));
-        assertEquals("Module info should be empty Set", Collections.EMPTY_SET, BindingReflections.loadModuleInfos());
         assertFalse("Should not be RpcType", BindingReflections.isOperationType(TreeNode.class));
         assertFalse("Should not be AugmentationChild", BindingReflections.isAugmentationChild(TreeNode.class));
         assertTrue("Should be BindingClass", BindingReflections.isBindingClass(TreeNode.class));
@@ -56,6 +55,7 @@ public class BindingReflectionsTest {
                 .resolveOperationOutputClass(TestImplementation.class.getDeclaredMethod("rpcMethodTest2")).isPresent());
 
         assertTrue(BindingReflections.getQName(TestImplementation.class).toString().equals("test"));
+        assertNotNull(BindingReflections.getQNameModule(TestImplementation.class));
     }
 
     @SuppressWarnings("rawtypes")
