@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.addTOToTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.annotateDeprecatedIfNecessary;
-import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.augGenTypeName;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.constructGetter;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.createDescription;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.createReturnTypeForUnion;
@@ -38,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
@@ -52,7 +50,6 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.build
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
-import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
@@ -68,7 +65,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.data.api.schema.DataContainerNode;
 import org.opendaylight.yangtools.yang.model.api.AnyDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
@@ -91,6 +87,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
+import org.opendaylight.yangtools.yang.model.api.meta.ModelStatement;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -245,7 +242,7 @@ final class GenHelperUtil {
 
         if (schemaNodes != null && parent != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
-                if (resolveDataSchemaNodesCheck(schemaNode)) {
+                if (resolveDataSchemaNodesCheck(module, schemaContext, schemaNode)) {
                     addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, parent, childOf, module, genCtx,
                             schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                 }
@@ -254,9 +251,18 @@ final class GenHelperUtil {
         return parent;
     }
 
-    static boolean resolveDataSchemaNodesCheck(final DataSchemaNode schemaNode) {
-        if (!(schemaNode.isAugmenting() && !schemaNode.isAddedByUses())) {
+    static boolean resolveDataSchemaNodesCheck(final Module module, final SchemaContext schemaContext,
+            final DataSchemaNode schemaNode) {
+        if (!schemaNode.isAugmenting()) {
             return true;
+        } else if (schemaNode.isAugmenting()) {
+            Preconditions.checkState(schemaNode instanceof ModelStatement<?>);
+            QName qname = schemaNode.getPath().getLastComponent();
+            final Module originalModule = schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
+                    qname.getRevision());
+            if (module.equals(originalModule)) {
+                return true;
+            }
         }
 
         return false;
@@ -770,7 +776,7 @@ final class GenHelperUtil {
             if (namespaceType.equals(BindingNamespaceType.Grouping)) {
                 final GeneratedTypeBuilder genTypeBuilder = resolveListKeyTypeBuilder(packageName, node);
                 for (final DataSchemaNode schemaNode : node.getChildNodes()) {
-                    if (resolveDataSchemaNodesCheck(schemaNode)) {
+                    if (resolveDataSchemaNodesCheck(module, schemaContext, schemaNode)) {
                         addSchemaNodeToListTypeBuilders(nodeName, basePackageName, schemaNode, genType, genTypeBuilder, listKeys,
                                 module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
                     }
@@ -782,7 +788,7 @@ final class GenHelperUtil {
             } else {
                 final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node);
                 for (final DataSchemaNode schemaNode : node.getChildNodes()) {
-                    if (resolveDataSchemaNodesCheck(schemaNode)) {
+                    if (resolveDataSchemaNodesCheck(module, schemaContext, schemaNode)) {
                         addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
                                 module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
                     }
@@ -1024,7 +1030,7 @@ final class GenHelperUtil {
         }
 
         for (final ChoiceCaseNode caseNode : caseNodes) {
-            if (caseNode != null && resolveDataSchemaNodesCheck(caseNode)) {
+            if (caseNode != null && resolveDataSchemaNodesCheck(module, schemaContext, caseNode)) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(basePackageName, caseNode,
                     module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                 caseTypeBuilder.addImplementsType(refChoiceType);

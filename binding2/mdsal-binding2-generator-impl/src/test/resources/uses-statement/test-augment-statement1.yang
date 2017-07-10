@@ -1,0 +1,24 @@
+module test-augment-statement1 {
+    yang-version 1.1;
+
+    namespace "urn:test:augment:statement1";
+    prefix test-augment-statement1;
+    organization "test.type.org";
+    revision "2017-07-10";
+
+    grouping s1-grp {
+        leaf leaf-s1-grp {
+            type string;
+        }
+        container cont-s1-grp {
+        }
+    }
+
+    container top {
+    }
+
+    augment "/top" {
+        container foo {
+        }
+    }
+}
