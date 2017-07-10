@@ -60,7 +60,7 @@ public final class BindingSchemaContextUtils {
         Preconditions.checkArgument(currentArg != null);
         QName currentQName = BindingReflections.findQName(currentArg.getType());
 
-        Optional<DataNodeContainer> currentContainer = Optional.absent();
+        Optional<DataNodeContainer> currentContainer;
         if (BindingReflections.isNotification(currentArg.getType())) {
             currentContainer = findNotification(ctx, currentQName);
         } else if (BindingReflections.isOperationType(currentArg.getType())) {
@@ -101,7 +101,7 @@ public final class BindingSchemaContextUtils {
     private static Optional<DataNodeContainer> findNotification(final SchemaContext ctx, final QName notificationQName) {
         for (final NotificationDefinition notification : ctx.getNotifications()) {
             if (notification.getQName().equals(notificationQName)) {
-                return Optional.<DataNodeContainer> of(notification);
+                return Optional.of(notification);
             }
         }
         return Optional.absent();
