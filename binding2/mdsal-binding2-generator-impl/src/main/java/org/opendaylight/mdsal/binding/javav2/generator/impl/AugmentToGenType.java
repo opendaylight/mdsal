@@ -121,7 +121,7 @@ final class AugmentToGenType {
         Preconditions.checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
 
         final String basePackageName = BindingMapping.getRootPackageName(module);
-        final List<AugmentationSchema> augmentations = resolveAugmentations(module);
+        final List<AugmentationSchema> augmentations = resolveAugmentations(module, schemaContext);
         Map<Module, ModuleContext> resultCtx = genCtx;
 
         //let's group augments by target path
@@ -161,12 +161,16 @@ final class AugmentToGenType {
      * @throws IllegalStateException
      *             if set of module augmentations is null
      */
-    private static List<AugmentationSchema> resolveAugmentations(final Module module) {
+    private static List<AugmentationSchema> resolveAugmentations(final Module module, final SchemaContext schemaContext) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         Preconditions.checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
 
         final Set<AugmentationSchema> augmentations = module.getAugmentations();
-        final List<AugmentationSchema> sortedAugmentations = new ArrayList<>(augmentations);
+        final List<AugmentationSchema> sortedAugmentations = new ArrayList<>(augmentations).stream()
+                .filter(aug -> !module.equals(schemaContext.findModuleByNamespaceAndRevision(
+                        aug.getTargetPath().getLastComponent().getNamespace(),
+                        aug.getTargetPath().getLastComponent().getRevision())))
+                .collect(Collectors.toList());
         Collections.sort(sortedAugmentations, AUGMENT_COMP);
 
         return sortedAugmentations;
@@ -252,6 +256,7 @@ final class AugmentToGenType {
         return genCtx;
     }
 
+    @Deprecated
     static Map<Module, ModuleContext> usesAugmentationToGenTypes(final SchemaContext schemaContext,
            final String augmentPackageName, final List<AugmentationSchema> schemaPathAugmentListEntry, final Module module,
            final UsesNode usesNode, final DataNodeContainer usesNodeParent, Map<Module, ModuleContext> genCtx,
