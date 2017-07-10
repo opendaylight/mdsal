@@ -166,13 +166,17 @@ final class AugmentToGenType {
 
         final Set<AugmentationSchema> augmentations = module.getAugmentations();
         final List<AugmentationSchema> sortedAugmentations = new ArrayList<>(augmentations).stream()
-                .filter(aug -> !module.equals(schemaContext.findModuleByNamespaceAndRevision(
-                        aug.getTargetPath().getLastComponent().getNamespace(),
-                        aug.getTargetPath().getLastComponent().getRevision())))
+                .filter(aug -> !module.equals(findAugmentTargetModule(schemaContext, aug)))
                 .collect(Collectors.toList());
         Collections.sort(sortedAugmentations, AUGMENT_COMP);
 
         return sortedAugmentations;
+    }
+
+    public static Module findAugmentTargetModule(final SchemaContext schemaContext , final AugmentationSchema aug) {
+        Preconditions.checkNotNull(aug, "Augmentation schema can not be null.");
+        final QName first = aug.getTargetPath().getPathFromRoot().iterator().next();
+        return schemaContext.findModuleByNamespaceAndRevision(first.getNamespace(), first.getRevision());
     }
 
     /**
