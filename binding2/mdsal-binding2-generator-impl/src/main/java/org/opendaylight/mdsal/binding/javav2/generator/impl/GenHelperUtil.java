@@ -408,14 +408,13 @@ final class GenHelperUtil {
             break;
         }
 
-        boolean isTypeNormalized = false;
         if (augIdentifier == null) {
-            augIdentifier = augGenTypeName(augmentBuilders, targetTypeRef.getName());
-            isTypeNormalized = true;
+            augIdentifier = new StringBuilder(module.getName())
+                    .append('_').append(targetTypeRef.getName()).toString();
         }
 
         GeneratedTypeBuilderImpl augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augIdentifier,
-                false, isTypeNormalized);
+                true, false);
 
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
         augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
