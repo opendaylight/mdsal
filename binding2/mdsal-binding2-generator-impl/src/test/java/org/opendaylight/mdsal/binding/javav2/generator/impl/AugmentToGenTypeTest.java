@@ -693,6 +693,7 @@ public class AugmentToGenTypeTest {
         final DataSchemaNode origSchNode = mock(DataSchemaNode.class);
         when(origSchNode.getPath()).thenReturn(path);
         when(origSchNode.isAddedByUses()).thenReturn(true);
+        when(origSchNode.getQName()).thenReturn(QName.create("test", "2017-04-04", "aug-node"));
         final Optional optionalSchemaNode = Optional.of(origSchNode);
         when(targetSchNode.getOriginal()).thenReturn(optionalSchemaNode);
         when(moduleAug.getDataChildByName(qnamePath)).thenReturn(targetSchNode);
@@ -723,7 +724,7 @@ public class AugmentToGenTypeTest {
         assertNotNull(result);
         final ModuleContext moduleContext = result.get(moduleAug);
         assertTrue(moduleContext.getAugmentations().get(0).getName().contains("Augm"));
-        assertEquals("pckg.name.data.aug", moduleContext.getAugmentations().get(0).getPackageName());
+        assertEquals("pckg.name.data", moduleContext.getAugmentations().get(0).getPackageName());
         assertTrue(moduleContext.getChildNode(path).getName().contains("Augm"));
         assertEquals("pckg.name", moduleContext.getChildNode(path).getPackageName());
     }
@@ -899,6 +900,7 @@ public class AugmentToGenTypeTest {
         when(groupingDefinition.getQName()).thenReturn(qnamePath);
         final DataSchemaNode schNode = mock(DataSchemaNode.class);
         when(schNode.getPath()).thenReturn(path);
+        when(schNode.getQName()).thenReturn(QName.create("test", "2017-04-04", "aug-node"));
         when(groupingDefinition.getDataChildByName(qnamePath)).thenReturn(schNode);
         groupings.add(groupingDefinition);
         when(moduleAug.getGroupings()).thenReturn(groupings);
@@ -948,6 +950,7 @@ public class AugmentToGenTypeTest {
         when(groupingDefinition.getQName()).thenReturn(qnamePath);
         final ChoiceSchemaNode schNode = mock(ChoiceSchemaNode.class);
         when(schNode.getPath()).thenReturn(path);
+        when(schNode.getQName()).thenReturn(QName.create("test", "2017-04-04", "aug-node"));
         when(groupingDefinition.getDataChildByName(qnamePath)).thenReturn(schNode);
         groupings.add(groupingDefinition);
         when(moduleAug.getGroupings()).thenReturn(groupings);
