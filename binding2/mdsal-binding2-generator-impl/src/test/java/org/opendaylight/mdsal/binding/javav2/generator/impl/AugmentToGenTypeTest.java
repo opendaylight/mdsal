@@ -723,7 +723,7 @@ public class AugmentToGenTypeTest {
         assertNotNull(result);
         final ModuleContext moduleContext = result.get(moduleAug);
         assertTrue(moduleContext.getAugmentations().get(0).getName().contains("Augm"));
-        assertEquals("pckg.name.data.aug", moduleContext.getAugmentations().get(0).getPackageName());
+        assertEquals("pckg.name.data", moduleContext.getAugmentations().get(0).getPackageName());
         assertTrue(moduleContext.getChildNode(path).getName().contains("Augm"));
         assertEquals("pckg.name", moduleContext.getChildNode(path).getPackageName());
     }

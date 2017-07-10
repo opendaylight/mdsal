@@ -238,11 +238,11 @@ final class AugmentToGenType {
             throw new NullPointerException("Target type not yet generated: " + targetSchemaNode);
         }
 
-        final String augmentNamespacePackageName =
-                BindingGeneratorUtil.packageNameForAugmentedGeneratedType(basePackageName, targetPath);
+        final String augmentPackageName =
+            BindingGeneratorUtil.packageNameWithNamespacePrefix(basePackageName, BindingNamespaceType.Data);
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentNamespacePackageName,
+            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentPackageName,
                     targetTypeBuilder.toInstance(), schemaPathAugmentListEntry.getValue(), genTypeBuilders, genCtx,
                     schemaContext, verboseClassComments, typeProvider, BindingNamespaceType.Data);
         } else {
