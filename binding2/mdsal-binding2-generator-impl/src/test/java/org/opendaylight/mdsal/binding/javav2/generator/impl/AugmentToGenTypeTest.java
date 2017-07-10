@@ -209,14 +209,15 @@ public class AugmentToGenTypeTest {
     @SuppressWarnings("rawtypes")
     @Test
     public void resolveAugmentationsNullModuleTest() throws Exception {
-        final Class[] parameterTypes = { Module.class };
+        final Class[] parameterTypes = { Module.class, SchemaContext.class };
         final Method generate = AugmentToGenType.class.getDeclaredMethod("resolveAugmentations", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
 
         final Module m = null;
+        final SchemaContext schemaContext = null;
 
-        final Object[] args = { m };
+        final Object[] args = { m, schemaContext };
         try {
             generate.invoke(AugmentToGenType.class, args);
             fail();
@@ -233,15 +234,16 @@ public class AugmentToGenTypeTest {
     @SuppressWarnings("rawtypes")
     @Test
     public void resolveAugmentationsNullAugmentationsTest() throws Exception {
-        final Class[] parameterTypes = { Module.class };
+        final Class[] parameterTypes = { Module.class, SchemaContext.class };
         final Method generate = AugmentToGenType.class.getDeclaredMethod("resolveAugmentations", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
 
         final Module m = mock(Module.class);
         when(m.getAugmentations()).thenReturn(null);
+        final SchemaContext schemaContext = mock(SchemaContext.class);
 
-        final Object[] args = { m };
+        final Object[] args = { m, schemaContext };
         try {
             generate.invoke(AugmentToGenType.class, args);
             fail();
@@ -258,12 +260,14 @@ public class AugmentToGenTypeTest {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void resolveAugmentationsTest() throws Exception {
-        final Class[] parameterTypes = { Module.class };
+        final Class[] parameterTypes = { Module.class, SchemaContext.class };
         final Method generate = AugmentToGenType.class.getDeclaredMethod("resolveAugmentations", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
 
         final Module m = mock(Module.class);
+        final Module m2 = mock(Module.class);
+        final SchemaContext schemaContext = mock(SchemaContext.class);
 
         final Set<AugmentationSchema> augmentations = new HashSet<>();
 
@@ -281,8 +285,10 @@ public class AugmentToGenTypeTest {
         augmentations.add(augmentationSchema2);
 
         when(m.getAugmentations()).thenReturn(augmentations);
+        when(schemaContext.findModuleByNamespaceAndRevision(q2.getNamespace(), q2.getRevision())).thenReturn(m2);
+        when(schemaContext.findModuleByNamespaceAndRevision(q5.getNamespace(), q5.getRevision())).thenReturn(m2);
 
-        final Object[] args = { m };
+        final Object[] args = { m, schemaContext };
 
         final List<AugmentationSchema> result =
                 (List<AugmentationSchema>) generate.invoke(AugmentToGenType.class, args);
