@@ -1,0 +1,22 @@
+module test-runtime {
+   namespace "org.test.runtime";
+   prefix "tst";
+   revision "2017-07-10" {
+   }
+
+   container my-cont {
+    choice my-choice {
+       case one {
+           leaf one {
+               type string;
+           }
+       }
+       case two {
+           leaf two {
+               type string;
+           }
+       }
+
+      }
+   }
+}
