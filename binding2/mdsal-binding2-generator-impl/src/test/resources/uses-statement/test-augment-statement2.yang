@@ -1,0 +1,38 @@
+module test-augment-statement2 {
+    yang-version 1.1;
+
+    namespace "urn:test:augment:statement2";
+    prefix test-augment-statement2;
+    organization "test.type.org";
+    revision "2017-07-10";
+
+    import test-augment-statement1 {
+        prefix "s1";
+    }
+
+    grouping s2-grp {
+        leaf leaf-s2-grp {
+            type string;
+        }
+
+    }
+
+    container bar {
+    }
+
+    augment "/s1:top" {
+        container bar1 {
+        }
+        leaf leaf-s2-aug {
+            type string;
+        }
+        uses s2-grp;
+    }
+
+    augment "/s1:top" {
+        container bar2 {
+        }
+
+        uses s1:s1-grp;
+    }
+}
