@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.javav2.runtime.reflection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -56,6 +57,7 @@ public class BindingReflectionsTest {
                 .resolveOperationOutputClass(TestImplementation.class.getDeclaredMethod("rpcMethodTest2")).isPresent());
 
         assertTrue(BindingReflections.getQName(TestImplementation.class).toString().equals("test"));
+        assertNotNull(BindingReflections.getQNameModule(TestImplementation.class));
     }
 
     @SuppressWarnings("rawtypes")
