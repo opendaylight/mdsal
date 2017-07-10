@@ -285,8 +285,8 @@ public class AugmentToGenTypeTest {
         augmentations.add(augmentationSchema2);
 
         when(m.getAugmentations()).thenReturn(augmentations);
-        when(schemaContext.findModuleByNamespaceAndRevision(q2.getNamespace(), q2.getRevision())).thenReturn(m2);
-        when(schemaContext.findModuleByNamespaceAndRevision(q5.getNamespace(), q5.getRevision())).thenReturn(m2);
+        when(schemaContext.findModuleByNamespaceAndRevision(q1.getNamespace(), q1.getRevision())).thenReturn(m2);
+        when(schemaContext.findModuleByNamespaceAndRevision(q3.getNamespace(), q3.getRevision())).thenReturn(m2);
 
         final Object[] args = { m, schemaContext };
 
