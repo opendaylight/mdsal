@@ -384,7 +384,7 @@ final class GenHelperUtil {
     }
 
     static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
-            final Type targetTypeRef, final List<AugmentationSchema> schemaPathAugmentListEntry,
+            final Type targetTypeRef, final SchemaNode targetNode, final List<AugmentationSchema> schemaPathAugmentListEntry,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx,
             final SchemaContext schemaContext, final boolean verboseClassComments, final TypeProvider typeProvider,
             final BindingNamespaceType namespaceType) {
@@ -402,14 +402,13 @@ final class GenHelperUtil {
             break;
         }
 
-        boolean isTypeNormalized = false;
         if (augIdentifier == null) {
-            augIdentifier = augGenTypeName(augmentBuilders, targetTypeRef.getName());
-            isTypeNormalized = true;
+            augIdentifier = new StringBuilder(module.getName())
+                    .append('_').append(targetNode.getQName().getLocalName()).toString();
         }
 
         GeneratedTypeBuilderImpl augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augIdentifier,
-                false, isTypeNormalized);
+                true, false);
 
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
         augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));

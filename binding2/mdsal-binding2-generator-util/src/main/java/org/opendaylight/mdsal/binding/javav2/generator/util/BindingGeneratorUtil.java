@@ -198,8 +198,8 @@ public final class BindingGeneratorUtil {
      * @return string with valid JAVA package name
      * @throws NullPointerException if any of the arguments are null
      */
-    public static String packageNameWithNamespacePrefix(final String basePackageName, final
-    BindingNamespaceType namespaceType) {
+    public static String packageNameWithNamespacePrefix(final String basePackageName,
+            final BindingNamespaceType namespaceType) {
         final StringBuilder sb = new StringBuilder();
         sb.append(basePackageName)
                 .append('.')

@@ -235,12 +235,12 @@ final class AugmentToGenType {
             throw new NullPointerException("Target type not yet generated: " + targetSchemaNode);
         }
 
-        final String augmentNamespacePackageName =
-                BindingGeneratorUtil.packageNameForAugmentedGeneratedType(basePackageName, targetPath);
+        final String augmentPackageName =
+            BindingGeneratorUtil.packageNameWithNamespacePrefix(basePackageName, BindingNamespaceType.Data);
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentNamespacePackageName,
-                    targetTypeBuilder.toInstance(), schemaPathAugmentListEntry.getValue(), genTypeBuilders, genCtx,
+            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentPackageName,
+                    targetTypeBuilder.toInstance(), targetSchemaNode, schemaPathAugmentListEntry.getValue(), genTypeBuilders, genCtx,
                     schemaContext, verboseClassComments, typeProvider, BindingNamespaceType.Data);
         } else {
             genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, basePackageName,
@@ -294,7 +294,7 @@ final class AugmentToGenType {
                         (AugmentationSchema)usesNodeParent);
             }
             genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName,
-                    targetTypeBuilder.toInstance(), schemaPathAugmentListEntry, genTypeBuilders, genCtx,
+                    targetTypeBuilder.toInstance(), targetSchemaNode, schemaPathAugmentListEntry, genTypeBuilders, genCtx,
                     schemaContext, verboseClassComments, typeProvider, namespaceType);
             return genCtx;
         } else {
