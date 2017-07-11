@@ -29,7 +29,7 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapter implements DataTreeCo
     private final BindingToNormalizedNodeCodec codec;
     private final DOMDataTreeCommitCohortRegistry registry;
 
-    private BindingDOMDataTreeCommitCohortRegistryAdapter(final BindingToNormalizedNodeCodec codec,
+    BindingDOMDataTreeCommitCohortRegistryAdapter(final BindingToNormalizedNodeCodec codec,
             final DOMDataTreeCommitCohortRegistry registry) {
         this.codec = Preconditions.checkNotNull(codec);
         this.registry = Preconditions.checkNotNull(registry);
