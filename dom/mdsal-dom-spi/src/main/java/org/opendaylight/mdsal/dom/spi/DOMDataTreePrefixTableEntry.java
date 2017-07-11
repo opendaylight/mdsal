@@ -46,6 +46,7 @@ public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathAr
     }
 
     DOMDataTreePrefixTableEntry<V> lookup(final YangInstanceIdentifier id) {
+        LOG.trace("Looking up identifier {} in entry {}", id, this);
         final Iterator<PathArgument> it = id.getPathArguments().iterator();
         DOMDataTreePrefixTableEntry<V> entry = this;
         DOMDataTreePrefixTableEntry<V> lastPresentEntry = entry;
@@ -58,13 +59,16 @@ public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathAr
                 break;
             }
 
+            LOG.trace("Lookup enters {}", child);
             entry = child;
 
             if (child.getValue() != null) {
+                LOG.trace("Lookup found value {}", child.getValue());
                 lastPresentEntry = child;
             }
         }
 
+        LOG.trace("Lookup returns {}", lastPresentEntry);
         return lastPresentEntry;
     }
 
@@ -88,12 +92,20 @@ public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathAr
     }
 
     private boolean remove(final Iterator<PathArgument> it) {
+        LOG.trace("Removing by iterator {} from entry {}", it, this);
         if (it.hasNext()) {
             final PathArgument arg = it.next();
+            LOG.trace("Next patch argument {}", arg);
             final DOMDataTreePrefixTableEntry<V> child = children.get(arg);
+            LOG.trace("Child entry {}", child);
             if (child != null) {
+                LOG.trace("Recursing to child");
                 if (child.remove(it)) {
+                    LOG.trace("Child {} reported empty, removing from children", child);
                     children.remove(arg);
+                    LOG.trace("Children after removal: {}", children);
+                } else {
+                    LOG.trace("Child {} reported non-empty, keeping it.", child);
                 }
             } else {
                 LOG.warn("Cannot remove non-existent child {}", arg);
@@ -103,12 +115,14 @@ public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathAr
              * Iterator is empty, this effectively means is table entry to remove registration.
              * FIXME: We probably want to compare value to make sure we are removing correct value.
              */
+            LOG.trace("Deleting value {}", value);
             value = null;
         }
         return value == null && children.isEmpty();
     }
 
     void remove(final YangInstanceIdentifier id) {
+        LOG.trace("Removing by identifier {}", id);
         this.remove(id.getPathArguments().iterator());
     }
 }
