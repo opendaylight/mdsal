@@ -30,7 +30,7 @@ public class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
     private final DOMDataTreeProducer delegate;
     private final BindingToNormalizedNodeCodec codec;
 
-    private BindingDOMDataTreeProducerAdapter(final DOMDataTreeProducer delegate,
+    BindingDOMDataTreeProducerAdapter(final DOMDataTreeProducer delegate,
             final BindingToNormalizedNodeCodec codec) {
         this.delegate = Preconditions.checkNotNull(delegate);
         this.codec = codec;
