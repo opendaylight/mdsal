@@ -30,6 +30,7 @@ import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTreeShardingService {
+    private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTree.class);
 
     @GuardedBy("this")
     private final DOMDataTreePrefixTable<DOMDataTreeShardRegistration<?>> shards = DOMDataTreePrefixTable.create();
@@ -110,13 +111,16 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
 
         final DOMDataTreePrefixTableEntry<DOMDataTreeProducer> producerEntry = producers.lookup(subtree);
         if (producerEntry != null) {
+            LOG.trace("Found: subtree {} is attached to producer {}", subtree, producerEntry.getValue());
             return producerEntry.getValue();
         }
         return null;
     }
 
     synchronized void destroyProducer(final ShardedDOMDataTreeProducer producer) {
+        LOG.debug("Destroying producer {}", producer);
         for (final DOMDataTreeIdentifier s : producer.getSubtrees()) {
+            LOG.trace("Removing subtree {} from map.", s);
             producers.remove(s);
         }
     }
@@ -126,7 +130,9 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
             final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         // Record the producer's attachment points
         final DOMDataTreeProducer ret = ShardedDOMDataTreeProducer.create(this, subtrees, shardMap);
+        LOG.debug("Creating producer {}", ret);
         for (final DOMDataTreeIdentifier subtree : subtrees) {
+            LOG.trace("Adding subtree {} to map.", subtree);
             producers.store(subtree, ret);
         }
 

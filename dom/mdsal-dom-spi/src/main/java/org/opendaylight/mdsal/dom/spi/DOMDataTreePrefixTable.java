@@ -82,12 +82,14 @@ public final class DOMDataTreePrefixTable<V> {
      * @param prefix to be removed
      */
     public void remove(@Nonnull final DOMDataTreeIdentifier prefix) {
+        LOG.trace("Entering DOMDataTreePrefixTable#remove");
         final DOMDataTreePrefixTableEntry<V> t = roots.get(prefix.getDatastoreType());
         if (t == null) {
             LOG.warn("Shard registration {} points to non-existent table", t);
             return;
         }
 
+        LOG.trace("Calling remove on DOMDataTreePrefixTableEntry {}", t);
         t.remove(prefix.getRootIdentifier());
     }
 
