@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.test;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
@@ -21,6 +22,7 @@ public class BasicLeafValueTest extends AbstractDataBrokerTest {
     private static final InstanceIdentifier<MyCont> MY_CONT_NODE_PATH
             = InstanceIdentifier.create(MyCont.class);
 
+    @Ignore
     @Test
     public void testMyContLeafNode() throws TransactionCommitFailedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
