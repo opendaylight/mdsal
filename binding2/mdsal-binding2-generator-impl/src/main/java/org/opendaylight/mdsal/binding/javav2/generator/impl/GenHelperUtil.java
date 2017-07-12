@@ -279,10 +279,10 @@ final class GenHelperUtil {
     private static QName createQNameFromSuperNode(final Module module, final Object node, final SchemaNode superChildNode) {
         QName childNodeQName = null;
         if (node instanceof Module) {
-            childNodeQName = QName.create(((Module)node).getNamespace(), ((Module)node).getRevision(),
+            childNodeQName = QName.create(((Module) node).getNamespace(), ((Module) node).getRevision(),
                     superChildNode.getQName().getLocalName());
         } else if (node instanceof SchemaNode) {
-            childNodeQName = QName.create(((SchemaNode)node).getQName(), superChildNode.getQName().getLocalName());
+            childNodeQName = QName.create(((SchemaNode) node).getQName(), superChildNode.getQName().getLocalName());
         } else if (node instanceof AugmentationSchema) {
             childNodeQName = QName.create(module.getNamespace(), module.getRevision(), superChildNode.getQName().getLocalName());
         } else {
@@ -292,24 +292,19 @@ final class GenHelperUtil {
         return childNodeQName;
     }
 
-    static void addUsesImplements(final SchemaNode superNode, final Module superModule,
+    private static void addUsesImplements(final SchemaNode superNode, final Module superModule,
             final Object node, final Module module, final SchemaContext schemaContext,
             Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
-
         if (superNode instanceof DataNodeContainer) {
-            for (DataSchemaNode superChildNode : ((DataNodeContainer)superNode).getChildNodes()) {
+            for (DataSchemaNode superChildNode : ((DataNodeContainer) superNode).getChildNodes()) {
                 if (superChildNode instanceof DataNodeContainer || superChildNode instanceof ChoiceSchemaNode) {
                     final QName childQName = createQNameFromSuperNode(module, node, superChildNode);
-                    DataSchemaNode childNode = ((DataNodeContainer)node).getDataChildByName(childQName);
+                    DataSchemaNode childNode = ((DataNodeContainer) node).getDataChildByName(childQName);
                     Preconditions.checkNotNull(childNode, node.toString() + "->" + childQName.toString());
 
                     final GeneratedTypeBuilder type = genCtx.get(module).getChildNode(childNode.getPath());
                     final GeneratedTypeBuilder superType = genCtx.get(superModule).getChildNode(superChildNode.getPath());
 
-                    //TODO:delete this after supporting uses augment
-                    if (type == null || superType == null) {
-                        return;
-                    }
                     Preconditions.checkNotNull(type, module.toString() + "->" + childNode.getPath().toString());
                     Preconditions.checkNotNull(superType, superModule.toString() + "->" + superChildNode.getPath().toString());
                     type.addImplementsType(superType);
@@ -327,9 +322,9 @@ final class GenHelperUtil {
                 }
             }
         } else if (superNode instanceof ChoiceSchemaNode) {
-            for (ChoiceCaseNode superCaseNode : ((ChoiceSchemaNode)superNode).getCases()) {
+            for (ChoiceCaseNode superCaseNode : ((ChoiceSchemaNode) superNode).getCases()) {
                 final QName childQName = createQNameFromSuperNode(module, node, superCaseNode);
-                ChoiceCaseNode caseNode = ((ChoiceSchemaNode)node).getCaseNodeByName(childQName);
+                ChoiceCaseNode caseNode = ((ChoiceSchemaNode) node).getCaseNodeByName(childQName);
                 Preconditions.checkNotNull(caseNode, node.toString() + "->" + childQName.toString());
 
                 final GeneratedTypeBuilder type = genCtx.get(module).getCase(caseNode.getPath());
@@ -368,7 +363,7 @@ final class GenHelperUtil {
     static Map<Module, ModuleContext> processUsesImplements(final Object node, final Module module,
             final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
         if (node instanceof DataNodeContainer) {
-            for (final UsesNode usesNode : ((DataNodeContainer)node).getUses()) {
+            for (final UsesNode usesNode : ((DataNodeContainer) node).getUses()) {
                 final GroupingDefinition grouping = findGroupingNodeFromUses(module, schemaContext, node, usesNode);
                 final Module superModule = SchemaContextUtil.findParentModule(schemaContext, grouping);
                 addUsesImplements(grouping, superModule, node, module, schemaContext, genCtx, namespaceType);
