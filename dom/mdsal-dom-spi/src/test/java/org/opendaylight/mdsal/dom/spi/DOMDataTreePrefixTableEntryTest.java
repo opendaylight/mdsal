@@ -25,7 +25,7 @@ public class DOMDataTreePrefixTableEntryTest {
         final Object testObject = new Object();
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("test"));
 
-        assertEquals(pathArgument, new DOMDataTreePrefixTableEntry(pathArgument).getIdentifier());
+        assertEquals(pathArgument, new DOMDataTreePrefixTableEntry<>(pathArgument).getIdentifier());
         domDataTreePrefixTableEntry.store(yangInstanceIdentifier, testObject);
         assertEquals(QName.create("test"),
                 domDataTreePrefixTableEntry.lookup(yangInstanceIdentifier).getIdentifier().getNodeType());
