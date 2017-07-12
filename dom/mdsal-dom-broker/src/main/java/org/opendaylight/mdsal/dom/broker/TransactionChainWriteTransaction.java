@@ -12,6 +12,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -68,7 +69,7 @@ public class TransactionChainWriteTransaction implements DOMDataTreeWriteTransac
             public void onFailure(final Throwable throwable) {
                 txChain.transactionFailed(TransactionChainWriteTransaction.this, throwable);
             }
-        });
+        }, MoreExecutors.directExecutor());
 
         txChain.closeWriteTransaction(writeResultFuture);
         return writeResultFuture;

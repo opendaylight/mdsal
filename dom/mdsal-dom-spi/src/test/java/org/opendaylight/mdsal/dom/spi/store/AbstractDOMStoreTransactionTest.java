@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class AbstractDOMStoreTransactionTest extends AbstractDOMStoreTransaction {
+public class AbstractDOMStoreTransactionTest extends AbstractDOMStoreTransaction<String> {
 
     private static final String IDENTIFIER = "testIdentifier";
 
