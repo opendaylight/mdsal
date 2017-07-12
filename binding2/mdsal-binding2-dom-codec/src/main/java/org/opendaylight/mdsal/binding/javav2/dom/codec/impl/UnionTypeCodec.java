@@ -52,8 +52,9 @@ public final class UnionTypeCodec extends ReflectionBasedCodec {
         return () -> {
             final Set<UnionValueOptionContext> values = new LinkedHashSet<>();
             for (final TypeDefinition<?> subtype : unionType.getTypes()) {
-                final Method valueGetter = unionCls.getMethod("get" + JavaIdentifierNormalizer
-                        .normalizeSpecificIdentifier(subtype.getQName().getLocalName(), JavaIdentifier.CLASS));
+                final Method valueGetter = unionCls.getMethod(JavaIdentifierNormalizer
+                        .normalizeSpecificIdentifier("get_" + subtype.getQName().getLocalName(), JavaIdentifier
+                                .METHOD));
                 final Class<?> valueType = valueGetter.getReturnType();
                 final Codec<Object, Object> valueCodec = bindingCodecContext.getCodec(valueType, subtype);
                 values.add(new UnionValueOptionContext(unionCls, valueType, valueGetter, valueCodec));
