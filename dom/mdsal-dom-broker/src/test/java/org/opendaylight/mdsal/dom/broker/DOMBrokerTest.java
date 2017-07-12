@@ -142,7 +142,7 @@ public class DOMBrokerTest {
         Mockito.doNothing().when(commitExecutor.delegate).shutdown();
         Mockito.doReturn(Collections.emptyList()).when(commitExecutor.delegate).shutdownNow();
         Mockito.doReturn("").when(commitExecutor.delegate).toString();
-        Mockito.doReturn(true).when(commitExecutor.delegate)
+        Mockito.doReturn(Boolean.TRUE).when(commitExecutor.delegate)
             .awaitTermination(Mockito.anyLong(), Mockito.any(TimeUnit.class));
 
         final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
@@ -205,8 +205,8 @@ public class DOMBrokerTest {
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
         writeTx.merge(OPERATIONAL, TestModel.TEST_PATH, testContainer);
         writeTx.submit().get();
-        assertEquals(true, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
-        assertEquals(true, domBroker.newReadOnlyTransaction().read(OPERATIONAL, TestModel.TEST_PATH).get()
+        assertEquals(Boolean.TRUE, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
+        assertEquals(Boolean.TRUE, domBroker.newReadOnlyTransaction().read(OPERATIONAL, TestModel.TEST_PATH).get()
                  .get().toString().contains(testContainer.toString()));
 
         readRx.close();

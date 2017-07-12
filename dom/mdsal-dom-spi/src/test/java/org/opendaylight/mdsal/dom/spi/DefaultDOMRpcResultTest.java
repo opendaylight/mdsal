@@ -22,13 +22,13 @@ public class DefaultDOMRpcResultTest {
     @Test
     public void basicTest() throws Exception {
         RpcError rpcError = mock(RpcError.class);
-        NormalizedNode normalizedNode = mock(NormalizedNode.class);
+        NormalizedNode<?, ?> normalizedNode = mock(NormalizedNode.class);
         DefaultDOMRpcResult defaultDOMRpcResult = new DefaultDOMRpcResult(normalizedNode, rpcError);
         assertEquals(normalizedNode, defaultDOMRpcResult.getResult());
         assertTrue(defaultDOMRpcResult.getErrors().contains(rpcError));
         assertTrue(new DefaultDOMRpcResult(normalizedNode).getErrors().isEmpty());
         assertTrue(new DefaultDOMRpcResult().getErrors().isEmpty());
-        assertTrue(new DefaultDOMRpcResult(Collections.EMPTY_LIST).getErrors().isEmpty());
+        assertTrue(new DefaultDOMRpcResult(Collections.emptyList()).getErrors().isEmpty());
         assertEquals(defaultDOMRpcResult.hashCode(), new DefaultDOMRpcResult(normalizedNode, rpcError).hashCode());
         assertTrue(new DefaultDOMRpcResult(normalizedNode, rpcError).equals(defaultDOMRpcResult));
         assertTrue(defaultDOMRpcResult.equals(defaultDOMRpcResult));

@@ -12,6 +12,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
@@ -108,7 +109,7 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
             public void onFailure(final Throwable throwable) {
                 transactionFailed(transaction, throwable);
             }
-        });
+        }, MoreExecutors.directExecutor());
 
         return ret;
     }

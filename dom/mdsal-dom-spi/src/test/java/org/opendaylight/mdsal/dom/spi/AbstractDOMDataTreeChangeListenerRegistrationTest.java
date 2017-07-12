@@ -13,20 +13,22 @@ import static org.mockito.Mockito.mock;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 
-public class AbstractDOMDataTreeChangeListenerRegistrationTest extends AbstractDOMDataTreeChangeListenerRegistration {
+public class AbstractDOMDataTreeChangeListenerRegistrationTest
+        extends AbstractDOMDataTreeChangeListenerRegistration<DOMDataTreeChangeListener> {
 
     private static final DOMDataTreeChangeListener DOM_DATA_TREE_CHANGE_LISTENER =
             mock(DOMDataTreeChangeListener.class);
 
-    @Test
-    public void basicTest() throws Exception {
-        AbstractDOMDataTreeChangeListenerRegistration abstractDOMDataTreeChangeListenerRegistration =
-                new AbstractDOMDataTreeChangeListenerRegistrationTest();
-        assertEquals(DOM_DATA_TREE_CHANGE_LISTENER, abstractDOMDataTreeChangeListenerRegistration.getInstance());
-    }
-
     public AbstractDOMDataTreeChangeListenerRegistrationTest() {
         super(DOM_DATA_TREE_CHANGE_LISTENER);
+    }
+
+    @Test
+    public void basicTest() throws Exception {
+        AbstractDOMDataTreeChangeListenerRegistration<?> abstractDOMDataTreeChangeListenerRegistration =
+                new AbstractDOMDataTreeChangeListenerRegistrationTest();
+        assertEquals(DOM_DATA_TREE_CHANGE_LISTENER, abstractDOMDataTreeChangeListenerRegistration.getInstance());
+        abstractDOMDataTreeChangeListenerRegistration.close();
     }
 
     @Override

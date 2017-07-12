@@ -51,11 +51,7 @@ public final class DefaultDOMRpcResult implements DOMRpcResult, Immutable, Seria
     }
 
     private static Collection<RpcError> asCollection(final RpcError... errors) {
-        if (errors.length == 0) {
-            return Collections.emptyList();
-        } else {
-            return Arrays.asList(errors);
-        }
+        return errors.length == 0 ? Collections.emptyList() : Arrays.asList(errors);
     }
 
     @Override
