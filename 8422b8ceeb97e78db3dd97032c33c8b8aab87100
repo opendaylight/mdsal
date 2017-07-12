@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_7f20a049",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-07-12T10:38:11Z",
+      "side": 1,
+      "message": "when casting, by code style, we allow one empty space ... please check all occurences in your chain",
+      "revId": "8422b8ceeb97e78db3dd97032c33c8b8aab87100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
