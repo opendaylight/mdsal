@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.TopBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
@@ -39,12 +38,11 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testPutCreateParentsSuccess() throws TransactionCommitFailedException,
-            InterruptedException, ExecutionException {
+    public void testPutCreateParentsSuccess() throws InterruptedException, ExecutionException {
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<Top> topNode = readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();
@@ -54,12 +52,11 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testMergeCreateParentsSuccess() throws TransactionCommitFailedException,
-            InterruptedException, ExecutionException {
+    public void testMergeCreateParentsSuccess() throws InterruptedException, ExecutionException {
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.merge(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<Top> topNode = readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();

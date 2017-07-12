@@ -11,6 +11,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
@@ -28,7 +29,7 @@ public class CodecTypeUtilsTest {
         constructor.setAccessible(true);
         try {
             constructor.newInstance();
-        } catch (Exception e) {
+        } catch (InvocationTargetException e) {
             throw e.getCause();
         }
     }

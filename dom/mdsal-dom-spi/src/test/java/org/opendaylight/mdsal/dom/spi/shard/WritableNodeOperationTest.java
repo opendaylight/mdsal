@@ -108,7 +108,7 @@ public class WritableNodeOperationTest extends WritableNodeOperation {
         returnNoNull(null);
     }
 
-    private static void returnNoNull(NormalizedNodeContainer normalizedNode) {
+    private static void returnNoNull(final NormalizedNodeContainer<?, ?, ?> normalizedNode) {
         if (normalizedNode != null) {
             doNothing().when(TestUtils.WRITE_CURSOR_STRATEGY).writeToCurrent(normalizedNode);
             doNothing().when(TestUtils.WRITE_CURSOR_STRATEGY).mergeToCurrent(normalizedNode);
@@ -123,7 +123,7 @@ public class WritableNodeOperationTest extends WritableNodeOperation {
 
     @Before
     public void setUp() {
-        final Collection<NormalizedNode> collectionNodes = new HashSet<>();
+        final Collection<NormalizedNode<?, ?>> collectionNodes = new HashSet<>();
         doReturn("testArgument").when(TestUtils.PATH_ARGUMENT).toString();
         doReturn("testCursor").when(TestUtils.DOM_DATA_TREE_WRITE_CURSOR).toString();
         doReturn("testNode").when(TestUtils.NORMALIZED_NODE).toString();

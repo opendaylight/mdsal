@@ -51,12 +51,12 @@ public class LazySerializedContainerNodeTest {
         final BindingTestContext bindingTestContext = bindingBrokerTestFactory.getTestContext();
         bindingTestContext.start();
 
-        final ImmutableBiMap biMap =
+        final ImmutableBiMap<?, ?> biMap =
                 bindingTestContext.getCodec().getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
         rpcName = ((RpcEffectiveStatementImpl) biMap.values().iterator().next()).getPath();
-        final LeafNode leafNode = ImmutableLeafNodeBuilder.create().withNodeIdentifier(NodeIdentifier
+        final LeafNode<?> leafNode = ImmutableLeafNodeBuilder.create().withNodeIdentifier(NodeIdentifier
                 .create(QName.create("test"))).build();
-        final NormalizedNode normalizedNode = LazySerializedContainerNode.create(rpcName, dataObject, codec);
+        final NormalizedNode<?, ?> normalizedNode = LazySerializedContainerNode.create(rpcName, dataObject, codec);
         assertNotNull(normalizedNode);
         final LazySerializedContainerNode lazySerializedContainerNode =
                 (LazySerializedContainerNode) LazySerializedContainerNode.withContextRef(rpcName, dataObject, leafNode,

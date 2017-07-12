@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.rev700101.BigIntContainer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.rev700101.BigIntContainerBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns._default.value.test.rev700101.BigUintContainer;
@@ -95,11 +94,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
             = InstanceIdentifier.create(IdentityrefContainer.class);
 
     @Test
-    public void testTinyIntDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testTinyIntDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, TINY_INT_NODE_PATH, new TinyIntContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<TinyIntContainer> tinyIntContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -117,11 +115,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testSmallIntDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testSmallIntDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, SMALL_INT_NODE_PATH, new SmallIntContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<SmallIntContainer> smallIntContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -139,11 +136,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testNormalIntDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testNormalIntDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, NORMAL_INT_NODE_PATH, new NormalIntContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<NormalIntContainer> normalIntContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -161,11 +157,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testBigIntDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testBigIntDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, BIG_INT_NODE_PATH, new BigIntContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<BigIntContainer> bigIntContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -183,11 +178,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testTinyUintDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testTinyUintDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, TINY_UINT_NODE_PATH, new TinyUintContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<TinyUintContainer> tinyUintContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -205,11 +199,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testSmallUintDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testSmallUintDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, SMALL_UINT_NODE_PATH, new SmallUintContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<SmallUintContainer> smallUintContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -227,11 +220,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testNormalUintDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testNormalUintDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, NORMAL_UINT_NODE_PATH, new NormalUintContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<NormalUintContainer> normalUintContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -249,11 +241,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testBigUintDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testBigUintDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, BIG_UINT_NODE_PATH, new BigUintContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<BigUintContainer> bigUintContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -271,11 +262,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testDecimalDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testDecimalDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, DECIMAL_NODE_PATH, new DecimalContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<DecimalContainer> decimalContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -293,11 +283,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testStringDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testStringDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, STRING_NODE_PATH, new StringContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<StringContainer> stringContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -315,11 +304,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testBooleanDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testBooleanDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, BOOLEAN_NODE_PATH, new BooleanContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<BooleanContainer> booleanContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -333,11 +321,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testEnumerationDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testEnumerationDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, ENUM_NODE_PATH, new EnumContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<EnumContainer> enumContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -351,11 +338,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testBitsDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testBitsDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, BITS_NODE_PATH, new BitsContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<BitsContainer> bitsContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -371,11 +357,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testBinaryDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testBinaryDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, BINARY_NODE_PATH, new BinaryContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<BinaryContainer> binaryContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,
@@ -391,11 +376,10 @@ public class LeafDefaultValueTest extends AbstractDataBrokerTest {
     }
 
     @Test
-    public void testIdentityrefDefaultValue() throws ExecutionException, InterruptedException,
-            TransactionCommitFailedException {
+    public void testIdentityrefDefaultValue() throws ExecutionException, InterruptedException {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, IDENTITYREF_NODE_PATH, new IdentityrefContainerBuilder().build());
-        writeTx.submit().checkedGet();
+        writeTx.submit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<IdentityrefContainer> identityrefContainerNode = readTx.read(LogicalDatastoreType.OPERATIONAL,

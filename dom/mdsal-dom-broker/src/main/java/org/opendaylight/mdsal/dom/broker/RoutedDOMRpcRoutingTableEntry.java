@@ -80,11 +80,10 @@ final class RoutedDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
         final List<DOMRpcImplementation> impls = getImplementations(null);
         if (impls != null) {
             return impls.get(0).invokeRpc(globalRpcId, input);
-        } else {
-            return Futures.<DOMRpcResult, DOMRpcException>immediateFailedCheckedFuture(
-                    new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available",
-                            getSchemaPath()));
         }
+
+        return Futures.<DOMRpcResult, DOMRpcException>immediateFailedCheckedFuture(
+            new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", getSchemaPath()));
     }
 
     @Override

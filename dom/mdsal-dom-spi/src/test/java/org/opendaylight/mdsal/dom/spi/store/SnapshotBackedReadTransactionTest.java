@@ -29,16 +29,16 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 public class SnapshotBackedReadTransactionTest {
 
     private static final DataTreeSnapshot DATA_TREE_SNAPSHOT = mock(DataTreeSnapshot.class);
-    private static SnapshotBackedReadTransaction snapshotBackedReadTransaction =
+    private static SnapshotBackedReadTransaction<Object> snapshotBackedReadTransaction =
             new SnapshotBackedReadTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT);
 
     @Test
     public void basicTest() throws Exception {
         final NormalizedNode<?, ?> testNode = mock(NormalizedNode.class);
-        final Optional<NormalizedNode> optional = Optional.of(testNode);
+        final Optional<NormalizedNode<?, ?>> optional = Optional.of(testNode);
         doReturn("testNode").when(testNode).toString();
         doReturn(optional).when(DATA_TREE_SNAPSHOT).readNode(YangInstanceIdentifier.EMPTY);
-        assertTrue((Boolean) snapshotBackedReadTransaction.exists(YangInstanceIdentifier.EMPTY).get());
+        assertTrue(snapshotBackedReadTransaction.exists(YangInstanceIdentifier.EMPTY).get());
 
         assertEquals(optional, snapshotBackedReadTransaction.read(YangInstanceIdentifier.EMPTY).get());
         final Field stableSnapshotField = SnapshotBackedReadTransaction.class.getDeclaredField("stableSnapshot");

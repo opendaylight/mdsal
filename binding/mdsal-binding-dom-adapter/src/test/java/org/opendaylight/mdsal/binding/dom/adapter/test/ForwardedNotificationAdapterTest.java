@@ -43,7 +43,7 @@ public class ForwardedNotificationAdapterTest extends AbstractNotificationBroker
 
     }
 
-    private TwoLevelListChanged createTestData() {
+    private static TwoLevelListChanged createTestData() {
         final TwoLevelListChangedBuilder tb = new TwoLevelListChangedBuilder();
         tb.setTopLevelList(ImmutableList.of(new TopLevelListBuilder().setKey(new TopLevelListKey("test")).build()));
         return tb.build();

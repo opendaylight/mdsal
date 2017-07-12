@@ -35,9 +35,9 @@ public class SnapshotBackedWriteTransactionTest {
             mock(TransactionReadyPrototype.class);
     private static final DOMStoreThreePhaseCommitCohort DOM_STORE_THREE_PHASE_COMMIT_COHORT =
             mock(DOMStoreThreePhaseCommitCohort.class);
-    private static final NormalizedNode NORMALIZED_NODE = mock(NormalizedNode.class);
-    private static final Optional NORMALIZED_NODE_OPTIONAL = Optional.of(NORMALIZED_NODE);
-    private static SnapshotBackedWriteTransaction snapshotBackedWriteTransaction;
+    private static final NormalizedNode<?, ?> NORMALIZED_NODE = mock(NormalizedNode.class);
+    private static final Optional<NormalizedNode<?, ?>> NORMALIZED_NODE_OPTIONAL = Optional.of(NORMALIZED_NODE);
+    private static SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction;
 
     @Before
     public void setUp() throws Exception {
@@ -77,7 +77,7 @@ public class SnapshotBackedWriteTransactionTest {
 
     @Test
     public void readyTest() throws Exception {
-        SnapshotBackedWriteTransaction snapshotBackedWriteTransaction =
+        SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction =
                 new SnapshotBackedWriteTransaction<>(
                         new Object(), false, DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE);
         Assert.assertNotNull(snapshotBackedWriteTransaction.ready());

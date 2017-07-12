@@ -16,7 +16,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.ImmutableList;
-import java.lang.reflect.Field;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Deque;
 import org.junit.Test;
@@ -36,14 +35,14 @@ public class BindingDOMDataTreeWriteCursorAdapterTest {
 
     @Test
     public void basicTest() throws Exception {
-        final DataTreeIdentifier identifier =
+        final DataTreeIdentifier<?> identifier =
                 DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
                         InstanceIdentifier.create(DataObject.class));
         final DOMDataTreeWriteCursor delegate = mock(DOMDataTreeWriteCursor.class);
         final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
         final BindingToNormalizedNodeCodec codec =
                 new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
-        final BindingDOMDataTreeWriteCursorAdapter adapter =
+        final BindingDOMDataTreeWriteCursorAdapter<?> adapter =
                 new BindingDOMDataTreeWriteCursorAdapter<>(identifier, delegate, codec);
 
         final PathArgument pathArgument = new Item<>(DataObject.class);
@@ -57,7 +56,7 @@ public class BindingDOMDataTreeWriteCursorAdapterTest {
         doNothing().when(delegate).delete(any());
         doReturn(YangInstanceIdentifier.EMPTY).when(registry).toYangInstanceIdentifier(any());
         doNothing().when(delegate).close();
-        final NormalizedNode normalizedNode = mock(NormalizedNode.class);
+        final NormalizedNode<?, ?> normalizedNode = mock(NormalizedNode.class);
 
         doReturn(new SimpleEntry<YangInstanceIdentifier,NormalizedNode<?,?>>(YangInstanceIdentifier.EMPTY,
                 normalizedNode)).when(registry).toNormalizedNode(any(), any());
@@ -70,9 +69,7 @@ public class BindingDOMDataTreeWriteCursorAdapterTest {
         adapter.delete(pathArgument);
         verify(delegate).delete(any());
 
-        final Field stackField = BindingDOMDataTreeWriteCursorAdapter.class.getDeclaredField("stack");
-        stackField.setAccessible(true);
-        final Deque stack = (Deque) stackField.get(adapter);
+        final Deque<PathArgument> stack = adapter.stack();
         assertTrue(stack.contains(pathArgument));
 
         adapter.exit(stack.size());

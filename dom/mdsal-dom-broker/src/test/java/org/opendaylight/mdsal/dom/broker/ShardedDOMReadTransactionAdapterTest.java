@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -22,7 +22,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeLoopException;
@@ -49,10 +48,10 @@ public class ShardedDOMReadTransactionAdapterTest {
 
     @Test
     public void testRead() throws Exception {
-        final CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> readResult =
+        final ListenableFuture<Optional<NormalizedNode<?, ?>>> readResult =
                 readTx.read(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
-        assertTrue(readTx.exists(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH).checkedGet());
-        assertEquals(readResult.checkedGet().get(), TestUtils.TEST_CONTAINER);
+        assertTrue(readTx.exists(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH).get());
+        assertEquals(readResult.get().get(), TestUtils.TEST_CONTAINER);
     }
 
     @After

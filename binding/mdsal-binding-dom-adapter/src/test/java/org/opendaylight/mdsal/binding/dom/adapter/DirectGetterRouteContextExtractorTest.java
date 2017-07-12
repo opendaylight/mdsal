@@ -19,7 +19,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class DirectGetterRouteContextExtractorTest {
 
-    private static final InstanceIdentifier INSTANCE_IDENTIFIER = InstanceIdentifier.create(DataObject.class);
+    private static final InstanceIdentifier<?> INSTANCE_IDENTIFIER = InstanceIdentifier.create(DataObject.class);
     private static final String EXCEPTION_TEXT = "testException";
 
     @Test
@@ -37,7 +37,7 @@ public class DirectGetterRouteContextExtractorTest {
         }
     }
 
-    private static InstanceIdentifier testMethod(DataObject data) {
+    private static InstanceIdentifier<?> testMethod(final DataObject data) {
         if (data == null) {
             throw new NullPointerException(EXCEPTION_TEXT);
         }

@@ -24,7 +24,7 @@ public class SnapshotBackedTransactionsTest {
     public void basicTest() throws Exception {
         final DataTreeSnapshot dataTreeSnapshot = mock(DataTreeSnapshot.class);
         final DataTreeModification dataTreeModification = mock(DataTreeModification.class);
-        final TransactionReadyPrototype transactionReadyPrototype =  mock(TransactionReadyPrototype.class);
+        final TransactionReadyPrototype<Object> transactionReadyPrototype =  mock(TransactionReadyPrototype.class);
         doReturn(dataTreeModification).when(dataTreeSnapshot).newModification();
 
         assertNotNull(SnapshotBackedTransactions.newReadTransaction(new Object(), false, dataTreeSnapshot));

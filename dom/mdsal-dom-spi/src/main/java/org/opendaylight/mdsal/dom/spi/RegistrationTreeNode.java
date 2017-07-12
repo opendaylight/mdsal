@@ -83,12 +83,12 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
             final RegistrationTreeNode<T> child = children.get(new NodeIdentifier(arg.getNodeType()));
             if (child == null) {
                 return Collections.emptyList();
-            } else {
-                return Collections.singletonList(child);
             }
-        } else {
-            return Collections.emptyList();
+
+            return Collections.singletonList(child);
         }
+
+        return Collections.emptyList();
     }
 
     public Collection<T> getRegistrations() {

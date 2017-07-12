@@ -47,7 +47,7 @@ public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTre
 
         final DOMDataTreeChangeListener domDataTreeChangeListener = mock(DOMDataTreeChangeListener.class);
 
-        final AbstractDOMDataTreeChangeListenerRegistration abstractDOMDataTreeChangeListenerRegistration =
+        final AbstractDOMDataTreeChangeListenerRegistration<?> abstractDOMDataTreeChangeListenerRegistration =
                 this.registerTreeChangeListener(yangInstanceIdentifier, domDataTreeChangeListener);
 
         assertFalse(removeInvoked);
@@ -70,13 +70,13 @@ public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTre
     }
 
     @Override
-    protected void notifyListener(AbstractDOMDataTreeChangeListenerRegistration<?> registration,
-            Collection<DataTreeCandidate> changes) {
+    protected void notifyListener(final AbstractDOMDataTreeChangeListenerRegistration<?> registration,
+            final Collection<DataTreeCandidate> changes) {
         notifyInvoked = true;
     }
 
     @Override
-    protected void registrationRemoved(@Nonnull AbstractDOMDataTreeChangeListenerRegistration<?> registration) {
+    protected void registrationRemoved(@Nonnull final AbstractDOMDataTreeChangeListenerRegistration<?> registration) {
         removeInvoked = true;
     }
 }
