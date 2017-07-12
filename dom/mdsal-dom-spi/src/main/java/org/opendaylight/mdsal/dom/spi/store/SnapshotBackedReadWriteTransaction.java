@@ -14,7 +14,6 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
-import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
@@ -54,9 +53,9 @@ public final class SnapshotBackedReadWriteTransaction<T> extends
 
         if (result == null) {
             return Futures.immediateFailedCheckedFuture(new ReadFailedException("Transaction is closed"));
-        } else {
-            return Futures.immediateCheckedFuture(result);
         }
+
+        return Futures.immediateCheckedFuture(result);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")

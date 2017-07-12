@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 
-public class AbstractSnapshotBackedTransactionChainTest extends AbstractSnapshotBackedTransactionChain {
+public class AbstractSnapshotBackedTransactionChainTest extends AbstractSnapshotBackedTransactionChain<Object> {
 
     @Mock
     private static DataTreeSnapshot dataTreeSnapshot;
@@ -29,7 +29,8 @@ public class AbstractSnapshotBackedTransactionChainTest extends AbstractSnapshot
     @Test
     public void basicTest() throws Exception {
         initMocks(this);
-        SnapshotBackedWriteTransaction snapshotBackedWriteTransaction = mock(SnapshotBackedWriteTransaction.class);
+        SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction =
+                mock(SnapshotBackedWriteTransaction.class);
         DataTreeModification dataTreeModification = mock(DataTreeModification.class);
         doReturn(dataTreeModification).when(dataTreeSnapshot).newModification();
         doReturn(MoreObjects.toStringHelper(this)).when(snapshotBackedWriteTransaction).addToStringAttributes(any());
@@ -65,8 +66,8 @@ public class AbstractSnapshotBackedTransactionChainTest extends AbstractSnapshot
     }
 
     @Override
-    protected DOMStoreThreePhaseCommitCohort createCohort(SnapshotBackedWriteTransaction transaction,
-                                                          DataTreeModification modification) {
+    protected DOMStoreThreePhaseCommitCohort createCohort(final SnapshotBackedWriteTransaction<Object> transaction,
+                                                          final DataTreeModification modification) {
         return domStoreThreePhaseCommitCohort;
     }
 }

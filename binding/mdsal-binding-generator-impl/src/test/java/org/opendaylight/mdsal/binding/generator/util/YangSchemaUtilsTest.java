@@ -19,6 +19,7 @@ import static org.opendaylight.mdsal.binding.yang.types.TypeProviderModel.create
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,11 +124,11 @@ public class YangSchemaUtilsTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void privateConstructTest() throws Throwable {
-        final Constructor constructor = YangSchemaUtils.class.getDeclaredConstructor();
+        final Constructor<YangSchemaUtils> constructor = YangSchemaUtils.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();
-        } catch (Exception e) {
+        } catch (InvocationTargetException e) {
             throw e.getCause();
         }
     }

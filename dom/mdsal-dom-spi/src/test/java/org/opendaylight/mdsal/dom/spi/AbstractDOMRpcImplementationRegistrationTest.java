@@ -13,19 +13,21 @@ import static org.mockito.Mockito.mock;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 
-public class AbstractDOMRpcImplementationRegistrationTest extends AbstractDOMRpcImplementationRegistration {
+public class AbstractDOMRpcImplementationRegistrationTest
+        extends AbstractDOMRpcImplementationRegistration<DOMRpcImplementation> {
 
     private static final DOMRpcImplementation DOM_RPC_IMPLEMENTATION = mock(DOMRpcImplementation.class);
 
-    @Test
-    public void basicTest() throws Exception {
-        AbstractDOMRpcImplementationRegistration abstractDOMRpcImplementationRegistration =
-                new AbstractDOMRpcImplementationRegistrationTest();
-        assertEquals(DOM_RPC_IMPLEMENTATION, abstractDOMRpcImplementationRegistration.getInstance());
-    }
-
     public AbstractDOMRpcImplementationRegistrationTest() {
         super(DOM_RPC_IMPLEMENTATION);
+    }
+
+    @Test
+    public void basicTest() throws Exception {
+        AbstractDOMRpcImplementationRegistration<?> abstractDOMRpcImplementationRegistration =
+                new AbstractDOMRpcImplementationRegistrationTest();
+        assertEquals(DOM_RPC_IMPLEMENTATION, abstractDOMRpcImplementationRegistration.getInstance());
+        abstractDOMRpcImplementationRegistration.close();
     }
 
     @Override

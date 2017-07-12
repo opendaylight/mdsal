@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,12 +31,12 @@ public class AbstractForwardedDataBrokerTest {
 
     private static final TopLevelListKey TOP_FOO_KEY = new TopLevelListKey("foo");
     private static final InstanceIdentifier<TopLevelList> BA_TOP_LEVEL_LIST =
-            InstanceIdentifier.builder(Top.class).child(TopLevelList.class, TOP_FOO_KEY).toInstance();
+            InstanceIdentifier.builder(Top.class).child(TopLevelList.class, TOP_FOO_KEY).build();
     private static final InstanceIdentifier<TreeLeafOnlyAugment> BA_TREE_LEAF_ONLY =
             BA_TOP_LEVEL_LIST.augmentation(TreeLeafOnlyAugment.class);
     private AbstractForwardedDataBroker forwardedDataBroker;
     private YangInstanceIdentifier data;
-    private NormalizedNode normalizedNode;
+    private NormalizedNode<?, ?> normalizedNode;
 
     @Before
     public void basicTest() throws Exception {
@@ -55,8 +54,8 @@ public class AbstractForwardedDataBrokerTest {
 
     @Test
     public void toBindingTestWithMap() throws Exception {
-        final NormalizedNode normalizedNode = mock(NormalizedNode.class);
-        assertNotNull(forwardedDataBroker.toBinding(BA_TREE_LEAF_ONLY, (Map) ImmutableMap.of(data, normalizedNode)));
+        final NormalizedNode<?, ?> normalizedNode = mock(NormalizedNode.class);
+        assertNotNull(forwardedDataBroker.toBinding(BA_TREE_LEAF_ONLY, ImmutableMap.of(data, normalizedNode)));
     }
 
     @Test
@@ -71,7 +70,8 @@ public class AbstractForwardedDataBrokerTest {
 
     private class AbstractForwardedDataBrokerImpl extends AbstractForwardedDataBroker {
 
-        private AbstractForwardedDataBrokerImpl(DOMDataBroker domDataBroker, BindingToNormalizedNodeCodec codec) {
+        private AbstractForwardedDataBrokerImpl(final DOMDataBroker domDataBroker,
+                final BindingToNormalizedNodeCodec codec) {
             super(domDataBroker, codec);
         }
     }

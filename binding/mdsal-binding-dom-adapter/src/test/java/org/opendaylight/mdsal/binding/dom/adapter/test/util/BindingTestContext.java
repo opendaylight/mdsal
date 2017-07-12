@@ -158,7 +158,7 @@ public class BindingTestContext implements AutoCloseable {
         mockSchemaService.changeSchema(getContext(moduleInfos));
     }
 
-    private SchemaContext getContext(final ImmutableSet<YangModuleInfo> moduleInfos) {
+    private static SchemaContext getContext(final ImmutableSet<YangModuleInfo> moduleInfos) {
         final ModuleInfoBackedContext ctx = ModuleInfoBackedContext.create();
         ctx.addModuleInfos(moduleInfos);
         return ctx.tryToCreateSchemaContext().get();

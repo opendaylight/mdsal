@@ -23,9 +23,9 @@ public class RegistrationTreeSnapshotTest {
     public void basicTest() throws Exception {
         final Lock lock = mock(Lock.class);
         final PathArgument pathArgument = mock(PathArgument.class);
-        final RegistrationTreeNode registrationTreeNode = new RegistrationTreeNode(null, pathArgument);
-        final RegistrationTreeSnapshot registrationTreeSnapshot =
-                new RegistrationTreeSnapshot(lock, registrationTreeNode);
+        final RegistrationTreeNode<?> registrationTreeNode = new RegistrationTreeNode<>(null, pathArgument);
+        final RegistrationTreeSnapshot<?> registrationTreeSnapshot =
+                new RegistrationTreeSnapshot<>(lock, registrationTreeNode);
 
         assertNotNull(registrationTreeSnapshot.getRootNode());
         assertEquals(registrationTreeNode, registrationTreeSnapshot.getRootNode());

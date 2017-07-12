@@ -21,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +35,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
@@ -189,7 +188,7 @@ public class ShardedDOMDataTreeTest {
         }
 
         cursor.close();
-        tx.submit().checkedGet();
+        tx.submit().get();
 
         tx = producer.createTransaction(false);
         cursor = tx.createCursor(TEST_ID);
@@ -197,7 +196,7 @@ public class ShardedDOMDataTreeTest {
 
         cursor.delete(TestModel.INNER_CONTAINER_PATH.getLastPathArgument());
         cursor.close();
-        tx.submit().checkedGet();
+        tx.submit().get();
 
         verify(mockedDataTreeListener, timeout(1000).times(3)).onDataTreeChanged(captorForChanges.capture(),
                 captorForSubtrees.capture());
@@ -238,7 +237,7 @@ public class ShardedDOMDataTreeTest {
         cursor.write(TEST_ID.getRootIdentifier().getLastPathArgument(), crossShardContainer);
 
         cursor.close();
-        tx.submit().checkedGet();
+        tx.submit().get();
 
         tx = producer.createTransaction(false);
         cursor = tx.createCursor(TEST_ID);
@@ -246,7 +245,7 @@ public class ShardedDOMDataTreeTest {
 
         cursor.delete(TestModel.INNER_CONTAINER_PATH.getLastPathArgument());
         cursor.close();
-        tx.submit().checkedGet();
+        tx.submit().get();
 
         verify(mockedDataTreeListener, timeout(5000).times(3)).onDataTreeChanged(captorForChanges.capture(),
                 captorForSubtrees.capture());
@@ -285,9 +284,9 @@ public class ShardedDOMDataTreeTest {
 
         cursor.write(new NodeIdentifier(TestModel.INNER_LIST_QNAME), innerList);
         cursor.close();
-        tx.submit().checkedGet();
+        tx.submit().get();
 
-        final ArrayList<CheckedFuture<Void, TransactionCommitFailedException>> futures = new ArrayList<>();
+        final ArrayList<ListenableFuture<Void>> futures = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
             final Collection<MapEntryNode> innerListMapEntries = createInnerListMapEntries(1000, "run-" + i);
             for (final MapEntryNode innerListMapEntry : innerListMapEntries) {
@@ -301,7 +300,7 @@ public class ShardedDOMDataTreeTest {
             }
         }
 
-        futures.get(futures.size() - 1).checkedGet();
+        futures.get(futures.size() - 1).get();
 
     }
 
@@ -428,7 +427,7 @@ public class ShardedDOMDataTreeTest {
         cursor.write(TestModel.TEST_PATH.getLastPathArgument(), createCrossShardContainer2());
         cursor.close();
 
-        tx.submit().checkedGet();
+        tx.submit().get();
 
         final DOMDataTreeListener listener = mock(DOMDataTreeListener.class);
         doNothing().when(listener).onDataTreeChanged(any(), any());

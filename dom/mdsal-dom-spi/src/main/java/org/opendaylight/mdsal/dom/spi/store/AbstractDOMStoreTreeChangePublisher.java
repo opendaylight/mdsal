@@ -167,7 +167,8 @@ public abstract class AbstractDOMStoreTreeChangePublisher
         }
     }
 
-    private void addToListenerChanges(final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
+    private static void addToListenerChanges(
+            final Collection<AbstractDOMDataTreeChangeListenerRegistration<?>> registrations,
             final YangInstanceIdentifier path, final DataTreeCandidateNode node,
             final Multimap<AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> listenerChanges) {
         final DataTreeCandidate dataTreeCandidate = DataTreeCandidates.newDataTreeCandidate(path, node);

@@ -29,23 +29,24 @@ public class SnapshotBackedReadWriteTransactionTest {
 
     private static final DataTreeSnapshot DATA_TREE_SNAPSHOT = mock(DataTreeSnapshot.class);
     private static final DataTreeModification DATA_TREE_MODIFICATION = mock(DataTreeModification.class);
-    private static final TransactionReadyPrototype TRANSACTION_READY_PROTOTYPE = mock(TransactionReadyPrototype.class);
-    private SnapshotBackedReadWriteTransaction snapshotBackedReadWriteTransaction;
+    private static final TransactionReadyPrototype<Object> TRANSACTION_READY_PROTOTYPE =
+            mock(TransactionReadyPrototype.class);
+    private SnapshotBackedReadWriteTransaction<Object> snapshotBackedReadWriteTransaction;
 
     @Before
     public void setUp() throws Exception {
         doReturn(DATA_TREE_MODIFICATION).when(DATA_TREE_SNAPSHOT).newModification();
-        snapshotBackedReadWriteTransaction = new SnapshotBackedReadWriteTransaction(new Object(), false,
+        snapshotBackedReadWriteTransaction = new SnapshotBackedReadWriteTransaction<>(new Object(), false,
                 DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE);
     }
 
     @Test
     public void basicTest() throws Exception {
         final NormalizedNode<?, ?> testNode = mock(NormalizedNode.class);
-        final Optional<NormalizedNode> optional = Optional.of(testNode);
+        final Optional<NormalizedNode<?, ?>> optional = Optional.of(testNode);
         doReturn("testNode").when(testNode).toString();
         doReturn(optional).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.EMPTY);
-        assertTrue((Boolean) snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.EMPTY).get());
+        assertTrue(snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.EMPTY).get());
         assertEquals(optional, snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.EMPTY).get());
     }
 

@@ -12,8 +12,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.util.XtendHelper;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
 public class XtendHelperTest {
@@ -28,11 +28,11 @@ public class XtendHelperTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void privateConstructTest() throws Throwable {
-        final Constructor constructor = XtendHelper.class.getDeclaredConstructor();
+        final Constructor<XtendHelper> constructor = XtendHelper.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();
-        } catch (Exception e) {
+        } catch (InvocationTargetException e) {
             throw e.getCause();
         }
     }

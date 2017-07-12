@@ -9,13 +9,13 @@ package org.opendaylight.controller.md.sal.dom.api;
 
 import static org.junit.Assert.assertNotNull;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.net.URI;
 import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
@@ -56,10 +56,10 @@ public abstract class AbstractDOMDataTreeServiceTestSuite {
      * test model.
      *
      * @throws DOMDataTreeProducerException when this exceptional condition happens
-     * @throws TransactionCommitFailedException when transaction commit fails
      */
     @Test
-    public final void testBasicProducer() throws DOMDataTreeProducerException, TransactionCommitFailedException {
+    public final void testBasicProducer() throws DOMDataTreeProducerException, InterruptedException,
+           ExecutionException {
         // Create a producer. It is an AutoCloseable resource, hence the try-with pattern
         try (DOMDataTreeProducer prod =
                 service().createProducer(Collections.singleton(UNORDERED_CONTAINER_TREE))) {
@@ -75,10 +75,10 @@ public abstract class AbstractDOMDataTreeServiceTestSuite {
             cursor.write(UNORDERED_CONTAINER_IID.getLastPathArgument(), ImmutableContainerNodeBuilder.create().build());
             cursor.close();
 
-            final CheckedFuture<Void, TransactionCommitFailedException> f = tx.submit();
+            final ListenableFuture<Void> f = tx.submit();
             assertNotNull(f);
 
-            f.checkedGet();
+            f.get();
         }
     }
 

@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.io.IOException;
@@ -201,10 +200,9 @@ public class InMemoryDataStoreTest {
 
         writeTx.merge(TestModel.TEST_PATH, containerNode);
 
-        CheckedFuture<Boolean, ReadFailedException> exists =
-            writeTx.exists(TestModel.TEST_PATH);
+        ListenableFuture<Boolean> exists = writeTx.exists(TestModel.TEST_PATH);
 
-        assertEquals(true, exists.checkedGet());
+        assertEquals(Boolean.TRUE, exists.get());
 
         DOMStoreThreePhaseCommitCohort ready = writeTx.ready();
 
@@ -218,7 +216,7 @@ public class InMemoryDataStoreTest {
         exists =
             readTx.exists(TestModel.TEST_PATH);
 
-        assertEquals(true, exists.checkedGet());
+        assertEquals(Boolean.TRUE, exists.get());
     }
 
     @Test
@@ -227,10 +225,9 @@ public class InMemoryDataStoreTest {
         DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
-        CheckedFuture<Boolean, ReadFailedException> exists =
-            writeTx.exists(TestModel.TEST_PATH);
+        ListenableFuture<Boolean> exists = writeTx.exists(TestModel.TEST_PATH);
 
-        assertEquals(false, exists.checkedGet());
+        assertEquals(Boolean.FALSE, exists.get());
 
         DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
@@ -238,7 +235,7 @@ public class InMemoryDataStoreTest {
         exists =
             readTx.exists(TestModel.TEST_PATH);
 
-        assertEquals(false, exists.checkedGet());
+        assertEquals(Boolean.FALSE, exists.get());
     }
 
     @Test(expected = ReadFailedException.class)

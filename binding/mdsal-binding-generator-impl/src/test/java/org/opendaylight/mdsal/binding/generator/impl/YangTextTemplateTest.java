@@ -8,18 +8,18 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.impl.YangTextTemplate;
 
 public class YangTextTemplateTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void privateConstructTest() throws Throwable {
-        final Constructor constructor = YangTextTemplate.class.getDeclaredConstructor();
+        final Constructor<YangTextTemplate> constructor = YangTextTemplate.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();
-        } catch (Exception e) {
+        } catch (InvocationTargetException e) {
             throw e.getCause();
         }
     }

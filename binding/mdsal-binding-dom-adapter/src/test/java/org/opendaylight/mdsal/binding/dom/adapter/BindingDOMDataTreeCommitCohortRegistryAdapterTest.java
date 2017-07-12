@@ -38,7 +38,8 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapterTest {
         bindingTestContext.start();
 
         final DOMDataTreeCommitCohortRegistry cohortRegistry = mock(DOMDataTreeCommitCohortRegistry.class);
-        final DOMDataTreeCommitCohortRegistration cohortRegistration = mock(DOMDataTreeCommitCohortRegistration.class);
+        final DOMDataTreeCommitCohortRegistration<?> cohortRegistration =
+                mock(DOMDataTreeCommitCohortRegistration.class);
         doReturn(cohortRegistration).when(cohortRegistry)
                 .registerCommitCohort(any(), any());
         doNothing().when(cohortRegistration).close();
@@ -49,8 +50,8 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapterTest {
 
         final DataTreeIdentifier dataTreeIdentifier = DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(Top.class));
-        final DataTreeCommitCohort dataTreeCommitCohort = mock(DataTreeCommitCohort.class);
-        final ObjectRegistration objectRegistration =
+        final DataTreeCommitCohort<?> dataTreeCommitCohort = mock(DataTreeCommitCohort.class);
+        final ObjectRegistration<?> objectRegistration =
                 registryAdapter.registerCommitCohort(dataTreeIdentifier, dataTreeCommitCohort);
         assertEquals(dataTreeCommitCohort, objectRegistration.getInstance());
 

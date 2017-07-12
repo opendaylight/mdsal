@@ -105,15 +105,13 @@ public final class Types {
     }
 
     public static ConcreteType typeForClass(final Class<?> cls, final Restrictions restrictions) {
-        if (restrictions != null) {
-            if (restrictions instanceof DefaultRestrictions) {
-                return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
-            } else {
-                return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
-            }
-        } else {
+        if (restrictions == null) {
             return typeForClass(cls);
         }
+        if (restrictions instanceof DefaultRestrictions) {
+            return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+        }
+        return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
     }
 
     /**
@@ -225,7 +223,7 @@ public final class Types {
 
     public static  @Nullable String getOuterClassName(final Type valueType) {
         final String pkgName = valueType.getPackageName();
-        if(CharMatcher.JAVA_UPPER_CASE.indexIn(pkgName) >= 0) {
+        if (CharMatcher.javaUpperCase().indexIn(pkgName) >= 0) {
             // It is inner class.
             return Iterables.getLast(DOT_SPLITTER.split(pkgName));
         }

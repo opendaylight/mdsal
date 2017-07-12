@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import com.google.common.annotations.VisibleForTesting;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -22,10 +23,10 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCursor> implements DataTreeWriteCursor {
-
-    private T delegate;
-    private BindingToNormalizedNodeCodec codec;
     private final Deque<PathArgument> stack = new ArrayDeque<>();
+
+    private final T delegate;
+    private final BindingToNormalizedNodeCodec codec;
 
     public BindingDOMDataTreeWriteCursorAdapter(final DataTreeIdentifier<?> path, final T delegate,
             final BindingToNormalizedNodeCodec codec) {
@@ -65,7 +66,7 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
     }
 
     @Override
-    public <P extends DataObject> void write(final PathArgument child, P data) {
+    public <P extends DataObject> void write(final PathArgument child, final P data) {
         final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = convertToNormalized(child, data);
         delegate.write(entry.getKey().getLastPathArgument(), entry.getValue());
     }
@@ -93,7 +94,7 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
     }
 
     @Override
-    public void exit(int depth) {
+    public void exit(final int depth) {
         for (int i = 0; i < depth; i++) {
             exit();
         }
@@ -102,5 +103,10 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
     @Override
     public void close() {
         delegate.close();
+    }
+
+    @VisibleForTesting
+    Deque<PathArgument> stack() {
+        return stack;
     }
 }

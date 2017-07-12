@@ -73,9 +73,8 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
             // FIXME: Add checked exception
         } catch (Exception e) {
             LOG.error("Tx: {}, failed to write {}:{} in {}", getIdentifier(), path, data, tree, e);
-            // Rethrow original ones if they are subclasses of RuntimeException
-            // or Error
-            Throwables.propagateIfPossible(e);
+            // Rethrow original ones if they are subclasses of RuntimeException or Error
+            Throwables.throwIfUnchecked(e);
             // FIXME: Introduce proper checked exception
             throw new IllegalArgumentException("Illegal input data.", e);
         }
@@ -94,9 +93,8 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
             // FIXME: Add checked exception
         } catch (Exception e) {
             LOG.error("Tx: {}, failed to write {}:{} in {}", getIdentifier(), path, data, tree, e);
-            // Rethrow original ones if they are subclasses of RuntimeException
-            // or Error
-            Throwables.propagateIfPossible(e);
+            // Rethrow original ones if they are subclasses of RuntimeException or Error
+            Throwables.throwIfUnchecked(e);
             // FIXME: Introduce proper checked exception
             throw new IllegalArgumentException("Illegal input data.", e);
         }
@@ -115,9 +113,8 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
             // FIXME: Add checked exception
         } catch (Exception e) {
             LOG.error("Tx: {}, failed to delete {} in {}", getIdentifier(), path, tree, e);
-            // Rethrow original ones if they are subclasses of RuntimeException
-            // or Error
-            Throwables.propagateIfPossible(e);
+            // Rethrow original ones if they are subclasses of RuntimeException or Error
+            Throwables.throwIfUnchecked(e);
             // FIXME: Introduce proper checked exception
             throw new IllegalArgumentException("Illegal path to delete.", e);
         }

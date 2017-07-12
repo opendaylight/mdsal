@@ -35,7 +35,7 @@ public class CommitCoordinationTaskTest {
     public void canCommitBlockingWithFail() throws Exception {
         doReturn(Futures.immediateCheckedFuture(null)).when(cohort).abort();
 
-        doReturn(Futures.immediateCheckedFuture(false)).when(cohort).canCommit();
+        doReturn(Futures.immediateCheckedFuture(Boolean.FALSE)).when(cohort).canCommit();
         task.call();
     }
 
@@ -49,7 +49,7 @@ public class CommitCoordinationTaskTest {
 
     @Test(expected = TransactionCommitFailedException.class)
     public void preCommitBlockingWithFail() throws Exception {
-        doReturn(Futures.immediateCheckedFuture(true)).when(cohort).canCommit();
+        doReturn(Futures.immediateCheckedFuture(Boolean.TRUE)).when(cohort).canCommit();
         doReturn(Futures.immediateCheckedFuture(null)).when(cohort).abort();
 
         doReturn(immediateFailedCheckedFuture(new InterruptedException())).when(cohort).preCommit();
@@ -58,7 +58,7 @@ public class CommitCoordinationTaskTest {
 
     @Test(expected = TransactionCommitFailedException.class)
     public void commitBlockingWithFail() throws Exception {
-        doReturn(Futures.immediateCheckedFuture(true)).when(cohort).canCommit();
+        doReturn(Futures.immediateCheckedFuture(Boolean.TRUE)).when(cohort).canCommit();
         doReturn(Futures.immediateCheckedFuture(null)).when(cohort).preCommit();
         doReturn(Futures.immediateCheckedFuture(null)).when(cohort).abort();
 

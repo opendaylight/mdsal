@@ -42,7 +42,7 @@ public class SchemaServiceActivatorTest {
         final SchemaServiceActivator schemaServiceActivator = new SchemaServiceActivator();
         schemaServiceActivator.start(bundleContext);
 
-        final ServiceRegistration registration = mock(ServiceRegistration.class);
+        final ServiceRegistration<?> registration = mock(ServiceRegistration.class);
         final OsgiBundleScanningSchemaService osgiBundle =
                 mock(OsgiBundleScanningSchemaService.class, CALLS_REAL_METHODS);
 

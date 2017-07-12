@@ -20,8 +20,8 @@ public class BindingStructuralTypeTest {
 
     @Test
     public void basicTest() throws Exception {
-        final NormalizedNode normalizedNode = mock(NormalizedNode.class);
-        final Optional optional = Optional.of(normalizedNode);
+        final NormalizedNode<?, ?> normalizedNode = mock(NormalizedNode.class);
+        final Optional<?> optional = Optional.of(normalizedNode);
         final DataTreeCandidateNode dataTreeCandidateNode = mock(DataTreeCandidateNode.class);
         doReturn(optional).when(dataTreeCandidateNode).getDataAfter();
         doReturn(optional).when(dataTreeCandidateNode).getDataBefore();
