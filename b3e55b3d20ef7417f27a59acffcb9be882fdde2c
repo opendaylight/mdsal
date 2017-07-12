@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_7c89cec9",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/AugmentToGenType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-07-12T09:15:52Z",
+      "side": 1,
+      "message": "is this called from tests only? That doesn\u0027t seem right...",
+      "range": {
+        "startLine": 258,
+        "startChar": 38,
+        "endLine": 258,
+        "endChar": 64
+      },
+      "revId": "b3e55b3d20ef7417f27a59acffcb9be882fdde2c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
