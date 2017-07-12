@@ -332,7 +332,7 @@ public class BindingNormalizedNodeCodecRegistry implements TreeNodeSerializerReg
 
     private final class GeneratorLoader extends CacheLoader<Class<? extends TreeNode>, TreeNodeSerializer> {
         @Override
-        public TreeNodeSerializer load(final Class<? extends TreeNode> key) throws Exception {
+        public TreeNodeSerializer load(@Nonnull final Class<? extends TreeNode> key) throws Exception {
             final TreeNodeSerializerImplementation prototype = generator.getSerializer(key);
             return new TreeNodeSerializerProxy(prototype);
         }
