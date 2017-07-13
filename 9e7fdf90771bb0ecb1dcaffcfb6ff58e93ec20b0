@@ -22,6 +22,30 @@
       "revId": "9e7fdf90771bb0ecb1dcaffcfb6ff58e93ec20b0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_abadb68a",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-07-13T06:22:49Z",
+      "side": 1,
+      "message": "This would be updated in subsequent patches.",
+      "parentUuid": "da2a55be_ebd32e36",
+      "range": {
+        "startLine": 258,
+        "startChar": 6,
+        "endLine": 262,
+        "endChar": 21
+      },
+      "revId": "9e7fdf90771bb0ecb1dcaffcfb6ff58e93ec20b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
