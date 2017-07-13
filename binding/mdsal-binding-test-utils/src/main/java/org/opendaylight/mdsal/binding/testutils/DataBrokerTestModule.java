@@ -8,20 +8,30 @@
 package org.opendaylight.mdsal.binding.testutils;
 
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
 
-// @Module
 public class DataBrokerTestModule {
+    private final boolean useMTDataTreeChangeListenerExecutor;
+
+    public DataBrokerTestModule(final boolean useMTDataTreeChangeListenerExecutor) {
+        this.useMTDataTreeChangeListenerExecutor = useMTDataTreeChangeListenerExecutor;
+    }
+
+    public static DataBroker dataBroker() {
+        return new DataBrokerTestModule(false).getDataBroker();
+    }
 
     // Suppress IllegalCatch because of AbstractDataBrokerTest (change later)
     @SuppressWarnings({ "checkstyle:IllegalCatch", "checkstyle:IllegalThrows" })
-    public static /* @Provides @Singleton */ DataBroker dataBroker() throws RuntimeException {
+    public DataBroker getDataBroker() throws RuntimeException {
         try {
             // This is a little bit "upside down" - in the future,
             // we should probably put what is in AbstractDataBrokerTest
             // into this DataBrokerTestModule, and make AbstractDataBrokerTest
             // use it, instead of the way around it currently is (the opposite);
             // this is just for historical reasons... and works for now.
-            AbstractDataBrokerTest dataBrokerTest = new AbstractDataBrokerTest();
+            AbstractConcurrentDataBrokerTest dataBrokerTest =
+                    new AbstractConcurrentDataBrokerTest(useMTDataTreeChangeListenerExecutor) { };
             dataBrokerTest.setup();
             return dataBrokerTest.getDataBroker();
         } catch (Exception e) {
