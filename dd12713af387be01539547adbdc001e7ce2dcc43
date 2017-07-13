@@ -94,6 +94,30 @@
       "revId": "dd12713af387be01539547adbdc001e7ce2dcc43",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_865269db",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-07-13T09:13:41Z",
+      "side": 1,
+      "message": "I tested it again and find that it\u0027s correct here, because the normalizer would add rank to the conflict class name,  so it\u0027s no need to add index manually here.",
+      "parentUuid": "da2a55be_06479920",
+      "range": {
+        "startLine": 421,
+        "startChar": 8,
+        "endLine": 427,
+        "endChar": 29
+      },
+      "revId": "dd12713af387be01539547adbdc001e7ce2dcc43",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
