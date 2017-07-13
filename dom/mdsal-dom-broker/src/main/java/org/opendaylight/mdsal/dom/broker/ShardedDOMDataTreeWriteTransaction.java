@@ -16,7 +16,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
@@ -132,17 +131,29 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
 
     void doSubmit(final Consumer<ShardedDOMDataTreeWriteTransaction> success,
             final BiConsumer<ShardedDOMDataTreeWriteTransaction, Throwable> failure) {
+        LOG.debug("Readying tx {}", identifier);
 
-        final ListenableFuture<List<Void>> listListenableFuture = Futures.allAsList(
-            transactions.values().stream().map(tx -> {
-                LOG.debug("Readying tx {}", identifier);
+        final ListenableFuture<?> future;
+        switch (transactions.size()) {
+            case 0:
+                success.accept(this);
+                return;
+            case 1: {
+                final DOMDataTreeShardWriteTransaction tx = transactions.values().iterator().next();
                 tx.ready();
-                return tx.submit();
-            }).collect(Collectors.toList()));
+                future = tx.submit();
+                break;
+            }
+            default:
+                future = Futures.allAsList(transactions.values().stream().map(tx -> {
+                    tx.ready();
+                    return tx.submit();
+                }).collect(Collectors.toList()));
+        }
 
-        Futures.addCallback(listListenableFuture, new FutureCallback<List<Void>>() {
+        Futures.addCallback(future, new FutureCallback<Object>() {
             @Override
-            public void onSuccess(final List<Void> result) {
+            public void onSuccess(final Object result) {
                 success.accept(ShardedDOMDataTreeWriteTransaction.this);
             }
 
