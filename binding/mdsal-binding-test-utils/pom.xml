@@ -74,6 +74,7 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-dom-adapter</artifactId>
             <type>test-jar</type>
+            <scope>compile</scope>
         </dependency>
         <!-- The following are dependencies which are listed
              as scope test in mdsal-binding-dom-adapter; we
