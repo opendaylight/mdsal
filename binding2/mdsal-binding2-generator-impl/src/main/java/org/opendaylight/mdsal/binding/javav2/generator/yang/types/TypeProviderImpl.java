@@ -983,7 +983,7 @@ public final class TypeProviderImpl implements TypeProvider {
         final String unionTypeName = unionSubtype.getQName().getLocalName();
         final Type genTO = findGenTO(unionTypeName, unionSubtype, schemaContext, genTypeDefsContextMap);
         if (genTO != null) {
-            updateUnionTypeAsProperty(parentUnionGenTOBuilder, genTO, genTO.getName());
+            updateUnionTypeAsProperty(parentUnionGenTOBuilder, genTO, unionTypeName);
         } else {
             final TypeDefinition<?> baseType = baseTypeDefForExtendedType(unionSubtype);
             if (unionTypeName.equals(baseType.getQName().getLocalName())) {
