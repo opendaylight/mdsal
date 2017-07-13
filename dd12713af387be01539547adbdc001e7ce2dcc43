@@ -22,6 +22,30 @@
       "revId": "dd12713af387be01539547adbdc001e7ce2dcc43",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_26a61d11",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-07-13T08:40:33Z",
+      "side": 1,
+      "message": "if there is no augment-identifier specified then the name would be module name + target node name according to binding2-spec.Here just mean not necessary to add rank as the name suffix although it would lead to name conflicts sometimes, and we should consider this later.",
+      "parentUuid": "da2a55be_ab06561e",
+      "range": {
+        "startLine": 421,
+        "startChar": 8,
+        "endLine": 427,
+        "endChar": 29
+      },
+      "revId": "dd12713af387be01539547adbdc001e7ce2dcc43",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
