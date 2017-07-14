@@ -14,14 +14,14 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>mdsal-model-binding2-parent</artifactId>
-        <version>0.10.1-SNAPSHOT</version>
+        <version>0.10.2-SNAPSHOT</version>
         <relativePath>../../binding2/mdsal-model-binding2-parent</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.model.binding2</groupId>
     <artifactId>yang-ext</artifactId>
-    <version>2013.09.07.10.1-SNAPSHOT</version>
+    <version>2013.09.07.10.2-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
     <packaging>bundle</packaging>

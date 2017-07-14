@@ -12,20 +12,20 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>bundle-parent</artifactId>
-        <version>1.8.1-SNAPSHOT</version>
+        <version>1.8.2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>mdsal-model-binding2-parent</artifactId>
-    <version>0.10.1-SNAPSHOT</version>
+    <version>0.10.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
-        <yangtools.version>1.1.1-SNAPSHOT</yangtools.version>
-        <mdsal.version>2.2.1-SNAPSHOT</mdsal.version>
-        <mdsalmodel.version>0.10.1-SNAPSHOT</mdsalmodel.version>
+        <yangtools.version>1.1.2-SNAPSHOT</yangtools.version>
+        <mdsal.version>2.2.2-SNAPSHOT</mdsal.version>
+        <mdsalmodel.version>0.10.2-SNAPSHOT</mdsalmodel.version>
         <salGeneratorPath>${project.build.directory}/generated-sources/mdsal-binding2</salGeneratorPath>
     </properties>
 
@@ -95,7 +95,7 @@
                                 <dependency>
                                     <groupId>org.opendaylight.mdsal</groupId>
                                     <artifactId>mdsal-binding2-maven-api-gen-plugin</artifactId>
-                                    <version>0.10.1-SNAPSHOT</version>
+                                    <version>0.10.2-SNAPSHOT</version>
                                     <type>jar</type>
                                 </dependency>
                             </dependencies>

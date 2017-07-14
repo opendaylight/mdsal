@@ -12,12 +12,12 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>1.8.1-SNAPSHOT</version>
+        <version>1.8.2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.opendaylight.mdsal.model.binding2</groupId>
-    <version>0.10.1-SNAPSHOT</version>
+    <version>0.10.2-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>model-aggregator</artifactId>
     <packaging>pom</packaging>
