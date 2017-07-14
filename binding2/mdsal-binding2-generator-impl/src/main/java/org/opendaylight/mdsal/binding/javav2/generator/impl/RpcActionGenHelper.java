@@ -16,6 +16,7 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addRawInterfaceDefinition;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.processUsesImplements;
+import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.resolveDataSchemaNodesCheck;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.ACTION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INPUT;
@@ -34,6 +35,7 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.paramet
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -49,7 +51,9 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
@@ -92,6 +96,38 @@ final class RpcActionGenHelper {
         return Optional.absent();
     }
 
+    private static void resolveActions(final DataNodeContainer parent, final Module module,
+            final SchemaContext schemaContext, final boolean verboseClassComments,
+            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx,
+            TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
+        Preconditions.checkNotNull(parent, "Parent should not be NULL.");
+        final Collection<DataSchemaNode> potentials = parent.getChildNodes();
+        for (DataSchemaNode potential : potentials) {
+            if (resolveDataSchemaNodesCheck(module, schemaContext,potential)) {
+                BindingNamespaceType namespaceType1 = namespaceType;
+                if (namespaceType.equals(BindingNamespaceType.Data)) {
+                    if (potential instanceof GroupingDefinition) {
+                        namespaceType1 = BindingNamespaceType.Grouping;
+                    }
+                }
+
+                if (potential instanceof ActionNodeContainer) {
+                    final Set<ActionDefinition> actions = ((ActionNodeContainer) potential).getActions();
+                    for (ActionDefinition action : actions) {
+                        genCtx.get(module).addTopLevelNodeType(resolveOperation(potential, action, module,
+                            schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
+                            namespaceType1));
+                    }
+                }
+
+                if (potential instanceof DataNodeContainer) {
+                    resolveActions((DataNodeContainer) potential, module, schemaContext, verboseClassComments,
+                        genTypeBuilders, genCtx, typeProvider, namespaceType1);
+                }
+            }
+        }
+    }
+
     /**
      * Converts Yang 1.1 <b>Actions</b> to list of <code>Type</code> objects.
      * @param module  module from which is obtained set of all Action objects to
@@ -105,17 +141,8 @@ final class RpcActionGenHelper {
             Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, TypeProvider typeProvider) {
 
         checkModuleAndModuleName(module);
-        final Collection<DataSchemaNode> potentials = module.getChildNodes();
-        for (DataSchemaNode potential : potentials) {
-            if (potential instanceof ActionNodeContainer) {
-                final Set<ActionDefinition> actions = ((ActionNodeContainer) potential).getActions();
-                for (ActionDefinition action: actions) {
-                    genCtx.get(module).addTopLevelNodeType(resolveOperation(potential, action, module,
-                            schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
-                            BindingNamespaceType.Data));
-                }
-            }
-        }
+        resolveActions(module, module, schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider,
+            BindingNamespaceType.Data);
         return genCtx;
     }
 
