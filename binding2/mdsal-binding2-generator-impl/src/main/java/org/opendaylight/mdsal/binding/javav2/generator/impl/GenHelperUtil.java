@@ -256,7 +256,6 @@ final class GenHelperUtil {
         if (!schemaNode.isAugmenting()) {
             return true;
         } else if (schemaNode.isAugmenting()) {
-            Preconditions.checkState(schemaNode instanceof ModelStatement<?>);
             QName qname = schemaNode.getPath().getLastComponent();
             final Module originalModule = schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
                     qname.getRevision());
