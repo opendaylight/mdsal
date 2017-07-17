@@ -18,7 +18,6 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.processUsesImplements;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.resolveDataSchemaNodesCheck;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
-import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.ACTION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INPUT;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INSTANCE_IDENTIFIER;
@@ -33,6 +32,7 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.CLASS;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.VOID;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.wildcardTypeFor;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
@@ -44,6 +44,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
@@ -261,29 +262,34 @@ final class RpcActionGenHelper {
         operationMethod.addParameter(inTypeInstance, "input");
 
         if (isAction) {
-            //action, routed RPC
-            checkState(parent != null, "Parent node of " + operation.getQName().getLocalName() + " can't be NULL");
-            GeneratedTypeBuilder parentType = genCtx.get(module).getChildNode(parent.getPath());
-            checkState(parentType != null, "Parent generated type for " + parent
-                    + " data schema node must have been generated already");
-            annotateDeprecatedIfNecessary(parent.getStatus(), parentType);
+            if (parent != null) {
+                //action
+                checkState(parent != null, "Parent node of " + operation.getQName().getLocalName() + " can't be NULL");
+                GeneratedTypeBuilder parentType = genCtx.get(module).getChildNode(parent.getPath());
+                checkState(parentType != null, "Parent generated type for " + parent
+                        + " data schema node must have been generated already");
+                annotateDeprecatedIfNecessary(parent.getStatus(), parentType);
 
-            if (parent instanceof ListSchemaNode) {
-                //ListAction
-                GeneratedTransferObject keyType = null;
-                for (MethodSignatureBuilder method : parentType.getMethodDefinitions()) {
-                    if (method.getName().equals("getKey")) {
-                        keyType = (GeneratedTransferObject) method.toInstance(parentType).getReturnType();
+                if (parent instanceof ListSchemaNode) {
+                    //ListAction
+                    GeneratedTransferObject keyType = null;
+                    for (MethodSignatureBuilder method : parentType.getMethodDefinitions()) {
+                        if (method.getName().equals("getKey")) {
+                            keyType = (GeneratedTransferObject) method.toInstance(parentType).getReturnType();
+                        }
                     }
-                }
 
-                operationMethod.addParameter(
-                        parameterizedTypeFor(KEYED_INSTANCE_IDENTIFIER, parentType, keyType), "kii");
-                interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
+                    operationMethod.addParameter(
+                            parameterizedTypeFor(KEYED_INSTANCE_IDENTIFIER, parentType, keyType), "kii");
+                    interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
+                } else {
+                    //Action
+                    operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
+                    interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
+                }
             } else {
-                //Action
-                operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
-                interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
+                //TODO:routed RPC
+
             }
         } else {
             //RPC
