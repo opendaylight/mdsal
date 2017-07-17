@@ -282,9 +282,6 @@ final class RpcActionGenHelper {
                 interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
             } else {
                 //Action
-                GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, parentType, parentType,
-                        ((ContainerSchemaNode) parent).getChildNodes(), genCtx, schemaContext, verboseClassComments,
-                        genTypeBuilders, typeProvider, namespaceType);
                 operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
                 interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
             }
