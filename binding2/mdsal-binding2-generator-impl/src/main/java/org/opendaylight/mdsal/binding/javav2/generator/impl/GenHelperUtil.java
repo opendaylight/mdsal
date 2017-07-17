@@ -1062,6 +1062,7 @@ final class GenHelperUtil {
                                 genCtx, verboseClassComments), caseChildNodes, genCtx, schemaContext,
                                 verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                     }
+                    processUsesImplements(caseNode, module, schemaContext, genCtx, namespaceType);
                 }
             }
         }
