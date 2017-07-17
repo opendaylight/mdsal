@@ -148,7 +148,7 @@ class @{genType.getName}
 
 @defaultInstance() = {
 @if(genTo.isTypedef && !allProperties.isEmpty && !genTo.isUnionType) {
-    @if(!"org.opendaylight.yangtools.yang.binding.InstanceIdentifier".equals(allProperties.get(0).getReturnType.getFullyQualifiedName)) {
+    @if(!"org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier".equals(allProperties.get(0).getReturnType.getFullyQualifiedName)) {
         public static @{genTo.getName} getDefaultInstance(String defaultValue) {
             @if(allProperties.size > 1) {
                 @{importedNames.get("list")}<@{importedNames.get("string")}> properties = @{importedNames.get("lists")}.newArrayList(@{propsAsArgs(allProperties)});
