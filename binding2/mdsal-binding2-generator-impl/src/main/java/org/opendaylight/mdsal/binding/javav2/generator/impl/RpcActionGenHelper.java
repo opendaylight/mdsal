@@ -183,7 +183,6 @@ final class RpcActionGenHelper {
         return genCtx;
     }
 
-    //TODO: This method should be reusable for convertion of action that is in grouping.
     /**
      * Converts RPC, Action or routed RPC into generated type
      * @return generated type
@@ -255,9 +254,6 @@ final class RpcActionGenHelper {
                 interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
             } else {
                 //Action
-                GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, parentType, parentType,
-                        ((ContainerSchemaNode) parent).getChildNodes(), genCtx, schemaContext, verboseClassComments,
-                        genTypeBuilders, typeProvider, namespaceType);
                 operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
                 interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
             }
