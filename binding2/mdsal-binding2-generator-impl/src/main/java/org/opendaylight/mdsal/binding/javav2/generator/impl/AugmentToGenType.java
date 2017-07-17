@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
+import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.processUsesImplements;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -139,7 +141,7 @@ final class AugmentToGenType {
                     verboseClassComments, resultCtx, genTypeBuilders, typeProvider);
 
             for (AugmentationSchema augSchema : schemaPathAugmentListEntry.getValue()) {
-                GenHelperUtil.processUsesImplements(augSchema, module, schemaContext, genCtx, BindingNamespaceType.Data);
+                processUsesImplements(augSchema, module, schemaContext, genCtx, BindingNamespaceType.Data);
             }
 
         }
@@ -473,6 +475,7 @@ final class AugmentToGenType {
                         GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType,
                                 childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
                                 namespaceType);
+                        processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
                     }
                     genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
                     genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
