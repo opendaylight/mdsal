@@ -260,29 +260,33 @@ final class RpcActionGenHelper {
         operationMethod.addParameter(inTypeInstance, "input");
 
         if (isAction) {
-            //action, routed RPC
-            checkState(parent != null, "Parent node of " + operation.getQName().getLocalName() + " can't be NULL");
-            GeneratedTypeBuilder parentType = genCtx.get(module).getChildNode(parent.getPath());
-            checkState(parentType != null, "Parent generated type for " + parent
-                    + " data schema node must have been generated already");
-            annotateDeprecatedIfNecessary(parent.getStatus(), parentType);
+            if (parent != null) {
+                //action
+                GeneratedTypeBuilder parentType = genCtx.get(module).getChildNode(parent.getPath());
+                checkState(parentType != null, "Parent generated type for " + parent
+                        + " data schema node must have been generated already");
+                annotateDeprecatedIfNecessary(parent.getStatus(), parentType);
 
-            if (parent instanceof ListSchemaNode) {
-                //ListAction
-                GeneratedTransferObject keyType = null;
-                for (MethodSignatureBuilder method : parentType.getMethodDefinitions()) {
-                    if (method.getName().equals("getKey")) {
-                        keyType = (GeneratedTransferObject) method.toInstance(parentType).getReturnType();
+                if (parent instanceof ListSchemaNode) {
+                    //ListAction
+                    GeneratedTransferObject keyType = null;
+                    for (MethodSignatureBuilder method : parentType.getMethodDefinitions()) {
+                        if (method.getName().equals("getKey")) {
+                            keyType = (GeneratedTransferObject) method.toInstance(parentType).getReturnType();
+                        }
                     }
-                }
 
-                operationMethod.addParameter(
-                        parameterizedTypeFor(KEYED_INSTANCE_IDENTIFIER, parentType, keyType), "kii");
-                interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
+                    operationMethod.addParameter(
+                            parameterizedTypeFor(KEYED_INSTANCE_IDENTIFIER, parentType, keyType), "kii");
+                    interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
+                } else {
+                    //Action
+                    operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
+                    interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
+                }
             } else {
-                //Action
-                operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
-                interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
+                //TODO:routed RPC
+                throw new UnsupportedOperationException("Not implemented yet.");
             }
         } else {
             //RPC
