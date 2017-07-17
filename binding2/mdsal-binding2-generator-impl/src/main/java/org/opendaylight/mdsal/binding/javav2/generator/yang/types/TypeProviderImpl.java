@@ -630,11 +630,14 @@ public final class TypeProviderImpl implements TypeProvider {
         if (strXPath != null) {
             if (strXPath.indexOf('[') == -1) {
                 Module module;
+                SchemaNode actualSchemaNode;
                 if ((parentNode instanceof DerivableSchemaNode) && ((DerivableSchemaNode) parentNode).isAddedByUses()) {
                     final SchemaNode originalNode = ((DerivableSchemaNode) parentNode).getOriginal().orNull();
                     Preconditions.checkNotNull(originalNode,"originalNode can not be null.");
+                    actualSchemaNode = originalNode;
                     module = findParentModule(schemaContext, originalNode);
                 } else {
+                    actualSchemaNode = parentNode;
                     module = findParentModule(schemaContext, parentNode);
                 }
                 Preconditions.checkArgument(module != null, "Failed to find module for parent %s", parentNode);
@@ -643,7 +646,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 if (xpath.isAbsolute()) {
                     dataNode = findDataSchemaNode(schemaContext, module, xpath);
                 } else {
-                    dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, parentNode, xpath);
+                    dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, actualSchemaNode, xpath);
                 }
                 Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s)",
                         strXPath, getParentModule(parentNode, schemaContext).getName(), parentNode.getQName().getModule());
