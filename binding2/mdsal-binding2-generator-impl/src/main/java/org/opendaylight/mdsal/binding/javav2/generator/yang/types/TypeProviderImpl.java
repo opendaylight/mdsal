@@ -63,6 +63,7 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
@@ -626,10 +627,16 @@ public final class TypeProviderImpl implements TypeProvider {
 
         final RevisionAwareXPath xpath = leafrefType.getPathStatement();
         final String strXPath = xpath.toString();
-
         if (strXPath != null) {
             if (strXPath.indexOf('[') == -1) {
-                final Module module = findParentModule(schemaContext, parentNode);
+                Module module;
+                if ((parentNode instanceof DerivableSchemaNode) && ((DerivableSchemaNode) parentNode).isAddedByUses()) {
+                    final SchemaNode originalNode = ((DerivableSchemaNode) parentNode).getOriginal().orNull();
+                    Preconditions.checkNotNull(originalNode,"originalNode can not be null.");
+                    module = findParentModule(schemaContext, originalNode);
+                } else {
+                    module = findParentModule(schemaContext, parentNode);
+                }
                 Preconditions.checkArgument(module != null, "Failed to find module for parent %s", parentNode);
 
                 final SchemaNode dataNode;
