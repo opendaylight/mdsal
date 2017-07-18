@@ -127,6 +127,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>ietf-access-control-list</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ietf-lisp-address-types</artifactId>
+        </dependency>
     </dependencies>
 
     <!--
