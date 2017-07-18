@@ -209,13 +209,13 @@ public final class ModuleContext {
     }
 
     /**
-     * Adds mapping between schema path and inner enum.
+     * Adds mapping between schema path and inner enum, inner union, inner bits.
      *
      * @param path
-     * @param enumBuilder
+     * @param builder
      */
-    void addInnerTypedefType(final SchemaPath path, final EnumBuilder enumBuilder) {
-        this.innerTypes.put(path, enumBuilder);
+    void addInnerTypedefType(final SchemaPath path, final Type builder) {
+        this.innerTypes.put(path, builder);
     }
 
     public Type getInnerType(final SchemaPath path) {
