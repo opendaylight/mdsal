@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
@@ -350,7 +351,15 @@ final class GenHelperUtil {
                     .findFirst().orElse(null);
         } else {
             //FIXME: Schema path is not unique for Yang 1.1, findDataSchemaNode always does search from data node first.
-            groupingNode = SchemaContextUtil.findDataSchemaNode(schemaContext, usesNode.getGroupingPath());
+            final Iterable<QName> prefixedPath = usesNode.getGroupingPath().getPathFromRoot();
+            final QName current = prefixedPath.iterator().next();
+            final Module targetModule = schemaContext.findModuleByNamespaceAndRevision(current.getNamespace(), current.getRevision());
+            Preconditions.checkNotNull(targetModule, "Target module can not be null.");
+            groupingNode = targetModule.getGroupings().stream().filter(grouping -> grouping.getPath().equals(usesNode.getGroupingPath()))
+                    .collect(Collectors.toList()).get(0);
+            if (groupingNode == null) {
+                groupingNode = SchemaContextUtil.findDataSchemaNode(schemaContext, usesNode.getGroupingPath());
+            }
         }
         Preconditions.checkNotNull(groupingNode, module.toString() + "->"
                 + usesNode.getGroupingPath().toString());
