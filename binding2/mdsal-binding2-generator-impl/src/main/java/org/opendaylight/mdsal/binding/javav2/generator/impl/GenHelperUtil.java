@@ -790,6 +790,7 @@ final class GenHelperUtil {
                                 module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
                     }
                 }
+                processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
 
                 // serialVersionUID
                 if (genTOBuilder != null) {
