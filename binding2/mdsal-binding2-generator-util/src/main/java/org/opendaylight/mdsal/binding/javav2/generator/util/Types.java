@@ -123,6 +123,20 @@ public final class Types {
         }
     }
 
+    public static ConcreteType typeForClass(final Class<?> cls, final Restrictions restrictions,
+            final ModuleContext moduleContext) {
+        if (restrictions != null) {
+            if (restrictions instanceof DefaultRestrictions) {
+                return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+            } else {
+                return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions,
+                        moduleContext);
+            }
+        } else {
+            return typeForClass(cls);
+        }
+    }
+
     /**
      * Returns an instance of {@link ParameterizedType} describing the typed
      * {@link Map}&lt;K,V&gt;
@@ -319,6 +333,12 @@ public final class Types {
          */
         private BaseTypeWithRestrictionsImpl(final String pkName, final String name, final Restrictions restrictions) {
             super(pkName, name, null);
+            this.restrictions = Preconditions.checkNotNull(restrictions);
+        }
+
+        private BaseTypeWithRestrictionsImpl(final String pkName, final String name, final Restrictions restrictions,
+                final ModuleContext moduleContext) {
+            super(pkName, name, moduleContext);
             this.restrictions = Preconditions.checkNotNull(restrictions);
         }
 

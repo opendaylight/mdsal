@@ -856,7 +856,18 @@ final class GenHelperUtil {
         Type returnType = null;
 
         final TypeDefinition<?> typeDef = leaf.getType();
-        if (isInnerType(leaf, typeDef)) {
+
+        if (leaf.isAddedByUses()) {
+            Preconditions.checkState(leaf instanceof DerivableSchemaNode);
+            LeafSchemaNode originalLeaf = (LeafSchemaNode)((DerivableSchemaNode) leaf).getOriginal().orNull();
+            Preconditions.checkNotNull(originalLeaf);
+            if (isInnerType(originalLeaf, typeDef)) {
+                returnType = genCtx.get(findParentModule(schemaContext, originalLeaf)).getInnerType(typeDef.getPath());
+            } else {
+                final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions, genCtx.get(module));
+            }
+        } else if (isInnerType(leaf, typeDef)) {
             if (typeDef instanceof EnumTypeDefinition) {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, genCtx.get(module));
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
@@ -892,6 +903,7 @@ final class GenHelperUtil {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
             returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions, genCtx.get(module));
         }
+
 
         if (returnType == null) {
             return null;
