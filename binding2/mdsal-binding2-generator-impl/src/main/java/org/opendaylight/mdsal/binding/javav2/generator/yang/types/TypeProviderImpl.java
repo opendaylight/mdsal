@@ -576,7 +576,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 }
                 if (returnType == null) {
                     returnType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(
-                            baseTypeDef, typeDefinition, r, null);
+                            baseTypeDef, typeDefinition, r, context);
                 }
             }
         }

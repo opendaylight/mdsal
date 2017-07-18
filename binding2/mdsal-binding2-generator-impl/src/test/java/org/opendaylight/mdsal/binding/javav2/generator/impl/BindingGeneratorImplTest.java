@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
@@ -65,6 +66,33 @@ public class BindingGeneratorImplTest {
                 assertEquals("APPLE", enumeration.getValues().get(0).getMappedName());
                 assertEquals("apple1", enumeration.getValues().get(1).getName());
                 assertEquals("APPLE1", enumeration.getValues().get(1).getMappedName());
+            }
+        }
+    }
+
+    @Test
+    public void generatedTypesUsesEnumLeafTest() throws Exception {
+        final BindingGenerator bg = new BindingGeneratorImpl(false);
+        final List<String> sources = new ArrayList<>();
+        sources.add("/uses-statement/test-uses-leaf-innertype-base.yang");
+        sources.add("/uses-statement/test-uses-leaf-innertype.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
+        final List<Type> generateTypes = bg.generateTypes(context);
+        assertNotNull(generateTypes);
+        assertTrue(!generateTypes.isEmpty());
+        for (final Type type : generateTypes) {
+            if (type.getName().equals("MyCont") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype.base.rev170809.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                final MethodSignature methodSignature = gt.getMethodDefinitions().get(0);
+                assertEquals("ErrorType", methodSignature.getReturnType().getName());
+            }
+
+            if (type.getName().equals("MyCont") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype.rev170809.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                final MethodSignature methodSignature = gt.getMethodDefinitions().get(0);
+                assertEquals("ErrorType", methodSignature.getReturnType().getName());
             }
         }
     }
