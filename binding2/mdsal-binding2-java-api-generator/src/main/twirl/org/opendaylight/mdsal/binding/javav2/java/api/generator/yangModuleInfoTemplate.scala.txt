@@ -55,7 +55,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
             return INSTANCE;
         }
 
-        @{classBody(submodule, normalizeSpecificIdentifier(submodule.getName + "Info", CLASS))}
+        @{classBody(submodule, normalizeSpecificIdentifier(submodule.getName, CLASS) + "Info")}
     }
 }
 }
