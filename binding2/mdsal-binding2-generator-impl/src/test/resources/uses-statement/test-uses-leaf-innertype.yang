@@ -1,0 +1,12 @@
+module test-uses-leaf-innertype {
+    namespace "urn:test:uses:leaf:innertype";
+    prefix uses-leaf;
+    revision 2017-08-09;
+    import test-uses-leaf-innertype-base {
+      prefix "base";
+    }
+
+    container my-cont {
+      uses base:errors;
+    }
+}
