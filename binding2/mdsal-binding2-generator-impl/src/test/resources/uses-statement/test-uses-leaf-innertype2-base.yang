@@ -1,0 +1,58 @@
+module test-uses-leaf-innertype2-base {
+    namespace "urn:test:uses:leaf:innertype2:base";
+    prefix uses-leaf;
+    revision 2017-08-09;
+
+    grouping my-grp {
+      leaf leaf-decimal64 {
+        description
+          "Minimum LSP Bandwidth. Units in bytes per second";
+        type decimal64 {
+          fraction-digits 2;
+        }
+      }
+
+      leaf leaf-union {
+        type union {
+          type int32;
+          type string;
+        }
+      }
+
+      leaf leaf-bits {
+        type bits {
+          bit path-computation-with-gmpls-link-constraints {
+            position 0;
+          }
+          bit bidirectional-path-computation {
+            position 1;
+          }
+          bit diverse-path-computation {
+            position 2;
+          }
+          bit load-balanced-path-computation {
+            position 3;
+          }
+          bit synchronized-path-computation {
+            position 4;
+          }
+          bit support-for-multiple-objective-functions {
+            position 5;
+          }
+          bit support-for-additive-path-constraints {
+            position 6;
+          }
+          bit support-for-request-prioritization {
+            position 7;
+          }
+          bit support-for-multiple-requests-per-message {
+            position 8;
+          }
+        }
+      }
+    }
+
+    container my-cont {
+      uses my-grp;
+    }
+}
