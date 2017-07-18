@@ -173,27 +173,27 @@ public final class BaseYangTypes {
                 case "binary":
                     return restrictions == null ? Types.BYTE_ARRAY : Types.primitiveType("byte[]", restrictions);
                 case "decimal64":
-                    return Types.typeForClass(BigDecimal.class, restrictions);
+                    return Types.typeForClass(BigDecimal.class, restrictions, context);
                 case "enumeration":
-                    return Types.typeForClass(Enum.class, restrictions);
+                    return Types.typeForClass(Enum.class, restrictions, context);
                 case "int8":
-                    return Types.typeForClass(Byte.class, restrictions);
+                    return Types.typeForClass(Byte.class, restrictions, context);
                 case "int16":
-                    return Types.typeForClass(Short.class, restrictions);
+                    return Types.typeForClass(Short.class, restrictions, context);
                 case "int32":
-                    return Types.typeForClass(Integer.class, restrictions);
+                    return Types.typeForClass(Integer.class, restrictions, context);
                 case "int64":
-                    return Types.typeForClass(Long.class, restrictions);
+                    return Types.typeForClass(Long.class, restrictions, context);
                 case "string":
-                    return Types.typeForClass(String.class, restrictions);
+                    return Types.typeForClass(String.class, restrictions, context);
                 case "uint8":
-                    return Types.typeForClass(Short.class, restrictions);
+                    return Types.typeForClass(Short.class, restrictions, context);
                 case "uint16":
-                    return Types.typeForClass(Integer.class, restrictions);
+                    return Types.typeForClass(Integer.class, restrictions, context);
                 case "uint32":
-                    return Types.typeForClass(Long.class, restrictions);
+                    return Types.typeForClass(Long.class, restrictions, context);
                 case "uint64":
-                    return Types.typeForClass(BigInteger.class, restrictions);
+                    return Types.typeForClass(BigInteger.class, restrictions, context);
                 case "union" :
                     return UNION_TYPE;
                 default:

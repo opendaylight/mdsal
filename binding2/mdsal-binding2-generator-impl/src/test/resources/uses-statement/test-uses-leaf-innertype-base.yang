@@ -1,0 +1,31 @@
+module test-uses-leaf-innertype-base {
+    namespace "urn:test:uses:leaf:innertype:base";
+    prefix uses-leaf;
+    revision 2017-08-09;
+
+    grouping errors {
+      leaf error-type {
+        type enumeration {
+          enum transport {
+            description "The transport layer";
+          }
+          enum rpc {
+            description "The rpc or notification layer";
+          }
+          enum protocol {
+            description "The protocol operation layer";
+          }
+          enum application {
+            description "The server application layer";
+          }
+        }
+        mandatory true;
+        description
+          "The protocol layer where the error occurred.";
+      }
+    }
+
+    container my-cont {
+      uses errors;
+    }
+}
