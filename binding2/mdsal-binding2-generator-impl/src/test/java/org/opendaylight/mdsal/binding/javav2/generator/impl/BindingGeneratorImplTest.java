@@ -98,6 +98,108 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
+    public void generatedTypesUsesBitsLeafTest() throws Exception {
+        final BindingGenerator bg = new BindingGeneratorImpl(false);
+        final List<String> sources = new ArrayList<>();
+        sources.add("/uses-statement/test-uses-leaf-innertype2-base.yang");
+        sources.add("/uses-statement/test-uses-leaf-innertype2.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
+        final List<Type> generateTypes = bg.generateTypes(context);
+        assertNotNull(generateTypes);
+        assertTrue(!generateTypes.isEmpty());
+        for (final Type type : generateTypes) {
+            if (type.getName().equals("MyCont") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.base.rev170809.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                    if (methodSignature.getName().equals("getLeafBits")) {
+                        assertEquals("LeafBits", methodSignature.getReturnType().getName());
+                    }
+                }
+
+            }
+
+            if (type.getName().equals("MyCont") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.rev170809.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                    if (methodSignature.getName().equals("getLeafBits")) {
+                        assertEquals("LeafBits", methodSignature.getReturnType().getName());
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void generatedTypesUsesUnionLeafTest() throws Exception {
+        final BindingGenerator bg = new BindingGeneratorImpl(false);
+        final List<String> sources = new ArrayList<>();
+        sources.add("/uses-statement/test-uses-leaf-innertype2-base.yang");
+        sources.add("/uses-statement/test-uses-leaf-innertype2.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
+        final List<Type> generateTypes = bg.generateTypes(context);
+        assertNotNull(generateTypes);
+        assertTrue(!generateTypes.isEmpty());
+        for (final Type type : generateTypes) {
+            if (type.getName().equals("MyCont") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.base.rev170809.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                    if (methodSignature.getName().equals("getLeafUnion")) {
+                        assertEquals("LeafUnion", methodSignature.getReturnType().getName());
+                    }
+                }
+
+            }
+
+            if (type.getName().equals("MyCont") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.rev170809.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                    if (methodSignature.getName().equals("getLeafUnion")) {
+                        assertEquals("LeafUnion", methodSignature.getReturnType().getName());
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void generatedTypesUsesLeafTest() throws Exception {
+        final BindingGenerator bg = new BindingGeneratorImpl(false);
+        final List<String> sources = new ArrayList<>();
+        sources.add("/uses-statement/test-uses-leaf-innertype2-base.yang");
+        sources.add("/uses-statement/test-uses-leaf-innertype2.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
+        final List<Type> generateTypes = bg.generateTypes(context);
+        assertNotNull(generateTypes);
+        assertTrue(!generateTypes.isEmpty());
+        for (final Type type : generateTypes) {
+            if (type.getName().equals("MyCont") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.base.rev170809.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                    if (methodSignature.getName().equals("getLeafDecimal64")) {
+                        assertEquals("BigDecimal", methodSignature.getReturnType().getName());
+                    }
+                }
+
+            }
+
+            if (type.getName().equals("MyCont") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.rev170809.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                    if (methodSignature.getName().equals("getLeafDecimal64")) {
+                        assertEquals("BigDecimal", methodSignature.getReturnType().getName());
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
     public void generatedTypesTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
         final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/test-list.yang");
