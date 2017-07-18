@@ -436,7 +436,7 @@ public final class TypeProviderImpl implements TypeProvider {
             // a base type which holds these constraints.
             if (typeDefinition instanceof DecimalTypeDefinition) {
                 final Type ret = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType
-                        (typeDefinition, parentNode, r, null);
+                        (typeDefinition, parentNode, r, context);
                 if (ret != null) {
                     return ret;
                 }

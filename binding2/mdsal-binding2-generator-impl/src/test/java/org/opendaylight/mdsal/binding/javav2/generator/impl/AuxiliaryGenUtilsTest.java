@@ -441,7 +441,7 @@ public class AuxiliaryGenUtilsTest {
     public void addTOToTypeBuilderNullTest() throws Exception {
         final Class[] parameterTypes =
                 { TypeDefinition.class, GeneratedTypeBuilder.class, DataSchemaNode.class, Module.class,
-                        TypeProvider.class, SchemaContext.class, ModuleContext.class };
+                        TypeProvider.class, SchemaContext.class, ModuleContext.class, Map.class };
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("addTOToTypeBuilder", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -457,8 +457,10 @@ public class AuxiliaryGenUtilsTest {
         final Set<Module> modules = new HashSet<>();
         when(schemaContext.getModules()).thenReturn(modules);
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
+        final Map<Module, ModuleContext> genCtx = new HashMap<>();
+        genCtx.put(parentModule, new ModuleContext());
 
-        final Object[] args1 = { typeDef, typeBuilder, leaf, parentModule, typeProvider, schemaContext, new ModuleContext() };
+        final Object[] args1 = { typeDef, typeBuilder, leaf, parentModule, typeProvider, schemaContext, new ModuleContext(), genCtx };
         final GeneratedTOBuilder result = (GeneratedTOBuilder) generate.invoke(AuxiliaryGenUtils.class, args1);
         assertEquals(null, result);
     }
@@ -478,7 +480,7 @@ public class AuxiliaryGenUtilsTest {
             throws NoSuchMethodException, ReactorException, FileNotFoundException, URISyntaxException,
             IllegalAccessException, InvocationTargetException {
         final Class[] parameterTypes = { TypeDefinition.class, GeneratedTypeBuilder.class, DataSchemaNode.class,
-                Module.class, TypeProvider.class, SchemaContext.class, ModuleContext.class };
+                Module.class, TypeProvider.class, SchemaContext.class, ModuleContext.class, Map.class };
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("addTOToTypeBuilder", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -490,8 +492,11 @@ public class AuxiliaryGenUtilsTest {
         final LeafSchemaNode leafSchemaNode =
                 (LeafSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
         final TypeDefinition<? extends TypeDefinition<?>> typeDef = leafSchemaNode.getType();
+        final Map<Module, ModuleContext> genCtx = new HashMap<>();
+        genCtx.put(schemaContext.getModules().iterator().next(), new ModuleContext());
+
         final Object[] args1 = { typeDef, typeBuilder, leafSchemaNode, schemaContext.getModules().iterator().next(),
-                typeProvider, schemaContext, new ModuleContext() };
+                typeProvider, schemaContext, new ModuleContext(), genCtx };
         return (GeneratedTOBuilder) generate.invoke(AuxiliaryGenUtils.class, args1);
     }
 
