@@ -270,11 +270,15 @@ public final class JavaIdentifierNormalizer {
 
         final StringBuilder sb = new StringBuilder(fullPackageName.length());
         while (true) {
-            sb.append(normalizePartialPackageName(it.next()));
+            String next = it.next();
+            sb.append(normalizePartialPackageName(next));
             if (!it.hasNext()) {
                 return sb.toString();
             }
-            sb.append('.');
+
+            if (!next.isEmpty()) {
+                sb.append('.');
+            }
         }
     }
 
