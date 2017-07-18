@@ -1070,9 +1070,10 @@ final class GenHelperUtil {
                         resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType, caseChildNodes,
                                 genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                     } else {
-                        resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, moduleToDataType(module,
-                                genCtx, verboseClassComments), caseChildNodes, genCtx, schemaContext,
-                                verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
+                        final GeneratedTypeBuilder moduleType = genCtx.get(module).getModuleNode();
+                        Preconditions.checkNotNull(moduleType, "Module type can not be null.");
+                        resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, moduleType, caseChildNodes,
+                            genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                     }
                     processUsesImplements(caseNode, module, schemaContext, genCtx, namespaceType);
                 }
