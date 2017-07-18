@@ -348,7 +348,8 @@ public abstract class BaseRenderer {
                 .append("() {")
                 .append("return ")
                 .append(name);
-        if (importedName.contains("[]")) {
+        if (!(field.getReturnType() instanceof ParameterizedType)
+                && importedName.contains("[]")) {
             sb.append(" == null ? null : ")
                     .append(name)
                     .append(".clone()");
