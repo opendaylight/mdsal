@@ -955,8 +955,8 @@ final class GenHelperUtil {
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
                 final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, nodeName,
                         genCtx, typeBuilder, module);
-                returnType = new ReferencedTypeImpl(enumBuilder.getPackageName(), enumBuilder.getName(),
-                        genCtx.get(module));
+                returnType = new ReferencedTypeImpl(enumBuilder.getPackageName(), enumBuilder.getName(), true,
+                        null);
                 ((TypeProviderImpl) typeProvider).putReferencedType(node.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule,
