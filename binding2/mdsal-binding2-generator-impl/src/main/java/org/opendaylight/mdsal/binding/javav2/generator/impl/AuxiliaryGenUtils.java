@@ -162,9 +162,7 @@ final class AuxiliaryGenUtils {
         } else {
             method.append("get");
         }
-        // underscore used as separator for distinction of method parts in convertIdentifier()
-        method.append('_').append(localName);
-        return JavaIdentifierNormalizer.normalizeSpecificIdentifier(method.toString(), JavaIdentifier.METHOD);
+        return method.append(JavaIdentifierNormalizer.normalizeSpecificIdentifier(localName, JavaIdentifier.CLASS)).toString();
     }
 
     static String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName,
