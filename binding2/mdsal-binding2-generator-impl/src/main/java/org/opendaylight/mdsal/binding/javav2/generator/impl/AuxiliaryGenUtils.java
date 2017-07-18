@@ -387,7 +387,7 @@ final class AuxiliaryGenUtils {
      */
     static GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef, final GeneratedTypeBuilder
             typeBuilder, final DataSchemaNode leaf, final Module parentModule, final TypeProvider typeProvider,
-            final SchemaContext schemaContext) {
+            final SchemaContext schemaContext, final Map<Module, ModuleContext> genCtx) {
         final String classNameFromLeaf = leaf.getQName().getLocalName();
         GeneratedTOBuilder genTOBuilder = null;
         final String packageName = typeBuilder.getFullyQualifiedName();
@@ -402,6 +402,7 @@ final class AuxiliaryGenUtils {
         }
         if (genTOBuilder != null) {
             typeBuilder.addEnclosingTransferObject(genTOBuilder);
+            genCtx.get(parentModule).addInnerTypedefType(typeDef.getPath(), genTOBuilder);
             return genTOBuilder;
         }
         return null;
