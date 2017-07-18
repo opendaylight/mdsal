@@ -454,7 +454,7 @@ public final class TextTemplateUtil {
         final StringBuilder sb = new StringBuilder();
         final StringBuilder lineBuilder = new StringBuilder();
         final String lineIndent = Strings.repeat(" ", nextLineIndent);
-        final String textToFormat = NEWLINE_OR_TAB.removeFrom(text);
+        final String textToFormat = NEWLINE_OR_TAB.removeFrom(encodeJavadocSymbols(text));
         final String formattedText = textToFormat.replaceAll(" +", " ");
         final StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
 
