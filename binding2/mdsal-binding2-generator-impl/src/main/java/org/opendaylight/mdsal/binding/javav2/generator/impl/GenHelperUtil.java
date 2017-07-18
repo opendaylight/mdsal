@@ -60,7 +60,6 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
-import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.base.BaseIdentity;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
@@ -741,7 +740,7 @@ final class GenHelperUtil {
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
         if (genType != null) {
             StringBuilder getterName = new StringBuilder(node.getQName().getLocalName());
-            final MethodSignatureBuilder getter = constructGetter(parent, getterName.toString(), node.getDescription(), genType, node.getStatus());
+            constructGetter(parent, getterName.toString(), node.getDescription(), genType, node.getStatus());
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
             processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
@@ -861,7 +860,15 @@ final class GenHelperUtil {
             LeafSchemaNode originalLeaf = (LeafSchemaNode)((DerivableSchemaNode) leaf).getOriginal().orNull();
             Preconditions.checkNotNull(originalLeaf);
             if (isInnerType(originalLeaf, typeDef)) {
-                returnType = genCtx.get(findParentModule(schemaContext, originalLeaf)).getInnerType(typeDef.getPath());
+                if (typeDef instanceof EnumTypeDefinition
+                        || typeDef instanceof UnionTypeDefinition
+                        || typeDef instanceof BitsTypeDefinition) {
+                    returnType = genCtx.get(findParentModule(schemaContext, originalLeaf)).getInnerType(typeDef.getPath());
+                } else {
+                    final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
+                    returnType = typeProvider.javaTypeForSchemaDefinitionType(getBaseOrDeclaredType(typeDef), leaf,
+                            restrictions, genCtx.get(module));
+                }
             } else {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions, genCtx.get(module));
@@ -878,14 +885,14 @@ final class GenHelperUtil {
                 ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule,
-                        typeProvider, schemaContext, genCtx.get(module));
+                        typeProvider, schemaContext, genCtx.get(module), genCtx);
                 if (genTOBuilder != null) {
                     //TODO: https://bugs.opendaylight.org/show_bug.cgi?id=2289
                     returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule, typeProvider);
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule,
-                        typeProvider, schemaContext, genCtx.get(module));
+                        typeProvider, schemaContext, genCtx.get(module), genCtx);
                 if (genTOBuilder != null) {
                     returnType = genTOBuilder.toInstance();
                 }
@@ -973,13 +980,13 @@ final class GenHelperUtil {
                 ((TypeProviderImpl) typeProvider).putReferencedType(node.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule,
-                        typeProvider, schemaContext, genCtx.get(module));
+                        typeProvider, schemaContext, genCtx.get(module), genCtx);
                 if (genTOBuilder != null) {
                     returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule, typeProvider);
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule,
-                        typeProvider, schemaContext, genCtx.get(module));
+                        typeProvider, schemaContext, genCtx.get(module), genCtx);
                 returnType = genTOBuilder.toInstance();
             } else {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
