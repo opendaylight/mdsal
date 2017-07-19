@@ -138,7 +138,8 @@ public class BuilderRenderer extends BaseRenderer {
         final String prefix = Types.BOOLEAN.equals(method.getReturnType()) ? "is" : "get";
         if (method.getName().startsWith(prefix)) {
             final String fieldName = toFirstLower(method.getName().substring(prefix.length()));
-            final GeneratedTOBuilderImpl tmpGenTO = new GeneratedTOBuilderImpl("foo", "foo", true);
+            final GeneratedTOBuilderImpl tmpGenTO = new GeneratedTOBuilderImpl("foo", "foo",
+                    true, true);
             tmpGenTO.addProperty(fieldName)
                     .setReturnType(method.getReturnType());
             return tmpGenTO.toInstance().getProperties().get(0);
