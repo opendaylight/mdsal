@@ -680,7 +680,7 @@ final class GenHelperUtil {
                 listToGenType(module, basePackageName, typeBuilder, childOf, (ListSchemaNode) node, schemaContext,
                         verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (node instanceof ChoiceSchemaNode) {
-                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, childOf,
+                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, typeBuilder,
                         (ChoiceSchemaNode) node, genTypeBuilders, genCtx, typeProvider, namespaceType);
             } else if (node instanceof AnyXmlSchemaNode || node instanceof AnyDataSchemaNode) {
                 resolveAnyNodeAsMethod(schemaContext, typeBuilder, genCtx, node, module, typeProvider);
