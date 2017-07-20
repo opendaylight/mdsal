@@ -779,6 +779,7 @@ final class GenHelperUtil {
                     typeBuildersToGenTypes(module, genType, genTypeBuilder.toInstance(), genCtx, namespaceType);
                     genCtx.get(module).addKeyType(node.getPath(), genTypeBuilder);
                 }
+                processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
             } else {
                 final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node);
                 for (final DataSchemaNode schemaNode : node.getChildNodes()) {
