@@ -414,7 +414,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
     public static void addUnitsToGenTO(final GeneratedTOBuilder to, final String units) {
         if (!Strings.isNullOrEmpty(units)) {
-            to.addConstant(Types.STRING, "Units", "\"" + units + "\"");
+            to.addConstant(Types.STRING, "_UNITS", "\"" + units + "\"");
             final GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("UNITS");
             prop.setReturnType(Types.STRING);
             to.addToStringProperty(prop);
