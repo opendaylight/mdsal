@@ -1,0 +1,94 @@
+module test-choice-case-choice {
+    yang-version 1.1;
+    namespace "urn:opendaylight:params:xml:ns:yang:test:choice:case:choice";
+    prefix "test-ccc";
+    revision "2017-07-20" {
+    }
+
+    list sub-tlvs {
+        choice range-sub-tlv {
+            case sid-label-tlv-case {
+                choice sid-label-index {
+                    case ipv6-address-case {
+                    }
+                    case local-label-case {
+                    }
+                    case sid-case {
+                    }
+                }
+            }
+            case prefix-sid-tlv-case {
+                choice flags {
+                    case isis-prefix-flags-case {
+                    }
+                    case ospf-prefix-flags-case {
+                    }
+                }
+                choice sid-label-index {
+                    case ipv6-address-case {
+                    }
+                    case local-label-case {
+                    }
+                    case sid-case {
+                    }
+                }
+            }
+            case binding-sid-tlv-case {
+                choice flags {
+                    case ospf-binding-flags-case {
+                    }
+                    case isis-binding-flags-case {
+                    }
+                }
+                list binding-sub-tlvs {
+                    choice binding-sub-tlv {
+                        case ero-metric-case {
+                        }
+                        case ipv6-ero-case {
+                        }
+                        case ipv4-ero-backup-case {
+                        }
+                        case prefix-sid-case {
+                            choice flags {
+                                case isis-prefix-flags-case {
+                                }
+                                case ospf-prefix-flags-case {
+                                }
+                            }
+                            choice sid-label-index {
+                                case ipv6-address-case {
+                                }
+                                case local-label-case {
+                                }
+                                case sid-case {
+                                }
+                            }
+                        }
+                        case sid-label-case {
+                            choice sid-label-index {
+                                case ipv6-address-case {
+                                }
+                                case local-label-case {
+                                }
+                                case sid-case {
+                                }
+                            }
+                        }
+                        case ipv6-prefix-sid-case {
+                        }
+                        case ipv4-ero-case {
+                        }
+                        case unnumbered-interface-id-backup-ero-case {
+                        }
+                        case ipv6-ero-backup-case {
+                        }
+                        case unnumbered-interface-id-ero-case {
+                        }
+                    }
+                }
+            }
+            case ipv6-prefix-sid-tlv-case {
+            }
+        }
+    }
+}
