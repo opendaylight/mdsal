@@ -1,0 +1,15 @@
+module test-uses-leaf-innertype3-base{
+    namespace "urn:test:uses:leaf:innertype3:base";
+    prefix base;
+    revision 2017-08-09;
+
+    typedef float32 {
+        type binary {
+            length 4;
+        }
+    }
+
+    typedef bandwidth {
+        type float32;
+    }
+}
