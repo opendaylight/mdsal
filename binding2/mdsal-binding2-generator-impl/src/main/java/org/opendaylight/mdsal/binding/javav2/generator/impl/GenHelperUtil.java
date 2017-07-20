@@ -856,18 +856,17 @@ final class GenHelperUtil {
 
         if (leaf.isAddedByUses()) {
             Preconditions.checkState(leaf instanceof DerivableSchemaNode);
-            LeafSchemaNode originalLeaf = (LeafSchemaNode)((DerivableSchemaNode) leaf).getOriginal().orNull();
-            Preconditions.checkNotNull(originalLeaf);
-            if (isInnerType(originalLeaf, typeDef)) {
-                if (typeDef instanceof EnumTypeDefinition
-                        || typeDef instanceof UnionTypeDefinition
-                        || typeDef instanceof BitsTypeDefinition) {
-                    returnType = genCtx.get(findParentModule(schemaContext, originalLeaf)).getInnerType(typeDef.getPath());
-                } else {
-                    final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
-                    returnType = typeProvider.javaTypeForSchemaDefinitionType(getBaseOrDeclaredType(typeDef), leaf,
-                            restrictions);
-                }
+            //FIXME: Is it correct that path of used types still be original?
+            if (typeDef instanceof EnumTypeDefinition
+                    || typeDef instanceof UnionTypeDefinition
+                    || typeDef instanceof BitsTypeDefinition) {
+                LeafSchemaNode originalLeaf = (LeafSchemaNode)((DerivableSchemaNode) leaf).getOriginal().orNull();
+                Preconditions.checkNotNull(originalLeaf);
+                returnType = genCtx.get(findParentModule(schemaContext, originalLeaf)).getInnerType(typeDef.getPath());
+            } else if (isInnerType(leaf, typeDef)) {
+                final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
+                returnType = typeProvider.javaTypeForSchemaDefinitionType(getBaseOrDeclaredType(typeDef), leaf,
+                        restrictions);
             } else {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
@@ -908,7 +907,6 @@ final class GenHelperUtil {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
             returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
         }
-
 
         if (returnType == null) {
             return null;
