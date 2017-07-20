@@ -1,0 +1,45 @@
+module test-uses-leaf-innertype3{
+    namespace "urn:test:uses:leaf:innertype3";
+    prefix innertype3;
+    revision 2017-08-09;
+    import test-uses-leaf-innertype3-base {
+      prefix base;
+    }
+
+    typedef protocol-version {
+        type uint8 {
+            range 1..7;
+        }
+    }
+
+    grouping open-message {
+       leaf version {
+           type protocol-version;
+           default 4;
+       }
+
+       leaf leaf-union {
+         type union {
+           type string;
+           type int64;
+         }
+       }
+    }
+
+    grouping link-bandwidth-extended-community {
+        leaf bandwidth {
+            mandatory true;
+            type base:bandwidth;
+            units "bytes per second";
+        }
+    }
+
+    container my-cont {
+       uses link-bandwidth-extended-community;
+    }
+
+    notification open {
+       uses open-message;
+    }
+
+}

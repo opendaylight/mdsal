@@ -22,7 +22,6 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
-import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -195,6 +194,45 @@ public class BindingGeneratorImplTest {
                         assertEquals("BigDecimal", methodSignature.getReturnType().getName());
                     }
                 }
+            }
+        }
+    }
+
+    @Test
+    public void generatedTypesUsesLeafInnertype3Test() throws Exception {
+        final BindingGenerator bg = new BindingGeneratorImpl(false);
+        final List<String> sources = new ArrayList<>();
+        sources.add("/uses-statement/test-uses-leaf-innertype3-base.yang");
+        sources.add("/uses-statement/test-uses-leaf-innertype3.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
+        final List<Type> generateTypes = bg.generateTypes(context);
+        assertNotNull(generateTypes);
+        assertTrue(!generateTypes.isEmpty());
+        for (final Type type : generateTypes) {
+            if (type.getName().equals("MyCont") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype3.rev170809.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                    if (methodSignature.getName().equals("getBandwidth")) {
+                        assertEquals("Bandwidth", methodSignature.getReturnType().getName());
+                    }
+                }
+
+            }
+
+            if (type.getName().equals("Open") && type.getPackageName()
+                    .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype3.rev170809.data")) {
+                final GeneratedType gt = (GeneratedType) type;
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                    if (methodSignature.getName().equals("getVersion")) {
+                        assertEquals("ProtocolVersion", methodSignature.getReturnType().getName());
+                    }
+
+                    if (methodSignature.getName().equals("getLeafUnion")) {
+                        assertEquals("LeafUnion", methodSignature.getReturnType().getName());
+                    }
+                }
+
             }
         }
     }
