@@ -26,7 +26,7 @@ public final class DOMDataTreePrefixTableEntry<V> implements Identifiable<PathAr
     // FIXME: We do probably want to adapt map
     private final Map<PathArgument, DOMDataTreePrefixTableEntry<V>> children = new HashMap<>();
     private final PathArgument identifier;
-    private V value;
+    private V value = null;
 
     DOMDataTreePrefixTableEntry() {
         identifier = null;
