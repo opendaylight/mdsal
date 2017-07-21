@@ -25,6 +25,7 @@ import org.opendaylight.yangtools.util.MapAdaptor;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 
+@Deprecated
 class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implements AutoCloseable {
 
     private final DOMDataTreeListener listener;
@@ -38,7 +39,7 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
     @GuardedBy("this")
     private Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> currentData = Collections.emptyMap();
 
-    private ShardedDOMDataTreeListenerContext(T listener) {
+    private ShardedDOMDataTreeListenerContext(final T listener) {
         for (LogicalDatastoreType type : LogicalDatastoreType.values()) {
             storeListeners.put(type, new StoreListener(type));
         }
@@ -55,7 +56,7 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
         listener.onDataTreeChanged(changesToNotify, currentData);
     }
 
-    void register(DOMDataTreeIdentifier subtree, DOMStoreTreeChangePublisher shard) {
+    void register(final DOMDataTreeIdentifier subtree, final DOMStoreTreeChangePublisher shard) {
         ListenerRegistration<?> storeReg =
                 shard.registerTreeChangeListener(subtree.getRootIdentifier(),
                         storeListeners.get(subtree.getDatastoreType()));
@@ -66,12 +67,12 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
 
         private final LogicalDatastoreType type;
 
-        StoreListener(LogicalDatastoreType type) {
+        StoreListener(final LogicalDatastoreType type) {
             this.type = type;
         }
 
         @Override
-        public void onDataTreeChanged(Collection<DataTreeCandidate> changes) {
+        public void onDataTreeChanged(final Collection<DataTreeCandidate> changes) {
             receivedDataTreeChanges(type, changes);
             scheduleNotification();
         }
@@ -80,7 +81,8 @@ class ShardedDOMDataTreeListenerContext<T extends DOMDataTreeListener> implement
 
     // FIXME: Should be able to run parallel to notifyListener and should honor
     // allowRxMerges
-    synchronized void receivedDataTreeChanges(LogicalDatastoreType type, Collection<DataTreeCandidate> changes) {
+    synchronized void receivedDataTreeChanges(final LogicalDatastoreType type,
+            final Collection<DataTreeCandidate> changes) {
         Map<DOMDataTreeIdentifier, NormalizedNode<?, ?>> updatedData =
                 MapAdaptor.getDefaultInstance().takeSnapshot(currentData);
         for (DataTreeCandidate change : changes) {
