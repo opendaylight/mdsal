@@ -43,7 +43,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
         return builder;
     }
 
-    protected Type getReturnType() {
+    public Type getReturnType() {
         return this.returnType;
     }
 
