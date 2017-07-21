@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
@@ -37,10 +36,10 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNodes;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidates;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataValidationFailedException;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.api.NormalizedNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapEntryNodeBuilder;
@@ -265,56 +264,10 @@ abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeC
             }
 
             if (modifiedChild == null) {
-                modifiedChild = new EmptyDataTreeCandidateNode(listenerPath.getLastPathArgument());
+                modifiedChild = DataTreeCandidateNodes.empty(listenerPath.getLastPathArgument());
             }
 
             return DataTreeCandidates.newDataTreeCandidate(listenerPath, modifiedChild);
         }
     }
-
-    private static final class EmptyDataTreeCandidateNode implements DataTreeCandidateNode {
-
-        private final PathArgument identifier;
-
-        EmptyDataTreeCandidateNode(final PathArgument identifier) {
-            this.identifier = Preconditions.checkNotNull(identifier, "Identifier should not be null");
-        }
-
-        @Nonnull
-        @Override
-        public PathArgument getIdentifier() {
-            return identifier;
-        }
-
-        @Nonnull
-        @Override
-        public Collection<DataTreeCandidateNode> getChildNodes() {
-            return Collections.emptySet();
-        }
-
-        @Nullable
-        @Override
-        public DataTreeCandidateNode getModifiedChild(final PathArgument identifier) {
-            return null;
-        }
-
-        @Nonnull
-        @Override
-        public ModificationType getModificationType() {
-            return ModificationType.UNMODIFIED;
-        }
-
-        @Nonnull
-        @Override
-        public Optional<NormalizedNode<?, ?>> getDataAfter() {
-            return Optional.absent();
-        }
-
-        @Nonnull
-        @Override
-        public Optional<NormalizedNode<?, ?>> getDataBefore() {
-            return Optional.absent();
-        }
-    }
-
 }
