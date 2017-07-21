@@ -21,6 +21,7 @@ public interface WriteableDOMDataTreeShard extends DOMDataTreeShard {
 
     /**
      * Create a producer that has the ability to write into the provided subtrees.
+     *
      * @param paths Subtrees that the caller wants to write into.
      * @return Producer.
      */
