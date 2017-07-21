@@ -13,7 +13,10 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 
 /**
  * Marker interface for readable/writeable DOMDataTreeShard.
+ *
+ * @deprecated Use {@link ListenableDOMDataTreeShard} instead.
  */
+@Deprecated
 @Beta
 public interface ReadableWriteableDOMDataTreeShard extends DOMStoreTreeChangePublisher, WriteableDOMDataTreeShard {
 }
