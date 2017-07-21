@@ -84,9 +84,9 @@ public abstract class WritableNodeOperation implements WriteCursorStrategy {
             if (shardChild != null) {
                 // FIXME: Decompose somehow
                 throw new UnsupportedOperationException("Not implemented yet");
-            } else {
-                cursor.merge(childId, child);
             }
+
+            cursor.merge(childId, child);
         }
     }
 
