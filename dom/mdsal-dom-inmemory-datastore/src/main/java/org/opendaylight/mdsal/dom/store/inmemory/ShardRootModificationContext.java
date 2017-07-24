@@ -10,16 +10,19 @@ package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModificationCursor;
 
-class ShardRootModificationContext {
+// Non-final for mocking
+class ShardRootModificationContext implements Identifiable<DOMDataTreeIdentifier> {
 
     private final DOMDataTreeIdentifier identifier;
     private final CursorAwareDataTreeSnapshot snapshot;
+
     private CursorAwareDataTreeModification modification = null;
     private DataTreeModificationCursorAdaptor cursor = null;
 
@@ -29,6 +32,7 @@ class ShardRootModificationContext {
         this.snapshot = Preconditions.checkNotNull(snapshot);
     }
 
+    @Override
     public DOMDataTreeIdentifier getIdentifier() {
         return identifier;
     }
@@ -36,12 +40,11 @@ class ShardRootModificationContext {
     DataTreeModificationCursorAdaptor cursor() {
         if (cursor == null) {
             if (modification == null) {
-                modification = (CursorAwareDataTreeModification) snapshot.newModification();
+                modification = snapshot.newModification();
             }
 
             // FIXME: Should there be non-root path?
-            DataTreeModificationCursor dataTreeCursor =
-                    modification.createCursor(YangInstanceIdentifier.EMPTY);
+            DataTreeModificationCursor dataTreeCursor = modification.createCursor(YangInstanceIdentifier.EMPTY);
             cursor = DataTreeModificationCursorAdaptor.of(dataTreeCursor);
         }
         return cursor;
