@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerBusyException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
@@ -50,7 +51,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
             AtomicIntegerFieldUpdater.newUpdater(ShardedDOMDataTreeProducer.class, "closed");
     private volatile int closed;
 
-    private volatile ShardedDOMDataTreeListenerContext<?> attachedListener;
+    private volatile DOMDataTreeListener attachedListener;
     private volatile ProducerLayout layout;
 
     private ShardedDOMDataTreeProducer(final ShardedDOMDataTree dataTree,
@@ -268,15 +269,9 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
         }
     }
 
-    void bindToListener(final ShardedDOMDataTreeListenerContext<?> listener) {
-        Preconditions.checkNotNull(listener);
-
-        final ShardedDOMDataTreeListenerContext<?> local = attachedListener;
-        if (local != null) {
-            throw new IllegalStateException(String.format("Producer %s is already attached to listener %s", this,
-                local.getListener()));
-        }
-
-        this.attachedListener = listener;
+    void bindToListener(final DOMDataTreeListener listener) {
+        final DOMDataTreeListener local = attachedListener;
+        Preconditions.checkState(local != null, "Producer %s is already attached to listener %s", this, local);
+        this.attachedListener = Preconditions.checkNotNull(listener);
     }
 }
