@@ -89,7 +89,7 @@ final class CompatListenableDOMDataTreeShard extends ForwardingObject implements
 
         final int size = subtrees.size();
         final Collection<ListenerRegistration<?>> regs = new ArrayList<>(size);
-        final CompatDOMDataTreeListener aggregator = new CompatDOMDataTreeListener(size, allowRxMerges);
+        final DOMDataTreeChangeListenerAggregator aggregator = new DOMDataTreeChangeListenerAggregator(size, allowRxMerges);
         for (DOMDataTreeIdentifier treeId : subtrees) {
             regs.add(registerTreeChangeListener(treeId.getRootIdentifier(), aggregator.createListener(treeId)));
         }
