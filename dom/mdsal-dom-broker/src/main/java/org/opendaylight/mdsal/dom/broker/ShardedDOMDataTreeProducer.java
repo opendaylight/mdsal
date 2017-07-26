@@ -112,10 +112,13 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     // Isolated case. If we have a previous transaction, submit it before returning this one.
     private synchronized ShardedDOMDataTreeWriteTransaction createIsolatedTransaction(
             final ProducerLayout local, final ShardedDOMDataTreeWriteTransaction current) {
+        LOG.trace("{} entering synchronized createIsolatedTransaction", this);
         if (current != null) {
+            LOG.trace("{} submitting transaction in createIsolatedTransaction", this);
             submitTransaction(current);
         }
 
+        LOG.trace("{} creating transaction in createIsolatedTransaction and returning from synchronized", this);
         return createTransaction(local);
     }
 
@@ -129,15 +132,20 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
                 return current;
             }
 
+            LOG.trace("{} synchronizing in createReusedTransaction fast path", this);
             synchronized (this) {
+                LOG.trace("{} synchronized in createReusedTransaction, submitting", this);
                 submitTransaction(current);
+                LOG.trace("{} submitted in createReusedTransaction, returning from synchronized", this);
                 return createTransaction(local);
             }
         }
 
         // Null indicates we have not seen a previous transaction -- which does not mean it is ready, as it may have
         // been stolen and in is process of being submitted.
+        LOG.trace("{} synchronizing in createReusedTransaction slow path", this);
         synchronized (this) {
+            LOG.trace("{} synchronized in createReusedTransaction slow path, creating and returning from synchronized", this);
             return createTransaction(local);
         }
     }
@@ -171,8 +179,11 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
 
 
         final DOMDataTreeProducer ret;
+        LOG.trace("{} synchronizing in createProducer", this);
         synchronized (this) {
+            LOG.trace("{} synchronized in createProducer, creating", this);
             ret = dataTree.createProducer(this, subtrees);
+            LOG.trace("{} created in createProducer, leaving synchronized block", this);
         }
 
         layout = local.addChild(ret, subtrees);
@@ -185,13 +196,19 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
 
     @Override
     public void close() throws DOMDataTreeProducerException {
+        LOG.trace("{} entering close", this);
         if (openTx != null) {
+            LOG.trace("{} detected open transaction {}", this, openTx);
             throw new DOMDataTreeProducerBusyException(String.format("Transaction %s is still open", openTx));
         }
 
+        LOG.trace("{} close doing compare and set", this);
         if (CLOSED_UPDATER.compareAndSet(this, 0, 1)) {
+            LOG.trace("{} close set, synchronizing", this);
             synchronized (this) {
+                LOG.trace("{} close synchronized, destroying", this);
                 dataTree.destroyProducer(this);
+                LOG.trace("{} close destroyed producer, leaving synchronized block", this);
             }
         }
     }
@@ -216,8 +233,11 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
 
         if (lastTx == null) {
             // No transaction outstanding, we need to submit it now
+            LOG.trace("{} synchronizing for null lastTx in transactionSubmitted", this);
             synchronized (this) {
+                LOG.trace("{} synchronized in transactionSubmitted, submitting", this);
                 submitTransaction(transaction);
+                LOG.trace("{} submitted in transactionSubmitted, returning", this);
             }
 
             return;
@@ -238,9 +258,13 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     private void submitCurrentTransaction() {
         final ShardedDOMDataTreeWriteTransaction current = currentTx;
         if (current != null) {
+            LOG.trace("{} synchronizing for non-null current in submitCurrentTransaction", this);
             synchronized (this) {
+                LOG.trace("{} synchronized in submitCurrentTransaction, comparing and set", this);
                 if (CURRENT_UPDATER.compareAndSet(this, current, null)) {
+                    LOG.trace("{} compared and set in submitCurrentTransaction, submitting transaction", this);
                     submitTransaction(current);
+                    LOG.trace("{} submitted in submitCurrentTransaction, leaving", this);
                 }
             }
         }
