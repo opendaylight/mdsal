@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Tom Pantelis <tompantelis@gmail.com>
+Submitted-by: Tom Pantelis <tompantelis@gmail.com>
+Submitted-at: Thu, 27 Jul 2017 17:13:37 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/60719
+Project: mdsal
+Branch: refs/heads/stable/carbon
