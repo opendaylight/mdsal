@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMDataTreeChangeListenerRegistration;
+import org.opendaylight.mdsal.dom.spi.AbstractDataTreeCandidatePublisher;
 import org.opendaylight.mdsal.dom.spi.RegistrationTreeNode;
 import org.opendaylight.mdsal.dom.spi.shard.ChildShardContext;
-import org.opendaylight.mdsal.dom.spi.store.AbstractDOMStoreTreeChangePublisher;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -46,7 +46,8 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class AbstractDOMShardTreeChangePublisher extends AbstractDOMStoreTreeChangePublisher
+abstract class AbstractDOMShardTreeChangePublisher
+        extends AbstractDataTreeCandidatePublisher<AbstractDOMDataTreeChangeListenerRegistration<?>>
         implements DOMStoreTreeChangePublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDOMShardTreeChangePublisher.class);
