@@ -13,8 +13,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.collect.ClassToInstanceMap;
-import java.lang.reflect.Field;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
@@ -30,9 +29,10 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public class MountPointServiceTest {
 
-    private static DOMMountPointService mountService;
-    private static final YangInstanceIdentifier PATH =
-            YangInstanceIdentifier.of(QName.create("namespace", "12-12-2012", "top"));
+    private static final YangInstanceIdentifier PATH = YangInstanceIdentifier.of(QName.create("namespace", "12-12-2012",
+        "top"));
+
+    private DOMMountPointService mountService;
 
     @Before
     public void setup() {
@@ -89,22 +89,11 @@ public class MountPointServiceTest {
         final SchemaContext mockSchemaContext = mock(SchemaContext.class);
         mountBuilder.addInitialSchemaContext(mockSchemaContext);
 
-        final Field schemaContextField = DOMMountPointBuilderImpl.class.getDeclaredField("schemaContext");
-        schemaContextField.setAccessible(true);
+        assertSame(mockSchemaContext, mountBuilder.getSchemaContext());
 
-        final SchemaContext schemaContext = (SchemaContext) schemaContextField.get(mountBuilder);
-
-        assertSame(mockSchemaContext, schemaContext);
-
-        final Field servicesField = DOMMountPointBuilderImpl.class.getDeclaredField("services");
-        servicesField.setAccessible(true);
-
-        final ClassToInstanceMap<DOMService> services =
-                (ClassToInstanceMap<DOMService>) servicesField.get(mountBuilder);
+        final Map<Class<? extends DOMService>, DOMService> services = mountBuilder.getServices();
         assertTrue(services.isEmpty());
-        assertFalse(services.containsKey(DOMService.class));
         mountBuilder.addService(DOMService.class, mock(DOMService.class));
-        assertFalse(services.isEmpty());
         assertTrue(services.containsKey(DOMService.class));
     }
 }

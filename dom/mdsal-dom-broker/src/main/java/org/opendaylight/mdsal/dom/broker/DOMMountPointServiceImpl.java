@@ -8,9 +8,11 @@
 
 package org.opendaylight.mdsal.dom.broker;
 
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +21,17 @@ import org.opendaylight.mdsal.dom.api.DOMMountPointListener;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.mdsal.dom.spi.SimpleDOMMountPoint;
+import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DOMMountPointServiceImpl implements DOMMountPointService {
+    private static final Logger LOG = LoggerFactory.getLogger(DOMMountPointServiceImpl.class);
 
     private final Map<YangInstanceIdentifier, DOMMountPoint> mountPoints = new HashMap<>();
 
@@ -38,95 +44,81 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
 
     @Override
     public DOMMountPointBuilder createMountPoint(final YangInstanceIdentifier path) {
-        Preconditions.checkState(!mountPoints.containsKey(path), "Mount point already exists");
+        checkState(!mountPoints.containsKey(path), "Mount point already exists");
         return new DOMMountPointBuilderImpl(path);
     }
 
-    public void notifyMountCreated(final YangInstanceIdentifier identifier) {
-        for (final ListenerRegistration<DOMMountPointListener> listener : listeners
-                .getListeners()) {
-            listener.getInstance().onMountPointCreated(identifier);
-        }
-    }
-
-    public void notifyMountRemoved(final YangInstanceIdentifier identifier) {
-        for (final ListenerRegistration<DOMMountPointListener> listener : listeners
-                .getListeners()) {
-            listener.getInstance().onMountPointRemoved(identifier);
-        }
-    }
-
     @Override
-    public ListenerRegistration<DOMMountPointListener> registerProvisionListener(
-            final DOMMountPointListener listener) {
+    public ListenerRegistration<DOMMountPointListener> registerProvisionListener(final DOMMountPointListener listener) {
         return listeners.register(listener);
     }
 
     public ObjectRegistration<DOMMountPoint> registerMountPoint(final DOMMountPoint mountPoint) {
+        final YangInstanceIdentifier mountPointId = mountPoint.getIdentifier();
         synchronized (mountPoints) {
-            Preconditions.checkState(!mountPoints.containsKey(mountPoint.getIdentifier()),
-                    "Mount point already exists");
-            mountPoints.put(mountPoint.getIdentifier(), mountPoint);
+            final DOMMountPoint prev = mountPoints.putIfAbsent(mountPointId, mountPoint);
+            checkState(prev == null, "Mount point %s already exists as %s", mountPointId, prev);
         }
-        notifyMountCreated(mountPoint.getIdentifier());
+        listeners.forEach(listener -> listener.getInstance().onMountPointCreated(mountPointId));
 
-        return new MountRegistration(mountPoint);
+        return new AbstractObjectRegistration<DOMMountPoint>(mountPoint) {
+            @Override
+            protected void removeRegistration() {
+                unregisterMountPoint(getInstance().getIdentifier());
+            }
+        };
     }
 
     public void unregisterMountPoint(final YangInstanceIdentifier mountPointId) {
         synchronized (mountPoints) {
-            Preconditions.checkState(mountPoints.containsKey(mountPointId), "Mount point does not exist");
-            mountPoints.remove(mountPointId);
+            if (mountPoints.remove(mountPointId) == null) {
+                LOG.warn("Removed non-existend mount point {} at", mountPointId, new Throwable());
+                return;
+            }
         }
-        notifyMountRemoved(mountPointId);
+
+        listeners.forEach(listener -> listener.getInstance().onMountPointRemoved(mountPointId));
     }
 
-    public class DOMMountPointBuilderImpl implements DOMMountPointBuilder {
+    final class DOMMountPointBuilderImpl implements DOMMountPointBuilder {
 
-        ClassToInstanceMap<DOMService> services = MutableClassToInstanceMap.create();
-        private SimpleDOMMountPoint mountPoint;
+        private final MutableClassToInstanceMap<DOMService> services = MutableClassToInstanceMap.create();
         private final YangInstanceIdentifier path;
         private SchemaContext schemaContext;
 
-        public DOMMountPointBuilderImpl(final YangInstanceIdentifier path) {
-            this.path = path;
+        private SimpleDOMMountPoint mountPoint;
+
+        DOMMountPointBuilderImpl(final YangInstanceIdentifier path) {
+            this.path = requireNonNull(path);
+        }
+
+        @VisibleForTesting
+        SchemaContext getSchemaContext() {
+            return schemaContext;
+        }
+
+        @VisibleForTesting
+        Map<Class<? extends DOMService>, DOMService> getServices() {
+            return services;
         }
 
         @Override
         public <T extends DOMService> DOMMountPointBuilder addService(final Class<T> type, final T impl) {
-            services.putInstance(type, impl);
+            services.putInstance(requireNonNull(type), requireNonNull(impl));
             return this;
         }
 
         @Override
         public DOMMountPointBuilder addInitialSchemaContext(final SchemaContext ctx) {
-            schemaContext = ctx;
+            schemaContext = requireNonNull(ctx);
             return this;
         }
 
         @Override
         public ObjectRegistration<DOMMountPoint> register() {
-            Preconditions.checkState(mountPoint == null, "Mount point is already built.");
+            checkState(mountPoint == null, "Mount point is already built.");
             mountPoint = SimpleDOMMountPoint.create(path, services,schemaContext);
             return registerMountPoint(mountPoint);
-        }
-    }
-
-    private final class MountRegistration implements ObjectRegistration<DOMMountPoint> {
-        private final DOMMountPoint mountPoint;
-
-        MountRegistration(final DOMMountPoint mountPoint) {
-            this.mountPoint = mountPoint;
-        }
-
-        @Override
-        public DOMMountPoint getInstance() {
-            return mountPoint;
-        }
-
-        @Override
-        public void close() throws Exception {
-            unregisterMountPoint(mountPoint.getIdentifier());
         }
     }
 }
