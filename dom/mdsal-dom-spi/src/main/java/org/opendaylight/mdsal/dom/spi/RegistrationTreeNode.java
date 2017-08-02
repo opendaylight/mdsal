@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -89,6 +90,10 @@ public final class RegistrationTreeNode<T> implements Identifiable<PathArgument>
         } else {
             return Collections.emptyList();
         }
+    }
+
+    public void forEachChild(final Consumer<RegistrationTreeNode<T>> action) {
+        children.values().forEach(action);
     }
 
     public Collection<T> getRegistrations() {
