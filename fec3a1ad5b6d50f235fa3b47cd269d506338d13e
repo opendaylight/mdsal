@@ -22,6 +22,30 @@
       "revId": "fec3a1ad5b6d50f235fa3b47cd269d506338d13e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a8697027",
+        "filename": "binding2/mdsal-binding2-generator-api/src/main/java/org/opendaylight/mdsal/binding/javav2/model/api/type/builder/GeneratedTypeBuilderBase.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-08-02T10:19:01Z",
+      "side": 1,
+      "message": "method implementation sits in AbstractGeneratedTypeBuilder and that calls\n\n   final EnumBuilder builder \u003d new EnumerationBuilderImpl(getFullyQualifiedName(), name, true, false);\n\nso, isTypeNormalized is set to false, so we need to provide context",
+      "parentUuid": "ba1f61a0_48d0b453",
+      "range": {
+        "startLine": 134,
+        "startChar": 4,
+        "endLine": 134,
+        "endChar": 67
+      },
+      "revId": "fec3a1ad5b6d50f235fa3b47cd269d506338d13e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
