@@ -57,7 +57,6 @@ final class ModuleToGenType {
         genCtx = groupingsToGenTypes(module, module.getGroupings(), genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
         genCtx = allIdentitiesToGenTypes(module, schemaContext, genCtx, verboseClassComments,  genTypeBuilders, typeProvider);
-        genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments, typeProvider);
 
         if (!module.getChildNodes().isEmpty()) {
             final GeneratedTypeBuilder moduleType = GenHelperUtil.moduleToDataType(module, genCtx, verboseClassComments);
@@ -68,6 +67,8 @@ final class ModuleToGenType {
                     BindingNamespaceType.Data);
             processUsesImplements(module, module, schemaContext, genCtx, BindingNamespaceType.Data);
         }
+
+        genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments, typeProvider);
 
         //after potential parent data schema nodes
         genCtx = actionsAndRPCMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
