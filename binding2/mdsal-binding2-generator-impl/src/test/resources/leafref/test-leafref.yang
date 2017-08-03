@@ -1,0 +1,34 @@
+module test-leafref {
+
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:test:leafref";
+    prefix "test";
+
+    revision "2017-02-24" {
+        description "Initial revision of test model.";
+    }
+
+    container test-container {
+        list test-list {
+            leaf test-leaf {
+                type enumeration {
+                    enum enum1 {
+                        value 1;
+                    }
+                    enum enum2 {
+                        value 2;
+                    }
+                }
+            }
+        }
+    }
+
+    container test-leafref-container {
+        leaf test-leafref {
+            type leafref {
+                path "/test:test-container/test:test-list/test:test-leaf";
+            }
+        }
+    }
+
+}
