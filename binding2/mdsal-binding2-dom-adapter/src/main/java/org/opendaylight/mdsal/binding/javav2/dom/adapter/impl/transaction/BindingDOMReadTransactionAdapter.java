@@ -8,6 +8,8 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.transaction;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
 import java.util.function.BiConsumer;
 import org.opendaylight.mdsal.binding.javav2.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.AbstractForwardedTransaction;
@@ -34,6 +36,11 @@ public class BindingDOMReadTransactionAdapter extends AbstractForwardedTransacti
     public <T extends TreeNode> void read(final LogicalDatastoreType store, final InstanceIdentifier<T> path,
             final BiConsumer<ReadFailedException, T> callback) {
         doRead(getDelegate(), store, path);
+    }
+
+    @Override
+    public <T extends TreeNode> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store, InstanceIdentifier<T> path) {
+        return doRead(getDelegate(), store, path);
     }
 
     @Override

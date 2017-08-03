@@ -9,12 +9,15 @@
 package org.opendaylight.mdsal.binding.javav2.api;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
 import java.util.function.BiConsumer;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.common.api.AsyncReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
  * A transaction that provides a stateful read-only view of the data tree.
@@ -43,4 +46,7 @@ public interface ReadTransaction extends AsyncReadTransaction<InstanceIdentifier
      */
     <T extends TreeNode> void read(LogicalDatastoreType store, InstanceIdentifier<T> path,
         BiConsumer<ReadFailedException, T> callback);
+
+    <T extends TreeNode> CheckedFuture<Optional<T>,ReadFailedException> read(LogicalDatastoreType store,
+       InstanceIdentifier<T> path);
 }
