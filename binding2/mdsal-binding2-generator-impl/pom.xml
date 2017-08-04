@@ -108,6 +108,7 @@
                         <Export-Package>
                             {local-packages},
                             org.opendaylight.mdsal.binding2.generator.impl,
+                            ;-split-package:=error
                         </Export-Package>
                     </instructions>
                 </configuration>

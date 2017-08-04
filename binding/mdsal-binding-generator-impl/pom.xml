@@ -105,6 +105,7 @@
                         <Export-Package>
                             {local-packages},
                             org.opendaylight.mdsal.binding.generator.impl,
+                            ;-split-package:=error
                         </Export-Package>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Embed-Dependency>org.eclipse.xtext.xbase.lib;inline</Embed-Dependency>
