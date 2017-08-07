@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Martin Ciglan <martin.ciglan@pantheon.tech>
+Submitted-by: Martin Ciglan <martin.ciglan@pantheon.tech>
+Submitted-at: Mon, 07 Aug 2017 10:04:54 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/61258
+Project: mdsal
+Branch: refs/heads/stable/carbon
