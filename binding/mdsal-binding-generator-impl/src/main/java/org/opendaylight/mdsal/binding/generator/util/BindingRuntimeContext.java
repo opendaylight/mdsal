@@ -377,7 +377,7 @@ public class BindingRuntimeContext implements Immutable {
             throw new IllegalStateException(e);
         }
     }
-
+    
     public ImmutableMap<AugmentationIdentifier,Type> getAvailableAugmentationTypes(final DataNodeContainer container) {
         final Map<AugmentationIdentifier,Type> identifierToType = new HashMap<>();
         if (container instanceof AugmentationTarget) {
