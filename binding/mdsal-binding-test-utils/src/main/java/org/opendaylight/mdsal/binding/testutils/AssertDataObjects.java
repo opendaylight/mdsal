@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.testutils;
 
 import ch.vorburger.xtendbeans.AssertBeans;
+import com.google.common.base.Objects;
 import org.junit.ComparisonFailure;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
@@ -16,9 +17,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Assertion utilities for YANG {@link DataObject}s.
  *
- * <p>This compares two {@link DataObject}s by creating a textual representation of them,
- * and comparing them.  If they are not equals, then the thrown ComparisonFailure provides
- * for a very highly readable comparison due to a syntax which immediately makes the difference obvious.
+ * <p>This compares two {@link DataObject}s using their {@link Object#equals(Object)} methods, but
+ * prepares a view of their contents in text form which allows easy comparison of the expected and
+ * actual values using the thrown {@link ComparisonFailure}.
  *
  * <p>The syntax used happens to be valid Xtend code, and as such could be directly copy/pasted
  * into an *.xtend source file of an expected object definition.  This is optional though; this
@@ -52,8 +53,14 @@ public final class AssertDataObjects {
      * @see AssertBeans#assertEqualBeans(Object, Object)
      */
     public static void assertEqualBeans(Object expected, Object actual) throws ComparisonFailure {
-        String expectedText = GENERATOR.getExpression(expected);
-        assertEqualByText(expectedText, actual);
+        if (!Objects.equal(expected, actual)) {
+            String expectedText = GENERATOR.getExpression(expected);
+            assertEqualByText(expectedText, actual);
+            throw new ComparisonFailure(
+                    "Expected and actual beans are not equal according to their equals() implementations, but their "
+                            + "textual representations are identical (there might be a bug in XtendBeans)",
+                    expected.toString(), actual.toString());
+        }
     }
 
     // package local method used only in the self tests of this utility (not intended for usage by client code)
