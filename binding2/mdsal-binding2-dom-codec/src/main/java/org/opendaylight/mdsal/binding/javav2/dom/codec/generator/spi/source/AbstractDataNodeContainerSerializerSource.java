@@ -25,6 +25,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingSerializer;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImplementation;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerRegistry;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -133,10 +134,25 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
             JavaIdentifier.CLASS);
     }
 
+    private boolean emitCheck(final DataSchemaNode schemaChild) {
+        if (schemaChild.isAugmenting()) {
+            QName root = schemaChild.getPath().getPathFromRoot().iterator().next();
+            return root.getModule().equals(schemaChild.getQName().getModule());
+        }
+
+        return true;
+    }
+
     private void emitBody(final StringBuilder builder) {
         final Map<String, Type> getterToType = collectAllProperties(dtoType, new HashMap<String, Type>());
         for (final DataSchemaNode schemaChild : schemaNode.getChildNodes()) {
-            if (!schemaChild.isAugmenting()) {
+            /**
+             * As before, it only emitted data nodes which were not added by uses or augment, now
+             * according to binding v2 specification, augment of the same module is same as inlining,
+             * all data node children should be processed as-if they were directly defined inside
+             * target node.
+             */
+            if (emitCheck(schemaChild)) {
                 final String getter = getGetterName(schemaChild);
                 final Type childType = getterToType.get(getter);
                 if (childType == null) {
