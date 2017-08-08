@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_d3ff1a00",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/AuxiliaryGenUtils.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-08-08T13:48:10Z",
+      "side": 1,
+      "message": "not sure what\u0027s going on here .... are we not creating method?",
+      "range": {
+        "startLine": 165,
+        "startChar": 7,
+        "endLine": 165,
+        "endChar": 127
+      },
+      "revId": "d1c029ffc2691034adcf666063bbb09a22a94fe0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
