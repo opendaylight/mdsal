@@ -36,6 +36,25 @@ public class AssertNonDataObjectsTest {
         public void setName(String name) {
             this.name = name;
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+
+            SomeBean someBean = (SomeBean) obj;
+
+            return name != null ? name.equals(someBean.name) : someBean.name == null;
+        }
+
+        @Override
+        public int hashCode() {
+            return name != null ? name.hashCode() : 0;
+        }
     }
 
     @Test
