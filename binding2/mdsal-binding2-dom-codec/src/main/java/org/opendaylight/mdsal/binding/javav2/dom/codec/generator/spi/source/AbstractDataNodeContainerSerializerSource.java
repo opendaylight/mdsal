@@ -25,6 +25,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingSerializer;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImplementation;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerRegistry;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -127,10 +128,22 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
         return prefix + JavaIdentifierNormalizer.normalizeSpecificIdentifier(node.getQName().getLocalName(), JavaIdentifier.CLASS);
     }
 
+    private boolean isLocalAugmentDataChild(final DataSchemaNode schemaChild) {
+        if (schemaChild.isAugmenting()) {
+            QName root = schemaChild.getPath().getPathFromRoot().iterator().next();
+            if (root.getNamespace().equals(schemaChild.getQName().getNamespace())
+                    && root.getRevision().equals(schemaChild.getQName().getRevision())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void emitBody(final StringBuilder b) {
         final Map<String, Type> getterToType = collectAllProperties(dtoType, new HashMap<String, Type>());
         for (final DataSchemaNode schemaChild : schemaNode.getChildNodes()) {
-            if (!schemaChild.isAugmenting()) {
+            if (!schemaChild.isAugmenting() || isLocalAugmentDataChild(schemaChild)) {
                 final String getter = getGetterName(schemaChild);
                 final Type childType = getterToType.get(getter);
                 if (childType == null) {
