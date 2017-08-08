@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_b32b8681",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/renderers/BuilderRenderer.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-08-08T13:51:49Z",
+      "side": 1,
+      "message": "what\u0027s wrong with initial isNormalized\u003dtrue solution? It provides true for both normalizations and null inside for context",
+      "range": {
+        "startLine": 141,
+        "startChar": 9,
+        "endLine": 142,
+        "endChar": 38
+      },
+      "revId": "c3ac4694823991db9ec891f18e37d44b8c159021",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
