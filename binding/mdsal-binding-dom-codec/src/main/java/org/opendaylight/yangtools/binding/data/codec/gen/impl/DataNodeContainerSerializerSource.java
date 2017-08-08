@@ -22,6 +22,7 @@ import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataObjectSerializerImplementation;
 import org.opendaylight.yangtools.yang.binding.DataObjectSerializerRegistry;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -123,10 +124,22 @@ abstract class DataNodeContainerSerializerSource extends DataObjectSerializerSou
         return prefix + BindingMapping.getGetterSuffix(node.getQName());
     }
 
+    private boolean isLocalAugmentDataChild(final DataSchemaNode schemaChild) {
+        if (schemaChild.isAugmenting()) {
+            QName root = schemaChild.getPath().getPathFromRoot().iterator().next();
+            if (root.getNamespace().equals(schemaChild.getQName().getNamespace())
+                    && root.getRevision().equals(schemaChild.getQName().getRevision())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void emitBody(final StringBuilder b) {
         final Map<String, Type> getterToType = collectAllProperties(dtoType, new HashMap<String, Type>());
         for (final DataSchemaNode schemaChild : schemaNode.getChildNodes()) {
-            if (!schemaChild.isAugmenting()) {
+            if (!schemaChild.isAugmenting() || isLocalAugmentDataChild(schemaChild)) {
                 final String getter = getGetterName(schemaChild);
                 final Type childType = getterToType.get(getter);
                 if (childType == null) {
