@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_3822d5b9",
+        "filename": "binding2/mdsal-binding2-generator-util/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/util/JavaIdentifierNormalizer.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-08-08T13:37:11Z",
+      "side": 1,
+      "message": "constant always first: \"\".equals(next)",
+      "range": {
+        "startLine": 278,
+        "startChar": 17,
+        "endLine": 278,
+        "endChar": 32
+      },
+      "revId": "3f1029d7881eee6f261e1c1399865acf12b9dbca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
