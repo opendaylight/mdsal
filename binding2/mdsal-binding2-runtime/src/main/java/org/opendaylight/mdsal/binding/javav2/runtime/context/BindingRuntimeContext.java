@@ -412,20 +412,34 @@ public class BindingRuntimeContext implements Immutable {
         }
     }
 
+    private boolean isLocalAugment(final AugmentationTarget container, final AugmentationSchemaNode augment) {
+        Preconditions.checkState(container instanceof SchemaNode);
+        final QName root = ((SchemaNode) container).getPath().getPathFromRoot().iterator().next();
+        // findFirst makes no sense but just pick up one child to judge whether the target node is
+        // in the same module.
+        final java.util.Optional<DataSchemaNode> child = augment.getChildNodes().stream().findFirst();
+        if (child.isPresent()) {
+            return root.getModule().equals(child.get().getQName().getModule());
+        }
+        return false;
+    }
+
     public ImmutableMap<AugmentationIdentifier,Type> getAvailableAugmentationTypes(final DataNodeContainer container) {
         final Map<AugmentationIdentifier,Type> identifierToType = new HashMap<>();
         if (container instanceof AugmentationTarget) {
             for (final AugmentationSchemaNode augment : ((AugmentationTarget) container).getAvailableAugmentations()) {
-                // Augmentation must have child nodes if is to be used with Binding classes
-                AugmentationSchemaNode augOrig = augment;
-                while (augOrig.getOriginalDefinition().isPresent()) {
-                    augOrig = augOrig.getOriginalDefinition().get();
-                }
+                if (!isLocalAugment((AugmentationTarget) container, augment)) {
+                    // Augmentation must have child nodes if is to be used with Binding classes
+                    AugmentationSchemaNode augOrig = augment;
+                    while (augOrig.getOriginalDefinition().isPresent()) {
+                        augOrig = augOrig.getOriginalDefinition().get();
+                    }
 
-                if (!augment.getChildNodes().isEmpty()) {
-                    final Type augType = this.typeToDefiningSchema.inverse().get(augOrig);
-                    if (augType != null) {
-                        identifierToType.put(getAugmentationIdentifier(augment),augType);
+                    if (!augment.getChildNodes().isEmpty()) {
+                        final Type augType = this.typeToDefiningSchema.inverse().get(augOrig);
+                        if (augType != null) {
+                            identifierToType.put(getAugmentationIdentifier(augment), augType);
+                        }
                     }
                 }
             }
