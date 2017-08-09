@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
@@ -100,9 +101,15 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
             final E mainEntity = createEntity(SERVICE_ENTITY_TYPE, serviceIdentifier);
             final E closeEntity = createEntity(CLOSE_SERVICE_ENTITY_TYPE, serviceIdentifier);
             serviceGroup = new ClusterSingletonServiceGroupImpl<>(serviceIdentifier,
-                    mainEntity, closeEntity, entityOwnershipService, serviceGroupMap);
+                    mainEntity, closeEntity, entityOwnershipService, this);
             serviceGroupMap.put(service.getIdentifier().getValue(), serviceGroup);
-            serviceGroup.initializationClusterSingletonGroup();
+
+            try {
+                serviceGroup.initializationClusterSingletonGroup();
+            } catch (CandidateAlreadyRegisteredException e) {
+                serviceGroupMap.remove(service.getIdentifier().getValue(), serviceGroup);
+                throw new IllegalArgumentException("Service group already registered", e);
+            }
         }
         return serviceGroup.registerService(service);
     }
@@ -192,5 +199,9 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
             asyncCloseEntityListenerReg = null;
         }
         serviceGroupMap.clear();
+    }
+
+    protected void onGroupClosed(final ClusterSingletonServiceGroupImpl<P, E, C, ?, ?> group) {
+        serviceGroupMap.remove(group.getIdentifier(), group);
     }
 }

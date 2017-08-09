@@ -418,14 +418,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
         reg.close();
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, atLeastOnce()).close();
-        verify(mockEosDoubleEntityListReg, never()).close();
-        Assert.assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
+        verifyCleanup();
     }
 
     /**
@@ -613,13 +606,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, atLeastOnce()).close();
-        verify(mockEosDoubleEntityListReg, never()).close();
-        Assert.assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
+
+        // Since our mocks terminate services immediately, the group is also cleaned up
+        verifyCleanup();
     }
 
     /**
@@ -643,9 +632,12 @@ public class DOMClusterSingletonServiceProviderImplTest {
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
+
+        // Since our mocks terminate services immediately, the group is also cleaned up
+        verifyCleanup();
+    }
+
+    private void verifyCleanup() {
         verify(mockEntityCandReg, atLeastOnce()).close();
         verify(mockDoubleEntityCandReg, atLeastOnce()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
