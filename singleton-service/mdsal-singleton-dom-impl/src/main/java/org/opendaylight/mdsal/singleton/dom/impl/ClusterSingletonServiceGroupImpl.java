@@ -8,24 +8,24 @@
 
 package org.opendaylight.mdsal.singleton.dom.impl;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Verify;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
@@ -46,29 +46,115 @@ import org.slf4j.LoggerFactory;
  * @param <G> the GenericEntityOwnershipListener type
  * @param <S> the GenericEntityOwnershipService type
  */
-@VisibleForTesting
 final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends GenericEntity<P>,
-                                             C extends GenericEntityOwnershipChange<P, E>,
-                                             G extends GenericEntityOwnershipListener<P, C>,
-                                             S extends GenericEntityOwnershipService<P, E, G>>
-        implements ClusterSingletonServiceGroup<P, E, C> {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ClusterSingletonServiceGroupImpl.class.getName());
-
-    private final S entityOwnershipService;
-    private final String clusterSingletonGroupIdentifier;
-    private final Semaphore clusterLock = new Semaphore(1, true);
-
-    /* Entity instances */
-    private final E serviceEntity;
-    private final E doubleCandidateEntity;
-
+        C extends GenericEntityOwnershipChange<P, E>,  G extends GenericEntityOwnershipListener<P, C>,
+        S extends GenericEntityOwnershipService<P, E, G>> implements ClusterSingletonServiceGroup<P, E, C> {
     // TODO :it needs to rewrite for StateMachine (INITIALIZED, TRY_TO_TAKE_LEADERSHIP, LEADER, FOLLOWER, TERMINATED)
     // INITIALIZED : we have registered baseCandidate and we are waiting for first EOS response (!do we really need it?)
     // FOLLOWER : baseCandidate is registered correctly
     // TRY_TO_TAKE_LEADERSHIP : guardCandidate is registered correctly
     // LEADER : both candidate have mastership from EOS
     // TERMINATED : service go down
+    // Abstract base state holder
+    private abstract static class State {
+
+        abstract Closed close();
+    }
+
+    // Initial, fresh state, needs to be initialized
+    private static final class Initial extends State {
+        @Override
+        public Closed close() {
+            return new Closed();
+        }
+    }
+
+    private static final class Registering extends State {
+        @Override
+        Closed close() {
+            // This should never happen
+            throw new IllegalStateException("Attempted to close group while it is registering");
+        }
+    }
+
+    // Initializing, current ownership status has not been ascertained
+    private static final class Registered extends State {
+
+        private final GenericEntityOwnershipCandidateRegistration<?, ?> registration;
+
+        Registered(final GenericEntityOwnershipCandidateRegistration<?, ?> registration) {
+            this.registration = Preconditions.checkNotNull(registration);
+        }
+
+        @Override
+        Closed close() {
+            registration.close();
+            return new Closed();
+        }
+    }
+
+    // We are the group owner
+    private static final class Owner extends State {
+
+        @Override
+        Closed close() {
+            // We are the owner. Relinquish the candidate registration and notify the user
+
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }
+
+    // We are not the owner
+    private static final class Standby extends State {
+
+        @Override
+        Closed close() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+    }
+
+    // We are becoming the new owner
+    private static final class Acquiring extends State {
+
+        @Override
+        Closed close() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+    }
+
+    // Terminated state
+    private static final class Closed extends State {
+        @Override
+        public Closed close() {
+            // No-op
+            return this;
+        }
+    }
+
+    private static final Logger LOG = LoggerFactory.getLogger(ClusterSingletonServiceGroupImpl.class.getName());
+
+    private final Semaphore clusterLock = new Semaphore(1, true);
+    private final String clusterSingletonGroupIdentifier;
+    private final S entityOwnershipService;
+
+    /* Entity instances */
+    private final E serviceEntity;
+    private final E doubleCandidateEntity;
+
+    private final AtomicReference<SettableFuture<List<Void>>> closeFuture = new AtomicReference<>();
+    private final ReentrantLock lock = new ReentrantLock(true);
+
+    @GuardedBy("lock")
+    private State state = new Initial();
+
+
+
+
     @GuardedBy("clusterLock")
     private boolean hasOwnership = false;
     @GuardedBy("clusterLock")
@@ -104,160 +190,171 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     @Override
     public ListenableFuture<List<Void>> closeClusterSingletonGroup() {
         LOG.debug("Close method for service Provider {}", clusterSingletonGroupIdentifier);
-        boolean needReleaseLock = false;
-        final ListenableFuture<List<Void>> destroyFuture;
-        try {
-            needReleaseLock = clusterLock.tryAcquire(1, TimeUnit.SECONDS);
-        } catch (final Exception e) {
-            LOG.warn("Unexpected Exception for service Provider {} in closing phase.", clusterSingletonGroupIdentifier,
-                    e);
-        } finally {
-            if (serviceEntityCandidateReg != null) {
-                serviceEntityCandidateReg.close();
-                serviceEntityCandidateReg = null;
-            }
-            final List<ListenableFuture<Void>> serviceCloseFutureList = new ArrayList<>();
-            if (hasOwnership) {
-                for (final ClusterSingletonServiceRegistrationDelegator service : serviceGroup) {
-                    try {
-                        serviceCloseFutureList.add(service.closeServiceInstance());
-                    } catch (final RuntimeException e) {
-                        LOG.warn("Unexpected exception while closing service: {}, resuming with next..",
-                                service.getIdentifier());
-                    }
-                }
-                hasOwnership = false;
-            }
-            destroyFuture = Futures.allAsList(serviceCloseFutureList);
-            final Semaphore finalRelease = needReleaseLock ? clusterLock : null;
-            Futures.addCallback(destroyFuture, newAsyncCloseCallback(finalRelease, true));
+
+        // Assert our future first
+        final SettableFuture<List<Void>> future = SettableFuture.create();
+        final boolean asserted = closeFuture.compareAndSet(null, future);
+        Preconditions.checkState(asserted, "Singleton group %s has already been closed",
+            clusterSingletonGroupIdentifier);
+
+        if (!lock.tryLock()) {
+            // The lock is held, the cleanup will be finished by the owner thread
+            LOG.debug("Singleton group {} cleanup postponed", clusterSingletonGroupIdentifier);
+            return future;
         }
-        return destroyFuture;
+
+        try {
+            state = state.close();
+        } finally {
+            lock.unlock();
+        }
+
+        return future;
+
+//            if (serviceEntityCandidateReg != null) {
+//                serviceEntityCandidateReg.close();
+//                serviceEntityCandidateReg = null;
+//            }
+//            final List<ListenableFuture<Void>> serviceCloseFutureList = new ArrayList<>();
+//            if (hasOwnership) {
+//                for (final ClusterSingletonServiceRegistrationDelegator service : serviceGroup) {
+//                    try {
+//                        serviceCloseFutureList.add(service.closeServiceInstance());
+//                    } catch (final RuntimeException e) {
+//                        LOG.warn("Unexpected exception while closing service: {}, resuming with next..",
+//                                service.getIdentifier());
+//                    }
+//                }
+//                hasOwnership = false;
+//            }
+//            destroyFuture = Futures.allAsList(serviceCloseFutureList);
+//            final Semaphore finalRelease = needReleaseLock ? clusterLock : null;
+//            Futures.addCallback(destroyFuture, newAsyncCloseCallback(finalRelease, true));
+//        }
+//        return destroyFuture;
     }
 
-    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public void initializationClusterSingletonGroup() {
+    public void initializationClusterSingletonGroup() throws CandidateAlreadyRegisteredException {
         LOG.debug("Initialization ClusterSingletonGroup {}", clusterSingletonGroupIdentifier);
-        boolean needReleaseLock = false;
-        boolean needCloseProviderInstance = false;
+
+        lock.lock();
         try {
-            clusterLock.acquire();
-            needReleaseLock = true;
-            Verify.verify(serviceGroup.isEmpty());
-            Verify.verify(!hasOwnership);
-            Verify.verify(serviceEntityCandidateReg == null);
-            serviceEntityCandidateReg = entityOwnershipService.registerCandidate(serviceEntity);
-        } catch (final RuntimeException | InterruptedException | CandidateAlreadyRegisteredException e) {
-            LOG.debug("Unexpected error by registration service Provider {}", clusterSingletonGroupIdentifier, e);
-            needCloseProviderInstance = true;
-            throw new RuntimeException(e);
+            Preconditions.checkState(state instanceof Initial, "Unexpected singleton group %s state %s",
+                clusterSingletonGroupIdentifier, state);
+
+            // Transitive state in case the registration fires in our thread
+            state = new Registering();
+            final GenericEntityOwnershipCandidateRegistration<P, E> registration =
+                    entityOwnershipService.registerCandidate(serviceEntity);
+
+            // FIXME: check if the registration already fired and transition accordingly
+
+            state = new Registered(registration);
         } finally {
-            closeResources(needReleaseLock, needCloseProviderInstance);
+            lock.unlock();
         }
+    }
+
+    private void checkNotClosed() {
+        Preconditions.checkState(closeFuture.get() == null, "Service group %s has already been closed",
+                clusterSingletonGroupIdentifier);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public ClusterSingletonServiceRegistration registerService(final ClusterSingletonService service) {
-        LOG.debug("RegisterService method call for ClusterSingletonServiceGroup {}", clusterSingletonGroupIdentifier);
         Verify.verify(clusterSingletonGroupIdentifier.equals(service.getIdentifier().getValue()));
-        boolean needReleaseLock = false;
-        boolean needCloseProviderInstance = false;
-        ClusterSingletonServiceRegistrationDelegator reg = null;
+        checkNotClosed();
+
+        LOG.debug("RegisterService method call for ClusterSingletonServiceGroup {}", clusterSingletonGroupIdentifier);
+
+        lock.lock();
         try {
-            clusterLock.acquire();
-            needReleaseLock = true;
-            Verify.verify(serviceEntityCandidateReg != null);
-            reg = new ClusterSingletonServiceRegistrationDelegator(service, this);
-            serviceGroup.add(reg);
-            if (hasOwnership) {
-                service.instantiateServiceInstance();
+//            Verify.verify(serviceEntityCandidateReg != null);
+            final ClusterSingletonServiceRegistrationDelegator delegator =
+                    new ClusterSingletonServiceRegistrationDelegator(service, this);
+            serviceGroup.add(delegator);
+            if (state instanceof Owner) {
+                delegator.instantiateServiceInstance();
             }
-        } catch (final RuntimeException | InterruptedException e) {
-            LOG.debug("Unexpected error by registration service Provider {}", clusterSingletonGroupIdentifier, e);
-            needCloseProviderInstance = true;
-            throw new RuntimeException(e);
+            return delegator;
         } finally {
-            closeResources(needReleaseLock, needCloseProviderInstance);
+            lock.unlock();
         }
-        return reg;
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public void unregisterService(final ClusterSingletonService service) {
-        LOG.debug("UnregisterService method call for ClusterSingletonServiceGroup {}", clusterSingletonGroupIdentifier);
         Verify.verify(clusterSingletonGroupIdentifier.equals(service.getIdentifier().getValue()));
-        boolean needReleaseLock = false;
-        boolean needCloseProviderInstance = false;
+        checkNotClosed();
+
+        final boolean needClose;
+        lock.lock();
         try {
-            clusterLock.acquire();
-            needReleaseLock = true;
-            if (serviceGroup.size() > 1) {
-                if (hasOwnership) {
-                    service.closeServiceInstance();
-                }
-                serviceGroup.remove(service);
-                LOG.debug("Service {} was removed from group.", service.getIdentifier().getValue());
-            } else {
-                needCloseProviderInstance = true;
-            }
-        } catch (final RuntimeException | InterruptedException e) {
-            LOG.debug("Unexpected error by registration service Provider {}", clusterSingletonGroupIdentifier, e);
-            needCloseProviderInstance = true;
-            throw new RuntimeException(e);
+            Verify.verify(serviceGroup.remove(service));
+            LOG.debug("Service {} was removed from group.", service.getIdentifier().getValue());
+            needClose = state instanceof Owner;
         } finally {
-            closeResources(needReleaseLock, needCloseProviderInstance);
+            lock.unlock();
+        }
+
+        if (needClose) {
+            service.closeServiceInstance();
         }
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     public void ownershipChanged(final C ownershipChange) {
-        LOG.debug("Ownership change {} for ClusterSingletonServiceGroup {}", ownershipChange,
+        LOG.debug("Ownership change {} flor ClusterSingletonServiceGroup {}", ownershipChange,
                 clusterSingletonGroupIdentifier);
-        try {
-            if (ownershipChange.inJeopardy()) {
-                LOG.warn("Cluster Node lost connection to another cluster nodes {}", ownershipChange);
+
+        final E entity = ownershipChange.getEntity();
+        if (serviceEntity.equals(entity)) {
+            serviceOwnershipChanged(ownershipChange);
+        } else if (doubleCandidateEntity.equals(entity)) {
+            doubleCandidateOwnershipChanged(ownershipChange);
+        } else {
+            LOG.warn("Group {} received unrecognized change {}", clusterSingletonGroupIdentifier, ownershipChange);
+        }
+
+//        if (ownershipChange.inJeopardy()) {
+//            LOG.warn("Cluster Node lost connection to another cluster nodes {}", ownershipChange);
+//            lostOwnership();
+//            return;
+//        }
+    }
+
+    private void doubleCandidateOwnershipChanged(final C ownershipChange) {
+        switch (ownershipChange.getState()) {
+            case LOCAL_OWNERSHIP_GRANTED:
+                // SLAVE to MASTER : ownershipChange.getState().isOwner() && !ownershipChange.getState().wasOwner()
+                takeOwnership();
+                break;
+            default:
+                // Not needed notifications
+                LOG.debug("Not processed doubleCandidate OwnershipChange {} in service Provider {}", ownershipChange,
+                    clusterSingletonGroupIdentifier);
+        }
+    }
+
+    private void serviceOwnershipChanged(final C ownershipChange) {
+        switch (ownershipChange.getState()) {
+            case LOCAL_OWNERSHIP_GRANTED:
+                // SLAVE to MASTER : ownershipChange.getState().isOwner() && !ownershipChange.getState().wasOwner()
+                tryToTakeOwnership();
+                break;
+            case LOCAL_OWNERSHIP_LOST_NEW_OWNER:
+            case LOCAL_OWNERSHIP_LOST_NO_OWNER:
+                // MASTER to SLAVE : !ownershipChange.getState().isOwner() && ownershipChange.getState().wasOwner()
                 lostOwnership();
-                return;
-            }
-            if (serviceEntity.equals(ownershipChange.getEntity())) {
-                if (EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED.equals(ownershipChange.getState())) {
-                    /*
-                     * SLAVE to MASTER : ownershipChange.getState().isOwner() && !ownershipChange.getState().wasOwner()
-                     */
-                    tryToTakeOwnership();
-                } else if (EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NEW_OWNER.equals(ownershipChange.getState())
-                        || EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NO_OWNER
-                                .equals(ownershipChange.getState())) {
-                    /*
-                     * MASTER to SLAVE : !ownershipChange.getState().isOwner() && ownershipChange.getState().wasOwner()
-                     */
-                    lostOwnership();
-                } else {
-                    /* Not needed notifications */
-                    LOG.debug("Not processed entity OwnershipChange {} in service Provider {}", ownershipChange,
-                            clusterSingletonGroupIdentifier);
-                }
-            } else if (doubleCandidateEntity.equals(ownershipChange.getEntity())) {
-                if (EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED.equals(ownershipChange.getState())) {
-                    /*
-                     * SLAVE to MASTER : ownershipChange.getState().isOwner() && !ownershipChange.getState().wasOwner()
-                     */
-                    takeOwnership();
-                } else {
-                    /* Not needed notifications */
-                    LOG.debug("Not processed doubleCandidate OwnershipChange {} in service Provider {}",
-                            ownershipChange, clusterSingletonGroupIdentifier);
-                }
-            } else {
-                LOG.warn("Unexpected EntityOwnershipChangeEvent for entity {}", ownershipChange);
-            }
-        } catch (final Exception e) {
-            LOG.error("Unexpected Exception for service Provider {}", clusterSingletonGroupIdentifier, e);
-            // TODO : think about close ... is it necessary?
+                break;
+            default:
+                // Not needed notifications
+                LOG.debug("Not processed entity OwnershipChange {} in service Provider {}", ownershipChange,
+                        clusterSingletonGroupIdentifier);
         }
     }
 
@@ -427,5 +524,4 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             }
         };
     }
-
 }

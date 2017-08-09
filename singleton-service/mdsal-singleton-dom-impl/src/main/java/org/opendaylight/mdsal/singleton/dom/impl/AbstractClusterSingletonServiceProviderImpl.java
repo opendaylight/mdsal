@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
@@ -102,7 +103,13 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
             serviceGroup = new ClusterSingletonServiceGroupImpl<>(serviceIdentifier,
                     mainEntity, closeEntity, entityOwnershipService, serviceGroupMap);
             serviceGroupMap.put(service.getIdentifier().getValue(), serviceGroup);
-            serviceGroup.initializationClusterSingletonGroup();
+
+            try {
+                serviceGroup.initializationClusterSingletonGroup();
+            } catch (CandidateAlreadyRegisteredException e) {
+                serviceGroupMap.remove(service.getIdentifier().getValue(), serviceGroup);
+                throw new IllegalArgumentException("Service group already registered", e);
+            }
         }
         return serviceGroup.registerService(service);
     }
