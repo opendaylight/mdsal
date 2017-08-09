@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_c4874f0e",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 643,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-08-09T11:39:40Z",
+      "side": 1,
+      "message": "this should remain final",
+      "range": {
+        "startLine": 643,
+        "startChar": 16,
+        "endLine": 643,
+        "endChar": 30
+      },
+      "revId": "e01052f459f53b229a8ef4d67840b3fc25ad2090",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_247c6b20",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 647,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-08-09T11:39:40Z",
+      "side": 1,
+      "message": "originalNode \u003d ((DerivableSchemaNode) parentNode).getOriginal();\nPreconditions.checkArgument(originalNode.isPresent(), \"some useful message\");\nmodule \u003d finalParentModule(schemaContext, originalNode.get())",
+      "range": {
+        "startLine": 645,
+        "startChar": 0,
+        "endLine": 647,
+        "endChar": 75
+      },
+      "revId": "e01052f459f53b229a8ef4d67840b3fc25ad2090",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
