@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_9613c65b",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 647,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-08-09T21:23:34Z",
+      "side": 1,
+      "message": "sorry to nitpick, but please do keep this whitespace-clean. We do want to enable checkstyle to enforce this, this adds more problems during that adoption.\n\nso do lines longer than 120 characters.",
+      "range": {
+        "startLine": 647,
+        "startChar": 72,
+        "endLine": 647,
+        "endChar": 74
+      },
+      "revId": "ed9e037acbb16e8c0f5fba07ad9f75431b4c8716",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
