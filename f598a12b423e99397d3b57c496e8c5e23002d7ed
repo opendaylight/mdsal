@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_64766340",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 644,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-08-09T11:40:48Z",
+      "side": 1,
+      "message": "same thing here: this should final -- which forces the value to be initialized somewhere (which is important during refactors)",
+      "range": {
+        "startLine": 644,
+        "startChar": 16,
+        "endLine": 644,
+        "endChar": 50
+      },
+      "revId": "f598a12b423e99397d3b57c496e8c5e23002d7ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
