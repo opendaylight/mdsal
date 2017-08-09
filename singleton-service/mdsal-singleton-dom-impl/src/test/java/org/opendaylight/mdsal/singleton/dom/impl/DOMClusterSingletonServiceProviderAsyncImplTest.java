@@ -67,7 +67,7 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest {
     private final DOMEntity doubleEntity = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_NAME);
 
     protected static Timer timer;
-    protected static long ASYNC_TIME_DELAY_SEC = 100L;
+    protected static final long ASYNC_TIME_DELAY_SEC = 100L;
 
     @BeforeClass
     public static void asyncInitTest() {
@@ -285,7 +285,7 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest {
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEosEntityListReg, never()).close();
         verify(mockEntityCandReg, never()).close();
-        verify(mockDoubleEntityCandReg).close();
+        verify(mockDoubleEntityCandReg, never()).close();
     }
 
     /**
