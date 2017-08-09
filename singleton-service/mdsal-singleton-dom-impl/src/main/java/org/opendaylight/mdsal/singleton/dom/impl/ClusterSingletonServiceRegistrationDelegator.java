@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
+import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 
 /**
  * Package protected help class represent a Delegator for {@link ClusterSingletonService}
@@ -25,39 +26,38 @@ import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
  * service or application in osgi container. Any another services from group can not be
  * stopped.
  */
-class ClusterSingletonServiceRegistrationDelegator
+class ClusterSingletonServiceRegistrationDelegator extends AbstractObjectRegistration<ClusterSingletonService>
         implements ClusterSingletonServiceRegistration, ClusterSingletonService {
 
-    private final ClusterSingletonService service;
     private final ClusterSingletonServiceGroup<?, ?, ?> group;
 
     ClusterSingletonServiceRegistrationDelegator(final ClusterSingletonService service,
             final ClusterSingletonServiceGroup<?, ?, ?> group) {
-        this.service = Preconditions.checkNotNull(service);
+        super(Preconditions.checkNotNull(service));
         this.group = Preconditions.checkNotNull(group);
     }
 
     @Override
-    public void close() throws Exception {
-        group.unregisterService(this);
-    }
-
-    @Override
     public void instantiateServiceInstance() {
-        service.instantiateServiceInstance();
+        getInstance().instantiateServiceInstance();
     }
 
     @Override
     public ListenableFuture<Void> closeServiceInstance() {
-        return service.closeServiceInstance();
+        return getInstance().closeServiceInstance();
     }
 
     @Override
     public ServiceGroupIdentifier getIdentifier() {
-        return service.getIdentifier();
+        return getInstance().getIdentifier();
     }
 
     public String getServiceGroupIdentifier() {
-        return service.getIdentifier().getValue();
+        return getInstance().getIdentifier().getValue();
+    }
+
+    @Override
+    protected void removeRegistration() {
+        group.unregisterService(this);
     }
 }

@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.singleton.dom.impl;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
+import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
@@ -41,7 +42,7 @@ interface ClusterSingletonServiceGroup<P extends Path<P>, E extends GenericEntit
      * register the relevant group entity candidate. It means create relevant
      * Group Entity Candidate Registration.
      */
-    void initializationClusterSingletonGroup();
+    void initializationClusterSingletonGroup() throws CandidateAlreadyRegisteredException;
 
     /**
      * This method registers a service instance for this service group. If the local node has

@@ -67,7 +67,7 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest {
     private final DOMEntity doubleEntity = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_NAME);
 
     protected static Timer timer;
-    protected static long ASYNC_TIME_DELAY_SEC = 100L;
+    protected final static long ASYNC_TIME_DELAY_SEC = 100L;
 
     @BeforeClass
     public static void asyncInitTest() {
@@ -285,7 +285,7 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest {
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEosEntityListReg, never()).close();
         verify(mockEntityCandReg, never()).close();
-        verify(mockDoubleEntityCandReg).close();
+        verify(mockDoubleEntityCandReg, never()).close();
     }
 
     /**
@@ -434,11 +434,6 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest {
         verify(mockEntityCandReg, never()).close();
         verify(mockDoubleEntityCandReg, never()).close();
         reg.close();
-        verify(mockEosDoubleEntityListReg, never()).close();
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        Thread.sleep(ASYNC_TIME_DELAY_SEC * 2);
         verify(mockEntityCandReg, atLeastOnce()).close();
         verify(mockDoubleEntityCandReg, atLeastOnce()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
@@ -607,11 +602,6 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest {
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        Thread.sleep(ASYNC_TIME_DELAY_SEC * 2);
-        verify(mockEntityCandReg, atLeastOnce()).close();
         verify(mockDoubleEntityCandReg, atLeastOnce()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         Assert.assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
@@ -638,11 +628,6 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest {
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        Thread.sleep(ASYNC_TIME_DELAY_SEC * 2);
-        verify(mockEntityCandReg, atLeastOnce()).close();
         verify(mockDoubleEntityCandReg, atLeastOnce()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         Assert.assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
@@ -668,12 +653,6 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest {
         reg.close();
         Thread.sleep(ASYNC_TIME_DELAY_SEC * 2);
         verify(mockEosEntityListReg, never()).close();
-        verify(mockEosDoubleEntityListReg, never()).close();
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        Thread.sleep(ASYNC_TIME_DELAY_SEC * 2);
         verify(mockEntityCandReg, atLeastOnce()).close();
         verify(mockDoubleEntityCandReg, atLeastOnce()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
