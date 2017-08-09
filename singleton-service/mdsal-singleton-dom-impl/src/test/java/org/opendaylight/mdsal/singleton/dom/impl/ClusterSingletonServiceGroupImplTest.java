@@ -91,28 +91,24 @@ public class ClusterSingletonServiceGroupImplTest {
         doReturn(SERVICE_GROUP_IDENT).when(mockClusterSingletonService).getIdentifier();
         doReturn(SERVICE_GROUP_IDENT).when(mockClusterSingletonServiceSecond).getIdentifier();
 
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
-            SERVICE_IDENTIFIER, mainEntity, closeEntity, mockEosService, map);
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(SERVICE_IDENTIFIER, mainEntity, closeEntity,
+            mockEosService, map);
     }
 
     /**
      * Test NULL ServiceIdent input for new ServiceGroup instance.
-     *
-     * @throws Exception - unexpected exception
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void instantiationClusterSingletonServiceGroupNullIdentTest() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
-                null, mainEntity, closeEntity, mockEosService, map);
+    @Test(expected = NullPointerException.class)
+    public void instantiationClusterSingletonServiceGroupNullIdentTest() {
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(null, mainEntity, closeEntity, mockEosService,
+            map);
     }
 
     /**
      * Test empty ServiceIdent input for new ServiceGroup instance.
-     *
-     * @throws Exception - unexpected exception
      */
     @Test(expected = IllegalArgumentException.class)
-    public void instantiationClusterSingletonServiceGroupEmptyIdentTest() throws Exception {
+    public void instantiationClusterSingletonServiceGroupEmptyIdentTest() {
         singletonServiceGroup = new ClusterSingletonServiceGroupImpl("", mainEntity, closeEntity, mockEosService, map);
     }
 

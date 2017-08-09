@@ -28,8 +28,8 @@ import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 class ClusterSingletonServiceRegistrationDelegator
         implements ClusterSingletonServiceRegistration, ClusterSingletonService {
 
-    private final ClusterSingletonService service;
     private final ClusterSingletonServiceGroup<?, ?, ?> group;
+    private final ClusterSingletonService service;
 
     ClusterSingletonServiceRegistrationDelegator(final ClusterSingletonService service,
             final ClusterSingletonServiceGroup<?, ?, ?> group) {
@@ -38,7 +38,7 @@ class ClusterSingletonServiceRegistrationDelegator
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         group.unregisterService(this);
     }
 
