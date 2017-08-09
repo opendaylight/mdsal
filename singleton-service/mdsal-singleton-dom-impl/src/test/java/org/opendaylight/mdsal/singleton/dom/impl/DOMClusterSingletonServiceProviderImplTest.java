@@ -8,90 +8,35 @@
 
 package org.opendaylight.mdsal.singleton.dom.impl;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.opendaylight.mdsal.singleton.dom.impl.AbstractClusterSingletonServiceProviderImpl.CLOSE_SERVICE_ENTITY_TYPE;
+import static org.opendaylight.mdsal.singleton.dom.impl.AbstractClusterSingletonServiceProviderImpl.SERVICE_ENTITY_TYPE;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntity;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipCandidateRegistration;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
-import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
-import org.opendaylight.mdsal.singleton.common.api.ServiceGroupIdentifier;
 
 /**
- * Testing {@link DOMClusterSingletonServiceProviderImpl} implementation.
+ * Synchronous test suite.
  */
-public class DOMClusterSingletonServiceProviderImplTest {
-
-    private static final String SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.ServiceEntityType";
-    private static final String CLOSE_SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.AsyncServiceCloseEntityType";
-    private static final String SERVICE_NAME = "testServiceName";
-
-    @Mock
-    private DOMEntityOwnershipService mockEos;
-    @Mock
-    private DOMEntityOwnershipCandidateRegistration mockEntityCandReg;
-    @Mock
-    private DOMEntityOwnershipCandidateRegistration mockDoubleEntityCandReg;
-    @Mock
-    private DOMEntityOwnershipListenerRegistration mockEosEntityListReg;
-    @Mock
-    private DOMEntityOwnershipListenerRegistration mockEosDoubleEntityListReg;
-
-    private DOMClusterSingletonServiceProviderImpl clusterSingletonServiceProvider;
-    private TestClusterSingletonServiceInstance clusterSingletonService;
-    private TestClusterSingletonServiceInstance clusterSingletonService2;
-
-    private final DOMEntity entity = new DOMEntity(SERVICE_ENTITY_TYPE, SERVICE_NAME);
-    private final DOMEntity doubleEntity = new DOMEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_NAME);
-
+public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClusterServiceProviderTest {
     /**
      * Initialization functionality for every Tests in this suite.
      *
-     * @throws Exception if the condition does not meet
+     * @throws CandidateAlreadyRegisteredException if the condition does not meet
      */
+    @Override
     @Before
-    public void setup() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
-        doNothing().when(mockEosEntityListReg).close();
-        doNothing().when(mockEosDoubleEntityListReg).close();
-        doNothing().when(mockEntityCandReg).close();
-        doNothing().when(mockDoubleEntityCandReg).close();
-        doReturn(mockEosEntityListReg).when(mockEos).registerListener(eq(SERVICE_ENTITY_TYPE),
-                any(DOMClusterSingletonServiceProviderImpl.class));
-        doReturn(mockEosDoubleEntityListReg).when(mockEos).registerListener(eq(CLOSE_SERVICE_ENTITY_TYPE),
-                any(DOMClusterSingletonServiceProviderImpl.class));
-        doReturn(mockEntityCandReg).when(mockEos).registerCandidate(entity);
-        doReturn(mockDoubleEntityCandReg).when(mockEos).registerCandidate(doubleEntity);
-
-        clusterSingletonServiceProvider = new DOMClusterSingletonServiceProviderImpl(mockEos);
-        clusterSingletonServiceProvider.initializeProvider();
-        verify(mockEos).registerListener(SERVICE_ENTITY_TYPE, clusterSingletonServiceProvider);
-        verify(mockEos).registerListener(CLOSE_SERVICE_ENTITY_TYPE, clusterSingletonServiceProvider);
-
-        clusterSingletonService = new TestClusterSingletonServiceInstance();
-        clusterSingletonService2 = new TestClusterSingletonServiceInstance();
-
-        Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService2.getServiceState());
+    public void setup() throws CandidateAlreadyRegisteredException {
+        super.setup();
     }
 
     /**
@@ -126,10 +71,10 @@ public class DOMClusterSingletonServiceProviderImplTest {
     @Test
     public void makeEntityClusterSingletonServiceProviderTest() throws Exception {
         final DOMEntity testEntity = clusterSingletonServiceProvider.createEntity(SERVICE_ENTITY_TYPE, SERVICE_NAME);
-        Assert.assertEquals(entity, testEntity);
+        Assert.assertEquals(ENTITY, testEntity);
         final DOMEntity testDbEn = clusterSingletonServiceProvider.createEntity(CLOSE_SERVICE_ENTITY_TYPE,
                 SERVICE_NAME);
-        Assert.assertEquals(doubleEntity, testDbEn);
+        Assert.assertEquals(DOUBLE_ENTITY, testDbEn);
     }
 
     /**
@@ -139,9 +84,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
      */
     @Test
     public void getIdentifierClusterSingletonServiceProviderTest() throws Exception {
-        final String entityIdentifier = clusterSingletonServiceProvider.getServiceIdentifierFromEntity(entity);
+        final String entityIdentifier = clusterSingletonServiceProvider.getServiceIdentifierFromEntity(ENTITY);
         Assert.assertEquals(SERVICE_NAME, entityIdentifier);
-        final String doubleEntityId = clusterSingletonServiceProvider.getServiceIdentifierFromEntity(doubleEntity);
+        final String doubleEntityId = clusterSingletonServiceProvider.getServiceIdentifierFromEntity(DOUBLE_ENTITY);
         Assert.assertEquals(SERVICE_NAME, doubleEntityId);
     }
 
@@ -155,7 +100,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
     }
 
@@ -169,9 +114,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getInitEntityToSlave());
-        verify(mockEos, never()).registerCandidate(doubleEntity);
+        verify(mockEos, never()).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
     }
 
@@ -185,9 +130,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getInitEntityToSlaveNoMaster());
-        verify(mockEos, never()).registerCandidate(doubleEntity);
+        verify(mockEos, never()).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
     }
 
@@ -201,9 +146,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
     }
 
@@ -217,9 +162,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getInitDoubleEntityToSlave());
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
     }
@@ -234,9 +179,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
@@ -252,9 +197,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService2);
@@ -272,9 +217,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
@@ -301,9 +246,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService2);
         Assert.assertNotNull(reg2);
@@ -324,9 +269,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
@@ -343,7 +288,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
      */
     @Test(expected = RuntimeException.class)
     public void initializationClusterSingletonServiceCandidateAlreadyRegistredTest() throws Exception {
-        doThrow(CandidateAlreadyRegisteredException.class).when(mockEos).registerCandidate(entity);
+        doThrow(CandidateAlreadyRegisteredException.class).when(mockEos).registerCandidate(ENTITY);
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNull(reg);
@@ -360,9 +305,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
@@ -380,9 +325,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getInitDoubleEntityToSlave());
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
@@ -402,9 +347,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getInitDoubleEntityToSlave());
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
@@ -438,9 +383,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getInitDoubleEntityToSlave());
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
@@ -464,9 +409,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getInitEntityToSlave());
-        verify(mockEos, never()).registerCandidate(doubleEntity);
+        verify(mockEos, never()).registerCandidate(DOUBLE_ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getEntityToJeopardy());
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
@@ -486,7 +431,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         reg.close();
         verify(mockEosEntityListReg, never()).close();
@@ -506,7 +451,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService2);
         Assert.assertNotNull(reg2);
@@ -532,7 +477,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getInitEntityToSlave());
         reg.close();
         verify(mockEosEntityListReg, never()).close();
@@ -552,7 +497,7 @@ public class DOMClusterSingletonServiceProviderImplTest {
         final ClusterSingletonServiceRegistration reg = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         final ClusterSingletonServiceRegistration reg2 = clusterSingletonServiceProvider
                 .registerClusterSingletonService(clusterSingletonService2);
         Assert.assertNotNull(reg2);
@@ -579,9 +524,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         reg.close();
@@ -604,9 +549,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         reg.close();
@@ -633,9 +578,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
                 .registerClusterSingletonService(clusterSingletonService);
         Assert.assertNotNull(reg);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         reg.close();
@@ -667,9 +612,9 @@ public class DOMClusterSingletonServiceProviderImplTest {
         Assert.assertNotNull(reg2);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService2.getServiceState());
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService2.getServiceState());
@@ -697,10 +642,10 @@ public class DOMClusterSingletonServiceProviderImplTest {
         Assert.assertNotNull(reg2);
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService2.getServiceState());
-        verify(mockEos).registerCandidate(entity);
+        verify(mockEos).registerCandidate(ENTITY);
         reg.close();
         clusterSingletonServiceProvider.ownershipChanged(getEntityToMaster());
-        verify(mockEos).registerCandidate(doubleEntity);
+        verify(mockEos).registerCandidate(DOUBLE_ENTITY);
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService2.getServiceState());
@@ -710,91 +655,5 @@ public class DOMClusterSingletonServiceProviderImplTest {
         verify(mockDoubleEntityCandReg, never()).close();
         Assert.assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         Assert.assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService2.getServiceState());
-    }
-
-    private DOMEntityOwnershipChange getEntityToMaster() {
-        return new DOMEntityOwnershipChange(entity, EntityOwnershipChangeState.from(false, true, true));
-    }
-
-    private DOMEntityOwnershipChange getEntityToSlave() {
-        return new DOMEntityOwnershipChange(entity, EntityOwnershipChangeState.from(true, false, true));
-    }
-
-    private DOMEntityOwnershipChange getInitEntityToSlave() {
-        return new DOMEntityOwnershipChange(entity, EntityOwnershipChangeState.from(false, false, true));
-    }
-
-    private DOMEntityOwnershipChange getInitEntityToSlaveNoMaster() {
-        return new DOMEntityOwnershipChange(entity, EntityOwnershipChangeState.from(false, false, false));
-    }
-
-    private DOMEntityOwnershipChange getDoubleEntityToMaster() {
-        return new DOMEntityOwnershipChange(doubleEntity, EntityOwnershipChangeState.from(false, true, true));
-    }
-
-    private DOMEntityOwnershipChange getInitDoubleEntityToSlave() {
-        return new DOMEntityOwnershipChange(doubleEntity, EntityOwnershipChangeState.from(false, false, true));
-    }
-
-    private DOMEntityOwnershipChange getDoubleEntityToSlave() {
-        return new DOMEntityOwnershipChange(doubleEntity, EntityOwnershipChangeState.from(true, false, true));
-    }
-
-    private DOMEntityOwnershipChange getEntityToJeopardy() {
-        return new DOMEntityOwnershipChange(entity, EntityOwnershipChangeState.from(false, false, false), true);
-    }
-
-    /**
-     * Base states for AbstractClusterProjectProvider.
-     */
-    enum TestClusterSingletonServiceState {
-
-        /**
-         * State represents a correct Instantiated process.
-         */
-
-        STARTED,
-        /**
-         * State represents a correct call abstract method instantiatingProject.
-         */
-        INITIALIZED,
-
-        /**
-         * State represents a correct call abstract method destryingProject.
-         */
-        DESTROYED;
-    }
-
-    /**
-     * Test implementation of {@link ClusterSingletonService}.
-     */
-    class TestClusterSingletonServiceInstance implements ClusterSingletonService {
-
-        private final ServiceGroupIdentifier serviceIndent = ServiceGroupIdentifier.create(SERVICE_NAME);
-        private TestClusterSingletonServiceState serviceState;
-
-        TestClusterSingletonServiceInstance() {
-            this.serviceState = TestClusterSingletonServiceState.INITIALIZED;
-        }
-
-        @Override
-        public void instantiateServiceInstance() {
-            this.serviceState = TestClusterSingletonServiceState.STARTED;
-        }
-
-        @Override
-        public ListenableFuture<Void> closeServiceInstance() {
-            this.serviceState = TestClusterSingletonServiceState.DESTROYED;
-            return Futures.immediateFuture(null);
-        }
-
-        public TestClusterSingletonServiceState getServiceState() {
-            return serviceState;
-        }
-
-        @Override
-        public ServiceGroupIdentifier getIdentifier() {
-            return serviceIndent;
-        }
     }
 }
