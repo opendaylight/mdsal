@@ -8,20 +8,19 @@
 
 package org.opendaylight.mdsal.singleton.dom.impl;
 
-import static org.mockito.Mockito.atLeastOnce;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.util.concurrent.Futures;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipChangeState;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
@@ -54,6 +53,11 @@ public class ClusterSingletonServiceGroupImplTest {
     @Mock
     private GenericEntityOwnershipListener<TestInstanceIdentifier,
         GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>> mockEosListener;
+    @Mock
+    private AbstractClusterSingletonServiceProviderImpl<TestInstanceIdentifier, TestEntity,
+        GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>,
+        GenericEntityOwnershipListener<TestInstanceIdentifier,
+        GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>, ?, ?> mockParent;
 
     @Mock
     private GenericEntityOwnershipService<TestInstanceIdentifier,TestEntity,
@@ -70,15 +74,14 @@ public class ClusterSingletonServiceGroupImplTest {
 
     private final TestEntity mainEntity = new TestEntity(SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
     private final TestEntity closeEntity = new TestEntity(CLOSE_SERVICE_ENTITY_TYPE, SERVICE_IDENTIFIER);
-    private final ConcurrentMap<String, ClusterSingletonServiceGroup<?, ?, ?>> map = new ConcurrentHashMap<>();
 
     /**
      * Initialization functionality for every Tests in this suite.
      *
-     * @throws Exception - unexpected exception
+     * @throws CandidateAlreadyRegisteredException unexpected exception.
      */
     @Before
-    public void setup() throws Exception {
+    public void setup() throws CandidateAlreadyRegisteredException {
         MockitoAnnotations.initMocks(this);
 
         doReturn(mockEntityCandReg).when(mockEosService).registerCandidate(mainEntity);
@@ -87,86 +90,68 @@ public class ClusterSingletonServiceGroupImplTest {
         doNothing().when(mockCloseEntityCandReg).close();
         doNothing().when(mockClusterSingletonService).instantiateServiceInstance();
         doReturn(Futures.immediateFuture(null)).when(mockClusterSingletonService).closeServiceInstance();
+        doNothing().when(mockParent).onGroupClosed(any(ClusterSingletonServiceGroupImpl.class));
 
         doReturn(SERVICE_GROUP_IDENT).when(mockClusterSingletonService).getIdentifier();
         doReturn(SERVICE_GROUP_IDENT).when(mockClusterSingletonServiceSecond).getIdentifier();
 
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
-            SERVICE_IDENTIFIER, mainEntity, closeEntity, mockEosService, map);
+        singletonServiceGroup = new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, mainEntity, closeEntity,
+            mockEosService, mockParent);
     }
 
     /**
      * Test NULL ServiceIdent input for new ServiceGroup instance.
-     *
-     * @throws Exception - unexpected exception
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void instantiationClusterSingletonServiceGroupNullIdentTest() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
-                null, mainEntity, closeEntity, mockEosService, map);
+    @Test(expected = NullPointerException.class)
+    public void instantiationClusterSingletonServiceGroupNullIdentTest() {
+        new ClusterSingletonServiceGroupImpl<>(null, mainEntity, closeEntity, mockEosService, mockParent);
     }
 
     /**
      * Test empty ServiceIdent input for new ServiceGroup instance.
-     *
-     * @throws Exception - unexpected exception
      */
     @Test(expected = IllegalArgumentException.class)
-    public void instantiationClusterSingletonServiceGroupEmptyIdentTest() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl("", mainEntity, closeEntity, mockEosService, map);
+    public void instantiationClusterSingletonServiceGroupEmptyIdentTest() {
+        new ClusterSingletonServiceGroupImpl<>("", mainEntity, closeEntity, mockEosService, mockParent);
     }
 
     /**
      * Test NULL MainEntity input for new ServiceGroup instance.
-     *
-     * @throws Exception - unexpected exception
      */
     @Test(expected = NullPointerException.class)
-    public void instantiationClusterSingletonServiceGroupNullMainEntityTest() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
-                SERVICE_IDENTIFIER, null, closeEntity, mockEosService, map);
+    public void instantiationClusterSingletonServiceGroupNullMainEntityTest() {
+        new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, null, closeEntity, mockEosService, mockParent);
     }
 
     /**
      * Test NULL MainEntity input for new ServiceGroup instance.
-     *
-     * @throws Exception - unexpected exception
      */
     @Test(expected = NullPointerException.class)
-    public void instantiationClusterSingletonServiceGroupNullCloseEntityTest() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
-                SERVICE_IDENTIFIER, mainEntity, null, mockEosService, map);
+    public void instantiationClusterSingletonServiceGroupNullCloseEntityTest() {
+        new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, mainEntity, null, mockEosService, mockParent);
     }
 
     /**
      * Test NULL MainEntity input for new ServiceGroup instance.
-     *
-     * @throws Exception - unexpected exception
      */
     @Test(expected = NullPointerException.class)
-    public void instantiationClusterSingletonServiceGroupNullEOS_Test() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
-                SERVICE_IDENTIFIER, mainEntity, closeEntity, null, map);
+    public void instantiationClusterSingletonServiceGroupNullEOS_Test() {
+        new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, mainEntity, closeEntity, null, mockParent);
     }
 
     /**
      * Test NULL MainEntity input for new ServiceGroup instance.
-     *
-     * @throws Exception - unexpected exception
      */
     @Test(expected = NullPointerException.class)
-    public void instantiationClusterSingletonServiceGroupNullMapRefTest() throws Exception {
-        singletonServiceGroup = new ClusterSingletonServiceGroupImpl(
-                SERVICE_IDENTIFIER, mainEntity, closeEntity, mockEosService, null);
+    public void instantiationClusterSingletonServiceGroupNullMapRefTest() {
+        new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, mainEntity, closeEntity, mockEosService, null);
     }
 
     /**
      * Test GoldPath for initialization ServiceGroup.
-     *
-     * @throws Exception - unexpected exception
      */
     @Test
-    public void initializationClusterSingletonServiceGroupTest() throws Exception {
+    public void initializationClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initializationClusterSingletonGroup();
         verify(mockEosService).registerCandidate(mainEntity);
     }
@@ -180,9 +165,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void initializationSlaveTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToSlave());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(closeEntity);
@@ -197,9 +180,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void initializationNoMasterTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToSlaveNoMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(closeEntity);
@@ -213,14 +194,10 @@ public class ClusterSingletonServiceGroupImplTest {
     @Test
     public void initializationInJeopardyTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNotNull(serviceGroup);
+        verify(mockParent, never()).onGroupClosed(any());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(closeEntity);
     }
@@ -234,9 +211,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void serviceRegistrationClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
     }
 
     /**
@@ -248,12 +223,8 @@ public class ClusterSingletonServiceGroupImplTest {
     public void serviceRegistrationClusterSingletonServiceGroupTwoServiceTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
-        final ClusterSingletonServiceRegistration reg2 = singletonServiceGroup
-                .registerService(mockClusterSingletonServiceSecond);
-        Assert.assertNotNull(reg2);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(mockClusterSingletonServiceSecond);
     }
 
     /**
@@ -265,15 +236,10 @@ public class ClusterSingletonServiceGroupImplTest {
     @Test
     public void serviceUnregistrationClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
-        reg.close();
+        singletonServiceGroup.registerService(mockClusterSingletonService);
+        assertTrue(singletonServiceGroup.unregisterService(mockClusterSingletonService));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNull(serviceGroup);
     }
 
     /**
@@ -285,18 +251,12 @@ public class ClusterSingletonServiceGroupImplTest {
     @Test
     public void serviceUnregistrationClusterSingletonServiceGroupTwoServicesTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
-        final ClusterSingletonServiceRegistration reg2 = singletonServiceGroup
-                .registerService(mockClusterSingletonServiceSecond);
-        Assert.assertNotNull(reg2);
-        reg.close();
+        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(mockClusterSingletonServiceSecond);
+        singletonServiceGroup.unregisterService(mockClusterSingletonService);
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNotNull(serviceGroup);
+        verify(mockParent, never()).onGroupClosed(any());
     }
 
     /**
@@ -308,9 +268,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void getSlaveClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToSlave());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
     }
@@ -324,9 +282,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void tryToTakeLeaderClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(closeEntity);
@@ -341,9 +297,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void takeMasterClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(closeEntity);
@@ -360,19 +314,15 @@ public class ClusterSingletonServiceGroupImplTest {
     @Test
     public void waitToTakeMasterClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(closeEntity);
         singletonServiceGroup.ownershipChanged(getInitDoubleEntityToSlave());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNotNull(serviceGroup);
+        verify(mockParent, never()).onGroupClosed(any());
     }
 
     /**
@@ -383,19 +333,15 @@ public class ClusterSingletonServiceGroupImplTest {
     @Test
     public void inJeopardyInWaitPhaseClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(closeEntity);
         singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNotNull(serviceGroup);
+        verify(mockParent, never()).onGroupClosed(any());
     }
 
     /**
@@ -406,22 +352,16 @@ public class ClusterSingletonServiceGroupImplTest {
     @Test
     public void inJeopardyInWaitPhaseClusterSingletonServiceGroupTwoServiceTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
-        final ClusterSingletonServiceRegistration reg2 = singletonServiceGroup
-                .registerService(mockClusterSingletonServiceSecond);
-        Assert.assertNotNull(reg2);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(mockClusterSingletonServiceSecond);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(closeEntity);
         singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNotNull(serviceGroup);
+        verify(mockParent, never()).onGroupClosed(any());
     }
 
     /**
@@ -432,11 +372,8 @@ public class ClusterSingletonServiceGroupImplTest {
     @Test
     public void inJeopardyLeaderClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(closeEntity);
@@ -444,8 +381,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockClusterSingletonService).instantiateServiceInstance();
         singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
         verify(mockClusterSingletonService).closeServiceInstance();
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNotNull(serviceGroup);
+        verify(mockParent, never()).onGroupClosed(any());
     }
 
     /**
@@ -457,9 +393,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void lostLeaderClusterSingletonServiceGroupTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(closeEntity);
@@ -478,12 +412,8 @@ public class ClusterSingletonServiceGroupImplTest {
      */
     @Test(expected = RuntimeException.class)
     public void tryToTakeLeaderForNotInitializedGroupTest() throws Exception {
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNull(reg);
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNull(serviceGroup);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
+        verify(mockParent).onGroupClosed(singletonServiceGroup);
     }
 
     /**
@@ -494,22 +424,17 @@ public class ClusterSingletonServiceGroupImplTest {
     @Test
     public void checkClosingRegistrationTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(closeEntity);
         singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
         verify(mockClusterSingletonService).instantiateServiceInstance();
-        reg.close();
+        singletonServiceGroup.unregisterService(mockClusterSingletonService);
         verify(mockClusterSingletonService, never()).closeServiceInstance();
         singletonServiceGroup.ownershipChanged(getEntityToSlaveNoMaster());
-        verify(mockClusterSingletonService, atLeastOnce()).closeServiceInstance();
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNull(serviceGroup);
+        verify(mockClusterSingletonService).closeServiceInstance();
     }
 
     /**
@@ -520,11 +445,8 @@ public class ClusterSingletonServiceGroupImplTest {
     @Test
     public void checkClosingUnexpectedDoubleEntityForMasterOwnershipChangeRegistrationTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(closeEntity);
@@ -532,8 +454,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockClusterSingletonService).instantiateServiceInstance();
         singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNotNull(serviceGroup);
+        verify(mockParent, never()).onGroupClosed(any());
     }
 
     /**
@@ -545,18 +466,14 @@ public class ClusterSingletonServiceGroupImplTest {
     @Test
     public void checkClosingUnexpectedDoubleEntityForSlaveOwnershipChangeRegistrationTest() throws Exception {
         singletonServiceGroup.initializationClusterSingletonGroup();
-        map.putIfAbsent(SERVICE_IDENTIFIER, singletonServiceGroup);
         verify(mockEosService).registerCandidate(mainEntity);
-        final ClusterSingletonServiceRegistration reg = singletonServiceGroup
-                .registerService(mockClusterSingletonService);
-        Assert.assertNotNull(reg);
+        singletonServiceGroup.registerService(mockClusterSingletonService);
         singletonServiceGroup.ownershipChanged(getEntityToSlave());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(closeEntity);
         singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        final ClusterSingletonServiceGroup<?, ?, ?> serviceGroup = map.get(SERVICE_IDENTIFIER);
-        Assert.assertNotNull(serviceGroup);
+        verify(mockParent, never()).onGroupClosed(any());
     }
 
     private GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToMaster() {
