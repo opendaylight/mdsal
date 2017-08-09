@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_e499b36f",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/GenHelperUtil.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-08-09T11:43:18Z",
+      "side": 1,
+      "message": "this probably should be a checkArgument (and a message along the lines \u0027cannot find module for $namespace/$revision)",
+      "range": {
+        "startLine": 359,
+        "startChar": 0,
+        "endLine": 359,
+        "endChar": 87
+      },
+      "revId": "8668e5bca9a15d996e2ddd8ca26197c88c6d8536",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
