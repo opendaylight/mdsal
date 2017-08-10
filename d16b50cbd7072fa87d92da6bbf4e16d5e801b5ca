@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_f03cc295",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:34:16Z",
+      "side": 1,
+      "message": "This is a NICE idea!",
+      "revId": "d16b50cbd7072fa87d92da6bbf4e16d5e801b5ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b0bb6a0d",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:34:16Z",
+      "side": 1,
+      "message": "how about instead of \"do not match\" specifically say \"are not equal according to their equals() methods implementations\" ?",
+      "revId": "d16b50cbd7072fa87d92da6bbf4e16d5e801b5ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
