@@ -33,6 +33,24 @@
       "revId": "d16b50cbd7072fa87d92da6bbf4e16d5e801b5ca",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_50278e64",
+        "filename": "binding/mdsal-binding-test-utils/src/main/java/org/opendaylight/mdsal/binding/testutils/AssertDataObjects.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-08-10T14:46:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_b0bb6a0d",
+      "revId": "d16b50cbd7072fa87d92da6bbf4e16d5e801b5ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
