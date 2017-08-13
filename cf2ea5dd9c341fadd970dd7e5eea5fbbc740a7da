@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_6c963a96",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/generator/spi/source/AbstractDataNodeContainerSerializerSource.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-08-13T20:49:49Z",
+      "side": 1,
+      "message": "return root.getQNameModule.equals(schemaChild.getQNameModule());",
+      "range": {
+        "startLine": 134,
+        "startChar": 12,
+        "endLine": 137,
+        "endChar": 13
+      },
+      "revId": "cf2ea5dd9c341fadd970dd7e5eea5fbbc740a7da",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
