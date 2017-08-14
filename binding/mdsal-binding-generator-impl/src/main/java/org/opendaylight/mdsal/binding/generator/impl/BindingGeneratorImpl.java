@@ -759,7 +759,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final GeneratedTypeBuilder typeBuilder, final Module module) {
         if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
             final String enumerationName = BindingMapping.getClassName(enumName);
-            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
+            final String normalizedEnumerationName = normalizePossibleConflictingNestedTypeName(enumerationName,
+                    typeBuilder, module);
+            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(normalizedEnumerationName);
             final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
             enumBuilder.setDescription(enumTypedefDescription);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
@@ -2028,12 +2030,14 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef,
             final GeneratedTypeBuilder typeBuilder, final DataSchemaNode leaf, final Module parentModule) {
         final String classNameFromLeaf = BindingMapping.getClassName(leaf.getQName());
+        final String normalizedClassName = normalizePossibleConflictingNestedTypeName(classNameFromLeaf, typeBuilder,
+                parentModule);
         final List<GeneratedTOBuilder> genTOBuilders = new ArrayList<>();
         final String packageName = typeBuilder.getFullyQualifiedName();
         if (typeDef instanceof UnionTypeDefinition) {
             final List<GeneratedTOBuilder> types = ((TypeProviderImpl) typeProvider)
                     .provideGeneratedTOBuildersForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
-                            classNameFromLeaf, leaf);
+                            normalizedClassName, leaf);
             genTOBuilders.addAll(types);
 
             GeneratedTOBuilder resultTOBuilder;
@@ -2053,7 +2057,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         } else if (typeDef instanceof BitsTypeDefinition) {
             genTOBuilders.add((((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
-                    packageName, typeDef, classNameFromLeaf, parentModule.getName()));
+                    packageName, typeDef, normalizedClassName, parentModule.getName()));
         }
         if (!genTOBuilders.isEmpty()) {
             for (final GeneratedTOBuilder genTOBuilder : genTOBuilders) {
@@ -2063,6 +2067,35 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
         return null;
 
+    }
+
+    // a union/bits/enumeration leaf is represented by a nested class/enum inside an interface corresponding to its
+    // parent node. if the name of such a leaf is the same as the name of its parent node
+    // we end up with uncompilable code (name of the interface conflicts with the name of the nested class/enum).
+    // therefore we add a suffix to the name of the nested class/enum to avoid the naming conflict.
+    // however, the newly suffixed name of the conflicting leaf node may lead to another conflict with a sibling
+    // nested type leaf node. in that case, we increase the rank of the suffix until there is no conflict.
+    private String normalizePossibleConflictingNestedTypeName(final String classNameFromLeaf,
+            final GeneratedTypeBuilder typeBuilder, final Module parentModule) {
+        if (classNameFromLeaf.equals(typeBuilder.getName())) {
+            final DataNodeContainer parentSchemaNode = (DataNodeContainer) genCtx.get(parentModule).getTypeToSchema()
+                    .get(typeBuilder);
+            return normalizeNestedTypeName(parentSchemaNode.getChildNodes(), classNameFromLeaf,
+                    classNameFromLeaf, 1);
+        } else {
+            return classNameFromLeaf;
+        }
+    }
+
+    private String normalizeNestedTypeName(final Iterable<DataSchemaNode> siblingNodes, final String originalLeafName,
+            final String currentLeafName, final int suffix) {
+        for (final DataSchemaNode siblingNode : siblingNodes) {
+            if (currentLeafName.equals(BindingMapping.getClassName(siblingNode.getQName()))) {
+                return normalizeNestedTypeName(siblingNodes, originalLeafName, originalLeafName + suffix, suffix + 1);
+            }
+        }
+
+        return currentLeafName;
     }
 
     /**
