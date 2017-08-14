@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Jie Han <han.jie@zte.com.cn>
+Code-Review+2: Robert Varga <nite@hq.sk>
+Submitted-by: Thanh Ha <thanh.ha@linuxfoundation.org>
+Submitted-at: Mon, 14 Aug 2017 20:47:58 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/61596
+Project: mdsal
+Branch: refs/heads/stable/carbon
