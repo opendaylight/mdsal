@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2017 Pantheon Technologies s.r.o. and others. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+
+package org.opendaylight.mdsal.binding.java.api.generator.test;
+
+import static org.junit.Assert.assertTrue;
+import static org.opendaylight.mdsal.binding.java.api.generator.test.CompilationTestUtils.COMPILER_OUTPUT_PATH;
+import static org.opendaylight.mdsal.binding.java.api.generator.test.CompilationTestUtils.FS;
+import static org.opendaylight.mdsal.binding.java.api.generator.test.CompilationTestUtils.GENERATOR_OUTPUT_PATH;
+import static org.opendaylight.mdsal.binding.java.api.generator.test.CompilationTestUtils.cleanUp;
+import static org.opendaylight.mdsal.binding.java.api.generator.test.CompilationTestUtils.getSourceFiles;
+import static org.opendaylight.mdsal.binding.java.api.generator.test.CompilationTestUtils.testCompilation;
+
+import com.google.common.collect.ImmutableSet;
+import java.io.File;
+import java.util.List;
+import org.junit.Test;
+import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
+
+public class Bug2360Test extends BaseCompilationTest {
+
+    @Test
+    public void test() throws Exception {
+        final File sourcesOutputDir = new File(GENERATOR_OUTPUT_PATH + FS + "bug2360test");
+        assertTrue("Failed to create test file '" + sourcesOutputDir + "'", sourcesOutputDir.mkdir());
+        final File compiledOutputDir = new File(COMPILER_OUTPUT_PATH + FS + "bug2360test");
+        assertTrue("Failed to create test file '" + compiledOutputDir + "'", compiledOutputDir.mkdir());
+
+        final List<File> sourceFiles = getSourceFiles("/compilation/bug2360test");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final List<Type> types = bindingGenerator.generateTypes(context);
+        final GeneratorJavaFile generator = new GeneratorJavaFile(ImmutableSet.copyOf(types));
+        generator.generateToFile(sourcesOutputDir);
+
+        // Test if sources are compilable
+        testCompilation(sourcesOutputDir, compiledOutputDir);
+        cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+}
