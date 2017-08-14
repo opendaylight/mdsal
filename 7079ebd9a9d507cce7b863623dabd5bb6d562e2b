@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_39ae3b86",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/bug2360test/bug2360module.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-08-14T21:22:42Z",
+      "side": 1,
+      "message": "what happens if we also add \u0027leaf nested-foo\u0027 ?",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 9
+      },
+      "revId": "7079ebd9a9d507cce7b863623dabd5bb6d562e2b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
