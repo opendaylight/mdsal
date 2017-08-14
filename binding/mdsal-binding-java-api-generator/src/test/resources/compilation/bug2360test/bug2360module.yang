@@ -1,0 +1,46 @@
+module bug2360module {
+    namespace "odl:test:bug2360";
+    prefix "b";
+    revision 2017-08-14;
+
+    list foo {
+        key foo-key;
+
+        leaf foo-key {
+            type string;
+        }
+
+        leaf foo {
+            type union {
+                type int32;
+                type string;
+            }
+        }
+
+        choice foo-choice {
+            case foo {
+                leaf foo {
+                    type union {
+                        type int32;
+                        type string;
+                    }
+                }
+            }
+
+            case baz {
+                leaf baz {
+                    type string;
+                }
+            }
+        }
+
+        container bar {
+            leaf bar {
+                type union {
+                    type int32;
+                    type string;
+                }
+            }
+        }
+    }
+}

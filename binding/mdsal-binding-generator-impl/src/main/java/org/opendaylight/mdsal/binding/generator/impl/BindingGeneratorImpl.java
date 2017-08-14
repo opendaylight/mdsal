@@ -116,6 +116,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(BindingGeneratorImpl.class);
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final Splitter BSDOT_SPLITTER = Splitter.on("\\.");
+    private static final String UNION_LEAF_NESTED_CLASS_PREFIX = "Nested";
     private static final char NEW_LINE = '\n';
 
     /**
@@ -2027,10 +2028,18 @@ public class BindingGeneratorImpl implements BindingGenerator {
      */
     private GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef,
             final GeneratedTypeBuilder typeBuilder, final DataSchemaNode leaf, final Module parentModule) {
-        final String classNameFromLeaf = BindingMapping.getClassName(leaf.getQName());
+        String classNameFromLeaf = BindingMapping.getClassName(leaf.getQName());
         final List<GeneratedTOBuilder> genTOBuilders = new ArrayList<>();
         final String packageName = typeBuilder.getFullyQualifiedName();
         if (typeDef instanceof UnionTypeDefinition) {
+            // a union leaf is represented by a nested class inside an interface corresponding to its parent node
+            // if the name of the union leaf is the same as the name of its parent node
+            // we end up with uncompilable code (name of the interface conflicts with the name of the nested class)
+            // therefore we add a prefix to the name of the nested class to avoid the naming conflict
+            if (classNameFromLeaf.equals(typeBuilder.getName())) {
+                classNameFromLeaf = UNION_LEAF_NESTED_CLASS_PREFIX + classNameFromLeaf;
+            }
+
             final List<GeneratedTOBuilder> types = ((TypeProviderImpl) typeProvider)
                     .provideGeneratedTOBuildersForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
                             classNameFromLeaf, leaf);
