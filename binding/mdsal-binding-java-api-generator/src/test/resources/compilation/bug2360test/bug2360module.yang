@@ -1,0 +1,67 @@
+module bug2360module {
+    namespace "odl:test:bug2360";
+    prefix "b";
+    revision 2017-08-14;
+
+    list foo {
+        key foo-key;
+
+        leaf foo-key {
+            type string;
+        }
+
+        leaf foo {
+            type union {
+                type int32;
+                type string;
+            }
+        }
+
+        leaf foo1 {
+            type union {
+                type uint64;
+                type string;
+            }
+        }
+
+        leaf foo-2 {
+            type union {
+                type empty;
+                type string;
+            }
+        }
+
+        leaf foo3 {
+            type union {
+                type string;
+                type boolean;
+            }
+        }
+
+        choice foo-choice {
+            case foo {
+                leaf foo {
+                    type enumeration {
+                        enum sun;
+                        enum moon;
+                    }
+                }
+            }
+
+            case baz {
+                leaf baz {
+                    type string;
+                }
+            }
+        }
+
+        container bar {
+            leaf bar {
+                type bits {
+                    bit white;
+                    bit black;
+                }
+            }
+        }
+    }
+}
