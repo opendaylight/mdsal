@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_5cbaf223",
+        "filename": "model/ietf/ietf-lisp-address-types/src/main/java/org/opendaylight/yang/gen/v1/urn/ietf/params/xml/ns/yang/ietf/lisp/address/types/rev151105/Ipv4Matcher.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-08-16T15:10:57Z",
+      "side": 1,
+      "message": "not a proper utility class and in a completely wrong package.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 1
+      },
+      "revId": "9b2b3a0d6a358708889f0e8b6d6d4a71ad26ed6e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
