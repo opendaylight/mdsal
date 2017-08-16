@@ -22,6 +22,30 @@
       "revId": "7079ebd9a9d507cce7b863623dabd5bb6d562e2b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_cbebbeae",
+        "filename": "binding/mdsal-binding-java-api-generator/src/test/resources/compilation/bug2360test/bug2360module.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 4561
+      },
+      "writtenOn": "2017-08-16T08:49:36Z",
+      "side": 1,
+      "message": "Following exception is thrown:\n\njava.lang.IllegalArgumentException: This generated type already contains equal enclosing transfer object.\n\nIn other words, the generated type builder for the list \u0027foo\u0027 already has a leaf object \u0027NestedFoo\u0027 in this particular case.",
+      "parentUuid": "ba1f61a0_39ae3b86",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 9
+      },
+      "revId": "7079ebd9a9d507cce7b863623dabd5bb6d562e2b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
