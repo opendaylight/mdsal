@@ -1,9 +1,11 @@
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.lisp.address.types.rev151105;
 
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 
+import com.google.common.base.Preconditions;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 
 /**
  * The purpose of generated class in src/main/java for Union types is to create new instances of unions from a string representation.
@@ -17,51 +19,17 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 public class SimpleAddressBuilder {
 
     public static SimpleAddress getDefaultInstance(String defaultValue) {
-        SimpleAddress address = tryIpAddress(defaultValue);
-        if (address != null) {
-            return address;
-        }
+        Preconditions.checkNotNull(defaultValue, "Cannot convert null address");
 
-        address = tryIpPrefix(defaultValue);
-        if (address != null) {
-            return address;
-        }
-
-        address = tryMacAddress(defaultValue);
-        if (address != null) {
-            return address;
-        }
-
-        // XXX need support for MAC addresses and AS numbers
-        address = new SimpleAddress(new DistinguishedNameType(defaultValue));
-
-        return address;
-    }
-
-    private static SimpleAddress tryIpAddress(String defaultValue) {
-        try {
-            SimpleAddress address = new SimpleAddress(IpAddressBuilder.getDefaultInstance(defaultValue));
-            return address;
-        } catch (IllegalArgumentException e) {
-            return null;
+        if (Ipv4Matcher.matches(defaultValue)) {
+            return new SimpleAddress(new IpAddress(new Ipv4Address(defaultValue)));
+        } else if (Ipv6Matcher.matches(defaultValue)) {
+            return new SimpleAddress(new IpAddress(new Ipv6Address(defaultValue)));
+        } else if (MacMatcher.matches(defaultValue)) {
+            return new SimpleAddress(new MacAddress(defaultValue));
+        } else {
+            throw new IllegalArgumentException("Unknown type");
         }
     }
 
-    private static SimpleAddress tryIpPrefix(String defaultValue) {
-        try {
-            SimpleAddress address = new SimpleAddress(IpPrefixBuilder.getDefaultInstance(defaultValue));
-            return address;
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
-
-    private static SimpleAddress tryMacAddress(String defaultValue) {
-        try {
-            SimpleAddress address = new SimpleAddress(new MacAddress(defaultValue));
-            return address;
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
 }
