@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
+import static com.google.common.base.Verify.verifyNotNull
+
 import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.Lists
@@ -58,6 +60,7 @@ class ClassTemplate extends BaseTemplate {
     protected val GeneratedTransferObject genTO;
 
     private val AbstractRangeGenerator<?> rangeGenerator
+    private val LengthGenerator lengthGenerator
 
     /**
      * Creates instance of this class with concrete <code>genType</code>.
@@ -84,11 +87,18 @@ class ClassTemplate extends BaseTemplate {
         this.consts = genType.constantDefinitions
         this.enclosedGeneratedTypes = genType.enclosedTypes
 
-        if (restrictions !== null && !restrictions.rangeConstraints.nullOrEmpty) {
-            rangeGenerator = AbstractRangeGenerator.forType(findProperty(genType, "value").returnType)
-            Preconditions.checkNotNull(rangeGenerator)
+        if (restrictions !== null) {
+            if (!restrictions.rangeConstraints.nullOrEmpty) {
+                rangeGenerator = verifyNotNull(AbstractRangeGenerator.forType(
+                            findProperty(genType, "value").returnType))
+            } else {
+                rangeGenerator = null;
+            }
+
+            lengthGenerator = LengthGenerator.forConstraints(restrictions.lengthConstraints)
         } else {
             rangeGenerator = null
+            lengthGenerator = null
         }
     }
 
@@ -121,13 +131,11 @@ class ClassTemplate extends BaseTemplate {
             «constantsDeclarations»
             «generateFields»
 
-            «IF restrictions !== null»
-                «IF !restrictions.lengthConstraints.nullOrEmpty»
-                    «LengthGenerator.generateLengthChecker("_value", findProperty(genTO, "value").returnType, restrictions.lengthConstraints)»
-                «ENDIF»
-                «IF !restrictions.rangeConstraints.nullOrEmpty»
-                    «rangeGenerator.generateRangeChecker("_value", restrictions.rangeConstraints)»
-                «ENDIF»
+            «IF lengthGenerator !== null»
+                «lengthGenerator.generateLengthChecker("_value", findProperty(genTO, "value").returnType)»
+            «ENDIF»
+            «IF rangeGenerator !== null»
+                «rangeGenerator.generateRangeChecker("_value", restrictions.rangeConstraints)»
             «ENDIF»
 
             «constructors»
@@ -286,7 +294,8 @@ class ClassTemplate extends BaseTemplate {
             «IF !restrictions.lengthConstraints.empty || !restrictions.rangeConstraints.empty»
             if («paramName» != null) {
                 «IF !restrictions.lengthConstraints.empty»
-                    «LengthGenerator.generateLengthCheckerCall(paramName, paramValue(returnType, paramName))»
+                    «LengthGenerator.forConstraints(restrictions.lengthConstraints)
+                        .generateLengthCheckerCall(paramName, paramValue(returnType, paramName))»
                 «ENDIF»
                 «IF !restrictions.rangeConstraints.empty»
                     «rangeGenerator.generateRangeCheckerCall(paramName, paramValue(returnType, paramName))»

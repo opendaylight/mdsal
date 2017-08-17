@@ -446,8 +446,8 @@ class BuilderTemplate extends BaseTemplate {
 
                     «ENDIF»
                     «IF !restrictions.lengthConstraints.nullOrEmpty»
-                    «LengthGenerator.generateLengthChecker(field.fieldName.toString, field.returnType, restrictions.lengthConstraints)»
-
+                    «LengthGenerator.forConstraints(restrictions.lengthConstraints)
+                        .generateLengthChecker(field.fieldName.toString, field.returnType)»
                     «ENDIF»
             «ENDIF»
             public «type.name»«BUILDER» set«field.name.toFirstUpper»(final «field.returnType.importedName» value) {
@@ -464,9 +464,11 @@ class BuilderTemplate extends BaseTemplate {
                     «ENDIF»
                     «IF !restrictions.lengthConstraints.nullOrEmpty»
                         «IF field.returnType instanceof ConcreteType»
-                            «LengthGenerator.generateLengthCheckerCall(field.fieldName.toString, "value")»
+                            «LengthGenerator.forConstraints(restrictions.lengthConstraints)
+                                .generateLengthCheckerCall(field.fieldName.toString, "value")»
                          «ELSE»
-                            «LengthGenerator.generateLengthCheckerCall(field.fieldName.toString, "value.getValue()")»
+                            «LengthGenerator.forConstraints(restrictions.lengthConstraints)
+                                .generateLengthCheckerCall(field.fieldName.toString, "value.getValue()")»
                         «ENDIF»
                     «ENDIF»
                 }
