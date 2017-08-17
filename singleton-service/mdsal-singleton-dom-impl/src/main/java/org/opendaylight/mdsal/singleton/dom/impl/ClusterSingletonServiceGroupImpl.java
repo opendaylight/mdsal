@@ -92,10 +92,6 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
          */
         RELEASING_OWNERSHIP,
         /**
-         * We have unregistered the service entity and are waiting for confirmation.
-         */
-        UNREGISTERING,
-        /**
          * Terminated, this group cannot be used anymore.
          */
         TERMINATED
@@ -213,7 +209,8 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
                 break;
             case REGISTERED:
             case STANDBY:
-                updateState(State.UNREGISTERING);
+                LOG.debug("Service group {} terminated", identifier);
+                terminate(future);
                 break;
             case OWNER:
                 // No-op, we will react to the loss of registration instead.
@@ -223,10 +220,6 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
                 break;
             case RELEASING_OWNERSHIP:
                 // Waiting for cleanup entity to flip, will resume afterwards.
-                break;
-            case UNREGISTERING:
-                LOG.debug("Service group {} terminated", identifier);
-                terminate(future);
                 break;
             case TAKING_OWNERSHIP:
                 // Abort taking of ownership and close
