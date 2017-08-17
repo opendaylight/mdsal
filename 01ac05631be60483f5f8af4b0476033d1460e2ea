@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_f6065e1f",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/PlaceholderGroup.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-08-17T15:12:33Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be synchronized?",
+      "revId": "01ac05631be60483f5f8af4b0476033d1460e2ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
