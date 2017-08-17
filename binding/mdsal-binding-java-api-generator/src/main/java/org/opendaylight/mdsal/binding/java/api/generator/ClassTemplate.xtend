@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
+import static com.google.common.base.Verify.verifyNotNull
+
 import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.Lists
@@ -84,11 +86,15 @@ class ClassTemplate extends BaseTemplate {
         this.consts = genType.constantDefinitions
         this.enclosedGeneratedTypes = genType.enclosedTypes
 
-        if (restrictions !== null && !restrictions.rangeConstraints.nullOrEmpty) {
-            rangeGenerator = AbstractRangeGenerator.forType(findProperty(genType, "value").returnType)
-            Preconditions.checkNotNull(rangeGenerator)
+        if (restrictions !== null) {
+            if (!restrictions.rangeConstraints.nullOrEmpty) {
+                rangeGenerator = verifyNotNull(AbstractRangeGenerator.forType(
+                            findProperty(genType, "value").returnType))
+            } else {
+                rangeGenerator = null;
+            }
         } else {
-            rangeGenerator = null
+            rangeGenerator = null;
         }
     }
 
