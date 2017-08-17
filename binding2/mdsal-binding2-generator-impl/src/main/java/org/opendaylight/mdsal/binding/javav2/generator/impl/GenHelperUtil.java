@@ -37,8 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import java.util.stream.Collectors;
+import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
@@ -88,7 +88,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
-import org.opendaylight.yangtools.yang.model.api.meta.ModelStatement;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -147,7 +146,7 @@ final class GenHelperUtil {
      *             if <code>module</code> is null
      */
     static GeneratedTypeBuilder moduleTypeBuilder(final Module module, final String postfix, final boolean
-            verboseClassComments, ModuleContext context) {
+            verboseClassComments, final ModuleContext context) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         final String packageName = BindingMapping.getRootPackageName(module);
         // underscore used as separator for distinction of module name parts
@@ -258,7 +257,7 @@ final class GenHelperUtil {
         if (!schemaNode.isAugmenting()) {
             return true;
         } else if (schemaNode.isAugmenting()) {
-            QName qname = schemaNode.getPath().getLastComponent();
+            final QName qname = schemaNode.getPath().getLastComponent();
             final Module originalModule = schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
                     qname.getRevision());
             if (module.equals(originalModule)) {
@@ -295,12 +294,12 @@ final class GenHelperUtil {
 
     private static void addUsesImplements(final SchemaNode superNode, final Module superModule,
             final Object node, final Module module, final SchemaContext schemaContext,
-            Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
+            final Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
         if (superNode instanceof DataNodeContainer) {
-            for (DataSchemaNode superChildNode : ((DataNodeContainer) superNode).getChildNodes()) {
+            for (final DataSchemaNode superChildNode : ((DataNodeContainer) superNode).getChildNodes()) {
                 if (superChildNode instanceof DataNodeContainer || superChildNode instanceof ChoiceSchemaNode) {
                     final QName childQName = createQNameFromSuperNode(module, node, superChildNode);
-                    DataSchemaNode childNode = ((DataNodeContainer) node).getDataChildByName(childQName);
+                    final DataSchemaNode childNode = ((DataNodeContainer) node).getDataChildByName(childQName);
                     Preconditions.checkNotNull(childNode, node.toString() + "->" + childQName.toString());
 
                     final GeneratedTypeBuilder type = genCtx.get(module).getChildNode(childNode.getPath());
@@ -323,9 +322,9 @@ final class GenHelperUtil {
                 }
             }
         } else if (superNode instanceof ChoiceSchemaNode) {
-            for (ChoiceCaseNode superCaseNode : ((ChoiceSchemaNode) superNode).getCases()) {
+            for (final ChoiceCaseNode superCaseNode : ((ChoiceSchemaNode) superNode).getCases()) {
                 final QName childQName = createQNameFromSuperNode(module, node, superCaseNode);
-                ChoiceCaseNode caseNode = ((ChoiceSchemaNode) node).getCaseNodeByName(childQName);
+                final ChoiceCaseNode caseNode = ((ChoiceSchemaNode) node).getCaseNodeByName(childQName);
                 Preconditions.checkNotNull(caseNode, node.toString() + "->" + childQName.toString());
 
                 final GeneratedTypeBuilder type = genCtx.get(module).getCase(caseNode.getPath());
@@ -357,9 +356,10 @@ final class GenHelperUtil {
             final Module targetModule = schemaContext.findModuleByNamespaceAndRevision(current.getNamespace(), current.getRevision());
             Preconditions.checkArgument(targetModule != null, "Cannot find target module for %s and %s.",
                     current.getNamespace(), current.getRevision());
-            groupingNode = targetModule.getGroupings().stream().filter(grouping -> grouping.getPath().equals(usesNode.getGroupingPath()))
-                    .collect(Collectors.toList()).get(0);
-            if (groupingNode == null) {
+            final List<GroupingDefinition> collect = targetModule.getGroupings().stream()
+                    .filter(grouping -> grouping.getPath().equals(usesNode.getGroupingPath()))
+                    .collect(Collectors.toList());
+            if (collect.isEmpty() || (groupingNode = collect.get(0)) == null) {
                 groupingNode = SchemaContextUtil.findDataSchemaNode(schemaContext, usesNode.getGroupingPath());
             }
         }
@@ -371,7 +371,7 @@ final class GenHelperUtil {
     }
 
     static Map<Module, ModuleContext> processUsesImplements(final Object node, final Module module,
-            final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
+            final SchemaContext schemaContext, final Map<Module, ModuleContext> genCtx, final BindingNamespaceType namespaceType) {
         if (node instanceof DataNodeContainer) {
             for (final UsesNode usesNode : ((DataNodeContainer) node).getUses()) {
                 final GroupingDefinition grouping = findGroupingNodeFromUses(module, schemaContext, node, usesNode);
@@ -411,12 +411,12 @@ final class GenHelperUtil {
         //pick augmentation grouped by augmentation target, there is always at least one
         final AugmentationSchema augSchema = schemaPathAugmentListEntry.get(0);
 
-        Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.computeIfAbsent(
+        final Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.computeIfAbsent(
                 augmentPackageName, k -> new HashMap<>());
 
         //this requires valid semantics in YANG model
         String augIdentifier = null;
-        for (AugmentationSchema aug : schemaPathAugmentListEntry) {
+        for (final AugmentationSchema aug : schemaPathAugmentListEntry) {
             augIdentifier = getAugmentIdentifier(aug.getUnknownSchemaNodes());
             break;
         }
@@ -426,7 +426,7 @@ final class GenHelperUtil {
                     .append('_').append(targetNode.getQName().getLocalName()).toString();
         }
 
-        GeneratedTypeBuilderImpl augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augIdentifier,
+        final GeneratedTypeBuilderImpl augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augIdentifier,
                 true, false, genCtx.get(module));
 
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
@@ -437,7 +437,7 @@ final class GenHelperUtil {
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
 
         //produces getters for augTypeBuilder eventually
-        for (AugmentationSchema aug : schemaPathAugmentListEntry) {
+        for (final AugmentationSchema aug : schemaPathAugmentListEntry) {
             //apply all uses
             addImplementedInterfaceFromUses(aug, augTypeBuilder, genCtx);
             augSchemaNodeToMethods(module, BindingMapping.getRootPackageName(module), augTypeBuilder, augTypeBuilder, aug.getChildNodes(),
@@ -559,10 +559,10 @@ final class GenHelperUtil {
         return it;
     }
 
-    static GeneratedTypeBuilder resolveNotification(final GeneratedTypeBuilder listenerInterface, String
+    static GeneratedTypeBuilder resolveNotification(final GeneratedTypeBuilder listenerInterface, final String
             parentName, final String basePackageName, final NotificationDefinition notification, final Module module,
-            final SchemaContext schemaContext, final boolean verboseClassComments, Map<String, Map<String, GeneratedTypeBuilder>>
-            genTypeBuilders, TypeProvider typeProvider, Map<Module, ModuleContext> genCtx) {
+            final SchemaContext schemaContext, final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>>
+            genTypeBuilders, final TypeProvider typeProvider, final Map<Module, ModuleContext> genCtx) {
         final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition
                 (basePackageName, notification, null, module, genCtx, schemaContext,
                         verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
@@ -616,7 +616,7 @@ final class GenHelperUtil {
     static GeneratedTypeBuilder addRawInterfaceDefinition(final String basePackageName, final SchemaNode schemaNode,
             final SchemaContext schemaContext, final String prefix, final String suffix,
             final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
-            final BindingNamespaceType namespaceType, ModuleContext context) {
+            final BindingNamespaceType namespaceType, final ModuleContext context) {
 
         Preconditions.checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
         Preconditions.checkArgument(basePackageName != null, "Base package Name for Generated Type cannot be NULL.");
@@ -740,7 +740,7 @@ final class GenHelperUtil {
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node,
                 schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
         if (genType != null) {
-            StringBuilder getterName = new StringBuilder(node.getQName().getLocalName());
+            final StringBuilder getterName = new StringBuilder(node.getQName().getLocalName());
             constructGetter(parent, getterName.toString(), node.getDescription(), genType, node.getStatus());
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes(), genCtx,
                     schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
@@ -866,7 +866,7 @@ final class GenHelperUtil {
             } else {
                 if (typeDef.getBaseType() == null && (typeDef instanceof EnumTypeDefinition
                         || typeDef instanceof UnionTypeDefinition || typeDef instanceof BitsTypeDefinition)) {
-                    LeafSchemaNode originalLeaf = (LeafSchemaNode) ((DerivableSchemaNode) leaf).getOriginal().orNull();
+                    final LeafSchemaNode originalLeaf = (LeafSchemaNode) ((DerivableSchemaNode) leaf).getOriginal().orNull();
                     Preconditions.checkNotNull(originalLeaf);
                     returnType = genCtx.get(findParentModule(schemaContext, originalLeaf)).getInnerType(typeDef.getPath());
                 } else {
@@ -926,7 +926,7 @@ final class GenHelperUtil {
 
         final String leafGetterName;
         if ("key".equals(leafName.toLowerCase())) {
-            StringBuilder sb = new StringBuilder(leafName)
+            final StringBuilder sb = new StringBuilder(leafName)
                 .append('_').append("RESERVED_WORD");
             leafGetterName = sb.toString();
         } else {
@@ -1115,7 +1115,7 @@ final class GenHelperUtil {
             anyDesc = "";
         }
 
-        Type returnType = Types.DOCUMENT;
+        final Type returnType = Types.DOCUMENT;
 
         constructGetter(typeBuilder, anyName, anyDesc, returnType, node.getStatus());
         return returnType;
@@ -1249,8 +1249,8 @@ final class GenHelperUtil {
                 returnType = mc.getTypedefs().get(typeDef.getPath());
             } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
                 // Annonymous enumeration (already generated, since it is inherited via uses).
-                LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
-                QName qname = originalLeaf.getQName();
+                final LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
+                final QName qname = originalLeaf.getQName();
                 final Module enumModule =  schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
                         qname.getRevision());
                 returnType = genCtx.get(enumModule).getInnerType(originalLeaf.getType().getPath());
@@ -1270,7 +1270,7 @@ final class GenHelperUtil {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static GeneratedTypeBuilder processDataSchemaNode(final Module module, final String basePackageName,
         final GeneratedTypeBuilder childOf, final DataSchemaNode node, final SchemaContext schemaContext,
-        final boolean verboseClassComments, Map<Module, ModuleContext> genCtx, final Map<String, Map<String,
+        final boolean verboseClassComments, final Map<Module, ModuleContext> genCtx, final Map<String, Map<String,
         GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
 
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(basePackageName, node, childOf, module,
@@ -1314,7 +1314,7 @@ final class GenHelperUtil {
      */
     static Map<Module, ModuleContext> groupingsToGenTypes(final Module module, final Collection<GroupingDefinition>
             groupings, Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean
-            verboseClassComments, Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
+            verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
         final String basePackageName = BindingMapping.getRootPackageName(module);
         final List<GroupingDefinition> groupingsSortedByDependencies = new GroupingDefinitionDependencySort()
                 .sort(groupings);
@@ -1352,7 +1352,7 @@ final class GenHelperUtil {
      */
     private static Map<Module, ModuleContext> groupingToGenType(final String basePackageName, final GroupingDefinition grouping, final Module
             module, Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean
-            verboseClassComments, Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
+            verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(basePackageName, grouping, module, genCtx,
                 schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Grouping);
         annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
@@ -1385,8 +1385,8 @@ final class GenHelperUtil {
      * @return returns generated context
      */
     static Map<Module, ModuleContext> identityToGenType(final Module module, final String basePackageName,
-            final IdentitySchemaNode identity, final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx,
-            boolean verboseClassComments) {
+            final IdentitySchemaNode identity, final SchemaContext schemaContext, final Map<Module, ModuleContext> genCtx,
+            final boolean verboseClassComments) {
 
         resolveIdentitySchemaNode(basePackageName, schemaContext, identity, module, verboseClassComments, genCtx);
         return genCtx;
@@ -1419,7 +1419,7 @@ final class GenHelperUtil {
             } else {
                 //one base - inheritance
                 final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
-                GeneratedTOBuilder baseType = resolveIdentitySchemaNode(basePackageName, schemaContext,
+                final GeneratedTOBuilder baseType = resolveIdentitySchemaNode(basePackageName, schemaContext,
                     baseIdentity, module, verboseClassComments, genCtx);
                 newType.setExtendsType(baseType.toInstance());
             }
