@@ -52,7 +52,7 @@ public class ChoiceDispatchSerializer implements TreeNodeSerializerImplementatio
     public void serialize(final TreeNodeSerializerRegistry reg, final TreeNode obj,
             final BindingStreamEventWriter stream) throws IOException {
         @SuppressWarnings("rawtypes")
-        final Class cazeClass = obj.getClass();
+        final Class cazeClass = ((Instantiable) obj).implementedInterface();
         stream.startChoiceNode(new Item<>(choiceClass), BindingStreamEventWriter.UNKNOWN_SIZE);
         final TreeNodeSerializer caseSerializer = reg.getSerializer(cazeClass);
         if (caseSerializer != null) {
