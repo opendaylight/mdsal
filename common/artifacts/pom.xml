@@ -71,6 +71,11 @@
                 <artifactId>mdsal-dom-inmemory-datastore</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-dom-schema-service-osgi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Binding MD-SAL & Java Binding -->
             <dependency>
