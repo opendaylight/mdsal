@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.osgi;
+package org.opendaylight.mdsal.dom.schema.service.osgi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -20,7 +20,8 @@ import static org.mockito.Mockito.verify;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.dom.broker.util.TestModel;
+import org.opendaylight.mdsal.dom.schema.service.osgi.OsgiBundleScanningSchemaService;
+import org.opendaylight.mdsal.dom.schema.service.osgi.util.TestModel;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.osgi.framework.Bundle;

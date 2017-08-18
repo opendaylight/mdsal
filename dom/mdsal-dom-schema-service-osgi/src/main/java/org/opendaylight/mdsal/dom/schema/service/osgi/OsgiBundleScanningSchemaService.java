@@ -5,12 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.osgi;
+package org.opendaylight.mdsal.dom.schema.service.osgi;
 
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -28,16 +27,15 @@ import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMYangTextSourceProvider;
+import org.opendaylight.mdsal.dom.broker.schema.JarScanningSchemaService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
-import org.opendaylight.yangtools.yang.parser.repo.YangTextSchemaContextResolver;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -59,8 +57,6 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     private static final long FRAMEWORK_BUNDLE_ID = 0;
 
     @GuardedBy("lock")
-    private final ListenerRegistry<SchemaContextListener> listeners = new ListenerRegistry<>();
-    private final YangTextSchemaContextResolver contextResolver = YangTextSchemaContextResolver.create("global-bundle");
     private final BundleScanner scanner = new BundleScanner();
     private final Object lock = new Object();
     private final BundleContext context;
@@ -71,26 +67,29 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
 
     private volatile boolean stopping;
 
+    private final JarScanningSchemaService scanningSchemaService;
+
     private OsgiBundleScanningSchemaService(final BundleContext context) {
         this.context = Preconditions.checkNotNull(context);
+        this.scanningSchemaService = new JarScanningSchemaService();
     }
 
     public static @Nonnull OsgiBundleScanningSchemaService createInstance(final BundleContext ctx) {
-        OsgiBundleScanningSchemaService instance = new OsgiBundleScanningSchemaService(ctx);
+        final OsgiBundleScanningSchemaService instance = new OsgiBundleScanningSchemaService(ctx);
         Preconditions.checkState(GLOBAL_INSTANCE.compareAndSet(null, instance));
         instance.start();
         return instance;
     }
 
     public static OsgiBundleScanningSchemaService getInstance() {
-        OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.get();
+        final OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.get();
         Preconditions.checkState(instance != null, "Global Instance was not instantiated");
         return instance;
     }
 
     @VisibleForTesting
-    public static void destroyInstance() {
-        OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.getAndSet(null);
+    public static void destroyInstance() throws Exception {
+        final OsgiBundleScanningSchemaService instance = GLOBAL_INSTANCE.getAndSet(null);
         if (instance != null) {
             instance.close();
         }
@@ -112,10 +111,6 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
             bundleTracker.open();
 
             LOG.debug("BundleTracker.open() complete");
-
-            if (Iterables.size(listeners.getListeners()) > 0) {
-                tryToUpdateSchemaContext();
-            }
         }
 
         listenerTracker.open();
@@ -126,12 +121,12 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
 
     @Override
     public SchemaContext getSchemaContext() {
-        return getGlobalContext();
+        return scanningSchemaService.getSchemaContext();
     }
 
     @Override
     public SchemaContext getGlobalContext() {
-        return contextResolver.getSchemaContext().orNull();
+        return scanningSchemaService.getGlobalContext();
     }
 
     @Override
@@ -142,13 +137,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     @Override
     public ListenerRegistration<SchemaContextListener> registerSchemaContextListener(
             final SchemaContextListener listener) {
-        synchronized (lock) {
-            final Optional<SchemaContext> potentialCtx = contextResolver.getSchemaContext();
-            if (potentialCtx.isPresent()) {
-                listener.onGlobalContextUpdated(potentialCtx.get());
-            }
-            return listeners.register(listener);
-        }
+        return scanningSchemaService.registerSchemaContextListener(listener);
     }
 
     @Override
@@ -164,9 +153,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
                 listenerTracker = null;
             }
 
-            for (final ListenerRegistration<SchemaContextListener> l : listeners.getListeners()) {
-                l.close();
-            }
+            scanningSchemaService.close();
         }
     }
 
@@ -174,14 +161,9 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     @VisibleForTesting
     @GuardedBy("lock")
     void notifyListeners(final SchemaContext snapshot) {
+        scanningSchemaService.notifyListeners(snapshot);
+
         final Object[] services = listenerTracker.getServices();
-        for (final ListenerRegistration<SchemaContextListener> listener : listeners) {
-            try {
-                listener.getInstance().onGlobalContextUpdated(snapshot);
-            } catch (final Exception e) {
-                LOG.error("Exception occured during invoking listener", e);
-            }
-        }
         if (services != null) {
             for (final Object rawListener : services) {
                 final SchemaContextListener listener = (SchemaContextListener) rawListener;
@@ -208,24 +190,24 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
                 return Collections.emptyList();
             }
 
-            final List<Registration> urls = new ArrayList<>();
+            final List<URL> urls = new ArrayList<>();
             while (enumeration.hasMoreElements()) {
                 final URL u = enumeration.nextElement();
                 try {
-                    urls.add(contextResolver.registerSource(u));
+                    urls.add(u);
                     LOG.debug("Registered {}", u);
                 } catch (final Exception e) {
                     LOG.warn("Failed to register {}, ignoring it", e);
                 }
             }
 
-            if (!urls.isEmpty()) {
+            final List<Registration> registrations = scanningSchemaService.registerAvalaibleYangs(urls);
+            if (!registrations.isEmpty()) {
                 LOG.debug("Loaded {} new URLs from bundle {}, attempting to rebuild schema context",
-                        urls.size(), bundle.getSymbolicName());
+                        registrations.size(), bundle.getSymbolicName());
                 tryToUpdateSchemaContext();
             }
-
-            return ImmutableList.copyOf(urls);
+            return ImmutableList.copyOf(registrations);
         }
 
         @Override
@@ -282,17 +264,7 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
         if (starting || stopping) {
             return;
         }
-
-        synchronized (lock) {
-            final Optional<SchemaContext> schema = contextResolver.getSchemaContext();
-            if (schema.isPresent()) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Got new SchemaContext: # of modules {}", schema.get().getAllModuleIdentifiers().size());
-                }
-
-                notifyListeners(schema.get());
-            }
-        }
+        scanningSchemaService.tryToUpdateSchemaContext();
     }
 
     @Override
@@ -315,6 +287,6 @@ public class OsgiBundleScanningSchemaService implements SchemaContextProvider, D
     @Override
     public CheckedFuture<? extends YangTextSchemaSource, SchemaSourceException> getSource(
             final SourceIdentifier sourceIdentifier) {
-        return contextResolver.getSource(sourceIdentifier);
+        return scanningSchemaService.getSource(sourceIdentifier);
     }
 }
