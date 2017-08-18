@@ -45,6 +45,7 @@
         <feature version="${odlparent.version}" dependency="true">odl-lmax-3</feature>
         <feature version='${project.version}' dependency="true">odl-mdsal-dom-api</feature>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-broker/{{VERSION}}</bundle>
+        <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-schema-service-osgi/{{VERSION}}</bundle>
         <bundle>mvn:org.opendaylight.mdsal/mdsal-dom-inmemory-datastore/{{VERSION}}</bundle>
     </feature>
 
