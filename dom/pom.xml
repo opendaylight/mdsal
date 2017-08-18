@@ -29,6 +29,7 @@
         <module>mdsal-dom-spi</module>
         <module>mdsal-dom-broker</module>
         <module>mdsal-dom-inmemory-datastore</module>
+        <module>mdsal-dom-schema-service-osgi</module>
     </modules>
 
   <!--

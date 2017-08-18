@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.osgi;
+package org.opendaylight.mdsal.dom.schema.service.osgi;
 
 import java.util.Hashtable;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
