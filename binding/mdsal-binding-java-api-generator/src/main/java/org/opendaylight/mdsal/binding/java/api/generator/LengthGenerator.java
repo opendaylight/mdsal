@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator;
 
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -19,15 +22,68 @@ import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class LengthGenerator {
-    private static final Logger LOG = LoggerFactory.getLogger(LengthGenerator.class);
+abstract class LengthGenerator {
+    private static final class Simple extends LengthGenerator {
+        private final List<LengthConstraint> constraints;
 
-    private LengthGenerator() {
-        throw new UnsupportedOperationException();
+        Simple(final List<LengthConstraint> constraints) {
+            this.constraints = requireNonNull(constraints);
+        }
+
+        @Override
+        String generateLengthChecker(final String member, final Type type) {
+            return TypeUtils.getBaseYangType(type).getName().indexOf('[') != -1
+                    ? generateArrayLengthChecker(member, constraints)
+                            : generateStringLengthChecker(member, constraints);
+        }
+
+        @Override
+        String generateLengthCheckerCall(final String member, final String valueReference) {
+            return lengthCheckerName(member) + '(' + valueReference + ");\n";
+        }
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(LengthGenerator.class);
+    private static final LengthGenerator NOOP = new LengthGenerator() {
+        @Override
+        String generateLengthChecker(final String member, final Type type) {
+            return "";
+        }
+
+        @Override
+        String generateLengthCheckerCall(final String member, final String valueReference) {
+            return "";
+        }
+    };
+
+    static LengthGenerator forConstraints(final List<LengthConstraint> constraints) {
+        if (constraints.isEmpty()) {
+            return NOOP;
+        }
+
+        final List<LengthConstraint> filtered = constraints.stream().filter(LengthGenerator::needsExpression)
+                .collect(ImmutableList.toImmutableList());
+        if (filtered.isEmpty()) {
+            return NOOP;
+        }
+
+        return new Simple(constraints.size() == filtered.size() ? constraints : filtered);
+    }
+
+    abstract String generateLengthChecker(String member, Type type);
+
+    abstract String generateLengthCheckerCall(@Nullable String member, @Nonnull String valueReference);
 
     private static String lengthCheckerName(final String member) {
         return "check" + member + "Length";
+    }
+
+    private static boolean needsExpression(final long min, final long max) {
+        return min > 0 || max < Integer.MAX_VALUE;
+    }
+
+    private static boolean needsExpression(final LengthConstraint constraint) {
+        return needsExpression(constraint.getMin().longValue(), constraint.getMax().longValue());
     }
 
     private static Collection<String> createExpressions(final Collection<LengthConstraint> constraints) {
@@ -38,7 +94,7 @@ final class LengthGenerator {
             final long min = l.getMin().longValue();
             final long max = l.getMax().longValue();
 
-            if (min > 0 || max < Integer.MAX_VALUE) {
+            if (needsExpression(min, max)) {
                 final StringBuilder sb = new StringBuilder("length >");
                 if (min <= Integer.MAX_VALUE) {
                     sb.append('=');
@@ -117,15 +173,5 @@ final class LengthGenerator {
         sb.append("}\n");
 
         return sb.toString();
-    }
-
-    static String generateLengthChecker(final String member, final Type type,
-            final Collection<LengthConstraint> constraints) {
-        return TypeUtils.getBaseYangType(type).getName().indexOf('[') != -1
-                ? generateArrayLengthChecker(member, constraints) : generateStringLengthChecker(member, constraints);
-    }
-
-    static String generateLengthCheckerCall(@Nullable final String member, @Nonnull final String valueReference) {
-        return lengthCheckerName(member) + '(' + valueReference + ");\n";
     }
 }
