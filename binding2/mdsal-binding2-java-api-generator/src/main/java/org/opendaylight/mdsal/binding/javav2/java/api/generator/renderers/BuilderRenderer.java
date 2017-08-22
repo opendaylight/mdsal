@@ -44,6 +44,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
@@ -278,6 +279,7 @@ public class BuilderRenderer extends BaseRenderer {
         importedNames.put("treeNode", importedName(TreeNode.class));
         importedNames.put("instantiable", importedName(Instantiable.class));
         importedNames.put("item", importedName(Item.class));
+        importedNames.put("identifiableItem", importedName(IdentifiableItem.class));
         if (getType().getParentType() != null) {
             importedNames.put("parent", importedName(getType().getParentType()));
             parentTypeForBuilderName = getType().getParentType().getFullyQualifiedName();
@@ -289,8 +291,16 @@ public class BuilderRenderer extends BaseRenderer {
         }
 
         boolean childTreeNode = false;
+        boolean childTreeNodeIdent = false;
+        String keyTypeName = null;
         if (getType().getImplements().contains(BindingTypes.TREE_CHILD_NODE)) {
             childTreeNode = true;
+            if (getType().getImplements().contains(BindingTypes.IDENTIFIABLE)) {
+                childTreeNodeIdent = true;
+                final ParameterizedType pType =
+                        (ParameterizedType) getType().getImplements().get(getType().getImplements().indexOf(BindingTypes.IDENTIFIABLE));
+                keyTypeName = pType.getActualTypeArguments()[0].getName();
+            }
         }
 
         importedNames.put("augmentation", importedName(Augmentation.class));
@@ -301,7 +311,7 @@ public class BuilderRenderer extends BaseRenderer {
         List<String> getterMethods = new ArrayList<>(Collections2.transform(properties, this::getterMethod));
 
         return builderTemplate.render(getType(), properties, importedNames, importedNamesForProperties, augmentField,
-            copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, instantiable)
+            copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, childTreeNodeIdent, keyTypeName, instantiable)
                 .body();
     }
 
