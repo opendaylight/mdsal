@@ -44,6 +44,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
@@ -133,14 +134,16 @@ public class BuilderRenderer extends BaseRenderer {
      */
     private GeneratedProperty propertyFromGetter(final MethodSignature method) {
         Preconditions.checkArgument(method != null, "Method cannot be NULL");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(method.getName()), "Method name cannot be NULL or empty");
-        Preconditions.checkArgument(method.getReturnType() != null, "Method return type reference cannot be NULL");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(method.getName()),
+            "Method name cannot be NULL or empty");
+        Preconditions.checkArgument(method.getReturnType() != null,
+            "Method return type reference cannot be NULL");
         final String prefix = Types.BOOLEAN.equals(method.getReturnType()) ? "is" : "get";
         if (method.getName().startsWith(prefix)) {
             final String fieldName = toFirstLower(method.getName().substring(prefix.length()));
-            final GeneratedTOBuilderImpl tmpGenTO = new GeneratedTOBuilderImpl("foo", "foo", true);
-            tmpGenTO.addProperty(fieldName)
-                    .setReturnType(method.getReturnType());
+            final GeneratedTOBuilderImpl tmpGenTO =
+                new GeneratedTOBuilderImpl("foo", "foo", true);
+            tmpGenTO.addProperty(fieldName).setReturnType(method.getReturnType());
             return tmpGenTO.toInstance().getProperties().get(0);
         }
         return null;
@@ -187,13 +190,15 @@ public class BuilderRenderer extends BaseRenderer {
                             final String name = getName(fullyQualifiedName);
                             final GeneratedTOBuilderImpl generatedTOBuilder = new GeneratedTOBuilderImpl(aPackage,
                                     name, true);
-                            final ReferencedTypeImpl referencedType = new ReferencedTypeImpl(aPackage, name, true,
-                                    null);
+                            final ReferencedTypeImpl referencedType = new ReferencedTypeImpl(aPackage, name,
+                                true, null);
                             final ReferencedTypeImpl generic = new ReferencedTypeImpl(getType().getPackageName(),
                                     getType().getName(), true, null);
-                            final ParameterizedType parametrizedReturnType = Types.parameterizedTypeFor(referencedType, generic);
+                            final ParameterizedType parametrizedReturnType =
+                                Types.parameterizedTypeFor(referencedType, generic);
                             generatedTOBuilder.addMethod(method.getName()).setReturnType(parametrizedReturnType);
-                            augmentField = propertyFromGetter(generatedTOBuilder.toInstance().getMethodDefinitions().get(0));
+                            augmentField = propertyFromGetter(generatedTOBuilder.toInstance().getMethodDefinitions()
+                                .get(0));
                             importedNames.put("map", importedName(Map.class));
                             importedNames.put("hashMap", importedName(HashMap.class));
                             importedNames.put("class", importedName(Class.class));
@@ -281,6 +286,7 @@ public class BuilderRenderer extends BaseRenderer {
         importedNames.put("treeNode", importedName(TreeNode.class));
         importedNames.put("instantiable", importedName(Instantiable.class));
         importedNames.put("item", importedName(Item.class));
+        importedNames.put("identifiableItem", importedName(IdentifiableItem.class));
         if (getType().getParentType() != null) {
             importedNames.put("parent", importedName(getType().getParentType()));
             parentTypeForBuilderName = getType().getParentType().getFullyQualifiedName();
@@ -292,8 +298,16 @@ public class BuilderRenderer extends BaseRenderer {
         }
 
         boolean childTreeNode = false;
+        boolean childTreeNodeIdent = false;
+        String keyTypeName = null;
         if (getType().getImplements().contains(BindingTypes.TREE_CHILD_NODE)) {
             childTreeNode = true;
+            if (getType().getImplements().contains(BindingTypes.IDENTIFIABLE)) {
+                childTreeNodeIdent = true;
+                final ParameterizedType pType = (ParameterizedType) getType().getImplements().get(getType()
+                    .getImplements().indexOf(BindingTypes.IDENTIFIABLE));
+                keyTypeName = pType.getActualTypeArguments()[0].getName();
+            }
         }
 
         importedNames.put("augmentation", importedName(Augmentation.class));
@@ -304,14 +318,14 @@ public class BuilderRenderer extends BaseRenderer {
         List<String> getterMethods = new ArrayList<>(Collections2.transform(properties, this::getterMethod));
 
         return builderTemplate.render(getType(), properties, importedNames, importedNamesForProperties, augmentField,
-            copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, instantiable)
-                .body();
+            copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, childTreeNodeIdent,
+            keyTypeName, instantiable).body();
     }
 
     private String generateListForCopyConstructor() {
         final List allProps = new ArrayList<>(properties);
-        final boolean isList = implementsIfc(getType(), Types.parameterizedTypeFor(Types.typeForClass(Identifiable.class),
-                getType()));
+        final boolean isList = implementsIfc(getType(),
+            Types.parameterizedTypeFor(Types.typeForClass(Identifiable.class), getType()));
         final Type keyType = getKey(getType());
         if (isList && keyType != null) {
             final List<GeneratedProperty> keyProps = ((GeneratedTransferObject) keyType).getProperties();
