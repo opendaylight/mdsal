@@ -16,6 +16,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
+import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
  * Event Stream Writer for Binding version 2 Representation
@@ -35,7 +36,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
  *
  * <ul>
  * <li><code>Map</code> - Map start event is emitted using
- * {@link #startMapNode(IdentifiableItem, int)} and is ended using {@link #endNode()}. Each map
+ * {@link #startMapNode(Class, int)} and is ended using {@link #endNode()}. Each map
  * entry start is emitted using {@link #startMapEntryNode(IdentifiableItem, int)} with Map of keys
  * and finished using {@link #endNode()}.</li>
  *
@@ -213,7 +214,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <li>{@link #startContainerNode(Class, int)}</li>
      * <li>{@link #startChoiceNode(Item, int)}</li>
      * <li>{@link #startLeafSet(String, int)}</li>
-     * <li>{@link #startMapNode(IdentifiableItem, int)}</li>
+     * <li>{@link #startMapNode(Class, int)}</li>
      * <li>{@link #startUnkeyedList(Class, int)}</li>
      * <li>{@link #startAugmentationNode(Class)}</li>
      * </ul>
@@ -276,7 +277,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <li>{@link #startContainerNode(Class, int)}</li>
      * <li>{@link #startChoiceNode(Item, int)}</li>
      * <li>{@link #startLeafSet(String, int)}</li>
-     * <li>{@link #startMapNode(IdentifiableItem, int)}</li>
+     * <li>{@link #startMapNode(Class, int)}</li>
      * <li>{@link #startUnkeyedList(Class, int)}</li>
      * <li>{@link #startAugmentationNode(Class)}</li>
      * </ul>
@@ -303,7 +304,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * throw {@link IllegalArgumentException}.
      *
      * @param mapEntryType
-     *            Class of list item, which has defined key.
+     *            Class of list.
      * @param childSizeHint
      *            Non-negative count of expected direct child nodes or
      *            {@link #UNKNOWN_SIZE} if count is unknown. This is only hint
@@ -315,7 +316,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *             <code>choice</code> <code>unkeyed list</code> node.
      * @throws IOException if an underlying IO error occurs
      */
-     <I extends TreeNode, T> void startMapNode(IdentifiableItem<I, T> mapEntryType, int childSizeHint)
+     <T extends TreeNode & Identifiable<?>> void startMapNode(Class<T> mapEntryType, int childSizeHint)
             throws IOException;
 
     /**
@@ -340,7 +341,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *             <code>choice</code> <code>unkeyed list</code> node.
      * @throws IOException if an underlying IO error occurs
      */
-    <I extends TreeNode, T> void startOrderedMapNode(IdentifiableItem<I, T> mapEntryType, int childSizeHint)
+    <T extends TreeNode & Identifiable<?>> void startOrderedMapNode(Class<T> mapEntryType, int childSizeHint)
             throws IOException;
 
     /**
@@ -357,7 +358,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <li>{@link #startContainerNode(Class, int)}</li>
      * <li>{@link #startChoiceNode(Item, int)}</li>
      * <li>{@link #startLeafSet(String, int)}</li>
-     * <li>{@link #startMapNode(IdentifiableItem, int)}</li>
+     * <li>{@link #startMapNode(Class, int)}</li>
      * <li>{@link #startUnkeyedList(Class, int)}</li>
      * <li>{@link #startAugmentationNode(Class)}</li>
      * </ul>
@@ -411,7 +412,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <li>{@link #startContainerNode(Class, int)}</li>
      * <li>{@link #startChoiceNode(Item, int)}</li>
      * <li>{@link #startLeafSet(String, int)}</li>
-     * <li>{@link #startMapNode(IdentifiableItem, int)}</li>
+     * <li>{@link #startMapNode(Class, int)}</li>
      * <li>{@link #startUnkeyedList(Class, int)}</li>
      * <li>{@link #startAugmentationNode(Class)}</li>
      * </ul>
@@ -436,7 +437,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * <li>{@link #startContainerNode(Class, int)}</li>
      * <li>{@link #startChoiceNode(Item, int)}</li>
      * <li>{@link #startLeafSet(String, int)}</li>
-     * <li>{@link #startMapNode(IdentifiableItem, int)}</li>
+     * <li>{@link #startMapNode(Class, int)}</li>
      * <li>{@link #startUnkeyedList(Class, int)}</li>
      * </ul>
      *
