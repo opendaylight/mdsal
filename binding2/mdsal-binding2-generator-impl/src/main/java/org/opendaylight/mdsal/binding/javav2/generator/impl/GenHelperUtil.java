@@ -533,14 +533,12 @@ final class GenHelperUtil {
             if (parent == null) {
                 it.addImplementsType(BindingTypes.TREE_NODE);
             } else {
-                if (parent instanceof ListSchemaNode) {
+                if (!(schemaNode instanceof ListSchemaNode) ||
+                        ((ListSchemaNode) schemaNode).getKeyDefinition().isEmpty()) {
                     it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
-                            (BindingTypes.IDENTIFIABLE_ITEM, parent)));
-                } else {
-                    it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
-                            (BindingTypes.ITEM, parent)));
-                    it.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, it));
+                            (BindingTypes.ITEM, it)));
                 }
+                it.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, it));
             }
 
             if (!(schemaNode instanceof GroupingDefinition)) {
@@ -785,16 +783,11 @@ final class GenHelperUtil {
                 processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
             } else {
                 final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node, genCtx.get(module));
-                for (final DataSchemaNode schemaNode : node.getChildNodes()) {
-                    if (resolveDataSchemaNodesCheck(module, schemaContext, schemaNode)) {
-                        addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
-                                module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
-                    }
-                }
-                processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
+				if (genTOBuilder != null) {
+                    genType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
+                                (BindingTypes.IDENTIFIABLE_ITEM, genType, genTOBuilder)));
 
-                // serialVersionUID
-                if (genTOBuilder != null) {
+                    // serialVersionUID
                     final GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("serialVersionUID");
                     prop.setValue(Long.toString(computeDefaultSUID(genTOBuilder)));
                     genTOBuilder.setSUID(prop);
@@ -802,6 +795,14 @@ final class GenHelperUtil {
                     typeBuildersToGenTypes(module, genType, genTOBuilder.toInstance(), genCtx, namespaceType);
                     genCtx.get(module).addGeneratedTOBuilder(node.getPath(), genTOBuilder);
                 }
+
+                for (final DataSchemaNode schemaNode : node.getChildNodes()) {
+                    if (resolveDataSchemaNodesCheck(module, schemaContext, schemaNode)) {
+                        addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
+                                module, typeProvider, schemaContext, genCtx, genTypeBuilders, verboseClassComments, namespaceType);
+                    }
+                }
+                processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
             }
         }
     }
