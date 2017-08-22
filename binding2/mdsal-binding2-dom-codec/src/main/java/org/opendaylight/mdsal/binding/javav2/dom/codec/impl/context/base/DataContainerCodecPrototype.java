@@ -22,7 +22,7 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.ListNodeCode
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.NodeCodecContext.CodecContextFactory;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeRoot;
-import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Identifiable;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
