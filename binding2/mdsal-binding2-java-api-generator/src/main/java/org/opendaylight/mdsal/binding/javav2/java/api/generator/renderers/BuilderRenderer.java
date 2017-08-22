@@ -44,6 +44,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Identifiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
@@ -52,7 +53,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.AugmentationHolder;
 import org.opendaylight.yangtools.concepts.Builder;
-import org.opendaylight.yangtools.concepts.Identifiable;
 
 public class BuilderRenderer extends BaseRenderer {
 

@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
-import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Path;
 import org.opendaylight.yangtools.util.HashCodeBuilder;
