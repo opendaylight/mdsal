@@ -16,6 +16,8 @@ import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Identifiable;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Identifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Input;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
@@ -32,7 +34,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.NotificationListener;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
-import org.opendaylight.yangtools.concepts.Identifier;
+
 
 public final class BindingTypes {
 
@@ -40,6 +42,7 @@ public final class BindingTypes {
     public static final ConcreteType AUGMENTABLE = typeForClass(Augmentable.class);
     public static final ConcreteType AUGMENTATION = typeForClass(Augmentation.class);
     public static final ConcreteType IDENTIFIABLE_ITEM = typeForClass(IdentifiableItem.class);
+    public static final ConcreteType IDENTIFIABLE = typeForClass(Identifiable.class);
     public static final ConcreteType IDENTIFIER = typeForClass(Identifier.class);
     public static final ConcreteType INPUT = typeForClass(Input.class);
     public static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
