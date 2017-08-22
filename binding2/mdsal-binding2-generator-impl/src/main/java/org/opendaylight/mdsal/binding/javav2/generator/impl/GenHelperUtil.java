@@ -23,6 +23,8 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIABLE;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIER;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.wildcardTypeFor;
@@ -88,7 +90,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
-import org.opendaylight.yangtools.yang.model.api.meta.ModelStatement;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -785,6 +786,13 @@ final class GenHelperUtil {
                 processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
             } else {
                 final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node, genCtx.get(module));
+                if (genTOBuilder != null) {
+                    final Type identifierMarker = Types.parameterizedTypeFor(IDENTIFIER, genType);
+                    final Type identifiableMarker = Types.parameterizedTypeFor(IDENTIFIABLE, genTOBuilder);
+                    genTOBuilder.addImplementsType(identifierMarker);
+                    genType.addImplementsType(identifiableMarker);
+                }
+
                 for (final DataSchemaNode schemaNode : node.getChildNodes()) {
                     if (resolveDataSchemaNodesCheck(module, schemaContext, schemaNode)) {
                         addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
