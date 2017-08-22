@@ -17,6 +17,7 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.Augmentab
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.ChoiceDispatchSerializer;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.runtime.javassist.JavassistUtils;
+import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImplementation;
@@ -125,7 +126,12 @@ public class StreamWriterGenerator extends AbstractStreamWriterGenerator {
         return new AbstractAugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
             public CharSequence emitStartEvent() {
-                return startMapEntryNode(invoke(INPUT, "getKey"), UNKNOWN_SIZE);
+                StringBuilder sb = new StringBuilder()
+                        .append('(')
+                        .append(IdentifiableItem.class.getName())
+                        .append(") ")
+                        .append(invoke(INPUT, "treeIdentifier"));
+                return startMapEntryNode(sb.toString(), UNKNOWN_SIZE);
             }
         };
     }
