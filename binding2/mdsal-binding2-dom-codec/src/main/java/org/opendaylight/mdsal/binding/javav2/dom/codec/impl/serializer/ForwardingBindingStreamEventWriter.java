@@ -14,6 +14,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
+import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
  * Forwarding of event stream writer of Binding v2 representation.
@@ -61,13 +62,13 @@ abstract class ForwardingBindingStreamEventWriter implements BindingStreamEventW
     }
 
     @Override
-    public <I extends TreeNode, T> void startMapNode(final IdentifiableItem<I, T> mapEntryType, final int childSizeHint)
+    public <T extends TreeNode & Identifiable<?>> void startMapNode(final Class<T> mapEntryType, final int childSizeHint)
             throws IOException {
         delegate().startMapNode(mapEntryType, childSizeHint);
     }
 
     @Override
-    public <I extends TreeNode, T> void startOrderedMapNode(final IdentifiableItem<I, T> mapEntryType,
+    public <T extends TreeNode & Identifiable<?>> void startOrderedMapNode(final Class<T> mapEntryType,
             final int childSizeHint) throws IOException {
         delegate().startOrderedMapNode(mapEntryType, childSizeHint);
     }

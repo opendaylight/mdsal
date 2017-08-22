@@ -410,7 +410,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     @if(childTreeNodeIdent) {
         @@Override
         public @{importedNames.get("identifiableItem")}<@{genType.getName()}, @{keyTypeName}> treeIdentifier() {
-            return new @{importedNames.get("identifiableItem")}(@{importedNames.get("genType")}.class,_key);
+            return new @{importedNames.get("identifiableItem")}(@{importedNames.get("genType")}.class,_identifier);
         }
     } else {
       @if(childTreeNode) {
