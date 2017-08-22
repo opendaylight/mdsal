@@ -27,6 +27,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.concepts.Delegator;
+import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -203,15 +204,15 @@ public final class BindingToNormalizedStreamWriter
     }
 
     @Override
-    public <I extends TreeNode, T> void startMapNode(final IdentifiableItem<I, T> mapEntryType, final int childSizeHint)
+    public <T extends TreeNode & Identifiable<?>> void startMapNode(final Class<T> mapEntryType, final int childSizeHint)
             throws IOException {
-        getDelegate().startMapNode(enter(mapEntryType.getType(), NodeIdentifier.class), childSizeHint);
+        getDelegate().startMapNode(enter(mapEntryType, NodeIdentifier.class), childSizeHint);
     }
 
     @Override
-    public <I extends TreeNode, T> void startOrderedMapNode(final IdentifiableItem<I, T> mapEntryType,
+    public <T extends TreeNode & Identifiable<?>> void startOrderedMapNode(final Class<T> mapEntryType,
             final int childSizeHint) throws IOException {
-        getDelegate().startOrderedMapNode(enter(mapEntryType.getType(), NodeIdentifier.class), childSizeHint);
+        getDelegate().startOrderedMapNode(enter(mapEntryType, NodeIdentifier.class), childSizeHint);
     }
 
     @Override
