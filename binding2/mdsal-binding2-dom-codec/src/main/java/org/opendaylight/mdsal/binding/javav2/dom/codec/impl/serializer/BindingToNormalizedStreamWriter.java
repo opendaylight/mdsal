@@ -21,6 +21,7 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.DataCon
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.LeafNodeCodecContext;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.NodeCodecContext;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.TreeNodeCodecContext;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Identifiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
@@ -203,9 +204,9 @@ public final class BindingToNormalizedStreamWriter
     }
 
     @Override
-    public <I extends TreeNode, T> void startMapNode(final IdentifiableItem<I, T> mapEntryType, final int childSizeHint)
+    public <T extends TreeNode & Identifiable<?>> void startMapNode(final Class<T> mapEntryType, final int childSizeHint)
             throws IOException {
-        getDelegate().startMapNode(enter(mapEntryType.getType(), NodeIdentifier.class), childSizeHint);
+        getDelegate().startMapNode(enter(mapEntryType, NodeIdentifier.class), childSizeHint);
     }
 
     @Override

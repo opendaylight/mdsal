@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer;
 
 import com.google.common.annotations.Beta;
 import java.io.IOException;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Identifiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
@@ -61,7 +62,7 @@ abstract class ForwardingBindingStreamEventWriter implements BindingStreamEventW
     }
 
     @Override
-    public <I extends TreeNode, T> void startMapNode(final IdentifiableItem<I, T> mapEntryType, final int childSizeHint)
+    public <T extends TreeNode & Identifiable<?>> void startMapNode(final Class<T> mapEntryType, final int childSizeHint)
             throws IOException {
         delegate().startMapNode(mapEntryType, childSizeHint);
     }
