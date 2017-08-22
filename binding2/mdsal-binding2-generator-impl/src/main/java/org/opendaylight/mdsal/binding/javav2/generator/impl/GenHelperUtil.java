@@ -529,14 +529,12 @@ final class GenHelperUtil {
             if (parent == null) {
                 it.addImplementsType(BindingTypes.TREE_NODE);
             } else {
-                if (parent instanceof ListSchemaNode) {
+                if (!(schemaNode instanceof ListSchemaNode) ||
+                        ((ListSchemaNode) schemaNode).getKeyDefinition().isEmpty()) {
                     it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
-                            (BindingTypes.IDENTIFIABLE_ITEM, parent)));
-                } else {
-                    it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
-                            (BindingTypes.ITEM, parent)));
-                    it.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, it));
+                            (BindingTypes.ITEM, it)));
                 }
+                it.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, it));
             }
 
             if (!(schemaNode instanceof GroupingDefinition)) {
@@ -785,6 +783,9 @@ final class GenHelperUtil {
                     final Type identifiableMarker = Types.parameterizedTypeFor(IDENTIFIABLE, genTOBuilder);
                     genTOBuilder.addImplementsType(IDENTIFIER);
                     genType.addImplementsType(identifiableMarker);
+                    genType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
+                        (BindingTypes.IDENTIFIABLE_ITEM, genType, genTOBuilder)));
+
                 }
 
                 for (final DataSchemaNode schemaNode : node.getChildNodes()) {
@@ -800,7 +801,6 @@ final class GenHelperUtil {
                     final GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("serialVersionUID");
                     prop.setValue(Long.toString(computeDefaultSUID(genTOBuilder)));
                     genTOBuilder.setSUID(prop);
-
                     typeBuildersToGenTypes(module, genType, genTOBuilder.toInstance(), genCtx, namespaceType);
                     genCtx.get(module).addGeneratedTOBuilder(node.getPath(), genTOBuilder);
                 }
