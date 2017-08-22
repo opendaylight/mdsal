@@ -44,7 +44,9 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormal
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Identifiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Identifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
@@ -53,8 +55,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializer;
 import org.opendaylight.yangtools.concepts.Codec;
-import org.opendaylight.yangtools.concepts.Identifiable;
-import org.opendaylight.yangtools.concepts.Identifier;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -422,7 +422,7 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
     @Override
     public Codec<NodeIdentifierWithPredicates, IdentifiableItem<?, ?>> getPathArgumentCodec(final Class<?> listClz,
             final ListSchemaNode schema) {
-        final Class<? extends Identifier> identifier =
+        final Class<? extends Identifier<?>> identifier =
                 ClassLoaderUtils.findFirstGenericArgument(listClz, Identifiable.class);
         final Map<QName, ValueContext> valueCtx = new HashMap<>();
         for (final LeafNodeCodecContext<?> leaf : getLeafNodes(identifier, schema).values()) {
