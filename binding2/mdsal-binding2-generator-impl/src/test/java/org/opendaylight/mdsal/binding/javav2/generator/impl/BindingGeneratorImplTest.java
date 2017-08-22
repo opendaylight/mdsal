@@ -382,8 +382,8 @@ public class BindingGeneratorImplTest {
                 int test_j = 0;
                 for (final MethodSignature m : t.getMethodDefinitions()) {
                     switch (m.getName()) {
-                        case "getKey":
-                                assertMethod(t, "getKey", "MyListKey",
+                        case "getIdentifier":
+                                assertMethod(t, "getIdentifier", "MyListKey",
                                         "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list",
                                         m);
                             test_j++;
