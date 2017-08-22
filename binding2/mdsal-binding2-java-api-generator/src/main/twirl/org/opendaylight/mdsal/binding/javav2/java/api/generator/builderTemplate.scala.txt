@@ -30,7 +30,8 @@
 
 @(genType: GeneratedType, properties: Set[GeneratedProperty], importedNames: Map[String, String],
 ImportedNamesWithProperties: Map[GeneratedProperty, String], augmentField: GeneratedProperty, copyConstructorHelper: String,
-getterMethods: List[String], parentTypeForBuilderName: String, childTreeNode: Boolean, instantiable: Boolean)
+getterMethods: List[String], parentTypeForBuilderName: String, childTreeNode: Boolean, childTreeNodeIdent: Boolean,
+keyTypeName: String, instantiable: Boolean)
 @if(genType != null) {
 @{wrapToDocumentation(formatDataForJavaDocBuilder(importedNames.get("genType")))}
 public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{importedNames.get("genType")}> {
@@ -406,12 +407,18 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 }
 
 @generateImplementedMethods() = {
-    @if(childTreeNode) {
+    @if(childTreeNodeIdent) {
         @@Override
-        public @{importedNames.get("item")}<@{parentTypeForBuilderName}> treeIdentifier() {
-            //TODO implement
-            return null;
+        public @{importedNames.get("identifiableItem")}<@{genType.getName()}, @{keyTypeName}> treeIdentifier() {
+            return new @{importedNames.get("identifiableItem")}(@{importedNames.get("genType")}.class,_key);
         }
+    } else {
+      @if(childTreeNode) {
+          @@Override
+          public @{importedNames.get("item")}<@{genType.getName()}> treeIdentifier() {
+               return new @{importedNames.get("item")}(@{importedNames.get("genType")}.class);
+          }
+      }
     }
 
     @if(augmentField != null) {
