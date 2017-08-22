@@ -311,7 +311,7 @@ final class RpcActionGenHelper {
                 operationName, "", verboseClassComments, genTypeBuilders, namespaceType, genCtx.get(module));
         addImplementedInterfaceFromUses(operationNode, nodeType, genCtx);
         nodeType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
-                (BindingTypes.ITEM, parent)));
+                (BindingTypes.ITEM, nodeType)));
         if (isInput) {
             nodeType.addImplementsType(parameterizedTypeFor(INPUT, nodeType));
         } else {
