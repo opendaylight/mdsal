@@ -210,9 +210,9 @@ public final class BindingToNormalizedStreamWriter
     }
 
     @Override
-    public <I extends TreeNode, T> void startOrderedMapNode(final IdentifiableItem<I, T> mapEntryType,
+    public <T extends TreeNode & Identifiable<?>> void startOrderedMapNode(final Class<T> mapEntryType,
             final int childSizeHint) throws IOException {
-        getDelegate().startOrderedMapNode(enter(mapEntryType.getType(), NodeIdentifier.class), childSizeHint);
+        getDelegate().startOrderedMapNode(enter(mapEntryType, NodeIdentifier.class), childSizeHint);
     }
 
     @Override
