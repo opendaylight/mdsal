@@ -329,7 +329,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      * throw {@link IllegalArgumentException}.
      *
      * @param mapEntryType
-     *            Class of list item, which has defined key.
+     *            Class of list.
      * @param childSizeHint
      *            Non-negative count of expected direct child nodes or
      *            {@link #UNKNOWN_SIZE} if count is unknown. This is only hint
@@ -341,7 +341,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *             <code>choice</code> <code>unkeyed list</code> node.
      * @throws IOException if an underlying IO error occurs
      */
-    <I extends TreeNode, T> void startOrderedMapNode(IdentifiableItem<I, T> mapEntryType, int childSizeHint)
+    <T extends TreeNode & Identifiable<?>> void startOrderedMapNode(Class<T> mapEntryType, int childSizeHint)
             throws IOException;
 
     /**
