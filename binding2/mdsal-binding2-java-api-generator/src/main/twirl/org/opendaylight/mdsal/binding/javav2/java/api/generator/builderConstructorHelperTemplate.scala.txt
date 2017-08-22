@@ -13,8 +13,8 @@
 @(allProps: List[GeneratedProperty], keyProps: List[GeneratedProperty], importedNames: Map[String, String],
 keyPropsList: String)
 @if(keyProps != null) {
-if (base.getKey() == null) {
-    this._key = new @{importedNames.get("keyTypeConstructor")}(
+if (base.getIdentifier() == null) {
+    this._identifier = new @{importedNames.get("keyTypeConstructor")}(
     @{keyPropsList}
     );
     @for(field <- keyProps) {
@@ -22,9 +22,9 @@ if (base.getKey() == null) {
         @{getterMethodName(field)}();
     }
 } @{"else"} {
-    this._key = base.getKey();
+    this._identifier = base.getIdentifier();
     @for(field <- keyProps) {
-        this.@{fieldName(field)} = _key.@{getterMethodName(field)}();
+        this.@{fieldName(field)} = _identifier.@{getterMethodName(field)}();
     }
 }
 }
