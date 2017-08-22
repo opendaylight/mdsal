@@ -315,18 +315,12 @@ public class BuilderRenderer extends BaseRenderer {
         final Type keyType = getKey(getType());
         if (isList && keyType != null) {
             final List<GeneratedProperty> keyProps = ((GeneratedTransferObject) keyType).getProperties();
-            final Comparator<GeneratedProperty> function = (GeneratedProperty p1, GeneratedProperty p2) -> {
-                String name2 = p1.getName();
-                String name3 = p2.getName();
-                return name2.compareTo(name3);
-            };
-            Collections.sort(keyProps, function);
             for (GeneratedProperty keyProp : keyProps) {
                 removeProperty(allProps, keyProp.getName());
             }
             removeProperty(allProps, "key");
             importedNames.put("keyTypeConstructor", importedName(keyType));
-            return builderConstructorHelperTemplate.render(allProps, keyProps, importedNames, getPropertyList(allProps))
+            return builderConstructorHelperTemplate.render(allProps, keyProps, importedNames, getPropertyList(keyProps))
                     .body();
         }
         return builderConstructorHelperTemplate.render(allProps, null, importedNames, null).body();
