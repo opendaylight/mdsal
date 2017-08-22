@@ -23,6 +23,8 @@ import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenU
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIABLE;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIER;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.wildcardTypeFor;
@@ -779,6 +781,12 @@ final class GenHelperUtil {
                 processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
             } else {
                 final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node, genCtx.get(module));
+                if (genTOBuilder != null) {
+                    final Type identifiableMarker = Types.parameterizedTypeFor(IDENTIFIABLE, genTOBuilder);
+                    genTOBuilder.addImplementsType(IDENTIFIER);
+                    genType.addImplementsType(identifiableMarker);
+                }
+
                 for (final DataSchemaNode schemaNode : node.getChildNodes()) {
                     if (resolveDataSchemaNodesCheck(module, schemaContext, schemaNode)) {
                         addSchemaNodeToListBuilders(nodeName, basePackageName, schemaNode, genType, genTOBuilder, listKeys,
@@ -810,7 +818,7 @@ final class GenHelperUtil {
                 returnKeyType = wildcardTypeFor(keyType.getPackageName(), keyType.getName(),
                         true, true, null);
             }
-            constructGetter(typeBuilder, "key", "Returns Primary Key of Yang List Type", returnKeyType, Status.CURRENT);
+            constructGetter(typeBuilder, "identifier", "Returns Primary Key of Yang List Type", returnKeyType, Status.CURRENT);
 
         }
     }
