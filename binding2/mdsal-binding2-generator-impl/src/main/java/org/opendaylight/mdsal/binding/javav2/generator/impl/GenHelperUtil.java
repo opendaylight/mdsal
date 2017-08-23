@@ -447,11 +447,13 @@ final class GenHelperUtil {
 
         augmentBuilders.put(augTypeBuilder.getName(), augTypeBuilder);
 
+
         if(!augSchema.getChildNodes().isEmpty()) {
             genCtx.get(module).addTypeToAugmentation(augTypeBuilder, augSchema);
             genCtx.get(module).addTargetToAugmentation(augTypeBuilder, augSchema.getTargetPath());
         }
         genCtx.get(module).addAugmentType(augTypeBuilder);
+        genCtx.get(module).addTypeToAugmentations(augTypeBuilder, schemaPathAugmentListEntry);
         return genCtx;
     }
 
