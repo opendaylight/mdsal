@@ -24,6 +24,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -88,8 +89,7 @@ public class BindingRuntimeContext implements Immutable {
     private static final char DOT = '.';
     private final ClassLoadingStrategy strategy;
     private final SchemaContext schemaContext;
-
-    private final Map<Type, AugmentationSchemaNode> augmentationToSchema = new HashMap<>();
+    private final Map<Type, List<AugmentationSchemaNode>> augmentationToSchema = new HashMap<>();
     private final BiMap<Type, Object> typeToDefiningSchema = HashBiMap.create();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final Map<QName, Type> identities = new HashMap<>();
@@ -116,7 +116,7 @@ public class BindingRuntimeContext implements Immutable {
         final Map<Module, ModuleContext> modules = generator.getModuleContexts(this.schemaContext);
 
         for (final ModuleContext ctx : modules.values()) {
-            this.augmentationToSchema.putAll(ctx.getTypeToAugmentation());
+            this.augmentationToSchema.putAll(ctx.getTypeToAugmentations());
             this.typeToDefiningSchema.putAll(ctx.getTypeToSchema());
 
             ctx.getTypedefs();
@@ -184,7 +184,8 @@ public class BindingRuntimeContext implements Immutable {
      * @throws IllegalArgumentException
      *             - if supplied class is not an augmentation
      */
-    public @Nullable AugmentationSchemaNode getAugmentationDefinition(final Class<?> augClass) {
+
+    public @Nullable List<AugmentationSchemaNode> getAugmentationDefinition(final Class<?> augClass) throws IllegalArgumentException {
         Preconditions.checkArgument(Augmentation.class.isAssignableFrom(augClass), "Class %s does not represent augmentation", augClass);
         return this.augmentationToSchema.get(referencedType(augClass));
     }
@@ -221,8 +222,8 @@ public class BindingRuntimeContext implements Immutable {
      */
     public Entry<AugmentationIdentifier, AugmentationSchemaNode> getResolvedAugmentationSchema(
             final DataNodeContainer target, final Class<? extends Augmentation<?>> aug) {
-        final AugmentationSchemaNode origSchema = getAugmentationDefinition(aug);
-        Preconditions.checkArgument(origSchema != null, "Augmentation %s is not known in current schema context",aug);
+        final List<AugmentationSchemaNode> origSchemas = getAugmentationDefinition(aug);
+        Preconditions.checkArgument(origSchemas != null, "Augmentation %s is not known in current schema context",aug);
         /*
          * FIXME: Validate augmentation schema lookup
          *
@@ -237,24 +238,26 @@ public class BindingRuntimeContext implements Immutable {
          */
         final Set<QName> childNames = new HashSet<>();
         final Set<DataSchemaNode> realChilds = new HashSet<>();
-        for (final DataSchemaNode child : origSchema.getChildNodes()) {
-            final DataSchemaNode dataChildQNname = target.getDataChildByName(child.getQName());
-            final String childLocalName = child.getQName().getLocalName();
-            if (dataChildQNname == null) {
-                for (final DataSchemaNode dataSchemaNode : target.getChildNodes()) {
-                    if (childLocalName.equals(dataSchemaNode.getQName().getLocalName())) {
-                        realChilds.add(dataSchemaNode);
-                        childNames.add(dataSchemaNode.getQName());
+        for (final AugmentationSchemaNode origSchema : origSchemas) {
+            for (final DataSchemaNode child : origSchema.getChildNodes()) {
+                final DataSchemaNode dataChildQNname = target.getDataChildByName(child.getQName());
+                final String childLocalName = child.getQName().getLocalName();
+                if (dataChildQNname == null) {
+                    for (final DataSchemaNode dataSchemaNode : target.getChildNodes()) {
+                        if (childLocalName.equals(dataSchemaNode.getQName().getLocalName())) {
+                            realChilds.add(dataSchemaNode);
+                            childNames.add(dataSchemaNode.getQName());
+                        }
                     }
+                } else {
+                    realChilds.add(dataChildQNname);
+                    childNames.add(child.getQName());
                 }
-            } else {
-                realChilds.add(dataChildQNname);
-                childNames.add(child.getQName());
             }
         }
 
         final AugmentationIdentifier identifier = new AugmentationIdentifier(childNames);
-        final AugmentationSchemaNode proxy = new EffectiveAugmentationSchema(origSchema, realChilds);
+        final AugmentationSchemaNode proxy = new EffectiveAugmentationSchema(origSchemas.get(0), realChilds);
         return new SimpleEntry<>(identifier, proxy);
     }
 
