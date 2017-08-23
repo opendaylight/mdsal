@@ -52,7 +52,7 @@ public final class ModuleContext {
     private final Map<QName,GeneratedTOBuilder> identities = new HashMap<>();
     private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<>();
     private final List<GeneratedTypeBuilder> augmentations = new ArrayList<>();
-    private final BiMap<Type,AugmentationSchema> typeToAugmentation = HashBiMap.create();
+    private final Map<Type,List<AugmentationSchema>> typeToAugmentations = new HashMap<>();
     private final BiMap<SchemaPath,Type> targetToAugmentation = HashBiMap.create();
     private final Map<Type,Object> typeToSchema = new HashMap<>();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
@@ -169,8 +169,8 @@ public final class ModuleContext {
         return Collections.unmodifiableList(this.augmentations);
     }
 
-    public BiMap<Type, AugmentationSchema> getTypeToAugmentation() {
-        return Maps.unmodifiableBiMap(this.typeToAugmentation);
+    public Map<Type, List<AugmentationSchema>> getTypeToAugmentations() {
+        return Collections.unmodifiableMap(this.typeToAugmentations);
     }
 
     public BiMap<SchemaPath, Type> getTargetToAugmentation() {
@@ -178,8 +178,11 @@ public final class ModuleContext {
     }
 
     public void addTypeToAugmentation(final GeneratedTypeBuilder builder, final AugmentationSchema schema) {
-        this.typeToAugmentation.put(builder, schema);
         this.typeToSchema.put(builder, schema);
+    }
+
+    public void addTypeToAugmentations(final GeneratedTypeBuilder builder, final List<AugmentationSchema> schemaList) {
+        this.typeToAugmentations.put(builder, schemaList);
     }
 
     public void addTargetToAugmentation(final GeneratedTypeBuilder builder, final SchemaPath augmentTarget) {
