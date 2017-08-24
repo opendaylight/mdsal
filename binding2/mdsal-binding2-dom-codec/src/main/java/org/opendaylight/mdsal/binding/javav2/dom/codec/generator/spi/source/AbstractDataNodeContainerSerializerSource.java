@@ -103,11 +103,6 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
         for (final MethodSignature definition : type.getMethodDefinitions()) {
             hashMap.put(definition.getName(), definition.getReturnType());
         }
-        for (final Type parent : type.getImplements()) {
-            if (parent instanceof GeneratedType) {
-                collectAllProperties((GeneratedType) parent, hashMap);
-            }
-        }
         return hashMap;
     }
 
