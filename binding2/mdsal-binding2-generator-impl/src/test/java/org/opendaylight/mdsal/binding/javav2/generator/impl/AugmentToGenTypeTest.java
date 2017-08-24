@@ -376,51 +376,6 @@ public class AugmentToGenTypeTest {
     }
 
     @Test
-    public void augmentationToGenTypesAugUsesNullOrigTargetTest() {
-        final String augmPackName = "pckg.name";
-
-        final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
-        final QName qnamePath = QName.create("test", "2017-04-04", "aug");
-        final SchemaPath path = SchemaPath.create(true, qnamePath);
-        when(augmSchema.getTargetPath()).thenReturn(path);
-        final Set<UsesNode> uses = new HashSet<>();
-        when(augmSchema.getUses()).thenReturn(uses);
-
-        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
-        AugmentationSchemaNodeList.add(augmSchema);
-        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = mock(Map.Entry.class);
-        when(schemaPathAugmentListEntry.getKey()).thenReturn(path);
-        when(schemaPathAugmentListEntry.getValue()).thenReturn(AugmentationSchemaNodeList);
-
-        final SchemaContext context = mock(SchemaContext.class);
-        final Module moduleAug = mock(Module.class);
-        final DerivableSchemaNode targetSchNode = mock(DerivableSchemaNode.class);
-        when(targetSchNode.getPath()).thenReturn(path);
-        when(targetSchNode.isAddedByUses()).thenReturn(true);
-        when(targetSchNode.getOriginal()).thenReturn(Optional.empty());
-        when(moduleAug.getDataChildByName(qnamePath)).thenReturn(targetSchNode);
-        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
-
-        final TypeProvider typeProvider = null;
-        final Map<Module, ModuleContext> genCtx = new HashMap<>();
-        final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
-
-        final Module m = mock(Module.class);
-        when(m.getName()).thenReturn("augm-module");
-        when(m.getNamespace()).thenReturn(qnamePath.getNamespace());
-        when(m.getRevision()).thenReturn(qnamePath.getRevision());
-
-        try {
-            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
-                genTypeBuilders, typeProvider);
-            fail();
-        } catch (final IllegalStateException e) {
-            assertEquals("Failed to find target node from grouping in augmentation " + augmSchema + " in module "
-                    + m.getName(), e.getMessage());
-        }
-    }
-
-    @Test
     public void augmentationToGenTypesTargetChoicSchemaNodeTest() {
         final String augmPackName = "pckg.name";
 
@@ -490,12 +445,7 @@ public class AugmentToGenTypeTest {
         final DerivableSchemaNode targetSchNode = mock(DerivableSchemaNode.class);
         when(targetSchNode.getPath()).thenReturn(path);
         when(targetSchNode.isAddedByUses()).thenReturn(true);
-        final DataSchemaNode origSchNode = mock(DataSchemaNode.class);
-        when(origSchNode.getPath()).thenReturn(path);
-        when(origSchNode.isAddedByUses()).thenReturn(true);
-        when(origSchNode.getQName()).thenReturn(QName.create("test", "2017-04-04", "aug-node"));
-        final Optional optionalSchemaNode = Optional.of(origSchNode);
-        when(targetSchNode.getOriginal()).thenReturn(optionalSchemaNode);
+        when(targetSchNode.getQName()).thenReturn(QName.create("test", "2017-04-04", "aug-node"));
         when(moduleAug.getDataChildByName(qnamePath)).thenReturn(targetSchNode);
         when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
 
