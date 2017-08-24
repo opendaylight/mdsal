@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright © 2016, 2017 Red Hat, Inc. and others.  All rights reserved.
+ Copyright © 2017 Pantheon Technologies s.r.o. and others.  All rights reserved.
 
  This program and the accompanying materials are made available under the
  terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -19,11 +19,11 @@
     </parent>
 
     <groupId>org.opendaylight.mdsal</groupId>
-    <artifactId>odl-mdsal-dom</artifactId>
+    <artifactId>odl-mdsal-dom-schema-service-osgi</artifactId>
     <version>2.4.0-SNAPSHOT</version>
     <packaging>feature</packaging>
 
-    <name>OpenDaylight :: MD-SAL :: DOM</name>
+    <name>OpenDaylight :: MD-SAL :: DOM Schema Service OSGi</name>
 
     <dependencyManagement>
         <dependencies>
@@ -31,18 +31,22 @@
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
                 <version>${project.version}</version>
-                <scope>import</scope>
                 <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>odl-mdsal-dom-schema-service-osgi</artifactId>
-            <classifier>features</classifier>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-dom-broker</artifactId>
             <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-dom-schema-service-osgi</artifactId>
         </dependency>
     </dependencies>
 
