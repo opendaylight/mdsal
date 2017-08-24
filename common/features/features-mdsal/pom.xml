@@ -90,6 +90,13 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>odl-mdsal-dom-schema-service-osgi</artifactId>
+            <classifier>features</classifier>
+    <version>2.4.0-SNAPSHOT</version>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>odl-mdsal-eos-common</artifactId>
             <classifier>features</classifier>
             <type>xml</type>

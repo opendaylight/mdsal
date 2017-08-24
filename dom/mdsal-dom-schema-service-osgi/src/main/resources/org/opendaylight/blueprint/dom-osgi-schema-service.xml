@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
+
+  <bean id="osgiBundleScanningSchema" class="org.opendaylight.mdsal.dom.schema.service.osgi.OsgiBundleScanningSchemaService" factory-method="createInstance" destroy-method="close">
+    <argument ref="blueprintBundleContext" />
+  </bean>
+
+  <service ref="osgiBundleScanningSchema" interface="org.opendaylight.mdsal.dom.api.DOMSchemaService" odl:type="default" />
+
+</blueprint>
