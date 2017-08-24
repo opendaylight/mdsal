@@ -33,6 +33,7 @@
         <module>odl-mdsal-dom</module>
         <module>odl-mdsal-dom-api</module>
         <module>odl-mdsal-dom-broker</module>
+        <module>odl-mdsal-dom-schema-service-osgi</module>
         <module>odl-mdsal-eos-binding</module>
         <module>odl-mdsal-eos-common</module>
         <module>odl-mdsal-eos-dom</module>
