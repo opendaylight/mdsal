@@ -333,7 +333,7 @@ public class BuilderRenderer extends BaseRenderer {
             }
             removeProperty(allProps, "key");
             importedNames.put("keyTypeConstructor", importedName(keyType));
-            return builderConstructorHelperTemplate.render(allProps, keyProps, importedNames, getPropertyList(allProps))
+            return builderConstructorHelperTemplate.render(allProps, keyProps, importedNames, getPropertyList(keyProps))
                     .body();
         }
         return builderConstructorHelperTemplate.render(allProps, null, importedNames, null).body();
