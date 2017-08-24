@@ -103,11 +103,15 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
         for (final MethodSignature definition : type.getMethodDefinitions()) {
             hashMap.put(definition.getName(), definition.getReturnType());
         }
-        for (final Type parent : type.getImplements()) {
-            if (parent instanceof GeneratedType) {
-                collectAllProperties((GeneratedType) parent, hashMap);
-            }
-        }
+
+       /**
+        * According to binding v2 spec., uses nodes are processed as-if they are direct children
+        * of parent node, so we can't get properties from implements any more. Uses nodes are processed by invoking
+        * {@link org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil#resolveDataSchemaNodes()} in which
+        * {@link org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil#resolveDataSchemaNodesCheck()}
+        * allows them to be resolved.
+        */
+
         return hashMap;
     }
 
