@@ -222,16 +222,6 @@ final class AugmentToGenType {
                 "Augmentation List cannot be empty.");
 
         SchemaNode targetSchemaNode = SchemaContextUtil.findDataSchemaNode(schemaContext, targetPath);
-        if (targetSchemaNode instanceof DataSchemaNode && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
-            if (targetSchemaNode instanceof DerivableSchemaNode) {
-                targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orNull();
-            }
-            if (targetSchemaNode == null) {
-                throw new IllegalStateException("Failed to find target node from grouping in augmentation " +
-                        schemaPathAugmentListEntry.getValue().get(0)
-                        + " in module " + module.getName());
-            }
-        }
         if (targetSchemaNode == null) {
             throw new IllegalArgumentException("augment target not found: " + targetPath);
         }
