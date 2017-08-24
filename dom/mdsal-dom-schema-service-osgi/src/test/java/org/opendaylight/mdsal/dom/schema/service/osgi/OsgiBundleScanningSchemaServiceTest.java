@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2017 Pantheon Technologies s.r.o. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.dom.broker.osgi;
+package org.opendaylight.mdsal.dom.schema.service.osgi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.dom.broker.util.TestModel;
+import org.opendaylight.mdsal.dom.schema.service.osgi.util.TestModel;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.osgi.framework.Bundle;
@@ -54,7 +54,7 @@ public class OsgiBundleScanningSchemaServiceTest {
         try {
             OsgiBundleScanningSchemaService.getInstance();
             OsgiBundleScanningSchemaService.destroyInstance();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             assertTrue(e instanceof IllegalStateException);
         }
     }
@@ -62,6 +62,7 @@ public class OsgiBundleScanningSchemaServiceTest {
     @Test
     public void basicTest() throws Exception {
         final SchemaContext schemaContext = TestModel.createTestContext();
+
         final SchemaContextListener schemaContextListener = mock(SchemaContextListener.class);
         doNothing().when(schemaContextListener).onGlobalContextUpdated(schemaContext);
         osgiService.registerSchemaContextListener(schemaContextListener);
