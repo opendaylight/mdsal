@@ -25,6 +25,7 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGenera
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIABLE;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIER;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INSTANTIABLE;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.wildcardTypeFor;
@@ -569,6 +570,7 @@ final class GenHelperUtil {
                         verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
         annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
         notificationInterface.addImplementsType(NOTIFICATION);
+        notificationInterface.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, notificationInterface));
         genCtx.get(module).addChildNodeType(notification, notificationInterface);
 
         // Notification object

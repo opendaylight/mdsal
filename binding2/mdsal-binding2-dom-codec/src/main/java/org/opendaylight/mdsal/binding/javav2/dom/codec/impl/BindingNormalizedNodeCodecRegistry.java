@@ -153,7 +153,7 @@ public class BindingNormalizedNodeCodecRegistry implements TreeNodeSerializerReg
         // We create DOM stream writer which produces normalized nodes
         final NormalizedNodeStreamWriter domWriter = ImmutableNormalizedNodeStreamWriter.from(result);
         @SuppressWarnings("unchecked")
-        final Class<? extends TreeNode> type = (Class) data.getClass();
+        final Class<? extends TreeNode> type = (Class) ((Instantiable<?>) data).implementedInterface();
         @SuppressWarnings("unchecked")
         final BindingStreamEventWriter writer = newNotificationWriter((Class) type, domWriter);
         try {
