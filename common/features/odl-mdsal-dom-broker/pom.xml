@@ -74,6 +74,13 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>mdsal-dom-broker</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-dom-schema-service-osgi</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
     </dependencies>
 
     <!--
