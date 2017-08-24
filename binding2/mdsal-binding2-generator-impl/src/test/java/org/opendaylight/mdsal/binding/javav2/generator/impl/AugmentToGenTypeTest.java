@@ -545,65 +545,6 @@ public class AugmentToGenTypeTest {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Test
-    public void augmentationToGenTypesAugUsesNullOrigTargetTest() throws Exception {
-        final Class[] parameterTypes = { String.class, Map.Entry.class, Module.class, SchemaContext.class,
-                boolean.class, Map.class, Map.class, TypeProvider.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("augmentationToGenTypes", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
-        final String augmPackName = "pckg.name";
-
-        final AugmentationSchema augmSchema = mock(AugmentationSchema.class);
-        final QName qnamePath = QName.create("test", "2017-04-04", "aug");
-        final SchemaPath path = SchemaPath.create(true, qnamePath);
-        when(augmSchema.getTargetPath()).thenReturn(path);
-        final Set<UsesNode> uses = new HashSet<>();
-        when(augmSchema.getUses()).thenReturn(uses);
-
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmSchema);
-        final Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry = mock(Map.Entry.class);
-        when(schemaPathAugmentListEntry.getKey()).thenReturn(path);
-        when(schemaPathAugmentListEntry.getValue()).thenReturn(augmentationSchemaList);
-
-        final SchemaContext context = mock(SchemaContext.class);
-        final Module moduleAug = mock(Module.class);
-        final DerivableSchemaNode targetSchNode = mock(DerivableSchemaNode.class);
-        when(targetSchNode.getPath()).thenReturn(path);
-        when(targetSchNode.isAddedByUses()).thenReturn(true);
-        final Optional optionalSchemaNode = Optional.absent();
-        when(targetSchNode.getOriginal()).thenReturn(optionalSchemaNode);
-        when(moduleAug.getDataChildByName(qnamePath)).thenReturn(targetSchNode);
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(moduleAug);
-
-        final TypeProvider typeProvider = null;
-        final Map<Module, ModuleContext> genCtx = new HashMap<>();
-        final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
-
-        final Module m = mock(Module.class);
-        when(m.getName()).thenReturn("augm-module");
-        when(m.getNamespace()).thenReturn(qnamePath.getNamespace());
-        when(m.getRevision()).thenReturn(qnamePath.getRevision());
-
-        final Object[] args = { augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider };
-        try {
-            generate.invoke(AugmentToGenType.class, args);
-            fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalStateException);
-            assertEquals("Failed to find target node from grouping in augmentation " + augmSchema + " in module "
-                    + m.getName(), cause.getMessage());
-        }
-    }
-
     @SuppressWarnings({ "rawtypes" })
     @Test
     public void augmentationToGenTypesTargetChoicSchemaNodeTest() throws Exception {
@@ -689,12 +630,7 @@ public class AugmentToGenTypeTest {
         final DerivableSchemaNode targetSchNode = mock(DerivableSchemaNode.class);
         when(targetSchNode.getPath()).thenReturn(path);
         when(targetSchNode.isAddedByUses()).thenReturn(true);
-        final DataSchemaNode origSchNode = mock(DataSchemaNode.class);
-        when(origSchNode.getPath()).thenReturn(path);
-        when(origSchNode.isAddedByUses()).thenReturn(true);
-        when(origSchNode.getQName()).thenReturn(QName.create("test", "2017-04-04", "aug-node"));
-        final Optional optionalSchemaNode = Optional.of(origSchNode);
-        when(targetSchNode.getOriginal()).thenReturn(optionalSchemaNode);
+        when(targetSchNode.getQName()).thenReturn(QName.create("test", "2017-04-04", "aug-node"));
         when(moduleAug.getDataChildByName(qnamePath)).thenReturn(targetSchNode);
         when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
                 .thenReturn(moduleAug);
