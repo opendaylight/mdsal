@@ -1,0 +1,9 @@
+module empty-test1 {
+    yang-version 1;
+    namespace "em:tst:1";
+    prefix "empty-test-1";
+
+    revision "2017-09-13" {
+        description "Initial revision.";
+    }
+}
