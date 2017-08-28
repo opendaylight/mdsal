@@ -259,7 +259,7 @@ public abstract class AbstractTreeNodeSerializerSource extends AbstractSource {
      */
     static final CharSequence anyxmlNode(final String name, final String value)
             throws IllegalArgumentException {
-        return invoke(STREAM, "anyxmlNode", escape(name), name);
+        return invoke(STREAM, "anyxmlNode", escape(name), value);
     }
 
     /**
