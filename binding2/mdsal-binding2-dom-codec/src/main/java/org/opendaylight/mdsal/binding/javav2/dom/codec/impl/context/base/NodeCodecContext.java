@@ -75,6 +75,15 @@ public abstract class NodeCodecContext<D extends TreeNode> implements BindingTre
         ImmutableMap<String, LeafNodeCodecContext<?>> getLeafNodes(Class<?> type, DataNodeContainer schema);
 
         /**
+         * Returns anyxml nodes for supplied data container and parent class.
+         *
+         * @param type Binding type for which anyxml should be loaded.
+         * @param schema  Instantiated schema of binding type.
+         * @return Map of local name to anyxml node context.
+         */
+        ImmutableMap<String, AnyxmlNodeCodecContext<?>> getAnyxmlNodes(Class<?> type, DataNodeContainer schema);
+
+        /**
          * Returns Path argument codec for list item
          *
          * @param type Type of list item
