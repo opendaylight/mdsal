@@ -463,7 +463,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *             <code>choice</code> <code>unkeyed list</code> node.
      * @throws IOException if an underlying IO error occurs
      */
-    void startAnyxmlNode(String name, Object value) throws IOException;
+    void anyxmlNode(String name, Object value) throws IOException;
 
     /**
      * Emits anydata node event.
