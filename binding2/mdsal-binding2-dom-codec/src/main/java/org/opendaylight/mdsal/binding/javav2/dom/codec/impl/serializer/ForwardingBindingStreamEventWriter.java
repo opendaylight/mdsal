@@ -95,8 +95,8 @@ abstract class ForwardingBindingStreamEventWriter implements BindingStreamEventW
     }
 
     @Override
-    public void startAnyxmlNode(final String name, final Object value) throws IOException {
-        delegate().startAnyxmlNode(name, value);
+    public void anyxmlNode(final String name, final Object value) throws IOException {
+        delegate().anyxmlNode(name, value);
     }
 
     @Override
