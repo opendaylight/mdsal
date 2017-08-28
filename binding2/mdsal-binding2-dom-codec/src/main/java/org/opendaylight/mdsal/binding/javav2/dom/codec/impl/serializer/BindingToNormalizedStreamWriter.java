@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.CaseNodeCodecContext;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.KeyedListNodeCodecContext;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.AnyxmlNodeCodecContext;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.DataContainerCodecContext;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.LeafNodeCodecContext;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.NodeCodecContext;
@@ -144,6 +145,18 @@ public final class BindingToNormalizedStreamWriter
         return new AbstractMap.SimpleEntry<>(domArg, domValue);
     }
 
+    private Map.Entry<NodeIdentifier, Object> serializeAnyxml(final String localName, final Object value) {
+        Preconditions.checkArgument(current() instanceof TreeNodeCodecContext);
+
+        final TreeNodeCodecContext<?, ?> currentCasted = (TreeNodeCodecContext<?, ?>) current();
+        final AnyxmlNodeCodecContext<?> anyxmlContext = currentCasted.getAnyxmlChild(localName);
+
+        final NodeIdentifier domArg = (NodeIdentifier) anyxmlContext.getDomPathArgument();
+        final Object domValue = anyxmlContext.getValueCodec().serialize(value);
+        emitSchema(anyxmlContext.getSchema());
+        return new AbstractMap.SimpleEntry<>(domArg, domValue);
+    }
+
     @Override
     public void leafNode(final String localName, final Object value) throws IOException {
         final Entry<NodeIdentifier, Object> dom = serializeLeaf(localName, value);
@@ -152,7 +165,7 @@ public final class BindingToNormalizedStreamWriter
 
     @Override
     public void anyxmlNode(final String name, final Object value) throws IOException {
-        final Entry<NodeIdentifier, Object> dom = serializeLeaf(name, value);
+        final Entry<NodeIdentifier, Object> dom = serializeAnyxml(name, value);
         getDelegate().anyxmlNode(dom.getKey(), dom.getValue());
     }
 
