@@ -66,6 +66,7 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
     private static final Comparator<Method> METHOD_BY_ALPHABET = Comparator.comparing(Method::getName);
 
     private final ImmutableMap<String, LeafNodeCodecContext<?>> leafChild;
+    private final ImmutableMap<String, AnyxmlNodeCodecContext<?>> anyxmlChild;
     private final ImmutableMap<YangInstanceIdentifier.PathArgument, NodeContextSupplier> byYang;
     private final ImmutableSortedMap<Method, NodeContextSupplier> byMethod;
     private final ImmutableMap<Class<?>, DataContainerCodecPrototype<?>> byStreamClass;
@@ -82,6 +83,7 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
         super(prototype);
 
         this.leafChild = factory().getLeafNodes(getBindingClass(), getSchema());
+        this.anyxmlChild = factory().getAnyxmlNodes(getBindingClass(), getSchema());
 
         final Map<Class<?>, Method> clsToMethod = BindingReflections.getChildrenClassToMethod(getBindingClass());
 
@@ -94,6 +96,11 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
         for (final LeafNodeCodecContext<?> leaf : leafChild.values()) {
             byMethodBuilder.put(leaf.getGetter(), leaf);
             byYangBuilder.put(leaf.getDomPathArgument(), leaf);
+        }
+
+        for (final AnyxmlNodeCodecContext<?> anyxml : anyxmlChild.values()) {
+            byMethodBuilder.put(anyxml.getGetter(), anyxml);
+            byYangBuilder.put(anyxml.getDomPathArgument(), anyxml);
         }
 
         for (final Entry<Class<?>, Method> childDataObj : clsToMethod.entrySet()) {
@@ -206,6 +213,11 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
     public final LeafNodeCodecContext<?> getLeafChild(final String name) {
         final LeafNodeCodecContext<?> value = leafChild.get(name);
         return IncorrectNestingException.checkNonNull(value, "Leaf %s is not valid for %s", name, getBindingClass());
+    }
+
+    public final AnyxmlNodeCodecContext<?> getAnyxmlChild(final String name) {
+        final AnyxmlNodeCodecContext<?> value = anyxmlChild.get(name);
+        return IncorrectNestingException.checkNonNull(value, "Anyxml %s is not valid for %s", name, getBindingClass());
     }
 
     private DataContainerCodecPrototype<?> loadChildPrototype(final Class<?> childClass) {

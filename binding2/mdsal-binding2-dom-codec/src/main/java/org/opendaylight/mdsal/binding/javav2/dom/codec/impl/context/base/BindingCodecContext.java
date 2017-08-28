@@ -63,6 +63,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
+import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
@@ -336,10 +337,31 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
         return getLeafNodesUsingReflection(parentClass, getterToLeafSchema);
     }
 
+    @Override
+    public ImmutableMap<String, AnyxmlNodeCodecContext<?>> getAnyxmlNodes(final Class<?> parentClass,
+                                                                      final DataNodeContainer childSchema) {
+        final Map<String, DataSchemaNode> getterToAnyxmlSchema = new HashMap<>();
+        for (final DataSchemaNode anyxml : childSchema.getChildNodes()) {
+            if (anyxml instanceof AnyXmlSchemaNode) {
+                getterToAnyxmlSchema.put(getGetterName(anyxml.getQName(), false), anyxml);
+            }
+        }
+        return getAnyxmlNodesUsingReflection(parentClass, getterToAnyxmlSchema);
+    }
+
     private static String getGetterName(final QName qName, final TypeDefinition<?> typeDef) {
         final String suffix =
                 JavaIdentifierNormalizer.normalizeSpecificIdentifier(qName.getLocalName(), JavaIdentifier.CLASS);
         if (typeDef instanceof BooleanTypeDefinition || typeDef instanceof EmptyTypeDefinition) {
+            return "is" + suffix;
+        }
+        return "get" + suffix;
+    }
+
+    private static String getGetterName(final QName qName, final boolean booleanOrEmpty) {
+        final String suffix =
+                JavaIdentifierNormalizer.normalizeSpecificIdentifier(qName.getLocalName(), JavaIdentifier.CLASS);
+        if (booleanOrEmpty) {
             return "is" + suffix;
         }
         return "get" + suffix;
@@ -375,6 +397,24 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
             }
         }
         return ImmutableMap.copyOf(leaves);
+    }
+
+    private ImmutableMap<String, AnyxmlNodeCodecContext<?>> getAnyxmlNodesUsingReflection(final Class<?> parentClass,
+                                                                final Map<String, DataSchemaNode> getterToAnyxmlSchema) {
+        final Map<String, AnyxmlNodeCodecContext<?>> anyxmls = new HashMap<>();
+        for (final Method method : parentClass.getMethods()) {
+            if (method.getParameterTypes().length == 0) {
+                final DataSchemaNode schema = getterToAnyxmlSchema.get(method.getName());
+                if (schema instanceof AnyXmlSchemaNode) {
+                    final Class<?> valueType = method.getReturnType();
+                    final Codec<Object, Object> codec = (Codec) getAnyxmlCodec();
+                    final AnyxmlNodeCodecContext<?> anyxmlNodeCtx =
+                            new AnyxmlNodeCodecContext<>(schema, codec, method, context.getSchemaContext());
+                    anyxmls.put(schema.getQName().getLocalName(), anyxmlNodeCtx);
+                }
+            }
+        }
+        return ImmutableMap.copyOf(anyxmls);
     }
 
     private Codec<Object, Object> getCodec(final Class<?> valueType, final DataSchemaNode schema) {
