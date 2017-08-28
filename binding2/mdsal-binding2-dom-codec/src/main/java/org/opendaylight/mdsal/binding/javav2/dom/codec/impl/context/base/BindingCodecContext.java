@@ -23,8 +23,10 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.xml.transform.dom.DOMSource;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingTreeCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.BindingTreeNodeCodec;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.AnyxmlCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.IdentifiableItemCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.IdentityCodec;
@@ -77,6 +79,7 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 /**
  * Binding codec context for holding runtime part and codecs.
@@ -88,6 +91,7 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
 
     private final Codec<YangInstanceIdentifier, InstanceIdentifier<?>> instanceIdentifierCodec;
     private final Codec<QName, Class<?>> identityCodec;
+    private final Codec<DOMSource, Document> anyxmlCodec;
     private final BindingNormalizedNodeCodecRegistry registry;
     private final BindingRuntimeContext context;
     private final SchemaRootCodecContext<?> root;
@@ -104,6 +108,7 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
         this.context = Preconditions.checkNotNull(context, "Binding Runtime Context is required.");
         this.root = SchemaRootCodecContext.create(this);
         this.identityCodec = new IdentityCodec(context);
+        this.anyxmlCodec = new AnyxmlCodec(context);
         this.instanceIdentifierCodec = new InstanceIdentifierCodec(this);
         this.registry = Preconditions.checkNotNull(registry);
     }
@@ -129,6 +134,15 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
      */
     public Codec<QName, Class<?>> getIdentityCodec() {
         return identityCodec;
+    }
+
+    /**
+     * Get anyxml codec.
+     *
+     * @return anyxml codec
+     */
+    public Codec<DOMSource, Document> getAnyxmlCodec() {
+        return anyxmlCodec;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
