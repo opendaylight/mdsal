@@ -151,7 +151,7 @@ public final class BindingToNormalizedStreamWriter
     }
 
     @Override
-    public void startAnyxmlNode(final String name, final Object value) throws IOException {
+    public void anyxmlNode(final String name, final Object value) throws IOException {
         final Entry<NodeIdentifier, Object> dom = serializeLeaf(name, value);
         getDelegate().anyxmlNode(dom.getKey(), dom.getValue());
     }
