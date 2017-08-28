@@ -56,7 +56,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
  * {@link #leafSetEntryNode(Object)}.
  *
  * <li><code>anyxml - Anyxml node event is emitted using
- * {@link #startAnyxmlNode(String, Object)}. {@link #endNode()} MUST NOT be emitted
+ * {@link #anyxmlNode(String, Object)}. {@link #endNode()} MUST NOT be emitted
  * for anyxml node.</code></li>
  *
  * <li><code>anydata - Anydata node event is emitted using
@@ -463,7 +463,7 @@ public interface BindingStreamEventWriter extends Closeable, Flushable {
      *             <code>choice</code> <code>unkeyed list</code> node.
      * @throws IOException if an underlying IO error occurs
      */
-    void startAnyxmlNode(String name, Object value) throws IOException;
+    void anyxmlNode(String name, Object value) throws IOException;
 
     /**
      * Emits anydata node event.
