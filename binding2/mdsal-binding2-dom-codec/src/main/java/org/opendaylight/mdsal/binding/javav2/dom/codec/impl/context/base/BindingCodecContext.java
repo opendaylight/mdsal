@@ -69,6 +69,7 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
@@ -331,7 +332,7 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
         final Map<String, DataSchemaNode> getterToLeafSchema = new HashMap<>();
         for (final DataSchemaNode leaf : childSchema.getChildNodes()) {
             if (leaf instanceof TypedDataSchemaNode) {
-                getterToLeafSchema.put(getGetterName(leaf.getQName(), ((TypedDataSchemaNode) leaf).getType()), leaf);
+                getterToLeafSchema.put(getGetterName(leaf, ((TypedDataSchemaNode) leaf).getType()), leaf);
             }
         }
         return getLeafNodesUsingReflection(parentClass, getterToLeafSchema);
@@ -349,18 +350,21 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
         return getAnyxmlNodesUsingReflection(parentClass, getterToAnyxmlSchema);
     }
 
-    private static String getGetterName(final QName qname, final TypeDefinition<?> typeDef) {
-        final String suffix =
-                JavaIdentifierNormalizer.normalizeSpecificIdentifier(qname.getLocalName(), JavaIdentifier.CLASS);
-        if (typeDef instanceof BooleanTypeDefinition || typeDef instanceof EmptyTypeDefinition) {
+    private static String getGetterName(final SchemaNode node, final TypeDefinition<?> typeDef) {
+        final String suffix = JavaIdentifierNormalizer.normalizeSpecificIdentifier(node.getQName().getLocalName(),
+            JavaIdentifier.CLASS);
+
+        if ((typeDef.getPath().equals(node.getPath()) || typeDef.getBaseType() == null)
+                && (typeDef instanceof BooleanTypeDefinition || typeDef instanceof EmptyTypeDefinition)) {
             return "is" + suffix;
         }
+
         return "get" + suffix;
     }
 
-    private static String getGetterName(final QName qName, final boolean booleanOrEmpty) {
+    private static String getGetterName(final QName qname, final boolean booleanOrEmpty) {
         final String suffix =
-                JavaIdentifierNormalizer.normalizeSpecificIdentifier(qName.getLocalName(), JavaIdentifier.CLASS);
+                JavaIdentifierNormalizer.normalizeSpecificIdentifier(qname.getLocalName(), JavaIdentifier.CLASS);
         if (booleanOrEmpty) {
             return "is" + suffix;
         }
@@ -400,7 +404,7 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
     }
 
     private ImmutableMap<String, AnyxmlNodeCodecContext<?>> getAnyxmlNodesUsingReflection(final Class<?> parentClass,
-                                                                final Map<String, DataSchemaNode> getterToAnyxmlSchema) {
+            final Map<String, DataSchemaNode> getterToAnyxmlSchema) {
         final Map<String, AnyxmlNodeCodecContext<?>> anyxmls = new HashMap<>();
         for (final Method method : parentClass.getMethods()) {
             if (method.getParameterTypes().length == 0) {
@@ -454,9 +458,9 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
     @SuppressWarnings("checkstyle:IllegalCatch")
     private Codec<Object, Object> getCodecForBindingClass(final Class<?> valueType, final TypeDefinition<?> typeDef) {
         if (typeDef instanceof IdentityrefTypeDefinition) {
-            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, identityCodec);
+            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, typeDef, identityCodec);
         } else if (typeDef instanceof InstanceIdentifierTypeDefinition) {
-            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, instanceIdentifierCodec);
+            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, typeDef, instanceIdentifierCodec);
         } else if (typeDef instanceof UnionTypeDefinition) {
             final Callable<UnionTypeCodec> loader =
                     UnionTypeCodec.loader(valueType, (UnionTypeDefinition) typeDef, this);
