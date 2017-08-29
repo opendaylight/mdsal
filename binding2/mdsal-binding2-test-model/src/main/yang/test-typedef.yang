@@ -11,6 +11,10 @@ module test-typedef {
         type boolean;
     }
 
+    typedef typedef-empty {
+        type empty;
+    }
+
     container default-policy{
       leaf action {
         type boolean;
@@ -23,6 +27,21 @@ module test-typedef {
       leaf action3 {
         type boolean;
         default "true";
+      }
+    }
+
+    container test-cont{
+      leaf empty-leaf {
+        type empty;
+      }
+
+      leaf empty-leaf2 {
+        type typedef-empty;
+      }
+
+      leaf empty-leaf3{
+         type empty;
+         default "";
       }
     }
 }
