@@ -28,7 +28,8 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 @Beta
-public final class AnyxmlNodeCodecContext<D extends TreeNode> extends NodeCodecContext<D> implements NodeContextSupplier {
+public final class AnyxmlNodeCodecContext<D extends TreeNode> extends NodeCodecContext<D>
+        implements NodeContextSupplier {
 
     private final YangInstanceIdentifier.PathArgument yangIdentifier;
     private final Codec<Object, Object> valueCodec;
@@ -64,7 +65,7 @@ public final class AnyxmlNodeCodecContext<D extends TreeNode> extends NodeCodecC
         return this;
     }
 
-    public final Method getGetter() {
+    public Method getGetter() {
         return getter;
     }
 
