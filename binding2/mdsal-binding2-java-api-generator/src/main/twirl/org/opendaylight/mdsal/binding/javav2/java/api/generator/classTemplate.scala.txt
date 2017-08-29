@@ -148,6 +148,11 @@ class @{genType.getName}
 
 @defaultInstance() = {
 @if(genTo.isTypedef && !allProperties.isEmpty && !genTo.isUnionType) {
+    @if("org.opendaylight.yangtools.yang.common.Empty".equals(allProperties.get(0).getReturnType.getFullyQualifiedName)) {
+        public static @{genTo.getName} getDefaultInstance() {
+            return new @{genTo.getName}(Empty.getInstance());
+        }
+    } else {
     @if(!"org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier".equals(allProperties.get(0).getReturnType.getFullyQualifiedName)) {
         public static @{genTo.getName} getDefaultInstance(String defaultValue) {
             @if(allProperties.size > 1) {
@@ -188,6 +193,7 @@ class @{genType.getName}
                 }
             }
         }
+    }
     }
 }
 }
