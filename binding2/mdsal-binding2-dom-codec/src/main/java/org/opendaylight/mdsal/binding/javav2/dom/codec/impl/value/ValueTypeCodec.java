@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.yangtools.concepts.Codec;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EmptyTypeDefinition;
@@ -61,17 +62,18 @@ public abstract class ValueTypeCodec implements Codec<Object, Object> {
         public Object serialize(final Object arg0) {
             // Empty type has null value in NormalizedNode and Composite Node
             // representation
-            return null;
+            return Empty.getInstance();
         }
 
         @Override
         public Object deserialize(final Object arg0) {
-            /* Empty type has boolean.TRUE representation in Binding-aware world
-            *  otherwise it is null / false.
-            *  So when codec is triggered, empty leaf is present, that means we
-            *  are safe to return true.
+            /* Empty type has Empty representation in Binding-aware world
+            *  otherwise it is null.
+            *  So when codec is triggered, empty leaf is present and its
+            *  value is Empty.getInstance(), that means we are safe to
+            *  return it directly.
             */
-            return Boolean.TRUE;
+            return arg0;
         }
     };
 
@@ -109,16 +111,16 @@ public abstract class ValueTypeCodec implements Codec<Object, Object> {
             return EnumerationCodec.loader(typeClz, (EnumTypeDefinition) rootType);
         } else if (rootType instanceof BitsTypeDefinition) {
             return BitsCodec.loader(typeClz, (BitsTypeDefinition) rootType);
-        } else if (rootType instanceof EmptyTypeDefinition) {
-            return EMPTY_LOADER;
         }
-        return EncapsulatedValueCodec.loader(typeClz);
+
+        return EncapsulatedValueCodec.loader(typeClz, def);
     }
 
     @SuppressWarnings("rawtypes")
-    public static ValueTypeCodec encapsulatedValueCodecFor(final Class<?> typeClz, final Codec delegate) {
+    public static ValueTypeCodec encapsulatedValueCodecFor(final Class<?> typeClz, final TypeDefinition<?> typeDef,
+            final Codec delegate) {
         final SchemaUnawareCodec extractor = getCachedSchemaUnawareCodec(typeClz,
-            EncapsulatedValueCodec.loader(typeClz));
+            EncapsulatedValueCodec.loader(typeClz, typeDef));
         return new CompositeValueCodec(extractor, delegate);
     }
 }

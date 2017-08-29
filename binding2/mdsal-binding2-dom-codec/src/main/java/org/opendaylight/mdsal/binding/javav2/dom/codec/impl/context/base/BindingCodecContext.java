@@ -454,9 +454,9 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
     @SuppressWarnings("checkstyle:IllegalCatch")
     private Codec<Object, Object> getCodecForBindingClass(final Class<?> valueType, final TypeDefinition<?> typeDef) {
         if (typeDef instanceof IdentityrefTypeDefinition) {
-            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, identityCodec);
+            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, typeDef, identityCodec);
         } else if (typeDef instanceof InstanceIdentifierTypeDefinition) {
-            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, instanceIdentifierCodec);
+            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, typeDef, instanceIdentifierCodec);
         } else if (typeDef instanceof UnionTypeDefinition) {
             final Callable<UnionTypeCodec> loader =
                     UnionTypeCodec.loader(valueType, (UnionTypeDefinition) typeDef, this);
