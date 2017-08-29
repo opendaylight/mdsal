@@ -115,7 +115,8 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
         }
 
         final String prefix;
-        if (type instanceof BooleanTypeDefinition || type instanceof EmptyTypeDefinition) {
+        if (type != null  && (type.getPath().equals(node.getPath()) || type.getBaseType() == null)
+            && (type instanceof BooleanTypeDefinition || type instanceof EmptyTypeDefinition)) {
             prefix = "is";
         } else {
             prefix = "get";
