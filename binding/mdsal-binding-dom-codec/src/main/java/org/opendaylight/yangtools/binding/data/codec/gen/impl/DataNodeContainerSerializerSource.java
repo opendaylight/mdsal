@@ -30,6 +30,7 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypedSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.BooleanTypeDefinition;
@@ -115,7 +116,8 @@ abstract class DataNodeContainerSerializerSource extends DataObjectSerializerSou
         }
 
         final String prefix;
-        if (type instanceof BooleanTypeDefinition || type instanceof EmptyTypeDefinition) {
+        if (type != null  && (type.getPath().equals(node.getPath()) || type.getBaseType() == null )
+                && (type instanceof BooleanTypeDefinition || type instanceof EmptyTypeDefinition)) {
             prefix = "is";
         } else {
             prefix = "get";
