@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.yangtools.concepts.Codec;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EmptyTypeDefinition;
@@ -61,7 +62,7 @@ public abstract class ValueTypeCodec implements Codec<Object, Object> {
         public Object serialize(final Object arg0) {
             // Empty type has null value in NormalizedNode and Composite Node
             // representation
-            return null;
+            return Empty.getInstance();
         }
 
         @Override
@@ -109,9 +110,8 @@ public abstract class ValueTypeCodec implements Codec<Object, Object> {
             return EnumerationCodec.loader(typeClz, (EnumTypeDefinition) rootType);
         } else if (rootType instanceof BitsTypeDefinition) {
             return BitsCodec.loader(typeClz, (BitsTypeDefinition) rootType);
-        } else if (rootType instanceof EmptyTypeDefinition) {
-            return EMPTY_LOADER;
         }
+
         return EncapsulatedValueCodec.loader(typeClz, def);
     }
 
