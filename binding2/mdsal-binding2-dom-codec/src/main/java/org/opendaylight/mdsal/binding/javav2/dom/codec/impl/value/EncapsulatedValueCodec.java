@@ -43,7 +43,7 @@ public final class EncapsulatedValueCodec extends ReflectionBasedCodec implement
         this.valueType = Preconditions.checkNotNull(valueType);
     }
 
-    static Callable<EncapsulatedValueCodec> loader(final Class<?> typeClz, TypeDefinition<?> typeDef) {
+    static Callable<EncapsulatedValueCodec> loader(final Class<?> typeClz, final TypeDefinition<?> typeDef) {
         return () -> {
             final Method m;
             if (typeDef instanceof BooleanTypeDefinition) {
