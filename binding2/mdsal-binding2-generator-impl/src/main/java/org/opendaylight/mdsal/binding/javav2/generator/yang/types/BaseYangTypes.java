@@ -22,6 +22,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -52,7 +53,7 @@ public final class BaseYangTypes {
     /**
      * <code>Type</code> representation of <code>empty</code> YANG type
      */
-    public static final Type EMPTY_TYPE = Types.typeForClass(Boolean.class);
+    public static final Type EMPTY_TYPE = Types.typeForClass(Empty.class);
 
     /**
      * <code>Type</code> representation of <code>enumeration</code> YANG type

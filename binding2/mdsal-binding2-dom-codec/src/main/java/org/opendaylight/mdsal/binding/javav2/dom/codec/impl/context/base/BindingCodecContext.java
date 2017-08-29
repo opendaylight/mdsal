@@ -59,6 +59,7 @@ import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.Identifier;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
@@ -74,7 +75,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.BooleanTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.EmptyTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.InstanceIdentifierTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
@@ -354,8 +354,8 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
         final String suffix = JavaIdentifierNormalizer.normalizeSpecificIdentifier(node.getQName().getLocalName(),
             JavaIdentifier.CLASS);
 
-        if ((typeDef.getPath().equals(node.getPath()) || typeDef.getBaseType() == null)
-                && (typeDef instanceof BooleanTypeDefinition || typeDef instanceof EmptyTypeDefinition)) {
+        if (typeDef instanceof BooleanTypeDefinition
+                && (typeDef.getPath().equals(node.getPath()) || typeDef.getBaseType() == null)) {
             return "is" + suffix;
         }
 
@@ -445,10 +445,8 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
             @SuppressWarnings({ "unchecked", "rawtypes" })
             final Codec<Object, Object> casted = (Codec) instanceIdentifierCodec;
             return casted;
-        } else if (Boolean.class.equals(valueType)) {
-            if (instantiatedType instanceof EmptyTypeDefinition) {
-                return ValueTypeCodec.EMPTY_CODEC;
-            }
+        } else if (Empty.class.equals(valueType)) {
+            return ValueTypeCodec.EMPTY_CODEC;
         } else if (BindingReflections.isBindingClass(valueType)) {
             return getCodecForBindingClass(valueType, instantiatedType);
         }
