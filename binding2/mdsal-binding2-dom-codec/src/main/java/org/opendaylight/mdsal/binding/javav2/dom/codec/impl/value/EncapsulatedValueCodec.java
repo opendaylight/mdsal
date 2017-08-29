@@ -18,6 +18,8 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.value.ValueTypeCodec.SchemaUnawareCodec;
+import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.BooleanTypeDefinition;
 
 /**
  * Derived YANG types are just immutable value holders for simple value
@@ -41,9 +43,14 @@ public final class EncapsulatedValueCodec extends ReflectionBasedCodec implement
         this.valueType = Preconditions.checkNotNull(valueType);
     }
 
-    static Callable<EncapsulatedValueCodec> loader(final Class<?> typeClz) {
+    static Callable<EncapsulatedValueCodec> loader(final Class<?> typeClz, TypeDefinition<?> typeDef) {
         return () -> {
-            final Method m = typeClz.getMethod("getValue");
+            final Method m;
+            if (typeDef instanceof BooleanTypeDefinition) {
+                m = typeClz.getMethod("isValue");
+            } else {
+                m = typeClz.getMethod("getValue");
+            }
             final MethodHandle getter = LOOKUP.unreflect(m).asType(OBJ_METHOD);
             final Class<?> valueType = m.getReturnType();
 

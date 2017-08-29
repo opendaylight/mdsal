@@ -38,7 +38,6 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypedDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.BooleanTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.EmptyTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,7 +126,10 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
         }
 
         final String prefix;
-        if (type instanceof BooleanTypeDefinition || type instanceof EmptyTypeDefinition) {
+        // Bug 8903: If it is a derived type of boolean, not a built-in type, then the return type
+        // of method would be the generated type and the prefix should be 'get'.
+        if (type instanceof BooleanTypeDefinition
+                && (type.getPath().equals(node.getPath()) || type.getBaseType() == null)) {
             prefix = "is";
         } else {
             prefix = "get";
