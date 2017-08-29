@@ -50,6 +50,7 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.TypedSchemaNode;
@@ -223,15 +224,16 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
         final Map<String, DataSchemaNode> getterToLeafSchema = new HashMap<>();
         for (final DataSchemaNode leaf : childSchema.getChildNodes()) {
             if (leaf instanceof TypedSchemaNode) {
-                getterToLeafSchema.put(getGetterName(leaf.getQName(), ((TypedSchemaNode) leaf).getType()), leaf);
+                getterToLeafSchema.put(getGetterName(leaf, ((TypedSchemaNode) leaf).getType()), leaf);
             }
         }
         return getLeafNodesUsingReflection(parentClass, getterToLeafSchema);
     }
 
-    private static String getGetterName(final QName qName, final TypeDefinition<?> typeDef) {
-        final String suffix = BindingMapping.getGetterSuffix(qName);
-        if (typeDef instanceof BooleanTypeDefinition || typeDef instanceof EmptyTypeDefinition) {
+    private static String getGetterName(final SchemaNode node, final TypeDefinition<?> typeDef) {
+        final String suffix = BindingMapping.getGetterSuffix(node.getQName());
+        if ((typeDef.getPath().equals(node.getPath()) || typeDef.getBaseType() == null)
+                && (typeDef instanceof BooleanTypeDefinition || typeDef instanceof EmptyTypeDefinition)) {
             return "is" + suffix;
         }
         return "get" + suffix;
@@ -295,9 +297,9 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
 
     private Codec<Object, Object> getCodecForBindingClass(final Class<?> valueType, final TypeDefinition<?> typeDef) {
         if (typeDef instanceof IdentityrefTypeDefinition) {
-            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, identityCodec);
+            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, typeDef, identityCodec);
         } else if (typeDef instanceof InstanceIdentifierTypeDefinition) {
-            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, instanceIdentifierCodec);
+            return ValueTypeCodec.encapsulatedValueCodecFor(valueType, typeDef, instanceIdentifierCodec);
         } else if (typeDef instanceof UnionTypeDefinition) {
             final Callable<UnionTypeCodec> loader = UnionTypeCodec.loader(valueType, (UnionTypeDefinition) typeDef, this);
             try {
