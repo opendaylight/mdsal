@@ -22,6 +22,30 @@
       "revId": "cc058b4fe13fb8c166163169f07caa83489aec63",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_5f98ecbf",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/base/Identifier.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-08-31T12:08:13Z",
+      "side": 1,
+      "message": "Where ? this is moved from binding v1.",
+      "parentUuid": "ba1f61a0_cd4c39a1",
+      "range": {
+        "startLine": 10,
+        "startChar": 1,
+        "endLine": 19,
+        "endChar": 3
+      },
+      "revId": "cc058b4fe13fb8c166163169f07caa83489aec63",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
