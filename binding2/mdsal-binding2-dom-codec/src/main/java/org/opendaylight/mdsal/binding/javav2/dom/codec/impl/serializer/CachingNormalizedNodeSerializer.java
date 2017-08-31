@@ -13,6 +13,7 @@ import java.io.IOException;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.cache.AbstractBindingNormalizedNodeCacheHolder;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.cache.BindingNormalizedNodeCache;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.DataContainerCodecContext;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingSerializer;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
@@ -72,7 +73,7 @@ public final class CachingNormalizedNodeSerializer extends ForwardingBindingStre
      */
     @Override
     public NormalizedNode<?, ?> serialize(final TreeNode input) {
-        final BindingNormalizedNodeCache cachingSerializer = getCacheSerializer(input.getClass());
+        final BindingNormalizedNodeCache cachingSerializer = getCacheSerializer(((Instantiable<?>) input).implementedInterface());
         if (cachingSerializer != null) {
             final NormalizedNode<?, ?> domData = cachingSerializer.get(input);
             domWriter.addChild(domData);
