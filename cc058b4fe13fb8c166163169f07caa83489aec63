@@ -46,6 +46,30 @@
       "revId": "cc058b4fe13fb8c166163169f07caa83489aec63",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_9f5384e1",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/base/Identifier.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-08-31T12:42:08Z",
+      "side": 1,
+      "message": "binding v1 will gets deprecated and deleted eventually, so this seems to be new class as part of binding v2, so it should be following:\n\n    /**\n     * Object is unique identifier for another object\n     *\n     * @param \u003cT\u003e\n     *            Class of object for which this object is identifier\n     */",
+      "parentUuid": "ba1f61a0_5f98ecbf",
+      "range": {
+        "startLine": 10,
+        "startChar": 1,
+        "endLine": 19,
+        "endChar": 3
+      },
+      "revId": "cc058b4fe13fb8c166163169f07caa83489aec63",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
