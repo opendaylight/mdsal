@@ -24,6 +24,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
@@ -39,7 +40,6 @@ import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.dom.api.DOMEntityOwnershipService;
-import org.opendaylight.yangtools.binding.data.codec.impl.BindingNormalizedNodeCodecRegistry;
 
 /**
  * Unit tests for BindingDOMEntityOwnershipServiceAdapter.
