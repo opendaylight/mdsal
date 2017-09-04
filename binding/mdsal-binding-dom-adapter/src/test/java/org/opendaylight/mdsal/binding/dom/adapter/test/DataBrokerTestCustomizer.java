@@ -19,6 +19,9 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishS
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.MockSchemaService;
+import org.opendaylight.mdsal.binding.dom.codec.gen.impl.DataObjectSerializerGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -28,9 +31,6 @@ import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
 import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
-import org.opendaylight.yangtools.binding.data.codec.gen.impl.DataObjectSerializerGenerator;
-import org.opendaylight.yangtools.binding.data.codec.gen.impl.StreamWriterGenerator;
-import org.opendaylight.yangtools.binding.data.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public class DataBrokerTestCustomizer {
