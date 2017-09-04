@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import org.eclipse.xtext.xbase.lib.util.ReflectExtensions;
-import org.opendaylight.yangtools.binding.data.codec.util.AugmentationReader;
+import org.opendaylight.mdsal.binding.dom.codec.util.AugmentationReader;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 
