@@ -20,13 +20,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
-import org.opendaylight.yangtools.binding.data.codec.impl.BindingNormalizedNodeCodecRegistry;
 
 public class BindingDOMTransactionChainAdapterTest {
 
@@ -50,7 +50,7 @@ public class BindingDOMTransactionChainAdapterTest {
                         mockCodecRegistry)) {
             @Nullable
             @Override
-            protected DOMService getDelegate(Class<? extends DOMService> reqDeleg) {
+            protected DOMService getDelegate(final Class<? extends DOMService> reqDeleg) {
                 return domService;
             }
         };
