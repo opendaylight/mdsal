@@ -83,8 +83,6 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     private final ClassLoadingStrategy classLoadingStrategy;
     private final FutureSchema futureSchema;
 
-    private volatile BindingRuntimeContext runtimeContext;
-
     public BindingToNormalizedNodeCodec(final ClassLoadingStrategy classLoadingStrategy,
             final BindingNormalizedNodeCodecRegistry codecRegistry) {
         this(classLoadingStrategy, codecRegistry, false);
@@ -94,7 +92,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
             final BindingNormalizedNodeCodecRegistry codecRegistry, final boolean waitForSchema) {
         this.classLoadingStrategy = Preconditions.checkNotNull(classLoadingStrategy, "classLoadingStrategy");
         this.codecRegistry = Preconditions.checkNotNull(codecRegistry, "codecRegistry");
-        this.futureSchema = waitForSchema ? new FutureSchema(WAIT_DURATION_SEC, TimeUnit.SECONDS) : null;
+        this.futureSchema = FutureSchema.create(WAIT_DURATION_SEC, TimeUnit.SECONDS, waitForSchema);
     }
 
     YangInstanceIdentifier toYangInstanceIdentifierBlocking(final InstanceIdentifier<? extends DataObject> binding) {
@@ -217,13 +215,12 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
              * InstanceIdentifier has definition InstanceIdentifier<T extends DataObject>,
              * this means '?' is always  <? extends DataObject>. Eclipse compiler
              * is able to determine this relationship and treats
-             * Entry<InstanceIdentifier<?>,DataObject> and Entry<InstanceIdentifier<? extends DataObject,DataObject>
+             * Entry<InstanceIdentifier<?>, DataObject> and Entry<InstanceIdentifier<? extends DataObject, DataObject>
              * as assignable. However openjdk / oracle javac treats this two types
              * as incompatible and issues a compile error.
              *
              * <p>
-             * It is safe to  loose generic information and cast it to other generic signature.
-             *
+             * It is safe to lose generic information and cast it to other generic signature.
              */
             @SuppressWarnings("unchecked")
             final Entry<InstanceIdentifier<? extends DataObject>, DataObject> binding = Entry.class.cast(
@@ -236,11 +233,9 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
 
     @Override
     public void onGlobalContextUpdated(final SchemaContext context) {
-        runtimeContext = BindingRuntimeContext.create(classLoadingStrategy, context);
+        final BindingRuntimeContext runtimeContext = BindingRuntimeContext.create(classLoadingStrategy, context);
         codecRegistry.onBindingRuntimeContextUpdated(runtimeContext);
-        if (futureSchema != null) {
-            futureSchema.onRuntimeContextUpdated(runtimeContext);
-        }
+        futureSchema.onRuntimeContextUpdated(runtimeContext);
     }
 
     public <T extends DataObject> Function<Optional<NormalizedNode<?, ?>>, Optional<T>>
@@ -294,11 +289,11 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
         final QNameModule moduleName = BindingReflections.getQNameModule(modeledClass);
         final URI namespace = moduleName.getNamespace();
         final Date revision = moduleName.getRevision();
-        BindingRuntimeContext localRuntimeContext = runtimeContext;
+        BindingRuntimeContext localRuntimeContext = runtimeContext();
         Module module = localRuntimeContext == null ? null :
             localRuntimeContext.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision);
-        if (module == null && futureSchema != null && futureSchema.waitForSchema(namespace,revision)) {
-            localRuntimeContext = runtimeContext;
+        if (module == null && futureSchema.waitForSchema(namespace,revision)) {
+            localRuntimeContext = runtimeContext();
             Preconditions.checkState(localRuntimeContext != null, "BindingRuntimeContext is not available.");
             module = localRuntimeContext.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision);
         }
@@ -307,21 +302,18 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     }
 
     private void waitForSchema(final Collection<Class<?>> binding, final MissingSchemaException exception) {
-        if (futureSchema != null) {
-            LOG.warn("Blocking thread to wait for schema convergence updates for {} {}",
-                    futureSchema.getDuration(), futureSchema.getUnit());
-            if (!futureSchema.waitForSchema(binding)) {
-                return;
-            }
+        LOG.warn("Blocking thread to wait for schema convergence updates for {} {}", futureSchema.getDuration(),
+            futureSchema.getUnit());
+        if (!futureSchema.waitForSchema(binding)) {
+            throw exception;
         }
-        throw exception;
     }
 
     private Method findRpcMethod(final Class<? extends RpcService> key, final RpcDefinition rpcDef)
             throws NoSuchMethodException {
         final String methodName = BindingMapping.getMethodName(rpcDef.getQName());
         if (rpcDef.getInput() != null && isExplicitStatement(rpcDef.getInput())) {
-            final Class<?> inputClz = runtimeContext.getClassForSchema(rpcDef.getInput());
+            final Class<?> inputClz = runtimeContext().getClassForSchema(rpcDef.getInput());
             return key.getMethod(methodName, inputClz);
         }
         return key.getMethod(methodName);
@@ -360,8 +352,8 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     @SuppressWarnings("unchecked")
     public Set<Class<? extends Notification>> getNotificationClasses(final Set<SchemaPath> interested) {
         final Set<Class<? extends Notification>> result = new HashSet<>();
-        final Set<NotificationDefinition> knownNotifications = runtimeContext.getSchemaContext().getNotifications();
-        for (final NotificationDefinition notification : knownNotifications) {
+        final BindingRuntimeContext runtimeContext = runtimeContext();
+        for (final NotificationDefinition notification : runtimeContext.getSchemaContext().getNotifications()) {
             if (interested.contains(notification.getPath())) {
                 try {
                     result.add((Class<? extends Notification>) runtimeContext.getClassForSchema(notification));
@@ -374,12 +366,16 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
         return result;
     }
 
+    private BindingRuntimeContext runtimeContext() {
+        return futureSchema.runtimeContext();
+    }
+
     private static Collection<Class<?>> decompose(final InstanceIdentifier<?> path) {
         return ImmutableSet.copyOf(Iterators.transform(path.getPathArguments().iterator(), PathArgument::getType));
     }
 
     protected NormalizedNode<?, ?> instanceIdentifierToNode(final YangInstanceIdentifier parentPath) {
-        return ImmutableNodes.fromInstanceId(runtimeContext.getSchemaContext(), parentPath);
+        return ImmutableNodes.fromInstanceId(runtimeContext().getSchemaContext(), parentPath);
     }
 
     public NormalizedNode<?, ?> getDefaultNodeFor(final YangInstanceIdentifier parentMapPath) {

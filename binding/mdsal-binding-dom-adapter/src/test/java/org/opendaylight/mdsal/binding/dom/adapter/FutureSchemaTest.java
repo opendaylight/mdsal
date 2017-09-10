@@ -21,7 +21,7 @@ public class FutureSchemaTest {
 
     @Test
     public void basicTest() throws Exception {
-        final FutureSchema futureSchema = new FutureSchema(0, TimeUnit.MICROSECONDS);
+        final FutureSchema futureSchema = FutureSchema.create(0, TimeUnit.MICROSECONDS, true);
         assertNotNull(futureSchema);
         assertFalse(futureSchema.waitForSchema(new URI("test"), new Date(0)));
         assertFalse(futureSchema.waitForSchema(ImmutableSet.of()));

@@ -8,34 +8,105 @@
 
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Predicate;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.SettableFuture;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Predicate;
+import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 
-class FutureSchema implements AutoCloseable {
+abstract class FutureSchema implements AutoCloseable {
+    private static final class Waiting extends FutureSchema {
+        Waiting(final long time, final TimeUnit unit) {
+            super(time, unit);
+        }
+    }
 
-    private final List<FutureSchemaPredicate> postponedOperations = new CopyOnWriteArrayList<>();
-    private final SettableFuture<Void> schemaPromise = SettableFuture.create();
+    private static final class NonWaiting extends FutureSchema {
+        NonWaiting(final long time, final TimeUnit unit) {
+            super(time, unit);
+        }
+
+        @Override
+        boolean addPostponedOpAndWait(final FutureSchemaPredicate postponedOp) {
+            return false;
+        }
+    }
+
+    private abstract class FutureSchemaPredicate implements Predicate<BindingRuntimeContext> {
+        private final SettableFuture<Void> schemaPromise = SettableFuture.create();
+
+        final boolean waitForSchema() {
+            try {
+                schemaPromise.get(FutureSchema.this.duration, FutureSchema.this.unit);
+                return true;
+            } catch (final InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (final TimeoutException e) {
+                return false;
+            } finally {
+                synchronized (FutureSchema.this.postponedOperations) {
+                    FutureSchema.this.postponedOperations.remove(this);
+                }
+            }
+        }
+
+        final void unlockIfPossible(final BindingRuntimeContext context) {
+            if (!schemaPromise.isDone() && test(context)) {
+                schemaPromise.set(null);
+            }
+        }
+
+        final void cancel() {
+            schemaPromise.cancel(true);
+        }
+    }
+
+    @GuardedBy("postponedOperations")
+    private final Set<FutureSchemaPredicate> postponedOperations = new LinkedHashSet<>();
     private final long duration;
     private final TimeUnit unit;
 
-    protected FutureSchema(final long time, final TimeUnit unit) {
+    private volatile BindingRuntimeContext runtimeContext;
+
+    FutureSchema(final long time, final TimeUnit unit) {
         this.duration = time;
-        this.unit = unit;
+        this.unit = requireNonNull(unit);
+    }
+
+    static FutureSchema create(final long time, final TimeUnit unit, final boolean waitEnabled) {
+        return waitEnabled ? new Waiting(time, unit) : new NonWaiting(time, unit);
+    }
+
+    BindingRuntimeContext runtimeContext() {
+        final BindingRuntimeContext localRuntimeContext = runtimeContext;
+        if (localRuntimeContext != null) {
+            return localRuntimeContext;
+        }
+
+        if (waitForSchema(Collections.emptyList())) {
+            return runtimeContext;
+        }
+
+        throw new IllegalStateException("No SchemaContext is available");
     }
 
     void onRuntimeContextUpdated(final BindingRuntimeContext context) {
-        for (final FutureSchemaPredicate op : postponedOperations) {
-            op.unlockIfPossible(context);
+        synchronized (postponedOperations) {
+            runtimeContext = context;
+            for (final FutureSchemaPredicate op : postponedOperations) {
+                op.unlockIfPossible(context);
+            }
         }
     }
 
@@ -49,72 +120,43 @@ class FutureSchema implements AutoCloseable {
 
     @Override
     public void close() {
-        for (final FutureSchemaPredicate op : postponedOperations) {
-            op.cancel();
+        synchronized (postponedOperations) {
+            postponedOperations.forEach(FutureSchemaPredicate::cancel);
         }
-    }
-
-    private static boolean isSchemaAvailable(final Class<?> clz, final BindingRuntimeContext context) {
-        final Object schema;
-        if (Augmentation.class.isAssignableFrom(clz)) {
-            schema = context.getAugmentationDefinition(clz);
-        } else {
-            schema = context.getSchemaDefinition(clz);
-        }
-        return schema != null;
     }
 
     boolean waitForSchema(final URI namespace, final Date revision) {
-        final FutureSchemaPredicate postponedOp = new FutureSchemaPredicate() {
-
+        return addPostponedOpAndWait(new FutureSchemaPredicate() {
             @Override
-            public boolean apply(final BindingRuntimeContext input) {
+            public boolean test(final BindingRuntimeContext input) {
                 return input.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision) != null;
             }
-        };
-        return postponedOp.waitForSchema();
+        });
     }
 
     boolean waitForSchema(final Collection<Class<?>> bindingClasses) {
-        final FutureSchemaPredicate postponedOp = new FutureSchemaPredicate() {
-
+        return addPostponedOpAndWait(new FutureSchemaPredicate() {
             @Override
-            public boolean apply(final BindingRuntimeContext context) {
-                for (final Class<?> clz : bindingClasses) {
-                    if (!isSchemaAvailable(clz, context)) {
-                        return false;
+            public boolean test(final BindingRuntimeContext context) {
+                return bindingClasses.stream().allMatch(clz -> {
+                    if (Augmentation.class.isAssignableFrom(clz)) {
+                        return context.getAugmentationDefinition(clz) != null;
                     }
-                }
-                return true;
+
+                    return context.getSchemaDefinition(clz) != null;
+                });
             }
-        };
+        });
+    }
+
+    boolean addPostponedOpAndWait(final FutureSchemaPredicate postponedOp) {
+        synchronized (postponedOperations) {
+            postponedOperations.add(postponedOp);
+
+            // If the runtimeContext changed, this op may now be satisfied so check it.
+            postponedOp.unlockIfPossible(runtimeContext);
+        }
+
         return postponedOp.waitForSchema();
     }
-
-    private abstract class FutureSchemaPredicate implements Predicate<BindingRuntimeContext> {
-
-        final boolean waitForSchema() {
-            try {
-                schemaPromise.get(duration, unit);
-                return true;
-            } catch (final InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            } catch (final TimeoutException e) {
-                return false;
-            } finally {
-                postponedOperations.remove(this);
-            }
-        }
-
-        final void unlockIfPossible(final BindingRuntimeContext context) {
-            if (!schemaPromise.isDone() && apply(context)) {
-                schemaPromise.set(null);
-            }
-        }
-
-        final void cancel() {
-            schemaPromise.cancel(true);
-        }
-    }
-
 }
