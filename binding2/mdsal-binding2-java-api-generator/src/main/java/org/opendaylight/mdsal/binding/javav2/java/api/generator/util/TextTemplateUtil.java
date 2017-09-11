@@ -143,11 +143,7 @@ public final class TextTemplateUtil {
      * @return parameter name, based on given Type
      */
     public static String paramValue(final Type returnType, final String paramName) {
-        if (returnType instanceof ConcreteType) {
-            return paramName;
-        } else {
-            return paramName + ".getValue()";
-        }
+        return returnType instanceof ConcreteType ? paramName : paramName + ".getValue()";
     }
 
     /**
@@ -157,10 +153,7 @@ public final class TextTemplateUtil {
      * @return string with comment in JAVA format
      */
     public static String asJavadoc(final String comment) {
-        if (comment == null) {
-            return "";
-        }
-        return wrapToDocumentation(formatToParagraph(comment.trim(), 0));
+        return comment == null ? "" : wrapToDocumentation(formatToParagraph(comment.trim(), 0));
     }
 
     private static String formatDataForJavaDoc(final TypeMember type, final String additionalComment) {
