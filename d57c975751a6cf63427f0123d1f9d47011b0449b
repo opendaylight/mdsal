@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_0056ef29",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/twirl/org/opendaylight/mdsal/binding/javav2/java/api/generator/yangModuleInfoTemplate.scala.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 2682
+      },
+      "writtenOn": "2017-09-11T16:55:16Z",
+      "side": 1,
+      "message": "TODO: eliminate this too and remove method and imports of it",
+      "range": {
+        "startLine": 50,
+        "startChar": 71,
+        "endLine": 50,
+        "endChar": 95
+      },
+      "revId": "d57c975751a6cf63427f0123d1f9d47011b0449b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
