@@ -31,10 +31,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.codec.TypeDefinitionAwareCodec;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 
@@ -87,11 +89,16 @@ final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<
                                                   final String defaultValue, final SchemaContext schemaContext) {
         int prefixEndIndex = defaultValue.indexOf(':');
         QName qname;
+        SchemaNode original = schema;
+        while (original instanceof DerivableSchemaNode &&
+                ((DerivableSchemaNode)original).getOriginal().isPresent()) {
+            original = ((DerivableSchemaNode)original).getOriginal().get();
+        }
         if (prefixEndIndex != -1) {
             String defaultValuePrefix = defaultValue.substring(0, prefixEndIndex);
 
-            Module module = schemaContext.findModuleByNamespaceAndRevision(schema.getQName().getNamespace(),
-                    schema.getQName().getRevision());
+            Module module = schemaContext.findModuleByNamespaceAndRevision(original.getQName().getNamespace(),
+                    original.getQName().getRevision());
 
             if (module.getPrefix().equals(defaultValuePrefix)) {
                 qname = QName.create(module.getQNameModule(), defaultValue.substring(prefixEndIndex + 1));
@@ -110,7 +117,7 @@ final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<
             }
         }
 
-        qname = QName.create(schema.getQName(), defaultValue);
+        qname = QName.create(original.getQName(), defaultValue);
         return codec.deserialize(qname);
     }
 
