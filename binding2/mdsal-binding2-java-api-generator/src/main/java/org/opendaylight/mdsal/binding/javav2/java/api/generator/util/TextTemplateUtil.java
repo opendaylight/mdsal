@@ -71,11 +71,9 @@ public final class TextTemplateUtil {
         final StringBuilder sb = new StringBuilder(NEW_LINE);
         sb.append("/**");
         sb.append(NEW_LINE);
-        final Iterable<String> lineSplitText = NL_SPLITTER.split(text);
-        for (final String t : lineSplitText) {
+        for (final String t : NL_SPLITTER.split(text)) {
             if (!t.isEmpty()) {
-                sb.append(" *");
-                sb.append(" ");
+                sb.append(" * ");
                 sb.append(t);
                 sb.append(NEW_LINE);
             }
