@@ -15,7 +15,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
@@ -364,11 +366,15 @@ public final class TextTemplateUtil {
 
     /**
      * Returns source path as String
-     * @param module
+     * @param module module
+     * @param moduleFilePathResolver function module -> module file path
      * @return formatted String source path
      */
-    public static String getSourcePath(final Module module) {
-        return "/".concat(module.getModuleSourcePath().replace(java.io.File.separatorChar, '/'));
+    public static String getSourcePath(final Module module, final Function<Module, Optional<String>> moduleFilePathResolver) {
+        final java.util.Optional<String> moduleFilePath = moduleFilePathResolver.apply(module);
+        Preconditions.checkArgument(moduleFilePath.isPresent(),"Module file path for %s is not present", module);
+
+        return moduleFilePath.get();
     }
 
     /**
