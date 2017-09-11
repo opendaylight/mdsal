@@ -15,7 +15,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.TypeMember;
  * Alphabetically type member {@link Comparator} which provides sorting by name for type members
  * (variables and methods) in generated class.
  *
- * @param <T>
+ * @param <T> type
  */
 public class AlphabeticallyTypeMemberComparator<T extends TypeMember> implements Comparator<T>{
 

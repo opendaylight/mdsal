@@ -31,7 +31,7 @@ public class EnumRenderer extends BaseRenderer {
     }
 
     /**
-     * @param enumeration
+     * @param enumeration enumeration to write
      * @return List of enumeration pairs with javadoc
      */
     public static String writeEnumeration(final Enumeration enumeration) {

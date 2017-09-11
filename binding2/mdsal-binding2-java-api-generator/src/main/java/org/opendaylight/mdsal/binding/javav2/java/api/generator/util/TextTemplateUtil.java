@@ -15,7 +15,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
@@ -89,7 +91,7 @@ public final class TextTemplateUtil {
 
     /**
      * Returns formatted Javadoc, based on type
-     * @param typeName
+     * @param typeName given type name
      * @return formatted Javadoc, based on type
      */
     public static String formatDataForJavaDocBuilder(final String typeName) {
@@ -105,8 +107,8 @@ public final class TextTemplateUtil {
 
     /**
      * Returns formatted Javadoc with possible additional comment, based on type
-     * @param type
-     * @param additionalComment
+     * @param type given type
+     * @param additionalComment additional comment to format
      * @return formatted Javadoc with possible additional comment, based on type
      */
     public static String formatDataForJavaDoc(final GeneratedType type, final String additionalComment) {
@@ -123,7 +125,7 @@ public final class TextTemplateUtil {
 
     /**
      * Returns properties names in formatted string
-     * @param properties
+     * @param properties list of given properties
      * @return properties names in formatted string
      */
     //FIXME: this needs further clarification in future patch
@@ -133,7 +135,7 @@ public final class TextTemplateUtil {
 
     /**
      * Returns formatted type description
-     * @param type
+     * @param type given type
      * @return formatted type description
      */
     public static String formatDataForJavaDoc(final GeneratedType type) {
@@ -142,8 +144,8 @@ public final class TextTemplateUtil {
 
     /**
      * Returns parameter name, based on given Type
-     * @param returnType
-     * @param paramName
+     * @param returnType given type
+     * @param paramName parameter name
      * @return parameter name, based on given Type
      */
     public static String paramValue(final Type returnType, final String paramName) {
@@ -174,7 +176,7 @@ public final class TextTemplateUtil {
 
     /**
      * Returns related Javadoc
-     * @param methodSignature
+     * @param methodSignature method signature
      * @return related Javadoc
      */
     public static String getJavaDocForInterface(final MethodSignature methodSignature) {
@@ -211,7 +213,7 @@ public final class TextTemplateUtil {
 
     /**
      * Returns collection of properties as formatted String
-     * @param properties
+     * @param properties list of given properties
      * @return generated properties as formatted String
      */
     public static String propsAsArgs(final Iterable<GeneratedProperty> properties) {
@@ -220,8 +222,8 @@ public final class TextTemplateUtil {
 
     /**
      * Returns properties as formatted String
-     * @param properties
-     * @param booleanName
+     * @param properties list of given properties
+     * @param booleanName Java Boolean type name
      * @return Properties as formatted String
      */
     public static String propsAsList(final Iterable<GeneratedProperty> properties, final String booleanName) {
@@ -231,7 +233,7 @@ public final class TextTemplateUtil {
 
     /**
      * Extracts available restrictions from given type
-     * @param currentType
+     * @param currentType given type
      * @return restrictions from given type
      */
     public static Restrictions getRestrictions(final Type currentType) {
@@ -249,6 +251,7 @@ public final class TextTemplateUtil {
      * method(type fieldname)
      *
      * @param property type from getter
+     * @return underscored string form
      */
     public static String fieldName(final GeneratedProperty property) {
         final String name = Preconditions.checkNotNull(property.getName());
@@ -256,7 +259,7 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Template method which generates sequence of the names of the class attributes
+     * Template method which generates sequence of the names of the class attributes.
      *
      * @param parameters group of generated property instances which are transformed to the sequence of parameter names
      * @return string with the list of the parameter names
@@ -266,10 +269,10 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Helper method for building getter
+     * Helper method for building getter.
      *
      * @param field property name
-     * @return getter for propery
+     * @return getter for property
      */
     public static String getterMethodName(final GeneratedProperty field) {
         final Type type = Preconditions.checkNotNull(field.getReturnType());
@@ -279,10 +282,10 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Returns built setter method body
-     * @param field
-     * @param typeName
-     * @param returnTypeName
+     * Returns built setter method body from input parameters.
+     * @param field generated property
+     * @param typeName type name
+     * @param returnTypeName return type name
      * @return built setter method body
      */
     public static String setterMethod(final GeneratedProperty field, final String typeName, final String returnTypeName) {
@@ -319,7 +322,7 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Cuts prefix from getter name
+     * Cuts prefix from getter name.
      *
      * @param getter getter name
      * @return getter name without prefix
@@ -338,8 +341,8 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Returns list of properties as formatted String
-     * @param properties
+     * Returns list of properties as formatted String.
+     * @param properties input list of generated properties
      * @return formatted property list as String
      */
     public static String getPropertyList(final List<GeneratedProperty> properties) {
@@ -363,16 +366,21 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Returns source path as String
-     * @param module
+     * Returns source path as String.
+     * @param module module
+     * @param moduleFilePathResolver function module to module file path
      * @return formatted String source path
      */
-    public static String getSourcePath(final Module module) {
-        return "/".concat(module.getModuleSourcePath().replace(java.io.File.separatorChar, '/'));
+    public static String getSourcePath(final Module module, final Function<Module, Optional<String>> moduleFilePathResolver) {
+        final java.util.Optional<String> moduleFilePath = moduleFilePathResolver.apply(module);
+        Preconditions.checkArgument(moduleFilePath.isPresent(),"Module file path for %s is not present", module);
+
+        return moduleFilePath.get();
     }
 
     /**
-     * util method for unionTemplateBuilderTemplate
+     * Util method for unionTemplateBuilderTemplate.
+     * @param modifier enum representing Java access modifier
      * @return needed access modifier
      */
     public static String getAccessModifier(final AccessModifier modifier) {

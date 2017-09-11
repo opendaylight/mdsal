@@ -245,7 +245,7 @@ public abstract class BaseRenderer {
     }
 
     /**
-     * @param constant
+     * @param constant constant to emit
      * @return string with constant wrapped in code
      */
     protected String emitConstant(final Constant constant) {

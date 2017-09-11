@@ -248,6 +248,9 @@ public class BuilderRenderer extends BaseRenderer {
 
     /**
      * Method is used to find out if given type implements any interface from uses.
+     *
+     * @param type type to inspect
+     * @return has implements from uses-stmt true/false
      */
     public static boolean hasImplementsFromUses(GeneratedType type) {
         for (Type impl : getAllIfcs(type)) {
