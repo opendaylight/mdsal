@@ -363,6 +363,7 @@ public final class TextTemplateUtil {
      * @param module
      * @return formatted String source path
      */
+    @Deprecated
     public static String getSourcePath(final Module module) {
         return "/".concat(module.getModuleSourcePath().replace(java.io.File.separatorChar, '/'));
     }
