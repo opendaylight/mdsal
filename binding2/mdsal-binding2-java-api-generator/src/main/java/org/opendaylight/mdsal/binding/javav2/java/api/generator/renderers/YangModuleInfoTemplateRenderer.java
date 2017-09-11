@@ -82,7 +82,7 @@ public class YangModuleInfoTemplateRenderer {
         importedNames.put("semVer", importedName(SemVer.class));
         importedNames.put("schemaSourceRepresentation", importedName(SchemaSourceRepresentation.class));
 
-        return yangModuleInfoTemplate.render(module, ctx, importedNames).body();
+        return yangModuleInfoTemplate.render(module, ctx, importedNames, moduleFilePathResolver).body();
     }
 
     /**
