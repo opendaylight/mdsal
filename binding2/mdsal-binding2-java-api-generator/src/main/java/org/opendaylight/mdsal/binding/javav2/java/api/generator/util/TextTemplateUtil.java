@@ -12,8 +12,6 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -56,8 +54,8 @@ public final class TextTemplateUtil {
      * @return getter name starting in LowerCase
      */
     public static String toFirstLower(final String s) {
-        return s != null && s.length() != 0 ? (Character.isLowerCase(s.charAt(0)) ? s : (s.length() == 1 ?
-                s.toLowerCase() : s.substring(0, 1).toLowerCase() + s.substring(1))) : s;
+        return s != null && s.length() != 0 ? Character.isLowerCase(s.charAt(0)) ? s : s.length() == 1 ?
+                s.toLowerCase() : s.substring(0, 1).toLowerCase() + s.substring(1) : s;
     }
 
     /**
@@ -296,7 +294,7 @@ public final class TextTemplateUtil {
         final List<String> strings = new LinkedList<>();
         if (!parameters.isEmpty()) {
             for (final GeneratedProperty parameter : parameters) {
-                strings.add((fieldName(parameter)));
+                strings.add(fieldName(parameter));
             }
         }
         return String.join(", ", strings);
@@ -351,8 +349,8 @@ public final class TextTemplateUtil {
      * @return getter name starting in uppercase
      */
     public static String toFirstUpper(final String s) {
-        return s != null && s.length() != 0 ? (Character.isUpperCase(s.charAt(0)) ? s : (s.length() == 1 ?
-                s.toUpperCase() : s.substring(0, 1).toUpperCase() + s.substring(1))) : s;
+        return s != null && s.length() != 0 ? Character.isUpperCase(s.charAt(0)) ? s : s.length() == 1 ?
+                s.toUpperCase() : s.substring(0, 1).toUpperCase() + s.substring(1) : s;
     }
 
     /**
@@ -407,16 +405,6 @@ public final class TextTemplateUtil {
                 .append("loss of user code.\n")
                 .append("\n");
         return clarification.toString();
-    }
-
-    /**
-     * Returns revision Date as String
-     * @param revision
-     * @return formatted Revision as String
-     */
-    public static String getFormattedRevision(final Date revision) {
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return simpleDateFormat.format(revision);
     }
 
     /**

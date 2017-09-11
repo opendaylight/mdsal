@@ -9,7 +9,6 @@
 @import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier.CLASS
 @import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer.normalizeSpecificIdentifier
 @import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer.normalizeFullPackageName
-@import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.getFormattedRevision
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.getSourcePath
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers.YangModuleInfoTemplateRenderer.getSortedQName
 @import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.getRootPackageName
@@ -26,7 +25,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
     private final @{importedNames.get("string")} name = "@{module.getName}";
     private final @{importedNames.get("string")} namespace = "@{module.getNamespace.toString}";
     private final @{importedNames.get("string")} semanticVersion = "@{module.getSemanticVersion}";
-    private final @{importedNames.get("string")} revision = "@{getFormattedRevision(module.getRevision)}";
+    private final @{importedNames.get("string")} revision = "@{module.getQNameModule.getFormattedRevision}";
     private final @{importedNames.get("string")} resourcePath = "@{getSourcePath(module)}";
     private final @{importedNames.get("set")}<YangModuleInfo> importedModules;
 
@@ -47,7 +46,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
         private final @{importedNames.get("string")} name = "@{submodule.getName}";
         private final @{importedNames.get("string")} semanticVersion = "@{submodule.getSemanticVersion}";
         private final @{importedNames.get("string")} namespace = "@{submodule.getNamespace.toString}";
-        private final @{importedNames.get("string")} revision = "@{getFormattedRevision(submodule.getRevision)}";
+        private final @{importedNames.get("string")} revision = "@{submodule.getQNameModule.getFormattedRevision}";
         private final @{importedNames.get("string")} resourcePath = "@{getSourcePath(submodule)}";
         private final @{importedNames.get("set")}<YangModuleInfo> importedModules;
 
