@@ -11,10 +11,12 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import org.opendaylight.yangtools.yang.common.QName;
 
 final class YangTextTemplate {
     private static final CharMatcher NEWLINE_OR_TAB = CharMatcher.anyOf("\n\t");
+    private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile(" +");
 
     private YangTextTemplate() {
         throw new UnsupportedOperationException();
@@ -52,14 +54,11 @@ final class YangTextTemplate {
 
         final StringBuilder sb = new StringBuilder();
         final StringBuilder lineBuilder = new StringBuilder();
-        boolean isFirstElementOnNewLineEmptyChar = false;
         final String lineIndent = Strings.repeat(" ", nextLineIndent);
-
-        String formattedText = NEWLINE_OR_TAB.removeFrom(text);
-        formattedText = formattedText.replaceAll(" +", " ");
-
+        final String formattedText = MULTIPLE_SPACES_PATTERN.matcher(NEWLINE_OR_TAB.removeFrom(text)).replaceAll(" ");
         final StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
 
+        boolean isFirstElementOnNewLineEmptyChar = false;
         while (tokenizer.hasMoreElements()) {
             final String nextElement = tokenizer.nextElement().toString();
 
