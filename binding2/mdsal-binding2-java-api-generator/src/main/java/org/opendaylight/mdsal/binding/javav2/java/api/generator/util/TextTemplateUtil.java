@@ -135,8 +135,7 @@ public final class TextTemplateUtil {
      * @return formatted type description
      */
     public static String formatDataForJavaDoc(final GeneratedType type) {
-        final String description = type.getDescription().isPresent() ? type.getDescription().get() : "";
-        return encodeJavadocSymbols(description);
+        return encodeJavadocSymbols(type.getDescription().orElse(""));
     }
 
     /**
