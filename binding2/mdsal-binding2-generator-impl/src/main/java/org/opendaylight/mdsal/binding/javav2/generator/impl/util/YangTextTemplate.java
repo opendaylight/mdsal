@@ -9,17 +9,9 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
-import java.util.Map;
 import java.util.StringTokenizer;
-import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
-import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
-import org.opendaylight.mdsal.binding.javav2.model.api.Type;
-import org.opendaylight.mdsal.binding.javav2.model.api.WildcardType;
 import org.opendaylight.yangtools.yang.common.QName;
 
 /**
@@ -28,12 +20,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 @Beta
 public final class YangTextTemplate {
     private static final CharMatcher NEWLINE_OR_TAB = CharMatcher.anyOf("\n\t");
-    private static final String DOT = ".";
-    private static final String COMMA = ",";
-    private static final char NEW_LINE = '\n';
-    private static final CharMatcher NL_MATCHER = CharMatcher.is(NEW_LINE);
-    private static final CharMatcher AMP_MATCHER = CharMatcher.is('&');
-    private static final Splitter NL_SPLITTER = Splitter.on(NL_MATCHER);
 
     private YangTextTemplate() {
         throw new UnsupportedOperationException("Util class");
@@ -119,174 +105,5 @@ public final class YangTextTemplate {
             sb.append('/').append(pathElement.getLocalName());
         }
         return sb.toString();
-    }
-
-    /**
-     * Evaluates if it is necessary to add the package name for type to the map of imports for parentGenType
-     * If it is so the package name is saved to the map imports.
-     *
-     * @param parentGenType generated type for which is the map of necessary imports build
-     * @param type JAVA type for which is the necessary of the package import evaluated
-     * @param imports map of the imports for parentGenType
-     */
-    public static void putTypeIntoImports(final GeneratedType parentGenType, final Type type,
-        final Map<String, String> imports) {
-        Preconditions.checkArgument(parentGenType != null,
-                "Parent Generated Type parameter MUST be specified and cannot be NULL!");
-        Preconditions.checkArgument(type != null, "Type parameter MUST be specified and cannot be NULL!");
-        Preconditions.checkArgument(parentGenType.getPackageName() != null,
-                "Parent Generated Type cannot have Package Name referenced as NULL!");
-
-        final String typeName = Preconditions.checkNotNull(type.getName());
-        final String typePackageName = Preconditions.checkNotNull(type.getPackageName());
-        final String parentTypeName = Preconditions.checkNotNull(parentGenType.getName());
-        if (typeName.equals(parentTypeName) || typePackageName.startsWith("java.lang") || typePackageName.isEmpty()) {
-            return;
-        }
-        if (!imports.containsKey(typeName)) {
-            imports.put(typeName, typePackageName);
-        }
-        if (type instanceof ParameterizedType) {
-            final ParameterizedType paramType = (ParameterizedType) type;
-            final Type[] params = paramType.getActualTypeArguments();
-            if (params != null) {
-                for (final Type param : params) {
-                    putTypeIntoImports(parentGenType, param, imports);
-                }
-            }
-        }
-    }
-
-    /**
-     * Builds the string which contains either the full path to the type (package name with type) or only type name
-     * if the package is among imports.
-     *
-     * @param parentGenType generated type which contains type
-     * @param type JAVA type for which is the string with type info generated
-     * @param imports map of necessary imports for parentGenType
-     * @return string with type name for type in the full format or in the short format
-     */
-    public static String getExplicitType(final GeneratedType parentGenType, final Type type,
-        final Map<String, String> imports) {
-        Preconditions.checkArgument(type != null, "Type parameter MUST be specified and cannot be NULL!");
-        Preconditions.checkArgument(imports != null, "Imports Map cannot be NULL!");
-
-        final String typePackageName = Preconditions.checkNotNull(type.getPackageName());
-        final String typeName = Preconditions.checkNotNull(type.getName());
-        final String importedPackageName = imports.get(typeName);
-        final StringBuilder builder;
-        if (typePackageName.equals(importedPackageName)) {
-            builder = new StringBuilder(typeName);
-            addActualTypeParameters(builder, type, parentGenType, imports);
-            if ("Void".equals(builder.toString())) {
-                return "void";
-            }
-        } else {
-            builder = new StringBuilder();
-            if (!typePackageName.isEmpty()) {
-                builder.append(typePackageName + DOT + typeName);
-            } else {
-                builder.append(type.getName());
-            }
-            if (type.equals(Types.voidType())) {
-                return "void";
-            }
-            addActualTypeParameters(builder, type, parentGenType, imports);
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Adds actual type parameters from type to builder if type is ParametrizedType.
-     *
-     * @param builder string builder which contains type name
-     * @param type JAVA Type for which is the string with type info generated
-     * @param parentGenType generated type which contains type
-     * @param imports map of necessary imports for parentGenType
-     * @return adds actual type parameters to builder
-     */
-    private static StringBuilder addActualTypeParameters(final StringBuilder builder, final Type type,
-        final GeneratedType parentGenType, final Map<String, String> imports) {
-        if (type instanceof ParameterizedType) {
-            final ParameterizedType pType = (ParameterizedType) type;
-            final Type[] pTypes = pType.getActualTypeArguments();
-            builder.append("<");
-            builder.append(getParameters(parentGenType, pTypes, imports));
-            builder.append(">");
-        }
-        return builder;
-    }
-
-    /**
-     * Generates the string with all actual type parameters from
-     *
-     * @param parentGenType generated type for which is the JAVA code generated
-     * @param pTypes array of Type instances = actual type parameters
-     * @param availableImports map of imports for parentGenType
-     * @return string with all actual type parameters from pTypes
-     */
-    private static String getParameters(final GeneratedType parentGenType, final Type[] pTypes,
-        final Map<String, String> availableImports) {
-        if (pTypes == null || pTypes.length == 0) {
-            return "?";
-        }
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < pTypes.length; i++) {
-            final Type t = pTypes[i];
-
-            String separator = COMMA;
-            if (i == (pTypes.length - 1)) {
-                separator = "";
-            }
-
-            String wildcardParam = "";
-            if (t.equals(Types.voidType())) {
-                builder.append("java.lang.Void")
-                .append(separator);
-                continue;
-            } else {
-
-                if (t instanceof WildcardType) {
-                    wildcardParam = "? extends ";
-                }
-
-                builder.append(wildcardParam)
-                .append(getExplicitType(parentGenType, t, availableImports) + separator);
-            }
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Wraps text as documentation
-     *
-     * @param text text for wrapping
-     * @return wrapped text
-     */
-    public static String wrapToDocumentation(final String text) {
-        if (text.isEmpty()) {
-            return "";
-        }
-        final StringBuilder sb = new StringBuilder("/**");
-        sb.append(NEW_LINE);
-        final Iterable<String> lineSplitText = NL_SPLITTER.split(text);
-        for (final String t : lineSplitText) {
-            sb.append(" *");
-            if (t.isEmpty()) {
-                sb.append(" ");
-                sb.append(t);
-            }
-            sb.append(NEW_LINE);
-        }
-        sb.append(" */");
-        return sb.toString();
-    }
-
-    public static String encodeJavadocSymbols(final String description) {
-        if (Strings.isNullOrEmpty(description)) {
-            return description;
-        }
-        final String ret = description.replace("*/", "&#42;&#47;");
-        return AMP_MATCHER.replaceFrom(ret, "&amp;");
     }
 }
