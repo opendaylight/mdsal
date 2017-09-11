@@ -16,6 +16,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
@@ -42,6 +43,9 @@ public final class TextTemplateUtil {
     private static final CharMatcher GT_MATCHER = CharMatcher.is('>');
     private static final CharMatcher LT_MATCHER = CharMatcher.is('<');
     private static final Splitter NL_SPLITTER = Splitter.on(NL_MATCHER);
+
+    private static final Pattern TAIL_COMMENT_PATTERN = Pattern.compile("*/", Pattern.LITERAL);
+    private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile(" +");
 
     private TextTemplateUtil() {
         throw new UnsupportedOperationException("Util class");
@@ -287,7 +291,7 @@ public final class TextTemplateUtil {
                 .append(typeName)
                 .append(" set")
                 .append(toFirstUpper(field.getName()))
-                .append("(")
+                .append('(')
                 .append(returnTypeName)
                 .append(" value) {\n    this.")
                 .append(fieldName(field))
@@ -394,7 +398,7 @@ public final class TextTemplateUtil {
         final StringBuilder lineBuilder = new StringBuilder();
         final String lineIndent = Strings.repeat(" ", nextLineIndent);
         final String textToFormat = NEWLINE_OR_TAB.removeFrom(encodeJavadocSymbols(text));
-        final String formattedText = textToFormat.replaceAll(" +", " ");
+        final String formattedText = MULTIPLE_SPACES_PATTERN.matcher(textToFormat).replaceAll(" ");
         final StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
 
         while (tokenizer.hasMoreElements()) {
@@ -430,10 +434,7 @@ public final class TextTemplateUtil {
     }
 
     private static String encodeJavadocSymbols(final String description) {
-        if (description == null || description.isEmpty()) {
-            return description;
-        }
-        final String ret = description.replace("*/", "&#42;&#47;");
-        return AMP_MATCHER.replaceFrom(ret, "&amp;");
+        return Strings.isNullOrEmpty(description) ? description
+                : AMP_MATCHER.replaceFrom(TAIL_COMMENT_PATTERN.matcher(description).replaceAll("&#42;&#47;"), "&amp;");
     }
 }
