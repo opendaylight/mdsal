@@ -82,7 +82,10 @@ public class YangModuleInfoTemplateRenderer {
         importedNames.put("semVer", importedName(SemVer.class));
         importedNames.put("schemaSourceRepresentation", importedName(SchemaSourceRepresentation.class));
 
-        return yangModuleInfoTemplate.render(module, ctx, importedNames).body();
+        final java.util.Optional<String> moduleFilePath = moduleFilePathResolver.apply(module);
+        Preconditions.checkArgument(moduleFilePath.isPresent(), "Module file path for %s is not present", module);
+
+        return yangModuleInfoTemplate.render(module, ctx, importedNames, moduleFilePath.get()).body();
     }
 
     /**
