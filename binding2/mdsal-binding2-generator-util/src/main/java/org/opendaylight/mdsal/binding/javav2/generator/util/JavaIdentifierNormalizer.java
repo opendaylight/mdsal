@@ -15,6 +15,7 @@ import com.google.common.collect.ListMultimap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration.Pair;
@@ -216,6 +217,8 @@ public final class JavaIdentifierNormalizer {
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
     private static final Splitter UNDERSCORE_SPLITTER = Splitter.on(UNDERSCORE);
 
+    private static final Pattern DOUBLE_UNDERSCORE_PATTERN = Pattern.compile("__", Pattern.LITERAL);
+
     // Converted to lower case
     private static final Set<String> WINDOWS_RESERVED_WORDS = BindingMapping.WINDOWS_RESERVED_WORDS.stream()
             .map(String::toLowerCase).collect(ImmutableSet.toImmutableSet());
@@ -333,7 +336,7 @@ public final class JavaIdentifierNormalizer {
      * @return - java acceptable identifier
      */
     static String normalizeClassIdentifier(final String packageName, final String className,
-            ModuleContext context) {
+            final ModuleContext context) {
         if (packageName.isEmpty() && PRIMITIVE_TYPES.contains(className)) {
             return className;
         }
@@ -404,8 +407,9 @@ public final class JavaIdentifierNormalizer {
                 sb.append(actualChar);
             }
         }
+
         // apply camel case in appropriate way
-        return fixCasesByJavaType(sb.toString().replace("__", "_").toLowerCase(), javaIdentifier);
+        return fixCasesByJavaType(DOUBLE_UNDERSCORE_PATTERN.matcher(sb).replaceAll("_").toLowerCase(), javaIdentifier);
     }
 
     /**
@@ -423,7 +427,7 @@ public final class JavaIdentifierNormalizer {
      * @return converted identifier
      */
     private static String normalizeClassIdentifier(final String packageName, final String origClassName,
-            final String actualClassName, final int rank, ModuleContext context) {
+            final String actualClassName, final int rank, final ModuleContext context) {
 
         final ListMultimap<String, String> packagesMap = context.getPackagesMap();
 
@@ -432,7 +436,7 @@ public final class JavaIdentifierNormalizer {
                 for (final String existingName : packagesMap.get(packageName)) {
                     if (actualClassName.equalsIgnoreCase(existingName)) {
                        return normalizeClassIdentifier(packageName, origClassName, origClassName + rank,
-                     rank + 1, context);
+                           rank + 1, context);
                     }
                 }
             }
