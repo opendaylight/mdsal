@@ -12,7 +12,8 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import java.util.LinkedList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.StringTokenizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
@@ -34,7 +35,6 @@ public final class TextTemplateUtil {
     public static final String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
 
     private static final char NEW_LINE = '\n';
-    private static final String COMMA = ",";
     private static final String UNDERSCORE = "_";
     private static final CharMatcher NEWLINE_OR_TAB = CharMatcher.anyOf("\n\t");
     private static final CharMatcher NL_MATCHER = CharMatcher.is(NEW_LINE);
@@ -126,11 +126,7 @@ public final class TextTemplateUtil {
      */
     //FIXME: this needs further clarification in future patch
     public static String valueForBits(final List<GeneratedProperty> properties) {
-        final List<String> strings = new LinkedList<>();
-        for (final GeneratedProperty property : properties) {
-            strings.add(fieldName(property));
-        }
-        return String.join(",", strings);
+        return String.join(",", Lists.transform(properties, TextTemplateUtil::fieldName));
     }
 
     /**
@@ -225,17 +221,7 @@ public final class TextTemplateUtil {
      * @return generated properties as formatted String
      */
     public static String propsAsArgs(final Iterable<GeneratedProperty> properties) {
-        final List<String> strings = new LinkedList<>();
-        if (properties.iterator().hasNext()) {
-            for (final GeneratedProperty property : properties) {
-                final StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("\"")
-                        .append(property.getName())
-                        .append("\"");
-                strings.add(stringBuilder.toString());
-            }
-        }
-        return String.join(",", strings);
+        return String.join(",", Iterables.transform(properties, prop -> "\"" + prop.getName() + "\""));
     }
 
     /**
@@ -245,17 +231,8 @@ public final class TextTemplateUtil {
      * @return Properties as formatted String
      */
     public static String propsAsList(final Iterable<GeneratedProperty> properties, final String booleanName) {
-        final List<String> strings = new LinkedList<>();
-        if (properties.iterator().hasNext()) {
-            for (final GeneratedProperty property : properties) {
-                final StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("properties.get(i++).equals(defaultValue) ? ")
-                        .append(booleanName)
-                        .append(".TRUE : null");
-                strings.add(stringBuilder.toString());
-            }
-        }
-        return String.join(",", strings);
+        return String.join(",", Iterables.transform(properties,
+            prop -> "properties.get(i++).equals(defaultValue) ? " + booleanName + ".TRUE : null"));
     }
 
     /**
@@ -291,13 +268,7 @@ public final class TextTemplateUtil {
      * @return string with the list of the parameter names
      */
     public static String asArguments(final List<GeneratedProperty> parameters) {
-        final List<String> strings = new LinkedList<>();
-        if (!parameters.isEmpty()) {
-            for (final GeneratedProperty parameter : parameters) {
-                strings.add(fieldName(parameter));
-            }
-        }
-        return String.join(", ", strings);
+        return String.join(", ", Lists.transform(parameters, TextTemplateUtil::fieldName));
     }
 
     /**
@@ -378,17 +349,7 @@ public final class TextTemplateUtil {
      * @return formatted property list as String
      */
     public static String getPropertyList(final List<GeneratedProperty> properties) {
-        final List<String> strings = new LinkedList<>();
-        if (!properties.isEmpty()) {
-            for (final GeneratedProperty property : properties) {
-                final StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("base.")
-                        .append(getterMethodName(property))
-                        .append("()");
-                strings.add(stringBuilder.toString());
-            }
-        }
-        return String.join(", ", strings);
+        return String.join(", ", Lists.transform(properties, prop -> "base." + getterMethodName(prop) + "()"));
     }
 
     /**
