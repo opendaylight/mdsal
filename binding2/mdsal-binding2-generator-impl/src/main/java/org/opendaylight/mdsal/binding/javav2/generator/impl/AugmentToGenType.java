@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
@@ -117,7 +116,7 @@ final class AugmentToGenType {
      */
     static Map<Module, ModuleContext> generate(final Module module, final SchemaContext schemaContext,
             final TypeProvider typeProvider, final Map<Module, ModuleContext> genCtx,
-            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments) {
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments) {
 
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         Preconditions.checkArgument(module.getName() != null, "Module name cannot be NULL.");
@@ -167,12 +166,10 @@ final class AugmentToGenType {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         Preconditions.checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
 
-        final Set<AugmentationSchema> augmentations = module.getAugmentations();
-        final List<AugmentationSchema> sortedAugmentations = new ArrayList<>(augmentations).stream()
+        final List<AugmentationSchema> sortedAugmentations = module.getAugmentations().stream()
                 .filter(aug -> !module.equals(findAugmentTargetModule(schemaContext, aug)))
                 .collect(Collectors.toList());
-        Collections.sort(sortedAugmentations, AUGMENT_COMP);
-
+        sortedAugmentations.sort(AUGMENT_COMP);
         return sortedAugmentations;
     }
 
@@ -209,7 +206,7 @@ final class AugmentToGenType {
     private static Map<Module, ModuleContext> augmentationToGenTypes(final String basePackageName,
             final Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry, final Module module,
             final SchemaContext schemaContext, final boolean verboseClassComments,
-            Map<Module, ModuleContext> genCtx, Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+            Map<Module, ModuleContext> genCtx, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
             final TypeProvider typeProvider) {
         Preconditions.checkArgument(basePackageName != null, "Package Name cannot be NULL.");
         Preconditions.checkArgument(schemaPathAugmentListEntry != null, "Augmentation List Entry cannot be NULL.");
@@ -218,7 +215,7 @@ final class AugmentToGenType {
                 "Augmentation List Entry does not contain Target Path (Target Path is NULL).");
 
         final List<AugmentationSchema> augmentationSchemaList = schemaPathAugmentListEntry.getValue();
-        Preconditions.checkState(augmentationSchemaList.size() > 0,
+        Preconditions.checkState(!augmentationSchemaList.isEmpty(),
                 "Augmentation List cannot be empty.");
 
         SchemaNode targetSchemaNode = SchemaContextUtil.findDataSchemaNode(schemaContext, targetPath);
@@ -266,7 +263,7 @@ final class AugmentToGenType {
     static Map<Module, ModuleContext> usesAugmentationToGenTypes(final SchemaContext schemaContext,
            final String augmentPackageName, final List<AugmentationSchema> schemaPathAugmentListEntry, final Module module,
            final UsesNode usesNode, final DataNodeContainer usesNodeParent, Map<Module, ModuleContext> genCtx,
-           Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments,
+           final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments,
            final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
 
         Preconditions.checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
@@ -419,8 +416,8 @@ final class AugmentToGenType {
             final String basePackageName, final Type targetType, final ChoiceSchemaNode targetNode,
             final List<AugmentationSchema> schemaPathAugmentListEntry,
             final DataNodeContainer usesNodeParent,
-            Map<Module, ModuleContext> genCtx, final boolean verboseClassComments,
-            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider,
+            final Map<Module, ModuleContext> genCtx, final boolean verboseClassComments,
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider,
             final BindingNamespaceType namespaceType) {
         Preconditions.checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         Preconditions.checkArgument(targetType != null, "Referenced Choice Type cannot be NULL.");
