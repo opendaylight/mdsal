@@ -13,8 +13,7 @@ import javax.annotation.RegEx;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Util class for cleaning yang models of excess whitespaces
- *
+ * Utility class for cleaning yang models of excess whitespaces
  */
 @Beta
 public final class YangSnippetCleaner {
@@ -54,12 +53,12 @@ public final class YangSnippetCleaner {
     public static String clean(final String unformedYang) {
         int indentCount = 0;
         final StringBuilder sb = new StringBuilder();
-        final String[] splitter = unformedYang.split(NEW_LINE_PATTERN.pattern());
+        final String[] splitter = NEW_LINE_PATTERN.split(unformedYang);
 
         for (int i = 0; i < splitter.length; i++) {
             if (!StringUtils.isBlank(splitter[i])) {
                 String line = cleanLine(splitter[i]);
-                if(line.equals(START_BODY)) {
+                if (START_BODY.equals(line)) {
                     indentCount = mergeWithPrevious(sb, indentCount);
                     continue;
                 }
@@ -74,8 +73,8 @@ public final class YangSnippetCleaner {
                 }
             }
         }
-        if (sb.toString().isEmpty()) {
-            return sb.toString();
+        if (sb.length() == 0) {
+            return "";
         }
         if (sb.charAt(sb.length() - 4) == NEW_LINE && sb.charAt(sb.length() - 3) == NEW_LINE) {
             sb.deleteCharAt(sb.length() - 3);
@@ -103,11 +102,11 @@ public final class YangSnippetCleaner {
 
     private static String cleanLine(final String split) {
         final StringBuilder sb = new StringBuilder();
-        final String[] s = split.split(WS_PATTERN.pattern());
+        final String[] s = WS_PATTERN.split(split);
         for (int i = 0; i < s.length; i++) {
             if (!StringUtils.isBlank(s[i])) {
                 sb.append(s[i]);
-                if (i != (s.length - 1)) {
+                if (i != s.length - 1) {
                     sb.append(SPACE);
                 }
             }
@@ -120,7 +119,7 @@ public final class YangSnippetCleaner {
         if (line.contains(END_BODY) && !line.contains(START_BODY)) {
             newIndentCount--;
         }
-        for (int i = 0; i < (newIndentCount * INDENT); i++) {
+        for (int i = 0; i < newIndentCount * INDENT; i++) {
             sb.append(SPACE);
         }
 
