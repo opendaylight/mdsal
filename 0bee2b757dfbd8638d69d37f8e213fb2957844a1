@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_e9b46783",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/TextTemplateUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-09-12T07:52:37Z",
+      "side": 1,
+      "message": "I think we can just kill this.",
+      "range": {
+        "startLine": 365,
+        "startChar": 0,
+        "endLine": 373,
+        "endChar": 5
+      },
+      "revId": "0bee2b757dfbd8638d69d37f8e213fb2957844a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
