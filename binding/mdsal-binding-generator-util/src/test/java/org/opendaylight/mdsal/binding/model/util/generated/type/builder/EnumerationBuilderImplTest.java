@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +25,7 @@ import org.opendaylight.yangtools.yang.model.util.type.EnumPairBuilder;
 
 public class EnumerationBuilderImplTest {
 
-    private final QName qName = QName.create("TestQName", "10-10-2014", "TestLocalQName");
+    private final QName qName = QName.create("TestQName", "2014-10-10", "TestLocalQName");
     private final String DESCRIPTION = "Test description of Enum";
     private final String packageName = "org.opendaylight.test";
     private final String name = "TestName";
@@ -100,18 +101,18 @@ public class EnumerationBuilderImplTest {
         assertEquals(enumeration, enumeration);
         assertNotEquals(enumeration, "string");
 
-        Enumeration enumerationOtherPackage = enumerationBuilderOtherPackage.toInstance(enumerationBuilderOtherPackage);
+        final Enumeration enumerationOtherPackage = enumerationBuilderOtherPackage.toInstance(enumerationBuilderOtherPackage);
         assertNotEquals(enumeration, enumerationOtherPackage);
 
-        Enumeration enumerationOtherName = enumerationBuilderOtherName.toInstance(enumerationBuilderOtherName);
+        final Enumeration enumerationOtherName = enumerationBuilderOtherName.toInstance(enumerationBuilderOtherName);
         assertNotEquals(enumeration, enumerationOtherName);
 
         enumerationBuilderSame.addValue(valueName, value, valueDescription);
-        Enumeration enumerationSame = enumerationBuilderSame.toInstance(enumerationBuilderSame);
+        final Enumeration enumerationSame = enumerationBuilderSame.toInstance(enumerationBuilderSame);
         assertEquals(enumeration, enumerationSame);
 
-        EnumerationBuilderImpl enumerationBuilderSame1 = new EnumerationBuilderImpl(packageName, name);
-        Enumeration enumerationSame1 = enumerationBuilderSame1.toInstance(enumerationBuilderSame1);
+        final EnumerationBuilderImpl enumerationBuilderSame1 = new EnumerationBuilderImpl(packageName, name);
+        final Enumeration enumerationSame1 = enumerationBuilderSame1.toInstance(enumerationBuilderSame1);
         enumerationBuilderSame1.addValue(valueName, 14, valueDescription);
         // Enums are equal thanks to same package name and local name
         assertEquals(enumeration, enumerationSame1);
@@ -119,11 +120,11 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void testEnumerationToString() {
-        String formattedString =
+        final String formattedString =
                 "public enum " + name + " {\n" +
                 "\t TestValue " + "(12 );\n" +
                 "}";
-        String s = "Enumeration [packageName="+packageName+", definingType="+packageName+"."+name+", name="+name+
+        final String s = "Enumeration [packageName="+packageName+", definingType="+packageName+"."+name+", name="+name+
                 ", values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]";
 
         assertEquals(s, enumeration.toString());
@@ -137,7 +138,7 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void testUpdateEnumPairsFromEnumTypeDef() {
-        EnumTypeDefinition enumTypeDefinition = BaseTypes.enumerationTypeBuilder(SchemaPath.SAME)
+        final EnumTypeDefinition enumTypeDefinition = BaseTypes.enumerationTypeBuilder(SchemaPath.SAME)
                 .addEnum(EnumPairBuilder.create("SomeName", 42).setDescription("Some Other Description")
                     .setReference("Some other reference").build()).build();
         enumerationBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDefinition);
