@@ -29,7 +29,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 public class MountPointServiceTest {
 
-    private static final YangInstanceIdentifier PATH = YangInstanceIdentifier.of(QName.create("namespace", "12-12-2012",
+    private static final YangInstanceIdentifier PATH =
+            YangInstanceIdentifier.of(QName.create("namespace", "2012-12-12",
         "top"));
 
     private DOMMountPointService mountService;
