@@ -40,17 +40,17 @@ import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.type.IdentityrefTypeBuilder;
-import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class TypeProviderImplTest {
 
-    @Test (expected = YangValidationException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void testLeafRefRelativeSelfReference() throws Exception {
         File relative = new File(getClass().getResource("/leafref/leafref-relative-invalid.yang").toURI());
 
         final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(relative);
-        final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrr")).iterator().next();
+        final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrr")).iterator()
+                .next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
         final QName listNode = QName.create(moduleRelative.getQNameModule(), "neighbor");
@@ -63,12 +63,13 @@ public class TypeProviderImplTest {
         assertNotNull(leafrefResolvedType);
     }
 
-    @Test (expected = YangValidationException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void testLeafRefAbsoluteSelfReference() throws Exception {
         File relative = new File(getClass().getResource("/leafref/leafref-absolute-invalid.yang").toURI());
 
         final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(relative);
-        final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lra")).iterator().next();
+        final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lra")).iterator()
+                .next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
         final QName listNode = QName.create(moduleRelative.getQNameModule(), "neighbor");
@@ -86,7 +87,8 @@ public class TypeProviderImplTest {
         File valid = new File(getClass().getResource("/leafref/leafref-valid.yang").toURI());
 
         final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(valid);
-        final Module moduleValid = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrv")).iterator().next();
+        final Module moduleValid = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrv")).iterator()
+                .next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
         final QName listNode = QName.create(moduleValid.getQNameModule(), "neighbor");
@@ -116,7 +118,8 @@ public class TypeProviderImplTest {
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
         final SchemaPath refTypePath = SchemaPath.create(true, QName.create("cont1"), QName.create("list1"));
-        final GeneratedTypeBuilderImpl refType = new GeneratedTypeBuilderImpl("org.opendaylight.yangtools.test", "TestType");
+        final GeneratedTypeBuilderImpl refType = new GeneratedTypeBuilderImpl("org.opendaylight.yangtools.test",
+            "TestType");
         typeProvider.putReferencedType(refTypePath, refType);
         final StringTypeDefinition stringType = BaseTypes.stringType();
 
@@ -162,14 +165,16 @@ public class TypeProviderImplTest {
         assertEquals("java.lang.Boolean.FALSE", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "false"));
 
         // decimal type
-        final DecimalTypeDefinition decimalType = BaseTypes.decimalTypeBuilder(refTypePath).setFractionDigits(4).build();
+        final DecimalTypeDefinition decimalType = BaseTypes.decimalTypeBuilder(refTypePath).setFractionDigits(4)
+                .build();
 
         reset(leafSchemaNode);
         doReturn(decimalType).when(leafSchemaNode).getType();
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
         doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
 
-        assertEquals("new java.math.BigDecimal(\"111\")", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "111"));
+        assertEquals("new java.math.BigDecimal(\"111\")", typeProvider.getTypeDefaultConstruction(leafSchemaNode,
+            "111"));
 
         // empty type
         final EmptyTypeDefinition emptyType = BaseTypes.emptyType();
@@ -179,7 +184,8 @@ public class TypeProviderImplTest {
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
         doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
 
-        assertEquals("java.lang.Boolean.valueOf(\"default value\")", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
+        assertEquals("java.lang.Boolean.valueOf(\"default value\")", typeProvider.getTypeDefaultConstruction(
+            leafSchemaNode, "default value"));
 
         // enum type
         final EnumTypeDefinition enumType =  BaseTypes.enumerationTypeBuilder(refTypePath).build();
