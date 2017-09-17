@@ -105,10 +105,10 @@ import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
+import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
-import org.opendaylight.yangtools.yang.parser.util.ModuleDependencySort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -250,9 +250,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         schemaContext = context;
         typeProvider = new TypeProviderImpl(context);
-        final Module[] modulesArray = new Module[context.getModules().size()];
-        context.getModules().toArray(modulesArray);
-        final List<Module> contextModules = ModuleDependencySort.sort(modulesArray);
+        final List<Module> contextModules = ModuleDependencySort.sort(context.getModules());
         genTypeBuilders = new HashMap<>();
 
         for (final Module contextModule : contextModules) {

@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.opendaylight.yangtools.util.TopologicalSort;
+import org.opendaylight.yangtools.util.TopologicalSort.Node;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -23,8 +25,6 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
-import org.opendaylight.yangtools.yang.parser.util.TopologicalSort;
-import org.opendaylight.yangtools.yang.parser.util.TopologicalSort.Node;
 
 public class GroupingDefinitionDependencySort {
 
@@ -33,12 +33,9 @@ public class GroupingDefinitionDependencySort {
      * dependencies.<br>
      *
      * Elements of <code>groupingDefinitions</code> are firstly transformed to
-     * {@link org.opendaylight.yangtools.yang.parser.util.TopologicalSort.Node
-     * Node} interfaces and then are sorted by
-     * {@link org.opendaylight.yangtools.yang.parser.util.TopologicalSort#sort(Set)
-     * sort()} method of <code>TopologicalSort</code>.<br>
+     * {@link TopologicalSort.Node Node} interfaces and then are sorted by
+     * {@link TopologicalSort#sort(Set) sort()} method of <code>TopologicalSort</code>.<br>
      * <br>
-     *
      *
      * <i>Definition of dependency relation:<br>
      * The first <code>GroupingDefinition</code> object (in this context)

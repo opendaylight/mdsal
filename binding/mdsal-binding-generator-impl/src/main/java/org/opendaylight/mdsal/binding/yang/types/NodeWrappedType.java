@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.yang.types;
 
-import org.opendaylight.yangtools.yang.parser.util.TopologicalSort.NodeImpl;
+import org.opendaylight.yangtools.util.TopologicalSort.NodeImpl;
 
 public final class NodeWrappedType extends NodeImpl {
     /**

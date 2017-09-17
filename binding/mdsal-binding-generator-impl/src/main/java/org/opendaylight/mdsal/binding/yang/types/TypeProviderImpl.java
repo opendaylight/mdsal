@@ -11,6 +11,7 @@ import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.enc
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -80,6 +81,7 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
+import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
@@ -683,13 +685,7 @@ public final class TypeProviderImpl implements TypeProvider {
     private void resolveTypeDefsFromContext() {
         final Set<Module> modules = schemaContext.getModules();
         Preconditions.checkArgument(modules != null, "Set of Modules cannot be NULL!");
-        final Module[] modulesArray = new Module[modules.size()];
-        int i = 0;
-        for (final Module modul : modules) {
-            modulesArray[i++] = modul;
-        }
-        final List<Module> modulesSortedByDependency = org.opendaylight.yangtools.yang.parser.util.ModuleDependencySort
-                .sort(modulesArray);
+        final List<Module> modulesSortedByDependency = ModuleDependencySort.sort(modules);
 
         for (final Module module : modulesSortedByDependency) {
             Map<Date, Map<String, Type>> dateTypeMap = genTypeDefsContextMap.get(module.getName());
