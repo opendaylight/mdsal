@@ -86,7 +86,6 @@ import org.opendaylight.yangtools.yang.model.util.RevisionAwareXPathImpl;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
-import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -315,17 +314,14 @@ public final class TypeProviderImpl implements TypeProvider {
     private Type javaTypeForLeafrefOrIdentityRef(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode) {
         if (typeDefinition instanceof LeafrefTypeDefinition) {
             final LeafrefTypeDefinition leafref = (LeafrefTypeDefinition) typeDefinition;
-            if (isLeafRefSelfReference(leafref, parentNode)) {
-                throw new YangValidationException("Leafref " + leafref.toString() + " is referencing itself, incoming" +
-                        " StackOverFlowError detected.");
-            }
+            Preconditions.checkArgument(!isLeafRefSelfReference(leafref, parentNode),
+                "Leafref %s is referencing itself, incoming StackOverFlowError detected.", leafref);
             return provideTypeForLeafref(leafref, parentNode);
         } else if (typeDefinition instanceof IdentityrefTypeDefinition) {
-            final IdentityrefTypeDefinition idref = (IdentityrefTypeDefinition) typeDefinition;
-            return provideTypeForIdentityref(idref);
-        } else {
-            return null;
+            return provideTypeForIdentityref((IdentityrefTypeDefinition) typeDefinition);
         }
+
+        return null;
     }
 
     /**
