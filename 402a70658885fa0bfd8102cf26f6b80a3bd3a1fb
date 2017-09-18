@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_6994e58a",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/NodeWrappedType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-09-18T12:48:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_09860966",
+      "revId": "402a70658885fa0bfd8102cf26f6b80a3bd3a1fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_e988d572",
         "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/NodeWrappedType.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2017-09-18T12:46:58Z",
       "side": 1,
       "message": "trailing whitespace",
+      "revId": "402a70658885fa0bfd8102cf26f6b80a3bd3a1fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c98fd173",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/NodeWrappedType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-09-18T12:48:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_e988d572",
       "revId": "402a70658885fa0bfd8102cf26f6b80a3bd3a1fb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
