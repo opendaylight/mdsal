@@ -34,6 +34,7 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Binding -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>odl-mdsal-binding</artifactId>
@@ -64,12 +65,48 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+
+        <!-- Binding 2 -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>odl-mdsal-binding2</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>odl-mdsal-binding2-api</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>odl-mdsal-binding2-base</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>odl-mdsal-binding2-dom-adapter</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>odl-mdsal-binding2-runtime</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+
+        <!-- Common -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>odl-mdsal-common</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+
+        <!-- DOM -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>odl-mdsal-dom</artifactId>
@@ -88,6 +125,8 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+
+        <!-- EOS -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>odl-mdsal-eos-common</artifactId>
@@ -106,6 +145,8 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+
+        <!-- Sinleton -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>odl-mdsal-singleton-common</artifactId>
