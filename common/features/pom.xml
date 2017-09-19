@@ -19,23 +19,40 @@
 
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>features-mdsal-aggregator</artifactId>
-    <version>2.3.1-SNAPSHOT</version>
+    <version>2.4.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>features-mdsal</module>
+
+        <!-- Binding -->
         <module>odl-mdsal-binding</module>
         <module>odl-mdsal-binding-api</module>
         <module>odl-mdsal-binding-base</module>
         <module>odl-mdsal-binding-dom-adapter</module>
         <module>odl-mdsal-binding-runtime</module>
+
+        <!-- Binding 2 -->
+        <module>odl-mdsal-binding2</module>
+        <module>odl-mdsal-binding2-api</module>
+        <module>odl-mdsal-binding2-base</module>
+        <module>odl-mdsal-binding2-dom-adapter</module>
+        <module>odl-mdsal-binding2-runtime</module>
+
+        <!-- Common -->
         <module>odl-mdsal-common</module>
+
+        <!-- DOM -->
         <module>odl-mdsal-dom</module>
         <module>odl-mdsal-dom-api</module>
         <module>odl-mdsal-dom-broker</module>
+
+        <!-- EOS -->
         <module>odl-mdsal-eos-binding</module>
         <module>odl-mdsal-eos-common</module>
         <module>odl-mdsal-eos-dom</module>
+
+        <!-- Singleton -->
         <module>odl-mdsal-singleton-common</module>
         <module>odl-mdsal-singleton-dom</module>
     </modules>
