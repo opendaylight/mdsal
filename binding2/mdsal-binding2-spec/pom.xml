@@ -69,6 +69,25 @@
         </dependency>
     </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-Name>Java Binding for YANG</Bundle-Name>
+            <Import-Package>
+              *,
+              com.google.common.base
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <!--
       Maven Site Configuration
 
