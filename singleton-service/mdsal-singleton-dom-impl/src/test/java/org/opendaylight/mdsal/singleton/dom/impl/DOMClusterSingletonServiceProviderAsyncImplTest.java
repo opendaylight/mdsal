@@ -114,7 +114,7 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest extends Abstr
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToSlave());
-        assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
+        assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
         Thread.sleep(ASYNC_TIME_DELAY_MILLIS * 2);
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, never()).close();
@@ -149,13 +149,15 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest extends Abstr
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToJeopardy());
+        clusterSingletonServiceProvider.ownershipChanged(getEntityMasterJeopardy());
+        assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
+        clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityMasterJeopardy());
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
         Thread.sleep(ASYNC_TIME_DELAY_MILLIS * 2);
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, never()).close();
-        verify(mockDoubleEntityCandReg).close();
+        verify(mockDoubleEntityCandReg, never()).close();
     }
 
     /**
