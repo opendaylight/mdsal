@@ -150,6 +150,15 @@ public abstract class AbstractDOMClusterServiceProviderTest {
         return new DOMEntityOwnershipChange(ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER);
     }
 
+    static final DOMEntityOwnershipChange getEntityToJeopardy() {
+        return new DOMEntityOwnershipChange(ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER, true);
+    }
+
+    static final DOMEntityOwnershipChange getEntityMasterJeopardy() {
+        return new DOMEntityOwnershipChange(ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE,
+            true);
+    }
+
     static final DOMEntityOwnershipChange getDoubleEntityToMaster() {
         return new DOMEntityOwnershipChange(DOUBLE_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
     }
@@ -162,8 +171,14 @@ public abstract class AbstractDOMClusterServiceProviderTest {
         return new DOMEntityOwnershipChange(DOUBLE_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NEW_OWNER);
     }
 
-    static final DOMEntityOwnershipChange getEntityToJeopardy() {
-        return new DOMEntityOwnershipChange(ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER, true);
+    static final DOMEntityOwnershipChange getDoubleEntityToJeopardy() {
+        return new DOMEntityOwnershipChange(DOUBLE_ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER,
+            true);
+    }
+
+    static final DOMEntityOwnershipChange getDoubleEntityMasterJeopardy() {
+        return new DOMEntityOwnershipChange(DOUBLE_ENTITY,
+            EntityOwnershipChangeState.LOCAL_OWNERSHIP_RETAINED_WITH_NO_CHANGE, true);
     }
 
     /**
