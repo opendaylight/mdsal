@@ -222,7 +222,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
                     AbstractClusterSingletonServiceProviderImpl.this, throwable);
                 cleanup();
             }
-        });
+        }, MoreExecutors.directExecutor());
     }
 
     @Override
