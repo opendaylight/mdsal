@@ -15,6 +15,7 @@ import com.google.common.base.Verify;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -533,7 +534,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             public void onSuccess(final List<Void> nulls) {
                 onServicesStopped();
             }
-        });
+        }, MoreExecutors.directExecutor());
     }
 
     void onServicesStopped() {
