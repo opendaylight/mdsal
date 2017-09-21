@@ -150,12 +150,14 @@ public final class DOMClusterSingletonServiceProviderAsyncImplTest extends Abstr
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getEntityToJeopardy());
+        assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
+        clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToJeopardy());
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
         Thread.sleep(ASYNC_TIME_DELAY_MILLIS * 2);
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, never()).close();
-        verify(mockDoubleEntityCandReg).close();
+        verify(mockDoubleEntityCandReg, never()).close();
     }
 
     /**
