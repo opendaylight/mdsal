@@ -119,12 +119,12 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         assertEquals(TestClusterSingletonServiceState.INITIALIZED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToMaster());
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToJeopardy());
+        clusterSingletonServiceProvider.ownershipChanged(getDoubleEntityToJeopardy());
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, never()).close();
-        verify(mockDoubleEntityCandReg).close();
+        verify(mockDoubleEntityCandReg, never()).close();
     }
 
     /**

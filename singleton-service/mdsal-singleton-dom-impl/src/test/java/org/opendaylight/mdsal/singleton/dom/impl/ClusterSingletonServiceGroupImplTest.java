@@ -366,7 +366,13 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
         singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
         verify(mockClusterSingletonService).instantiateServiceInstance();
+
+        // Base entity in jeopardy should not matter...
         singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
+        verify(mockClusterSingletonService, never()).closeServiceInstance();
+
+        // ... application state is actually guarded by cleanup
+        singletonServiceGroup.ownershipChanged(getDoubleEntityToJeopardy());
         verify(mockClusterSingletonService).closeServiceInstance();
     }
 
@@ -511,6 +517,11 @@ public class ClusterSingletonServiceGroupImplTest {
                 EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NO_OWNER);
     }
 
+    private static GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToJeopardy() {
+        return new GenericEntityOwnershipChange<>(MAIN_ENTITY,
+                EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER, true);
+    }
+
     private static GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getDoubleEntityToMaster() {
         return new GenericEntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED);
     }
@@ -524,8 +535,8 @@ public class ClusterSingletonServiceGroupImplTest {
         return new GenericEntityOwnershipChange<>(CLOSE_ENTITY, EntityOwnershipChangeState.REMOTE_OWNERSHIP_CHANGED);
     }
 
-    private static GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToJeopardy() {
-        return new GenericEntityOwnershipChange<>(MAIN_ENTITY,
+    private static GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getDoubleEntityToJeopardy() {
+        return new GenericEntityOwnershipChange<>(CLOSE_ENTITY,
                 EntityOwnershipChangeState.REMOTE_OWNERSHIP_LOST_NO_OWNER, true);
     }
 }
