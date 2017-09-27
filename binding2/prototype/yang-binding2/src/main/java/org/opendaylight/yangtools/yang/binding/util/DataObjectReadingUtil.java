@@ -148,7 +148,6 @@ public class DataObjectReadingUtil {
 
         @SuppressWarnings("unchecked")
         public DataObjectReadingStrategy(final Class parentType, final Class childType) {
-            super();
             checkArgument(InterfaceTyped.class.isAssignableFrom(parentType));
             checkArgument(InterfaceTyped.class.isAssignableFrom(childType));
             this.parentType = parentType;

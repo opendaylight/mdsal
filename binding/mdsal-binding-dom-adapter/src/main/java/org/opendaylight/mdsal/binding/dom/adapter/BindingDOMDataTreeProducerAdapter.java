@@ -25,7 +25,6 @@ class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
 
     protected BindingDOMDataTreeProducerAdapter(final DOMDataTreeProducer delegate,
             final BindingToNormalizedNodeCodec codec) {
-        super();
         this.delegate = Preconditions.checkNotNull(delegate);
         this.codec = codec;
     }

@@ -11,7 +11,6 @@ public class CodeGenerationException extends RuntimeException{
     private static final long serialVersionUID = 1L;
 
     public CodeGenerationException() {
-        super();
     }
 
     public CodeGenerationException(String message, Throwable cause, boolean enableSuppression,

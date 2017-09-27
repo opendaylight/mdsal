@@ -28,7 +28,6 @@ abstract class AbstractTypeMember implements TypeMember {
     protected AbstractTypeMember(final Type definingType, final String name,  final List<AnnotationType> annotations,
             final String comment, final AccessModifier accessModifier, final Type returnType,
             final boolean isFinal, final boolean isStatic) {
-        super();
         this.definingType = definingType;
         this.name = name;
         this.annotations = annotations;

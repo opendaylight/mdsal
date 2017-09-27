@@ -129,7 +129,6 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         private final String description;
 
         public EnumPairImpl(final String name, final int value, final String description) {
-            super();
             this.name = name;
             this.mappedName = BindingMapping.getClassName(name);
             this.value = value;
