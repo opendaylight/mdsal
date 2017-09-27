@@ -28,7 +28,6 @@ public class StaticBindingProperty {
     private final Object value;
 
     public StaticBindingProperty(final String name, final Class<?> type, final Object value) {
-        super();
         this.name = Preconditions.checkNotNull(name);
         this.type = Preconditions.checkNotNull(type);
         this.value = Preconditions.checkNotNull(value);

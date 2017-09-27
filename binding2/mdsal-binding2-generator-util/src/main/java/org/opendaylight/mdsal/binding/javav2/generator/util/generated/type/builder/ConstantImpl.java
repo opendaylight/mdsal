@@ -22,13 +22,11 @@ final class ConstantImpl implements Constant {
     private final Object value;
 
     public ConstantImpl(final Type definingType, final Type type, final String name, final Object value) {
-        super();
         this.definingType = definingType;
         this.type = type;
         this.name = name;
         this.value = value;
     }
-
 
     @Override
     public Type getDefiningType() {

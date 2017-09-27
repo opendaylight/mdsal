@@ -20,11 +20,9 @@ final class MethodParameterImpl implements Parameter {
     private final Type type;
 
     public MethodParameterImpl(final String name, final Type type) {
-        super();
         this.name = name;
         this.type = type;
     }
-
 
     @Override
     public String getName() {

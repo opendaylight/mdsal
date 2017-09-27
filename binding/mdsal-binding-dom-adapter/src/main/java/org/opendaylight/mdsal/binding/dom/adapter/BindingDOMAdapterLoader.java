@@ -32,7 +32,6 @@ public abstract class BindingDOMAdapterLoader extends AdapterLoader<BindingServi
     private final BindingToNormalizedNodeCodec codec;
 
     public BindingDOMAdapterLoader(final BindingToNormalizedNodeCodec codec) {
-        super();
         this.codec = codec;
     }
 

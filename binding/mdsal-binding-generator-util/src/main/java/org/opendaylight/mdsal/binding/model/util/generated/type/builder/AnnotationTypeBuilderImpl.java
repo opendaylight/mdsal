@@ -124,7 +124,6 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         public AnnotationTypeImpl(final String packageName, final String name,
                 final List<AnnotationTypeBuilder> annotationBuilders,
                 final List<AnnotationType.Parameter> parameters) {
-            super();
             this.packageName = packageName;
             this.name = name;
 
@@ -238,14 +237,12 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         private final List<String> values;
 
         public ParameterImpl(final String name, final String value) {
-            super();
             this.name = name;
             this.value = value;
             this.values = Collections.emptyList();
         }
 
         public ParameterImpl(final String name, final List<String> values) {
-            super();
             this.name = name;
             this.values = values;
             this.value = null;
