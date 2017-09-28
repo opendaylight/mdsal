@@ -33,7 +33,7 @@ public class GeneratedTypesBitsTest {
     public void testGeneretedTypesBitsTest() throws Exception {
         final URI yangTypesPath = getClass().getResource("/simple-bits-demo.yang").toURI();
 
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(new File(yangTypesPath));
+        final SchemaContext context = YangParserTestUtils.parseYangSources(new File(yangTypesPath));
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

@@ -11,10 +11,8 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.annotations.Beta;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
 import org.junit.Assert;
@@ -33,8 +31,7 @@ public class YangTemplateTest {
 
     @Before
     public void setup() throws URISyntaxException, ReactorException, FileNotFoundException {
-        File[] listFiles = new File(getClass().getResource("/yang-template").toURI()).listFiles();
-        this.modules = YangParserTestUtils.parseYangFiles(listFiles).getModules();
+        this.modules = YangParserTestUtils.parseYangSources("/yang-template").getModules();
     }
 
     @Test

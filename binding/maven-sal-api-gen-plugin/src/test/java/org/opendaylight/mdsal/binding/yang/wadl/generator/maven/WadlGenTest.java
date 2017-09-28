@@ -52,7 +52,7 @@ public class WadlGenTest {
     @Test
     public void testListGeneration() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/wadl-gen");
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
         final Set<Module> modules = context.getModules();
         final BasicCodeGenerator generator = new WadlGenerator();
         Collection<File> generatedWadlFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, modules);
@@ -63,7 +63,7 @@ public class WadlGenTest {
     @Test
     public void testListGenerationWithoutPath() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/wadl-gen");
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
         final Set<Module> modules = context.getModules();
         final BasicCodeGenerator generator = new WadlGenerator();
         Collection<File> generatedWadlFiles = generator.generateSources(context, null, modules);

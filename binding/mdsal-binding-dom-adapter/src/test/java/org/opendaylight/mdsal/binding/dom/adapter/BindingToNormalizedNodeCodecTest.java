@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -54,8 +53,7 @@ public class BindingToNormalizedNodeCodecTest {
      */
     @Test
     public void fromNormalizedNodeTest() throws Exception {
-        final SchemaContext schemaCtx =
-                YangParserTestUtils.parseYangFiles(new File(getClass().getResource("/test.yang").toURI()));
+        final SchemaContext schemaCtx = YangParserTestUtils.parseYangSource("/test.yang");
         final NormalizedNode<?, ?> data = prepareData(schemaCtx, 42);
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
 
@@ -85,8 +83,7 @@ public class BindingToNormalizedNodeCodecTest {
      */
     @Test
     public void fromNormalizedNodeWithAnotherInputDataTest() throws Exception {
-        final SchemaContext schemaCtx =
-                YangParserTestUtils.parseYangFiles(new File(getClass().getResource("/test.yang").toURI()));
+        final SchemaContext schemaCtx = YangParserTestUtils.parseYangSource("/test.yang");
         final NormalizedNode<?, ?> data = prepareData(schemaCtx, "42");
 
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);

@@ -11,42 +11,49 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 import com.google.common.collect.ImmutableList;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorImplTest {
 
     @Test
-    public void isisTotpologyStatementParserTest() throws Exception {
-        final File topo = new File(getClass().getResource("/isis-topology/network-topology@2013-10-21.yang").toURI());
-        final File isis = new File(getClass().getResource("/isis-topology/isis-topology@2013-10-21.yang").toURI());
-        final File l3 =
-                new File(getClass().getResource("/isis-topology/l3-unicast-igp-topology@2013-10-21.yang").toURI());
+    public void isisTotpologyStatementParserTest() throws IOException,
+            URISyntaxException, ReactorException {
+        final InputStream topo = getClass().getResourceAsStream("/isis-topology/network-topology@2013-10-21.yang");
+        final InputStream isis = getClass().getResourceAsStream("/isis-topology/isis-topology@2013-10-21.yang");
+        final InputStream l3 = getClass().getResourceAsStream("/isis-topology/l3-unicast-igp-topology@2013-10-21.yang");
 
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(ImmutableList.of(isis, l3, topo));
+        SchemaContext context = YangParserTestUtils.parseYangStreams(ImmutableList.of(isis, l3, topo));
         assertNotNull(context);
 
-        final List<Type> generateTypes = new BindingGeneratorImpl(false)
+        List<Type> generateTypes = new BindingGeneratorImpl(false)
                 .generateTypes(context);
 
         assertFalse(generateTypes.isEmpty());
     }
 
     @Test
-    public void choiceNodeGenerationTest() throws Exception {
-        final File resourceFile = new File(getClass().getResource(
+    public void choiceNodeGenerationTest() throws IOException,
+            URISyntaxException, ReactorException {
+        File resourceFile = new File(getClass().getResource(
                 "/binding-generator-impl-test/choice-test.yang").toURI());
 
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(resourceFile);
+        SchemaContext context = YangParserTestUtils.parseYangSources(resourceFile);
 
-        final List<Type> generateTypes = new BindingGeneratorImpl(false)
+        List<Type> generateTypes = new BindingGeneratorImpl(false)
                 .generateTypes(context);
 
         GeneratedType choiceTestData = null;
@@ -56,7 +63,7 @@ public class BindingGeneratorImplTest {
         GeneratedType myList2 = null;
         GeneratedType myContainer2 = null;
 
-        for (final Type type : generateTypes) {
+        for (Type type : generateTypes) {
             switch (type.getName()) {
             case "ChoiceTestData":
                 choiceTestData = (GeneratedType) type;
@@ -88,7 +95,7 @@ public class BindingGeneratorImplTest {
 
         List<Type> implements1 = myContainer.getImplements();
         Type childOfParamType = null;
-        for (final Type type : implements1) {
+        for (Type type : implements1) {
             if (type.getName().equals("ChildOf")) {
                 childOfParamType = ((ParameterizedType) type)
                         .getActualTypeArguments()[0];
@@ -100,7 +107,7 @@ public class BindingGeneratorImplTest {
 
         implements1 = myList.getImplements();
         childOfParamType = null;
-        for (final Type type : implements1) {
+        for (Type type : implements1) {
             if (type.getName().equals("ChildOf")) {
                 childOfParamType = ((ParameterizedType) type)
                         .getActualTypeArguments()[0];
@@ -112,7 +119,7 @@ public class BindingGeneratorImplTest {
 
         implements1 = myContainer2.getImplements();
         childOfParamType = null;
-        for (final Type type : implements1) {
+        for (Type type : implements1) {
             if (type.getName().equals("ChildOf")) {
                 childOfParamType = ((ParameterizedType) type)
                         .getActualTypeArguments()[0];
@@ -124,7 +131,7 @@ public class BindingGeneratorImplTest {
 
         implements1 = myList2.getImplements();
         childOfParamType = null;
-        for (final Type type : implements1) {
+        for (Type type : implements1) {
             if (type.getName().equals("ChildOf")) {
                 childOfParamType = ((ParameterizedType) type)
                         .getActualTypeArguments()[0];
@@ -137,17 +144,17 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void notificationGenerationTest() throws Exception {
-        final File resourceFile = new File(getClass().getResource(
+    public void notificationGenerationTest() throws IOException, URISyntaxException, ReactorException {
+        File resourceFile = new File(getClass().getResource(
                 "/binding-generator-impl-test/notification-test.yang").toURI());
 
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(resourceFile);
+        SchemaContext context = YangParserTestUtils.parseYangSources(resourceFile);
 
-        final List<Type> generateTypes = new BindingGeneratorImpl(false)
+        List<Type> generateTypes = new BindingGeneratorImpl(false)
                 .generateTypes(context);
 
         GeneratedType foo = null;
-        for (final Type type : generateTypes) {
+        for (Type type : generateTypes) {
             if (type.getName().equals("Foo")) {
                 foo = (GeneratedType) type;
                 break;
@@ -156,8 +163,8 @@ public class BindingGeneratorImplTest {
 
         Type childOf = null;
         Type dataObject = null;
-        final List<Type> impl = foo.getImplements();
-        for (final Type type : impl) {
+        List<Type> impl = foo.getImplements();
+        for (Type type : impl) {
             switch (type.getName()) {
             case "ChildOf":
                 childOf = type;

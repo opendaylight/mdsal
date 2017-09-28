@@ -7,11 +7,14 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class TestModel {
@@ -31,11 +34,11 @@ public class TestModel {
             YangInstanceIdentifier.builder(TEST_PATH).node(OUTER_LIST_QNAME).build();
     private static final String DATASTORE_TEST_YANG = "/odl-datastore-test.yang";
 
-    public static SchemaContext createTestContext() throws Exception {
-        return YangParserTestUtils.parseYangFiles(Collections.singletonList(getFile()));
+    public static SchemaContext createTestContext() throws IOException, YangSyntaxErrorException, ReactorException {
+        return YangParserTestUtils.parseYangStreams(Collections.singletonList(getInputStream()));
     }
 
-    private static File getFile() throws Exception {
-        return new File(TestModel.class.getResource(DATASTORE_TEST_YANG).toURI());
+    private static InputStream getInputStream() {
+        return TestModel.class.getResourceAsStream(DATASTORE_TEST_YANG);
     }
 }

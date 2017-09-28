@@ -28,7 +28,7 @@ public class UnionTypeDefTest {
     public void unionTypeResolvingTest() throws Exception {
         final File abstractTopology = new File(getClass().getResource("/union-test-models/abstract-topology.yang").toURI());
         final File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(abstractTopology, ietfInetTypes);
+        final SchemaContext context = YangParserTestUtils.parseYangSources(abstractTopology, ietfInetTypes);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -43,7 +43,7 @@ public class UnionTypeDefTest {
     @Test
     public void unionTypedefLeafrefTest() throws Exception {
         final File yang = new File(getClass().getResource("/leafref_typedef_union/bug8449.yang").toURI());
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangFiles(yang);
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(yang);
         assertNotNull(schemaContext);
         final List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(schemaContext);
         assertNotNull(generateTypes);

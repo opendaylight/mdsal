@@ -12,8 +12,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -32,8 +30,7 @@ public class BindingGeneratorImplTest {
     @Test
     public void genTypesTypeDefTest() throws Exception {
         final BindingGeneratorImpl bg = new BindingGeneratorImpl(false);
-        final SchemaContext schemaContext = YangParserTestUtils
-                .parseYangFiles(new File(getClass().getResource("/generator/test-typedef.yang").toURI()));
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangSource("/generator/test-typedef.yang");
         final List<Type> generateTypes = bg.generateTypes(schemaContext);
         assertNotNull(generateTypes);
         for (final Type genType : generateTypes) {
@@ -52,8 +49,7 @@ public class BindingGeneratorImplTest {
     @Test
     public void generatedTypesEnumTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final SchemaContext context = YangParserTestUtils
-                .parseYangFiles(new File(getClass().getResource("/generator/apple-test.yang").toURI()));
+        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/apple-test.yang");
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -76,10 +72,10 @@ public class BindingGeneratorImplTest {
     @Test
     public void generatedTypesUsesEnumLeafTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final List<File> sources = new ArrayList<>();
-        sources.add(new File(getClass().getResource("/uses-statement/test-uses-leaf-innertype-base.yang").toURI()));
-        sources.add(new File(getClass().getResource("/uses-statement/test-uses-leaf-innertype.yang").toURI()));
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(sources);
+        final List<String> sources = new ArrayList<>();
+        sources.add("/uses-statement/test-uses-leaf-innertype-base.yang");
+        sources.add("/uses-statement/test-uses-leaf-innertype.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -103,10 +99,10 @@ public class BindingGeneratorImplTest {
     @Test
     public void generatedTypesUsesBitsLeafTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final List<File> sources = new ArrayList<>();
-        sources.add(new File(getClass().getResource("/uses-statement/test-uses-leaf-innertype2-base.yang").toURI()));
-        sources.add(new File(getClass().getResource("/uses-statement/test-uses-leaf-innertype2.yang").toURI()));
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(sources);
+        final List<String> sources = new ArrayList<>();
+        sources.add("/uses-statement/test-uses-leaf-innertype2-base.yang");
+        sources.add("/uses-statement/test-uses-leaf-innertype2.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -114,7 +110,7 @@ public class BindingGeneratorImplTest {
             if (type.getName().equals("MyCont") && type.getPackageName()
                     .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.base.rev170809.data")) {
                 final GeneratedType gt = (GeneratedType) type;
-                for (final MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
                     if (methodSignature.getName().equals("getLeafBits")) {
                         assertEquals("LeafBits", methodSignature.getReturnType().getName());
                     }
@@ -125,7 +121,7 @@ public class BindingGeneratorImplTest {
             if (type.getName().equals("MyCont") && type.getPackageName()
                     .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.rev170809.data")) {
                 final GeneratedType gt = (GeneratedType) type;
-                for (final MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
                     if (methodSignature.getName().equals("getLeafBits")) {
                         assertEquals("LeafBits", methodSignature.getReturnType().getName());
                     }
@@ -137,10 +133,10 @@ public class BindingGeneratorImplTest {
     @Test
     public void generatedTypesUsesUnionLeafTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final List<File> sources = new ArrayList<>();
-        sources.add(new File(getClass().getResource("/uses-statement/test-uses-leaf-innertype2-base.yang").toURI()));
-        sources.add(new File(getClass().getResource("/uses-statement/test-uses-leaf-innertype2.yang").toURI()));
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(sources);
+        final List<String> sources = new ArrayList<>();
+        sources.add("/uses-statement/test-uses-leaf-innertype2-base.yang");
+        sources.add("/uses-statement/test-uses-leaf-innertype2.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -148,7 +144,7 @@ public class BindingGeneratorImplTest {
             if (type.getName().equals("MyCont") && type.getPackageName()
                     .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.base.rev170809.data")) {
                 final GeneratedType gt = (GeneratedType) type;
-                for (final MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
                     if (methodSignature.getName().equals("getLeafUnion")) {
                         assertEquals("LeafUnion", methodSignature.getReturnType().getName());
                     }
@@ -159,7 +155,7 @@ public class BindingGeneratorImplTest {
             if (type.getName().equals("MyCont") && type.getPackageName()
                     .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.rev170809.data")) {
                 final GeneratedType gt = (GeneratedType) type;
-                for (final MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
                     if (methodSignature.getName().equals("getLeafUnion")) {
                         assertEquals("LeafUnion", methodSignature.getReturnType().getName());
                     }
@@ -171,10 +167,10 @@ public class BindingGeneratorImplTest {
     @Test
     public void generatedTypesUsesLeafTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final List<File> sources = new ArrayList<>();
-        sources.add(new File(getClass().getResource("/uses-statement/test-uses-leaf-innertype2-base.yang").toURI()));
-        sources.add(new File(getClass().getResource("/uses-statement/test-uses-leaf-innertype2.yang").toURI()));
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(sources);
+        final List<String> sources = new ArrayList<>();
+        sources.add("/uses-statement/test-uses-leaf-innertype2-base.yang");
+        sources.add("/uses-statement/test-uses-leaf-innertype2.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -182,7 +178,7 @@ public class BindingGeneratorImplTest {
             if (type.getName().equals("MyCont") && type.getPackageName()
                     .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.base.rev170809.data")) {
                 final GeneratedType gt = (GeneratedType) type;
-                for (final MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
                     if (methodSignature.getName().equals("getLeafDecimal64")) {
                         assertEquals("BigDecimal", methodSignature.getReturnType().getName());
                     }
@@ -193,7 +189,7 @@ public class BindingGeneratorImplTest {
             if (type.getName().equals("MyCont") && type.getPackageName()
                     .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype2.rev170809.data")) {
                 final GeneratedType gt = (GeneratedType) type;
-                for (final MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
                     if (methodSignature.getName().equals("getLeafDecimal64")) {
                         assertEquals("BigDecimal", methodSignature.getReturnType().getName());
                     }
@@ -205,10 +201,10 @@ public class BindingGeneratorImplTest {
     @Test
     public void generatedTypesUsesLeafInnertype3Test() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final List<File> sources = new ArrayList<>();
-        sources.add(new File(getClass().getResource("/uses-statement/test-uses-leaf-innertype3-base.yang").toURI()));
-        sources.add(new File(getClass().getResource("/uses-statement/test-uses-leaf-innertype3.yang").toURI()));
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(sources);
+        final List<String> sources = new ArrayList<>();
+        sources.add("/uses-statement/test-uses-leaf-innertype3-base.yang");
+        sources.add("/uses-statement/test-uses-leaf-innertype3.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -216,7 +212,7 @@ public class BindingGeneratorImplTest {
             if (type.getName().equals("MyCont") && type.getPackageName()
                     .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype3.rev170809.data")) {
                 final GeneratedType gt = (GeneratedType) type;
-                for (final MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
                     if (methodSignature.getName().equals("getBandwidth")) {
                         assertEquals("Bandwidth", methodSignature.getReturnType().getName());
                     }
@@ -227,7 +223,7 @@ public class BindingGeneratorImplTest {
             if (type.getName().equals("Open") && type.getPackageName()
                     .equals("org.opendaylight.mdsal.gen.javav2.urn.test.uses.leaf.innertype3.rev170809.data")) {
                 final GeneratedType gt = (GeneratedType) type;
-                for (final MethodSignature methodSignature : gt.getMethodDefinitions()) {
+                for (MethodSignature methodSignature : gt.getMethodDefinitions()) {
                     if (methodSignature.getName().equals("getVersion")) {
                         assertEquals("ProtocolVersion", methodSignature.getReturnType().getName());
                     }
@@ -244,8 +240,7 @@ public class BindingGeneratorImplTest {
     @Test
     public void generatedTypesTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final SchemaContext context = YangParserTestUtils
-                .parseYangFiles(new File(getClass().getResource("/generator/test-list.yang").toURI()));
+        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/test-list.yang");
         final List<Type> generateTypes = bg.generateTypes(context);
 
         assertNotNull(generateTypes);
@@ -289,7 +284,7 @@ public class BindingGeneratorImplTest {
     @Test
     public void generateTypesDescriptionsTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(true);
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(getFiles("/base/with_import/"));
+        final SchemaContext context = YangParserTestUtils.parseYangSources("/base/with_import/");
         assertNotNull(context);
 
         final List<Type> generateTypes = bg.generateTypes(context, context.getModules());
@@ -311,7 +306,7 @@ public class BindingGeneratorImplTest {
     @Test
     public void generateTypesIdentityTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(true);
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(getFiles("/identity/"));
+        final SchemaContext context = YangParserTestUtils.parseYangSources("/identity/");
         assertNotNull(context);
 
         final List<Type> generateTypes = bg.generateTypes(context, context.getModules());
@@ -340,10 +335,6 @@ public class BindingGeneratorImplTest {
 
             }
         }
-    }
-
-    private File[] getFiles(final String path) throws URISyntaxException {
-        return new File(getClass().getResource(path).toURI()).listFiles();
     }
 
     private void testActualType(final GeneratedType t, final int[] test_i) {
