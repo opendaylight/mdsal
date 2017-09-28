@@ -36,7 +36,7 @@ public class BindingSchemaContextUtilsTest {
 
     @Before
     public void setup() throws URISyntaxException, FileNotFoundException, ReactorException {
-        schemaContext = YangParserTestUtils.parseYangSources(
+        schemaContext = YangParserTestUtils.parseYangFiles(
                 new File(getClass().getResource("/yang/test-runtime.yang").toURI()));
         myCont = (DataNodeContainer) schemaContext.getChildNodes().iterator().next();
         myChoice = (ChoiceSchemaNode) myCont.getChildNodes().iterator().next();

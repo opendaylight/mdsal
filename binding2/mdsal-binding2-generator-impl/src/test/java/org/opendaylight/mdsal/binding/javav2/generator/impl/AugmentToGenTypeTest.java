@@ -15,6 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -165,7 +166,8 @@ public class AugmentToGenTypeTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/test.yang");
+        final SchemaContext context =
+                YangParserTestUtils.parseYangFiles(new File(getClass().getResource("/generator/test.yang").toURI()));
         final TypeProvider typeProvider = new TypeProviderImpl(context);
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
@@ -185,7 +187,8 @@ public class AugmentToGenTypeTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/test-augment.yang");
+        final SchemaContext context = YangParserTestUtils
+                .parseYangFiles(new File(getClass().getResource("/generator/test-augment.yang").toURI()));
         final TypeProvider typeProvider = new TypeProviderImpl(context);
         final Map<Module, ModuleContext> genCtx = mock(Map.class);
         final Collection<ModuleContext> moduleContexts = new ArrayList<>();

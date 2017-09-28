@@ -11,18 +11,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
-import java.util.List;
 
 public class Bug8542Test {
     @Test
     public void Bug8542Test() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/bug-8542/recursive-uses-augment.yang");
+        final SchemaContext context = YangParserTestUtils
+                .parseYangFiles(new File(getClass().getResource("/bug-8542/recursive-uses-augment.yang").toURI()));
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());

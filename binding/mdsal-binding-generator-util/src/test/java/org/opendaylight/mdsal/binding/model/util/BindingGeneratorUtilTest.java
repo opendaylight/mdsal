@@ -83,7 +83,7 @@ public class BindingGeneratorUtilTest {
     public void testBindingGeneratorUtilMethods() throws Exception {
         List<File> testModels = loadTestResources("/module.yang");
 
-        final Set<Module> modules = YangParserTestUtils.parseYangSources(testModels).getModules();
+        final Set<Module> modules = YangParserTestUtils.parseYangFiles(testModels).getModules();
         String packageName = "";
         Module module = null;
         for (Module m : modules) {

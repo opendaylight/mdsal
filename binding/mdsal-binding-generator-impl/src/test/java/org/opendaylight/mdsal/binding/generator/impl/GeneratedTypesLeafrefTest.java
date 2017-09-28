@@ -14,34 +14,29 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesLeafrefTest {
 
     @Test
-    public void testLeafrefResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
-        File abstractTopology = new File(getClass().getResource(
+    public void testLeafrefResolving() throws Exception {
+        final File abstractTopology = new File(getClass().getResource(
                 "/leafref-test-models/abstract-topology@2013-02-08.yang").toURI());
-        File ietfInterfaces = new File(getClass().getResource("/ietf/ietf-interfaces.yang").toURI());
-        File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
-        File ietfYangTypes = new File(getClass().getResource("/ietf/ietf-yang-types.yang").toURI());
+        final File ietfInterfaces = new File(getClass().getResource("/ietf/ietf-interfaces.yang").toURI());
+        final File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
+        final File ietfYangTypes = new File(getClass().getResource("/ietf/ietf-yang-types.yang").toURI());
 
-        final SchemaContext context =  YangParserTestUtils.parseYangSources(abstractTopology, ietfInterfaces,
+        final SchemaContext context =  YangParserTestUtils.parseYangFiles(abstractTopology, ietfInterfaces,
                 ietfInetTypes, ietfYangTypes);
         assertNotNull(context);
         assertEquals(4, context.getModules().size());
@@ -61,7 +56,7 @@ public class GeneratedTypesLeafrefTest {
         GeneratedTransferObject gtTunnelKey = null;
         GeneratedType gtTopology = null;
         for (final Type type : genTypes) {
-            String name = type.getName();
+            final String name = type.getName();
             if ("InterfaceKey".equals(name)) {
                 gtIfcKey = (GeneratedTransferObject) type;
             } else if ("Interface".equals(name)) {
@@ -100,7 +95,7 @@ public class GeneratedTypesLeafrefTest {
             }
         }
         assertNotNull(condLeafref);
-        Type condLeafRT = condLeafref.getReturnType();
+        final Type condLeafRT = condLeafref.getReturnType();
         assertNotNull(condLeafRT);
         assertEquals("java.lang.Object", condLeafRT.getFullyQualifiedName());
 
@@ -114,7 +109,7 @@ public class GeneratedTypesLeafrefTest {
             }
         }
         assertNotNull(ifcIdProp);
-        Type ifcIdPropType = ifcIdProp.getReturnType();
+        final Type ifcIdPropType = ifcIdProp.getReturnType();
         assertNotNull(ifcIdPropType);
         assertEquals("java.lang.String", ifcIdPropType.getFullyQualifiedName());
 
@@ -131,13 +126,13 @@ public class GeneratedTypesLeafrefTest {
             }
         }
         assertNotNull(getIfcKey);
-        Type getIfcKeyType = getIfcKey.getReturnType();
+        final Type getIfcKeyType = getIfcKey.getReturnType();
         assertNotNull(getIfcKeyType);
         assertNotSame("java.lang.Void", getIfcKeyType);
         assertEquals("InterfaceKey", getIfcKeyType.getName());
 
         assertNotNull(getHigherLayerIf);
-        Type getHigherLayerIfType = getHigherLayerIf.getReturnType();
+        final Type getHigherLayerIfType = getHigherLayerIf.getReturnType();
         assertNotNull(getHigherLayerIfType);
         assertNotSame("java.lang.Void", getHigherLayerIfType);
         assertEquals("List", getHigherLayerIfType.getName());
@@ -146,13 +141,13 @@ public class GeneratedTypesLeafrefTest {
         final List<MethodSignature> gtNetworkLinkMethods = gtNetworkLink.getMethodDefinitions();
         assertNotNull(gtNetworkLinkMethods);
         MethodSignature getIfc = null;
-        for (MethodSignature method : gtNetworkLinkMethods) {
+        for (final MethodSignature method : gtNetworkLinkMethods) {
             if (method.getName().equals("getInterface")) {
                 getIfc = method;
             }
         }
         assertNotNull(getIfc);
-        Type getIfcType = getIfc.getReturnType();
+        final Type getIfcType = getIfc.getReturnType();
         assertNotNull(getIfcType);
         assertNotSame("java.lang.Void", getIfcType);
         assertEquals("String", getIfcType.getName());
@@ -161,13 +156,13 @@ public class GeneratedTypesLeafrefTest {
         final List<MethodSignature> gtSourceMethods = gtSource.getMethodDefinitions();
         assertNotNull(gtSourceMethods);
         MethodSignature getIdSource = null;
-        for (MethodSignature method : gtSourceMethods) {
+        for (final MethodSignature method : gtSourceMethods) {
             if (method.getName().equals("getId")) {
                 getIdSource = method;
             }
         }
         assertNotNull(getIdSource);
-        Type getIdType = getIdSource.getReturnType();
+        final Type getIdType = getIdSource.getReturnType();
         assertNotNull(getIdType);
         assertNotSame("java.lang.Void", getIdType);
         assertEquals("Uri", getIdType.getName());
@@ -176,13 +171,13 @@ public class GeneratedTypesLeafrefTest {
         final List<MethodSignature> gtDestMethods = gtDest.getMethodDefinitions();
         assertNotNull(gtDestMethods);
         MethodSignature getIdDest = null;
-        for (MethodSignature method : gtDestMethods) {
+        for (final MethodSignature method : gtDestMethods) {
             if (method.getName().equals("getId")) {
                 getIdDest = method;
             }
         }
         assertNotNull(getIdDest);
-        Type getIdDestType = getIdDest.getReturnType();
+        final Type getIdDestType = getIdDest.getReturnType();
         assertNotNull(getIdDestType);
         assertNotSame("java.lang.Void", getIdDestType);
         assertEquals("Uri", getIdDestType.getName());
@@ -191,13 +186,13 @@ public class GeneratedTypesLeafrefTest {
         final List<MethodSignature> gtTunnelMethods = gtTunnel.getMethodDefinitions();
         assertNotNull(gtTunnelMethods);
         MethodSignature getTunnelKey = null;
-        for (MethodSignature method : gtTunnelMethods) {
+        for (final MethodSignature method : gtTunnelMethods) {
             if (method.getName().equals("getKey")) {
                 getTunnelKey = method;
             }
         }
         assertNotNull(getTunnelKey);
-        Type getTunnelKeyType = getTunnelKey.getReturnType();
+        final Type getTunnelKeyType = getTunnelKey.getReturnType();
         assertNotNull(getTunnelKeyType);
         assertNotSame("java.lang.Void", getTunnelKeyType);
         assertEquals("TunnelKey", getTunnelKeyType.getName());
@@ -212,18 +207,18 @@ public class GeneratedTypesLeafrefTest {
             }
         }
         assertNotNull(tunnelId);
-        Type tunnelIdType = tunnelId.getReturnType();
+        final Type tunnelIdType = tunnelId.getReturnType();
         assertNotNull(tunnelIdType);
         assertNotSame("java.lang.Void", tunnelIdType);
         assertEquals("Uri", tunnelIdType.getName());
     }
 
     @Test
-    public void testLeafrefInvalidPathResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
+    public void testLeafrefInvalidPathResolving() throws Exception {
         final URI resource = getClass().getResource("/leafref-test-invalid-model/foo.yang").toURI();
         assertNotNull(resource);
 
-        final SchemaContext context =  YangParserTestUtils.parseYangSources(new File(resource));
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(new File(resource));
         assertNotNull(context);
         assertEquals(1, context.getModules().size());
 
@@ -231,8 +226,8 @@ public class GeneratedTypesLeafrefTest {
         try {
             bindingGen.generateTypes(context);
             fail("Expected IllegalArgumentException caused by invalid leafref path");
-        } catch (IllegalArgumentException e) {
-            String expected = "Failed to find leafref target";
+        } catch (final IllegalArgumentException e) {
+            final String expected = "Failed to find leafref target";
             assertTrue(e.getMessage().contains(expected));
         }
     }

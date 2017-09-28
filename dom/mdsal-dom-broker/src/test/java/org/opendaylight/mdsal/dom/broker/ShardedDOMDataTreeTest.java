@@ -22,6 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,7 +59,6 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableCo
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +71,7 @@ public class ShardedDOMDataTreeTest {
     static {
         try {
             schemaContext = TestModel.createTestContext();
-        } catch (final ReactorException e) {
+        } catch (final URISyntaxException e) {
             LOG.error("Unable to create schema context for TestModel", e);
         }
     }
@@ -219,7 +219,7 @@ public class ShardedDOMDataTreeTest {
         final DOMDataTreeListener mockedDataTreeListener = mock(DOMDataTreeListener.class);
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
-        InMemoryDOMDataTreeShard testShard = InMemoryDOMDataTreeShard.create(TEST_ID, executor, 1);
+        final InMemoryDOMDataTreeShard testShard = InMemoryDOMDataTreeShard.create(TEST_ID, executor, 1);
         testShard.onGlobalContextUpdated(schemaContext);
 
         final DOMDataTreeProducer regProducer = dataTreeService.createProducer(Collections.singleton(TEST_ID));
@@ -277,7 +277,7 @@ public class ShardedDOMDataTreeTest {
                 tx.createCursor(new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, oid1));
         assertNotNull(cursor);
 
-        MapNode innerList = ImmutableMapNodeBuilder
+        final MapNode innerList = ImmutableMapNodeBuilder
                 .create()
                 .withNodeIdentifier(new NodeIdentifier(TestModel.INNER_LIST_QNAME))
                 .build();

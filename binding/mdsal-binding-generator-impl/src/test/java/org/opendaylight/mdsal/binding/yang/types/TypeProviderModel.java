@@ -7,12 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.yang.types;
 
-import java.io.InputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 /**
@@ -27,20 +25,20 @@ public final class TypeProviderModel {
     private static final String TEST_TYPE_PROVIDER_PATH = "/"+TEST_TYPE_PROVIDER_MODULE_NAME+".yang";
     private static final String TEST_TYPE_PROVIDER_B_PATH = "/test-type-provider-b.yang";
 
-    private static InputStream getInputStream(final String resourceName) {
-        return TypeProviderModel.class.getResourceAsStream(resourceName);
+    private static File getFile(final String resourceName) throws Exception {
+        return new File(TypeProviderModel.class.getResource(resourceName).toURI());
     }
 
-    private static List<InputStream> provideTestModelStreams() {
-        final List<InputStream> arrayList = new ArrayList<>();
+    private static List<File> provideTestModelStreams() throws Exception {
+        final List<File> arrayList = new ArrayList<>();
 
-        arrayList.add(getInputStream(BASE_YANG_TYPES_PATH));
-        arrayList.add(getInputStream(TEST_TYPE_PROVIDER_PATH));
-        arrayList.add(getInputStream(TEST_TYPE_PROVIDER_B_PATH));
+        arrayList.add(getFile(BASE_YANG_TYPES_PATH));
+        arrayList.add(getFile(TEST_TYPE_PROVIDER_PATH));
+        arrayList.add(getFile(TEST_TYPE_PROVIDER_B_PATH));
         return arrayList;
     }
 
-    public static SchemaContext createTestContext() throws SourceException, ReactorException {
-        return YangParserTestUtils.parseYangStreams(provideTestModelStreams());
+    public static SchemaContext createTestContext() throws Exception {
+        return YangParserTestUtils.parseYangFiles(provideTestModelStreams());
     }
 }

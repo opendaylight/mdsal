@@ -11,7 +11,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,11 +18,8 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BinaryTypeTest {
@@ -42,8 +38,8 @@ public class BinaryTypeTest {
     }
 
     @Test
-    public void binaryTypeTest() throws IOException, SourceException, ReactorException {
-        final SchemaContext context = YangParserTestUtils.parseYangSources(yangModels);
+    public void binaryTypeTest() throws Exception {
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(yangModels);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

@@ -10,26 +10,23 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
+import java.io.File;
 import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class Bug6135Test {
 
     @Ignore
     @Test
-    public void bug6135Test() throws FileNotFoundException, ReactorException, URISyntaxException {
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/bug-6135/foo.yang");
+    public void bug6135Test() throws Exception {
+        final SchemaContext context = YangParserTestUtils
+                .parseYangFiles(new File(Bug6135Test.class.getResource("/bug-6135/foo.yang").toURI()));
         assertNotNull(context);
 
         final List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);

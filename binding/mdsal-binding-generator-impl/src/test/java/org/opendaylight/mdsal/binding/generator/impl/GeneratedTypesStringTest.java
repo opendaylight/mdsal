@@ -41,7 +41,7 @@ public class GeneratedTypesStringTest {
 
     @Test
     public void constantGenerationTest() throws IOException, SourceException, ReactorException {
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

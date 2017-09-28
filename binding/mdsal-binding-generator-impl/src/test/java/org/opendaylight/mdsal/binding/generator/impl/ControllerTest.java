@@ -27,7 +27,7 @@ public class ControllerTest {
         File co = new File(getClass().getResource("/controller-models/controller-openflow.yang").toURI());
         File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
 
-        final SchemaContext context = YangParserTestUtils.parseYangSources(cn, co, ietfInetTypes);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(cn, co, ietfInetTypes);
         assertNotNull("Schema Context is null", context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

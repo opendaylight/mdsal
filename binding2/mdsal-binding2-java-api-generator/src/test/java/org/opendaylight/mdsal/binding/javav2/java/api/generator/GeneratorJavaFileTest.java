@@ -27,7 +27,8 @@ public class GeneratorJavaFileTest {
 
     @Test
     public void generatedFilesTest() throws Exception {
-        final SchemaContext context = YangParserTestUtils.parseYangSources("/base/with_import/");
+        final File[] listFiles = new File(getClass().getResource("/base/with_import/").toURI()).listFiles();
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(listFiles);
         final BindingGenerator bindingGenerator = new BindingGeneratorImpl(true);
         final List<Type> types = bindingGenerator.generateTypes(context, context.getModules());
         final BuildContext buildContext = new DefaultBuildContext();

@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -194,7 +194,8 @@ public class AuxiliaryGenUtilsTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSource("/generator/test-list.yang");
+        final SchemaContext schemaContext = YangParserTestUtils
+                .parseYangFiles(new File(getClass().getResource("/generator/test-list.yang").toURI()));
         final ListSchemaNode containerSchemaNode =
                 (ListSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
         final String fullyQualifiedName =
@@ -222,7 +223,8 @@ public class AuxiliaryGenUtilsTest {
         generate.setAccessible(true);
 
         final SchemaContext schemaContext =
-                YangParserTestUtils.parseYangSource("/base/test-leaf-with-description.yang");
+                YangParserTestUtils.parseYangFiles(
+                        new File(getClass().getResource("/base/test-leaf-with-description.yang").toURI()));
         final LeafSchemaNode containerSchemaNode =
                 (LeafSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
         final String fullyQualifiedName = "test.base.cont.with.leaf.MyList";
@@ -241,7 +243,8 @@ public class AuxiliaryGenUtilsTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSource("/base/test-module.yang");
+        final SchemaContext schemaContext =
+                YangParserTestUtils.parseYangFiles(new File(getClass().getResource("/base/test-module.yang").toURI()));
 
         final Object[] args = { schemaContext.getModules().iterator().next(), true };
         final String result = (String) generate.invoke(AuxiliaryGenUtils.class, args);
@@ -258,7 +261,8 @@ public class AuxiliaryGenUtilsTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSource("/base/test-rpc-and-notification.yang");
+        final SchemaContext schemaContext = YangParserTestUtils
+                .parseYangFiles(new File(getClass().getResource("/base/test-rpc-and-notification.yang").toURI()));
         final Module module = schemaContext.getModules().iterator().next();
         Set schemaNodes = new HashSet<>();
         schemaNodes.add(module.getRpcs().iterator().next());
@@ -487,7 +491,8 @@ public class AuxiliaryGenUtilsTest {
 
         final GeneratedTypeBuilder typeBuilder =
                 new GeneratedTypeBuilderImpl("test.boolean.spc.def", "spec-type-def", new ModuleContext());
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSource(yangPath);
+        final SchemaContext schemaContext =
+                YangParserTestUtils.parseYangFiles(new File(getClass().getResource(yangPath).toURI()));
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
         final LeafSchemaNode leafSchemaNode =
                 (LeafSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
@@ -511,7 +516,8 @@ public class AuxiliaryGenUtilsTest {
 
         final GeneratedTypeBuilder typeBuilder = new GeneratedTypeBuilderImpl("test.boolean.spc.def",
                 "spec-type-def", new ModuleContext());
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSource("/base/test-union.yang");
+        final SchemaContext schemaContext =
+                YangParserTestUtils.parseYangFiles(new File(getClass().getResource("/base/test-union.yang").toURI()));
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
         final LeafSchemaNode leafSchemaNode =
                 (LeafSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();

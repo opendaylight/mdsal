@@ -46,8 +46,6 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 
 /**
  * Test suite for testing public methods in TypeProviderImpl class
@@ -70,7 +68,7 @@ public class TypeProviderTest {
     private SchemaNode schemaNode;
 
     @Before
-    public void setUp() throws SourceException, ReactorException {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         this.schemaContext = TypeProviderModel.createTestContext();
         assertNotNull(this.schemaContext);

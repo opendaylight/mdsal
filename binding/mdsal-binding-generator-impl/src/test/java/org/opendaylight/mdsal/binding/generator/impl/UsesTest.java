@@ -45,7 +45,7 @@ public class UsesTest {
     @Test
     public void usesInGroupingDependenciesTest() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/uses-of-grouping/uses-of-grouping-dependencies.yang");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -100,7 +100,7 @@ public class UsesTest {
     public void usesInCaseTest() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/uses-of-grouping/uses-of-grouping-case.yang");
 
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -148,7 +148,7 @@ public class UsesTest {
     public void usesInContainerTest() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/uses-of-grouping/uses-of-grouping-container.yang");
 
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -201,7 +201,7 @@ public class UsesTest {
     public void usesInGroupingTest() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/uses-of-grouping/uses-of-grouping-grouping.yang");
 
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -252,7 +252,7 @@ public class UsesTest {
     public void usesInListTest() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/uses-of-grouping/uses-of-grouping-list.yang");
 
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -334,7 +334,7 @@ public class UsesTest {
     public void usesInModulTest() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/uses-of-grouping/uses-of-grouping-modul.yang");
 
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -385,7 +385,7 @@ public class UsesTest {
     public void usesInRpcTest() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/uses-of-grouping/uses-of-grouping-rpc.yang");
 
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -478,7 +478,7 @@ public class UsesTest {
     public void usesInAugmentTest() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/uses-of-grouping/uses-of-grouping-augment.yang");
 
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -531,7 +531,7 @@ public class UsesTest {
     public void usesInNotification() throws IOException, SourceException, ReactorException {
         List<File> testModels = loadTestResources("/uses-of-grouping/uses-of-grouping-notification.yang");
 
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
