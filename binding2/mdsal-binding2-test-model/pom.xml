@@ -27,7 +27,7 @@
             <artifactId>mdsal-binding2-spec</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
+            <groupId>org.opendaylight.mdsal.model.binding2</groupId>
             <artifactId>yang-ext</artifactId>
             <exclusions>
                 <exclusion>
