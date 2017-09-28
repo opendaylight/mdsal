@@ -140,6 +140,53 @@
       "revId": "239443964e8db6070d3ead5b41e505266612b59e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_0ed541e4",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-09-28T17:15:37Z",
+      "side": 1,
+      "message": "Line 475 does not seem to imply \"ownership uncertain\".",
+      "parentUuid": "ba1f61a0_037feb66",
+      "range": {
+        "startLine": 474,
+        "startChar": 62,
+        "endLine": 474,
+        "endChar": 81
+      },
+      "revId": "239443964e8db6070d3ead5b41e505266612b59e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8e001167",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 547,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-09-28T17:15:37Z",
+      "side": 1,
+      "message": "Do we want a LOG.debug (as in line 474) here?",
+      "range": {
+        "startLine": 547,
+        "startChar": 51,
+        "endLine": 547,
+        "endChar": 52
+      },
+      "revId": "239443964e8db6070d3ead5b41e505266612b59e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
