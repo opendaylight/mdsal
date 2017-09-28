@@ -29,7 +29,7 @@ public class BindingRuntimeContextTest {
 
     @Before
     public void setup() throws URISyntaxException, FileNotFoundException, ReactorException {
-        schemaContext = YangParserTestUtils.parseYangFiles(
+        schemaContext = YangParserTestUtils.parseYangSources(
                  new File(getClass().getResource("/yang/test-runtime.yang").toURI()));
         myCont = (DataNodeContainer) schemaContext.getChildNodes().iterator().next();
         brc = BindingRuntimeContext.create(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), schemaContext);

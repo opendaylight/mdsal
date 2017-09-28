@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -38,6 +39,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableContainerNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 
 public class InMemoryDataStoreTest {
 
@@ -45,7 +48,7 @@ public class InMemoryDataStoreTest {
     private InMemoryDOMDataStore domStore;
 
     @Before
-    public void setupStore() throws Exception {
+    public void setupStore() throws IOException, YangSyntaxErrorException, ReactorException {
         domStore = new InMemoryDOMDataStore("TEST", MoreExecutors.newDirectExecutorService());
         schemaContext = TestModel.createTestContext();
         domStore.onGlobalContextUpdated(schemaContext);
@@ -56,57 +59,57 @@ public class InMemoryDataStoreTest {
 
         assertNotNull(domStore);
 
-        final DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
+        DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
-        final DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
+        DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
         /**
          * Writes /test in writeTx.
          */
-        final NormalizedNode<?, ?> testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
+        NormalizedNode<?, ?> testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
         writeTx.write(TestModel.TEST_PATH, testNode);
 
         /**
          * Reads /test from writeTx Read should return container.
          */
-        final ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = writeTx.read(TestModel.TEST_PATH);
+        ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = writeTx.read(TestModel.TEST_PATH);
         assertEquals("read: isPresent", true, writeTxContainer.get().isPresent());
         assertEquals("read: data", testNode, writeTxContainer.get().get());
 
         /**
          * Reads /test from readTx Read should return Absent.
          */
-        final ListenableFuture<Optional<NormalizedNode<?, ?>>> readTxContainer = readTx.read(TestModel.TEST_PATH);
+        ListenableFuture<Optional<NormalizedNode<?, ?>>> readTxContainer = readTx.read(TestModel.TEST_PATH);
         assertEquals("read: isPresent", false, readTxContainer.get().isPresent());
     }
 
     @Test
     public void testTransactionCommit() throws InterruptedException, ExecutionException {
 
-        final DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
+        DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
         /**
          * Writes /test in writeTx.
          */
-        final NormalizedNode<?, ?> testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
+        NormalizedNode<?, ?> testNode = ImmutableNodes.containerNode(TestModel.TEST_QNAME);
         writeTx.write(TestModel.TEST_PATH, testNode);
 
         /**
          * Reads /test from writeTx Read should return container.
          */
-        final ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = writeTx.read(TestModel.TEST_PATH);
+        ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = writeTx.read(TestModel.TEST_PATH);
         assertEquals("read: isPresent", true, writeTxContainer.get().isPresent());
         assertEquals("read: data", testNode, writeTxContainer.get().get());
 
-        final DOMStoreThreePhaseCommitCohort cohort = writeTx.ready();
+        DOMStoreThreePhaseCommitCohort cohort = writeTx.ready();
 
         assertThreePhaseCommit(cohort);
 
-        final Optional<NormalizedNode<?, ?>> afterCommitRead =
-                domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
+        Optional<NormalizedNode<?, ?>> afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH)
+                .get();
         assertEquals("After commit read: isPresent", true, afterCommitRead.isPresent());
         assertEquals("After commit read: data", testNode, afterCommitRead.get());
     }
@@ -186,10 +189,10 @@ public class InMemoryDataStoreTest {
     @Test
     public void testExistsForExistingData() throws Exception {
 
-        final DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
+        DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
-        final ContainerNode containerNode = ImmutableContainerNodeBuilder.create()
+        ContainerNode containerNode = ImmutableContainerNodeBuilder.create()
             .withNodeIdentifier(new NodeIdentifier(TestModel.TEST_QNAME))
             .addChild(ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
                 .addChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME,
@@ -201,13 +204,13 @@ public class InMemoryDataStoreTest {
 
         assertEquals(Boolean.TRUE, exists.get());
 
-        final DOMStoreThreePhaseCommitCohort ready = writeTx.ready();
+        DOMStoreThreePhaseCommitCohort ready = writeTx.ready();
 
         ready.preCommit().get();
 
         ready.commit().get();
 
-        final DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
+        DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
         exists =
@@ -219,14 +222,14 @@ public class InMemoryDataStoreTest {
     @Test
     public void testExistsForNonExistingData() throws Exception {
 
-        final DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
+        DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
         ListenableFuture<Boolean> exists = writeTx.exists(TestModel.TEST_PATH);
 
         assertEquals(Boolean.FALSE, exists.get());
 
-        final DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
+        DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
         exists =
@@ -238,7 +241,7 @@ public class InMemoryDataStoreTest {
     @Test(expected = ReadFailedException.class)
     public void testExistsThrowsReadFailedException() throws Exception {
 
-        final DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
+        DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
         readTx.close();
@@ -251,7 +254,7 @@ public class InMemoryDataStoreTest {
     @Test(expected = ReadFailedException.class)
     public void testReadWithReadOnlyTransactionClosed() throws Throwable {
 
-        final DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
+        DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
         readTx.close();
@@ -263,11 +266,11 @@ public class InMemoryDataStoreTest {
     @Test(expected = ReadFailedException.class)
     public void testReadWithReadOnlyTransactionFailure() throws Throwable {
 
-        final DataTreeSnapshot mockSnapshot = Mockito.mock(DataTreeSnapshot.class);
+        DataTreeSnapshot mockSnapshot = Mockito.mock(DataTreeSnapshot.class);
         Mockito.doThrow(new RuntimeException("mock ex")).when(mockSnapshot)
         .readNode(Mockito.any(YangInstanceIdentifier.class));
 
-        final DOMStoreReadTransaction readTx = SnapshotBackedTransactions.newReadTransaction("1", true, mockSnapshot);
+        DOMStoreReadTransaction readTx = SnapshotBackedTransactions.newReadTransaction("1", true, mockSnapshot);
 
         doReadAndThrowEx(readTx);
     }
@@ -276,7 +279,7 @@ public class InMemoryDataStoreTest {
     @Test(expected = ReadFailedException.class)
     public void testReadWithReadWriteTransactionClosed() throws Throwable {
 
-        final DOMStoreReadTransaction readTx = domStore.newReadWriteTransaction();
+        DOMStoreReadTransaction readTx = domStore.newReadWriteTransaction();
         assertNotNull(readTx);
 
         readTx.close();
@@ -288,15 +291,15 @@ public class InMemoryDataStoreTest {
     @Test(expected = ReadFailedException.class)
     public void testReadWithReadWriteTransactionFailure() throws Throwable {
 
-        final DataTreeSnapshot mockSnapshot = Mockito.mock(DataTreeSnapshot.class);
-        final DataTreeModification mockModification = Mockito.mock(DataTreeModification.class);
+        DataTreeSnapshot mockSnapshot = Mockito.mock(DataTreeSnapshot.class);
+        DataTreeModification mockModification = Mockito.mock(DataTreeModification.class);
         Mockito.doThrow(new RuntimeException("mock ex")).when(mockModification)
         .readNode(Mockito.any(YangInstanceIdentifier.class));
         Mockito.doReturn(mockModification).when(mockSnapshot).newModification();
         @SuppressWarnings("unchecked")
-        final TransactionReadyPrototype<String> mockReady = Mockito.mock(TransactionReadyPrototype.class);
-        final DOMStoreReadTransaction readTx =
-                SnapshotBackedTransactions.newReadWriteTransaction("1", false, mockSnapshot, mockReady);
+        TransactionReadyPrototype<String> mockReady = Mockito.mock(TransactionReadyPrototype.class);
+        DOMStoreReadTransaction readTx = SnapshotBackedTransactions.newReadWriteTransaction(
+                "1", false, mockSnapshot, mockReady);
 
         doReadAndThrowEx(readTx);
     }
@@ -305,7 +308,7 @@ public class InMemoryDataStoreTest {
     private static void doReadAndThrowEx(final DOMStoreReadTransaction readTx) throws Throwable {
         try {
             readTx.read(TestModel.TEST_PATH).get();
-        } catch (final ExecutionException e) {
+        } catch (ExecutionException e) {
             throw e.getCause();
         }
     }
@@ -313,7 +316,7 @@ public class InMemoryDataStoreTest {
     @Test(expected = IllegalStateException.class)
     public void testWriteWithTransactionReady() throws Exception {
 
-        final DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
+        DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
 
         writeTx.ready();
 
@@ -324,7 +327,7 @@ public class InMemoryDataStoreTest {
     @Test(expected = IllegalStateException.class)
     public void testReadyWithTransactionAlreadyReady() throws Exception {
 
-        final DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
+        DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
 
         writeTx.ready();
 
@@ -335,31 +338,31 @@ public class InMemoryDataStoreTest {
     @Test
     public void testTransactionAbort() throws InterruptedException, ExecutionException {
 
-        final DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
+        DOMStoreReadWriteTransaction writeTx = domStore.newReadWriteTransaction();
         assertNotNull(writeTx);
 
         assertTestContainerWrite(writeTx);
 
-        final DOMStoreThreePhaseCommitCohort cohort = writeTx.ready();
+        DOMStoreThreePhaseCommitCohort cohort = writeTx.ready();
 
         assertTrue(cohort.canCommit().get().booleanValue());
         cohort.preCommit().get();
         cohort.abort().get();
 
-        final Optional<NormalizedNode<?, ?>> afterCommitRead =
-                domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH).get();
+        Optional<NormalizedNode<?, ?>> afterCommitRead = domStore.newReadOnlyTransaction().read(TestModel.TEST_PATH)
+                .get();
         assertFalse(afterCommitRead.isPresent());
     }
 
     @Test
     public void testTransactionChain() throws InterruptedException, ExecutionException {
-        final DOMStoreTransactionChain txChain = domStore.createTransactionChain();
+        DOMStoreTransactionChain txChain = domStore.createTransactionChain();
         assertNotNull(txChain);
 
         /**
          * We alocate new read-write transaction and write /test.
          */
-        final DOMStoreReadWriteTransaction firstTx = txChain.newReadWriteTransaction();
+        DOMStoreReadWriteTransaction firstTx = txChain.newReadWriteTransaction();
         assertTestContainerWrite(firstTx);
 
         /**
@@ -372,7 +375,7 @@ public class InMemoryDataStoreTest {
          * We alocate chained transaction - read transaction, note first one is
          * still not commited to datastore.
          */
-        final DOMStoreReadTransaction secondReadTx = txChain.newReadOnlyTransaction();
+        DOMStoreReadTransaction secondReadTx = txChain.newReadOnlyTransaction();
 
         /**
          * We test if we are able to read data from tx, read should not fail
@@ -384,7 +387,7 @@ public class InMemoryDataStoreTest {
          * We alocate next transaction, which is still based on first one, but
          * is read-write.
          */
-        final DOMStoreReadWriteTransaction thirdDeleteTx = txChain.newReadWriteTransaction();
+        DOMStoreReadWriteTransaction thirdDeleteTx = txChain.newReadWriteTransaction();
 
         /**
          * We test existence of /test in third transaction container should
@@ -400,7 +403,7 @@ public class InMemoryDataStoreTest {
         /**
          * third transaction is sealed.
          */
-        final DOMStoreThreePhaseCommitCohort thirdDeleteTxCohort = thirdDeleteTx.ready();
+        DOMStoreThreePhaseCommitCohort thirdDeleteTxCohort = thirdDeleteTx.ready();
 
         /**
          * We commit first transaction.
@@ -409,7 +412,7 @@ public class InMemoryDataStoreTest {
         assertThreePhaseCommit(firstWriteTxCohort);
 
         // Alocates store transacion
-        final DOMStoreReadTransaction storeReadTx = domStore.newReadOnlyTransaction();
+        DOMStoreReadTransaction storeReadTx = domStore.newReadOnlyTransaction();
         /**
          * We verify transaction is commited to store, container should exists
          * in datastore.
@@ -425,8 +428,8 @@ public class InMemoryDataStoreTest {
     @Test
     @Ignore
     public void testTransactionConflict() throws InterruptedException, ExecutionException {
-        final DOMStoreReadWriteTransaction txOne = domStore.newReadWriteTransaction();
-        final DOMStoreReadWriteTransaction txTwo = domStore.newReadWriteTransaction();
+        DOMStoreReadWriteTransaction txOne = domStore.newReadWriteTransaction();
+        DOMStoreReadWriteTransaction txTwo = domStore.newReadWriteTransaction();
         assertTestContainerWrite(txOne);
         assertTestContainerWrite(txTwo);
 
@@ -466,7 +469,7 @@ public class InMemoryDataStoreTest {
     private static Optional<NormalizedNode<?, ?>> assertTestContainerExists(final DOMStoreReadTransaction readTx)
             throws InterruptedException, ExecutionException {
 
-        final ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = readTx.read(TestModel.TEST_PATH);
+        ListenableFuture<Optional<NormalizedNode<?, ?>>> writeTxContainer = readTx.read(TestModel.TEST_PATH);
         assertTrue(writeTxContainer.get().isPresent());
         return writeTxContainer.get();
     }

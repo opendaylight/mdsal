@@ -60,7 +60,7 @@ public class IdentityrefTypeTest {
      */
     @Test
     public void testIdentityrefYangBuiltInType() throws IOException, SourceException, ReactorException {
-        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
+        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

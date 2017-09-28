@@ -38,7 +38,7 @@ public class Bug8575Test {
         File foo = new File(getClass().getResource(
                 "/bug-8575/foo.yang").toURI());
 
-        SchemaContext context = YangParserTestUtils.parseYangFiles(foo);
+        SchemaContext context = YangParserTestUtils.parseYangSources(foo);
 
         final QName groupingQname = QName.create("foo", "2017-05-15", "A");
         final QName containerQname = QName.create("foo", "2017-05-15", "A1");

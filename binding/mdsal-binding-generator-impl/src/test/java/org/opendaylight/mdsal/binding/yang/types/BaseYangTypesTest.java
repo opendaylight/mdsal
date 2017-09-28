@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collections;
@@ -33,6 +33,8 @@ import org.opendaylight.yangtools.yang.model.api.type.IntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 /**
@@ -59,10 +61,10 @@ public class BaseYangTypesTest {
     private static BooleanTypeDefinition bool = null;
 
     @BeforeClass
-    public static void setup() throws Exception {
-        final List<File> modelsToParse = Collections
-            .singletonList(new File(BaseYangTypesTest.class.getResource("/base-yang-types.yang").toURI()));
-        schemaContext = YangParserTestUtils.parseYangFiles(modelsToParse);
+    public static void setup() throws SourceException, ReactorException {
+        final List<InputStream> modelsToParse = Collections
+            .singletonList(BaseYangTypesTest.class.getResourceAsStream("/base-yang-types.yang"));
+        schemaContext = YangParserTestUtils.parseYangStreams(modelsToParse);
         assertNotNull(schemaContext);
         initTypeDefinitionsFromSchemaContext();
     }
