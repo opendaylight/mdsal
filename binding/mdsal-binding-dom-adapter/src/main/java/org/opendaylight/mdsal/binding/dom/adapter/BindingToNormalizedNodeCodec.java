@@ -380,7 +380,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
 
     public NormalizedNode<?, ?> getDefaultNodeFor(final YangInstanceIdentifier parentMapPath) {
         final BindingCodecTreeNode<?> mapCodec = codecRegistry.getCodecContext().getSubtreeCodec(parentMapPath);
-        final Object schema = mapCodec.getSchema();
+        final Object schema = mapCodec != null ? mapCodec.getSchema() : null;
         if (schema instanceof ListSchemaNode) {
             final ListSchemaNode castedSchema = (ListSchemaNode) schema;
             return castedSchema.isUserOrdered() ? Builders.orderedMapBuilder(castedSchema).build()

@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public class BindingMountPointAdapter implements MountPoint {
 
     private final InstanceIdentifier<?> identifier;
-    private LoadingCache<Class<? extends BindingService>, Optional<BindingService>> services;
+    private final LoadingCache<Class<? extends BindingService>, Optional<BindingService>> services;
 
     public BindingMountPointAdapter(final BindingToNormalizedNodeCodec codec, final DOMMountPoint domMountPoint) {
         identifier = codec.getCodecRegistry().fromYangInstanceIdentifier(domMountPoint.getIdentifier());
