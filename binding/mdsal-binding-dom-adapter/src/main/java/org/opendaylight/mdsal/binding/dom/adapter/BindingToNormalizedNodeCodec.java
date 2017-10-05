@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -379,7 +381,9 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     }
 
     public NormalizedNode<?, ?> getDefaultNodeFor(final YangInstanceIdentifier parentMapPath) {
-        final BindingCodecTreeNode<?> mapCodec = codecRegistry.getCodecContext().getSubtreeCodec(parentMapPath);
+        final BindingCodecTreeNode<?> mapCodec = requireNonNull(
+                codecRegistry.getCodecContext().getSubtreeCodec(parentMapPath),
+                "Codec not found for yang instance identifier: " + parentMapPath);
         final Object schema = mapCodec.getSchema();
         if (schema instanceof ListSchemaNode) {
             final ListSchemaNode castedSchema = (ListSchemaNode) schema;
