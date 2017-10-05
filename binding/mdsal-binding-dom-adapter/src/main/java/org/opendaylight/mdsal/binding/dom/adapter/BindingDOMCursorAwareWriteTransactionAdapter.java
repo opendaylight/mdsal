@@ -23,8 +23,8 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 public class BindingDOMCursorAwareWriteTransactionAdapter<T extends DOMDataTreeCursorAwareTransaction>
         implements CursorAwareWriteTransaction {
 
-    private T delegate;
-    private BindingToNormalizedNodeCodec codec;
+    private final T delegate;
+    private final BindingToNormalizedNodeCodec codec;
 
     public BindingDOMCursorAwareWriteTransactionAdapter(final T delegate, final BindingToNormalizedNodeCodec codec) {
 

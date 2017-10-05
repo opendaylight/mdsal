@@ -35,7 +35,7 @@ public abstract class AdapterBuilder<T,D> implements Builder<T> {
     @Override
     public final  T build() {
         checkAllRequiredServices();
-        return createInstance(ImmutableClassToInstanceMap.<D,D>copyOf(delegates));
+        return createInstance(ImmutableClassToInstanceMap.copyOf(delegates));
     }
 
 }

@@ -18,7 +18,7 @@ public final class MockSchemaService implements DOMSchemaService, SchemaContextP
 
     private SchemaContext schemaContext;
 
-    ListenerRegistry<SchemaContextListener> listeners = ListenerRegistry.create();
+    final ListenerRegistry<SchemaContextListener> listeners = ListenerRegistry.create();
 
     @Override
     public synchronized SchemaContext getGlobalContext() {
