@@ -114,7 +114,7 @@ class LazySerializedContainerNode implements ContainerNode {
              * accessing it.
              */
             if (contextRef.getIdentifier().equals(child)) {
-                return Optional.<DataContainerChild<? extends PathArgument, ?>>of(contextRef);
+                return Optional.of(contextRef);
             }
             return super.getChild(child);
         }
