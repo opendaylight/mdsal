@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
-class BindingDOMDataTreeServiceAdapter implements DataTreeService {
+final class BindingDOMDataTreeServiceAdapter implements DataTreeService {
 
     private final DOMDataTreeService delegate;
     private final BindingToNormalizedNodeCodec codec;

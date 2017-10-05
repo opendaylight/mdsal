@@ -78,7 +78,7 @@ class LazyDataTreeModification<T extends DataObject> implements DataTreeModifica
             final Collection<DataTreeCandidate> domChanges, final LogicalDatastoreType datastoreType) {
         final List<DataTreeModification<T>> result = new ArrayList<>(domChanges.size());
         for (final DataTreeCandidate domChange : domChanges) {
-            result.add(LazyDataTreeModification.<T>create(codec, domChange, datastoreType));
+            result.add(LazyDataTreeModification.create(codec, domChange, datastoreType));
         }
         return result;
     }

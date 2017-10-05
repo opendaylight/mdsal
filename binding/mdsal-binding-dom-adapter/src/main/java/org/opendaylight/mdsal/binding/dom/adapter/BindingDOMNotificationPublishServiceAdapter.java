@@ -63,7 +63,7 @@ public class BindingDOMNotificationPublishServiceAdapter implements Notification
 
     @Override
     public ListenableFuture<? extends Object> offerNotification(final Notification notification,
-            final int timeout, final TimeUnit unit) throws InterruptedException {
+                                                 final int timeout, final TimeUnit unit) throws InterruptedException {
         ListenableFuture<?> offerResult = domPublishService.offerNotification(
                 toDomNotification(notification), timeout, unit);
         return DOMNotificationPublishService.REJECTED.equals(offerResult)
@@ -84,7 +84,7 @@ public class BindingDOMNotificationPublishServiceAdapter implements Notification
 
         @Override
         public Set<Class<? extends DOMService>> getRequiredDelegates() {
-            return ImmutableSet.<Class<? extends DOMService>>of(DOMNotificationPublishService.class);
+            return ImmutableSet.of(DOMNotificationPublishService.class);
         }
 
         @Override

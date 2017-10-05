@@ -21,12 +21,12 @@ public abstract class AdapterLoader<T, D> extends CacheLoader<Class<? extends T>
         for (final Class<? extends D> reqDeleg : builder.getRequiredDelegates()) {
             final D deleg = getDelegate(reqDeleg);
             if (deleg != null) {
-                builder.addDelegate(reqDeleg,deleg);
+                builder.addDelegate(reqDeleg, deleg);
             } else {
                 return Optional.absent();
             }
         }
-        return  Optional.<T>of(builder.build());
+        return Optional.of(builder.build());
     }
 
     @Nullable
@@ -34,5 +34,4 @@ public abstract class AdapterLoader<T, D> extends CacheLoader<Class<? extends T>
 
     @Nonnull
     protected abstract AdapterBuilder<? extends T, D> createBuilder(Class<? extends T> key);
-
 }
