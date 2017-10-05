@@ -13,7 +13,10 @@ import java.util.Map;
 
 import org.junit.Assert;
 
-public class AssertCollections {
+public final class AssertCollections {
+
+    private AssertCollections() {
+    }
 
     public static void assertEmpty(final Collection<?> set) {
         Assert.assertTrue(set.isEmpty());
