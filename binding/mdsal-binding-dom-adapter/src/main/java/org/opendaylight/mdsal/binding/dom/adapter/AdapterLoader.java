@@ -26,7 +26,7 @@ public abstract class AdapterLoader<T, D> extends CacheLoader<Class<? extends T>
                 return Optional.absent();
             }
         }
-        return  Optional.<T>of(builder.build());
+        return  Optional.of(builder.build());
     }
 
     @Nullable

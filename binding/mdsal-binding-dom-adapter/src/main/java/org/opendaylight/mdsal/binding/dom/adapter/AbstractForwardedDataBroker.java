@@ -90,7 +90,7 @@ public abstract class AbstractForwardedDataBroker implements Delegator<DOMDataBr
             return Optional.absent();
         }
         return (Optional<DataObject>) getCodec().deserializeFunction(path).apply(
-                Optional.<NormalizedNode<?, ?>>of(data));
+                Optional.of(data));
     }
 
     @Override
