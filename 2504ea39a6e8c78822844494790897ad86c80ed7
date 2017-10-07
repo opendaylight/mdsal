@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_62adc988",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/renderers/BuilderRenderer.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-10-07T19:39:32Z",
+      "side": 0,
+      "message": "Yes, this is what puzzles me about the spec.base.Identifiable -- are we going to remove dependency on concepts.Builder, to completely detach from yangtools by duplication?\n\nThat is a strong NO, unless there is a very good reason for doing this.",
+      "range": {
+        "startLine": 55,
+        "startChar": 7,
+        "endLine": 55,
+        "endChar": 56
+      },
+      "revId": "2504ea39a6e8c78822844494790897ad86c80ed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
