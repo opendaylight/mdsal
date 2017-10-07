@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_a2a181ab",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/base/Identifiable.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-10-07T19:27:42Z",
+      "side": 1,
+      "message": "why do we need a copy of this and cannot use it from yangtools.concepts? Identifier is already pulling in that dependency anyway...",
+      "range": {
+        "startLine": 16,
+        "startChar": 16,
+        "endLine": 16,
+        "endChar": 78
+      },
+      "revId": "7764ffb25959d496621bb505f966f3cfcd56cbc3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_62c82975",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/base/Identifier.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-10-07T19:27:42Z",
+      "side": 1,
+      "message": "not proper javadoc. First line should start as a full sentence, ending with a period.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 49
+      },
+      "revId": "7764ffb25959d496621bb505f966f3cfcd56cbc3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_42c5255a",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/base/Identifier.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-10-07T19:27:42Z",
+      "side": 1,
+      "message": "This is confusing to use, as IDEs with see both Identifiers in completion.\n\nThis interface should probably be called ItemIdentifier or similar.",
+      "range": {
+        "startLine": 17,
+        "startChar": 17,
+        "endLine": 17,
+        "endChar": 109
+      },
+      "revId": "7764ffb25959d496621bb505f966f3cfcd56cbc3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
