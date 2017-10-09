@@ -167,6 +167,30 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_45552f1c",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-10-09T10:58:56Z",
+      "side": 1,
+      "message": "Not quite -- global ownership is uncertain, but we know we do not own the service.",
+      "parentUuid": "ba1f61a0_0ed541e4",
+      "range": {
+        "startLine": 474,
+        "startChar": 62,
+        "endLine": 474,
+        "endChar": 81
+      },
+      "revId": "239443964e8db6070d3ead5b41e505266612b59e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_8e001167",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 6
