@@ -191,6 +191,30 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_bb5c0827",
+        "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 474,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-10-09T15:25:47Z",
+      "side": 1,
+      "message": "\"unowned, owner uncertain\" then?\nAlso, lines 520 and 515 could have log messages to compare.",
+      "parentUuid": "9a245df4_45552f1c",
+      "range": {
+        "startLine": 474,
+        "startChar": 62,
+        "endLine": 474,
+        "endChar": 81
+      },
+      "revId": "239443964e8db6070d3ead5b41e505266612b59e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_8e001167",
         "filename": "singleton-service/mdsal-singleton-dom-impl/src/main/java/org/opendaylight/mdsal/singleton/dom/impl/ClusterSingletonServiceGroupImpl.java",
         "patchSetId": 6
