@@ -33,6 +33,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
 import org.opendaylight.yangtools.concepts.Identifier;
+import org.opendaylight.yangtools.concepts.Identifiable;
 
 public final class BindingTypes {
 
@@ -41,6 +42,7 @@ public final class BindingTypes {
     public static final ConcreteType AUGMENTATION = typeForClass(Augmentation.class);
     public static final ConcreteType IDENTIFIABLE_ITEM = typeForClass(IdentifiableItem.class);
     public static final ConcreteType IDENTIFIER = typeForClass(Identifier.class);
+    public static final ConcreteType IDENTIFIABLE = typeForClass(Identifiable.class);
     public static final ConcreteType INPUT = typeForClass(Input.class);
     public static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
     public static final ConcreteType INSTANTIABLE = typeForClass(Instantiable.class);
