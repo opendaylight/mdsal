@@ -46,7 +46,7 @@ public final class KeyedListNodeCodecContext<D extends TreeNode & Identifiable<?
         super(prototype);
         this.codec = factory().getPathArgumentCodec(getBindingClass(), getSchema());
         try {
-            this.keyGetter = getBindingClass().getMethod("getKey");
+            this.keyGetter = getBindingClass().getMethod("getIdentifier");
         } catch (final NoSuchMethodException e) {
             throw new IllegalStateException("Required method not available", e);
         }
