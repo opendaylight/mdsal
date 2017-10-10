@@ -132,15 +132,20 @@ public final class JavaCodePrettyPrint {
         }
 
         // prepare imports
-        int importsEndAt = 1;
-        for (int i = 1; i < splittedByNewLine.length - 1; i++) {
-            if (!splittedByNewLine[i + 1].startsWith(IMPORT)) {
-                fixedLines.add(new StringBuilder(splittedByNewLine[i]).append(NEW_LINE).append(NEW_LINE).toString());
-                importsEndAt = i;
-                break;
-            } else {
-                fixedLines.add(new StringBuilder(splittedByNewLine[i]).append(NEW_LINE).toString());
+        int importsEndAt;
+        if (splittedByNewLine[1].startsWith(IMPORT)) {
+            importsEndAt = 1;
+            for (int i = 1; i < splittedByNewLine.length - 1; i++) {
+                if (!splittedByNewLine[i + 1].startsWith(IMPORT)) {
+                    fixedLines.add(new StringBuilder(splittedByNewLine[i]).append(NEW_LINE).append(NEW_LINE).toString());
+                    importsEndAt = i;
+                    break;
+                } else {
+                    fixedLines.add(new StringBuilder(splittedByNewLine[i]).append(NEW_LINE).toString());
+                }
             }
+        } else {
+            importsEndAt = 0;
         }
 
         // prepare class
