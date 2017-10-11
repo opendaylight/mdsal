@@ -16,6 +16,7 @@ import java.util.List
 import java.util.Map
 import java.util.StringTokenizer
 import java.util.regex.Pattern
+import org.opendaylight.yangtools.yang.common.QName
 import org.opendaylight.mdsal.binding.model.api.ConcreteType
 import org.opendaylight.mdsal.binding.model.api.Constant
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
@@ -26,7 +27,6 @@ import org.opendaylight.mdsal.binding.model.api.Restrictions
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.api.TypeMember
 import org.opendaylight.mdsal.binding.model.util.Types
-import org.opendaylight.yangtools.yang.common.QName
 
 abstract class BaseTemplate {
     protected val GeneratedType type;
@@ -409,7 +409,7 @@ abstract class BaseTemplate {
         «IF c.value instanceof QName»
             «val qname = c.value as QName»
             public static final «c.type.importedName» «c.name» = «QName.name».create("«qname.namespace.toString»",
-                "«qname.formattedRevision»", "«qname.localName»").intern();
+                "«qname.getRevision.orElse(null)»", "«qname.localName»").intern();
         «ELSE»
             public static final «c.type.importedName» «c.name» = «c.value»;
         «ENDIF»

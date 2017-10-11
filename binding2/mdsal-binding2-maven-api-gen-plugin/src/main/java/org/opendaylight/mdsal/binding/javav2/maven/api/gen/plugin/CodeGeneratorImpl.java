@@ -115,12 +115,6 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         this.projectBaseDir = project.getBasedir();
     }
 
-    @Override
-    public Collection<File> generateSources(SchemaContext context, File outputBaseDir, Set<Module> currentModules) throws IOException {
-        return generateSources(context, outputBaseDir, currentModules,
-                m -> Optional.of("/" + m.getModuleSourcePath().replace(File.separator, "/")));
-    }
-
     private Collection<? extends File> generateModuleInfos(final File outputBaseDir, final Set<Module> yangModules,
                                                            final SchemaContext context, final Function<Module, Optional<String>> moduleResourcePathResolver) {
         Builder<File> result = ImmutableSet.builder();

@@ -18,10 +18,10 @@ import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.DATA_TREE;
 import static org.opendaylight.mdsal.dom.store.inmemory.TestUtils.resetMocks;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
@@ -129,8 +129,8 @@ public class AbstractDOMShardTreeChangePublisherTest extends AbstractDOMShardTre
     }
 
     @Override
-    protected void notifyListener(AbstractDOMDataTreeChangeListenerRegistration<?> registration,
-            Collection<DataTreeCandidate> changes) {
+    protected void notifyListener(final AbstractDOMDataTreeChangeListenerRegistration<?> registration,
+            final Collection<DataTreeCandidate> changes) {
         // NOOP
     }
 

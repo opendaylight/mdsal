@@ -12,33 +12,25 @@ import static org.junit.Assert.assertNotNull;
 import static org.opendaylight.mdsal.binding.generator.impl.SupportTestUtil.containsAttributes;
 import static org.opendaylight.mdsal.binding.generator.impl.SupportTestUtil.containsMethods;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BitAndUnionTOEnclosingTest {
 
-    private final static List<File> testModels = new ArrayList<>();
     private static List<Type> genTypes = null;
     private static GeneratedType parentContainer = null;
 
-    public static void parseResources() throws IOException, SourceException, ReactorException {
-
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+    @BeforeClass
+    public static void loadTestResources() {
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/bit_and_union.yang");
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -52,13 +44,6 @@ public class BitAndUnionTOEnclosingTest {
                 }
             }
         }
-    }
-
-    @BeforeClass
-    public static void loadTestResources() throws IOException, URISyntaxException, SourceException, ReactorException {
-        final File listModelFile = new File(ExtendedTypedefTest.class.getResource("/bit_and_union.yang").toURI());
-        testModels.add(listModelFile);
-        parseResources();
     }
 
     @Test
@@ -131,7 +116,7 @@ public class BitAndUnionTOEnclosingTest {
         for (Type type : genTypes) {
             if (type instanceof GeneratedType) {
                 GeneratedType genType = (GeneratedType) type;
-                if (genType.getName().equals("TypeUnion") && (genType instanceof GeneratedTransferObject)) {
+                if (genType.getName().equals("TypeUnion") && genType instanceof GeneratedTransferObject) {
                     typeUnionTypedef = (GeneratedTransferObject) genType;
                     typeUnionTypedefCounter++;
                 }

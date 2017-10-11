@@ -122,8 +122,8 @@ class ClassTemplate extends BaseTemplate {
             «generateFields»
 
             «IF restrictions !== null»
-                «IF !restrictions.lengthConstraints.nullOrEmpty»
-                    «LengthGenerator.generateLengthChecker("_value", findProperty(genTO, "value").returnType, restrictions.lengthConstraints)»
+                «IF restrictions.lengthConstraint.isPresent»
+                    «LengthGenerator.generateLengthChecker("_value", findProperty(genTO, "value").returnType, restrictions.lengthConstraint.get)»
                 «ENDIF»
                 «IF !restrictions.rangeConstraints.nullOrEmpty»
                     «rangeGenerator.generateRangeChecker("_value", restrictions.rangeConstraints)»
@@ -283,9 +283,9 @@ class ClassTemplate extends BaseTemplate {
     def private generateRestrictions(Type type, String paramName, Type returnType) '''
         «val restrictions = type.getRestrictions»
         «IF restrictions !== null»
-            «IF !restrictions.lengthConstraints.empty || !restrictions.rangeConstraints.empty»
+            «IF restrictions.lengthConstraint.isPresent || !restrictions.rangeConstraints.empty»
             if («paramName» != null) {
-                «IF !restrictions.lengthConstraints.empty»
+                «IF restrictions.lengthConstraint.isPresent»
                     «LengthGenerator.generateLengthCheckerCall(paramName, paramValue(returnType, paramName))»
                 «ENDIF»
                 «IF !restrictions.rangeConstraints.empty»

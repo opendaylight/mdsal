@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.processUsesImplements;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
@@ -221,7 +221,7 @@ final class AugmentToGenType {
         SchemaNode targetSchemaNode = SchemaContextUtil.findDataSchemaNode(schemaContext, targetPath);
         if (targetSchemaNode instanceof DataSchemaNode && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
             if (targetSchemaNode instanceof DerivableSchemaNode) {
-                targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orNull();
+                targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orElse(null);
             }
             if (targetSchemaNode == null) {
                 throw new IllegalStateException("Failed to find target node from grouping in augmentation " +
