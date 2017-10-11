@@ -10,9 +10,6 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,23 +30,20 @@ public class TypeProviderIntegrationTest {
     private Module m;
 
     @BeforeClass
-    public static void setup() throws Exception {
-        File abstractTopology = new File(TypeProviderIntegrationTest.class.getResource("/type-provider/test.yang")
-                .toURI());
-        File ietfInetTypes = new File(TypeProviderIntegrationTest.class.getResource("/ietf/ietf-inet-types.yang")
-                .toURI());
-        context = YangParserTestUtils.parseYangSources(abstractTopology, ietfInetTypes);
+    public static void setup() {
+        context = YangParserTestUtils.parseYangResources(TypeProviderIntegrationTest.class, "/type-provider/test.yang",
+            "/ietf/ietf-inet-types.yang");
         assertNotNull(context);
     }
 
     @Before
-    public void init() throws ParseException {
+    public void init() {
         provider = new TypeProviderImpl(context);
-        m = context.findModuleByName("test", new SimpleDateFormat("yyyy-MM-dd").parse("2013-10-08"));
+        m = context.findModuleByName("test", QName.parseRevision("2013-10-08"));
     }
 
     @Test
-    public void testGetTypeDefaultConstructionBinary() throws ParseException {
+    public void testGetTypeDefaultConstructionBinary() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-binary");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -62,7 +56,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionBits() throws ParseException {
+    public void testGetTypeDefaultConstructionBits() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-bits");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -75,7 +69,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionBoolean() throws ParseException {
+    public void testGetTypeDefaultConstructionBoolean() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-boolean");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -88,7 +82,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionDecimal() throws ParseException {
+    public void testGetTypeDefaultConstructionDecimal() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-decimal64");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -101,7 +95,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionEmpty() throws ParseException {
+    public void testGetTypeDefaultConstructionEmpty() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-empty");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -114,7 +108,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionEnumeration() throws ParseException {
+    public void testGetTypeDefaultConstructionEnumeration() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-enumeration");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -127,7 +121,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionInt8() throws ParseException {
+    public void testGetTypeDefaultConstructionInt8() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int8");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -140,7 +134,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionInt16() throws ParseException {
+    public void testGetTypeDefaultConstructionInt16() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int16");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -153,7 +147,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionInt32() throws ParseException {
+    public void testGetTypeDefaultConstructionInt32() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int32");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -166,7 +160,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionInt64() throws ParseException {
+    public void testGetTypeDefaultConstructionInt64() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-int64");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -179,7 +173,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionLeafref1() throws ParseException {
+    public void testGetTypeDefaultConstructionLeafref1() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-leafref");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -192,7 +186,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionLeafref2() throws ParseException {
+    public void testGetTypeDefaultConstructionLeafref2() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-leafref1");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -205,7 +199,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionString() throws ParseException {
+    public void testGetTypeDefaultConstructionString() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-string");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -218,7 +212,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionUint8() throws ParseException {
+    public void testGetTypeDefaultConstructionUint8() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint8");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -231,7 +225,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionUint16() throws ParseException {
+    public void testGetTypeDefaultConstructionUint16() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint16");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -244,7 +238,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionUint32() throws ParseException {
+    public void testGetTypeDefaultConstructionUint32() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint32");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -257,7 +251,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionUint64() throws ParseException {
+    public void testGetTypeDefaultConstructionUint64() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-uint64");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -270,7 +264,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstruction() throws ParseException {
+    public void testGetTypeDefaultConstruction() {
         final QName leafNode = QName.create(m.getQNameModule(), "ip-leaf");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -279,7 +273,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionUnion() throws ParseException {
+    public void testGetTypeDefaultConstructionUnion() {
         final QName leafNode1 = QName.create(m.getQNameModule(), "leaf-union");
         LeafSchemaNode leaf = (LeafSchemaNode) m.getDataChildByName(leafNode1);
         String actual = provider.getTypeDefaultConstruction(leaf);
@@ -294,7 +288,7 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetTypeDefaultConstructionUnionNested() throws ParseException {
+    public void testGetTypeDefaultConstructionUnionNested()  {
         final QName containerNode1 = QName.create(m.getQNameModule(), "c1");
         ContainerSchemaNode c1 = (ContainerSchemaNode) m.getDataChildByName(containerNode1);
         final QName containerNode2 = QName.create(m.getQNameModule(), "c2");
@@ -310,8 +304,8 @@ public class TypeProviderIntegrationTest {
     }
 
     @Test
-    public void testGetParamNameFromType() throws ParseException {
-        m = context.findModuleByName("ietf-inet-types", new SimpleDateFormat("yyyy-MM-dd").parse("2010-09-24"));
+    public void testGetParamNameFromType() {
+        m = context.findModuleByName("ietf-inet-types", QName.parseRevision("2010-09-24"));
         Set<TypeDefinition<?>> types = m.getTypeDefinitions();
         TypeDefinition<?> ipv4 = null;
         TypeDefinition<?> ipv6 = null;

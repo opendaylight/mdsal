@@ -12,31 +12,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.collect.ImmutableList;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorImplTest {
 
     @Test
-    public void isisTotpologyStatementParserTest() throws IOException,
-            URISyntaxException, ReactorException {
-        final InputStream topo = getClass().getResourceAsStream("/isis-topology/network-topology@2013-10-21.yang");
-        final InputStream isis = getClass().getResourceAsStream("/isis-topology/isis-topology@2013-10-21.yang");
-        final InputStream l3 = getClass().getResourceAsStream("/isis-topology/l3-unicast-igp-topology@2013-10-21.yang");
-
-        SchemaContext context = YangParserTestUtils.parseYangStreams(ImmutableList.of(isis, l3, topo));
+    public void isisTotpologyStatementParserTest()  {
+        SchemaContext context = YangParserTestUtils.parseYangResources(BindingGeneratorImplTest.class,
+            "/isis-topology/network-topology@2013-10-21.yang", "/isis-topology/isis-topology@2013-10-21.yang",
+            "/isis-topology/l3-unicast-igp-topology@2013-10-21.yang");
         assertNotNull(context);
 
         List<Type> generateTypes = new BindingGeneratorImpl(false)
@@ -46,15 +36,10 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void choiceNodeGenerationTest() throws IOException,
-            URISyntaxException, ReactorException {
-        File resourceFile = new File(getClass().getResource(
-                "/binding-generator-impl-test/choice-test.yang").toURI());
+    public void choiceNodeGenerationTest() {
+        SchemaContext context = YangParserTestUtils.parseYangResource("/binding-generator-impl-test/choice-test.yang");
 
-        SchemaContext context = YangParserTestUtils.parseYangSources(resourceFile);
-
-        List<Type> generateTypes = new BindingGeneratorImpl(false)
-                .generateTypes(context);
+        List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
 
         GeneratedType choiceTestData = null;
         GeneratedType myRootContainer = null;
@@ -144,14 +129,11 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void notificationGenerationTest() throws IOException, URISyntaxException, ReactorException {
-        File resourceFile = new File(getClass().getResource(
-                "/binding-generator-impl-test/notification-test.yang").toURI());
+    public void notificationGenerationTest() {
+        SchemaContext context = YangParserTestUtils.parseYangResource(
+            "/binding-generator-impl-test/notification-test.yang");
 
-        SchemaContext context = YangParserTestUtils.parseYangSources(resourceFile);
-
-        List<Type> generateTypes = new BindingGeneratorImpl(false)
-                .generateTypes(context);
+        List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
 
         GeneratedType foo = null;
         for (Type type : generateTypes) {
