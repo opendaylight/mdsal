@@ -46,14 +46,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-common</artifactId>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>odl-yangtools-data-api</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>odl-yangtools-yang-data</artifactId>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>odl-mdsal-common</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

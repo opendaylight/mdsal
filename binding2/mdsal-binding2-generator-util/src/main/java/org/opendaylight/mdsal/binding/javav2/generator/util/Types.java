@@ -10,17 +10,19 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Iterables;
-import java.util.Collections;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,7 +38,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
-import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 import org.w3c.dom.Document;
 
 @Beta
@@ -112,28 +113,26 @@ public final class Types {
 
 
     public static ConcreteType typeForClass(final Class<?> cls, final Restrictions restrictions) {
-        if (restrictions != null) {
-            if (restrictions instanceof DefaultRestrictions) {
-                return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
-            } else {
-                return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
-            }
-        } else {
+        if (restrictions == null) {
             return typeForClass(cls);
+        }
+        if (restrictions instanceof DefaultRestrictions) {
+            return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+        } else {
+            return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
         }
     }
 
     public static ConcreteType typeForClass(final Class<?> cls, final Restrictions restrictions,
             final ModuleContext moduleContext) {
-        if (restrictions != null) {
-            if (restrictions instanceof DefaultRestrictions) {
-                return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
-            } else {
-                return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions,
-                        moduleContext);
-            }
-        } else {
+        if (restrictions == null) {
             return typeForClass(cls);
+        }
+        if (restrictions instanceof DefaultRestrictions) {
+            return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+        } else {
+            return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions,
+                moduleContext);
         }
     }
 
@@ -224,7 +223,7 @@ public final class Types {
      *         <code>packageName</code> and <code>typeName</code>
      */
     public static WildcardType wildcardTypeFor(final String packageName, final String typeName,
-            final boolean isPkNameNormalized, final boolean isTypeNormalized, ModuleContext context) {
+            final boolean isPkNameNormalized, final boolean isTypeNormalized, final ModuleContext context) {
         return new WildcardTypeImpl(packageName, typeName, isPkNameNormalized, isTypeNormalized, context);
     }
 
@@ -267,7 +266,7 @@ public final class Types {
     @Nullable
     public static String getOuterClassName(final Type valueType) {
         final String pkgName = valueType.getPackageName();
-        final int index = CharMatcher.JAVA_UPPER_CASE.indexIn(pkgName);
+        final int index = CharMatcher.javaUpperCase().indexIn(pkgName);
         if (index >= 0) {
             // It is inner class.
             return Iterables.getFirst(DOT_SPLITTER.split(pkgName.substring(index)), null);
@@ -278,7 +277,7 @@ public final class Types {
     @Nullable
     public static String getOuterClassPackageName(final Type valueType) {
         final String pkgName = valueType.getPackageName();
-        final int index = CharMatcher.JAVA_UPPER_CASE.indexIn(pkgName);
+        final int index = CharMatcher.javaUpperCase().indexIn(pkgName);
         if (index >= 1) {
             return pkgName.substring(0, index - 1);
         }
@@ -423,23 +422,49 @@ public final class Types {
          *            if the type name has been normalized
          */
         public WildcardTypeImpl(final String packageName, final String typeName, final boolean isPkNameNormalized,
-                final boolean isTypeNormalized, ModuleContext context) {
+                final boolean isTypeNormalized, final ModuleContext context) {
             super(packageName, typeName, isPkNameNormalized, isTypeNormalized, context);
         }
     }
 
-    public static <T extends Number> DefaultRestrictions<T> getDefaultRestrictions(final T min, final T max) {
+    public static <T extends Number & Comparable<T>> DefaultRestrictions<T> getDefaultRestrictions(final T min,
+            final T max) {
         return new DefaultRestrictions<>(min, max);
     }
 
-    private static final class DefaultRestrictions<T extends Number> implements Restrictions {
-        private final List<RangeConstraint> rangeConstraints;
+    private static final class DefaultRestrictions<T extends Number & Comparable<T>> implements Restrictions {
+        private final RangeConstraint<T> rangeConstraint;
 
         private DefaultRestrictions(final T min, final T max) {
             Preconditions.checkNotNull(min);
             Preconditions.checkNotNull(max);
-            this.rangeConstraints = Collections.singletonList(BaseConstraints.newRangeConstraint(min, max, Optional
-                    .absent(), Optional.absent()));
+            this.rangeConstraint = new RangeConstraint<T>() {
+
+                @Override
+                public Optional<String> getErrorAppTag() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public Optional<String> getErrorMessage() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public Optional<String> getDescription() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public Optional<String> getReference() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public RangeSet<T> getAllowedRanges() {
+                    return ImmutableRangeSet.of(Range.closed(min, max));
+                }
+            };
         }
 
         @Override
@@ -448,8 +473,8 @@ public final class Types {
         }
 
         @Override
-        public List<RangeConstraint> getRangeConstraints() {
-            return this.rangeConstraints;
+        public Optional<RangeConstraint<?>> getRangeConstraint() {
+            return Optional.ofNullable(rangeConstraint);
         }
 
         @Override
@@ -458,8 +483,8 @@ public final class Types {
         }
 
         @Override
-        public List<LengthConstraint> getLengthConstraints() {
-            return ImmutableList.of();
+        public Optional<LengthConstraint> getLengthConstraint() {
+            return Optional.empty();
         }
     }
 }

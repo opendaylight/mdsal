@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
@@ -49,14 +50,15 @@ public class DocGenTest {
     @Test
     public void testListGeneration() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/doc-gen");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         final Set<Module> modules = context.getModules();
         final BasicCodeGenerator generator = new DocumentationGeneratorImpl();
-        Collection<File> generatedFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, modules);
+        Collection<File> generatedFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, modules,
+            module -> Optional.empty());
         assertEquals(4, generatedFiles.size());
     }
 
-    private static List<File> getSourceFiles(String path) throws Exception {
+    private static List<File> getSourceFiles(final String path) throws Exception {
         final URI resPath = DocGenTest.class.getResource(path).toURI();
         final File sourcesDir = new File(resPath);
         if (sourcesDir.exists()) {
@@ -72,7 +74,7 @@ public class DocGenTest {
         }
     }
 
-    private static void deleteTestDir(File file) {
+    private static void deleteTestDir(final File file) {
         if (file.isDirectory()) {
             File[] filesToDelete = file.listFiles();
             if (filesToDelete != null) {

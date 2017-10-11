@@ -9,11 +9,12 @@
 package org.opendaylight.mdsal.binding.yang.types;
 
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.type.IntegerTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.Int8TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 
 /**
@@ -21,45 +22,55 @@ import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
  *
  * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
-final class TestIntegerTypeDefinition implements IntegerTypeDefinition {
+final class TestIntegerTypeDefinition implements Int8TypeDefinition {
 
-    @Override public List<RangeConstraint> getRangeConstraints() {
+    @Override
+    public Int8TypeDefinition getBaseType() {
         return null;
     }
 
-    @Override public IntegerTypeDefinition getBaseType() {
+    @Override
+    public Optional<String> getUnits() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Object> getDefaultValue() {
+        return Optional.empty();
+    }
+
+    @Override
+    public QName getQName() {
         return null;
     }
 
-    @Override public String getUnits() {
+    @Override
+    public SchemaPath getPath() {
         return null;
     }
 
-    @Override public Object getDefaultValue() {
+    @Override
+    public List<UnknownSchemaNode> getUnknownSchemaNodes() {
         return null;
     }
 
-    @Override public QName getQName() {
+    @Override
+    public Optional<String> getDescription() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> getReference() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Status getStatus() {
         return null;
     }
 
-    @Override public SchemaPath getPath() {
-        return null;
-    }
-
-    @Override public List<UnknownSchemaNode> getUnknownSchemaNodes() {
-        return null;
-    }
-
-    @Override public String getDescription() {
-        return null;
-    }
-
-    @Override public String getReference() {
-        return null;
-    }
-
-    @Override public Status getStatus() {
-        return null;
+    @Override
+    public Optional<RangeConstraint<Byte>> getRangeConstraint() {
+        return Optional.empty();
     }
 }

@@ -19,9 +19,12 @@
 @import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus
+@import org.opendaylight.yangtools.yang.model.api.ElementCountConstraintAware
 @import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
+@import org.opendaylight.yangtools.yang.model.api.MandatoryAware
 @import org.opendaylight.yangtools.yang.model.api.Module
 @import org.opendaylight.yangtools.yang.model.api.SchemaNode
 @import org.opendaylight.yangtools.yang.model.api.Status
@@ -29,26 +32,18 @@
 
 @(dataSchemaNode: DataSchemaNode, module: Module)
 @if(dataSchemaNode.isInstanceOf[ContainerSchemaNode]) {
-    @writeContSchemaNode(dataSchemaNode.asInstanceOf[ContainerSchemaNode], module)
+    @container(dataSchemaNode.asInstanceOf[ContainerSchemaNode], module)
 }
 @if(dataSchemaNode.isInstanceOf[AnyXmlSchemaNode]) {
-    anyxml @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getQName().getLocalName()}@if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() == Status.CURRENT && !dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getConstraints().isMandatory()){;} else { {
-        @if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getConstraints().isMandatory()){
-            mandatory true;
-        }
-        @if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() != Status.CURRENT) {
-            status @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus()};
-        }
+    anyxml @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getQName().getLocalName()}@if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() == Status.CURRENT && !dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].isMandatory()){;} else { {
+        @mandatory(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode])
+        @status(dataSchemaNode)
     }}
 }
 @if(dataSchemaNode.isInstanceOf[AnyDataSchemaNode]) {
-    anydata @{dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getQName().getLocalName()}@if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getStatus() == Status.CURRENT && !dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getConstraints().isMandatory()){;} else { {
-        @if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getConstraints().isMandatory()){
-            mandatory true;
-        }
-        @if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getStatus() != Status.CURRENT) {
-            status @{dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getStatus()};
-        }
+    anydata @{dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getQName().getLocalName()}@if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getStatus() == Status.CURRENT && !dataSchemaNode.asInstanceOf[AnyDataSchemaNode].isMandatory()){;} else { {
+        @mandatory(dataSchemaNode.asInstanceOf[AnyDataSchemaNode])
+        @status(dataSchemaNode)
     }}
 }
 @if(dataSchemaNode.isInstanceOf[LeafSchemaNode]) {
@@ -58,12 +53,8 @@
                 description "@{dataSchemaNode.asInstanceOf[LeafSchemaNode].getDescription()}";
             }
             @yangTemplateWriteType(dataSchemaNode.asInstanceOf[LeafSchemaNode].getType())
-            @if(dataSchemaNode.asInstanceOf[LeafSchemaNode].getConstraints() != null){
-                @yangTemplateWriteConstraints(dataSchemaNode.asInstanceOf[LeafSchemaNode].getConstraints())
-            }
-            @if(dataSchemaNode.asInstanceOf[LeafSchemaNode].getStatus() != Status.CURRENT) {
-                status @{dataSchemaNode.asInstanceOf[LeafSchemaNode].getStatus()};
-            }
+            @mandatory(dataSchemaNode.asInstanceOf[LeafSchemaNode])
+            @status(dataSchemaNode)
         }
     }
 }
@@ -73,12 +64,8 @@
             ordered-by user;
         }
         type @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getType().getQName().getLocalName()};
-        @if(dataSchemaNode.asInstanceOf[LeafListSchemaNode].getConstraints() != null){
-                @yangTemplateWriteConstraints(dataSchemaNode.asInstanceOf[LeafListSchemaNode].getConstraints())
-        }
-        @if(dataSchemaNode.asInstanceOf[LeafListSchemaNode].getStatus() != Status.CURRENT) {
-            status @{dataSchemaNode.asInstanceOf[LeafListSchemaNode].getStatus()};
-        }
+        @minmaxelements(dataSchemaNode.asInstanceOf[LeafListSchemaNode])
+        @status(dataSchemaNode)
     }
 }
 @if(dataSchemaNode.isInstanceOf[ChoiceCaseNode]) {
@@ -86,29 +73,47 @@
         @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceCaseNode].getChildNodes()) {
             @yangTemplateWriteDataSchemaNode(childNode, module)
         }
-        @if(dataSchemaNode.asInstanceOf[ChoiceCaseNode].getStatus() != Status.CURRENT) {
-            status @{dataSchemaNode.asInstanceOf[ChoiceCaseNode].getStatus()};
-        }
+        @status(dataSchemaNode)
     }
 }
 @if(dataSchemaNode.isInstanceOf[ChoiceSchemaNode]) {
     choice @{dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getQName().getLocalName()} {
-        @if(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getConstraints() != null){
-                @yangTemplateWriteConstraints(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getConstraints())
-        }
-        @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getCases()) {
+        @mandatory(dataSchemaNode.asInstanceOf[ChoiceSchemaNode])
+        @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getCases().values()) {
             @yangTemplateWriteDataSchemaNode(childNode, module)
         }
-        @if(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getStatus() != Status.CURRENT) {
-            status @{dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getStatus()};
-        }
+        @status(dataSchemaNode)
     }
 }
 @if(dataSchemaNode.isInstanceOf[ListSchemaNode]) {
-    @writeListSchemaNode(dataSchemaNode.asInstanceOf[ListSchemaNode], module)
+    @list(dataSchemaNode.asInstanceOf[ListSchemaNode], module)
 }
 
-@writeContSchemaNode(container: ContainerSchemaNode, module: Module) = {
+@mandatory(aware: MandatoryAware) = {
+    @if(aware.isMandatory()) {
+         mandatory true;
+    }
+}
+
+@minmaxelements(aware: ElementCountConstraintAware) = {
+    @if(aware.getElementCountConstraint().isPresent()) {
+        @defining(aware.getElementCountConstraint().get()) { constraint =>
+            @if(constraint.getMinElements() != null) {
+                min-elements @{constraint.getMinElements()}
+            }
+            @if(constraint.getMaxElements() != null) {
+                max-elements @{constraint.getMaxElements()}
+            }
+        }
+    }
+}
+         
+@status(aware: WithStatus) = {
+    @if(aware.getStatus() != Status.CURRENT) {
+        status @{aware.getStatus()};
+    }
+}
+@container(container: ContainerSchemaNode, module: Module) = {
     container @{container.getQName().getLocalName()} {
         @if(container.getChildNodes() != null && !container.getChildNodes().isEmpty()) {
             @yangTemplateWriteDataSchemaNodes(container.getChildNodes(), module)
@@ -125,20 +130,16 @@
         @if(container.getActions() != null && !container.getActions().isEmpty()) {
             @yangTemplateWriteActions(container.getActions(), module)
         }
-        @if(container.getStatus() != Status.CURRENT) {
-            status @{container.getStatus()};
-        }
+        @status(container)
     }
 }
 
-@writeListSchemaNode(list: ListSchemaNode, module: Module) = {
+@list(list: ListSchemaNode, module: Module) = {
     list @{list.getQName().getLocalName()} {
         @if(list.isUserOrdered()){
             ordered-by user;
         }
-        @if(dataSchemaNode.asInstanceOf[ListSchemaNode].getConstraints() != null){
-                @yangTemplateWriteConstraints(dataSchemaNode.asInstanceOf[ListSchemaNode].getConstraints())
-        }
+        @minmaxelements(list)
         key "@for(listKey <- list.getKeyDefinition()) {@{listKey.getLocalName()} }";
         @if(!list.getUniqueConstraints().isEmpty()){
             @for(listUnique <- list.getUniqueConstraints()){
@@ -163,8 +164,6 @@
         @if(list.getActions() != null && !list.getActions().isEmpty()) {
             @yangTemplateWriteActions(list.getActions(), module)
         }
-        @if(list.getStatus() != Status.CURRENT) {
-            status @{list.getStatus()};
-        }
+        @status(list)
     }
 }

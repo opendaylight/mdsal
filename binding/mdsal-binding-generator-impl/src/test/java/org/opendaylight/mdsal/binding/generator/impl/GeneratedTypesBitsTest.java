@@ -12,28 +12,23 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.net.URI;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
-import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature.Parameter;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesBitsTest {
 
     @Test
-    public void testGeneretedTypesBitsTest() throws Exception {
-        final URI yangTypesPath = getClass().getResource("/simple-bits-demo.yang").toURI();
-
-        final SchemaContext context = YangParserTestUtils.parseYangSources(new File(yangTypesPath));
+    public void testGeneretedTypesBitsTest() {
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-bits-demo.yang");
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -74,19 +69,16 @@ public class GeneratedTypesBitsTest {
                     hashPropertiesNum = genProperties.size();
 
                 }
-            } else if (type instanceof GeneratedType) { // searching for
-                                                        // interface
-                                                        // LeafParameterContainer
+            } else if (type instanceof GeneratedType) {
+                // searching for interface LeafParameterContainer
                 final GeneratedType genType = (GeneratedType) type;
                 if (genType.getName().equals("LeafParentContainer")) {
                     leafParentFound = true;
                     // check of methods
                     methodSignaturesList = genType.getMethodDefinitions();
                     if (methodSignaturesList != null) {
-                        for (MethodSignature methodSignature : methodSignaturesList) { // loop
-                                                                                       // through
-                                                                                       // all
-                                                                                       // methods
+                        // loop through all methods
+                        for (MethodSignature methodSignature : methodSignaturesList) {
                             if (methodSignature.getName().equals("getByteLeaf")) {
                                 getByteLeafMethodFound = true;
 
@@ -102,7 +94,6 @@ public class GeneratedTypesBitsTest {
                     }
                 }
             }
-
         }
 
         assertTrue(byteTypeFound);

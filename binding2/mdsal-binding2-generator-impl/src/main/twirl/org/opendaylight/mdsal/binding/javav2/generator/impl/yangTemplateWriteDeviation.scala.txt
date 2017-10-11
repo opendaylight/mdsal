@@ -15,15 +15,15 @@
 
 @import org.opendaylight.yangtools.yang.model.api.Deviation
 @import org.opendaylight.yangtools.yang.model.api.Status
-@import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.DeviationEffectiveStatementImpl
+@import org.opendaylight.yangtools.yang.model.api.stmt.DeviationEffectiveStatement
 
 @(deviation: Deviation)
-deviation @{deviation.asInstanceOf[DeviationEffectiveStatementImpl].getDeclared().rawArgument()} {
-    @if(deviation.getReference() != null && !deviation.getReference().isEmpty()) {
-        reference "@{deviation.getReference()}";
+deviation @{deviation.asInstanceOf[DeviationEffectiveStatement].getDeclared().rawArgument()} {
+    @if(deviation.getReference().isPresent()) {
+        reference "@{deviation.getReference().get()}";
     }
-    @if(deviation.getDescription() != null && !deviation.getDescription().isEmpty()) {
-        description "@{deviation.getDescription()}";
+    @if(deviation.getDescription().isPresent()) {
+        description "@{deviation.getDescription().get()}";
     }
     @for(deviate <- deviation.getDeviates()) {
         @if(deviate != null && deviate.getDeviateType() != null ) {

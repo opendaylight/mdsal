@@ -39,14 +39,14 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeS
 public class InMemoryDOMDataTreeShardTest {
 
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         final InMemoryDOMDataTreeShard inMemoryDOMDataTreeShard =
                 InMemoryDOMDataTreeShard.create(DOM_DATA_TREE_IDENTIFIER,
                         MoreExecutors.directExecutor(), 1);
 
         final DOMDataTreeIdentifier domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION,
-                        YangInstanceIdentifier.of(QName.create("Test")));
+                        YangInstanceIdentifier.of(QName.create("", "Test")));
 
         final ReadableWriteableDOMDataTreeShard domDataTreeShard = mock(ReadableWriteableDOMDataTreeShard.class);
         doReturn("testReadableWriteableDOMDataTreeShard").when(domDataTreeShard).toString();
@@ -80,7 +80,7 @@ public class InMemoryDOMDataTreeShardTest {
     }
 
     @Test
-    public void createTransactionWithException() throws Exception {
+    public void createTransactionWithException() {
         final DOMDataTreeIdentifier domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.EMPTY);
 
