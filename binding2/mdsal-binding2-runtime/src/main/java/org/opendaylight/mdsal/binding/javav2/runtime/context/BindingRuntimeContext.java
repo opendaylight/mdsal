@@ -57,6 +57,7 @@ import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
@@ -89,7 +90,9 @@ public class BindingRuntimeContext implements Immutable {
     private static final char DOT = '.';
     private final ClassLoadingStrategy strategy;
     private final SchemaContext schemaContext;
-    private final Map<Type, List<AugmentationSchemaNode>> augmentationToSchema = new HashMap<>();
+
+    private final Map<Type, List<AugmentationSchemaNode>> augmentationToSchemas = new HashMap<>();
+    private final BiMap<SchemaPath,Type> targetToAugmentation = HashBiMap.create();
     private final BiMap<Type, Object> typeToDefiningSchema = HashBiMap.create();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final Map<QName, Type> identities = new HashMap<>();
@@ -116,7 +119,8 @@ public class BindingRuntimeContext implements Immutable {
         final Map<Module, ModuleContext> modules = generator.getModuleContexts(this.schemaContext);
 
         for (final ModuleContext ctx : modules.values()) {
-            this.augmentationToSchema.putAll(ctx.getTypeToAugmentations());
+            this.augmentationToSchemas.putAll(ctx.getTypeToAugmentations());
+            this.targetToAugmentation.putAll(ctx.getTargetToAugmentation());
             this.typeToDefiningSchema.putAll(ctx.getTypeToSchema());
 
             ctx.getTypedefs();
@@ -184,10 +188,18 @@ public class BindingRuntimeContext implements Immutable {
      * @throws IllegalArgumentException
      *             - if supplied class is not an augmentation
      */
+    public @Nullable Entry<Type, List<AugmentationSchemaNode>> getAugmentationDefinition(final Class<?> augClass)
+        throws IllegalArgumentException {
+        Preconditions.checkArgument(Augmentation.class.isAssignableFrom(augClass),
+            "Class %s does not represent augmentation", augClass);
+        final Type refType = referencedType(augClass);
+        for (Entry<Type, List<AugmentationSchemaNode>> entry : this.augmentationToSchemas.entrySet()) {
+            if (refType.equals(entry.getKey())) {
+                return entry;
+            }
+        }
 
-    public @Nullable List<AugmentationSchemaNode> getAugmentationDefinition(final Class<?> augClass) throws IllegalArgumentException {
-        Preconditions.checkArgument(Augmentation.class.isAssignableFrom(augClass), "Class %s does not represent augmentation", augClass);
-        return this.augmentationToSchema.get(referencedType(augClass));
+        return null;
     }
 
     /**
@@ -222,7 +234,7 @@ public class BindingRuntimeContext implements Immutable {
      */
     public Entry<AugmentationIdentifier, AugmentationSchemaNode> getResolvedAugmentationSchema(
             final DataNodeContainer target, final Class<? extends Augmentation<?>> aug) {
-        final List<AugmentationSchemaNode> origSchemas = getAugmentationDefinition(aug);
+        final List<AugmentationSchemaNode> origSchemas = getAugmentationDefinition(aug).getValue();
         Preconditions.checkArgument(origSchemas != null, "Augmentation %s is not known in current schema context",aug);
         /*
          * FIXME: Validate augmentation schema lookup
@@ -438,7 +450,7 @@ public class BindingRuntimeContext implements Immutable {
                     }
 
                     if (!augment.getChildNodes().isEmpty()) {
-                        final Type augType = this.typeToDefiningSchema.inverse().get(augOrig);
+                        final Type augType = this.targetToAugmentation.get(augOrig.getTargetPath());
                         if (augType != null) {
                             identifierToType.put(getAugmentationIdentifier(augment), augType);
                         }
