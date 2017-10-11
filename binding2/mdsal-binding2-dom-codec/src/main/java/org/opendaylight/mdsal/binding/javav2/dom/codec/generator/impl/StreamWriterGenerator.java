@@ -8,10 +8,11 @@
 package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.impl;
 
 import com.google.common.annotations.Beta;
+import java.util.List;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.api.TreeNodeSerializerGenerator;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator.AbstractStreamWriterGenerator;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source.AbstractAugmentSerializerSource;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source.AbstractAugmentableDataNodeContainerEmitterSource;
-import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source.AbstractDataNodeContainerSerializerSource;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source.AbstractTreeNodeSerializerSource;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.AugmentableDispatchSerializer;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.ChoiceDispatchSerializer;
@@ -109,9 +110,9 @@ public class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected AbstractTreeNodeSerializerSource generateSerializer(final GeneratedType type,
-            final AugmentationSchema schema) {
-        return new AbstractDataNodeContainerSerializerSource(this, type, schema) {
+    protected AbstractTreeNodeSerializerSource generateAugmentSerializer(final GeneratedType type,
+            final List<AugmentationSchema> augmentationSchemas) {
+        return new AbstractAugmentSerializerSource(this, type, augmentationSchemas) {
 
             @Override
             public CharSequence emitStartEvent() {

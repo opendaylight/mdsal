@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.impl.StreamWriterGenerator;
@@ -132,9 +133,13 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
         return false;
     }
 
+    protected Collection<DataSchemaNode> getChildNodes() {
+        return schemaNode.getChildNodes();
+    }
+
     private void emitBody(final StringBuilder b) {
         final Map<String, Type> getterToType = collectAllProperties(dtoType, new HashMap<String, Type>());
-        for (final DataSchemaNode schemaChild : schemaNode.getChildNodes()) {
+        for (final DataSchemaNode schemaChild : getChildNodes()) {
             if (!schemaChild.isAugmenting() || isLocalAugmentDataChild(schemaChild)) {
                 final String getter = getGetterName(schemaChild);
                 final Type childType = getterToType.get(getter);
