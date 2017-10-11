@@ -11,9 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.SettableFuture;
-import java.net.URI;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
@@ -21,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 
 @Beta
 class FutureSchema implements AutoCloseable {
@@ -66,12 +65,12 @@ class FutureSchema implements AutoCloseable {
         return schema != null;
     }
 
-    boolean waitForSchema(final URI namespace, final Date revision) {
+    boolean waitForSchema(final QNameModule module) {
         final FutureSchemaPredicate postponedOp = new FutureSchemaPredicate() {
 
             @Override
             public boolean apply(final BindingRuntimeContext input) {
-                return input.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision) != null;
+                return input.getSchemaContext().findModule(module).isPresent();
             }
         };
         return postponedOp.waitForSchema();

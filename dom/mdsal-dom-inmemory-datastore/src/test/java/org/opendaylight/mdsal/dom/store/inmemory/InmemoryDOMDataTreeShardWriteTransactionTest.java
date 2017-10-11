@@ -37,8 +37,8 @@ import org.opendaylight.mdsal.dom.spi.shard.ForeignShardModificationContext;
 import org.opendaylight.mdsal.dom.spi.shard.ReadableWriteableDOMDataTreeShard;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateTip;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModificationCursor;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType;
@@ -50,7 +50,7 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
     private static final ShardRootModificationContext SHARD_ROOT_MODIFICATION_CONTEXT =
             mock(ShardRootModificationContext.class);
     private static final YangInstanceIdentifier YANG_INSTANCE_IDENTIFIER =
-            YangInstanceIdentifier.of(QName.create("test"));
+            YangInstanceIdentifier.of(QName.create("", "test"));
     private static final DOMDataTreeIdentifier DOM_DATA_TREE_IDENTIFIER =
             new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YANG_INSTANCE_IDENTIFIER);
     private static final ForeignShardModificationContext FOREIGN_SHARD_MODIFICATION_CONTEXT =
@@ -75,7 +75,7 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
         doReturn(DataTreeModificationCursorAdaptor.of(dataTreeModificationCursor))
                 .when(SHARD_ROOT_MODIFICATION_CONTEXT).cursor();
         doNothing().when(SHARD_ROOT_MODIFICATION_CONTEXT).closeCursor();
-        final DataTreeCandidate dataTreeCandidate = mock(DataTreeCandidate.class);
+        final DataTreeCandidateTip dataTreeCandidate = mock(DataTreeCandidateTip.class);
         final DataTreeCandidateNode dataTreeCandidateNode = mock(DataTreeCandidateNode.class);
         doReturn(dataTreeCandidateNode).when(dataTreeCandidate).getRootNode();
         doReturn(ModificationType.WRITE).when(dataTreeCandidateNode).getModificationType();

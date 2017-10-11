@@ -28,7 +28,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
     private final @{importedNames.get("string")} name = "@{module.getName}";
     private final @{importedNames.get("string")} namespace = "@{module.getNamespace.toString}";
     private final @{importedNames.get("string")} semanticVersion = "@{module.getSemanticVersion}";
-    private final @{importedNames.get("string")} revision = "@{module.getQNameModule.getFormattedRevision}";
+    private final @{importedNames.get("string")} revision = @if(module.getRevision.isPresent) { "@{module.getRevision.get.toString}" } else { null };
     private final @{importedNames.get("string")} resourcePath = "@{getSourcePath(module, moduleFilePathResolver)}";
     private final @{importedNames.get("set")}<YangModuleInfo> importedModules;
 
@@ -49,7 +49,7 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
         private final @{importedNames.get("string")} name = "@{submodule.getName}";
         private final @{importedNames.get("string")} semanticVersion = "@{submodule.getSemanticVersion}";
         private final @{importedNames.get("string")} namespace = "@{submodule.getNamespace.toString}";
-        private final @{importedNames.get("string")} revision = "@{submodule.getQNameModule.getFormattedRevision}";
+        private final @{importedNames.get("string")} revision = @if(module.getRevision.isPresent) { "@{module.getRevision.get.toString}" } else { null };
         private final @{importedNames.get("string")} resourcePath = "@{getSourcePath(submodule, moduleFilePathResolver)}";
         private final @{importedNames.get("set")}<YangModuleInfo> importedModules;
 
@@ -69,13 +69,8 @@ public final class @{MODULE_INFO_CLASS_NAME} implements @{importedNames.get("yan
         }
         @if(!module.getImports.isEmpty) {
             @for(moduleImport <- module.getImports) {
-                @if(moduleImport.getRevision == null) {
-                    set.add(@{normalizeFullPackageName(getRootPackageName(getSortedQName(ctx.getModules, moduleImport
-                    .getModuleName)))}.@{MODULE_INFO_CLASS_NAME}.getInstance());
-                } else {
-                    set.add(@{normalizeFullPackageName(getRootPackageName(ctx.findModuleByName(moduleImport
-                    .getModuleName, moduleImport.getRevision)))}.@{MODULE_INFO_CLASS_NAME}.getInstance());
-                }
+                set.add(@{normalizeFullPackageName(getRootPackageName(ctx.findModule(moduleImport
+                .getModuleName, moduleImport.getRevision).get))}.@{MODULE_INFO_CLASS_NAME}.getInstance());
             }
         }
         @if(!module.getSubmodules.isEmpty) {

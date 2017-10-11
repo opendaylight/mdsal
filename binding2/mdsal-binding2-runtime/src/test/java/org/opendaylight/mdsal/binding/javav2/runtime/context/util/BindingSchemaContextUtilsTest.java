@@ -10,9 +10,6 @@ package org.opendaylight.mdsal.binding.javav2.runtime.context.util;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
@@ -21,7 +18,6 @@ import org.opendaylight.mdsal.gen.javav2.org.test.runtime.rev170710.data.my_cont
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingSchemaContextUtilsTest {
@@ -35,9 +31,8 @@ public class BindingSchemaContextUtilsTest {
 
 
     @Before
-    public void setup() throws URISyntaxException, FileNotFoundException, ReactorException {
-        schemaContext = YangParserTestUtils.parseYangSources(
-                new File(getClass().getResource("/yang/test-runtime.yang").toURI()));
+    public void setup() {
+        schemaContext = YangParserTestUtils.parseYangResource("/yang/test-runtime.yang");
         myCont = (DataNodeContainer) schemaContext.getChildNodes().iterator().next();
         myChoice = (ChoiceSchemaNode) myCont.getChildNodes().iterator().next();
     }
@@ -46,6 +41,7 @@ public class BindingSchemaContextUtilsTest {
     public void utilTest() {
         assertNotNull(BindingSchemaContextUtils.findDataNodeContainer(schemaContext, MY_CONT_NODE_PATH));
         assertNotNull(BindingSchemaContextUtils.findInstantiatedChoice(myCont, MyChoice.class));
-        assertNotNull(BindingSchemaContextUtils.findInstantiatedCase(myChoice, myChoice.getCaseNodeByName("one")));
+        assertNotNull(BindingSchemaContextUtils.findInstantiatedCase(myChoice, myChoice.findCaseNodes("one")
+            .iterator().next()));
     }
 }
