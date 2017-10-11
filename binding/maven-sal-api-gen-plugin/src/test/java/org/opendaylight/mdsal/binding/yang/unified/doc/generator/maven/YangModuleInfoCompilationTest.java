@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -33,6 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.maven.api.gen.plugin.CodeGeneratorImpl;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 import org.sonatype.plexus.build.incremental.DefaultBuildContext;
@@ -140,22 +142,25 @@ public class YangModuleInfoCompilationTest {
     private static void generateTestSources(final String resourceDirPath, final File sourcesOutputDir)
             throws Exception {
         final List<File> sourceFiles = getSourceFiles(resourceDirPath);
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
-        codegen.generateSources(context, sourcesOutputDir, context.getModules());
+        codegen.generateSources(context, sourcesOutputDir, context.getModules(),
+            module -> Optional.of(resourceDirPath + File.separator + module.getName()
+            + YangConstants.RFC6020_YANG_FILE_EXTENSION));
     }
 
     @Test
     public void generateTestSourcesWithAdditionalConfig() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/yang-module-info");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.setResourceBaseDir(null);
         codegen.setMavenProject(new MavenProject());
         codegen.setAdditionalConfig(ImmutableMap.of("test", "test"));
-        Collection<File> files = codegen.generateSources(context, null, context.getModules());
+        Collection<File> files = codegen.generateSources(context, null, context.getModules(),
+            module -> Optional.of(module.getName()));
         assertFalse(files.isEmpty());
         files.forEach(file -> {
             deleteTestDir(file);

@@ -19,8 +19,8 @@
 
 @(notification: NotificationDefinition, module: Module)
 notification @{notification.getQName().getLocalName()} {
-    @if(notification.getDescription() != null && !notification.getDescription().isEmpty()) {
-        description "@{notification.getDescription()}";
+    @if(notification.getDescription().isPresent()) {
+        description "@{notification.getDescription().get()}";
     }
     @if(notification.getChildNodes() != null && !notification.getChildNodes().isEmpty()) {
         @yangTemplateWriteDataSchemaNodes(notification.getChildNodes(), module)
@@ -34,8 +34,8 @@ notification @{notification.getQName().getLocalName()} {
     @if(notification.getUses() != null && !notification.getUses().isEmpty()) {
         @yangTemplateWriteUsesNodes(notification.getUses(), module)
     }
-    @if(notification.getReference() != null && !notification.getReference().isEmpty()) {
-        reference "@{notification.getReference()}";
+    @if(notification.getReference().isPresent()) {
+        reference "@{notification.getReference().get()}";
     }
     @if(notification.getStatus() != Status.CURRENT) {
         status @{notification.getStatus()};

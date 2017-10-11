@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -67,7 +68,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
 
     @Override
     public AnnotationTypeBuilder addAnnotation(final String packageName, final String name) {
-        if ((packageName != null) && (name != null)) {
+        if (packageName != null && name != null) {
             final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
             if (!this.annotationBuilders.contains(builder)) {
                 this.annotationBuilders = LazyCollections.lazyAdd(this.annotationBuilders, builder);
@@ -114,7 +115,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         if (enums != null) {
             for (final EnumPair enumPair : enums) {
                 if (enumPair != null) {
-                    this.addValue(enumPair.getName(), enumPair.getValue(), enumPair.getDescription());
+                    this.addValue(enumPair.getName(), enumPair.getValue(), enumPair.getDescription().orElse(null));
                 }
             }
         }
@@ -159,8 +160,8 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = (prime * result) + Objects.hashCode(this.name);
-            result = (prime * result) + Objects.hashCode(this.value);
+            result = prime * result + Objects.hashCode(this.name);
+            result = prime * result + Objects.hashCode(this.value);
             return result;
         }
 
@@ -203,13 +204,13 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         }
 
         @Override
-        public String getDescription() {
-            return this.description;
+        public Optional<String> getDescription() {
+            return Optional.ofNullable(description);
         }
 
         @Override
-        public String getReference() {
-            return null;
+        public Optional<String> getReference() {
+            return Optional.empty();
         }
 
         @Override
@@ -280,7 +281,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
                 builder.append(" (");
                 builder.append(valPair.getValue());
 
-                if (i == (this.values.size() - 1)) {
+                if (i == this.values.size() - 1) {
                     builder.append(" );");
                 } else {
                     builder.append(" ),");
