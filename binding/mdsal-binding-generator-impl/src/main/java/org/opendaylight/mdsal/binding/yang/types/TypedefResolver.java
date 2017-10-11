@@ -64,11 +64,8 @@ final class TypedefResolver {
                     } else if (childNode instanceof ListSchemaNode) {
                         fillRecursively(list, (ListSchemaNode) childNode);
                     } else if (childNode instanceof ChoiceSchemaNode) {
-                        final Set<ChoiceCaseNode> cases = ((ChoiceSchemaNode) childNode).getCases();
-                        if (cases != null) {
-                            for (final ChoiceCaseNode caseNode : cases) {
-                                fillRecursively(list, caseNode);
-                            }
+                        for (final ChoiceCaseNode caseNode : ((ChoiceSchemaNode) childNode).getCases().values()) {
+                            fillRecursively(list, caseNode);
                         }
                     }
                 }

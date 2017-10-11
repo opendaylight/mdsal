@@ -34,7 +34,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataObjectSerializerImplementation;
 import org.opendaylight.yangtools.yang.binding.DataObjectSerializerRegistry;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
@@ -177,8 +177,8 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
             } else {
                 source = generateMapEntrySerializer(generatedType, casted);
             }
-        } else if (schema instanceof AugmentationSchema) {
-            source = generateSerializer(generatedType,(AugmentationSchema) schema);
+        } else if (schema instanceof AugmentationSchemaNode) {
+            source = generateSerializer(generatedType,(AugmentationSchemaNode) schema);
         } else if (schema instanceof ChoiceCaseNode) {
             source = generateCaseSerializer(generatedType,(ChoiceCaseNode) schema);
         } else if (schema instanceof NotificationDefinition) {
@@ -293,7 +293,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * @param schema Schema of augmentation
      * @return Source for augmentation node writer
      */
-    protected abstract DataObjectSerializerSource generateSerializer(GeneratedType type, AugmentationSchema schema);
+    protected abstract DataObjectSerializerSource generateSerializer(GeneratedType type, AugmentationSchemaNode schema);
 
     /**
      * Generates serializer source for notification node, which will read supplied binding type and invoke proper

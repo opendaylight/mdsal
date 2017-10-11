@@ -43,11 +43,11 @@ public class RegistrationTreeNodeTest {
         assertNotNull(registrationTreeNode.ensureChild(pathArgument));
         assertNotNull(registrationTreeNode.getExactChild(pathArgument));
 
-        final NodeWithValue<?> nodeWithValue = new NodeWithValue<>(QName.create("testNode"), new Object());
+        final NodeWithValue<?> nodeWithValue = new NodeWithValue<>(QName.create("", "testNode"), new Object());
         assertEquals(Collections.EMPTY_LIST, registrationTreeNode.getInexactChildren(nodeWithValue));
         assertEquals(Collections.EMPTY_LIST, registrationTreeNode.getInexactChildren(pathArgument));
 
-        final NodeIdentifier nodeWithoutValue = new NodeIdentifier(QName.create("testNode"));
+        final NodeIdentifier nodeWithoutValue = new NodeIdentifier(QName.create("", "testNode"));
         assertNotNull(registrationTreeNode.ensureChild(nodeWithoutValue));
         assertFalse(registrationTreeNode.getInexactChildren(nodeWithValue).isEmpty());
 

@@ -19,8 +19,8 @@
 
 @(rpc: RpcDefinition, module: Module)
 rpc @{rpc.getQName().getLocalName()} {
-    @if(rpc.getDescription() != null && !rpc.getDescription().isEmpty()) {
-        "@{rpc.getDescription()}";
+    @if(rpc.getDescription().isPresent()) {
+        "@{rpc.getDescription().get()}";
     }
     @if(rpc.getGroupings() != null && !rpc.getGroupings().isEmpty()) {
         @yangTemplateWriteGroupingDefs(rpc.getGroupings(), module)
@@ -35,8 +35,8 @@ rpc @{rpc.getQName().getLocalName()} {
             @yangTemplateWriteDataSchemaNodes(rpc.getOutput().getChildNodes, module)
         }
     }
-    @if(rpc.getReference() != null && !rpc.getReference().isEmpty()) {
-        reference "@{rpc.getReference()}";
+    @if(rpc.getReference().isPresent()) {
+        reference "@{rpc.getReference().get()}";
     }
     @if(rpc.getStatus() != Status.CURRENT) {
         status @{rpc.getStatus()};

@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 public class DOMRpcRouterTest extends TestUtils {
 
     @Test
-    public void registerRpcImplementation() throws Exception {
+    public void registerRpcImplementation() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
             DOMRpcRoutingTable routingTable = rpcRouter.routingTable();
             assertFalse(routingTable.getRpcs().containsKey(SchemaPath.ROOT));
@@ -42,14 +42,14 @@ public class DOMRpcRouterTest extends TestUtils {
     }
 
     @Test
-    public void invokeRpc() throws Exception {
+    public void invokeRpc() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
             assertNotNull(rpcRouter.invokeRpc(SchemaPath.create(false, TestModel.TEST_QNAME), null));
         }
     }
 
     @Test
-    public void registerRpcListener() throws Exception {
+    public void registerRpcListener() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
             final DOMRpcAvailabilityListener listener = mock(DOMRpcAvailabilityListener.class);
 
@@ -65,7 +65,7 @@ public class DOMRpcRouterTest extends TestUtils {
     }
 
     @Test
-    public void onGlobalContextUpdated() throws Exception {
+    public void onGlobalContextUpdated() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
 
             final DOMRpcRoutingTable routingTableOriginal = rpcRouter.routingTable();
@@ -78,7 +78,7 @@ public class DOMRpcRouterTest extends TestUtils {
     }
 
     @Test(expected = RejectedExecutionException.class)
-    public void close() throws Exception {
+    public void close() {
         final DOMRpcRouter rpcRouter = new DOMRpcRouter();
         rpcRouter.close();
         rpcRouter.registerRpcImplementation(getTestRpcImplementation(), DOMRpcIdentifier.create(SchemaPath.ROOT, null));
