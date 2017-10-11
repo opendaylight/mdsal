@@ -23,7 +23,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 public class DOMRpcIdentifierTest {
     private static final String LOCAL_IDENT = "local";
     private static final QNameModule TEST_MODULE = QNameModule.create(URI.create(
-            "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"), null);
+            "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
     private static final DOMRpcIdentifier GLOBAL = DOMRpcIdentifier.create(SchemaPath.SAME, null);
     private static final DOMRpcIdentifier LOCAL = DOMRpcIdentifier.create(SchemaPath.ROOT,YangInstanceIdentifier.create(
             new NodeIdentifier(QName.create(TEST_MODULE, LOCAL_IDENT))));

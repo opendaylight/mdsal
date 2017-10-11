@@ -235,8 +235,7 @@ public class RpcActionGenHelperTest {
         genCtx.put(module, moduleContext);
 
         final SchemaContext schemaContext = mock(SchemaContext.class);
-        when(schemaContext.findModuleByNamespaceAndRevision(rpcQName.getNamespace(), rpcQName.getRevision()))
-                .thenReturn(module);
+        when(schemaContext.findModule(rpcQName.getModule())).thenReturn(java.util.Optional.of(module));
 
         final boolean verboseClassComments = false;
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
@@ -312,8 +311,7 @@ public class RpcActionGenHelperTest {
         genCtx.put(module, moduleContext);
 
         final SchemaContext schemaContext = mock(SchemaContext.class);
-        when(schemaContext.findModuleByNamespaceAndRevision(actionQName.getNamespace(), actionQName.getRevision()))
-                .thenReturn(module);
+        when(schemaContext.findModule(actionQName.getModule())).thenReturn(java.util.Optional.of(module));
 
         final boolean verboseClassComments = false;
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();

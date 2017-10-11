@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -36,7 +37,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignat
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -71,8 +72,8 @@ public final class BindingGeneratorUtil {
 
     private static final Restrictions EMPTY_RESTRICTIONS = new Restrictions() {
         @Override
-        public List<LengthConstraint> getLengthConstraints() {
-            return Collections.emptyList();
+        public Optional<LengthConstraint> getLengthConstraints() {
+            return Optional.empty();
         }
 
         @Override
@@ -124,7 +125,7 @@ public final class BindingGeneratorUtil {
             }
 
             for (final MethodSignatureBuilder m : sortedCollection(SUID_MEMBER_COMPARATOR, to.getMethodDefinitions())) {
-                if (!(m.getAccessModifier().equals(AccessModifier.PRIVATE))) {
+                if (!m.getAccessModifier().equals(AccessModifier.PRIVATE)) {
                     dout.writeUTF(m.getName());
                     dout.write(m.getAccessModifier().ordinal());
                 }
@@ -138,7 +139,7 @@ public final class BindingGeneratorUtil {
         final byte[] hashBytes = SHA1_MD.get().digest(bout.toByteArray());
         long hash = 0;
         for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
-            hash = (hash << 8) | (hashBytes[i] & 0xFF);
+            hash = hash << 8 | hashBytes[i] & 0xFF;
         }
         return hash;
     }
@@ -208,7 +209,7 @@ public final class BindingGeneratorUtil {
     }
 
     public static Restrictions getRestrictions(final TypeDefinition<?> type) {
-        if ((type == null) || (type.getBaseType() == null)) {
+        if (type == null || type.getBaseType() == null) {
             if (type instanceof DecimalTypeDefinition) {
                 final DecimalTypeDefinition decimal = (DecimalTypeDefinition) type;
                 final DecimalTypeBuilder tmpBuilder = BaseTypes.decimalTypeBuilder(decimal.getPath());
@@ -233,8 +234,8 @@ public final class BindingGeneratorUtil {
                         }
 
                         @Override
-                        public List<LengthConstraint> getLengthConstraints() {
-                            return ImmutableList.of();
+                        public Optional<LengthConstraint> getLengthConstraints() {
+                            return Optional.empty();
                         }
                     };
                 }
@@ -243,7 +244,7 @@ public final class BindingGeneratorUtil {
             return EMPTY_RESTRICTIONS;
         }
 
-        final List<LengthConstraint> length;
+        final Optional<LengthConstraint> length;
         final List<PatternConstraint> pattern;
         final List<RangeConstraint> range;
 
@@ -261,32 +262,32 @@ public final class BindingGeneratorUtil {
         if (type instanceof BinaryTypeDefinition) {
             final BinaryTypeDefinition binary = (BinaryTypeDefinition)type;
             final BinaryTypeDefinition base = binary.getBaseType();
-            if ((base != null) && (base.getBaseType() != null)) {
-                length = currentOrEmpty(binary.getLengthConstraints(), base.getLengthConstraints());
+            if (base != null && base.getBaseType() != null) {
+                length = currentOrEmpty(binary.getLengthConstraint(), base.getLengthConstraint());
             } else {
-                length = binary.getLengthConstraints();
+                length = binary.getLengthConstraint();
             }
 
             pattern = ImmutableList.of();
             range = ImmutableList.of();
         } else if (type instanceof DecimalTypeDefinition) {
-            length = ImmutableList.of();
+            length = Optional.empty();
             pattern = ImmutableList.of();
 
             final DecimalTypeDefinition decimal = (DecimalTypeDefinition)type;
             final DecimalTypeDefinition base = decimal.getBaseType();
-            if ((base != null) && (base.getBaseType() != null)) {
+            if (base != null && base.getBaseType() != null) {
                 range = currentOrEmpty(decimal.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = decimal.getRangeConstraints();
             }
         } else if (type instanceof IntegerTypeDefinition) {
-            length = ImmutableList.of();
+            length = Optional.empty();
             pattern = ImmutableList.of();
 
             final IntegerTypeDefinition integer = (IntegerTypeDefinition)type;
             final IntegerTypeDefinition base = integer.getBaseType();
-            if ((base != null) && (base.getBaseType() != null)) {
+            if (base != null && base.getBaseType() != null) {
                 range = currentOrEmpty(integer.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = integer.getRangeConstraints();
@@ -294,33 +295,33 @@ public final class BindingGeneratorUtil {
         } else if (type instanceof StringTypeDefinition) {
             final StringTypeDefinition string = (StringTypeDefinition)type;
             final StringTypeDefinition base = string.getBaseType();
-            if ((base != null) && (base.getBaseType() != null)) {
-                length = currentOrEmpty(string.getLengthConstraints(), base.getLengthConstraints());
+            if (base != null && base.getBaseType() != null) {
+                length = currentOrEmpty(string.getLengthConstraint(), base.getLengthConstraint());
             } else {
-                length = string.getLengthConstraints();
+                length = string.getLengthConstraint();
             }
 
             pattern = uniquePatterns(string);
             range = ImmutableList.of();
         } else if (type instanceof UnsignedIntegerTypeDefinition) {
-            length = ImmutableList.of();
+            length = Optional.empty();
             pattern = ImmutableList.of();
 
             final UnsignedIntegerTypeDefinition unsigned = (UnsignedIntegerTypeDefinition)type;
             final UnsignedIntegerTypeDefinition base = unsigned.getBaseType();
-            if ((base != null) && (base.getBaseType() != null)) {
+            if (base != null && base.getBaseType() != null) {
                 range = currentOrEmpty(unsigned.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = unsigned.getRangeConstraints();
             }
         } else {
-            length = ImmutableList.of();
+            length = Optional.empty();
             pattern = ImmutableList.of();
             range = ImmutableList.of();
         }
 
         // Now, this may have ended up being empty, too...
-        if (length.isEmpty() && pattern.isEmpty() && range.isEmpty()) {
+        if (!length.isPresent() && pattern.isEmpty() && range.isEmpty()) {
             return EMPTY_RESTRICTIONS;
         }
 
@@ -335,7 +336,7 @@ public final class BindingGeneratorUtil {
                 return pattern;
             }
             @Override
-            public List<LengthConstraint> getLengthConstraints() {
+            public Optional<LengthConstraint> getLengthConstraints() {
                 return length;
             }
             @Override
@@ -395,7 +396,7 @@ public final class BindingGeneratorUtil {
      * @throws NullPointerException if any of the arguments are null
      */
     public static String packageNameForAugmentedGeneratedType(final String parentAugmentPackageName,
-                                                              final AugmentationSchema augmentationSchema) {
+                                                              final AugmentationSchemaNode augmentationSchema) {
         final QName last = augmentationSchema.getTargetPath().getLastComponent();
 
         return generateNormalizedPackageName(parentAugmentPackageName, last);
@@ -487,6 +488,10 @@ public final class BindingGeneratorUtil {
 
     private static <T> List<T> currentOrEmpty(final List<T> current, final List<T> base) {
         return current.equals(base) ? ImmutableList.of() : current;
+    }
+
+    private static <T> Optional<T> currentOrEmpty(final Optional<T> current, final Optional<T> base) {
+        return current.equals(base) ? Optional.empty() : current;
     }
 
     private static List<PatternConstraint> uniquePatterns(final StringTypeDefinition type) {

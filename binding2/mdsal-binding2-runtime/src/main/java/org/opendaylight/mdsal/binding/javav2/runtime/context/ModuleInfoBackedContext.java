@@ -111,7 +111,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
      * @return optional of schema context
      */
     public Optional<SchemaContext> tryToCreateSchemaContext() {
-        return ctxResolver.getSchemaContext();
+        return Optional.fromJavaUtil(ctxResolver.getSchemaContext());
     }
 
     private boolean resolveModuleInfo(final Class<?> cls) {
@@ -161,7 +161,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     private static SourceIdentifier sourceIdentifierFrom(final YangModuleInfo moduleInfo) {
-        return RevisionSourceIdentifier.create(moduleInfo.getName(), Optional.of(moduleInfo.getRevision()));
+        return RevisionSourceIdentifier.create(moduleInfo.getName(), java.util.Optional.of(moduleInfo.getRevision()));
     }
 
     /**

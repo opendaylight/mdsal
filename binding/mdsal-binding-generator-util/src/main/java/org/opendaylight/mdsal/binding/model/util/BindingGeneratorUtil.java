@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -69,8 +70,8 @@ public final class BindingGeneratorUtil {
 
     private static final Restrictions EMPTY_RESTRICTIONS = new Restrictions() {
         @Override
-        public List<LengthConstraint> getLengthConstraints() {
-            return Collections.emptyList();
+        public Optional<LengthConstraint> getLengthConstraint() {
+            return Optional.empty();
         }
 
         @Override
@@ -106,7 +107,7 @@ public final class BindingGeneratorUtil {
      * @return string with the admissible parameter name
      */
     public static String resolveJavaReservedWordEquivalency(final String parameterName) {
-        if ((parameterName != null) && BindingMapping.JAVA_RESERVED_WORDS.contains(parameterName)) {
+        if (parameterName != null && BindingMapping.JAVA_RESERVED_WORDS.contains(parameterName)) {
             return "_" + parameterName;
         }
         return parameterName;
@@ -346,7 +347,7 @@ public final class BindingGeneratorUtil {
         char firstChar = correctStr.charAt(0);
         firstChar = uppercase ? Character.toUpperCase(firstChar) : Character.toLowerCase(firstChar);
 
-        if ((firstChar >= '0') && (firstChar <= '9')) {
+        if (firstChar >= '0' && firstChar <= '9') {
             return '_' + correctStr;
         } else {
             return firstChar + correctStr.substring(1);
@@ -426,7 +427,7 @@ public final class BindingGeneratorUtil {
             }
 
             for (final MethodSignatureBuilder m : sortedCollection(SUID_MEMBER_COMPARATOR, to.getMethodDefinitions())) {
-                if (!(m.getAccessModifier().equals(AccessModifier.PRIVATE))) {
+                if (!m.getAccessModifier().equals(AccessModifier.PRIVATE)) {
                     dout.writeUTF(m.getName());
                     dout.write(m.getAccessModifier().ordinal());
                 }
@@ -440,13 +441,17 @@ public final class BindingGeneratorUtil {
         final byte[] hashBytes = SHA1_MD.get().digest(bout.toByteArray());
         long hash = 0;
         for (int i = Math.min(hashBytes.length, 8) - 1; i >= 0; i--) {
-            hash = (hash << 8) | (hashBytes[i] & 0xFF);
+            hash = hash << 8 | hashBytes[i] & 0xFF;
         }
         return hash;
     }
 
     private static <T> List<T> currentOrEmpty(final List<T> current, final List<T> base) {
         return current.equals(base) ? ImmutableList.<T>of() : current;
+    }
+
+    private static <T> Optional<T> currentOrEmpty(final Optional<T> current, final Optional<T> base) {
+        return current.equals(base) ? Optional.empty() : current;
     }
 
     private static boolean containsConstraint(final StringTypeDefinition type, final PatternConstraint constraint) {
@@ -481,7 +486,7 @@ public final class BindingGeneratorUtil {
     public static Restrictions getRestrictions(final TypeDefinition<?> type) {
         // Old parser generated types which actually contained based restrictions, but our code deals with that when
         // binding to core Java types. Hence we'll emit empty restrictions for base types.
-        if ((type == null) || (type.getBaseType() == null)) {
+        if (type == null || type.getBaseType() == null) {
             // Handling of decimal64 has changed in the new parser. It contains range restrictions applied to the type
             // directly, without an extended type. We need to capture such constraints. In order to retain behavior we
             // need to analyze the new semantics and see if the constraints have been overridden. To do that we
@@ -513,8 +518,8 @@ public final class BindingGeneratorUtil {
                         }
 
                         @Override
-                        public List<LengthConstraint> getLengthConstraints() {
-                            return ImmutableList.of();
+                        public Optional<LengthConstraint> getLengthConstraint() {
+                            return Optional.empty();
                         }
                     };
                 }
@@ -523,7 +528,7 @@ public final class BindingGeneratorUtil {
             return EMPTY_RESTRICTIONS;
         }
 
-        final List<LengthConstraint> length;
+        final Optional<LengthConstraint> length;
         final List<PatternConstraint> pattern;
         final List<RangeConstraint> range;
 
@@ -543,32 +548,32 @@ public final class BindingGeneratorUtil {
         if (type instanceof BinaryTypeDefinition) {
             final BinaryTypeDefinition binary = (BinaryTypeDefinition)type;
             final BinaryTypeDefinition base = binary.getBaseType();
-            if ((base != null) && (base.getBaseType() != null)) {
-                length = currentOrEmpty(binary.getLengthConstraints(), base.getLengthConstraints());
+            if (base != null && base.getBaseType() != null) {
+                length = currentOrEmpty(binary.getLengthConstraint(), base.getLengthConstraint());
             } else {
-                length = binary.getLengthConstraints();
+                length = binary.getLengthConstraint();
             }
 
             pattern = ImmutableList.of();
             range = ImmutableList.of();
         } else if (type instanceof DecimalTypeDefinition) {
-            length = ImmutableList.of();
+            length = Optional.empty();
             pattern = ImmutableList.of();
 
             final DecimalTypeDefinition decimal = (DecimalTypeDefinition)type;
             final DecimalTypeDefinition base = decimal.getBaseType();
-            if ((base != null) && (base.getBaseType() != null)) {
+            if (base != null && base.getBaseType() != null) {
                 range = currentOrEmpty(decimal.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = decimal.getRangeConstraints();
             }
         } else if (type instanceof IntegerTypeDefinition) {
-            length = ImmutableList.of();
+            length = Optional.empty();
             pattern = ImmutableList.of();
 
             final IntegerTypeDefinition integer = (IntegerTypeDefinition)type;
             final IntegerTypeDefinition base = integer.getBaseType();
-            if ((base != null) && (base.getBaseType() != null)) {
+            if (base != null && base.getBaseType() != null) {
                 range = currentOrEmpty(integer.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = integer.getRangeConstraints();
@@ -576,33 +581,33 @@ public final class BindingGeneratorUtil {
         } else if (type instanceof StringTypeDefinition) {
             final StringTypeDefinition string = (StringTypeDefinition)type;
             final StringTypeDefinition base = string.getBaseType();
-            if ((base != null) && (base.getBaseType() != null)) {
-                length = currentOrEmpty(string.getLengthConstraints(), base.getLengthConstraints());
+            if (base != null && base.getBaseType() != null) {
+                length = currentOrEmpty(string.getLengthConstraint(), base.getLengthConstraint());
             } else {
-                length = string.getLengthConstraints();
+                length = string.getLengthConstraint();
             }
 
             pattern = uniquePatterns(string);
             range = ImmutableList.of();
         } else if (type instanceof UnsignedIntegerTypeDefinition) {
-            length = ImmutableList.of();
+            length = Optional.empty();
             pattern = ImmutableList.of();
 
             final UnsignedIntegerTypeDefinition unsigned = (UnsignedIntegerTypeDefinition)type;
             final UnsignedIntegerTypeDefinition base = unsigned.getBaseType();
-            if ((base != null) && (base.getBaseType() != null)) {
+            if (base != null && base.getBaseType() != null) {
                 range = currentOrEmpty(unsigned.getRangeConstraints(), base.getRangeConstraints());
             } else {
                 range = unsigned.getRangeConstraints();
             }
         } else {
-            length = ImmutableList.of();
+            length = Optional.empty();
             pattern = ImmutableList.of();
             range = ImmutableList.of();
         }
 
         // Now, this may have ended up being empty, too...
-        if (length.isEmpty() && pattern.isEmpty() && range.isEmpty()) {
+        if (!length.isPresent() && pattern.isEmpty() && range.isEmpty()) {
             return EMPTY_RESTRICTIONS;
         }
 
@@ -617,7 +622,7 @@ public final class BindingGeneratorUtil {
                 return pattern;
             }
             @Override
-            public List<LengthConstraint> getLengthConstraints() {
+            public Optional<LengthConstraint> getLengthConstraint() {
                 return length;
             }
             @Override

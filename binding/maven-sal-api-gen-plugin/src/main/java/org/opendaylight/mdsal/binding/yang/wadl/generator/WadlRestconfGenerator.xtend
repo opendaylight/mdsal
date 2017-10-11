@@ -84,7 +84,7 @@ class WadlRestconfGenerator {
 
     private def importsAsNamespaces(Module module) '''
         «FOR imprt : module.imports»
-            xmlns:«imprt.prefix»="«context.findModuleByName(imprt.moduleName, imprt.revision).namespace»"
+            xmlns:«imprt.prefix»="«context.findModule(imprt.moduleName, imprt.revision).get.namespace»"
         «ENDFOR»
     '''
 

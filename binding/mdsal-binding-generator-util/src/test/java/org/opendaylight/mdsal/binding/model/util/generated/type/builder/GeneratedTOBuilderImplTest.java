@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
@@ -102,8 +103,8 @@ public class GeneratedTOBuilderImplTest {
             }
 
             @Override
-            public List<LengthConstraint> getLengthConstraints() {
-                return null;
+            public Optional<LengthConstraint> getLengthConstraint() {
+                return Optional.empty();
             }
         };
         genTOBuilder.setRestrictions(restrictions);

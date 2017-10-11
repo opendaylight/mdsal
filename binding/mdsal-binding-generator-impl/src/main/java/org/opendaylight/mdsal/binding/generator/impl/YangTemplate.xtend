@@ -8,13 +8,12 @@
 package org.opendaylight.mdsal.binding.generator.impl
 
 import java.util.Collection
-import java.util.Date
 import java.util.List
 import java.util.Map
 import java.util.Set
-import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
+import org.opendaylight.yangtools.yang.common.Revision
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
@@ -122,11 +121,11 @@ class YangTemplate {
         '''
     }
 
-    def private static writeRevision(Date moduleRevision, String moduleDescription) {
+    def private static writeRevision(Revision moduleRevision, String moduleDescription) {
         val revisionIndent = 12
 
         '''
-            revision «SimpleDateFormatUtil.getRevisionFormat.format(moduleRevision)» {
+            revision «moduleRevision.toString» {
                 description "«YangTextTemplate.formatToParagraph(moduleDescription, revisionIndent)»";
             }
         '''
@@ -144,8 +143,8 @@ class YangTemplate {
                 «IF !module.imports.nullOrEmpty»
                 «writeModuleImports(module.imports)»
                 «ENDIF»
-                «IF module.revision !== null»
-                «writeRevision(module.revision, module.description)»
+                «IF module.revision.isPresent»
+                «writeRevision(module.revision.get, module.description)»
                 «ENDIF»
                 «IF !module.childNodes.nullOrEmpty»
 
@@ -385,9 +384,9 @@ class YangTemplate {
             return ''
         '''
             identity «identity.QName.localName» {
-                «IF identity.baseIdentity !== null»
-                base "()«identity.baseIdentity»";
-                «ENDIF»
+                «FOR baseIdentity : identity.baseIdentities»
+                base "()«baseIdentity»";
+                «ENDFOR»
                 «IF !identity.description.nullOrEmpty»
                 description
                     "«identity.description»";
@@ -488,7 +487,7 @@ class YangTemplate {
         '''
     }
 
-    def private static writeAugments(Set<AugmentationSchema> augments) {
+    def private static writeAugments(Set<AugmentationSchemaNode> augments) {
         '''
             «FOR augment : augments»
                 «IF augment !== null»
@@ -516,7 +515,7 @@ class YangTemplate {
         '''
     }
 
-    def private static writeAugment(AugmentationSchema augment) {
+    def private static writeAugment(AugmentationSchemaNode augment) {
         '''
             augment «YangTextTemplate.formatToAugmentPath(augment.targetPath.pathFromRoot)» {
                 «IF augment.whenCondition !== null && !augment.whenCondition.toString.nullOrEmpty»
