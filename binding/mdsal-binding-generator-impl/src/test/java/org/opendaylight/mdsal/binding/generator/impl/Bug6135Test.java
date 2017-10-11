@@ -16,7 +16,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -29,7 +28,7 @@ public class Bug6135Test {
     @Ignore
     @Test
     public void bug6135Test() throws FileNotFoundException, ReactorException, URISyntaxException {
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/bug-6135/foo.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/bug-6135/foo.yang");
         assertNotNull(context);
 
         final List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
