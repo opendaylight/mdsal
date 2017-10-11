@@ -136,7 +136,7 @@ public class YangModuleInfoCompilationTest {
 
     private static void generateTestSources(final String resourceDirPath, final File sourcesOutputDir) throws Exception {
         final List<File> sourceFiles = getSourceFiles(resourceDirPath);
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.generateSources(context, sourcesOutputDir, context.getModules());
@@ -145,7 +145,7 @@ public class YangModuleInfoCompilationTest {
     @Test
     public void generateTestSourcesWithAdditionalConfig() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/yang-module-info");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.setResourceBaseDir(null);
@@ -153,10 +153,10 @@ public class YangModuleInfoCompilationTest {
         codegen.setAdditionalConfig(ImmutableMap.of("test", "test"));
         Collection<File> files = codegen.generateSources(context, null, context.getModules());
         assertFalse(files.isEmpty());
-        files.forEach((file -> {
+        files.forEach(file -> {
             deleteTestDir(file);
             assertFalse(file.exists());
-        }));
+        });
     }
 
     private static void testCompilation(final File sourcesOutputDir, final File compiledOutputDir) {

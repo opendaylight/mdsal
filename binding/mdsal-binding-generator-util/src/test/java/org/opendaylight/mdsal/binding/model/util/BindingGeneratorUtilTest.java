@@ -17,13 +17,10 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import java.io.File;
 import java.io.Serializable;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,18 +53,6 @@ public class BindingGeneratorUtilTest {
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
-    private static List<File> loadTestResources(final String testFile) {
-        final List<File> testModels = new ArrayList<>();
-        File listModelFile;
-        try {
-            listModelFile = new File(BindingGeneratorUtilTest.class.getResource(testFile).toURI());
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Failed to load sources from " + testFile);
-        }
-        testModels.add(listModelFile);
-        return testModels;
-    }
-
     /**
      * Tests methods:
      * &lt;ul&gt;
@@ -80,10 +65,9 @@ public class BindingGeneratorUtilTest {
      * - without revision &lt;/ul&gt;
      */
     @Test
-    public void testBindingGeneratorUtilMethods() throws Exception {
-        List<File> testModels = loadTestResources("/module.yang");
-
-        final Set<Module> modules = YangParserTestUtils.parseYangSources(testModels).getModules();
+    public void testBindingGeneratorUtilMethods() {
+        final Set<Module> modules = YangParserTestUtils.parseYangResources(BindingGeneratorUtilTest.class,
+            "/module.yang").getModules();
         String packageName = "";
         Module module = null;
         for (Module m : modules) {
@@ -310,7 +294,7 @@ public class BindingGeneratorUtilTest {
 
     @Test
     public void getRestrictionsTest() {
-        final Optional<String> absent = Optional.absent();
+        final Optional<String> absent = Optional.empty();
         final StringTypeBuilder builder =
                 RestrictedTypes.newStringBuilder(BaseTypes.stringType(), ROOT_PATH);
 

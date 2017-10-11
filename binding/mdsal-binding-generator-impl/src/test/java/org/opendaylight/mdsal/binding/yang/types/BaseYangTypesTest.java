@@ -11,11 +11,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,8 +30,6 @@ import org.opendaylight.yangtools.yang.model.api.type.IntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 /**
@@ -61,10 +56,8 @@ public class BaseYangTypesTest {
     private static BooleanTypeDefinition bool = null;
 
     @BeforeClass
-    public static void setup() throws SourceException, ReactorException {
-        final List<InputStream> modelsToParse = Collections
-            .singletonList(BaseYangTypesTest.class.getResourceAsStream("/base-yang-types.yang"));
-        schemaContext = YangParserTestUtils.parseYangStreams(modelsToParse);
+    public static void setup() {
+        schemaContext = YangParserTestUtils.parseYangResource("/base-yang-types.yang");
         assertNotNull(schemaContext);
         initTypeDefinitionsFromSchemaContext();
     }
@@ -213,15 +206,18 @@ public class BaseYangTypesTest {
     public void javaTypeForRestrictedSchemaDefinitionTypeTest() {
         final TypeProvider typeProvider = BaseYangTypes.BASE_YANG_TYPES_PROVIDER;
 
-        Type javaType = typeProvider.javaTypeForSchemaDefinitionType(binary, binary, BindingGeneratorUtil.getRestrictions(binary));
+        Type javaType = typeProvider.javaTypeForSchemaDefinitionType(binary, binary,
+            BindingGeneratorUtil.getRestrictions(binary));
         assertNotNull(javaType);
         assertEquals("byte[]", javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(decimal64, decimal64, BindingGeneratorUtil.getRestrictions(decimal64));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(decimal64, decimal64,
+            BindingGeneratorUtil.getRestrictions(decimal64));
         assertNotNull(javaType);
         assertEquals(BigDecimal.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(enumeration, enumeration, BindingGeneratorUtil.getRestrictions(enumeration));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(enumeration, enumeration,
+            BindingGeneratorUtil.getRestrictions(enumeration));
         assertNotNull(javaType);
         assertEquals(Enum.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
@@ -229,47 +225,58 @@ public class BaseYangTypesTest {
         assertNotNull(javaType);
         assertEquals(Byte.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(int16, int16, BindingGeneratorUtil.getRestrictions(int16));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(int16, int16,
+            BindingGeneratorUtil.getRestrictions(int16));
         assertNotNull(javaType);
         assertEquals(Short.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(int32, int32, BindingGeneratorUtil.getRestrictions(int32));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(int32, int32,
+            BindingGeneratorUtil.getRestrictions(int32));
         assertNotNull(javaType);
         assertEquals(Integer.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(int64, int64, BindingGeneratorUtil.getRestrictions(int64));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(int64, int64,
+            BindingGeneratorUtil.getRestrictions(int64));
         assertNotNull(javaType);
         assertEquals(Long.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(string, string, BindingGeneratorUtil.getRestrictions(string));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(string, string,
+            BindingGeneratorUtil.getRestrictions(string));
         assertNotNull(javaType);
         assertEquals(String.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(uint8, uint8, BindingGeneratorUtil.getRestrictions(uint8));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(uint8, uint8,
+            BindingGeneratorUtil.getRestrictions(uint8));
         assertNotNull(javaType);
         assertEquals(Short.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(uint16, uint16, BindingGeneratorUtil.getRestrictions(uint16));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(uint16, uint16,
+            BindingGeneratorUtil.getRestrictions(uint16));
         assertNotNull(javaType);
         assertEquals(Integer.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(uint32, uint32, BindingGeneratorUtil.getRestrictions(uint32));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(uint32, uint32,
+            BindingGeneratorUtil.getRestrictions(uint32));
         assertNotNull(javaType);
         assertEquals(Long.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(uint64, uint64, BindingGeneratorUtil.getRestrictions(uint64));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(uint64, uint64,
+            BindingGeneratorUtil.getRestrictions(uint64));
         assertNotNull(javaType);
         assertEquals(BigInteger.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(union, union, BindingGeneratorUtil.getRestrictions(union));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(union, union,
+            BindingGeneratorUtil.getRestrictions(union));
         assertNotNull(javaType);
         assertEquals("Union", javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(empty, empty, BindingGeneratorUtil.getRestrictions(empty));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(empty, empty,
+            BindingGeneratorUtil.getRestrictions(empty));
         assertNotNull(javaType);
         assertEquals(Boolean.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
-        javaType = typeProvider.javaTypeForSchemaDefinitionType(bool, bool, BindingGeneratorUtil.getRestrictions(bool));
+        javaType = typeProvider.javaTypeForSchemaDefinitionType(bool, bool,
+            BindingGeneratorUtil.getRestrictions(bool));
         assertNotNull(javaType);
         assertEquals(Boolean.class.getCanonicalName(), javaType.getFullyQualifiedName());
     }

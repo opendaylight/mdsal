@@ -21,7 +21,6 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.yang.unified.doc.generator.maven.DocumentationGeneratorImpl;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
@@ -50,14 +49,14 @@ public class DocGenTest {
     @Test
     public void testListGeneration() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/doc-gen");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         final Set<Module> modules = context.getModules();
         final BasicCodeGenerator generator = new DocumentationGeneratorImpl();
         Collection<File> generatedFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, modules);
         assertEquals(4, generatedFiles.size());
     }
 
-    private static List<File> getSourceFiles(String path) throws Exception {
+    private static List<File> getSourceFiles(final String path) throws Exception {
         final URI resPath = DocGenTest.class.getResource(path).toURI();
         final File sourcesDir = new File(resPath);
         if (sourcesDir.exists()) {
@@ -73,7 +72,7 @@ public class DocGenTest {
         }
     }
 
-    private static void deleteTestDir(File file) {
+    private static void deleteTestDir(final File file) {
         if (file.isDirectory()) {
             File[] filesToDelete = file.listFiles();
             if (filesToDelete != null) {

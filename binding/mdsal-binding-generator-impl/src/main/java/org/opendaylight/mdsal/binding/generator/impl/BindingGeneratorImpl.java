@@ -29,7 +29,6 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findN
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -42,6 +41,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
@@ -722,7 +722,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @param module
      *            current module
      */
-    private void groupingToGenType(final String basePackageName, final GroupingDefinition grouping, final Module module) {
+    private void groupingToGenType(final String basePackageName, final GroupingDefinition grouping,
+            final Module module) {
         final String packageName = packageNameForGeneratedType(basePackageName, grouping.getPath());
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, grouping, module);
         annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
@@ -830,7 +831,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         targetSchemaNode = findDataSchemaNode(schemaContext, targetPath);
         if (targetSchemaNode instanceof DataSchemaNode && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
             if (targetSchemaNode instanceof DerivableSchemaNode) {
-                targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orNull();
+                targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orElse(null);
             }
             if (targetSchemaNode == null) {
                 throw new IllegalStateException("Failed to find target node from grouping in augmentation " + augSchema
@@ -885,7 +886,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             String packageName = augmentPackageName;
             if (usesNodeParent instanceof SchemaNode) {
-                packageName = packageNameForAugmentedGeneratedType(augmentPackageName, ((SchemaNode) usesNodeParent).getPath());
+                packageName = packageNameForAugmentedGeneratedType(augmentPackageName,
+                    ((SchemaNode) usesNodeParent).getPath());
             }
             addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName, targetTypeBuilder.toInstance(),
                     augSchema);
@@ -926,8 +928,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         if (result instanceof DerivableSchemaNode) {
             DerivableSchemaNode castedResult = (DerivableSchemaNode) result;
-            Optional<? extends SchemaNode> originalNode = castedResult
-                    .getOriginal();
+            Optional<? extends SchemaNode> originalNode = castedResult.getOriginal();
             if (castedResult.isAddedByUses() && originalNode.isPresent()) {
                 result = originalNode.get();
             }
@@ -1233,7 +1234,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
         for (final ChoiceCaseNode caseNode : caseNodes) {
             if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
                 final String packageName = packageNameForGeneratedType(basePackageName, caseNode.getPath());
-                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode, module);
+                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode,
+                    module);
                 caseTypeBuilder.addImplementsType(refChoiceType);
                 annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
                 genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
@@ -1252,7 +1254,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
                             if (targetSchemaNode instanceof DataSchemaNode
                                     && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
                                 if (targetSchemaNode instanceof DerivableSchemaNode) {
-                                    targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orNull();
+                                    targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal()
+                                            .orElse(null);
                                 }
                                 if (targetSchemaNode == null) {
                                     throw new IllegalStateException(

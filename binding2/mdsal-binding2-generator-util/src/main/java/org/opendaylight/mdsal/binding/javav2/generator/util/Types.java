@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.cache.CacheBuilder;
@@ -21,6 +20,7 @@ import com.google.common.collect.Iterables;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -112,28 +112,26 @@ public final class Types {
 
 
     public static ConcreteType typeForClass(final Class<?> cls, final Restrictions restrictions) {
-        if (restrictions != null) {
-            if (restrictions instanceof DefaultRestrictions) {
-                return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
-            } else {
-                return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
-            }
-        } else {
+        if (restrictions == null) {
             return typeForClass(cls);
+        }
+        if (restrictions instanceof DefaultRestrictions) {
+            return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+        } else {
+            return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
         }
     }
 
     public static ConcreteType typeForClass(final Class<?> cls, final Restrictions restrictions,
             final ModuleContext moduleContext) {
-        if (restrictions != null) {
-            if (restrictions instanceof DefaultRestrictions) {
-                return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
-            } else {
-                return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions,
-                        moduleContext);
-            }
-        } else {
+        if (restrictions == null) {
             return typeForClass(cls);
+        }
+        if (restrictions instanceof DefaultRestrictions) {
+            return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+        } else {
+            return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions,
+                moduleContext);
         }
     }
 
@@ -224,7 +222,7 @@ public final class Types {
      *         <code>packageName</code> and <code>typeName</code>
      */
     public static WildcardType wildcardTypeFor(final String packageName, final String typeName,
-            final boolean isPkNameNormalized, final boolean isTypeNormalized, ModuleContext context) {
+            final boolean isPkNameNormalized, final boolean isTypeNormalized, final ModuleContext context) {
         return new WildcardTypeImpl(packageName, typeName, isPkNameNormalized, isTypeNormalized, context);
     }
 
@@ -267,7 +265,7 @@ public final class Types {
     @Nullable
     public static String getOuterClassName(final Type valueType) {
         final String pkgName = valueType.getPackageName();
-        final int index = CharMatcher.JAVA_UPPER_CASE.indexIn(pkgName);
+        final int index = CharMatcher.javaUpperCase().indexIn(pkgName);
         if (index >= 0) {
             // It is inner class.
             return Iterables.getFirst(DOT_SPLITTER.split(pkgName.substring(index)), null);
@@ -278,7 +276,7 @@ public final class Types {
     @Nullable
     public static String getOuterClassPackageName(final Type valueType) {
         final String pkgName = valueType.getPackageName();
-        final int index = CharMatcher.JAVA_UPPER_CASE.indexIn(pkgName);
+        final int index = CharMatcher.javaUpperCase().indexIn(pkgName);
         if (index >= 1) {
             return pkgName.substring(0, index - 1);
         }
@@ -423,7 +421,7 @@ public final class Types {
          *            if the type name has been normalized
          */
         public WildcardTypeImpl(final String packageName, final String typeName, final boolean isPkNameNormalized,
-                final boolean isTypeNormalized, ModuleContext context) {
+                final boolean isTypeNormalized, final ModuleContext context) {
             super(packageName, typeName, isPkNameNormalized, isTypeNormalized, context);
         }
     }
@@ -439,7 +437,7 @@ public final class Types {
             Preconditions.checkNotNull(min);
             Preconditions.checkNotNull(max);
             this.rangeConstraints = Collections.singletonList(BaseConstraints.newRangeConstraint(min, max, Optional
-                    .absent(), Optional.absent()));
+                    .empty(), Optional.empty()));
         }
 
         @Override
