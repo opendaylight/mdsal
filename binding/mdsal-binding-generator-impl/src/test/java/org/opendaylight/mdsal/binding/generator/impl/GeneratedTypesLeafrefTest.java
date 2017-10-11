@@ -13,36 +13,24 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesLeafrefTest {
 
     @Test
-    public void testLeafrefResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
-        File abstractTopology = new File(getClass().getResource(
-                "/leafref-test-models/abstract-topology@2013-02-08.yang").toURI());
-        File ietfInterfaces = new File(getClass().getResource("/ietf/ietf-interfaces.yang").toURI());
-        File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
-        File ietfYangTypes = new File(getClass().getResource("/ietf/ietf-yang-types.yang").toURI());
-
-        final SchemaContext context =  YangParserTestUtils.parseYangSources(abstractTopology, ietfInterfaces,
-                ietfInetTypes, ietfYangTypes);
+    public void testLeafrefResolving() {
+        final SchemaContext context = YangParserTestUtils.parseYangResources(GeneratedTypesLeafrefTest.class,
+            "/leafref-test-models/abstract-topology@2013-02-08.yang", "/ietf/ietf-interfaces.yang",
+            "/ietf/ietf-inet-types.yang", "/ietf/ietf-yang-types.yang");
         assertNotNull(context);
         assertEquals(4, context.getModules().size());
 
@@ -219,11 +207,8 @@ public class GeneratedTypesLeafrefTest {
     }
 
     @Test
-    public void testLeafrefInvalidPathResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
-        final URI resource = getClass().getResource("/leafref-test-invalid-model/foo.yang").toURI();
-        assertNotNull(resource);
-
-        final SchemaContext context =  YangParserTestUtils.parseYangSources(new File(resource));
+    public void testLeafrefInvalidPathResolving() {
+        final SchemaContext context =  YangParserTestUtils.parseYangResource("/leafref-test-invalid-model/foo.yang");
         assertNotNull(context);
         assertEquals(1, context.getModules().size());
 

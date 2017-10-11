@@ -65,7 +65,7 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapter implements DataTreeCo
             }
 
             @Override
-            public void close() throws Exception {
+            public void close() {
                 domReg.close();
             }
         };

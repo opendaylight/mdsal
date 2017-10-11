@@ -13,7 +13,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
+import com.google.common.collect.Range;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -175,7 +177,7 @@ public class TypeProviderTest {
         assertEquals("base-yang-types", genTO.getModuleName());
         assertEquals("org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914", genTO.getPackageName());
         assertEquals("YangInt8", genTO.getName());
-        assertTrue(genTO.getProperties().size() == 1);
+        assertEquals(1, genTO.getProperties().size());
     }
 
     @Test
@@ -193,13 +195,13 @@ public class TypeProviderTest {
         final GeneratedTransferObject genTO = (GeneratedTransferObject) result;
         assertEquals("org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914", genTO.getPackageName());
         assertEquals("YangInt8Restricted", genTO.getName());
-        assertTrue(genTO.getProperties().size() == 1);
-        final List<RangeConstraint> rangeConstraints = genTO.getRestrictions().getRangeConstraints();
+        assertEquals(1, genTO.getProperties().size());
+        final Optional<? extends RangeConstraint<?>> rangeConstraints = genTO.getRestrictions().getRangeConstraint();
 
-        assertTrue(!rangeConstraints.isEmpty());
-        final RangeConstraint constraint = rangeConstraints.get(0);
-        assertEquals(1, constraint.getMin().intValue());
-        assertEquals(100, constraint.getMax().intValue());
+        assertTrue(rangeConstraints.isPresent());
+        final Range<?> constraint = rangeConstraints.get().getAllowedRanges().asRanges().iterator().next();
+        assertEquals((byte) 1, constraint.lowerEndpoint());
+        assertEquals((byte) 100, constraint.upperEndpoint());
     }
 
     @Test
@@ -319,7 +321,7 @@ public class TypeProviderTest {
 
         final QName leafListNode = QName.create(module.getQNameModule(), "enums");
         final DataSchemaNode enumListNode = module.getDataChildByName(leafListNode);
-        assertNotNull("leaf-list enums is not present in root of module "+ module.getName(), enumNode);
+        assertNotNull("leaf-list enums is not present in root of module " + module.getName(), enumNode);
         assertTrue(enumListNode instanceof LeafListSchemaNode);
         final LeafListSchemaNode leafList = (LeafListSchemaNode) enumListNode;
         final TypeDefinition<?> leafListType = leafList.getType();
@@ -338,8 +340,8 @@ public class TypeProviderTest {
         Type refType = new ReferencedTypeImpl(enumType.getPackageName(), enumType.getName());
         ((TypeProviderImpl) provider).putReferencedType(enumLeafNode.getPath(), refType);
 
-        final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
-                "list-of-enums");
+        final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(this.testTypeProviderModule,
+            "foo", "list-of-enums");
         final TypeDefinition<?> enumLeafListTypedef = enumListNode.getType();
         enumType = provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode);
 

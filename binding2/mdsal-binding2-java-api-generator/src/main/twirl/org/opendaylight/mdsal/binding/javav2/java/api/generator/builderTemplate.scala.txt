@@ -256,27 +256,27 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 @generateSetters() = {
     @for(field <- properties) {
         @if(!field.getReturnType.isInstanceOf[GeneratedType] && getRestrictions(field.getReturnType) != null) {
-            @if(getRestrictions(field.getReturnType).getRangeConstraints != null && !getRestrictions(field.getReturnType).getRangeConstraints.isEmpty) {
+            @if(getRestrictions(field.getReturnType).getRangeConstraint.isPresent) {
                 @{AbstractRangeGenerator.forType(field.getReturnType).generateRangeChecker(toFirstUpper(field.getName),
-                getRestrictions(field.getReturnType).getRangeConstraints)}
+                getRestrictions(field.getReturnType).getRangeConstraint.get)}
             }
-            @if(getRestrictions(field.getReturnType).getLengthConstraints != null && !getRestrictions(field.getReturnType).getLengthConstraints.isEmpty) {
+            @if(getRestrictions(field.getReturnType).getLengthConstraint.isPresent) {
                 @{LengthGenerator.generateLengthChecker(fieldName(field), field.getReturnType,
-                getRestrictions(field.getReturnType).getLengthConstraints)}
+                getRestrictions(field.getReturnType).getLengthConstraint.get)}
             }
         }
 
         public @{genType.getName}Builder set@{toFirstUpper(field.getName)}(final @{field.getReturnType.getFullyQualifiedName} value) {
         @if(!field.getReturnType.isInstanceOf[GeneratedType] && getRestrictions(field.getReturnType) != null) {
             if (value != null) {
-            @if(getRestrictions(field.getReturnType).getRangeConstraints != null && !getRestrictions(field.getReturnType).getRangeConstraints.isEmpty) {
+            @if(getRestrictions(field.getReturnType).getRangeConstraint.isPresent) {
                 @if(field.getReturnType.isInstanceOf[ConcreteType]) {
                     @{AbstractRangeGenerator.forType(field.getReturnType).generateRangeCheckerCall(toFirstUpper(field.getName), "value")}
                 } else {
                     @{AbstractRangeGenerator.forType(field.getReturnType).generateRangeCheckerCall(toFirstUpper(field.getName), "value.getValue()")}
                 }
             }
-            @if(getRestrictions(field.getReturnType).getLengthConstraints != null && !getRestrictions(field.getReturnType).getLengthConstraints.isEmpty) {
+            @if(getRestrictions(field.getReturnType).getLengthConstraint.isPresent) {
                 @if(field.getReturnType.isInstanceOf[ConcreteType]) {
                     @{LengthGenerator.generateLengthCheckerCall(fieldName(field), "value")}
                 } else {

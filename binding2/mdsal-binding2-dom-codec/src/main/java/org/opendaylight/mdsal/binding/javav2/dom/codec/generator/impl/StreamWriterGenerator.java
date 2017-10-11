@@ -20,7 +20,7 @@ import org.opendaylight.mdsal.binding.javav2.runtime.javassist.JavassistUtils;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImplementation;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
@@ -109,7 +109,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
 
     @Override
     protected AbstractTreeNodeSerializerSource generateSerializer(final GeneratedType type,
-            final AugmentationSchema schema) {
+            final AugmentationSchemaNode schema) {
         return new AbstractDataNodeContainerSerializerSource(this, type, schema) {
 
             @Override
