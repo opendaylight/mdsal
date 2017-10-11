@@ -11,31 +11,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GenEnumResolvingTest {
 
     @Test
-    public void testLeafEnumResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
-        File ietfInterfaces = new File(getClass().getResource("/enum-test-models/ietf-interfaces@2012-11-15.yang")
-                .toURI());
-        File ianaIfTypeModel = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
-
-        final SchemaContext context = YangParserTestUtils.parseYangSources(ietfInterfaces, ianaIfTypeModel);
+    public void testLeafEnumResolving() {
+        final SchemaContext context = YangParserTestUtils.parseYangResources(GenEnumResolvingTest.class,
+            "/enum-test-models/ietf-interfaces@2012-11-15.yang", "/ietf/iana-if-type.yang");
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
@@ -95,9 +86,8 @@ public class GenEnumResolvingTest {
     }
 
     @Test
-    public void testTypedefEnumResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
-        File ianaIfType = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
-        final SchemaContext context = YangParserTestUtils.parseYangSources(ianaIfType);
+    public void testTypedefEnumResolving() {
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/ietf/iana-if-type.yang");
         assertTrue(context != null);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
         final List<Type> genTypes = bindingGen.generateTypes(context);
@@ -112,15 +102,10 @@ public class GenEnumResolvingTest {
     }
 
     @Test
-    public void testLeafrefEnumResolving() throws URISyntaxException, IOException, SourceException, ReactorException {
-        File abstractTopology = new File(getClass().getResource("/enum-test-models/abstract-topology@2013-02-08.yang")
-                .toURI());
-        File ietfInterfaces = new File(getClass().getResource("/enum-test-models/ietf-interfaces@2012-11-15.yang")
-                .toURI());
-        File ianaIfType = new File(getClass().getResource("/ietf/iana-if-type.yang").toURI());
-
-        final SchemaContext context = YangParserTestUtils.parseYangSources(abstractTopology, ietfInterfaces,
-                ianaIfType);
+    public void testLeafrefEnumResolving() {
+        final SchemaContext context = YangParserTestUtils.parseYangResources(GenEnumResolvingTest.class,
+            "/enum-test-models/abstract-topology@2013-02-08.yang", "/enum-test-models/ietf-interfaces@2012-11-15.yang",
+            "/ietf/iana-if-type.yang");
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
         final List<Type> genTypes = bindingGen.generateTypes(context);

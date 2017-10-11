@@ -14,16 +14,14 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Optional;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
@@ -35,7 +33,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTyp
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
@@ -52,11 +50,9 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AugmentToGenTypeTest {
 
-    @SuppressWarnings("unchecked")
     @Test(expected = UnsupportedOperationException.class)
     public void constructorTest() throws Throwable {
-        final Constructor<AugmentToGenType> constructor =
-                (Constructor<AugmentToGenType>) AugmentToGenType.class.getDeclaredConstructors()[0];
+        final Constructor<AugmentToGenType> constructor = AugmentToGenType.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         final Object[] objs = {};
         try {
@@ -66,44 +62,24 @@ public class AugmentToGenTypeTest {
         }
     }
 
-    @SuppressWarnings("rawtypes")
     @Test
-    public void generateNullModuleTest() throws Exception {
-        final Class[] parameterTypes =
-                { Module.class, SchemaContext.class, TypeProvider.class, Map.class, Map.class, boolean.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("generate", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void generateNullModuleTest() {
         final SchemaContext context = null;
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
         final Module m = null;
 
-        final Object[] args = { m, context, typeProvider, genCtx, genTypeBuilders, false };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.generate(m, context, typeProvider, genCtx, genTypeBuilders, false);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("Module reference cannot be NULL.", cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Module reference cannot be NULL.", e.getMessage());
         }
     }
 
-    @SuppressWarnings("rawtypes")
     @Test
-    public void generateNullModuleNameTest() throws Exception {
-        final Class[] parameterTypes =
-                { Module.class, SchemaContext.class, TypeProvider.class, Map.class, Map.class, boolean.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("generate", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void generateNullModuleNameTest() {
         final SchemaContext context = null;
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
@@ -111,29 +87,16 @@ public class AugmentToGenTypeTest {
         final Module m = mock(Module.class);
         when(m.getName()).thenReturn(null);
 
-        final Object[] args = { m, context, typeProvider, genCtx, genTypeBuilders, false };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.generate(m, context, typeProvider, genCtx, genTypeBuilders, false);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("Module name cannot be NULL.", cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Module name cannot be NULL.", e.getMessage());
         }
     }
 
-    @SuppressWarnings("rawtypes")
     @Test
-    public void generateNullModuleAugmentationsTest() throws Exception {
-        final Class[] parameterTypes =
-                { Module.class, SchemaContext.class, TypeProvider.class, Map.class, Map.class, boolean.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("generate", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void generateNullModuleAugmentationsTest() {
         final SchemaContext context = null;
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
@@ -142,50 +105,28 @@ public class AugmentToGenTypeTest {
         when(m.getName()).thenReturn("name");
         when(m.getAugmentations()).thenReturn(null);
 
-        final Object[] args = { m, context, typeProvider, genCtx, genTypeBuilders, false };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.generate(m, context, typeProvider, genCtx, genTypeBuilders, false);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalStateException);
-            assertEquals("Augmentations Set cannot be NULL.", cause.getMessage());
+        } catch (final IllegalStateException e) {
+            assertEquals("Augmentations Set cannot be NULL.", e.getMessage());
         }
     }
 
-    @SuppressWarnings("rawtypes")
     @Test
-    public void generateWithoutAugmentationsTest() throws Exception {
-        final Class[] parameterTypes =
-                { Module.class, SchemaContext.class, TypeProvider.class, Map.class, Map.class, boolean.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("generate", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/test.yang");
+    public void generateWithoutAugmentationsTest() {
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/generator/test.yang");
         final TypeProvider typeProvider = new TypeProviderImpl(context);
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
-
-        final Object[] args =
-                { context.getModules().iterator().next(), context, typeProvider, genCtx, genTypeBuilders, false };
-        final Map invoke = (Map) generate.invoke(AugmentToGenType.class, args);
+        final Map<Module, ModuleContext> invoke = AugmentToGenType.generate(context.getModules().iterator().next(),
+            context, typeProvider, genCtx, genTypeBuilders, false);
         assertNotNull(invoke);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void generateWithAugmentationsTest() throws Exception {
-        final Class[] parameterTypes =
-                { Module.class, SchemaContext.class, TypeProvider.class, Map.class, Map.class, boolean.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("generate", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/test-augment.yang");
+    public void generateWithAugmentationsTest() {
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/generator/test-augment.yang");
         final TypeProvider typeProvider = new TypeProviderImpl(context);
         final Map<Module, ModuleContext> genCtx = mock(Map.class);
         final Collection<ModuleContext> moduleContexts = new ArrayList<>();
@@ -199,76 +140,42 @@ public class AugmentToGenTypeTest {
         when(genCtx.get(context.getModules().iterator().next())).thenReturn(moduleContext);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
 
-        final Object[] args =
-                { context.getModules().iterator().next(), context, typeProvider, genCtx, genTypeBuilders, false };
-        final Map invoke = (Map) generate.invoke(AugmentToGenType.class, args);
+        final Map<Module, ModuleContext> invoke = AugmentToGenType.generate(context.getModules().iterator().next(),
+            context, typeProvider, genCtx, genTypeBuilders, false);
         assertNotNull(invoke);
     }
 
-    @SuppressWarnings("rawtypes")
     @Test
-    public void resolveAugmentationsNullModuleTest() throws Exception {
-        final Class[] parameterTypes = { Module.class, SchemaContext.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("resolveAugmentations", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
-        final Module m = null;
-        final SchemaContext schemaContext = null;
-
-        final Object[] args = { m, schemaContext };
+    public void resolveAugmentationsNullModuleTest() {
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.resolveAugmentations(null, null);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("Module reference cannot be NULL.", cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Module reference cannot be NULL.", e.getMessage());
         }
     }
 
-    @SuppressWarnings("rawtypes")
     @Test
-    public void resolveAugmentationsNullAugmentationsTest() throws Exception {
-        final Class[] parameterTypes = { Module.class, SchemaContext.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("resolveAugmentations", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void resolveAugmentationsNullAugmentationsTest() {
         final Module m = mock(Module.class);
         when(m.getAugmentations()).thenReturn(null);
         final SchemaContext schemaContext = mock(SchemaContext.class);
 
-        final Object[] args = { m, schemaContext };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.resolveAugmentations(m, schemaContext);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalStateException);
-            assertEquals("Augmentations Set cannot be NULL.", cause.getMessage());
+        } catch (final IllegalStateException e) {
+            assertEquals("Augmentations Set cannot be NULL.", e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void resolveAugmentationsTest() throws Exception {
-        final Class[] parameterTypes = { Module.class, SchemaContext.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("resolveAugmentations", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void resolveAugmentationsTest() {
         final Module m = mock(Module.class);
         final Module m2 = mock(Module.class);
         final SchemaContext schemaContext = mock(SchemaContext.class);
 
-        final Set<AugmentationSchema> augmentations = new HashSet<>();
+        final Set<AugmentationSchemaNode> augmentations = new HashSet<>();
 
         final QName q1 = QName.create("q1", "2017-04-04", "q1");
         final QName q2 = QName.create("q2", "2017-04-04", "q2");
@@ -276,106 +183,72 @@ public class AugmentToGenTypeTest {
         final QName q4 = QName.create("q4", "2017-04-04", "q4");
         final QName q5 = QName.create("q5", "2017-04-04", "q5");
 
-        final AugmentationSchema augmentationSchema1 = mock(AugmentationSchema.class);
-        when(augmentationSchema1.getTargetPath()).thenReturn(SchemaPath.create(true, q1, q2));
-        final AugmentationSchema augmentationSchema2 = mock(AugmentationSchema.class);
-        when(augmentationSchema2.getTargetPath()).thenReturn(SchemaPath.create(true, q3, q4, q5));
-        augmentations.add(augmentationSchema1);
-        augmentations.add(augmentationSchema2);
+        final AugmentationSchemaNode AugmentationSchemaNode1 = mock(AugmentationSchemaNode.class);
+        when(AugmentationSchemaNode1.getTargetPath()).thenReturn(SchemaPath.create(true, q1, q2));
+        final AugmentationSchemaNode AugmentationSchemaNode2 = mock(AugmentationSchemaNode.class);
+        when(AugmentationSchemaNode2.getTargetPath()).thenReturn(SchemaPath.create(true, q3, q4, q5));
+        augmentations.add(AugmentationSchemaNode1);
+        augmentations.add(AugmentationSchemaNode2);
 
         when(m.getAugmentations()).thenReturn(augmentations);
-        when(schemaContext.findModuleByNamespaceAndRevision(q1.getNamespace(), q1.getRevision())).thenReturn(m2);
-        when(schemaContext.findModuleByNamespaceAndRevision(q3.getNamespace(), q3.getRevision())).thenReturn(m2);
+        when(schemaContext.findModule(q1.getModule())).thenReturn(Optional.of(m2));
+        when(schemaContext.findModule(q3.getModule())).thenReturn(Optional.of(m2));
 
-        final Object[] args = { m, schemaContext };
-
-        final List<AugmentationSchema> result =
-                (List<AugmentationSchema>) generate.invoke(AugmentToGenType.class, args);
+        final List<AugmentationSchemaNode> result = AugmentToGenType.resolveAugmentations(m, schemaContext);
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals(result.get(0), augmentationSchema1);
-        assertEquals(result.get(1), augmentationSchema2);
+        assertEquals(result.get(0), AugmentationSchemaNode1);
+        assertEquals(result.get(1), AugmentationSchemaNode2);
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void augmentationToGenTypesNullPckgNameTest() throws Exception {
-        final Class[] parameterTypes = { String.class, Map.Entry.class, Module.class, SchemaContext.class,
-                boolean.class, Map.class, Map.class, TypeProvider.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("augmentationToGenTypes", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void augmentationToGenTypesNullPckgNameTest() {
         final String augmPackName = null;
-        final Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry = null;
+        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = null;
         final SchemaContext context = null;
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
         final Module m = null;
 
-        final Object[] args = { augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
+                genTypeBuilders, typeProvider);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("Package Name cannot be NULL.", cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Package Name cannot be NULL.", e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void augmentationToGenTypesNullAugSchemaTest() throws Exception {
-        final Class[] parameterTypes = { String.class, Map.Entry.class, Module.class, SchemaContext.class,
-                boolean.class, Map.class, Map.class, TypeProvider.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("augmentationToGenTypes", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void augmentationToGenTypesNullAugSchemaTest() {
         final String augmPackName = "pckg.name";
-        final Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry = null;
+        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = null;
         final SchemaContext context = null;
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
         final Module m = null;
 
-        final Object[] args = { augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
+                genTypeBuilders, typeProvider);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("Augmentation List Entry cannot be NULL.", cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Augmentation List Entry cannot be NULL.", e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void augmentationToGenTypesNullAugSchemaTargetPathTest() throws Exception {
-        final Class[] parameterTypes = { String.class, Map.Entry.class, Module.class, SchemaContext.class,
-                boolean.class, Map.class, Map.class, TypeProvider.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("augmentationToGenTypes", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void augmentationToGenTypesNullAugSchemaTargetPathTest() {
         final String augmPackName = "pckg.name";
-        final AugmentationSchema augmSchema = mock(AugmentationSchema.class);
+        final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
         when(augmSchema.getTargetPath()).thenReturn(null);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        final Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry = mock(Map.Entry.class);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = mock(Map.Entry.class);
         when(schemaPathAugmentListEntry.getKey()).thenReturn(null);
-        when(schemaPathAugmentListEntry.getValue()).thenReturn(augmentationSchemaList);
+        when(schemaPathAugmentListEntry.getValue()).thenReturn(AugmentationSchemaNodeList);
 
         final SchemaContext context = null;
         final TypeProvider typeProvider = null;
@@ -383,39 +256,27 @@ public class AugmentToGenTypeTest {
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
         final Module m = null;
 
-        final Object[] args = { augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
+                genTypeBuilders, typeProvider);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalStateException);
-            assertEquals("Augmentation List Entry does not contain Target Path (Target Path is NULL).", cause.getMessage());
+        } catch (final IllegalStateException e) {
+            assertEquals("Augmentation List Entry does not contain Target Path (Target Path is NULL).", e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void augmentationToGenTypesNullAugSchemaListTest() throws Exception {
-        final Class[] parameterTypes = { String.class, Map.Entry.class, Module.class, SchemaContext.class,
-                boolean.class, Map.class, Map.class, TypeProvider.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("augmentationToGenTypes", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void augmentationToGenTypesNullAugSchemaListTest() {
         final String augmPackName = "pckg.name";
-        final AugmentationSchema augmSchema = mock(AugmentationSchema.class);
+        final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
         when(augmSchema.getTargetPath()).thenReturn(path);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        final Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry = mock(Map.Entry.class);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = mock(Map.Entry.class);
         when(schemaPathAugmentListEntry.getKey()).thenReturn(path);
-        when(schemaPathAugmentListEntry.getValue()).thenReturn(augmentationSchemaList);
+        when(schemaPathAugmentListEntry.getValue()).thenReturn(AugmentationSchemaNodeList);
 
         final SchemaContext context = null;
         final TypeProvider typeProvider = null;
@@ -423,50 +284,37 @@ public class AugmentToGenTypeTest {
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
         final Module m = null;
 
-        final Object[] args = { augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
+                genTypeBuilders, typeProvider);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalStateException);
-            assertEquals("Augmentation List cannot be empty.", cause.getMessage());
+        } catch (final IllegalStateException e) {
+            assertEquals("Augmentation List cannot be empty.", e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void augmentationToGenTypesNullAugSchemaTargetNodeTest() throws Exception {
-        final Class[] parameterTypes = { String.class, Map.Entry.class, Module.class, SchemaContext.class,
-                boolean.class, Map.class, Map.class, TypeProvider.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("augmentationToGenTypes", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void augmentationToGenTypesNullAugSchemaTargetNodeTest() {
         final String augmPackName = "pckg.name";
 
-        final AugmentationSchema augmSchema = mock(AugmentationSchema.class);
+        final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
         when(augmSchema.getTargetPath()).thenReturn(path);
         final Set<UsesNode> uses = new HashSet<>();
         when(augmSchema.getUses()).thenReturn(uses);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmSchema);
-        final Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry = mock(Map.Entry.class);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        AugmentationSchemaNodeList.add(augmSchema);
+        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = mock(Map.Entry.class);
         when(schemaPathAugmentListEntry.getKey()).thenReturn(path);
-        when(schemaPathAugmentListEntry.getValue()).thenReturn(augmentationSchemaList);
+        when(schemaPathAugmentListEntry.getValue()).thenReturn(AugmentationSchemaNodeList);
 
         final SchemaContext context = mock(SchemaContext.class);
         final Module moduleAug = mock(Module.class);
         final DataSchemaNode schNode = null;
         when(moduleAug.getDataChildByName(qnamePath)).thenReturn(schNode);
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(moduleAug);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
 
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
@@ -477,50 +325,37 @@ public class AugmentToGenTypeTest {
         when(m.getNamespace()).thenReturn(qnamePath.getNamespace());
         when(m.getRevision()).thenReturn(qnamePath.getRevision());
 
-        final Object[] args = { augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
+                genTypeBuilders, typeProvider);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("augment target not found: " + path, cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("augment target not found: " + path, e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void augmentationToGenTypesNullAugTargetGTBTest() throws Exception {
-        final Class[] parameterTypes = { String.class, Map.Entry.class, Module.class, SchemaContext.class,
-                boolean.class, Map.class, Map.class, TypeProvider.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("augmentationToGenTypes", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void augmentationToGenTypesNullAugTargetGTBTest() {
         final String augmPackName = "pckg.name";
 
-        final AugmentationSchema augmSchema = mock(AugmentationSchema.class);
+        final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
         when(augmSchema.getTargetPath()).thenReturn(path);
         final Set<UsesNode> uses = new HashSet<>();
         when(augmSchema.getUses()).thenReturn(uses);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmSchema);
-        final Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry = mock(Map.Entry.class);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        AugmentationSchemaNodeList.add(augmSchema);
+        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = mock(Map.Entry.class);
         when(schemaPathAugmentListEntry.getKey()).thenReturn(path);
-        when(schemaPathAugmentListEntry.getValue()).thenReturn(augmentationSchemaList);
+        when(schemaPathAugmentListEntry.getValue()).thenReturn(AugmentationSchemaNodeList);
 
         final SchemaContext context = mock(SchemaContext.class);
         final Module moduleAug = mock(Module.class);
         final DataSchemaNode schNode = mock(DataSchemaNode.class);
         when(moduleAug.getDataChildByName(qnamePath)).thenReturn(schNode);
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(moduleAug);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
 
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
@@ -531,54 +366,40 @@ public class AugmentToGenTypeTest {
         when(m.getNamespace()).thenReturn(qnamePath.getNamespace());
         when(m.getRevision()).thenReturn(qnamePath.getRevision());
 
-        final Object[] args = { augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
+                genTypeBuilders, typeProvider);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof NullPointerException);
-            assertEquals("Target type not yet generated: " + schNode, cause.getMessage());
+        } catch (final NullPointerException e) {
+            assertEquals("Target type not yet generated: " + schNode, e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void augmentationToGenTypesAugUsesNullOrigTargetTest() throws Exception {
-        final Class[] parameterTypes = { String.class, Map.Entry.class, Module.class, SchemaContext.class,
-                boolean.class, Map.class, Map.class, TypeProvider.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("augmentationToGenTypes", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void augmentationToGenTypesAugUsesNullOrigTargetTest() {
         final String augmPackName = "pckg.name";
 
-        final AugmentationSchema augmSchema = mock(AugmentationSchema.class);
+        final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
         when(augmSchema.getTargetPath()).thenReturn(path);
         final Set<UsesNode> uses = new HashSet<>();
         when(augmSchema.getUses()).thenReturn(uses);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmSchema);
-        final Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry = mock(Map.Entry.class);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        AugmentationSchemaNodeList.add(augmSchema);
+        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = mock(Map.Entry.class);
         when(schemaPathAugmentListEntry.getKey()).thenReturn(path);
-        when(schemaPathAugmentListEntry.getValue()).thenReturn(augmentationSchemaList);
+        when(schemaPathAugmentListEntry.getValue()).thenReturn(AugmentationSchemaNodeList);
 
         final SchemaContext context = mock(SchemaContext.class);
         final Module moduleAug = mock(Module.class);
         final DerivableSchemaNode targetSchNode = mock(DerivableSchemaNode.class);
         when(targetSchNode.getPath()).thenReturn(path);
         when(targetSchNode.isAddedByUses()).thenReturn(true);
-        final Optional optionalSchemaNode = Optional.absent();
-        when(targetSchNode.getOriginal()).thenReturn(optionalSchemaNode);
+        when(targetSchNode.getOriginal()).thenReturn(Optional.empty());
         when(moduleAug.getDataChildByName(qnamePath)).thenReturn(targetSchNode);
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(moduleAug);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
 
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
@@ -589,56 +410,43 @@ public class AugmentToGenTypeTest {
         when(m.getNamespace()).thenReturn(qnamePath.getNamespace());
         when(m.getRevision()).thenReturn(qnamePath.getRevision());
 
-        final Object[] args = { augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
+                genTypeBuilders, typeProvider);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalStateException);
+        } catch (final IllegalStateException e) {
             assertEquals("Failed to find target node from grouping in augmentation " + augmSchema + " in module "
-                    + m.getName(), cause.getMessage());
+                    + m.getName(), e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void augmentationToGenTypesTargetChoicSchemaNodeTest() throws Exception {
-        final Class[] parameterTypes = { String.class, Map.Entry.class, Module.class, SchemaContext.class,
-                boolean.class, Map.class, Map.class, TypeProvider.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("augmentationToGenTypes", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void augmentationToGenTypesTargetChoicSchemaNodeTest() {
         final String augmPackName = "pckg.name";
 
-        final AugmentationSchema augmSchema = mock(AugmentationSchema.class);
+        final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
         when(augmSchema.getTargetPath()).thenReturn(path);
         final Set<UsesNode> uses = new HashSet<>();
         when(augmSchema.getUses()).thenReturn(uses);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmSchema);
-        final Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry = mock(Map.Entry.class);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        AugmentationSchemaNodeList.add(augmSchema);
+        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = mock(Map.Entry.class);
         when(schemaPathAugmentListEntry.getKey()).thenReturn(path);
-        when(schemaPathAugmentListEntry.getValue()).thenReturn(augmentationSchemaList);
+        when(schemaPathAugmentListEntry.getValue()).thenReturn(AugmentationSchemaNodeList);
 
         final SchemaContext context = mock(SchemaContext.class);
         final Module moduleAug = mock(Module.class);
         final ChoiceSchemaNode targetSchNode = mock(ChoiceSchemaNode.class);
         when(targetSchNode.getPath()).thenReturn(path);
         when(moduleAug.getDataChildByName(qnamePath)).thenReturn(targetSchNode);
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(moduleAug);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
 
         final TypeProvider typeProvider = null;
 
-        final Map genCtx = mock(Map.class);
+        final Map<Module, ModuleContext> genCtx = mock(Map.class);
         final Collection<ModuleContext> moduleContexts = new ArrayList<>();
         final ModuleContext mc = new ModuleContext();
         final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(augmPackName, "augm", mc);
@@ -653,23 +461,16 @@ public class AugmentToGenTypeTest {
         when(m.getNamespace()).thenReturn(qnamePath.getNamespace());
         when(m.getRevision()).thenReturn(qnamePath.getRevision());
 
-        final Object[] args = { augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider };
-        final Map result = (Map) generate.invoke(AugmentToGenType.class, args);
+        final Map<Module, ModuleContext> result = AugmentToGenType.augmentationToGenTypes(augmPackName,
+            schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider);
         assertNotNull(result);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void augmentationToGenTypesTest() throws Exception {
-        final Class[] parameterTypes = { String.class, Map.Entry.class, Module.class, SchemaContext.class,
-                boolean.class, Map.class, Map.class, TypeProvider.class };
-        final Method generate = AugmentToGenType.class.getDeclaredMethod("augmentationToGenTypes", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void augmentationToGenTypesTest() {
         final String augmPackName = "pckg.name";
 
-        final AugmentationSchema augmSchema = mock(AugmentationSchema.class);
+        final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
         when(augmSchema.getTargetPath()).thenReturn(path);
@@ -678,11 +479,11 @@ public class AugmentToGenTypeTest {
         final List<UnknownSchemaNode> unknownSchemaNodes = new ArrayList<>();
         when(augmSchema.getUnknownSchemaNodes()).thenReturn(unknownSchemaNodes);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmSchema);
-        final Map.Entry<SchemaPath, List<AugmentationSchema>> schemaPathAugmentListEntry = mock(Map.Entry.class);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        AugmentationSchemaNodeList.add(augmSchema);
+        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = mock(Map.Entry.class);
         when(schemaPathAugmentListEntry.getKey()).thenReturn(path);
-        when(schemaPathAugmentListEntry.getValue()).thenReturn(augmentationSchemaList);
+        when(schemaPathAugmentListEntry.getValue()).thenReturn(AugmentationSchemaNodeList);
 
         final SchemaContext context = mock(SchemaContext.class);
         final Module moduleAug = mock(Module.class);
@@ -696,8 +497,7 @@ public class AugmentToGenTypeTest {
         final Optional optionalSchemaNode = Optional.of(origSchNode);
         when(targetSchNode.getOriginal()).thenReturn(optionalSchemaNode);
         when(moduleAug.getDataChildByName(qnamePath)).thenReturn(targetSchNode);
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(moduleAug);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
 
         final TypeProvider typeProvider = null;
 
@@ -716,10 +516,9 @@ public class AugmentToGenTypeTest {
         when(moduleAug.getNamespace()).thenReturn(qnamePath.getNamespace());
         when(moduleAug.getRevision()).thenReturn(qnamePath.getRevision());
 
-        final Object[] args =
-                { augmPackName, schemaPathAugmentListEntry, moduleAug, context, false, genCtx, genTypeBuilders, typeProvider };
         final Map<Module, ModuleContext> result =
-                (Map<Module, ModuleContext>) generate.invoke(AugmentToGenType.class, args);
+                AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, moduleAug, context,
+                    false, genCtx, genTypeBuilders, typeProvider);
         assertNotNull(result);
         final ModuleContext moduleContext = result.get(moduleAug);
         assertTrue(moduleContext.getAugmentations().get(0).getName().contains("Augm"));
@@ -730,71 +529,63 @@ public class AugmentToGenTypeTest {
 
     @Deprecated
     @Test
-    public void usesAugmentationToGenTypesNullPckgNameTest() throws Exception {
+    public void usesAugmentationToGenTypesNullPckgNameTest() {
         try {
             AugmentToGenType.usesAugmentationToGenTypes(null, null, null, null, null, null, null, null, false, null, null);
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof IllegalArgumentException);
+        } catch (final IllegalArgumentException e) {
             assertEquals(e.getMessage(), "Package Name cannot be NULL.");
         }
     }
 
     @Deprecated
     @Test
-    public void usesAugmentationToGenTypesNullAugSchemaListEntryTest() throws Exception {
+    public void usesAugmentationToGenTypesNullAugSchemaListEntryTest() {
         try {
             AugmentToGenType.usesAugmentationToGenTypes(null, "", null, null, null, null, null, null, false, null, null);
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof IllegalArgumentException);
+        } catch (final IllegalArgumentException e) {
             assertEquals(e.getMessage(), "Augmentation Schema List Entry cannot be NULL.");
         }
     }
 
     @Deprecated
     @Test
-    public void usesAugmentationToGenTypesEmptyAugSchemaListTest() throws Exception {
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
+    public void usesAugmentationToGenTypesEmptyAugSchemaListTest() {
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(null, "", augmentationSchemaList, null, null, null, null, null,
+            AugmentToGenType.usesAugmentationToGenTypes(null, "", AugmentationSchemaNodeList, null, null, null, null, null,
                     false, null, null);
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof IllegalStateException);
+        } catch (final IllegalStateException e) {
             assertEquals(e.getMessage(), "Augmentation Schema List cannot be empty");
         }
     }
 
     @Deprecated
     @Test
-    public void usesAugmentationToGenTypesNullAugSchemaNodeTargetPathTest() throws Exception {
-        final AugmentationSchema augmentationSchema = mock(AugmentationSchema.class);
-        when(augmentationSchema.getTargetPath()).thenReturn(null);
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmentationSchema);
+    public void usesAugmentationToGenTypesNullAugSchemaNodeTargetPathTest() {
+        final AugmentationSchemaNode AugmentationSchemaNode = mock(AugmentationSchemaNode.class);
+        when(AugmentationSchemaNode.getTargetPath()).thenReturn(null);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        AugmentationSchemaNodeList.add(AugmentationSchemaNode);
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(null, "", augmentationSchemaList, null, null, null, null, null,
+            AugmentToGenType.usesAugmentationToGenTypes(null, "", AugmentationSchemaNodeList, null, null, null, null, null,
                     false, null, null);
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof IllegalStateException);
+        } catch (final IllegalStateException e) {
             assertEquals(e.getMessage(), "Augmentation Schema does not contain Target Path (Target Path is NULL).");
         }
     }
 
     @Deprecated
     @Test
-    public void usesAugmentationToGenTypesNullAugmentTargetTest() throws Exception {
+    public void usesAugmentationToGenTypesNullAugmentTargetTest() {
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
-        final AugmentationSchema augmentationSchema = mock(AugmentationSchema.class);
-        when(augmentationSchema.getTargetPath()).thenReturn(path);
+        final AugmentationSchemaNode AugmentationSchemaNode = mock(AugmentationSchemaNode.class);
+        when(AugmentationSchemaNode.getTargetPath()).thenReturn(path);
         final Set<UsesNode> uses = new HashSet<>();
-        when(augmentationSchema.getUses()).thenReturn(uses);
+        when(AugmentationSchemaNode.getUses()).thenReturn(uses);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmentationSchema);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        AugmentationSchemaNodeList.add(AugmentationSchemaNode);
 
         final SchemaContext context = mock(SchemaContext.class);
         final Module moduleAug = mock(Module.class);
@@ -807,8 +598,7 @@ public class AugmentToGenTypeTest {
         groupings.add(groupingDefinition);
         when(moduleAug.getGroupings()).thenReturn(groupings);
 
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(moduleAug);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
@@ -820,27 +610,25 @@ public class AugmentToGenTypeTest {
         when(usesNode.getGroupingPath()).thenReturn(path);
 
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(context, "pckg.test.augm", augmentationSchemaList, moduleAug,
+            AugmentToGenType.usesAugmentationToGenTypes(context, "pckg.test.augm", AugmentationSchemaNodeList, moduleAug,
                     usesNode, usesNodeParent, genCtx, genTypeBuilders, false, null, null);
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof IllegalArgumentException);
+        } catch (final IllegalArgumentException e) {
             assertEquals(e.getMessage(), "augment target not found: " + path);
         }
     }
 
     @Deprecated
     @Test
-    public void usesAugmentationToGenTypesNullTargetGTBTest() throws Exception {
+    public void usesAugmentationToGenTypesNullTargetGTBTest() {
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
-        final AugmentationSchema augmentationSchema = mock(AugmentationSchema.class);
-        when(augmentationSchema.getTargetPath()).thenReturn(path);
+        final AugmentationSchemaNode AugmentationSchemaNode = mock(AugmentationSchemaNode.class);
+        when(AugmentationSchemaNode.getTargetPath()).thenReturn(path);
         final Set<UsesNode> uses = new HashSet<>();
-        when(augmentationSchema.getUses()).thenReturn(uses);
+        when(AugmentationSchemaNode.getUses()).thenReturn(uses);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmentationSchema);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        AugmentationSchemaNodeList.add(AugmentationSchemaNode);
 
         final SchemaContext context = mock(SchemaContext.class);
         final Module moduleAug = mock(Module.class);
@@ -855,8 +643,7 @@ public class AugmentToGenTypeTest {
         groupings.add(groupingDefinition);
         when(moduleAug.getGroupings()).thenReturn(groupings);
 
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(moduleAug);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
@@ -867,27 +654,25 @@ public class AugmentToGenTypeTest {
         when(usesNode.getGroupingPath()).thenReturn(path);
 
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(context, "pckg.test.augm", augmentationSchemaList, moduleAug,
+            AugmentToGenType.usesAugmentationToGenTypes(context, "pckg.test.augm", AugmentationSchemaNodeList, moduleAug,
                     usesNode, usesNodeParent, genCtx, genTypeBuilders, false, null, null);
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof NullPointerException);
+        } catch (final NullPointerException e) {
             assertEquals(e.getMessage(), "Target type not yet generated: " + schNode);
         }
     }
 
     @Deprecated
     @Test
-    public void usesAugmentationToGenTypesTest() throws Exception {
+    public void usesAugmentationToGenTypesTest() {
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
-        final AugmentationSchema augmentationSchema = mock(AugmentationSchema.class);
-        when(augmentationSchema.getTargetPath()).thenReturn(path);
+        final AugmentationSchemaNode AugmentationSchemaNode = mock(AugmentationSchemaNode.class);
+        when(AugmentationSchemaNode.getTargetPath()).thenReturn(path);
         final Set<UsesNode> uses = new HashSet<>();
-        when(augmentationSchema.getUses()).thenReturn(uses);
+        when(AugmentationSchemaNode.getUses()).thenReturn(uses);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmentationSchema);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        AugmentationSchemaNodeList.add(AugmentationSchemaNode);
 
         final SchemaContext context = mock(SchemaContext.class);
         final Module moduleAug = mock(Module.class);
@@ -904,8 +689,7 @@ public class AugmentToGenTypeTest {
         groupings.add(groupingDefinition);
         when(moduleAug.getGroupings()).thenReturn(groupings);
 
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(moduleAug);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext mc = new ModuleContext();
@@ -921,23 +705,23 @@ public class AugmentToGenTypeTest {
         when(usesNode.getGroupingPath()).thenReturn(path);
 
         final Map<Module, ModuleContext> result = AugmentToGenType.usesAugmentationToGenTypes(context, "pckg.test.augm",
-                augmentationSchemaList, moduleAug, usesNode, usesNodeParent, genCtx, genTypeBuilders, false, null,
+                AugmentationSchemaNodeList, moduleAug, usesNode, usesNodeParent, genCtx, genTypeBuilders, false, null,
                 BindingNamespaceType.Data);
         assertNotNull(result);
     }
 
     @Deprecated
     @Test
-    public void usesAugmentationToGenTypesChoiceTest() throws Exception {
+    public void usesAugmentationToGenTypesChoiceTest() {
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
-        final AugmentationSchema augmentationSchema = mock(AugmentationSchema.class);
-        when(augmentationSchema.getTargetPath()).thenReturn(path);
+        final AugmentationSchemaNode AugmentationSchemaNode = mock(AugmentationSchemaNode.class);
+        when(AugmentationSchemaNode.getTargetPath()).thenReturn(path);
         final Set<UsesNode> uses = new HashSet<>();
-        when(augmentationSchema.getUses()).thenReturn(uses);
+        when(AugmentationSchemaNode.getUses()).thenReturn(uses);
 
-        final List<AugmentationSchema> augmentationSchemaList = new ArrayList<>();
-        augmentationSchemaList.add(augmentationSchema);
+        final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
+        AugmentationSchemaNodeList.add(AugmentationSchemaNode);
 
         final SchemaContext context = mock(SchemaContext.class);
         final Module moduleAug = mock(Module.class);
@@ -954,8 +738,7 @@ public class AugmentToGenTypeTest {
         groupings.add(groupingDefinition);
         when(moduleAug.getGroupings()).thenReturn(groupings);
 
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(moduleAug);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(moduleAug));
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext mc = new ModuleContext();
@@ -971,20 +754,13 @@ public class AugmentToGenTypeTest {
         when(usesNode.getGroupingPath()).thenReturn(path);
 
         final Map<Module, ModuleContext> result = AugmentToGenType.usesAugmentationToGenTypes(context, "pckg.test.augm",
-                augmentationSchemaList, moduleAug, usesNode, usesNodeParent, genCtx, genTypeBuilders, false, null,
+                AugmentationSchemaNodeList, moduleAug, usesNode, usesNodeParent, genCtx, genTypeBuilders, false, null,
                 BindingNamespaceType.Data);
         assertNotNull(result);
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void findOriginalTargetFromGroupingNonGroupingTest() throws Exception {
-        final Class[] parameterTypes = { SchemaContext.class, SchemaPath.class, UsesNode.class };
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("findOriginalTargetFromGrouping", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void findOriginalTargetFromGroupingNonGroupingTest() {
         final Module module = mock(Module.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "test");
         final SchemaPath schemaPath = SchemaPath.create(true, qnamePath);
@@ -993,34 +769,20 @@ public class AugmentToGenTypeTest {
         when(module.getDataChildByName(qnamePath)).thenReturn(schNode);
 
         final SchemaContext context = mock(SchemaContext.class);
-        when(context.findModuleByNamespaceAndRevision(qnamePath .getNamespace(), qnamePath.getRevision()))
-                .thenReturn(module);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(module));
         final UsesNode usesNode = mock(UsesNode.class);
         when(usesNode.getGroupingPath()).thenReturn(schemaPath);
 
-        final Object[] args = { context, schemaPath, usesNode };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.findOriginalTargetFromGrouping(context, schemaPath, usesNode);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("Failed to generate code for augment in " + usesNode, cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Failed to generate code for augment in " + usesNode, e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void findOriginalTargetFromGroupingAsUsesFailedTest() throws Exception {
-        final Class[] parameterTypes = { SchemaContext.class, SchemaPath.class, UsesNode.class };
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("findOriginalTargetFromGrouping", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void findOriginalTargetFromGroupingAsUsesFailedTest() {
         final Module module = mock(Module.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "test");
         final SchemaPath schemaPath = SchemaPath.create(true, qnamePath);
@@ -1035,34 +797,21 @@ public class AugmentToGenTypeTest {
         when(module.getGroupings()).thenReturn(groupings);
 
         final SchemaContext context = mock(SchemaContext.class);
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(module);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(module));
         final UsesNode usesNode = mock(UsesNode.class);
         when(usesNode.getGroupingPath()).thenReturn(schemaPath);
 
-        final Object[] args = { context, schemaPath, usesNode };
+        final Object[] args = {  };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.findOriginalTargetFromGrouping(context, schemaPath, usesNode);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalStateException);
-            assertEquals("Failed to generate code for augment in " + usesNode, cause.getMessage());
+        } catch (final IllegalStateException e) {
+            assertEquals("Failed to generate code for augment in " + usesNode, e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void findOriginalTargetFromGroupingReturnNullTest() throws Exception {
-        final Class[] parameterTypes = { SchemaContext.class, SchemaPath.class, UsesNode.class };
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("findOriginalTargetFromGrouping", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void findOriginalTargetFromGroupingReturnNullTest() {
         final Module module = mock(Module.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "test");
         final SchemaPath schemaPath = SchemaPath.create(true, qnamePath);
@@ -1075,25 +824,17 @@ public class AugmentToGenTypeTest {
         when(module.getGroupings()).thenReturn(groupings);
 
         final SchemaContext context = mock(SchemaContext.class);
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(module);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(module));
         final UsesNode usesNode = mock(UsesNode.class);
         when(usesNode.getGroupingPath()).thenReturn(schemaPath);
 
-        final Object[] args = { context, schemaPath, usesNode };
-        final DataSchemaNode result = (DataSchemaNode) generate.invoke(AugmentToGenType.class, args);
+        final Object[] args = {  };
+        final DataSchemaNode result = AugmentToGenType.findOriginalTargetFromGrouping(context, schemaPath, usesNode);
         assertEquals(null, result);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void findOriginalTargetFromGroupingTest() throws Exception {
-        final Class[] parameterTypes = { SchemaContext.class, SchemaPath.class, UsesNode.class };
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("findOriginalTargetFromGrouping", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void findOriginalTargetFromGroupingTest() {
         final Module module = mock(Module.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "test");
         final SchemaPath schemaPath = SchemaPath.create(true, qnamePath);
@@ -1111,25 +852,16 @@ public class AugmentToGenTypeTest {
         when(module.getGroupings()).thenReturn(groupings);
 
         final SchemaContext context = mock(SchemaContext.class);
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(module);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(module));
         final UsesNode usesNode = mock(UsesNode.class);
         when(usesNode.getGroupingPath()).thenReturn(schemaPath);
 
-        final Object[] args = { context, schemaPath, usesNode };
-        final DataSchemaNode result = (DataSchemaNode) generate.invoke(AugmentToGenType.class, args);
+        final DataSchemaNode result = AugmentToGenType.findOriginalTargetFromGrouping(context, schemaPath, usesNode);
         assertEquals(schNode, result);
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void findOriginalTargetFromGroupingChoiceTest() throws Exception {
-        final Class[] parameterTypes = { SchemaContext.class, SchemaPath.class, UsesNode.class };
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("findOriginalTargetFromGrouping", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void findOriginalTargetFromGroupingChoiceTest() {
         final Module module = mock(Module.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "test");
         final SchemaPath schemaPath = SchemaPath.create(true, qnamePath);
@@ -1143,139 +875,83 @@ public class AugmentToGenTypeTest {
         when(module.getGroupings()).thenReturn(groupings);
 
         final SchemaContext context = mock(SchemaContext.class);
-        when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(module);
+        when(context.findModule(qnamePath.getModule())).thenReturn(Optional.of(module));
         final UsesNode usesNode = mock(UsesNode.class);
         when(usesNode.getGroupingPath()).thenReturn(schemaPath);
 
-        final Object[] args = { context, schemaPath, usesNode };
-        final DataSchemaNode result = (DataSchemaNode) generate.invoke(AugmentToGenType.class, args);
+        final DataSchemaNode result = AugmentToGenType.findOriginalTargetFromGrouping(context, schemaPath, usesNode);
         assertEquals(schNode, result);
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void generateTypesFromAugmentedChoiceCasesNullPckgNameTest() throws Exception {
-        final Class[] parameterTypes =
-                { SchemaContext.class, Module.class, String.class, Type.class, ChoiceSchemaNode.class, List.class,
-                        DataNodeContainer.class, Map.class, boolean.class, Map.class, TypeProvider.class,
-                        BindingNamespaceType.class};
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("generateTypesFromAugmentedChoiceCases", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void generateTypesFromAugmentedChoiceCasesNullPckgNameTest() {
         final SchemaContext schemaContext = null;
         final Module module = null;
         final String pckgName = null;
         final Type targetType = null;
         final ChoiceSchemaNode targetNode = null;
-        final List<AugmentationSchema> schemaPathAugmentListEntry = null;
+        final List<AugmentationSchemaNode> schemaPathAugmentListEntry = null;
         final DataNodeContainer usesNodeParent = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
-        final Object[] args = { schemaContext, module, pckgName, targetType, targetNode, schemaPathAugmentListEntry,
-                usesNodeParent, genCtx, false, genTypeBuilder, null, BindingNamespaceType.Data };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
+                targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false, genTypeBuilder, null,
+                BindingNamespaceType.Data);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("Base Package Name cannot be NULL.", cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Base Package Name cannot be NULL.", e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void generateTypesFromAugmentedChoiceCasesNullTargetType() throws Exception {
-        final Class[] parameterTypes =
-                { SchemaContext.class, Module.class, String.class, Type.class, ChoiceSchemaNode.class, List.class,
-                        DataNodeContainer.class, Map.class, boolean.class, Map.class, TypeProvider.class,
-                        BindingNamespaceType.class };
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("generateTypesFromAugmentedChoiceCases", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void generateTypesFromAugmentedChoiceCasesNullTargetType() {
         final SchemaContext schemaContext = null;
         final Module module = null;
         final String pckgName = "";
         final Type targetType = null;
         final ChoiceSchemaNode targetNode = null;
-        final List<AugmentationSchema> schemaPathAugmentListEntry = null;
+        final List<AugmentationSchemaNode> schemaPathAugmentListEntry = null;
         final DataNodeContainer usesNodeParent = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
-        final Object[] args = { schemaContext, module, pckgName, targetType, targetNode, schemaPathAugmentListEntry,
-                usesNodeParent, genCtx, false, genTypeBuilder, null, BindingNamespaceType.Data };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
+                targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false, genTypeBuilder, null,
+                BindingNamespaceType.Data);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("Referenced Choice Type cannot be NULL.", cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Referenced Choice Type cannot be NULL.", e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void generateTypesFromAugmentedChoiceCasesNullAugmentNodes() throws Exception {
-        final Class[] parameterTypes =
-                { SchemaContext.class, Module.class, String.class, Type.class, ChoiceSchemaNode.class, List.class,
-                        DataNodeContainer.class, Map.class, boolean.class, Map.class, TypeProvider.class,
-                        BindingNamespaceType.class };
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("generateTypesFromAugmentedChoiceCases", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void generateTypesFromAugmentedChoiceCasesNullAugmentNodes() {
         final SchemaContext schemaContext = null;
         final Module module = null;
         final String pckgName = "";
         final Type targetType = mock(Type.class);
         final ChoiceSchemaNode targetNode = null;
-        final List<AugmentationSchema> schemaPathAugmentListEntry = null;
+        final List<AugmentationSchemaNode> schemaPathAugmentListEntry = null;
         final DataNodeContainer usesNodeParent = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
-        final Object[] args = { schemaContext, module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, usesNodeParent,
-                genCtx, false, genTypeBuilder, null, BindingNamespaceType.Data };
+        final Object[] args = {  };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
+                targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false, genTypeBuilder, null,
+                BindingNamespaceType.Data);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("Set of Choice Case Nodes cannot be NULL.", cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Set of Choice Case Nodes cannot be NULL.", e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void generateTypesFromAugmentedChoiceCasesNullCaseNodeTest() throws Exception {
-        final Class[] parameterTypes =
-                { SchemaContext.class, Module.class, String.class, Type.class, ChoiceSchemaNode.class, List.class,
-                        DataNodeContainer.class, Map.class, boolean.class, Map.class, TypeProvider.class,
-                        BindingNamespaceType.class };
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("generateTypesFromAugmentedChoiceCases", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void generateTypesFromAugmentedChoiceCasesNullCaseNodeTest() {
         final SchemaContext schemaContext = null;
         final Module module = null;
         final String pckgName = "";
@@ -1285,34 +961,23 @@ public class AugmentToGenTypeTest {
         final DataSchemaNode caseNode = null;
         augmentNodes.add(caseNode);
 
-        final AugmentationSchema augmentationSchema = mock(AugmentationSchema.class);
-        when(augmentationSchema.getChildNodes()).thenReturn(augmentNodes);
-        final List<AugmentationSchema> schemaPathAugmentListEntry = new ArrayList<>();
-        schemaPathAugmentListEntry.add(augmentationSchema);
+        final AugmentationSchemaNode AugmentationSchemaNode = mock(AugmentationSchemaNode.class);
+        when(AugmentationSchemaNode.getChildNodes()).thenReturn(augmentNodes);
+        final List<AugmentationSchemaNode> schemaPathAugmentListEntry = new ArrayList<>();
+        schemaPathAugmentListEntry.add(AugmentationSchemaNode);
 
         final DataNodeContainer usesNodeParent = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
-        final Object[] args = { schemaContext, module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, usesNodeParent,
-                genCtx, false, genTypeBuilder, null, BindingNamespaceType.Data };
-        final Map<Module, ModuleContext> result =
-                (Map<Module, ModuleContext>) generate.invoke(AugmentToGenType.class, args);
+        final Map<Module, ModuleContext> result = AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext,
+            module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false,
+            genTypeBuilder, null, BindingNamespaceType.Data);
         assertEquals(genCtx, result);
     }
 
-    @SuppressWarnings({ "rawtypes" })
     @Test
-    public void generateTypesFromAugmentedChoiceCasesNullChildTest() throws Exception {
-        final Class[] parameterTypes =
-                { SchemaContext.class, Module.class, String.class, Type.class, ChoiceSchemaNode.class, List.class,
-                        DataNodeContainer.class, Map.class, boolean.class, Map.class, TypeProvider.class,
-                        BindingNamespaceType.class };
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("generateTypesFromAugmentedChoiceCases", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void generateTypesFromAugmentedChoiceCasesNullChildTest() {
         final QName qnamePath = QName.create("test", "2017-04-04", "chcase");
         final QName qnamePath2 = QName.create("test", "2017-04-04", "chcase2");
         final SchemaPath path = SchemaPath.create(true, qnamePath, qnamePath2);
@@ -1331,52 +996,42 @@ public class AugmentToGenTypeTest {
         final ChoiceCaseNode caseNode = mock(ChoiceCaseNode.class);
         when(caseNode.getPath()).thenReturn(path);
         when(caseNode.getQName()).thenReturn(qnamePath);
+        when(caseNode.getDescription()).thenReturn(Optional.empty());
+        when(caseNode.getReference()).thenReturn(Optional.empty());
+
         augmentNodes.add(caseNode);
 
-        final AugmentationSchema augmentationSchema = mock(AugmentationSchema.class);
-        when(augmentationSchema.getChildNodes()).thenReturn(augmentNodes);
-        final List<AugmentationSchema> schemaPathAugmentListEntry = new ArrayList<>();
-        schemaPathAugmentListEntry.add(augmentationSchema);
+        final AugmentationSchemaNode AugmentationSchemaNode = mock(AugmentationSchemaNode.class);
+        when(AugmentationSchemaNode.getChildNodes()).thenReturn(augmentNodes);
+        final List<AugmentationSchemaNode> schemaPathAugmentListEntry = new ArrayList<>();
+        schemaPathAugmentListEntry.add(AugmentationSchemaNode);
 
         final DataNodeContainer usesNodeParent = null;
         final ChoiceSchemaNode targetNode = mock(ChoiceSchemaNode.class);
         when(targetNode.getPath()).thenReturn(path);
+        when(targetNode.getDescription()).thenReturn(Optional.empty());
+        when(targetNode.getReference()).thenReturn(Optional.empty());
+
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         genCtx.put(module, new ModuleContext());
         final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", genCtx.get(module));
         genCtx.get(module).addCaseType(path, gtb);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
-        when(schemaContext.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(module);
+        when(schemaContext.findModule(qnamePath.getModule())).thenReturn(Optional.of(module));
 
-        final Object[] args = { schemaContext, module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, usesNodeParent,
-                genCtx, false, genTypeBuilder, null, BindingNamespaceType.Data };
         try {
-            generate.invoke(AugmentToGenType.class, args);
+            AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
+                targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false, genTypeBuilder, null,
+                BindingNamespaceType.Data);
             fail();
-        } catch (final Exception e) {
-            assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
-            final Throwable cause = e.getCause();
-            assertNotNull(cause);
-            assertTrue(cause instanceof IllegalArgumentException);
-            assertEquals("Failed to find parent type of choice " + targetNode, cause.getMessage());
+        } catch (final IllegalArgumentException e) {
+            assertEquals("Failed to find parent type of choice " + targetNode, e.getMessage());
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void generateTypesFromAugmentedChoiceCasesTest() throws Exception {
-        final Class[] parameterTypes =
-                { SchemaContext.class, Module.class, String.class, Type.class, ChoiceSchemaNode.class, List.class,
-                        DataNodeContainer.class, Map.class, boolean.class, Map.class, TypeProvider.class,
-                        BindingNamespaceType.class };
-        final Method generate =
-                AugmentToGenType.class.getDeclaredMethod("generateTypesFromAugmentedChoiceCases", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void generateTypesFromAugmentedChoiceCasesTest() {
         final QName qnamePath = QName.create("test", "2017-04-04", "chcase");
         final QName qnamePath2 = QName.create("test", "2017-04-04", "chcase2");
         final SchemaPath path = SchemaPath.create(true, qnamePath, qnamePath2);
@@ -1396,16 +1051,20 @@ public class AugmentToGenTypeTest {
         final ChoiceCaseNode caseNode = mock(ChoiceCaseNode.class);
         when(caseNode.getPath()).thenReturn(path);
         when(caseNode.getQName()).thenReturn(qnamePath);
+        when(caseNode.getDescription()).thenReturn(Optional.empty());
+        when(caseNode.getReference()).thenReturn(Optional.empty());
         augmentNodes.add(caseNode);
 
-        final AugmentationSchema augmentationSchema = mock(AugmentationSchema.class);
-        when(augmentationSchema.getChildNodes()).thenReturn(augmentNodes);
-        final List<AugmentationSchema> schemaPathAugmentListEntry = new ArrayList<>();
-        schemaPathAugmentListEntry.add(augmentationSchema);
+        final AugmentationSchemaNode AugmentationSchemaNode = mock(AugmentationSchemaNode.class);
+        when(AugmentationSchemaNode.getChildNodes()).thenReturn(augmentNodes);
+        final List<AugmentationSchemaNode> schemaPathAugmentListEntry = new ArrayList<>();
+        schemaPathAugmentListEntry.add(AugmentationSchemaNode);
 
         final DataNodeContainer usesNodeParent = null;
         final ChoiceSchemaNode targetNode = mock(ChoiceSchemaNode.class);
         when(targetNode.getPath()).thenReturn(path);
+        when(targetNode.getDescription()).thenReturn(Optional.empty());
+        when(targetNode.getReference()).thenReturn(Optional.empty());
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext moduleContext = new ModuleContext();
         final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", moduleContext);
@@ -1413,13 +1072,11 @@ public class AugmentToGenTypeTest {
         genCtx.put(module, moduleContext);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
-        when(schemaContext.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
-                .thenReturn(module);
+        when(schemaContext.findModule(qnamePath.getModule())).thenReturn(Optional.of(module));
 
-        final Object[] args = { schemaContext, module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, usesNodeParent,
-                genCtx, false, genTypeBuilder, null ,BindingNamespaceType.Data };
-        final Map<Module, ModuleContext> result =
-                (Map<Module, ModuleContext>) generate.invoke(AugmentToGenType.class, args);
+        final Map<Module, ModuleContext> result = AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext,
+            module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false,
+            genTypeBuilder, null, BindingNamespaceType.Data);
         assertNotNull(result);
         assertEquals(result.get(module), moduleContext);
     }
