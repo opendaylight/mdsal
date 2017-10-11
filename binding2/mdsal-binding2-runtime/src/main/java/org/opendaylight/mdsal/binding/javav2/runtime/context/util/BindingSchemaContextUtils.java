@@ -24,6 +24,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
@@ -112,7 +113,7 @@ public final class BindingSchemaContextUtils {
 
         for (final DataSchemaNode child : ctx.getChildNodes()) {
             if (child instanceof ChoiceSchemaNode) {
-                final DataNodeContainer potential = findInCases(((ChoiceSchemaNode) child), targetQName);
+                final DataNodeContainer potential = findInCases((ChoiceSchemaNode) child, targetQName);
                 if (potential != null) {
                     return Optional.of(potential);
                 }
@@ -129,7 +130,7 @@ public final class BindingSchemaContextUtils {
     }
 
     private static DataNodeContainer findInCases(final ChoiceSchemaNode choiceNode, final QName targetQName) {
-        for (final ChoiceCaseNode caze : choiceNode.getCases()) {
+        for (final ChoiceCaseNode caze : choiceNode.getCases().values()) {
             final Optional<DataNodeContainer> potential = findDataNodeContainer(caze, targetQName);
             if (potential.isPresent()) {
                 return potential.get();
@@ -160,7 +161,7 @@ public final class BindingSchemaContextUtils {
             final YangModuleInfo moduleInfo, final Class<? extends TreeNode> targetType) {
         for (final OperationDefinition operation : operations) {
             final String operationNamespace = operation.getQName().getNamespace().toString();
-            final String operationRevision = operation.getQName().getFormattedRevision();
+            final String operationRevision = operation.getQName().getRevision().map(Revision::toString).orElse(null);
             if (moduleInfo.getNamespace().equals(operationNamespace)
                     && moduleInfo.getRevision().equals(operationRevision)) {
                 final Optional<DataNodeContainer> potential = findInputOutput(operation, targetType.getSimpleName());
@@ -230,8 +231,9 @@ public final class BindingSchemaContextUtils {
      * @return choice case node if exists, absent() otherwise
      */
     public static Optional<ChoiceCaseNode> findInstantiatedCase(final ChoiceSchemaNode instantiatedChoice, final ChoiceCaseNode originalDefinition) {
-        ChoiceCaseNode potential = instantiatedChoice.getCaseNodeByName(originalDefinition.getQName());
-        if(originalDefinition.equals(potential)) {
+        final QName qname = originalDefinition.getQName();
+        final ChoiceCaseNode potential = instantiatedChoice.getCaseNodeByName(qname);
+        if (originalDefinition.equals(potential)) {
             return Optional.of(potential);
         }
         if (potential != null) {
@@ -247,11 +249,11 @@ public final class BindingSchemaContextUtils {
         // different, but local names are still same.
         //
         // Still we need to check equality of definition, because local name is not
-        // sufficient to uniquelly determine equality of cases
-        //
-        potential = instantiatedChoice.getCaseNodeByName(originalDefinition.getQName().getLocalName());
-        if(potential != null && (originalDefinition.equals(SchemaNodeUtils.getRootOriginalIfPossible(potential)))) {
-            return Optional.of(potential);
+        // sufficient to uniquely determine equality of cases
+        for (ChoiceCaseNode found : instantiatedChoice.findCaseNodes(qname.getLocalName())) {
+            if (originalDefinition.equals(SchemaNodeUtils.getRootOriginalIfPossible(found))) {
+                return Optional.of(found);
+            }
         }
         return Optional.absent();
     }
