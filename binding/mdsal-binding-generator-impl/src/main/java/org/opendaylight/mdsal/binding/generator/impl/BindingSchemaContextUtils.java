@@ -22,7 +22,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationTarget;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -99,7 +100,7 @@ public final class BindingSchemaContextUtils {
 
         for (DataSchemaNode child : ctx.getChildNodes()) {
             if (child instanceof ChoiceSchemaNode) {
-                DataNodeContainer potential = findInCases(((ChoiceSchemaNode) child), targetQName);
+                DataNodeContainer potential = findInCases((ChoiceSchemaNode) child, targetQName);
                 if (potential != null) {
                     return Optional.of(potential);
                 }
@@ -137,7 +138,7 @@ public final class BindingSchemaContextUtils {
 
         for(RpcDefinition rpc : ctx.getOperations()) {
             String rpcNamespace = rpc.getQName().getNamespace().toString();
-            String rpcRevision = rpc.getQName().getFormattedRevision();
+            String rpcRevision = rpc.getQName().getRevision().map(Revision::toString).orElse(null);
             if(moduleInfo.getNamespace().equals(rpcNamespace) && moduleInfo.getRevision().equals(rpcRevision)) {
                 Optional<DataNodeContainer> potential = findInputOutput(rpc,targetType.getSimpleName());
                 if(potential.isPresent()) {
@@ -160,8 +161,9 @@ public final class BindingSchemaContextUtils {
        return Optional.absent();
     }
 
-    public static Set<AugmentationSchema> collectAllAugmentationDefinitions(final SchemaContext currentSchema, final AugmentationTarget ctxNode) {
-        HashSet<AugmentationSchema> augmentations = new HashSet<>();
+    public static Set<AugmentationSchemaNode> collectAllAugmentationDefinitions(final SchemaContext currentSchema,
+            final AugmentationTarget ctxNode) {
+        HashSet<AugmentationSchemaNode> augmentations = new HashSet<>();
         augmentations.addAll(ctxNode.getAvailableAugmentations());
         if(ctxNode instanceof DataSchemaNode && ((DataSchemaNode) ctxNode).isAddedByUses()) {
 
@@ -172,11 +174,13 @@ public final class BindingSchemaContextUtils {
         return augmentations;
     }
 
-    public static Optional<ChoiceSchemaNode> findInstantiatedChoice(final DataNodeContainer parent, final Class<?> choiceClass) {
+    public static Optional<ChoiceSchemaNode> findInstantiatedChoice(final DataNodeContainer parent,
+            final Class<?> choiceClass) {
         return findInstantiatedChoice(parent, BindingReflections.findQName(choiceClass));
     }
 
-    public static Optional<ChoiceSchemaNode> findInstantiatedChoice(final DataNodeContainer ctxNode, final QName choiceName) {
+    public static Optional<ChoiceSchemaNode> findInstantiatedChoice(final DataNodeContainer ctxNode,
+            final QName choiceName) {
         DataSchemaNode potential = ctxNode.getDataChildByName(choiceName);
         if (potential instanceof ChoiceSchemaNode) {
             return Optional.of((ChoiceSchemaNode) potential);
@@ -185,7 +189,8 @@ public final class BindingSchemaContextUtils {
         return Optional.absent();
     }
 
-    public static Optional<ChoiceCaseNode> findInstantiatedCase(final ChoiceSchemaNode instantiatedChoice, final ChoiceCaseNode originalDefinition) {
+    public static Optional<ChoiceCaseNode> findInstantiatedCase(final ChoiceSchemaNode instantiatedChoice,
+            final ChoiceCaseNode originalDefinition) {
         ChoiceCaseNode potential = instantiatedChoice.getCaseNodeByName(originalDefinition.getQName());
         if(originalDefinition.equals(potential)) {
             return Optional.of(potential);
@@ -206,7 +211,7 @@ public final class BindingSchemaContextUtils {
         // sufficient to uniquelly determine equality of cases
         //
         potential = instantiatedChoice.getCaseNodeByName(originalDefinition.getQName().getLocalName());
-        if(potential != null && (originalDefinition.equals(SchemaNodeUtils.getRootOriginalIfPossible(potential)))) {
+        if(potential != null && originalDefinition.equals(SchemaNodeUtils.getRootOriginalIfPossible(potential))) {
             return Optional.of(potential);
         }
         return Optional.absent();

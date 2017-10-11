@@ -14,7 +14,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Optional;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
@@ -165,7 +165,7 @@ public class AugmentToGenTypeTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/test.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/generator/test.yang");
         final TypeProvider typeProvider = new TypeProviderImpl(context);
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
@@ -185,7 +185,7 @@ public class AugmentToGenTypeTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/test-augment.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/generator/test-augment.yang");
         final TypeProvider typeProvider = new TypeProviderImpl(context);
         final Map<Module, ModuleContext> genCtx = mock(Map.class);
         final Collection<ModuleContext> moduleContexts = new ArrayList<>();
@@ -574,8 +574,7 @@ public class AugmentToGenTypeTest {
         final DerivableSchemaNode targetSchNode = mock(DerivableSchemaNode.class);
         when(targetSchNode.getPath()).thenReturn(path);
         when(targetSchNode.isAddedByUses()).thenReturn(true);
-        final Optional optionalSchemaNode = Optional.absent();
-        when(targetSchNode.getOriginal()).thenReturn(optionalSchemaNode);
+        when(targetSchNode.getOriginal()).thenReturn(Optional.empty());
         when(moduleAug.getDataChildByName(qnamePath)).thenReturn(targetSchNode);
         when(context.findModuleByNamespaceAndRevision(qnamePath.getNamespace(), qnamePath.getRevision()))
                 .thenReturn(moduleAug);

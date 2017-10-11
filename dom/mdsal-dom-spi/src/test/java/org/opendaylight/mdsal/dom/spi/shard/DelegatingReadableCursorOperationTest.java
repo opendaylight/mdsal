@@ -14,7 +14,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.junit.After;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -26,7 +26,7 @@ public class DelegatingReadableCursorOperationTest extends DelegatingReadableCur
 
     @Test
     public void basicTest() throws Exception {
-        final Optional<NormalizedNode<?, ?>> nodeOptional = Optional.absent();
+        final Optional<NormalizedNode<?, ?>> nodeOptional = Optional.empty();
         doReturn(nodeOptional).when(MOCK_CURSOR_SNAPSHOT).readNode(TestUtils.PATH_ARGUMENT);
         doNothing().when(MOCK_CURSOR_SNAPSHOT).exit();
         doNothing().when(MOCK_CURSOR_SNAPSHOT).enter(TestUtils.PATH_ARGUMENT);

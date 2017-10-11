@@ -8,12 +8,12 @@
 package org.opendaylight.mdsal.binding.yang.unified.doc.generator
 
 import com.google.common.collect.Iterables
+import com.google.common.collect.Lists
 import java.io.BufferedWriter
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Collection
 import java.util.HashMap
@@ -21,6 +21,7 @@ import java.util.HashSet
 import java.util.LinkedHashMap
 import java.util.List
 import java.util.Map
+import java.util.Optional
 import java.util.Set
 import org.opendaylight.yangtools.yang.common.QName
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier
@@ -55,12 +56,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
 import org.sonatype.plexus.build.incremental.DefaultBuildContext
-import com.google.common.collect.Lists
 
 class GeneratorImpl {
 
     File path
-    static val REVISION_FORMAT = new SimpleDateFormat("yyyy-MM-dd")
     static val Logger LOG = LoggerFactory.getLogger(GeneratorImpl)
     static val BuildContext CTX = new DefaultBuildContext();
     var Module currentModule;
@@ -341,9 +340,9 @@ class GeneratorImpl {
     private def parseTargetPath(SchemaPath path) {
         val List<DataSchemaNode> nodes = new ArrayList<DataSchemaNode>();
         for (QName pathElement : path.pathFromRoot) {
-            val module = ctx.findModuleByNamespaceAndRevision(pathElement.namespace, pathElement.revision);
-            if (module !== null) {
-                var foundNode = module.getDataChildByName(pathElement)
+            val module = ctx.findModule(pathElement.module)
+            if (module.isPresent) {
+                var foundNode = module.get.getDataChildByName(pathElement)
                 if (foundNode === null) {
                     val child = nodes.last
                     if (child instanceof DataNodeContainer) {
@@ -719,8 +718,10 @@ class GeneratorImpl {
                 <td>«module.namespace»</td>
             </tr>
             <tr>
+                «IF module.revision.isPresent»
                 <td>«strong("revision")»</td>
-                <td>«REVISION_FORMAT.format(module.revision)»</td>
+                <td>«module.revision.get.toString»</td>
+                «ENDIF»
             </tr>
             <tr>
                 <td>«strong("description")»</td>
@@ -732,7 +733,7 @@ class GeneratorImpl {
             </tr>
             <tr>
                 «FOR imp : module.imports BEFORE '''<td>«strong("imports")»</td><td>''' AFTER '''</td>'''»
-                    «imp.prefix»:«imp.moduleName»«IF imp.revision !== null» «REVISION_FORMAT.format(imp.revision)»«ENDIF»;
+                    «imp.prefix»:«imp.moduleName»«IF imp.revision.isPresent» «imp.revision.get.toString»«ENDIF»;
                 «ENDFOR»
             </tr>
         </table>
@@ -1200,7 +1201,7 @@ class GeneratorImpl {
         }
 
         val QName qname = path.get(0)
-        var Object parent = ctx.findModuleByNamespaceAndRevision(qname.namespace, qname.revision)
+        var Object parent = ctx.findModule(qname.module).orElse(null)
 
         for (name : path) {
             if (parent instanceof DataNodeContainer) {
@@ -1222,7 +1223,7 @@ class GeneratorImpl {
                     }
                 }
 
-                val pathElementModule = ctx.findModuleByNamespaceAndRevision(name.namespace, name.revision)
+                val pathElementModule = ctx.findModule(name.module).get
                 val String moduleName = pathElementModule.name
                 pathString.append(moduleName)
                 pathString.append(':')
@@ -1301,11 +1302,11 @@ class GeneratorImpl {
     }
 
     private def dispatch toLength(BinaryTypeDefinition type) '''
-        «type.lengthConstraints.toLengthStmt»
+        «type.lengthConstraint.toLengthStmt»
     '''
 
     private def dispatch toLength(StringTypeDefinition type) '''
-        «type.lengthConstraints.toLengthStmt»
+        «type.lengthConstraint.toLengthStmt»
     '''
 
     private def dispatch toRange(TypeDefinition<?> type) {
@@ -1323,16 +1324,16 @@ class GeneratorImpl {
         «type.rangeConstraints.toRangeStmt»
     '''
 
-    def toLengthStmt(Collection<LengthConstraint> lengths) '''
-        «IF lengths !== null && !lengths.empty»
+    def toLengthStmt(Optional<LengthConstraint> lengths) '''
+        «IF lengths.isPresent»
             «listItem("Length restrictions:")»
             <ul>
-            «FOR length : lengths»
+            «FOR length : lengths.get.allowedRanges.asRanges»
                 <li>
-                «IF length.min == length.max»
-                    «length.min»
+                «IF length.lowerEndpoint == length.upperEndpoint»
+                    «length.lowerEndpoint»
                 «ELSE»
-                    &lt;«length.min», «length.max»&gt;
+                    &lt;«length.lowerEndpoint», «length.upperEndpoint»&gt;
                 «ENDIF»
                 </li>
             «ENDFOR»

@@ -16,9 +16,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
@@ -44,7 +44,7 @@ public class LazySerializedContainerNodeTest {
         final BindingNormalizedNodeCodecRegistry codec = mock(BindingNormalizedNodeCodecRegistry.class);
         final ContainerNode containerNode = mock(ContainerNode.class);
         doReturn(containerNode).when(codec).toNormalizedNodeRpcData(any());
-        doReturn(Optional.absent()).when(containerNode).getChild(any());
+        doReturn(Optional.empty()).when(containerNode).getChild(any());
 
         final BindingBrokerTestFactory bindingBrokerTestFactory = new BindingBrokerTestFactory();
         bindingBrokerTestFactory.setExecutor(MoreExecutors.newDirectExecutorService());
