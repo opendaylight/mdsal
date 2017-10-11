@@ -426,7 +426,7 @@ final class GenHelperUtil {
                 true, false, genCtx.get(module));
 
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
-        augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
+        augTypeBuilder.addImplementsType(parameterizedTypeFor(INSTANTIABLE, augTypeBuilder));
         augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
         augTypeBuilder.setBasePackageName(BindingMapping.getRootPackageName(module));
         augTypeBuilder.setWithBuilder(true);
@@ -442,9 +442,7 @@ final class GenHelperUtil {
 
         augmentBuilders.put(augTypeBuilder.getName(), augTypeBuilder);
 
-
         if(!augSchema.getChildNodes().isEmpty()) {
-            genCtx.get(module).addTypeToAugmentation(augTypeBuilder, augSchema);
             genCtx.get(module).addTargetToAugmentation(augTypeBuilder, augSchema.getTargetPath());
         }
         genCtx.get(module).addAugmentType(augTypeBuilder);
