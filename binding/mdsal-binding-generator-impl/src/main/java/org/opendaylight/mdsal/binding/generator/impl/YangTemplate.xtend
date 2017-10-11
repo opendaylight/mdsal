@@ -8,14 +8,13 @@
 package org.opendaylight.mdsal.binding.generator.impl
 
 import java.util.Collection
-import java.util.Date
 import java.util.List
 import java.util.Map
 import java.util.Set
-import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
+import org.opendaylight.yangtools.yang.common.Revision
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema
-import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode
+import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
@@ -97,7 +96,7 @@ class YangTemplate {
                 «IF node instanceof NotificationDefinition»
                 «writeNotification(node)»
                 «ELSEIF node instanceof RpcDefinition»
-                «writeRPC(node as RpcDefinition)»
+                «writeRPC(node)»
                 «ENDIF»
             «ENDFOR»
         '''
@@ -124,11 +123,11 @@ class YangTemplate {
         '''
     }
 
-    def private static writeRevision(Date moduleRevision, String moduleDescription) {
+    def private static writeRevision(Revision moduleRevision, String moduleDescription) {
         val revisionIndent = 12
 
         '''
-            revision «SimpleDateFormatUtil.getRevisionFormat.format(moduleRevision)» {
+            revision «moduleRevision.toString» {
                 description "«YangTextTemplate.formatToParagraph(moduleDescription, revisionIndent)»";
             }
         '''
@@ -146,8 +145,8 @@ class YangTemplate {
                 «IF !module.imports.nullOrEmpty»
                 «writeModuleImports(module.imports)»
                 «ENDIF»
-                «IF module.revision !== null»
-                «writeRevision(module.revision, module.description)»
+                «IF module.revision.present»
+                «writeRevision(module.revision.get, module.description.orElse(null))»
                 «ENDIF»
                 «IF !module.childNodes.nullOrEmpty»
 
@@ -211,8 +210,8 @@ class YangTemplate {
         var boolean isStatusDeprecated = rpc.status == Status::DEPRECATED
         '''
             rpc «rpc.QName.localName» {
-                «IF !rpc.description.nullOrEmpty»
-                    "«rpc.description»";
+                «IF rpc.description.present»
+                    "«rpc.description.get»";
                 «ENDIF»
                 «IF !rpc.groupings.nullOrEmpty»
                     «writeGroupingDefs(rpc.groupings)»
@@ -223,9 +222,9 @@ class YangTemplate {
                 «IF rpc.output !== null»
                     «writeRpcOutput(rpc.output)»
                 «ENDIF»
-                «IF !rpc.reference.nullOrEmpty»
+                «IF rpc.reference.present»
                 reference
-                    "«rpc.reference»";
+                    "«rpc.reference.get»";
                 «ENDIF»
                 «IF isStatusDeprecated»
                 status «rpc.status»;
@@ -275,9 +274,9 @@ class YangTemplate {
         var boolean isStatusDeprecated = notification.status == Status::DEPRECATED
         '''
             notification «notification.QName.localName» {
-                «IF !notification.description.nullOrEmpty»
+                «IF notification.description.present»
                 description
-                    "«notification.description»";
+                    "«notification.description.get»";
                 «ENDIF»
                 «IF !notification.childNodes.nullOrEmpty»
                     «writeDataSchemaNodes(notification.childNodes)»
@@ -291,9 +290,9 @@ class YangTemplate {
                 «IF !notification.uses.nullOrEmpty»
                     «writeUsesNodes(notification.uses)»
                 «ENDIF»
-                «IF !notification.reference.nullOrEmpty»
+                «IF notification.reference.present»
                 reference
-                    "«notification.reference»";
+                    "«notification.reference.get»";
                 «ENDIF»
                 «IF isStatusDeprecated»
                 status «notification.status»;
@@ -387,16 +386,16 @@ class YangTemplate {
             return ''
         '''
             identity «identity.QName.localName» {
-                «IF identity.baseIdentity !== null»
-                base "()«identity.baseIdentity»";
-                «ENDIF»
-                «IF !identity.description.nullOrEmpty»
+                «FOR baseIdentity : identity.baseIdentities»
+                base "()«baseIdentity»";
+                «ENDFOR»
+                «IF identity.description.present»
                 description
-                    "«identity.description»";
+                    "«identity.description.get»";
                 «ENDIF»
-                «IF !identity.reference.nullOrEmpty»
+                «IF identity.reference.present»
                 reference
-                    "«identity.reference»";
+                    "«identity.reference.get»";
                 «ENDIF»
                 «IF identity.status !== null»
                 status «identity.status»;
@@ -418,13 +417,13 @@ class YangTemplate {
     def private static writeFeature(FeatureDefinition featureDef) {
         '''
             feature «featureDef.QName.localName» {
-                «IF !featureDef.description.nullOrEmpty»
+                «IF featureDef.description.present»
                 description
-                    "«featureDef.description»";
+                    "«featureDef.description.get»";
                 «ENDIF»
-                «IF !featureDef.reference.nullOrEmpty»
+                «IF featureDef.reference.present»
                 reference
-                    "«featureDef.reference»";
+                    "«featureDef.reference.get»";
                 «ENDIF»
                 «IF featureDef.status !== null»
                 status «featureDef.status»;
@@ -446,16 +445,16 @@ class YangTemplate {
     def private static writeExtension(ExtensionDefinition extensionDef) {
         '''
             extension «extensionDef.QName.localName» {
-                «IF !extensionDef.description.nullOrEmpty»
+                «IF extensionDef.description.present»
                 description
-                    "«extensionDef.description»";
+                    "«extensionDef.description.get»";
                 «ENDIF»
                 «IF !extensionDef.argument.nullOrEmpty»
                 argument "«extensionDef.argument»";
                 «ENDIF»
-                «IF !extensionDef.reference.nullOrEmpty»
+                «IF extensionDef.reference.present»
                 reference
-                    "«extensionDef.reference»";
+                    "«extensionDef.reference.get»";
                 «ENDIF»
                 «IF extensionDef.status !== null»
                 status «extensionDef.status»;
@@ -477,9 +476,9 @@ class YangTemplate {
     def private static writeDeviation(Deviation deviation) {
         '''
             deviation «deviation.targetPath» {
-                «IF !deviation.reference.nullOrEmpty»
+                «IF deviation.reference.present»
                     reference
-                        "«deviation.reference»";
+                        "«deviation.reference.get»";
                 «ENDIF»
                 «FOR dev : deviation.deviates»
                     «IF dev !== null && dev.deviateType !== null»
@@ -490,7 +489,7 @@ class YangTemplate {
         '''
     }
 
-    def private static writeAugments(Set<AugmentationSchema> augments) {
+    def private static writeAugments(Set<AugmentationSchemaNode> augments) {
         '''
             «FOR augment : augments»
                 «IF augment !== null»
@@ -518,19 +517,19 @@ class YangTemplate {
         '''
     }
 
-    def private static writeAugment(AugmentationSchema augment) {
+    def private static writeAugment(AugmentationSchemaNode augment) {
         '''
             augment «YangTextTemplate.formatToAugmentPath(augment.targetPath.pathFromRoot)» {
                 «IF augment.whenCondition !== null && !augment.whenCondition.toString.nullOrEmpty»
                 when "«augment.whenCondition.toString»";
                 «ENDIF»
-                «IF !augment.description.nullOrEmpty»
+                «IF augment.description.present»
                 description
-                    "«augment.description»";
+                    "«augment.description.get»";
                 «ENDIF»
-                «IF !augment.reference.nullOrEmpty»
+                «IF augment.reference.present»
                 reference
-                    "«augment.reference»";
+                    "«augment.reference.get»";
                 «ENDIF»
                 «IF augment.status !== null»
                 status «augment.status»;
@@ -625,7 +624,7 @@ class YangTemplate {
         '''
     }
 
-    def private static writeChoiceCaseNode(ChoiceCaseNode choiceCaseNode) {
+    def private static writeCaseSchemaNode(CaseSchemaNode choiceCaseNode) {
         var boolean isStatusDeprecated = choiceCaseNode.status == Status::DEPRECATED
         '''
             case «choiceCaseNode.getQName.localName» {
@@ -643,7 +642,7 @@ class YangTemplate {
         var boolean isStatusDeprecated = choiceNode.status == Status::DEPRECATED
         '''
             choice «choiceNode.getQName.localName» {
-                «FOR child : choiceNode.cases»
+                «FOR child : choiceNode.cases.values»
                     «writeDataSchemaNode(child)»
                 «ENDFOR»
                 «IF isStatusDeprecated»
@@ -696,8 +695,8 @@ class YangTemplate {
             «IF child instanceof LeafListSchemaNode»
                 «writeLeafListSchemaNode(child)»
             «ENDIF»
-            «IF child instanceof ChoiceCaseNode»
-                «writeChoiceCaseNode(child)»
+            «IF child instanceof CaseSchemaNode»
+                «writeCaseSchemaNode(child)»
             «ENDIF»
             «IF child instanceof ChoiceSchemaNode»
                 «writeChoiceNode(child)»

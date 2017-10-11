@@ -46,7 +46,7 @@ public class SnapshotBackedReadWriteTransactionTest {
         final NormalizedNode<?, ?> testNode = mock(NormalizedNode.class);
         final Optional<NormalizedNode<?, ?>> optional = Optional.of(testNode);
         doReturn("testNode").when(testNode).toString();
-        doReturn(optional).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.EMPTY);
+        doReturn(java.util.Optional.of(testNode)).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.EMPTY);
         assertTrue(snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.EMPTY).get());
         assertEquals(optional, snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.EMPTY).get());
     }
