@@ -67,7 +67,7 @@ public class ShardedDOMDataWriteTransactionTest {
                 Collections.singletonList(ROOT_ID));
         shardedDOMDataTree.registerDataTreeShard(ROOT_ID, rootShard, shardRegProducer);
         shardRegProducer.close();
-        final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("test"));
+        final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("", "test"));
 
         final DOMDataTreeProducer producer = shardedDOMDataTree.createProducer(Collections.singletonList(ROOT_ID));
         final DOMDataTreeCursorAwareTransaction transaction = producer.createTransaction(false);

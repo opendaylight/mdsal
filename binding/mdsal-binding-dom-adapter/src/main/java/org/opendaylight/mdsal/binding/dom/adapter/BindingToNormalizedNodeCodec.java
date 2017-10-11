@@ -19,10 +19,8 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -289,15 +287,13 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
 
     private Module getModuleBlocking(final Class<?> modeledClass) {
         final QNameModule moduleName = BindingReflections.getQNameModule(modeledClass);
-        final URI namespace = moduleName.getNamespace();
-        final Date revision = moduleName.getRevision();
         BindingRuntimeContext localRuntimeContext = runtimeContext();
         Module module = localRuntimeContext == null ? null :
-            localRuntimeContext.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision);
-        if (module == null && futureSchema.waitForSchema(namespace,revision)) {
+            localRuntimeContext.getSchemaContext().findModule(moduleName).orElse(null);
+        if (module == null && futureSchema.waitForSchema(moduleName)) {
             localRuntimeContext = runtimeContext();
             Preconditions.checkState(localRuntimeContext != null, "BindingRuntimeContext is not available.");
-            module = localRuntimeContext.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision);
+            module = localRuntimeContext.getSchemaContext().findModule(moduleName).orElse(null);
         }
         Preconditions.checkState(module != null, "Schema for %s is not available.", modeledClass);
         return module;

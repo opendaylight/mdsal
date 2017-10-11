@@ -9,12 +9,14 @@
 package org.opendaylight.mdsal.binding.javav2.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
-import java.text.SimpleDateFormat;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.Module;
 
 /**
@@ -49,19 +51,6 @@ public final class BindingMapping {
     public static final String MEMBER_PATTERN_LIST = "patterns";
     public static final String RPC_INPUT_SUFFIX = "Input";
     public static final String RPC_OUTPUT_SUFFIX = "Output";
-
-    private static final ThreadLocal<SimpleDateFormat> PACKAGE_DATE_FORMAT = new ThreadLocal<SimpleDateFormat>() {
-
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("yyMMdd");
-        }
-
-        @Override
-        public void set(final SimpleDateFormat value) {
-            throw new UnsupportedOperationException();
-        }
-    };
 
     private BindingMapping() {
         throw new UnsupportedOperationException("Utility class");
@@ -115,8 +104,18 @@ public final class BindingMapping {
 //            packageNameBuilder.append(PACKAGE_DATE_FORMAT.get().format(module.getRevision()));
 //        }
 
-        packageNameBuilder.append("rev");
-        packageNameBuilder.append(PACKAGE_DATE_FORMAT.get().format(module.getRevision()));
+        final Optional<Revision> optRev = module.getRevision();
+        if (optRev.isPresent()) {
+            // Revision is in format 2017-10-26, we want the output to be 171026, which is a matter of picking the
+            // right characters.
+            final String rev = optRev.get().toString();
+            checkArgument(rev.length() == 10, "Unsupported revision %s", rev);
+            packageNameBuilder.append("rev");
+            packageNameBuilder.append(rev.substring(2, 4)).append(rev.substring(5, 7)).append(rev.substring(8));
+        } else {
+            // No-revision packages are special
+            packageNameBuilder.append("norev");
+        }
         return packageNameBuilder.toString();
     }
 
