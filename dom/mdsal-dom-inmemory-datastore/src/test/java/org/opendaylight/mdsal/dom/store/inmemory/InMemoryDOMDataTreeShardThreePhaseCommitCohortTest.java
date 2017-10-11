@@ -28,20 +28,20 @@ import org.junit.Test;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateTip;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeModification;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataValidationFailedException;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.ModificationType;
 
 public class InMemoryDOMDataTreeShardThreePhaseCommitCohortTest {
 
-    private static final DataTreeCandidate DATA_TREE_CANDIDATE = mock(DataTreeCandidate.class);
+    private static final DataTreeCandidateTip DATA_TREE_CANDIDATE = mock(DataTreeCandidateTip.class);
     private static final DataTreeCandidateNode DATA_TREE_CANDIDATE_NODE = mock(DataTreeCandidateNode.class);
     private static final DataTreeModification DATA_TREE_MODIFICATION = mock(DataTreeModification.class);
     private static final InMemoryDOMDataTreeShardChangePublisher IN_MEMORY_DOM_DATA_TREE_SHARD_CHANGE_PUBLISHER =
             new InMemoryDOMDataTreeShardChangePublisher(MoreExecutors.directExecutor(), 1, DATA_TREE,
-                    YangInstanceIdentifier.of(QName.create("test")), ImmutableMap.of());
+                    YangInstanceIdentifier.of(QName.create("", "test")), ImmutableMap.of());
     private static final InMemoryDOMDataTreeShardThreePhaseCommitCohort
             IN_MEMORY_DOM_DATA_TREE_SHARD_THREE_PHASE_COMMIT_COHORT =
                 new InMemoryDOMDataTreeShardThreePhaseCommitCohort(DATA_TREE, DATA_TREE_MODIFICATION,

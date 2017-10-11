@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.util.concurrent.CheckedFuture;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,10 +23,10 @@ import org.junit.Test;
 import org.mockito.internal.util.io.IOUtil;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.Registration;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
-import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceException;
 import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 import org.opendaylight.yangtools.yang.model.repo.api.YangTextSchemaSource;
 
@@ -67,7 +66,7 @@ public class ScanningSchemaServiceProviderTest {
         assertFalse(schemaService.hasListeners());
 
         final SchemaContextHolder actualSchemaCtx = new SchemaContextHolder();
-        final SchemaContextListener listener = prepareSchemaCtxListener(actualSchemaCtx);
+        final SchemaContextListener listener = actualSchemaCtx::setSchemaContext;
         final ListenerRegistration<SchemaContextListener> registerSchemaContextListener =
                 schemaService.registerSchemaContextListener(listener);
         assertEquals(registerSchemaContextListener.getInstance(), listener);
@@ -82,7 +81,7 @@ public class ScanningSchemaServiceProviderTest {
 
         final SchemaContextHolder actualSchemaCtx = new SchemaContextHolder();
 
-        final SchemaContextListener schemaCtxListener = prepareSchemaCtxListener(actualSchemaCtx);
+        final SchemaContextListener schemaCtxListener = actualSchemaCtx::setSchemaContext;
         final ListenerRegistration<SchemaContextListener> registerSchemaContextListener =
                 schemaService.registerSchemaContextListener(schemaCtxListener);
         assertEquals(registerSchemaContextListener.getInstance(), schemaCtxListener);
@@ -128,9 +127,7 @@ public class ScanningSchemaServiceProviderTest {
         assertTrue(baseSchemaContext.getModules().size() == 1);
 
         final SchemaContextHolder actualSchemaCtx = new SchemaContextHolder();
-        final SchemaContextListener schemaCtxListener = prepareSchemaCtxListener(actualSchemaCtx);
-
-        schemaService.registerSchemaContextListener(schemaCtxListener);
+        schemaService.registerSchemaContextListener(actualSchemaCtx::setSchemaContext);
 
         assertEquals(baseSchemaContext, actualSchemaCtx.getSchemaContext());
 
@@ -147,13 +144,11 @@ public class ScanningSchemaServiceProviderTest {
         assertEquals(nextSchemaContext, actualSchemaCtx.getSchemaContext());
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void getSourceTest() throws Exception {
-        final SourceIdentifier sourceIdentifier = RevisionSourceIdentifier.create("odl-datastore-test", "2014-03-13");
-        final CheckedFuture<? extends YangTextSchemaSource, SchemaSourceException> source =
-                schemaService.getSource(sourceIdentifier);
-        final YangTextSchemaSource yangTextSchemaSource = source.checkedGet();
+        final SourceIdentifier sourceIdentifier = RevisionSourceIdentifier.create("odl-datastore-test",
+            Revision.of("2014-03-13"));
+        final YangTextSchemaSource yangTextSchemaSource = schemaService.getSource(sourceIdentifier).get();
         final Collection<String> lines = IOUtil.readLines(yangTextSchemaSource.openStream());
         assertEquals("module odl-datastore-test {", lines.iterator().next());
     }
@@ -171,16 +166,6 @@ public class ScanningSchemaServiceProviderTest {
     private void addYangs(final ScanningSchemaServiceProvider service) {
         final List<Registration> registerAvailableYangs = service.registerAvailableYangs(yangs);
         assertTrue(!registerAvailableYangs.isEmpty());
-    }
-
-    private SchemaContextListener prepareSchemaCtxListener(final SchemaContextHolder actualSchemaCtx) {
-        return new SchemaContextListener() {
-
-            @Override
-            public void onGlobalContextUpdated(final SchemaContext context) {
-                actualSchemaCtx.setSchemaContext(context);
-            }
-        };
     }
 
     private class SchemaContextHolder {

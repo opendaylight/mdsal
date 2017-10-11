@@ -62,25 +62,25 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
     private static Object createDefaultObject(final DataSchemaNode schema, final Codec<Object, Object> codec,
             final SchemaContext schemaContext) {
         if (schema instanceof LeafSchemaNode) {
-            Object defaultValue = ((LeafSchemaNode) schema).getDefault();
             TypeDefinition<?> type = ((LeafSchemaNode) schema).getType();
-            if (defaultValue != null) {
+            java.util.Optional<? extends Object> defaultValue = type.getDefaultValue();
+            if (defaultValue.isPresent()) {
                 if (type instanceof IdentityrefTypeDefinition) {
-                    return qnameDomValueFromString(codec, schema, (String) defaultValue, schemaContext);
+                    return qnameDomValueFromString(codec, schema, (String) defaultValue.get(), schemaContext);
                 }
                 return domValueFromString(codec, type, defaultValue);
-            } else {
-                while (type.getBaseType() != null && type.getDefaultValue() == null) {
-                    type = type.getBaseType();
-                }
+            }
 
-                defaultValue = type.getDefaultValue();
-                if (defaultValue != null) {
-                    if (type instanceof IdentityrefTypeDefinition) {
-                        return qnameDomValueFromString(codec, schema, (String) defaultValue, schemaContext);
-                    }
-                    return domValueFromString(codec, type, defaultValue);
+            while (type.getBaseType() != null && !type.getDefaultValue().isPresent()) {
+                type = type.getBaseType();
+            }
+
+            defaultValue = type.getDefaultValue();
+            if (defaultValue != null) {
+                if (type instanceof IdentityrefTypeDefinition) {
+                    return qnameDomValueFromString(codec, schema, (String) defaultValue.get(), schemaContext);
                 }
+                return domValueFromString(codec, type, defaultValue);
             }
         }
         return null;
@@ -92,24 +92,23 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
         if (prefixEndIndex != -1) {
             final String defaultValuePrefix = defaultValue.substring(0, prefixEndIndex);
 
-            final Module module = schemaContext.findModuleByNamespaceAndRevision(schema.getQName().getNamespace(),
-                    schema.getQName().getRevision());
+            final Module module = schemaContext.findModule(schema.getQName().getModule()).get();
 
             if (module.getPrefix().equals(defaultValuePrefix)) {
-                return codec
-                        .deserialize(QName.create(module.getQNameModule(), defaultValue.substring(prefixEndIndex + 1)));
-            } else {
-                final Set<ModuleImport> imports = module.getImports();
-                for (final ModuleImport moduleImport : imports) {
-                    if (moduleImport.getPrefix().equals(defaultValuePrefix)) {
-                        final Module importedModule = schemaContext.findModuleByName(moduleImport.getModuleName(),
-                                moduleImport.getRevision());
-                        return codec.deserialize(QName.create(importedModule.getQNameModule(),
-                                defaultValue.substring(prefixEndIndex + 1)));
-                    }
-                }
-                return null;
+                return codec.deserialize(QName.create(module.getQNameModule(),
+                    defaultValue.substring(prefixEndIndex + 1)));
             }
+
+            final Set<ModuleImport> imports = module.getImports();
+            for (final ModuleImport moduleImport : imports) {
+                if (moduleImport.getPrefix().equals(defaultValuePrefix)) {
+                    final Module importedModule = schemaContext.findModule(moduleImport.getModuleName(),
+                        moduleImport.getRevision()).get();
+                    return codec.deserialize(QName.create(importedModule.getQNameModule(),
+                        defaultValue.substring(prefixEndIndex + 1)));
+                }
+            }
+            return null;
         }
 
         return codec.deserialize(QName.create(schema.getQName(), defaultValue));

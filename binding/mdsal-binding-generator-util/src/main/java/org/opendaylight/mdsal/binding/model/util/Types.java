@@ -8,16 +8,19 @@
 package org.opendaylight.mdsal.binding.model.util;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Future;
 import javax.annotation.Nullable;
@@ -32,7 +35,6 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
-import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 
 public final class Types {
     private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
@@ -259,9 +261,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents concrete JAVA type with changed restriction values.
-     *
      */
     private static final class BaseTypeWithRestrictionsImpl extends AbstractBaseType implements BaseTypeWithRestrictions {
         private final Restrictions restrictions;
@@ -287,9 +287,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents parametrized JAVA type.
-     *
      */
     private static class ParametrizedTypeImpl extends AbstractBaseType implements ParameterizedType {
         /**
@@ -331,9 +329,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents JAVA bounded wildcard type.
-     *
      */
     private static class WildcardTypeImpl extends AbstractBaseType implements WildcardType {
         /**
@@ -349,20 +345,47 @@ public final class Types {
         }
     }
 
-    public static <T extends Number> DefaultRestrictions<T> getDefaultRestrictions(final T min, final T max) {
+    public static <T extends Number& Comparable<T>> DefaultRestrictions<T> getDefaultRestrictions(final T min,
+            final T max) {
         return new DefaultRestrictions<>(min, max);
     }
 
-    private static final class DefaultRestrictions<T extends Number> implements Restrictions {
+    private static final class DefaultRestrictions<T extends Number & Comparable<T>> implements Restrictions {
         private final T min;
         private final T max;
-        private final List<RangeConstraint> rangeConstraints;
+        private final RangeConstraint<?> rangeConstraint;
 
         private DefaultRestrictions(final T min, final T max) {
             this.min = Preconditions.checkNotNull(min);
             this.max = Preconditions.checkNotNull(max);
-            this.rangeConstraints = Collections.singletonList(BaseConstraints.newRangeConstraint(min, max, Optional
-                    .<String>absent(), Optional.<String>absent()));
+
+            this.rangeConstraint = new RangeConstraint<T>() {
+
+                @Override
+                public Optional<String> getErrorAppTag() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public Optional<String> getErrorMessage() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public Optional<String> getDescription() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public Optional<String> getReference() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public RangeSet<T> getAllowedRanges() {
+                    return ImmutableRangeSet.of(Range.closed(min, max));
+                }
+            };
         }
 
         @Override
@@ -371,8 +394,8 @@ public final class Types {
         }
 
         @Override
-        public List<RangeConstraint> getRangeConstraints() {
-            return this.rangeConstraints;
+        public Optional<? extends RangeConstraint<?>> getRangeConstraint() {
+            return Optional.of(rangeConstraint);
         }
 
         @Override
@@ -381,8 +404,8 @@ public final class Types {
         }
 
         @Override
-        public List<LengthConstraint> getLengthConstraints() {
-            return Collections.emptyList();
+        public Optional<LengthConstraint> getLengthConstraint() {
+            return Optional.empty();
         }
     }
 }
