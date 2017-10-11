@@ -414,6 +414,8 @@ final class GenHelperUtil {
         //this requires valid semantics in YANG model
         String augIdentifier = null;
         for (AugmentationSchemaNode aug : schemaPathAugmentListEntry) {
+            // FIXME: when there're multiple augment identifiers for augmentations of same target,
+            // it would pick the first identifier.
             augIdentifier = getAugmentIdentifier(aug.getUnknownSchemaNodes());
             break;
         }
