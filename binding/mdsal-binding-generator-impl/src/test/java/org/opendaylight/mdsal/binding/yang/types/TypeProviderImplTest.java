@@ -16,7 +16,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
-import java.io.File;
 import java.net.URI;
 import java.util.NoSuchElementException;
 import org.junit.Test;
@@ -44,12 +43,11 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class TypeProviderImplTest {
 
-    @Test (expected = IllegalArgumentException.class)
-    public void testLeafRefRelativeSelfReference() throws Exception {
-        File relative = new File(getClass().getResource("/leafref/leafref-relative-invalid.yang").toURI());
-
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(relative);
-        final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrr")).iterator()
+    @Test(expected = IllegalArgumentException.class)
+    public void testLeafRefRelativeSelfReference() {
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
+            "/leafref/leafref-relative-invalid.yang");
+        final Module moduleRelative = schemaContext.findModuleByNamespace(URI.create("urn:xml:ns:yang:lrr")).iterator()
                 .next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
@@ -63,12 +61,11 @@ public class TypeProviderImplTest {
         assertNotNull(leafrefResolvedType);
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void testLeafRefAbsoluteSelfReference() throws Exception {
-        File relative = new File(getClass().getResource("/leafref/leafref-absolute-invalid.yang").toURI());
-
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(relative);
-        final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lra")).iterator()
+    @Test(expected = IllegalArgumentException.class)
+    public void testLeafRefAbsoluteSelfReference() {
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
+            "/leafref/leafref-absolute-invalid.yang");
+        final Module moduleRelative = schemaContext.findModuleByNamespace(URI.create("urn:xml:ns:yang:lra")).iterator()
                 .next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
@@ -83,11 +80,9 @@ public class TypeProviderImplTest {
     }
 
     @Test
-    public void testLeafRefRelativeAndAbsoluteValidReference() throws Exception {
-        File valid = new File(getClass().getResource("/leafref/leafref-valid.yang").toURI());
-
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(valid);
-        final Module moduleValid = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrv")).iterator()
+    public void testLeafRefRelativeAndAbsoluteValidReference() {
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/leafref/leafref-valid.yang");
+        final Module moduleValid = schemaContext.findModuleByNamespace(URI.create("urn:xml:ns:yang:lrv")).iterator()
                 .next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
@@ -110,10 +105,8 @@ public class TypeProviderImplTest {
     }
 
     @Test
-    public void testMethodsOfTypeProviderImpl() throws Exception {
-        final File abstractTopology = new File(getClass().getResource("/base-yang-types.yang").toURI());
-
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(abstractTopology);
+    public void testMethodsOfTypeProviderImpl() {
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/base-yang-types.yang");
 
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 

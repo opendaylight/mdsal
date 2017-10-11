@@ -188,9 +188,9 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
         Preconditions.checkNotNull(cls,"Supplied augmentation must not be null.");
 
         @SuppressWarnings({"unchecked","rawtypes"})
-        final Optional<DataContainerCodecContext<?,?>> augCtx= context.possibleStreamChild((Class) cls);
-        if(augCtx.isPresent()) {
-            final Optional<NormalizedNode<?, ?>> augData = data.getChild(augCtx.get().getDomPathArgument());
+        final Optional<DataContainerCodecContext<?,?>> augCtx = context.possibleStreamChild((Class) cls);
+        if (augCtx.isPresent()) {
+            final java.util.Optional<NormalizedNode<?, ?>> augData = data.getChild(augCtx.get().getDomPathArgument());
             if (augData.isPresent()) {
                 return augCtx.get().deserialize(augData.get());
             }

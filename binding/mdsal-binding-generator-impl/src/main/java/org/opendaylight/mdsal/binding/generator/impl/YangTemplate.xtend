@@ -385,9 +385,9 @@ class YangTemplate {
             return ''
         '''
             identity «identity.QName.localName» {
-                «IF identity.baseIdentity !== null»
-                base "()«identity.baseIdentity»";
-                «ENDIF»
+                «FOR baseIdentity : identity.baseIdentities»
+                base "()«baseIdentity»";
+                «ENDFOR»
                 «IF !identity.description.nullOrEmpty»
                 description
                     "«identity.description»";
