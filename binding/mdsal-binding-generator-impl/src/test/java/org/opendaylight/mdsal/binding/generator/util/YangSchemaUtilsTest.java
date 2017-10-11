@@ -22,13 +22,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
-import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
+import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -41,15 +42,14 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
 public class YangSchemaUtilsTest {
 
-    private static final AugmentationSchema AUGMENTATION_SCHEMA = mock(AugmentationSchema.class);
+    private static final AugmentationSchemaNode AUGMENTATION_SCHEMA = mock(AugmentationSchemaNode.class);
     private static final UnknownSchemaNode UNKNOWN_SCHEMA_NODE = mock(UnknownSchemaNode.class);
-    private static final QName Q_NAME =
-            QName.create(URI.create("testUri"), new Date(System.currentTimeMillis()), "foo_augment");
+    private static final QName Q_NAME = QName.create(URI.create("testUri"), "foo_augment");
 
     @Before
     public void setUp() throws Exception {
         doReturn(ImmutableList.of(UNKNOWN_SCHEMA_NODE)).when(AUGMENTATION_SCHEMA).getUnknownSchemaNodes();
-        doReturn(QName.create(YangSchemaUtils.AUGMENT_IDENTIFIER)).when(UNKNOWN_SCHEMA_NODE).getNodeType();
+        doReturn(QName.create("", YangSchemaUtils.AUGMENT_IDENTIFIER)).when(UNKNOWN_SCHEMA_NODE).getNodeType();
         doReturn(Q_NAME).when(UNKNOWN_SCHEMA_NODE).getQName();
     }
 
@@ -85,9 +85,9 @@ public class YangSchemaUtilsTest {
 
         context = mock(SchemaContext.class);
         final Module container = mock(Module.class);
-        doReturn(null).when(context).findModuleByNamespaceAndRevision(any(), any());
+        doReturn(Optional.empty()).when(context).findModule(any(QNameModule.class));
         assertNull(YangSchemaUtils.findTypeDefinition(context, SchemaPath.create(qNames, false)));
-        doReturn(container).when(context).findModuleByNamespaceAndRevision(any(), any());
+        doReturn(Optional.of(container)).when(context).findModule(any(QNameModule.class));
 
         final DataSchemaNode node = mock(DataSchemaNode.class);
         doReturn(node).when(container).getDataChildByName((QName) any());
@@ -114,7 +114,7 @@ public class YangSchemaUtilsTest {
         final ChoiceSchemaNode choiceNode =
                 mock(ChoiceSchemaNode.class, withSettings().extraInterfaces(DataSchemaNode.class));
         doReturn(choiceNode).when(container).getDataChildByName((QName) any());
-        final ChoiceCaseNode caseNode = mock(ChoiceCaseNode.class);
+        final CaseSchemaNode caseNode = mock(CaseSchemaNode.class);
         doReturn(caseNode).when(choiceNode).getCaseNodeByName((QName) any());
         doReturn(ImmutableSet.of(typeDefinition)).when(caseNode).getTypeDefinitions();
         assertEquals(typeDefinition,

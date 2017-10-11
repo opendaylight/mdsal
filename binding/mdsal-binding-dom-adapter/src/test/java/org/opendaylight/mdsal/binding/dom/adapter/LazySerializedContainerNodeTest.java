@@ -16,9 +16,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
@@ -32,8 +32,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
+import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
-import org.opendaylight.yangtools.yang.parser.stmt.rfc6020.effective.RpcEffectiveStatementImpl;
 
 public class LazySerializedContainerNodeTest {
 
@@ -44,7 +44,7 @@ public class LazySerializedContainerNodeTest {
         final BindingNormalizedNodeCodecRegistry codec = mock(BindingNormalizedNodeCodecRegistry.class);
         final ContainerNode containerNode = mock(ContainerNode.class);
         doReturn(containerNode).when(codec).toNormalizedNodeRpcData(any());
-        doReturn(Optional.absent()).when(containerNode).getChild(any());
+        doReturn(Optional.empty()).when(containerNode).getChild(any());
 
         final BindingBrokerTestFactory bindingBrokerTestFactory = new BindingBrokerTestFactory();
         bindingBrokerTestFactory.setExecutor(MoreExecutors.newDirectExecutorService());
@@ -53,9 +53,9 @@ public class LazySerializedContainerNodeTest {
 
         final ImmutableBiMap<?, ?> biMap =
                 bindingTestContext.getCodec().getRpcMethodToSchema(OpendaylightTestRpcServiceService.class);
-        rpcName = ((RpcEffectiveStatementImpl) biMap.values().iterator().next()).getPath();
+        rpcName = ((RpcDefinition) biMap.values().iterator().next()).getPath();
         final LeafNode<?> leafNode = ImmutableLeafNodeBuilder.create().withNodeIdentifier(NodeIdentifier
-                .create(QName.create("test"))).build();
+                .create(QName.create("", "test"))).withValue("").build();
         final NormalizedNode<?, ?> normalizedNode = LazySerializedContainerNode.create(rpcName, dataObject, codec);
         assertNotNull(normalizedNode);
         final LazySerializedContainerNode lazySerializedContainerNode =

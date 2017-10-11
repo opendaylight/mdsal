@@ -11,7 +11,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Range;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.slf4j.Logger;
@@ -47,14 +47,15 @@ abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
         return minValue.compareTo(minToEnforce) < 0;
     }
 
-    private Collection<String> createExpressions(final Collection<RangeConstraint> constraints) {
+    private Collection<String> createExpressions(final RangeConstraint<?> constraint) {
+        final Set<? extends Range<? extends Number>> constraints = constraint.getAllowedRanges().asRanges();
         final Collection<String> ret = new ArrayList<>(constraints.size());
 
-        for (RangeConstraint r : constraints) {
-            final T min = getValue(r.getMin());
+        for (Range<? extends Number> r : constraints) {
+            final T min = getValue(r.lowerEndpoint());
             final boolean needMin = needsMinimumEnforcement(min);
 
-            final T max = getValue(r.getMax());
+            final T max = getValue(r.upperEndpoint());
             final boolean needMax = needsMaximumEnforcement(max);
 
             if (!needMin && !needMax) {
@@ -79,20 +80,15 @@ abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
         return ret;
     }
 
-    private String createRangeString(final Collection<RangeConstraint> constraints) {
-        final List<Range<T>> ranges = new ArrayList<>(constraints.size());
-
-        for (RangeConstraint c : constraints) {
-            ranges.add(Range.closed(getValue(c.getMin()), getValue(c.getMax())));
-        }
-
-        return ranges.toString();
+    private static String createRangeString(final RangeConstraint<?> constraints) {
+        return constraints.getAllowedRanges().toString();
     }
 
     @Override
-    protected final String generateRangeCheckerImplementation(final String checkerName, final Collection<RangeConstraint> constraints) {
+    protected final String generateRangeCheckerImplementation(final String checkerName,
+            final RangeConstraint<?> constraint) {
         final StringBuilder sb = new StringBuilder();
-        final Collection<String> expressions = createExpressions(constraints);
+        final Collection<String> expressions = createExpressions(constraint);
 
         sb.append("private static void ").append(checkerName).append("(final ").append(primitiveName).append(" value) {\n");
 
@@ -104,7 +100,7 @@ abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
             }
 
             sb.append("    throw new IllegalArgumentException(String.format(\"Invalid range: %s, expected: ")
-              .append(createRangeString(constraints)).append(".\", value));\n");
+              .append(createRangeString(constraint)).append(".\", value));\n");
         }
 
         sb.append("}\n");

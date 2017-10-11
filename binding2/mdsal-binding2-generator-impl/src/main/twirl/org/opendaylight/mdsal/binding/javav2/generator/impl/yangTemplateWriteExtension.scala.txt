@@ -18,14 +18,14 @@
 
 @(extension: ExtensionDefinition)
 extension @{extension.getQName().getLocalName()}@if(extension.getArgument() == null || extension.getArgument().isEmpty()){;} else { {
-    @if(extension.getDescription() != null && !extension.getDescription().isEmpty()) {
-        description "@{extension.getDescription()}";
+    @if(extension.getDescription().isPresent()) {
+        description "@{extension.getDescription().get()}";
     }
     @if(extension.getArgument() != null && !extension.getArgument().isEmpty()) {
         argument @{extension.getArgument()};
     }
-    @if(extension.getReference() != null && !extension.getReference().isEmpty()) {
-        reference "@{extension.getReference()}";
+    @if(extension.getReference().isPresent()) {
+        reference "@{extension.getReference().get()}";
     }
     @if(extension.getStatus() != Status.CURRENT) {
         status @{extension.getStatus()};
