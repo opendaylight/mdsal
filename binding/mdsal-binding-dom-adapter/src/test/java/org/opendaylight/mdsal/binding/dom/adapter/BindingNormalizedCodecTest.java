@@ -13,12 +13,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.Multimaps;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.SetMultimap;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -40,11 +41,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.ModuleIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.util.AbstractSchemaContext;
@@ -171,22 +172,22 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
     static class EmptySchemaContext extends AbstractSchemaContext {
         @Override
         public Set<Module> getModules() {
-            return Collections.emptySet();
+            return ImmutableSet.of();
         }
 
         @Override
-        protected Map<ModuleIdentifier, String> getIdentifiersToSources() {
-            return Collections.emptyMap();
+        protected Map<QNameModule, Module> getModuleMap() {
+            return ImmutableMap.of();
         }
 
         @Override
         protected SetMultimap<URI, Module> getNamespaceToModules() {
-            return Multimaps.forMap(Collections.emptyMap());
+            return ImmutableSetMultimap.of();
         }
 
         @Override
         protected SetMultimap<String, Module> getNameToModules() {
-            return Multimaps.forMap(Collections.emptyMap());
+            return ImmutableSetMultimap.of();
         }
     }
 }

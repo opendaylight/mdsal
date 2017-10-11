@@ -7,12 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -165,7 +165,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     @SuppressWarnings("unchecked")
     @Override
     public <C extends ChildOf<? super T>> Collection<DataObjectModification<C>>
-            getModifiedChildren(Class<C> childType) {
+            getModifiedChildren(final Class<C> childType) {
         List<DataObjectModification<C>> children = new ArrayList<>();
         for (DataObjectModification<? extends DataObject> potential : getModifiedChildren()) {
             if (childType.isAssignableFrom(potential.getDataType())) {

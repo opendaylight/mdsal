@@ -23,11 +23,11 @@ public class DOMDataTreePrefixTableEntryTest {
         final DOMDataTreePrefixTableEntry<Object> domDataTreePrefixTableEntry = new DOMDataTreePrefixTableEntry<>();
         final PathArgument pathArgument = mock(PathArgument.class);
         final Object testObject = new Object();
-        final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("test"));
+        final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("", "test"));
 
         assertEquals(pathArgument, new DOMDataTreePrefixTableEntry<>(pathArgument).getIdentifier());
         domDataTreePrefixTableEntry.store(yangInstanceIdentifier, testObject);
-        assertEquals(QName.create("test"),
+        assertEquals(QName.create("", "test"),
                 domDataTreePrefixTableEntry.lookup(yangInstanceIdentifier).getIdentifier().getNodeType());
         domDataTreePrefixTableEntry.remove(yangInstanceIdentifier);
         domDataTreePrefixTableEntry.remove(yangInstanceIdentifier);
