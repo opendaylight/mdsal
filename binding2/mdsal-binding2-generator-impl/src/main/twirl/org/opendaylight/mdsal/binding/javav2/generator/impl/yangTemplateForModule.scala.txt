@@ -14,7 +14,6 @@
 ***********************************************************@
 
 @import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate
-@import org.opendaylight.yangtools.yang.common.SimpleDateFormatUtil
 @import org.opendaylight.yangtools.yang.model.api.Module
 @import org.opendaylight.yangtools.yang.model.api.DocumentedNode
 @import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement
@@ -34,19 +33,24 @@
         @if(module.getImports() != null && !module.getImports().isEmpty()) {
             @for(moduleImport <- module.getImports()) {
                 @if(moduleImport != null && moduleImport.getModuleName() != "") {
-                    import @{moduleImport.getModuleName()} { prefix "@{moduleImport.getPrefix()}"; revision-date @{SimpleDateFormatUtil.getRevisionFormat().format(moduleImport.getRevision())}; }
+                    import @{moduleImport.getModuleName()} {
+                        prefix "@{moduleImport.getPrefix()}";
+                        @if(moduleImport.getRevision().isPresent()) {
+                            revision-date @{moduleImport.getRevision().get().toString()};
+                        }
+                    }
                 }
             }
         }
-        @if(module.getRevision() != null) {
+        @if(module.getRevision().isPresent()) {
             @for(effectiveStatement <- module.asInstanceOf[EffectiveStatement[_, _]].effectiveSubstatements()){
                 @if(effectiveStatement.getDeclared().isInstanceOf[RevisionStatement]){
-                    @if(effectiveStatement.asInstanceOf[DocumentedNode].getDescription() == null || effectiveStatement.asInstanceOf[DocumentedNode].getDescription().isEmpty()){
-                        revision @{SimpleDateFormatUtil.getRevisionFormat().format(module.getRevision())};
-                    } else {
-                        revision @{SimpleDateFormatUtil.getRevisionFormat().format(module.getRevision())} {
-                            description "@{effectiveStatement.asInstanceOf[DocumentedNode].getDescription()}";
+                    @if(effectiveStatement.asInstanceOf[DocumentedNode].getDescription().isPresent()){
+                        revision @{module.getRevision().get().toString()} {
+                            description "@{effectiveStatement.asInstanceOf[DocumentedNode].getDescription().get()}";
                         }
+                    } else {
+                        revision @{module.getRevision().get().toString()};
                     }
                 }
             }

@@ -31,12 +31,12 @@ public class AdapterBuilderTest extends AdapterBuilder {
     }
 
     @Override
-    public Set<? extends Class> getRequiredDelegates() {
+    public Set<? extends Class<?>> getRequiredDelegates() {
         return DELEGATES.keySet();
     }
 
     @Override
-    protected Object createInstance(ClassToInstanceMap delegates) {
+    protected Object createInstance(final ClassToInstanceMap delegates) {
         return delegates;
     }
 }
