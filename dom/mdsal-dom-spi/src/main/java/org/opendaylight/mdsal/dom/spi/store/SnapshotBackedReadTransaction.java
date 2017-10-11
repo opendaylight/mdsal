@@ -65,7 +65,7 @@ public final class SnapshotBackedReadTransaction<T> extends
         }
 
         try {
-            return Futures.immediateCheckedFuture(snapshot.readNode(path));
+            return Futures.immediateCheckedFuture(Optional.fromJavaUtil(snapshot.readNode(path)));
         } catch (Exception e) {
             LOG.error("Tx: {} Failed Read of {}", getIdentifier(), path, e);
             return Futures.immediateFailedCheckedFuture(new ReadFailedException("Read failed", e));

@@ -12,11 +12,12 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Preconditions;
 import java.net.URI;
-import java.util.Date;
 import java.util.Iterator;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -34,14 +35,14 @@ public final class YangSchemaUtils {
         throw new UnsupportedOperationException("Helper class. Instantiation is prohibited");
     }
 
-    public static QName getAugmentationQName(final AugmentationSchema augmentation) {
+    public static QName getAugmentationQName(final AugmentationSchemaNode augmentation) {
         checkNotNull(augmentation, "Augmentation must not be null.");
         final QName identifier = getAugmentationIdentifier(augmentation);
         if(identifier != null) {
             return identifier;
         }
         URI namespace = null;
-        Date revision = null;
+        Optional<Revision> revision = null;
         if(augmentation instanceof NamespaceRevisionAware) {
             namespace = ((NamespaceRevisionAware) augmentation).getNamespace();
             revision = ((NamespaceRevisionAware) augmentation).getRevision();
@@ -58,11 +59,11 @@ public final class YangSchemaUtils {
         }
         checkState(namespace != null, "Augmentation namespace must not be null");
         checkState(revision != null, "Augmentation revision must not be null");
-        // FIXME: Allways return a qname with module namespace.
-        return QName.create(namespace,revision, "foo_augment");
+        // FIXME: Always return a qname with module namespace.
+        return QName.create(namespace, revision, "foo_augment");
     }
 
-    public static QName getAugmentationIdentifier(final AugmentationSchema augmentation) {
+    public static QName getAugmentationIdentifier(final AugmentationSchemaNode augmentation) {
         for(final UnknownSchemaNode extension : augmentation.getUnknownSchemaNodes()) {
             if(AUGMENT_IDENTIFIER.equals(extension.getNodeType().getLocalName())) {
                 return extension.getQName();
@@ -77,7 +78,7 @@ public final class YangSchemaUtils {
         Preconditions.checkArgument(arguments.hasNext(), "Type Definition path must contain at least one element.");
 
         QName currentArg = arguments.next();
-        DataNodeContainer currentNode = context.findModuleByNamespaceAndRevision(currentArg.getNamespace(), currentArg.getRevision());
+        DataNodeContainer currentNode = context.findModule(currentArg.getModule()).orElse(null);
         if(currentNode == null) {
             return null;
         }

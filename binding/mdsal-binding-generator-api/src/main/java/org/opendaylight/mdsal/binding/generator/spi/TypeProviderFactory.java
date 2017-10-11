@@ -7,10 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.generator.spi;
 
-import org.opendaylight.yangtools.yang.model.api.ModuleIdentifier;
+import org.opendaylight.yangtools.yang.model.repo.api.SourceIdentifier;
 
 //FIXME not implemented anywhere
 public interface TypeProviderFactory {
 
-    TypeProvider providerFor(ModuleIdentifier module);
+    TypeProvider providerFor(SourceIdentifier module);
 }
