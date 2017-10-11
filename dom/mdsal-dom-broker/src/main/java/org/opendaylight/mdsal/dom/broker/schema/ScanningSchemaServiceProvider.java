@@ -8,15 +8,16 @@
 package org.opendaylight.mdsal.dom.broker.schema;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
@@ -112,7 +113,7 @@ public class ScanningSchemaServiceProvider
 
     @Override
     public SchemaContext getGlobalContext() {
-        return contextResolver.getSchemaContext().orNull();
+        return contextResolver.getSchemaContext().orElse(null);
     }
 
     @Override
@@ -135,7 +136,13 @@ public class ScanningSchemaServiceProvider
     @Override
     public CheckedFuture<? extends YangTextSchemaSource, SchemaSourceException>
             getSource(final SourceIdentifier sourceIdentifier) {
-        return contextResolver.getSource(sourceIdentifier);
+        return Futures.makeChecked(contextResolver.getSource(sourceIdentifier), cause -> {
+            if (cause instanceof SchemaSourceException) {
+                return (SchemaSourceException) cause;
+            }
+
+            return new SchemaSourceException("Failed to acquire source", cause);
+        });
     }
 
     @Override

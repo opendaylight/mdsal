@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -136,27 +137,28 @@ public class YangModuleInfoCompilationTest {
 
     private static void generateTestSources(final String resourceDirPath, final File sourcesOutputDir) throws Exception {
         final List<File> sourceFiles = getSourceFiles(resourceDirPath);
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
-        codegen.generateSources(context, sourcesOutputDir, context.getModules());
+        codegen.generateSources(context, sourcesOutputDir, context.getModules(), module -> Optional.empty());
     }
 
     @Test
     public void generateTestSourcesWithAdditionalConfig() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/yang-module-info");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
         codegen.setBuildContext(new DefaultBuildContext());
         codegen.setResourceBaseDir(null);
         codegen.setMavenProject(new MavenProject());
         codegen.setAdditionalConfig(ImmutableMap.of("test", "test"));
-        Collection<File> files = codegen.generateSources(context, null, context.getModules());
+        Collection<File> files = codegen.generateSources(context, null, context.getModules(),
+            module -> Optional.empty());
         assertFalse(files.isEmpty());
-        files.forEach((file -> {
+        files.forEach(file -> {
             deleteTestDir(file);
             assertFalse(file.exists());
-        }));
+        });
     }
 
     private static void testCompilation(final File sourcesOutputDir, final File compiledOutputDir) {

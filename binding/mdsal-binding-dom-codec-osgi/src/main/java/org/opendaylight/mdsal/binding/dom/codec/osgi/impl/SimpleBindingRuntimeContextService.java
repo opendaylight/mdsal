@@ -12,6 +12,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verifyNotNull;
 
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.binding.dom.codec.osgi.BindingRuntimeContextListener;
 import org.opendaylight.mdsal.binding.dom.codec.osgi.BindingRuntimeContextService;
@@ -47,7 +48,13 @@ final class SimpleBindingRuntimeContextService extends
     @Override
     public CheckedFuture<? extends YangTextSchemaSource, SchemaSourceException> getSource(
             final SourceIdentifier sourceIdentifier) {
-        return sourceProvider.getSource(sourceIdentifier);
+        return Futures.makeChecked(sourceProvider.getSource(sourceIdentifier), cause -> {
+            if (cause instanceof SchemaSourceException) {
+                return (SchemaSourceException) cause;
+            }
+
+            return new SchemaSourceException("Failed to acquire source", cause);
+        });
     }
 
     @Override

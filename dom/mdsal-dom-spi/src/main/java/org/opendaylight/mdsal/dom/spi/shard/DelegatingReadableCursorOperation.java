@@ -23,7 +23,7 @@ abstract class DelegatingReadableCursorOperation extends ForwardingObject implem
 
     @Override
     public Optional<NormalizedNode<?, ?>> readNode(final PathArgument arg) {
-        return delegate().readNode(arg);
+        return Optional.fromJavaUtil(delegate().readNode(arg));
     }
 
     @Override
