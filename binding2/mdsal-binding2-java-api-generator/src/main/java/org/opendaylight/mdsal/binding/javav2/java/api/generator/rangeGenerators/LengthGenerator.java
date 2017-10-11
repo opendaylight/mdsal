@@ -8,10 +8,9 @@
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators;
 
 import com.google.common.collect.Range;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -26,19 +25,20 @@ public final class LengthGenerator {
         return "check" + member + "Length";
     }
 
-    private static Collection<String> createExpressions(final Collection<LengthConstraint> constraints) {
+    private static Collection<String> createExpressions(final LengthConstraint constraint) {
+        final Set<Range<Integer>> constraints = constraint.getAllowedRanges().asRanges();
         final Collection<String> ret = new ArrayList<>(constraints.size());
 
-        for (LengthConstraint l : constraints) {
+        for (Range<Integer> l : constraints) {
             final StringBuilder sb = new StringBuilder("length >");
 
             // We have to deal with restrictions being out of integer's range
-            if (l.getMin().longValue() <= Integer.MAX_VALUE) {
+            if (l.lowerEndpoint() <= Integer.MAX_VALUE) {
                 sb.append('=');
             }
-            sb.append(' ').append(l.getMin().intValue());
+            sb.append(' ').append(l.lowerEndpoint());
 
-            final int max = l.getMax().intValue();
+            final int max = l.upperEndpoint();
             if (max < Integer.MAX_VALUE) {
                 sb.append(" && length <= ").append(max);
             }
@@ -49,19 +49,13 @@ public final class LengthGenerator {
         return ret;
     }
 
-    private static String createLengthString(final Collection<LengthConstraint> constraints) {
-        final List<Range<BigInteger>> ranges = new ArrayList<>(constraints.size());
-
-        for (LengthConstraint c : constraints) {
-            ranges.add(Range.closed(new BigInteger(c.getMin().toString()), new BigInteger(c.getMax().toString())));
-        }
-
-        return ranges.toString();
+    private static String createLengthString(final LengthConstraint constraint) {
+        return new ArrayList<>(constraint.getAllowedRanges().asRanges()).toString();
     }
 
-    private static String generateArrayLengthChecker(final String member, final Collection<LengthConstraint> constraints) {
+    private static String generateArrayLengthChecker(final String member, final LengthConstraint constraint) {
         final StringBuilder sb = new StringBuilder();
-        final Collection<String> expressions = createExpressions(constraints);
+        final Collection<String> expressions = createExpressions(constraint);
 
         sb.append("private static void ").append(lengthCheckerName(member)).append("(final byte[] value) {\n");
 
@@ -75,7 +69,7 @@ public final class LengthGenerator {
             }
 
             sb.append("    throw new IllegalArgumentException(String.format(\"Invalid length: %s, expected: ")
-              .append(createLengthString(constraints)).append(".\", java.util.Arrays.toString(value)));\n");
+              .append(createLengthString(constraint)).append(".\", java.util.Arrays.toString(value)));\n");
         }
 
         sb.append("}\n");
@@ -83,9 +77,9 @@ public final class LengthGenerator {
         return sb.toString();
     }
 
-    private static String generateStringLengthChecker(final String member, final Collection<LengthConstraint> constraints) {
+    private static String generateStringLengthChecker(final String member, final LengthConstraint constraint) {
         final StringBuilder sb = new StringBuilder();
-        final Collection<String> expressions = createExpressions(constraints);
+        final Collection<String> expressions = createExpressions(constraint);
 
         sb.append("private static void ").append(lengthCheckerName(member)).append("(final String value) {\n");
 
@@ -99,7 +93,7 @@ public final class LengthGenerator {
             }
 
             sb.append("    throw new IllegalArgumentException(String.format(\"Invalid length: %s, expected: ")
-              .append(createLengthString(constraints)).append(".\", value));\n");
+              .append(createLengthString(constraint)).append(".\", value));\n");
         }
 
         sb.append("}\n");
@@ -107,12 +101,12 @@ public final class LengthGenerator {
         return sb.toString();
     }
 
-    public static String generateLengthChecker(final String member, final Type type, final Collection<LengthConstraint>
-            constraints) {
+    public static String generateLengthChecker(final String member, final Type type,
+            final LengthConstraint constraint) {
         if (TypeUtils.getBaseYangType(type).getName().contains("[")) {
-            return generateArrayLengthChecker(member, constraints);
+            return generateArrayLengthChecker(member, constraint);
         } else {
-            return generateStringLengthChecker(member, constraints);
+            return generateStringLengthChecker(member, constraint);
         }
     }
 

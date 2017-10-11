@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil;
@@ -29,6 +30,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.WildcardType;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Revision;
 
 public abstract class BaseRenderer {
     private static final String COMMA = ",";
@@ -52,15 +54,15 @@ public abstract class BaseRenderer {
         return type;
     }
 
-    protected String getFromImportMap(@NonNull String typeName) {
+    protected String getFromImportMap(@NonNull final String typeName) {
         return importMap.get(typeName);
     }
 
-    protected void putToImportMap(@NonNull String typeName, String typePackageName) {
+    protected void putToImportMap(@NonNull final String typeName, final String typePackageName) {
         importMap.put(typeName, typePackageName);
     }
 
-    protected void putAllToImportMap(@NonNull Map<String, String> imports) {
+    protected void putAllToImportMap(@NonNull final Map<String, String> imports) {
         importMap.putAll(imports);
     }
 
@@ -231,7 +233,7 @@ public abstract class BaseRenderer {
         return sb;
     }
 
-    protected GeneratedProperty findProperty(final GeneratedTransferObject gto, String name) {
+    protected GeneratedProperty findProperty(final GeneratedTransferObject gto, final String name) {
         for (GeneratedProperty prop : gto.getProperties()) {
             if (name.equals(prop.getName())) {
                 return prop;
@@ -250,23 +252,24 @@ public abstract class BaseRenderer {
      */
     protected String emitConstant(final Constant constant) {
         final StringBuilder sb = new StringBuilder();
-        final Object qname = constant.getValue();
+        final Object value = constant.getValue();
         sb.append("public static final ")
                 .append(importedName(constant.getType()))
                 .append(' ')
                 .append(constant.getName())
                 .append(" = ");
-        if (qname instanceof QName) {
-            sb.append(QName.class.getName())
-                    .append(".create(\"")
-                    .append(((QName) qname).getNamespace().toString())
-                    .append("\", \"")
-                    .append(((QName) qname).getFormattedRevision())
-                    .append("\", \"")
-                    .append(((QName) qname).getLocalName())
-                    .append("\").intern()");
+        if (value instanceof QName) {
+            final QName qname = (QName) value;
+            sb.append(QName.class.getName()).append(".create(\"").append(qname.getNamespace()).append("\", ");
+            final Optional<Revision> rev = qname.getRevision();
+            if (rev.isPresent()) {
+                sb.append('"').append(rev.get()).append('"');
+            } else {
+                sb.append("null");
+            }
+            sb.append(", \"").append(qname.getLocalName()).append("\").intern()");
         } else {
-            sb.append(qname);
+            sb.append(value);
         }
         sb.append(";\n");
         return sb.toString();
@@ -288,7 +291,7 @@ public abstract class BaseRenderer {
             final Type t = pTypes[i];
 
             String separator = COMMA;
-            if (i == (pTypes.length - 1)) {
+            if (i == pTypes.length - 1) {
                 separator = "";
             }
 
