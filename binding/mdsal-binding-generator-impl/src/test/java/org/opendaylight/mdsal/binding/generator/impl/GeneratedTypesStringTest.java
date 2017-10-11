@@ -10,38 +10,21 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class GeneratedTypesStringTest {
 
-    private final static List<File> testModels = new ArrayList<>();
-
-    @BeforeClass
-    public static void loadTestResources() throws URISyntaxException {
-        final File listModelFile = new File(GeneratedTypesStringTest.class.getResource("/simple-string-demo.yang")
-                .toURI());
-        testModels.add(listModelFile);
-    }
-
     @Test
-    public void constantGenerationTest() throws IOException, SourceException, ReactorException {
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+    public void constantGenerationTest() {
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-string-demo.yang");
 
         assertNotNull(context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

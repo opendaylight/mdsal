@@ -97,7 +97,7 @@ public class InterfaceRenderer extends BaseRenderer {
                 generatedConstants, generatedInnerClasses).body();
     }
 
-    private boolean isAccessor (final MethodSignature maybeGetter) {
+    private static boolean isAccessor(final MethodSignature maybeGetter) {
         return maybeGetter.getName().startsWith("is") || maybeGetter.getName().startsWith("get");
     }
 

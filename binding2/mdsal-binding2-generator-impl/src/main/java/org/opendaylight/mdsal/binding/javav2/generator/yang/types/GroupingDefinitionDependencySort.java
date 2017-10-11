@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import org.opendaylight.yangtools.util.TopologicalSort;
 import org.opendaylight.yangtools.util.TopologicalSort.Node;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
@@ -130,7 +130,7 @@ public class GroupingDefinitionDependencySort {
         ret.addAll(usesNodes);
 
         for (UsesNode usesNode : usesNodes) {
-            for (AugmentationSchema augment : usesNode.getAugmentations()) {
+            for (AugmentationSchemaNode augment : usesNode.getAugmentations()) {
                 ret.addAll(getAllUsesNodes(augment));
             }
         }
@@ -142,8 +142,7 @@ public class GroupingDefinitionDependencySort {
             if (childNode instanceof DataNodeContainer) {
                 ret.addAll(getAllUsesNodes((DataNodeContainer) childNode));
             } else if (childNode instanceof ChoiceSchemaNode) {
-                Set<ChoiceCaseNode> cases = ((ChoiceSchemaNode) childNode).getCases();
-                for (ChoiceCaseNode choiceCaseNode : cases) {
+                for (ChoiceCaseNode choiceCaseNode : ((ChoiceSchemaNode) childNode).getCases().values()) {
                     ret.addAll(getAllUsesNodes(choiceCaseNode));
                 }
             }
