@@ -177,10 +177,6 @@ public final class ModuleContext {
         return Maps.unmodifiableBiMap(this.targetToAugmentation);
     }
 
-    public void addTypeToAugmentation(final GeneratedTypeBuilder builder, final AugmentationSchema schema) {
-        this.typeToSchema.put(builder, schema);
-    }
-
     public void addTypeToAugmentations(final GeneratedTypeBuilder builder, final List<AugmentationSchema> schemaList) {
         this.typeToAugmentations.put(builder, schemaList);
     }
