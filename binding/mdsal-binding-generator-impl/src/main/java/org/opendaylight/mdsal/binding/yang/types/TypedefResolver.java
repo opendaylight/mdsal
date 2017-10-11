@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
+import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
@@ -64,11 +64,8 @@ final class TypedefResolver {
                     } else if (childNode instanceof ListSchemaNode) {
                         fillRecursively(list, (ListSchemaNode) childNode);
                     } else if (childNode instanceof ChoiceSchemaNode) {
-                        final Set<ChoiceCaseNode> cases = ((ChoiceSchemaNode) childNode).getCases();
-                        if (cases != null) {
-                            for (final ChoiceCaseNode caseNode : cases) {
-                                fillRecursively(list, caseNode);
-                            }
+                        for (final CaseSchemaNode caseNode : ((ChoiceSchemaNode) childNode).getCases().values()) {
+                            fillRecursively(list, caseNode);
                         }
                     }
                 }

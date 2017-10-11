@@ -45,7 +45,7 @@ public final class SnapshotBackedReadWriteTransaction<T> extends
         final Optional<NormalizedNode<?, ?>> result;
 
         try {
-            result = readSnapshotNode(path);
+            result = Optional.fromJavaUtil(readSnapshotNode(path));
         } catch (Exception e) {
             LOG.error("Tx: {} Failed Read of {}", getIdentifier(), path, e);
             return Futures.immediateFailedCheckedFuture(new ReadFailedException("Read failed", e));

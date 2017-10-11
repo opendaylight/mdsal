@@ -23,12 +23,18 @@
 @import org.opendaylight.yangtools.yang.model.api.`type`.IdentityrefTypeDefinition
 @import org.opendaylight.yangtools.yang.model.api.`type`.IdentityTypeDefinition
 @import org.opendaylight.yangtools.yang.model.api.`type`.InstanceIdentifierTypeDefinition
-@import org.opendaylight.yangtools.yang.model.api.`type`.IntegerTypeDefinition
+@import org.opendaylight.yangtools.yang.model.api.`type`.Int8TypeDefinition
+@import org.opendaylight.yangtools.yang.model.api.`type`.Int16TypeDefinition
+@import org.opendaylight.yangtools.yang.model.api.`type`.Int32TypeDefinition
+@import org.opendaylight.yangtools.yang.model.api.`type`.Int64TypeDefinition
 @import org.opendaylight.yangtools.yang.model.api.`type`.LeafrefTypeDefinition
 @import org.opendaylight.yangtools.yang.model.api.`type`.StringTypeDefinition
+@import org.opendaylight.yangtools.yang.model.api.`type`.Uint8TypeDefinition
+@import org.opendaylight.yangtools.yang.model.api.`type`.Uint16TypeDefinition
+@import org.opendaylight.yangtools.yang.model.api.`type`.Uint32TypeDefinition
+@import org.opendaylight.yangtools.yang.model.api.`type`.Uint64TypeDefinition
 @import org.opendaylight.yangtools.yang.model.api.`type`.UnionTypeDefinition
 @import org.opendaylight.yangtools.yang.model.api.`type`.UnknownTypeDefinition
-@import org.opendaylight.yangtools.yang.model.api.`type`.UnsignedIntegerTypeDefinition
 
 @(typeDefinition: TypeDefinition[_])
     @if(typeDefinition.getBaseType() != null) {
@@ -59,8 +65,17 @@
         @if(typeDefinition.isInstanceOf[InstanceIdentifierTypeDefinition]){
             type @(typeDefinition.asInstanceOf[InstanceIdentifierTypeDefinition].getBaseType().getQName().getLocalName());
         }
-        @if(typeDefinition.isInstanceOf[IntegerTypeDefinition]){
-            type @(typeDefinition.asInstanceOf[IntegerTypeDefinition].getBaseType().getQName().getLocalName());
+        @if(typeDefinition.isInstanceOf[Int8TypeDefinition]){
+            type @(typeDefinition.asInstanceOf[Int8TypeDefinition].getBaseType().getQName().getLocalName());
+        }
+        @if(typeDefinition.isInstanceOf[Int16TypeDefinition]){
+            type @(typeDefinition.asInstanceOf[Int16TypeDefinition].getBaseType().getQName().getLocalName());
+        }
+        @if(typeDefinition.isInstanceOf[Int32TypeDefinition]){
+            type @(typeDefinition.asInstanceOf[Int32TypeDefinition].getBaseType().getQName().getLocalName());
+        }
+        @if(typeDefinition.isInstanceOf[Int64TypeDefinition]){
+            type @(typeDefinition.asInstanceOf[Int64TypeDefinition].getBaseType().getQName().getLocalName());
         }
         @if(typeDefinition.isInstanceOf[LeafrefTypeDefinition]){
             type @(typeDefinition.asInstanceOf[LeafrefTypeDefinition].getBaseType().getQName().getLocalName());
@@ -74,8 +89,17 @@
         @if(typeDefinition.isInstanceOf[UnknownTypeDefinition]){
             type @(typeDefinition.asInstanceOf[UnknownTypeDefinition].getBaseType().getQName().getLocalName());
         }
-        @if(typeDefinition.isInstanceOf[UnsignedIntegerTypeDefinition]){
-            type @(typeDefinition.asInstanceOf[UnsignedIntegerTypeDefinition].getBaseType().getQName().getLocalName());
+        @if(typeDefinition.isInstanceOf[Uint8TypeDefinition]){
+            type @(typeDefinition.asInstanceOf[Uint8TypeDefinition].getBaseType().getQName().getLocalName());
+        }
+        @if(typeDefinition.isInstanceOf[Uint16TypeDefinition]){
+            type @(typeDefinition.asInstanceOf[Uint16TypeDefinition].getBaseType().getQName().getLocalName());
+        }
+        @if(typeDefinition.isInstanceOf[Uint32TypeDefinition]){
+            type @(typeDefinition.asInstanceOf[Uint32TypeDefinition].getBaseType().getQName().getLocalName());
+        }
+        @if(typeDefinition.isInstanceOf[Uint64TypeDefinition]){
+            type @(typeDefinition.asInstanceOf[Uint64TypeDefinition].getBaseType().getQName().getLocalName());
         }
     } else {
         type @(typeDefinition.getQName().getLocalName());

@@ -7,14 +7,9 @@
  */
 package org.opendaylight.controller.md.sal.dom.store.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public final class TestModel {
@@ -32,17 +27,12 @@ public final class TestModel {
     public static final YangInstanceIdentifier TEST_PATH = YangInstanceIdentifier.of(TEST_QNAME);
     public static final YangInstanceIdentifier OUTER_LIST_PATH =
             YangInstanceIdentifier.builder(TEST_PATH).node(OUTER_LIST_QNAME).build();
-    private static final String DATASTORE_TEST_YANG = "/odl-datastore-test.yang";
 
     private TestModel() {
         throw new UnsupportedOperationException();
     }
 
-    public static SchemaContext createTestContext() throws IOException, YangSyntaxErrorException, ReactorException {
-        return YangParserTestUtils.parseYangStreams(Collections.singletonList(getInputStream()));
-    }
-
-    private static InputStream getInputStream() {
-        return TestModel.class.getResourceAsStream(DATASTORE_TEST_YANG);
+    public static SchemaContext createTestContext() {
+        return YangParserTestUtils.parseYangResource("/odl-datastore-test.yang");
     }
 }
