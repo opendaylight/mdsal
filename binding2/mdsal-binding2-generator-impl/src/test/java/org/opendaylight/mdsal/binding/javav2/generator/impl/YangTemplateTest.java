@@ -11,17 +11,13 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.annotations.Beta;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.Set;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
 import org.opendaylight.mdsal.binding.javav2.generator.util.YangSnippetCleaner;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 @Beta
@@ -30,8 +26,8 @@ public class YangTemplateTest {
     private Set<Module> modules;
 
     @Before
-    public void setup() throws URISyntaxException, ReactorException, FileNotFoundException {
-        this.modules = YangParserTestUtils.parseYangSources("/yang-template").getModules();
+    public void setup() {
+        this.modules = YangParserTestUtils.parseYangResourceDirectory("/yang-template").getModules();
     }
 
     @Test
@@ -46,9 +42,12 @@ public class YangTemplateTest {
 
         moduleBody = yangTemplateForModule.render(iterator.next()).body().trim();
         cleanedModuleBody = YangSnippetCleaner.clean(moduleBody);
+        System.out.println(cleanedModuleBody);
         assertTrue(cleanedModuleBody.contains("module yang-template-test {"));
-        assertTrue(cleanedModuleBody
-                .contains("    import yang-template-import { prefix \"yti\"; revision-date 2016-06-23; }"));
+        assertTrue(cleanedModuleBody.contains("    import yang-template-import {"));
+        assertTrue(cleanedModuleBody.contains("        prefix \"yti\";"));
+        assertTrue(cleanedModuleBody.contains("        revision-date 2016-06-23;"));
+        assertTrue(cleanedModuleBody.contains("    }"));
         assertTrue(cleanedModuleBody.contains("    anydata simple-anydata;"));
         assertTrue(cleanedModuleBody.contains("    container simple-container-with-action {"));
         assertTrue(cleanedModuleBody.contains("    leaf-list simple-leaf-list {"));

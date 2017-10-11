@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.yang.types;
 
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.RevisionAwareXPath;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -22,43 +23,53 @@ import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
  * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
 public class LeafrefTypeWithNullXpath implements LeafrefTypeDefinition {
-    @Override public RevisionAwareXPath getPathStatement() {
+    @Override
+    public RevisionAwareXPath getPathStatement() {
         return null;
     }
 
-    @Override public LeafrefTypeDefinition getBaseType() {
+    @Override
+    public LeafrefTypeDefinition getBaseType() {
         return null;
     }
 
-    @Override public String getUnits() {
+    @Override
+    public Optional<String> getUnits() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<? extends Object> getDefaultValue() {
+        return Optional.empty();
+    }
+
+    @Override
+    public QName getQName() {
         return null;
     }
 
-    @Override public Object getDefaultValue() {
+    @Override
+    public SchemaPath getPath() {
         return null;
     }
 
-    @Override public QName getQName() {
+    @Override
+    public List<UnknownSchemaNode> getUnknownSchemaNodes() {
         return null;
     }
 
-    @Override public SchemaPath getPath() {
-        return null;
+    @Override
+    public Optional<String> getDescription() {
+        return Optional.empty();
     }
 
-    @Override public List<UnknownSchemaNode> getUnknownSchemaNodes() {
-        return null;
+    @Override
+    public Optional<String> getReference() {
+        return Optional.empty();
     }
 
-    @Override public String getDescription() {
-        return null;
-    }
-
-    @Override public String getReference() {
-        return null;
-    }
-
-    @Override public Status getStatus() {
+    @Override
+    public Status getStatus() {
         return null;
     }
 }

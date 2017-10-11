@@ -39,7 +39,7 @@ public class EnumRenderer extends BaseRenderer {
         if (!enumeration.getValues().isEmpty()) {
             for (Enumeration.Pair pair : enumeration.getValues()) {
                 final StringBuilder sb = new StringBuilder();
-                sb.append(asJavadoc(encodeAngleBrackets(pair.getDescription())));
+                sb.append(asJavadoc(encodeAngleBrackets(pair.getDescription().orElse(null))));
                 sb.append("\n");
                 sb.append(pair.getMappedName());
                 sb.append('(');

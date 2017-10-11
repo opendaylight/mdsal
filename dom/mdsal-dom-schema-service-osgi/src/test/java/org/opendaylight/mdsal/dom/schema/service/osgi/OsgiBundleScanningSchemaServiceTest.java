@@ -16,6 +16,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public class OsgiBundleScanningSchemaServiceTest {
@@ -34,7 +36,7 @@ public class OsgiBundleScanningSchemaServiceTest {
     private final BundleContext bundleContext = mock(BundleContext.class, "bundleContext");
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws InvalidSyntaxException {
         destroyInstance();
         doReturn(mock(Filter.class)).when(bundleContext).createFilter(any());
         doNothing().when(bundleContext).addBundleListener(any());
@@ -50,7 +52,7 @@ public class OsgiBundleScanningSchemaServiceTest {
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @After
-    public void destroyInstance() throws Exception {
+    public void destroyInstance() {
         try {
             OsgiBundleScanningSchemaService.getInstance();
             OsgiBundleScanningSchemaService.destroyInstance();
@@ -60,7 +62,7 @@ public class OsgiBundleScanningSchemaServiceTest {
     }
 
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() {
         assertTrue(osgiService instanceof DOMSchemaService);
 
         final SchemaContext schemaContext = TestModel.createTestContext();
@@ -85,7 +87,7 @@ public class OsgiBundleScanningSchemaServiceTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void sessionContextTest() throws Exception {
+    public void sessionContextTest() {
         osgiService.getSessionContext();
     }
 }

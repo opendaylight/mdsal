@@ -53,7 +53,7 @@ public class BindingToNormalizedNodeCodecTest {
      */
     @Test
     public void fromNormalizedNodeTest() throws Exception {
-        final SchemaContext schemaCtx = YangParserTestUtils.parseYangSource("/test.yang");
+        final SchemaContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
         final NormalizedNode<?, ?> data = prepareData(schemaCtx, 42);
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
 
@@ -83,7 +83,7 @@ public class BindingToNormalizedNodeCodecTest {
      */
     @Test
     public void fromNormalizedNodeWithAnotherInputDataTest() throws Exception {
-        final SchemaContext schemaCtx = YangParserTestUtils.parseYangSource("/test.yang");
+        final SchemaContext schemaCtx = YangParserTestUtils.parseYangResource("/test.yang");
         final NormalizedNode<?, ?> data = prepareData(schemaCtx, "42");
 
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = fromNormalizedNode(data, schemaCtx);
@@ -114,7 +114,7 @@ public class BindingToNormalizedNodeCodecTest {
     }
 
     private static Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode(final NormalizedNode<?, ?> data,
-            final SchemaContext schemaCtx) throws Exception {
+            final SchemaContext schemaCtx) {
         final DataObjectSerializerGenerator serializerGenerator =
                 StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault()));
         final BindingNormalizedNodeCodecRegistry codecRegistry =

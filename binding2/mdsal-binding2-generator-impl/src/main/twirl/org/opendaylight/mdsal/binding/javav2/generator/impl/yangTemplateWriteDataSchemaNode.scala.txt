@@ -96,7 +96,7 @@
         @if(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getConstraints() != null){
                 @yangTemplateWriteConstraints(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getConstraints())
         }
-        @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getCases()) {
+        @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getCases().values()) {
             @yangTemplateWriteDataSchemaNode(childNode, module)
         }
         @if(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getStatus() != Status.CURRENT) {
