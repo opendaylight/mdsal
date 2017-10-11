@@ -12,7 +12,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.api.BindingGenerator;
@@ -30,7 +29,7 @@ public class BindingGeneratorImplTest {
     @Test
     public void genTypesTypeDefTest() throws Exception {
         final BindingGeneratorImpl bg = new BindingGeneratorImpl(false);
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSource("/generator/test-typedef.yang");
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/generator/test-typedef.yang");
         final List<Type> generateTypes = bg.generateTypes(schemaContext);
         assertNotNull(generateTypes);
         for (final Type genType : generateTypes) {
@@ -49,7 +48,7 @@ public class BindingGeneratorImplTest {
     @Test
     public void generatedTypesEnumTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/apple-test.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/generator/apple-test.yang");
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -70,12 +69,10 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void generatedTypesUsesEnumLeafTest() throws Exception {
+    public void generatedTypesUsesEnumLeafTest() {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final List<String> sources = new ArrayList<>();
-        sources.add("/uses-statement/test-uses-leaf-innertype-base.yang");
-        sources.add("/uses-statement/test-uses-leaf-innertype.yang");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
+        final SchemaContext context = YangParserTestUtils.parseYangResources(BindingGeneratorImplTest.class,
+            "/uses-statement/test-uses-leaf-innertype-base.yang", "/uses-statement/test-uses-leaf-innertype.yang");
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -97,12 +94,10 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void generatedTypesUsesBitsLeafTest() throws Exception {
+    public void generatedTypesUsesBitsLeafTest() {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final List<String> sources = new ArrayList<>();
-        sources.add("/uses-statement/test-uses-leaf-innertype2-base.yang");
-        sources.add("/uses-statement/test-uses-leaf-innertype2.yang");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
+        final SchemaContext context = YangParserTestUtils.parseYangResources(BindingGeneratorImplTest.class,
+            "/uses-statement/test-uses-leaf-innertype2-base.yang", "/uses-statement/test-uses-leaf-innertype2.yang");
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -131,12 +126,10 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void generatedTypesUsesUnionLeafTest() throws Exception {
+    public void generatedTypesUsesUnionLeafTest() {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final List<String> sources = new ArrayList<>();
-        sources.add("/uses-statement/test-uses-leaf-innertype2-base.yang");
-        sources.add("/uses-statement/test-uses-leaf-innertype2.yang");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
+        final SchemaContext context = YangParserTestUtils.parseYangResources(BindingGeneratorImplTest.class,
+            "/uses-statement/test-uses-leaf-innertype2-base.yang", "/uses-statement/test-uses-leaf-innertype2.yang");
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -165,12 +158,10 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void generatedTypesUsesLeafTest() throws Exception {
+    public void generatedTypesUsesLeafTest() {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final List<String> sources = new ArrayList<>();
-        sources.add("/uses-statement/test-uses-leaf-innertype2-base.yang");
-        sources.add("/uses-statement/test-uses-leaf-innertype2.yang");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
+        final SchemaContext context = YangParserTestUtils.parseYangResources(BindingGeneratorImplTest.class,
+            "/uses-statement/test-uses-leaf-innertype2-base.yang", "/uses-statement/test-uses-leaf-innertype2.yang");
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -199,12 +190,11 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void generatedTypesUsesLeafInnertype3Test() throws Exception {
+    public void generatedTypesUsesLeafInnertype3Test() {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final List<String> sources = new ArrayList<>();
-        sources.add("/uses-statement/test-uses-leaf-innertype3-base.yang");
-        sources.add("/uses-statement/test-uses-leaf-innertype3.yang");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sources);
+        final SchemaContext context = YangParserTestUtils.parseYangResources(BindingGeneratorImplTest.class,
+            "/uses-statement/test-uses-leaf-innertype3-base.yang",
+            "/uses-statement/test-uses-leaf-innertype3.yang");
         final List<Type> generateTypes = bg.generateTypes(context);
         assertNotNull(generateTypes);
         assertTrue(!generateTypes.isEmpty());
@@ -238,9 +228,9 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void generatedTypesTest() throws Exception {
+    public void generatedTypesTest() {
         final BindingGenerator bg = new BindingGeneratorImpl(false);
-        final SchemaContext context = YangParserTestUtils.parseYangSource("/generator/test-list.yang");
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/generator/test-list.yang");
         final List<Type> generateTypes = bg.generateTypes(context);
 
         assertNotNull(generateTypes);
@@ -282,9 +272,9 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void generateTypesDescriptionsTest() throws Exception {
+    public void generateTypesDescriptionsTest() {
         final BindingGenerator bg = new BindingGeneratorImpl(true);
-        final SchemaContext context = YangParserTestUtils.parseYangSources("/base/with_import/");
+        final SchemaContext context = YangParserTestUtils.parseYangResourceDirectory("/base/with_import/");
         assertNotNull(context);
 
         final List<Type> generateTypes = bg.generateTypes(context, context.getModules());
@@ -306,7 +296,7 @@ public class BindingGeneratorImplTest {
     @Test
     public void generateTypesIdentityTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(true);
-        final SchemaContext context = YangParserTestUtils.parseYangSources("/identity/");
+        final SchemaContext context = YangParserTestUtils.parseYangResourceDirectory("/identity/");
         assertNotNull(context);
 
         final List<Type> generateTypes = bg.generateTypes(context, context.getModules());

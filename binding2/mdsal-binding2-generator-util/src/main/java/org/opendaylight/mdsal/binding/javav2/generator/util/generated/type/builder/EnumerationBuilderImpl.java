@@ -45,12 +45,12 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
     private String moduleName;
     private List<QName> schemaPath;
 
-    public EnumerationBuilderImpl(final String packageName, final String name, ModuleContext context) {
+    public EnumerationBuilderImpl(final String packageName, final String name, final ModuleContext context) {
         super(packageName, name, context);
     }
 
     public EnumerationBuilderImpl(final String packageName, final String name, final boolean isPkNameNormalized,
-            final boolean isTypeNormalized, ModuleContext context) {
+            final boolean isTypeNormalized, final ModuleContext context) {
         super(packageName, name, isPkNameNormalized, isTypeNormalized, context);
     }
 
@@ -110,7 +110,8 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         final List<EnumPair> enums = enumTypeDef.getValues();
         if (enums != null) {
             enums.stream().filter(enumPair -> enumPair != null).forEach(enumPair -> this.addValue(enumPair.getName(),
-                    enumPair.getValue(), enumPair.getDescription(), enumPair.getReference(), enumPair.getStatus()));
+                    enumPair.getValue(), enumPair.getDescription().orElse(null), enumPair.getReference().orElse(null),
+                    enumPair.getStatus()));
         }
     }
 
@@ -151,14 +152,14 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
 
         @Nullable
         @Override
-        public String getDescription() {
-            return this.description;
+        public Optional<String> getDescription() {
+            return Optional.ofNullable(this.description);
         }
 
         @Nullable
         @Override
-        public String getReference() {
-            return this.reference;
+        public Optional<String> getReference() {
+            return Optional.ofNullable(this.reference);
         }
 
         @Nonnull
@@ -272,7 +273,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
                 builder.append(" (");
                 builder.append(valPair.getValue());
 
-                if (i == (this.values.size() - 1)) {
+                if (i == this.values.size() - 1) {
                     builder.append(" );");
                 } else {
                     builder.append(" ),");

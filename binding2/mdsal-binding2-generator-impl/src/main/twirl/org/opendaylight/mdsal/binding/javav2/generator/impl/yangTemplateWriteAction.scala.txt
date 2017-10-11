@@ -19,8 +19,8 @@
 
 @(action: ActionDefinition, module: Module)
 action @{action.getQName().getLocalName()} {
-    @if(action.getDescription() != null && !action.getDescription().isEmpty()) {
-        "@{action.getDescription()}";
+    @if(action.getDescription().isPresent()) {
+        "@{action.getDescription().get()}";
     }
     @if(action.getGroupings() != null && !action.getGroupings().isEmpty()) {
         @yangTemplateWriteGroupingDefs(action.getGroupings(), module)
@@ -35,8 +35,8 @@ action @{action.getQName().getLocalName()} {
             @yangTemplateWriteDataSchemaNodes(action.getOutput().getChildNodes, module)
         }
     }
-    @if(action.getReference() != null && !action.getReference().isEmpty()) {
-        reference "@{action.getReference()}";
+    @if(action.getReference().isPresent()) {
+        reference "@{action.getReference().get()}";
     }
     @if(action.getStatus() != Status.CURRENT) {
         status @{action.getStatus()};

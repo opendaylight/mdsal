@@ -32,7 +32,7 @@ final class TestUtils {
 
     static final PathArgument PATH_ARGUMENT = mock(PathArgument.class);
 
-    static final NodeIdentifier NODE_IDENTIFIER = NodeIdentifier.create(QName.create("test"));
+    static final NodeIdentifier NODE_IDENTIFIER = NodeIdentifier.create(QName.create("", "test"));
 
     static final NormalizedNode<?, ?> NORMALIZED_NODE = mock(NormalizedNode.class);
 

@@ -9,12 +9,9 @@ package org.opendaylight.mdsal.binding.generator.impl;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.net.URI;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -25,10 +22,8 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class GenerateInnerClassForBitsAndUnionInLeavesTest {
 
     @Test
-    public void testInnerClassCreationForBitsAndUnionsInLeafes() throws Exception {
-        final URI yangTypesPath = getClass().getResource("/bit_and_union_in_leaf.yang").toURI();
-
-        final SchemaContext context = YangParserTestUtils.parseYangSources(new File(yangTypesPath));
+    public void testInnerClassCreationForBitsAndUnionsInLeafes() {
+        final SchemaContext context = YangParserTestUtils.parseYangResource("/bit_and_union_in_leaf.yang");
         assertTrue(context != null);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

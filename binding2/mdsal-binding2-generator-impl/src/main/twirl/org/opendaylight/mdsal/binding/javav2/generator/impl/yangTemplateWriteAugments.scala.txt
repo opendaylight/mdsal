@@ -14,22 +14,22 @@
 ***********************************************************@
 
 @import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate
-@import org.opendaylight.yangtools.yang.model.api.AugmentationSchema
+@import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode
 @import org.opendaylight.yangtools.yang.model.api.Module
 @import org.opendaylight.yangtools.yang.model.api.Status
 
-@(augments: Set[_ <: AugmentationSchema], module: Module)
+@(augments: Set[_ <: AugmentationSchemaNode], module: Module)
 @for(augment <- augments) {
     @if(augment != null) {
         augment "@{YangTextTemplate.formatToAugmentPath(augment.getTargetPath().getPathFromRoot())}" {
             @if(augment.getWhenCondition() != null && !augment.getWhenCondition().toString().isEmpty()) {
                 when "@augment.getWhenCondition().toString()";
             }
-            @if(augment.getDescription() != null && !augment.getDescription().isEmpty()) {
-                description "@augment.getDescription().toString()";
+            @if(augment.getDescription().isPresent()) {
+                description "@augment.getDescription().get()";
             }
-            @if(augment.getReference() != null && !augment.getReference().isEmpty()) {
-                reference "@augment.getReference().toString()";
+            @if(augment.getReference().isPresent()) {
+                reference "@augment.getReference().get()";
             }
             @if(augment.getStatus() != Status.CURRENT) {
                 status "@augment.getStatus()";
