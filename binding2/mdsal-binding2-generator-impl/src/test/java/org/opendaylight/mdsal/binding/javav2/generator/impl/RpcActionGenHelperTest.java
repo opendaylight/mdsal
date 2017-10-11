@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -46,11 +45,9 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
 public class RpcActionGenHelperTest {
 
-    @SuppressWarnings("unchecked")
     @Test(expected = UnsupportedOperationException.class)
     public void constructorTest() throws Throwable {
-        final Constructor<RpcActionGenHelper> constructor =
-                (Constructor<RpcActionGenHelper>) RpcActionGenHelper.class.getDeclaredConstructors()[0];
+        final Constructor<RpcActionGenHelper> constructor = RpcActionGenHelper.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         final Object[] objs = {};
         try {
@@ -60,45 +57,29 @@ public class RpcActionGenHelperTest {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void getRoutingContextAbsentTest() throws Exception {
-        final Class[] parameterTypes = { DataSchemaNode.class };
-        final Method generate = RpcActionGenHelper.class.getDeclaredMethod("getRoutingContext", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
+    public void getRoutingContextAbsentTest() {
         final DataSchemaNode dataSchemaNode = mock(DataSchemaNode.class);
         final List<UnknownSchemaNode> unknownSchemaNodes = new ArrayList<>();
         when(dataSchemaNode.getUnknownSchemaNodes()).thenReturn(unknownSchemaNodes);
 
-        final Object[] args = { dataSchemaNode };
-        final Optional<QName> result = (Optional<QName>) generate.invoke(RpcActionGenHelper.class, args);
+        final Optional<QName> result = RpcActionGenHelper.getRoutingContext(dataSchemaNode);
         assertNotNull(result);
         assertTrue(!result.isPresent());
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void getRoutingContextTest() throws Exception {
-        final Class[] parameterTypes = { DataSchemaNode.class };
-        final Method generate = RpcActionGenHelper.class.getDeclaredMethod("getRoutingContext", parameterTypes);
-        assertNotNull(generate);
-        generate.setAccessible(true);
-
+    public void getRoutingContextTest() {
         final DataSchemaNode dataSchemaNode = mock(DataSchemaNode.class);
         final List<UnknownSchemaNode> unknownSchemaNodes = new ArrayList<>();
-        final Field contextRef = RpcActionGenHelper.class.getDeclaredField("CONTEXT_REFERENCE");
-        contextRef.setAccessible(true);
-        final QName nodeType = (QName) contextRef.get(RpcActionGenHelper.class);
         final UnknownSchemaNode unknownSchemaNode = mock(UnknownSchemaNode.class);
-        when(unknownSchemaNode.getNodeType()).thenReturn(nodeType);
+        when(unknownSchemaNode.getNodeType()).thenReturn(RpcActionGenHelper.CONTEXT_REFERENCE);
         final QName qname = QName.create("test", "2017-05-04", "unknown");
         when(unknownSchemaNode.getQName()).thenReturn(qname);
         unknownSchemaNodes.add(unknownSchemaNode);
         when(dataSchemaNode.getUnknownSchemaNodes()).thenReturn(unknownSchemaNodes);
 
-        final Object[] args = { dataSchemaNode };
-        final Optional<QName> result = (Optional<QName>) generate.invoke(RpcActionGenHelper.class, args);
+        final Optional<QName> result = RpcActionGenHelper.getRoutingContext(dataSchemaNode);
         assertNotNull(result);
         assertTrue(result.isPresent());
         assertEquals(qname, result.get());
@@ -235,8 +216,7 @@ public class RpcActionGenHelperTest {
         genCtx.put(module, moduleContext);
 
         final SchemaContext schemaContext = mock(SchemaContext.class);
-        when(schemaContext.findModuleByNamespaceAndRevision(rpcQName.getNamespace(), rpcQName.getRevision()))
-                .thenReturn(module);
+        when(schemaContext.findModule(rpcQName.getModule())).thenReturn(java.util.Optional.of(module));
 
         final boolean verboseClassComments = false;
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
@@ -249,7 +229,7 @@ public class RpcActionGenHelperTest {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private <T extends ActionNodeContainer> void actionMethodsToGenType(final Class<T> clazz,
+    private static <T extends ActionNodeContainer> void actionMethodsToGenType(final Class<T> clazz,
             final boolean isRoutedRpc) throws Exception {
         final Class[] parameterTypes =
                 { Module.class, Map.class, SchemaContext.class, boolean.class, Map.class, TypeProvider.class };
@@ -312,8 +292,7 @@ public class RpcActionGenHelperTest {
         genCtx.put(module, moduleContext);
 
         final SchemaContext schemaContext = mock(SchemaContext.class);
-        when(schemaContext.findModuleByNamespaceAndRevision(actionQName.getNamespace(), actionQName.getRevision()))
-                .thenReturn(module);
+        when(schemaContext.findModule(actionQName.getModule())).thenReturn(java.util.Optional.of(module));
 
         final boolean verboseClassComments = false;
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
@@ -327,11 +306,8 @@ public class RpcActionGenHelperTest {
             when(module.getDataChildByName(actionQName)).thenReturn((ContainerSchemaNode) actionNodeContainer);
             final List<UnknownSchemaNode> unknownSchemaNodes = new ArrayList<>();
             final UnknownSchemaNode unknownSchemaNode = mock(UnknownSchemaNode.class);
-            final Field contextRef = RpcActionGenHelper.class.getDeclaredField("CONTEXT_REFERENCE");
-            contextRef.setAccessible(true);
-            final QName nodeType = (QName) contextRef.get(RpcActionGenHelper.class);
-            when(unknownSchemaNode.getNodeType()).thenReturn(nodeType);
-            when(unknownSchemaNode.getQName()).thenReturn(nodeType);
+            when(unknownSchemaNode.getNodeType()).thenReturn(RpcActionGenHelper.CONTEXT_REFERENCE);
+            when(unknownSchemaNode.getQName()).thenReturn(RpcActionGenHelper.CONTEXT_REFERENCE);
             unknownSchemaNodes.add(unknownSchemaNode);
             when(((DataSchemaNode) actionNodeContainer).getUnknownSchemaNodes()).thenReturn(unknownSchemaNodes);
             when(rpcDef.getInput()).thenReturn(input);

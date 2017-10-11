@@ -34,6 +34,7 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.VOID;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
 
 import com.google.common.annotations.Beta;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
@@ -62,15 +63,13 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
 /**
- *
  * Util class used for generation of types for RPCs, routedRPCs and Actions (YANG 1.1 only)
  * in Binding spec. v2. In case of routed RPC detected in input YANG, RPC is turned to Action.
- *
  */
 @Beta
 final class RpcActionGenHelper {
-
-    private static final QName CONTEXT_REFERENCE =
+    @VisibleForTesting
+    static final QName CONTEXT_REFERENCE =
             QName.create("urn:opendaylight:yang:extension:yang-ext", "2013-07-09", "context-reference").intern();
 
     private RpcActionGenHelper() {
@@ -87,7 +86,8 @@ final class RpcActionGenHelper {
      * @param schemaNode RPC input node
      * @return presence optional
      */
-    private static Optional<QName> getRoutingContext(final DataSchemaNode schemaNode) {
+    @VisibleForTesting
+    static Optional<QName> getRoutingContext(final DataSchemaNode schemaNode) {
         for (UnknownSchemaNode extension : schemaNode.getUnknownSchemaNodes()) {
             if (CONTEXT_REFERENCE.equals(extension.getNodeType())) {
                 return Optional.fromNullable(extension.getQName());
@@ -98,8 +98,8 @@ final class RpcActionGenHelper {
 
     private static void resolveActions(final DataNodeContainer parent, final Module module,
             final SchemaContext schemaContext, final boolean verboseClassComments,
-            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx,
-            TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx,
+            final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
         Preconditions.checkNotNull(parent, "Parent should not be NULL.");
         final Collection<DataSchemaNode> potentials = parent.getChildNodes();
         for (DataSchemaNode potential : potentials) {
@@ -136,9 +136,9 @@ final class RpcActionGenHelper {
      * @param verboseClassComments verbosity switch
      * @return generated context
      */
-    static Map<Module, ModuleContext> actionMethodsToGenType(final Module module, Map<Module, ModuleContext> genCtx,
+    static Map<Module, ModuleContext> actionMethodsToGenType(final Module module, final Map<Module, ModuleContext> genCtx,
             final SchemaContext schemaContext, final boolean verboseClassComments,
-            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, TypeProvider typeProvider) {
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
 
         checkModuleAndModuleName(module);
         resolveActions(module, module, schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider,
@@ -168,9 +168,9 @@ final class RpcActionGenHelper {
      *
      * @return generated context
      */
-     static Map<Module, ModuleContext> rpcMethodsToGenType(final Module module, Map<Module, ModuleContext> genCtx,
-            final SchemaContext schemaContext, final boolean verboseClassComments, Map<String, Map<String,
-             GeneratedTypeBuilder>> genTypeBuilders, TypeProvider typeProvider) {
+     static Map<Module, ModuleContext> rpcMethodsToGenType(final Module module, final Map<Module, ModuleContext> genCtx,
+            final SchemaContext schemaContext, final boolean verboseClassComments, final Map<String, Map<String,
+             GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
 
         checkModuleAndModuleName(module);
         final Set<RpcDefinition> rpcDefinitions = module.getRpcs();
@@ -216,8 +216,8 @@ final class RpcActionGenHelper {
      */
     private static GeneratedTypeBuilder resolveOperation(final DataSchemaNode parent, final OperationDefinition operation,
             final Module module, final SchemaContext schemaContext, final boolean verboseClassComments,
-            Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx,
-            TypeProvider typeProvider, final boolean isAction, final BindingNamespaceType namespaceType) {
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx,
+            final TypeProvider typeProvider, final boolean isAction, final BindingNamespaceType namespaceType) {
 
         //operation name
         final String operationName = operation.getQName().getLocalName();
@@ -235,7 +235,7 @@ final class RpcActionGenHelper {
 
         interfaceBuilder.setDescription(createDescription(operation, interfaceBuilder.getFullyQualifiedName(),
                 schemaContext, verboseClassComments, namespaceType));
-        final String operationComment = encodeAngleBrackets(operation.getDescription());
+        final String operationComment = encodeAngleBrackets(operation.getDescription().orElse(null));
         final MethodSignatureBuilder operationMethod = interfaceBuilder.addMethod("invoke");
 
         //input
@@ -302,9 +302,9 @@ final class RpcActionGenHelper {
         return interfaceBuilder;
     }
 
-    private static GeneratedTypeBuilder resolveOperationNode(GeneratedTypeBuilder parent, final Module module, final
+    private static GeneratedTypeBuilder resolveOperationNode(final GeneratedTypeBuilder parent, final Module module, final
             ContainerSchemaNode operationNode, final String basePackageName, final SchemaContext schemaContext, final String
-            operationName, final boolean verboseClassComments, TypeProvider typeProvider, Map<String, Map<String,
+            operationName, final boolean verboseClassComments, final TypeProvider typeProvider, final Map<String, Map<String,
             GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx, final boolean isInput,
             final BindingNamespaceType namespaceType) {
         final GeneratedTypeBuilder nodeType = addRawInterfaceDefinition(basePackageName, operationNode, schemaContext,

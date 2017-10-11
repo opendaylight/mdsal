@@ -220,9 +220,9 @@ public class ClassRenderer extends BaseRenderer {
 
         final StringBuilder lengthRangeCheckerBuilder = new StringBuilder();
         if (restrictions != null) {
-            if (restrictions.getLengthConstraints() != null && !restrictions.getLengthConstraints().isEmpty()) {
+            if (restrictions.getLengthConstraints().isPresent()) {
                 lengthRangeCheckerBuilder.append(LengthGenerator.generateLengthChecker("_value", findProperty(genTO,
-                        "value").getReturnType(), restrictions.getLengthConstraints()))
+                        "value").getReturnType(), restrictions.getLengthConstraints().get()))
                         .append("\n");
             }
             if (restrictions.getRangeConstraints() != null && !restrictions.getRangeConstraints().isEmpty()) {

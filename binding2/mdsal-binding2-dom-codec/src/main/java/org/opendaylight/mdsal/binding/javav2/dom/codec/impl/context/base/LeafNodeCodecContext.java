@@ -92,24 +92,23 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
         if (prefixEndIndex != -1) {
             final String defaultValuePrefix = defaultValue.substring(0, prefixEndIndex);
 
-            final Module module = schemaContext.findModuleByNamespaceAndRevision(schema.getQName().getNamespace(),
-                    schema.getQName().getRevision());
+            final Module module = schemaContext.findModule(schema.getQName().getModule()).get();
 
             if (module.getPrefix().equals(defaultValuePrefix)) {
-                return codec
-                        .deserialize(QName.create(module.getQNameModule(), defaultValue.substring(prefixEndIndex + 1)));
-            } else {
-                final Set<ModuleImport> imports = module.getImports();
-                for (final ModuleImport moduleImport : imports) {
-                    if (moduleImport.getPrefix().equals(defaultValuePrefix)) {
-                        final Module importedModule = schemaContext.findModuleByName(moduleImport.getModuleName(),
-                                moduleImport.getRevision());
-                        return codec.deserialize(QName.create(importedModule.getQNameModule(),
-                                defaultValue.substring(prefixEndIndex + 1)));
-                    }
-                }
-                return null;
+                return codec.deserialize(QName.create(module.getQNameModule(),
+                    defaultValue.substring(prefixEndIndex + 1)));
             }
+
+            final Set<ModuleImport> imports = module.getImports();
+            for (final ModuleImport moduleImport : imports) {
+                if (moduleImport.getPrefix().equals(defaultValuePrefix)) {
+                    final Module importedModule = schemaContext.findModule(moduleImport.getModuleName(),
+                        moduleImport.getRevision()).get();
+                    return codec.deserialize(QName.create(importedModule.getQNameModule(),
+                        defaultValue.substring(prefixEndIndex + 1)));
+                }
+            }
+            return null;
         }
 
         return codec.deserialize(QName.create(schema.getQName(), defaultValue));
