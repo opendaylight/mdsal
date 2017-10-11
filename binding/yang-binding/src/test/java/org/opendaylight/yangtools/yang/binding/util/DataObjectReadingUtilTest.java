@@ -103,7 +103,7 @@ public class DataObjectReadingUtilTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testPrivateConstructor() throws Throwable {
         assertFalse(DataObjectReadingUtil.class.getDeclaredConstructor().isAccessible());
-        final Constructor constructor = DataObjectReadingUtil.class.getDeclaredConstructor();
+        final Constructor<?> constructor = DataObjectReadingUtil.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();

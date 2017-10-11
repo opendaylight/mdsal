@@ -11,17 +11,13 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.annotations.Beta;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.Set;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
 import org.opendaylight.mdsal.binding.javav2.generator.util.YangSnippetCleaner;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 @Beta
@@ -30,8 +26,8 @@ public class YangTemplateTest {
     private Set<Module> modules;
 
     @Before
-    public void setup() throws URISyntaxException, ReactorException, FileNotFoundException {
-        this.modules = YangParserTestUtils.parseYangSources("/yang-template").getModules();
+    public void setup() {
+        this.modules = YangParserTestUtils.parseYangResourceDirectory("/yang-template").getModules();
     }
 
     @Test

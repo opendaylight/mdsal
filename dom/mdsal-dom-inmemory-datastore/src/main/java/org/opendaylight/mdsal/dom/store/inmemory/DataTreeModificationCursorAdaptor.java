@@ -74,7 +74,7 @@ final class DataTreeModificationCursorAdaptor extends ForwardingObject implement
     }
 
     public Optional<NormalizedNode<?, ?>> readNode(final PathArgument child) {
-        return delegate.readNode(child);
+        return Optional.fromJavaUtil(delegate.readNode(child));
     }
 
     @Override

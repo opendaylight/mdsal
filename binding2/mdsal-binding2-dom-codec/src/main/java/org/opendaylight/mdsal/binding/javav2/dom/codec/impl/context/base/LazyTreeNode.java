@@ -139,7 +139,7 @@ class LazyTreeNode<D extends TreeNode> implements InvocationHandler, Augmentatio
             result = prime * result + Objects.hashCode(value);
         }
         if (Augmentable.class.isAssignableFrom(context.getBindingClass())) {
-            result = prime * result + (getAugmentationsImpl().hashCode());
+            result = prime * result + getAugmentationsImpl().hashCode();
         }
         cachedHashcode = result;
         return result;
@@ -193,7 +193,7 @@ class LazyTreeNode<D extends TreeNode> implements InvocationHandler, Augmentatio
         @SuppressWarnings({"unchecked","rawtypes"})
         final Optional<DataContainerCodecContext<?,?>> augCtx= context.possibleStreamChild((Class) cls);
         if(augCtx.isPresent()) {
-            final Optional<NormalizedNode<?, ?>> augData = data.getChild(augCtx.get().getDomPathArgument());
+            final java.util.Optional<NormalizedNode<?, ?>> augData = data.getChild(augCtx.get().getDomPathArgument());
             if (augData.isPresent()) {
                 return augCtx.get().deserialize(augData.get());
             }
