@@ -54,7 +54,7 @@ public class BindingReflectionsTest {
         assertFalse(BindingReflections
                 .resolveOperationOutputClass(TestImplementation.class.getDeclaredMethod("rpcMethodTest2")).isPresent());
 
-        assertTrue(BindingReflections.getQName(TestImplementation.class).toString().equals("test"));
+        assertTrue(BindingReflections.getQName(TestImplementation.class).toString().equals("()test"));
         assertNotNull(BindingReflections.getQNameModule(TestImplementation.class));
     }
 
@@ -75,7 +75,7 @@ public class BindingReflectionsTest {
     private static final class TestImplementation extends BaseIdentity
             implements Augmentation<TestImplementation>, Rpc {
 
-        public static final QName QNAME = QName.create("test");
+        public static final QName QNAME = QName.create("", "test");
 
         Future<List<Object>> rpcMethodTest() {
             return null;

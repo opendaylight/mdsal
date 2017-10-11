@@ -26,6 +26,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModuleInfo;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
@@ -111,7 +112,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
      * @return optional of schema context
      */
     public Optional<SchemaContext> tryToCreateSchemaContext() {
-        return ctxResolver.getSchemaContext();
+        return Optional.fromJavaUtil(ctxResolver.getSchemaContext());
     }
 
     private boolean resolveModuleInfo(final Class<?> cls) {
@@ -161,7 +162,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     private static SourceIdentifier sourceIdentifierFrom(final YangModuleInfo moduleInfo) {
-        return RevisionSourceIdentifier.create(moduleInfo.getName(), Optional.of(moduleInfo.getRevision()));
+        return RevisionSourceIdentifier.create(moduleInfo.getName(), Revision.ofNullable(moduleInfo.getRevision()));
     }
 
     /**

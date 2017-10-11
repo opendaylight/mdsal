@@ -11,10 +11,8 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.SettableFuture;
-import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -24,6 +22,7 @@ import java.util.function.Predicate;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 
 abstract class FutureSchema implements AutoCloseable {
     private static final class Waiting extends FutureSchema {
@@ -125,11 +124,11 @@ abstract class FutureSchema implements AutoCloseable {
         }
     }
 
-    boolean waitForSchema(final URI namespace, final Date revision) {
+    boolean waitForSchema(final QNameModule module) {
         return addPostponedOpAndWait(new FutureSchemaPredicate() {
             @Override
             public boolean test(final BindingRuntimeContext input) {
-                return input.getSchemaContext().findModuleByNamespaceAndRevision(namespace, revision) != null;
+                return input.getSchemaContext().findModule(module).isPresent();
             }
         });
     }

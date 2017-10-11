@@ -7,9 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.serialized;
 
-import com.google.common.base.Optional;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;

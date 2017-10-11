@@ -155,7 +155,8 @@ final class AuxiliaryGenUtils {
      * @return string with the name of the getter method for
      *         <code>methodName</code> in JAVA method format
      */
-    private static String getterMethodName(final String localName, final Type returnType) {
+    @VisibleForTesting
+    static String getterMethodName(final String localName, final Type returnType) {
         final StringBuilder method = new StringBuilder();
         if (BOOLEAN.equals(returnType)) {
             method.append("is");
@@ -169,7 +170,7 @@ final class AuxiliaryGenUtils {
                                     final SchemaContext schemaContext, final boolean verboseClassComments,
                                     final BindingNamespaceType namespaceType) {
         final StringBuilder sb = new StringBuilder();
-        final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription());
+        final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription().orElse(null));
         final String formattedDescription = YangTextTemplate.formatToParagraph(nodeDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
@@ -238,7 +239,7 @@ final class AuxiliaryGenUtils {
 
     static String createDescription(final Module module, final boolean verboseClassComments) {
         final StringBuilder sb = new StringBuilder();
-        final String moduleDescription = encodeAngleBrackets(module.getDescription());
+        final String moduleDescription = encodeAngleBrackets(module.getDescription().orElse(null));
         final String formattedDescription = YangTextTemplate.formatToParagraph(moduleDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
@@ -288,7 +289,8 @@ final class AuxiliaryGenUtils {
         return replaceAllIllegalChars(sb);
     }
 
-    private static boolean isNullOrEmpty(final Collection<?> list) {
+    @VisibleForTesting
+    static boolean isNullOrEmpty(final Collection<?> list) {
         return list == null || list.isEmpty();
     }
 
@@ -352,7 +354,7 @@ final class AuxiliaryGenUtils {
             final Map<Module, ModuleContext> genCtx, final GeneratedTypeBuilder typeBuilder, final Module module) {
         if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
             final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumName.getLocalName(), genCtx.get(module));
-            final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
+            final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription().orElse(null));
             enumBuilder.setDescription(enumTypedefDescription);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
             final ModuleContext ctx = genCtx.get(module);
@@ -412,16 +414,16 @@ final class AuxiliaryGenUtils {
     static Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final TypeDefinition<?> typeDef,
             final GeneratedTypeBuilder typeBuilder, final Module parentModule, final TypeProvider typeProvider) {
         final GeneratedTOBuilderImpl returnType = (GeneratedTOBuilderImpl) genTOBuilder;
-        final String typedefDescription = encodeAngleBrackets(typeDef.getDescription());
+        final String typedefDescription = encodeAngleBrackets(typeDef.getDescription().orElse(null));
 
         returnType.setDescription(typedefDescription);
-        returnType.setReference(typeDef.getReference());
+        returnType.setReference(typeDef.getReference().orElse(null));
         returnType.setSchemaPath((List) typeDef.getPath().getPathFromRoot());
         returnType.setModuleName(parentModule.getName());
 
         genTOBuilder.setTypedef(true);
         genTOBuilder.setIsUnion(true);
-        TypeProviderImpl.addUnitsToGenTO(genTOBuilder, typeDef.getUnits());
+        TypeProviderImpl.addUnitsToGenTO(genTOBuilder, typeDef.getUnits().orElse(null));
 
         return returnType.toInstance();
     }
@@ -507,7 +509,7 @@ final class AuxiliaryGenUtils {
             leafGetterName = leafName;
         }
 
-        final String leafDesc = encodeAngleBrackets(leaf.getDescription());
+        final String leafDesc = encodeAngleBrackets(leaf.getDescription().orElse(null));
         final GeneratedPropertyBuilder propBuilder =
                 toBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafGetterName, JavaIdentifier.METHOD));
         propBuilder.setReadOnly(isReadOnly);

@@ -39,8 +39,8 @@ import org.opendaylight.yangtools.util.concurrent.FastThreadPoolExecutor;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.CursorAwareDataTreeSnapshot;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
+import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeConfiguration;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.TreeType;
 import org.opendaylight.yangtools.yang.data.impl.schema.tree.InMemoryDataTreeFactory;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
@@ -65,8 +65,14 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
                                      final int maxDataChangeListenerQueueSize, final int submitQueueSize) {
         this.prefix = Preconditions.checkNotNull(prefix);
 
-        final TreeType treeType = treeTypeFor(prefix.getDatastoreType());
-        this.dataTree = InMemoryDataTreeFactory.getInstance().create(treeType, prefix.getRootIdentifier());
+        final DataTreeConfiguration treeBaseConfig = treeTypeFor(prefix.getDatastoreType());
+        final DataTreeConfiguration treeConfig = new DataTreeConfiguration.Builder(treeBaseConfig.getTreeType())
+                .setMandatoryNodesValidation(treeBaseConfig.isMandatoryNodesValidationEnabled())
+                .setUniqueIndexes(treeBaseConfig.isUniqueIndexEnabled())
+                .setRootPath(prefix.getRootIdentifier())
+                .build();
+
+        this.dataTree = InMemoryDataTreeFactory.getInstance().create(treeConfig);
 
         this.shardChangePublisher = new InMemoryDOMDataTreeShardChangePublisher(dataTreeChangeExecutor,
                 maxDataChangeListenerQueueSize, dataTree, prefix.getRootIdentifier(), childShards);
@@ -218,12 +224,12 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
         return new ChildShardContext(prefix, (WriteableDOMDataTreeShard) child);
     }
 
-    private static TreeType treeTypeFor(final LogicalDatastoreType dsType) {
+    private static DataTreeConfiguration treeTypeFor(final LogicalDatastoreType dsType) {
         switch (dsType) {
             case CONFIGURATION:
-                return TreeType.CONFIGURATION;
+                return DataTreeConfiguration.DEFAULT_CONFIGURATION;
             case OPERATIONAL:
-                return TreeType.OPERATIONAL;
+                return DataTreeConfiguration.DEFAULT_OPERATIONAL;
             default:
                 throw new IllegalArgumentException("Unsupported Data Store type:" + dsType);
         }
