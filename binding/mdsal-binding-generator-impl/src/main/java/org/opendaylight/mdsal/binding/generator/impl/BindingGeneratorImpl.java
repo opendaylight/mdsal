@@ -29,7 +29,6 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findN
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -42,6 +41,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
@@ -76,7 +76,7 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -121,7 +121,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
     /**
      * Comparator based on augment target path.
      */
-    private static final Comparator<AugmentationSchema> AUGMENT_COMP = (o1, o2) -> {
+    private static final Comparator<AugmentationSchemaNode> AUGMENT_COMP = (o1, o2) -> {
         final Iterator<QName> thisIt = o1.getTargetPath().getPathFromRoot().iterator();
         final Iterator<QName> otherIt = o2.getTargetPath().getPathFromRoot().iterator();
 
@@ -330,11 +330,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
         final String packageName = packageNameForGeneratedType(basePackageName, node.getPath());
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, node, childOf, module);
-        genType.addComment(node.getDescription());
+        genType.addComment(node.getDescription().orElse(null));
         annotateDeprecatedIfNecessary(node.getStatus(), genType);
         genType.setDescription(createDescription(node, genType.getFullyQualifiedName()));
         genType.setModuleName(module.getName());
-        genType.setReference(node.getReference());
+        genType.setReference(node.getReference().orElse(null));
         genType.setSchemaPath(node.getPath().getPathFromRoot());
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
@@ -348,7 +348,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf, final ContainerSchemaNode node) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node);
         if (genType != null) {
-            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(), genType, node.getStatus());
+            constructGetter(parent, node.getQName().getLocalName(), node.getDescription().orElse(null), genType,
+                node.getStatus());
             resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes());
         }
     }
@@ -357,7 +358,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final GeneratedTypeBuilder childOf, final ListSchemaNode node) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node);
         if (genType != null) {
-            constructGetter(parent, node.getQName().getLocalName(), node.getDescription(),
+            constructGetter(parent, node.getQName().getLocalName(), node.getDescription().orElse(null),
                     Types.listTypeFor(genType), node.getStatus());
 
             final List<String> listKeys = listKeys(node);
@@ -390,7 +391,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private void processUsesAugments(final DataNodeContainer node, final Module module) {
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
         for (final UsesNode usesNode : node.getUses()) {
-            for (final AugmentationSchema augment : usesNode.getAugmentations()) {
+            for (final AugmentationSchemaNode augment : usesNode.getAugmentations()) {
                 usesAugmentationToGenTypes(basePackageName, augment, module, usesNode, node);
                 processUsesAugments(augment, module);
             }
@@ -418,8 +419,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
 
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
-        final List<AugmentationSchema> augmentations = resolveAugmentations(module);
-        for (final AugmentationSchema augment : augmentations) {
+        for (final AugmentationSchemaNode augment : resolveAugmentations(module)) {
             augmentationToGenTypes(basePackageName, augment, module);
         }
     }
@@ -438,12 +438,12 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @throws IllegalStateException
      *             if set of module augmentations is null
      */
-    private static List<AugmentationSchema> resolveAugmentations(final Module module) {
+    private static List<AugmentationSchemaNode> resolveAugmentations(final Module module) {
         checkArgument(module != null, "Module reference cannot be NULL.");
         checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
 
-        final Set<AugmentationSchema> augmentations = module.getAugmentations();
-        final List<AugmentationSchema> sortedAugmentations = new ArrayList<>(augmentations);
+        final Set<AugmentationSchemaNode> augmentations = module.getAugmentations();
+        final List<AugmentationSchemaNode> sortedAugmentations = new ArrayList<>(augmentations);
         sortedAugmentations.sort(AUGMENT_COMP);
 
         return sortedAugmentations;
@@ -465,9 +465,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final GeneratedTypeBuilder moduleDataTypeBuilder = moduleTypeBuilder(module, "Data");
         addImplementedInterfaceFromUses(module, moduleDataTypeBuilder);
         moduleDataTypeBuilder.addImplementsType(DATA_ROOT);
-        moduleDataTypeBuilder.addComment(module.getDescription());
+        moduleDataTypeBuilder.addComment(module.getDescription().orElse(null));
         moduleDataTypeBuilder.setDescription(createDescription(module));
-        moduleDataTypeBuilder.setReference(module.getReference());
+        moduleDataTypeBuilder.setReference(module.getReference().orElse(null));
         return moduleDataTypeBuilder;
     }
 
@@ -505,7 +505,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             if (rpc != null) {
                 final String rpcName = BindingMapping.getClassName(rpc.getQName());
                 final String rpcMethodName = BindingMapping.getPropertyName(rpcName);
-                final String rpcComment = encodeAngleBrackets(rpc.getDescription());
+                final String rpcComment = encodeAngleBrackets(rpc.getDescription().orElse(null));
                 final MethodSignatureBuilder method = interfaceBuilder.addMethod(rpcMethodName);
                 final ContainerSchemaNode input = rpc.getInput();
                 final ContainerSchemaNode output = rpc.getOutput();
@@ -598,7 +598,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
                 listenerInterface.addMethod("on" + notificationInterface.getName())
                 .setAccessModifier(AccessModifier.PUBLIC).addParameter(notificationInterface, "notification")
-                .setComment(encodeAngleBrackets(notification.getDescription())).setReturnType(Types.VOID);
+                .setComment(encodeAngleBrackets(notification.getDescription().orElse(null))).setReturnType(Types.VOID);
             }
         }
         listenerInterface.setDescription(createDescription(notifications, module.getName()));
@@ -656,12 +656,13 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final String packageName = packageNameForGeneratedType(basePackageName, identity.getPath());
         final String genTypeName = BindingMapping.getClassName(identity.getQName());
         final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(packageName, genTypeName);
-        final IdentitySchemaNode baseIdentity = identity.getBaseIdentity();
-        if (baseIdentity == null) {
+        final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
+        if (baseIdentities.isEmpty()) {
             final GeneratedTOBuilderImpl gto = new GeneratedTOBuilderImpl(BaseIdentity.class.getPackage().getName(),
                     BaseIdentity.class.getSimpleName());
             newType.setExtendsType(gto.toInstance());
         } else {
+            final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
             final Module baseIdentityParentModule = SchemaContextUtil.findParentModule(context, baseIdentity);
             final String returnTypePkgName = BindingMapping.getRootPackageName(baseIdentityParentModule
                     .getQNameModule());
@@ -671,9 +672,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
             newType.setExtendsType(gto);
         }
         newType.setAbstract(true);
-        newType.addComment(identity.getDescription());
+        newType.addComment(identity.getDescription().orElse(null));
         newType.setDescription(createDescription(identity, newType.getFullyQualifiedName()));
-        newType.setReference(identity.getReference());
+        newType.setReference(identity.getReference().orElse(null));
         newType.setModuleName(module.getName());
         newType.setSchemaPath(identity.getPath().getPathFromRoot());
 
@@ -722,7 +723,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @param module
      *            current module
      */
-    private void groupingToGenType(final String basePackageName, final GroupingDefinition grouping, final Module module) {
+    private void groupingToGenType(final String basePackageName, final GroupingDefinition grouping,
+            final Module module) {
         final String packageName = packageNameForGeneratedType(basePackageName, grouping.getPath());
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, grouping, module);
         annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
@@ -756,7 +758,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
             final String enumerationName = BindingMapping.getClassName(enumName);
             final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
-            final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
+            final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription().orElse(null));
             enumBuilder.setDescription(enumTypedefDescription);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
             ModuleContext ctx = genCtx.get(module);
@@ -787,7 +789,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         final GeneratedTypeBuilderImpl moduleBuilder = new GeneratedTypeBuilderImpl(packageName, moduleName);
         moduleBuilder.setDescription(createDescription(module));
-        moduleBuilder.setReference(module.getReference());
+        moduleBuilder.setReference(module.getReference().orElse(null));
         moduleBuilder.setModuleName(moduleName);
 
         return moduleBuilder;
@@ -816,7 +818,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @throws IllegalStateException
      *             if augment target path is null
      */
-    private void augmentationToGenTypes(final String augmentPackageName, final AugmentationSchema augSchema,
+    private void augmentationToGenTypes(final String augmentPackageName, final AugmentationSchemaNode augSchema,
             final Module module) {
         checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
         checkArgument(augSchema != null, "Augmentation Schema cannot be NULL.");
@@ -830,7 +832,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         targetSchemaNode = findDataSchemaNode(schemaContext, targetPath);
         if (targetSchemaNode instanceof DataSchemaNode && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
             if (targetSchemaNode instanceof DerivableSchemaNode) {
-                targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orNull();
+                targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orElse(null);
             }
             if (targetSchemaNode == null) {
                 throw new IllegalStateException("Failed to find target node from grouping in augmentation " + augSchema
@@ -860,7 +862,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
     }
 
-    private void usesAugmentationToGenTypes(final String augmentPackageName, final AugmentationSchema augSchema,
+    private void usesAugmentationToGenTypes(final String augmentPackageName, final AugmentationSchemaNode augSchema,
             final Module module, final UsesNode usesNode, final DataNodeContainer usesNodeParent) {
         checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
         checkArgument(augSchema != null, "Augmentation Schema cannot be NULL.");
@@ -885,7 +887,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             String packageName = augmentPackageName;
             if (usesNodeParent instanceof SchemaNode) {
-                packageName = packageNameForAugmentedGeneratedType(augmentPackageName, ((SchemaNode) usesNodeParent).getPath());
+                packageName = packageNameForAugmentedGeneratedType(augmentPackageName,
+                    ((SchemaNode) usesNodeParent).getPath());
             }
             addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName, targetTypeBuilder.toInstance(),
                     augSchema);
@@ -917,7 +920,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 final QName resultNode = QName.create(result.getQName().getModule(), node.getLocalName());
                 result = ((DataNodeContainer) result).getDataChildByName(resultNode);
             } else if (result instanceof ChoiceSchemaNode) {
-                result = ((ChoiceSchemaNode) result).getCaseNodeByName(node.getLocalName());
+                result = findNamedCase((ChoiceSchemaNode) result, node.getLocalName());
             }
         }
         if (result == null) {
@@ -926,8 +929,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         if (result instanceof DerivableSchemaNode) {
             DerivableSchemaNode castedResult = (DerivableSchemaNode) result;
-            Optional<? extends SchemaNode> originalNode = castedResult
-                    .getOriginal();
+            Optional<? extends SchemaNode> originalNode = castedResult.getOriginal();
             if (castedResult.isAddedByUses() && originalNode.isPresent()) {
                 result = originalNode.get();
             }
@@ -972,7 +974,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @return generated type builder for augment
      */
     private GeneratedTypeBuilder addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
-            final String basePackageName, final Type targetTypeRef, final AugmentationSchema augSchema) {
+            final String basePackageName, final Type targetTypeRef, final AugmentationSchemaNode augSchema) {
         Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.get(augmentPackageName);
         if (augmentBuilders == null) {
             augmentBuilders = new HashMap<>();
@@ -1185,7 +1187,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final String packageName = packageNameForGeneratedType(basePackageName, choiceNode.getPath());
             final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(packageName, choiceNode);
             constructGetter(parent, choiceNode.getQName().getLocalName(),
-                    choiceNode.getDescription(), choiceTypeBuilder, choiceNode.getStatus());
+                    choiceNode.getDescription().orElse(null), choiceTypeBuilder, choiceNode.getStatus());
             choiceTypeBuilder.addImplementsType(typeForClass(DataContainer.class));
             annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
             genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
@@ -1225,15 +1227,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
         checkArgument(refChoiceType != null, "Referenced Choice Type cannot be NULL.");
         checkArgument(choiceNode != null, "ChoiceNode cannot be NULL.");
 
-        final Set<ChoiceCaseNode> caseNodes = choiceNode.getCases();
-        if (caseNodes == null) {
-            return;
-        }
-
-        for (final ChoiceCaseNode caseNode : caseNodes) {
+        for (final ChoiceCaseNode caseNode : choiceNode.getCases().values()) {
             if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
                 final String packageName = packageNameForGeneratedType(basePackageName, caseNode.getPath());
-                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode, module);
+                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode,
+                    module);
                 caseTypeBuilder.addImplementsType(refChoiceType);
                 annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
                 genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
@@ -1245,14 +1243,15 @@ public class BindingGeneratorImpl implements BindingGenerator {
                     if (!Iterables.isEmpty(choiceNodeParentPath.getPathFromRoot())) {
                         SchemaNode parent = findDataSchemaNode(schemaContext, choiceNodeParentPath);
 
-                        if (parent instanceof AugmentationSchema) {
-                            final AugmentationSchema augSchema = (AugmentationSchema) parent;
+                        if (parent instanceof AugmentationSchemaNode) {
+                            final AugmentationSchemaNode augSchema = (AugmentationSchemaNode) parent;
                             final SchemaPath targetPath = augSchema.getTargetPath();
                             SchemaNode targetSchemaNode = findDataSchemaNode(schemaContext, targetPath);
                             if (targetSchemaNode instanceof DataSchemaNode
                                     && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
                                 if (targetSchemaNode instanceof DerivableSchemaNode) {
-                                    targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orNull();
+                                    targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal()
+                                            .orElse(null);
                                 }
                                 if (targetSchemaNode == null) {
                                     throw new IllegalStateException(
@@ -1341,17 +1340,17 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 final String caseLocalName = caseNode.getQName().getLocalName();
                 if (caseNode instanceof ChoiceCaseNode) {
                     node = (ChoiceCaseNode) caseNode;
-                } else if (targetNode.getCaseNodeByName(caseLocalName) == null) {
+                } else if (findNamedCase(targetNode, caseLocalName) == null) {
                     final String targetNodeLocalName = targetNode.getQName().getLocalName();
                     for (DataSchemaNode dataSchemaNode : usesNodeParent.getChildNodes()) {
                         if (dataSchemaNode instanceof ChoiceSchemaNode && targetNodeLocalName.equals(dataSchemaNode.getQName
                                 ().getLocalName())) {
-                            node = ((ChoiceSchemaNode) dataSchemaNode).getCaseNodeByName(caseLocalName);
+                            node = findNamedCase((ChoiceSchemaNode) dataSchemaNode, caseLocalName);
                             break;
                         }
                     }
                 } else {
-                    node = targetNode.getCaseNodeByName(caseLocalName);
+                    node = findNamedCase(targetNode, caseLocalName);
                 }
                 final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
                 if (childNodes != null) {
@@ -1361,6 +1360,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
             }
         }
+    }
+
+    private static ChoiceCaseNode findNamedCase(final ChoiceSchemaNode choice, final String caseName) {
+        final List<ChoiceCaseNode> cases = choice.findCaseNodes(caseName);
+        return cases.isEmpty() ? null : cases.get(0);
     }
 
     private static boolean isInnerType(final LeafSchemaNode leaf, final TypeDefinition<?> type) {
@@ -1452,12 +1456,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
             ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
         }
 
-        String leafDesc = leaf.getDescription();
-        if (leafDesc == null) {
-            leafDesc = "";
-        }
-
-        final MethodSignatureBuilder getter = constructGetter(typeBuilder, leafName, leafDesc, returnType, leaf.getStatus());
+        final String leafDesc = leaf.getDescription().orElse("");
+        final MethodSignatureBuilder getter = constructGetter(typeBuilder, leafName, leafDesc, returnType,
+            leaf.getStatus());
         processContextRefExtension(leaf, getter, parentModule);
         return returnType;
     }
@@ -1522,7 +1523,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private Module findModuleFromImports(final Set<ModuleImport> imports, final String prefix) {
         for (final ModuleImport imp : imports) {
             if (imp.getPrefix().equals(prefix)) {
-                return schemaContext.findModuleByName(imp.getModuleName(), imp.getRevision());
+                return schemaContext.findModule(imp.getModuleName(), imp.getRevision()).orElse(null);
             }
         }
         return null;
@@ -1537,16 +1538,14 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 // GeneratedType for this type definition should be already
                 // created
                 final QName qname = typeDef.getQName();
-                final Module unionModule = schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
-                        qname.getRevision());
+                final Module unionModule = schemaContext.findModule(qname.getModule()).orElse(null);
                 final ModuleContext mc = genCtx.get(unionModule);
                 returnType = mc.getTypedefs().get(typeDef.getPath());
             } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
                 // Annonymous enumeration (already generated, since it is inherited via uses).
                 LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
                 QName qname = originalLeaf.getQName();
-                final Module enumModule =  schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
-                        qname.getRevision());
+                final Module enumModule =  schemaContext.findModule(qname.getModule()).orElse(null);
                 returnType = genCtx.get(enumModule).getInnerType(originalLeaf.getType().getPath());
             } else {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
@@ -1583,7 +1582,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             return false;
         }
         final String leafName = leaf.getQName().getLocalName();
-        final String leafDesc = encodeAngleBrackets(leaf.getDescription());
+        final String leafDesc = encodeAngleBrackets(leaf.getDescription().orElse(null));
         final GeneratedPropertyBuilder propBuilder = toBuilder.addProperty(BindingMapping.getPropertyName(leafName));
         propBuilder.setReadOnly(isReadOnly);
         propBuilder.setReturnType(returnType);
@@ -1612,7 +1611,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
      *         <li>false - other cases</li>
      *         </ul>
      */
-    private boolean resolveLeafListSchemaNode(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode node, final Module module) {
+    private boolean resolveLeafListSchemaNode(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode node,
+            final Module module) {
         if (node == null || typeBuilder == null || node.isAddedByUses()) {
             return false;
         }
@@ -1649,7 +1649,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
 
         final ParameterizedType listType = Types.listTypeFor(returnType);
-        constructGetter(typeBuilder, nodeName.getLocalName(), node.getDescription(), listType, node.getStatus());
+        constructGetter(typeBuilder, nodeName.getLocalName(), node.getDescription().orElse(null), listType,
+            node.getStatus());
         return true;
     }
 
@@ -1657,16 +1658,16 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final GeneratedTypeBuilder typeBuilder, final Module parentModule) {
         final GeneratedTOBuilderImpl returnType = new GeneratedTOBuilderImpl(genTOBuilder.getPackageName(),
                 genTOBuilder.getName());
-        final String typedefDescription = encodeAngleBrackets(typeDef.getDescription());
+        final String typedefDescription = encodeAngleBrackets(typeDef.getDescription().orElse(null));
 
         returnType.setDescription(typedefDescription);
-        returnType.setReference(typeDef.getReference());
+        returnType.setReference(typeDef.getReference().orElse(null));
         returnType.setSchemaPath(typeDef.getPath().getPathFromRoot());
         returnType.setModuleName(parentModule.getName());
 
         genTOBuilder.setTypedef(true);
         genTOBuilder.setIsUnion(true);
-        TypeProviderImpl.addUnitsToGenTO(genTOBuilder, typeDef.getUnits());
+        TypeProviderImpl.addUnitsToGenTO(genTOBuilder, typeDef.getUnits().orElse(null));
 
 
 
@@ -1810,9 +1811,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final GeneratedTypeBuilderImpl newType = new GeneratedTypeBuilderImpl(packageName, genTypeName);
         final Module module = findParentModule(schemaContext, schemaNode);
         qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
-        newType.addComment(schemaNode.getDescription());
+        newType.addComment(schemaNode.getDescription().orElse(null));
         newType.setDescription(createDescription(schemaNode, newType.getFullyQualifiedName()));
-        newType.setReference(schemaNode.getReference());
+        newType.setReference(schemaNode.getReference().orElse(null));
         newType.setSchemaPath(schemaNode.getPath().getPathFromRoot());
         newType.setModuleName(module.getName());
 
@@ -2117,7 +2118,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
     private String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName) {
         final StringBuilder sb = new StringBuilder();
-        final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription());
+        final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription().orElse(null));
         final String formattedDescription = YangTextTemplate.formatToParagraph(nodeDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
@@ -2185,7 +2186,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
     private String createDescription(final Module module) {
         final StringBuilder sb = new StringBuilder();
-        final String moduleDescription = encodeAngleBrackets(module.getDescription());
+        final String moduleDescription = encodeAngleBrackets(module.getDescription().orElse(null));
         final String formattedDescription = YangTextTemplate.formatToParagraph(moduleDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {

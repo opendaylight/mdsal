@@ -18,8 +18,8 @@
 
 @(identity: IdentitySchemaNode)
 identity @{identity.getQName().getLocalName()} {
-    @if(identity.getBaseIdentity() != null) {
-        base "(@writeIdentityNs(identity.getBaseIdentity()))@{identity.getBaseIdentity()}";
+    @for(baseIdentity <- identity.getBaseIdentities()) {
+        base "(@writeIdentityNs(baseIdentity))@{baseIdentity}";
     }
     @if(identity.getDescription() != null && !identity.getDescription().isEmpty()) {
         description "@{identity.getDescription()}";

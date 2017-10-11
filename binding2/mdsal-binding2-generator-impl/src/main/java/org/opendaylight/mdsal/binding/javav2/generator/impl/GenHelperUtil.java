@@ -68,7 +68,7 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AnyDataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -259,8 +259,7 @@ final class GenHelperUtil {
         }
 
         final QName qname = schemaNode.getPath().getLastComponent();
-        final Module originalModule = schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
-            qname.getRevision());
+        final Module originalModule = schemaContext.findModule(qname.getModule()).get();
         return module.equals(originalModule);
     }
 
@@ -278,7 +277,7 @@ final class GenHelperUtil {
             childNodeQName = QName.create(((Module) node).getQNameModule(), superChildNode.getQName().getLocalName());
         } else if (node instanceof SchemaNode) {
             childNodeQName = QName.create(((SchemaNode) node).getQName(), superChildNode.getQName().getLocalName());
-        } else if (node instanceof AugmentationSchema) {
+        } else if (node instanceof AugmentationSchemaNode) {
             childNodeQName = QName.create(module.getQNameModule(), superChildNode.getQName().getLocalName());
         } else {
             throw new IllegalArgumentException("Not support node type:" + node);
@@ -338,9 +337,8 @@ final class GenHelperUtil {
             final Object parentNode, final UsesNode usesNode) {
         SchemaNode groupingNode;
         if (parentNode instanceof Module) {
-            final Module superModule = schemaContext.findModuleByNamespaceAndRevision(
-                    usesNode.getGroupingPath().getLastComponent().getModule().getNamespace(),
-                    usesNode.getGroupingPath().getLastComponent().getModule().getRevision());
+            final Module superModule = schemaContext.findModule(
+                usesNode.getGroupingPath().getLastComponent().getModule()).get();
             groupingNode = superModule.getGroupings()
                     .stream().filter(grouping -> grouping.getPath().equals(usesNode.getGroupingPath()))
                     .findFirst().orElse(null);
@@ -348,10 +346,11 @@ final class GenHelperUtil {
             //FIXME: Schema path is not unique for Yang 1.1, findDataSchemaNode always does search from data node first.
             final Iterable<QName> prefixedPath = usesNode.getGroupingPath().getPathFromRoot();
             final QName current = prefixedPath.iterator().next();
-            final Module targetModule = schemaContext.findModuleByNamespaceAndRevision(current.getNamespace(), current.getRevision());
+            final Module targetModule = schemaContext.findModule(current.getModule()).orElse(null);
             Preconditions.checkArgument(targetModule != null, "Cannot find target module for %s and %s.",
                     current.getNamespace(), current.getRevision());
-            groupingNode = targetModule.getGroupings().stream().filter(grouping -> grouping.getPath().equals(usesNode.getGroupingPath()))
+            groupingNode = targetModule.getGroupings().stream()
+                    .filter(grouping -> grouping.getPath().equals(usesNode.getGroupingPath()))
                     .collect(Collectors.toList()).get(0);
             if (groupingNode == null) {
                 groupingNode = SchemaContextUtil.findDataSchemaNode(schemaContext, usesNode.getGroupingPath());
@@ -396,21 +395,23 @@ final class GenHelperUtil {
         return null;
     }
 
-    static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
-            final Type targetTypeRef, final SchemaNode targetNode, final List<AugmentationSchema> schemaPathAugmentListEntry,
-            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final Map<Module, ModuleContext> genCtx,
-            final SchemaContext schemaContext, final boolean verboseClassComments, final TypeProvider typeProvider,
+    static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module,
+            final String augmentPackageName, final Type targetTypeRef, final SchemaNode targetNode,
+            final List<AugmentationSchemaNode> schemaPathAugmentListEntry,
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+            final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext,
+            final boolean verboseClassComments, final TypeProvider typeProvider,
             final BindingNamespaceType namespaceType) {
 
         //pick augmentation grouped by augmentation target, there is always at least one
-        final AugmentationSchema augSchema = schemaPathAugmentListEntry.get(0);
+        final AugmentationSchemaNode augSchema = schemaPathAugmentListEntry.get(0);
 
         Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.computeIfAbsent(
                 augmentPackageName, k -> new HashMap<>());
 
         //this requires valid semantics in YANG model
         String augIdentifier = null;
-        for (AugmentationSchema aug : schemaPathAugmentListEntry) {
+        for (AugmentationSchemaNode aug : schemaPathAugmentListEntry) {
             augIdentifier = getAugmentIdentifier(aug.getUnknownSchemaNodes());
             break;
         }
@@ -431,11 +432,12 @@ final class GenHelperUtil {
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
 
         //produces getters for augTypeBuilder eventually
-        for (AugmentationSchema aug : schemaPathAugmentListEntry) {
+        for (AugmentationSchemaNode aug : schemaPathAugmentListEntry) {
             //apply all uses
             addImplementedInterfaceFromUses(aug, augTypeBuilder, genCtx);
-            augSchemaNodeToMethods(module, BindingMapping.getRootPackageName(module), augTypeBuilder, augTypeBuilder, aug.getChildNodes(),
-               genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders, namespaceType);
+            augSchemaNodeToMethods(module, BindingMapping.getRootPackageName(module), augTypeBuilder, augTypeBuilder,
+                aug.getChildNodes(), genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders,
+                namespaceType);
         }
 
         augmentBuilders.put(augTypeBuilder.getName(), augTypeBuilder);
@@ -860,7 +862,7 @@ final class GenHelperUtil {
             } else {
                 if (typeDef.getBaseType() == null && (typeDef instanceof EnumTypeDefinition
                         || typeDef instanceof UnionTypeDefinition || typeDef instanceof BitsTypeDefinition)) {
-                    LeafSchemaNode originalLeaf = (LeafSchemaNode) ((DerivableSchemaNode) leaf).getOriginal().orNull();
+                    LeafSchemaNode originalLeaf = (LeafSchemaNode) ((DerivableSchemaNode) leaf).getOriginal().orElse(null);
                     Preconditions.checkNotNull(originalLeaf);
                     returnType = genCtx.get(findParentModule(schemaContext, originalLeaf)).getInnerType(typeDef.getPath());
                 } else {
@@ -1057,14 +1059,14 @@ final class GenHelperUtil {
                     if (!Iterables.isEmpty(choiceNodeParentPath.getPathFromRoot())) {
                         SchemaNode parent = findDataSchemaNode(schemaContext, choiceNodeParentPath);
 
-                        if (parent instanceof AugmentationSchema) {
-                            final AugmentationSchema augSchema = (AugmentationSchema) parent;
+                        if (parent instanceof AugmentationSchemaNode) {
+                            final AugmentationSchemaNode augSchema = (AugmentationSchemaNode) parent;
                             final SchemaPath targetPath = augSchema.getTargetPath();
                             SchemaNode targetSchemaNode = findDataSchemaNode(schemaContext, targetPath);
                             if (targetSchemaNode instanceof DataSchemaNode
                                     && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
                                 if (targetSchemaNode instanceof DerivableSchemaNode) {
-                                    targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orNull();
+                                    targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orElse(null);
                                 }
                                 if (targetSchemaNode == null) {
                                     throw new IllegalStateException(
@@ -1237,16 +1239,14 @@ final class GenHelperUtil {
                 // GeneratedType for this type definition should be already
                 // created
                 final QName qname = typeDef.getQName();
-                final Module unionModule = schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
-                        qname.getRevision());
+                final Module unionModule = schemaContext.findModule(qname.getModule()).get();
                 final ModuleContext mc = genCtx.get(unionModule);
                 returnType = mc.getTypedefs().get(typeDef.getPath());
             } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
                 // Annonymous enumeration (already generated, since it is inherited via uses).
                 LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
                 QName qname = originalLeaf.getQName();
-                final Module enumModule =  schemaContext.findModuleByNamespaceAndRevision(qname.getNamespace(),
-                        qname.getRevision());
+                final Module enumModule =  schemaContext.findModule(qname.getModule()).orElse(null);
                 returnType = genCtx.get(enumModule).getInnerType(originalLeaf.getType().getPath());
             } else {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, genCtx.get(module));
