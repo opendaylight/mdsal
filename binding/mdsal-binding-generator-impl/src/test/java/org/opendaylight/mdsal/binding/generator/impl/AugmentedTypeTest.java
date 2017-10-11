@@ -11,11 +11,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
@@ -27,20 +25,13 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class AugmentedTypeTest {
 
     @Test
-    public void augmentedAbstractTopologyTest() throws Exception {
-        File abstractTopology = new File(getClass().getResource(
-                "/augment-test-models/abstract-topology@2013-02-08.yang").toURI());
-        File augmentTopology = new File(getClass().getResource(
-                "/augment-test-models/augment-abstract-topology@2013-05-03.yang").toURI());
-        File augmentNetworkLink = new File(getClass().getResource(
-                "/augment-test-models/augment-network-link-attributes@2013-05-03.yang").toURI());
-        File augmentTopologyTunnels = new File(getClass().getResource(
-                "/augment-test-models/augment-topology-tunnels@2013-05-03.yang").toURI());
-        File ietfInterfaces = new File(getClass().getResource("/augment-test-models/ietf-interfaces@2012-11-15.yang")
-                .toURI());
-
-        final SchemaContext context = YangParserTestUtils.parseYangSources(abstractTopology, augmentTopology,
-                augmentNetworkLink, augmentTopologyTunnels, ietfInterfaces);
+    public void augmentedAbstractTopologyTest() {
+        final SchemaContext context = YangParserTestUtils.parseYangResources(AugmentedTypeTest.class,
+            "/augment-test-models/abstract-topology@2013-02-08.yang",
+            "/augment-test-models/augment-abstract-topology@2013-05-03.yang",
+            "/augment-test-models/augment-network-link-attributes@2013-05-03.yang",
+            "/augment-test-models/augment-topology-tunnels@2013-05-03.yang",
+            "/augment-test-models/ietf-interfaces@2012-11-15.yang");
         assertNotNull("Schema Context is null", context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

@@ -20,16 +20,15 @@ import com.google.common.io.BaseEncoding;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -56,6 +55,7 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.Generate
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
@@ -106,7 +106,7 @@ public final class TypeProviderImpl implements TypeProvider {
     /**
      * Map<moduleName, Map<moduleDate, Map<typeName, type>>>
      */
-    private final Map<String, Map<Date, Map<String, Type>>> genTypeDefsContextMap;
+    private final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap;
 
     /**
      * The map which maps schema paths to JAVA <code>Type</code>.
@@ -344,7 +344,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 final Module module = findParentModule(schemaContext, typeDefinition);
                 final Restrictions r = BindingGeneratorUtil.getRestrictions(typeDefinition);
                 if (module != null) {
-                    final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
+                    final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
                     final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
                     if (genTOs != null) {
                         returnType = genTOs.get(typedefName);
@@ -371,13 +371,17 @@ public final class TypeProviderImpl implements TypeProvider {
      * @param idref
      *            identityref type definition for which JAVA <code>Type</code>
      *            is sought
-     * @return JAVA <code>Type</code> of the identity which is refrenced through
+     * @return JAVA <code>Type</code> of the identity which is referenced through
      *         <code>idref</code>
      */
     private Type provideTypeForIdentityref(final IdentityrefTypeDefinition idref) {
-        final QName baseIdQName = idref.getIdentity().getQName();
-        final Module module = schemaContext.findModuleByNamespaceAndRevision(baseIdQName.getNamespace(),
-                baseIdQName.getRevision());
+        final Collection<IdentitySchemaNode> identities = idref.getIdentities();
+        if (identities.size() > 1) {
+            LOG.warn("Identity reference {} has multiple identities, using only the first one", idref);
+        }
+
+        final QName baseIdQName = identities.iterator().next().getQName();
+        final Module module = schemaContext.findModule(baseIdQName.getModule()).orElse(null);
         IdentitySchemaNode identity = null;
         for (final IdentitySchemaNode id : module.getIdentities()) {
             if (id.getQName().equals(baseIdQName)) {
@@ -424,7 +428,7 @@ public final class TypeProviderImpl implements TypeProvider {
             final Module module = findParentModule(schemaContext, parentNode);
 
             if (module != null) {
-                final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
+                final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
                 final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
                 if (genTOs != null) {
                     return genTOs.get(typeDefinition.getQName().getLocalName());
@@ -592,9 +596,9 @@ public final class TypeProviderImpl implements TypeProvider {
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
 
         final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(basePackageName, enumerationName);
-        final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
+        final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription().orElse(null));
         enumBuilder.setDescription(enumTypedefDescription);
-        enumBuilder.setReference(enumTypeDef.getReference());
+        enumBuilder.setReference(enumTypeDef.getReference().orElse(null));
         enumBuilder.setModuleName(module.getName());
         enumBuilder.setSchemaPath(enumTypeDef.getPath().getPathFromRoot());
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
@@ -636,7 +640,7 @@ public final class TypeProviderImpl implements TypeProvider {
         final String enumerationName = BindingMapping.getClassName(enumName);
 
         final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
-        final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription());
+        final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription().orElse(null));
         enumBuilder.setDescription(enumTypedefDescription);
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
         return enumBuilder.toInstance(enumBuilder);
@@ -684,7 +688,7 @@ public final class TypeProviderImpl implements TypeProvider {
         final List<Module> modulesSortedByDependency = ModuleDependencySort.sort(modules);
 
         for (final Module module : modulesSortedByDependency) {
-            Map<Date, Map<String, Type>> dateTypeMap = genTypeDefsContextMap.get(module.getName());
+            Map<Optional<Revision>, Map<String, Type>> dateTypeMap = genTypeDefsContextMap.get(module.getName());
             if (dateTypeMap == null) {
                 dateTypeMap = new HashMap<>();
             }
@@ -725,7 +729,7 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     private Type typedefToGeneratedType(final String basePackageName, final Module module, final TypeDefinition<?> typedef) {
         final String moduleName = module.getName();
-        final Date moduleRevision = module.getRevision();
+        final Optional<Revision> moduleRevision = module.getRevision();
         if (basePackageName != null && moduleName != null && typedef != null && typedef.getQName() != null) {
             final String typedefName = typedef.getQName().getLocalName();
             final TypeDefinition<?> innerTypeDefinition = typedef.getBaseType();
@@ -739,7 +743,7 @@ public final class TypeProviderImpl implements TypeProvider {
                             (UnionTypeDefinition) innerTypeDefinition, typedefName, typedef);
                     genTOBuilder.setTypedef(true);
                     genTOBuilder.setIsUnion(true);
-                    addUnitsToGenTO(genTOBuilder, typedef.getUnits());
+                    addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
                     makeSerializable((GeneratedTOBuilderImpl) genTOBuilder);
                     returnType = genTOBuilder.toInstance();
                     // union builder
@@ -768,7 +772,7 @@ public final class TypeProviderImpl implements TypeProvider {
                     final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForBitsTypeDefinition(
                             basePackageName, bitsTypeDefinition, typedefName, module.getName());
                     genTOBuilder.setTypedef(true);
-                    addUnitsToGenTO(genTOBuilder, typedef.getUnits());
+                    addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
                     makeSerializable((GeneratedTOBuilderImpl) genTOBuilder);
                     returnType = genTOBuilder.toInstance();
                 } else {
@@ -776,7 +780,8 @@ public final class TypeProviderImpl implements TypeProvider {
                     returnType = wrapJavaTypeIntoTO(basePackageName, typedef, javaType, module.getName());
                 }
                 if (returnType != null) {
-                    final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(moduleName);
+                    final Map<Optional<Revision>, Map<String, Type>> modulesByDate =
+                            genTypeDefsContextMap.get(moduleName);
                     Map<String, Type> typeMap = modulesByDate.get(moduleRevision);
                     if (typeMap != null) {
                         if (typeMap.isEmpty()) {
@@ -803,7 +808,8 @@ public final class TypeProviderImpl implements TypeProvider {
      *            JAVA <code>Type</code> to which is <code>typedef</code> mapped
      * @return generated transfer object which represent<code>javaType</code>
      */
-    private static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef, final Type javaType, final String moduleName) {
+    private static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName,
+            final TypeDefinition<?> typedef, final Type javaType, final String moduleName) {
         Preconditions.checkNotNull(javaType, "javaType cannot be null");
         final String propertyName = "value";
 
@@ -821,7 +827,7 @@ public final class TypeProviderImpl implements TypeProvider {
             final List<String> regExps = resolveRegExpressionsFromTypedef(typedef);
             addStringRegExAsConstant(genTOBuilder, regExps);
         }
-        addUnitsToGenTO(genTOBuilder, typedef.getUnits());
+        addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
         genTOBuilder.setTypedef(true);
         makeSerializable((GeneratedTOBuilderImpl) genTOBuilder);
         return genTOBuilder.toInstance();
@@ -876,7 +882,8 @@ public final class TypeProviderImpl implements TypeProvider {
      *             <li>if Qname of <code>typedef</code> is null</li>
      *             </ul>
      */
-    public List<GeneratedTOBuilder> provideGeneratedTOBuildersForUnionTypeDef(final String basePackageName, final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
+    public List<GeneratedTOBuilder> provideGeneratedTOBuildersForUnionTypeDef(final String basePackageName,
+            final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
         Preconditions.checkNotNull(basePackageName, "Base Package Name cannot be NULL!");
         Preconditions.checkNotNull(typedef, "Type Definition cannot be NULL!");
         Preconditions.checkNotNull(typedef.getQName(), "Type definition QName cannot be NULL!");
@@ -889,9 +896,9 @@ public final class TypeProviderImpl implements TypeProvider {
         if (typeDefName != null && !typeDefName.isEmpty()) {
             final String typeName = BindingMapping.getClassName(typeDefName);
             unionGenTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeName);
-            final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
+            final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
             unionGenTOBuilder.setDescription(typedefDescription);
-            unionGenTOBuilder.setReference(typedef.getReference());
+            unionGenTOBuilder.setReference(typedef.getReference().orElse(null));
             unionGenTOBuilder.setSchemaPath(typedef.getPath().getPathFromRoot());
             unionGenTOBuilder.setModuleName(module.getName());
         } else {
@@ -950,7 +957,8 @@ public final class TypeProviderImpl implements TypeProvider {
      *         bigger one due to recursive call of
      *         <code>provideGeneratedTOBuildersForUnionTypeDef</code> method.
      */
-    private List<GeneratedTOBuilder> resolveUnionSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder, final UnionTypeDefinition unionSubtype, final String basePackageName, final SchemaNode parentNode) {
+    private List<GeneratedTOBuilder> resolveUnionSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
+            final UnionTypeDefinition unionSubtype, final String basePackageName, final SchemaNode parentNode) {
         final String newTOBuilderName = provideAvailableNameForGenTOBuilder(parentUnionGenTOBuilder.getName());
         final List<GeneratedTOBuilder> subUnionGenTOBUilders = provideGeneratedTOBuildersForUnionTypeDef(
                 basePackageName, unionSubtype, newTOBuilderName, parentNode);
@@ -1030,7 +1038,7 @@ public final class TypeProviderImpl implements TypeProvider {
     private Type findGenTO(final String searchedTypeName, final SchemaNode parentNode) {
         final Module typeModule = findParentModule(schemaContext, parentNode);
         if (typeModule != null && typeModule.getName() != null) {
-            final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(typeModule.getName());
+            final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(typeModule.getName());
             final Map<String, Type> genTOs = modulesByDate.get(typeModule.getRevision());
             if (genTOs != null) {
                 return genTOs.get(searchedTypeName);
@@ -1054,7 +1062,7 @@ public final class TypeProviderImpl implements TypeProvider {
         if (!(newTypeDef instanceof UnionTypeDefinition)) {
             final Module parentModule = findParentModule(schemaContext, parentNode);
             if (parentModule != null && parentModule.getName() != null) {
-                final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(parentModule.getName());
+                final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(parentModule.getName());
                 final Map<String, Type> genTOsMap = modulesByDate.get(parentModule.getRevision());
                 genTOsMap.put(newTypeDef.getQName().getLocalName(), genTOBuilder.toInstance());
             }
@@ -1104,10 +1112,10 @@ public final class TypeProviderImpl implements TypeProvider {
         if (packageName != null && typeDefTOName != null) {
             final String genTOName = BindingMapping.getClassName(typeDefTOName);
             final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(packageName, genTOName);
-            final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
+            final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
 
             newType.setDescription(typedefDescription);
-            newType.setReference(typedef.getReference());
+            newType.setReference(typedef.getReference().orElse(null));
             newType.setSchemaPath(typedef.getPath().getPathFromRoot());
             newType.setModuleName(moduleName);
 
@@ -1136,7 +1144,8 @@ public final class TypeProviderImpl implements TypeProvider {
      *             <li>if <code>basePackageName</code> equals null</li>
      *             </ul>
      */
-    public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final String basePackageName, final TypeDefinition<?> typeDef, final String typeDefName, final String moduleName) {
+    public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final String basePackageName,
+            final TypeDefinition<?> typeDef, final String typeDefName, final String moduleName) {
 
         Preconditions.checkArgument(typeDef != null, "typeDef cannot be NULL!");
         Preconditions.checkArgument(basePackageName != null, "Base Package Name cannot be NULL!");
@@ -1146,10 +1155,10 @@ public final class TypeProviderImpl implements TypeProvider {
 
             final String typeName = BindingMapping.getClassName(typeDefName);
             final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeName);
-            final String typedefDescription = encodeAngleBrackets(typeDef.getDescription());
+            final String typedefDescription = encodeAngleBrackets(typeDef.getDescription().orElse(null));
 
             genTOBuilder.setDescription(typedefDescription);
-            genTOBuilder.setReference(typeDef.getReference());
+            genTOBuilder.setReference(typeDef.getReference().orElse(null));
             genTOBuilder.setSchemaPath(typeDef.getPath().getPathFromRoot());
             genTOBuilder.setModuleName(moduleName);
             genTOBuilder.setBaseType(typeDef);
@@ -1196,7 +1205,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
         final List<String> regExps = new ArrayList<>(patternConstraints.size());
         for (final PatternConstraint patternConstraint : patternConstraints) {
-            final String regEx = patternConstraint.getRegularExpression();
+            final String regEx = patternConstraint.getJavaPatternString();
             final String modifiedRegEx = StringEscapeUtils.escapeJava(regEx);
             regExps.add(modifiedRegEx);
         }
@@ -1268,10 +1277,10 @@ public final class TypeProviderImpl implements TypeProvider {
         final String classTypedefName = BindingMapping.getClassName(typedefName);
         final String innerTypeDef = innerExtendedType.getQName().getLocalName();
         final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, classTypedefName);
-        final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
+        final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
 
         genTOBuilder.setDescription(typedefDescription);
-        genTOBuilder.setReference(typedef.getReference());
+        genTOBuilder.setReference(typedef.getReference().orElse(null));
         genTOBuilder.setSchemaPath(typedef.getPath().getPathFromRoot());
         genTOBuilder.setModuleName(moduleName);
         genTOBuilder.setTypedef(true);
@@ -1285,7 +1294,7 @@ public final class TypeProviderImpl implements TypeProvider {
             genTOBuilder.setIsUnion(true);
         }
 
-        Map<Date, Map<String, Type>> modulesByDate = null;
+        Map<Optional<Revision>, Map<String, Type>> modulesByDate = null;
         Map<String, Type> typeMap = null;
         final Module parentModule = findParentModule(schemaContext, innerExtendedType);
         if (parentModule != null) {
@@ -1299,7 +1308,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 genTOBuilder.setExtendsType((GeneratedTransferObject) type);
             }
         }
-        addUnitsToGenTO(genTOBuilder, typedef.getUnits());
+        addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
         makeSerializable(genTOBuilder);
 
         return genTOBuilder.toInstance();
@@ -1423,7 +1432,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
     @Override
     public String getTypeDefaultConstruction(final LeafSchemaNode node) {
-        return getTypeDefaultConstruction(node, node.getDefault());
+        return getTypeDefaultConstruction(node, (String) node.getType().getDefaultValue().orElse(null));
     }
 
     public String getTypeDefaultConstruction(final LeafSchemaNode node, final String defaultValue) {
@@ -1598,9 +1607,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
     private Module getParentModule(final SchemaNode node) {
         final QName qname = node.getPath().getPathFromRoot().iterator().next();
-        final URI namespace = qname.getNamespace();
-        final Date revision = qname.getRevision();
-        return schemaContext.findModuleByNamespaceAndRevision(namespace, revision);
+        return schemaContext.findModule(qname.getModule()).orElse(null);
     }
 
     private String leafrefToDef(final LeafSchemaNode parentNode, final LeafrefTypeDefinition leafrefType, final String defaultValue) {
@@ -1640,7 +1647,7 @@ public final class TypeProviderImpl implements TypeProvider {
         if (type.getBaseType() != null) {
             final QName typeQName = type.getQName();
             Module module = null;
-            final Set<Module> modules = schemaContext.findModuleByNamespace(typeQName.getNamespace());
+            final Set<Module> modules = schemaContext.findModules(typeQName.getNamespace());
             if (modules.size() > 1) {
                 for (final Module m : modules) {
                     if (m.getRevision().equals(typeQName.getRevision())) {
@@ -1650,7 +1657,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 }
                 if (module == null) {
                     final List<Module> modulesList = new ArrayList<>(modules);
-                    Collections.sort(modulesList, (o1, o2) -> o1.getRevision().compareTo(o2.getRevision()));
+                    Collections.sort(modulesList, (o1, o2) -> Revision.compare(o1.getRevision(), o2.getRevision()));
                     module = modulesList.get(0);
                 }
             } else {
@@ -1662,23 +1669,17 @@ public final class TypeProviderImpl implements TypeProvider {
         } else {
             final Iterator<QName> path = node.getPath().getPathFromRoot().iterator();
             final QName first = path.next();
+            final Module parent = schemaContext.findModule(first.getModule()).orElse(null);
+            final String basePackageName = BindingMapping.getRootPackageName(parent.getQNameModule());
             if (!path.hasNext()) {
-                final URI namespace = first.getNamespace();
-                final Date revision = first.getRevision();
-                final Module parent = schemaContext.findModuleByNamespaceAndRevision(namespace, revision);
                 parentName = BindingMapping.getClassName(parent.getName()) + "Data";
-                final String basePackageName = BindingMapping.getRootPackageName(parent.getQNameModule());
                 className = basePackageName + "." + parentName + "." + BindingMapping.getClassName(node.getQName());
             } else {
-                final URI namespace = first.getNamespace();
-                final Date revision = first.getRevision();
-                final Module parentModule = schemaContext.findModuleByNamespaceAndRevision(namespace, revision);
-                final String basePackageName = BindingMapping.getRootPackageName(parentModule.getQNameModule());
                 final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, UNION_PATH);
                 className = packageName + "." + BindingMapping.getClassName(node.getQName());
             }
         }
-        return union(className, node.getDefault(), node);
+        return union(className, (String) node.getType().getDefaultValue().orElse(null), node);
     }
 
     private static String union(final String className, final String defaultValue, final LeafSchemaNode node) {
