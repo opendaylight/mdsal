@@ -13,17 +13,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.opendaylight.mdsal.binding.generator.impl.SupportTestUtil.containsInterface;
 import static org.opendaylight.mdsal.binding.generator.impl.SupportTestUtil.containsMethods;
 
-import java.io.IOException;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.opendaylight.yangtools.yang.parser.spi.source.SourceException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
@@ -58,8 +54,8 @@ public class ChoiceCaseGenTypesTest extends AbstractTypesTest {
     }
 
     @Test
-    public void choiceCaseResolvingTypeTest() throws IOException, SourceException, ReactorException {
-        final SchemaContext context = YangParserTestUtils.parseYangSources(testModels);
+    public void choiceCaseResolvingTypeTest() {
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull("context is null", context);
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

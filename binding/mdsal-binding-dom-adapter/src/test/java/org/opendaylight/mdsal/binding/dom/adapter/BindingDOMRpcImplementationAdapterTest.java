@@ -13,7 +13,6 @@ import static org.mockito.Mockito.mock;
 import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Date;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
@@ -28,7 +27,7 @@ public class BindingDOMRpcImplementationAdapterTest {
         final BindingNormalizedNodeCodecRegistry registry = mock(BindingNormalizedNodeCodecRegistry.class);
         final Method testMethod = this.getClass().getDeclaredMethod("testMethod");
         final SchemaPath schemaPath = SchemaPath.create(true,
-                QName.create(QNameModule.create(new URI("tst"), new Date()), "test"));
+                QName.create(QNameModule.create(new URI("tst")), "test"));
         final BindingDOMRpcImplementationAdapter adapter =
                 new BindingDOMRpcImplementationAdapter(registry, OpendaylightTestRpcServiceService.class,
                         ImmutableMap.of(schemaPath, testMethod), mock(OpendaylightTestRpcServiceService.class));

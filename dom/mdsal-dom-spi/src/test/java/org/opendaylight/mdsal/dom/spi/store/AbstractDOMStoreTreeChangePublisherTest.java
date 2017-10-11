@@ -37,7 +37,7 @@ public class AbstractDOMStoreTreeChangePublisherTest extends AbstractDOMStoreTre
         final DataTreeCandidate dataTreeCandidate = mock(DataTreeCandidate.class);
         final DataTreeCandidateNode dataTreeCandidateNode = mock(DataTreeCandidateNode.class, "dataTreeCandidateNode");
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.builder()
-                .node(QName.create("node1")).node(QName.create("node2")).build();
+                .node(QName.create("", "node1")).node(QName.create("", "node2")).build();
 
         doReturn(dataTreeCandidateNode).when(dataTreeCandidate).getRootNode();
         doReturn(ModificationType.WRITE).when(dataTreeCandidateNode).getModificationType();

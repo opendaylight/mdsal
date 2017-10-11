@@ -32,8 +32,8 @@
     @writeContSchemaNode(dataSchemaNode.asInstanceOf[ContainerSchemaNode], module)
 }
 @if(dataSchemaNode.isInstanceOf[AnyXmlSchemaNode]) {
-    anyxml @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getQName().getLocalName()}@if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() == Status.CURRENT && !dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getConstraints().isMandatory()){;} else { {
-        @if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getConstraints().isMandatory()){
+    anyxml @{dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getQName().getLocalName()}@if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() == Status.CURRENT && !dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].isMandatory()){;} else { {
+        @if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].isMandatory()){
             mandatory true;
         }
         @if(dataSchemaNode.asInstanceOf[AnyXmlSchemaNode].getStatus() != Status.CURRENT) {
@@ -42,8 +42,8 @@
     }}
 }
 @if(dataSchemaNode.isInstanceOf[AnyDataSchemaNode]) {
-    anydata @{dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getQName().getLocalName()}@if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getStatus() == Status.CURRENT && !dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getConstraints().isMandatory()){;} else { {
-        @if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getConstraints().isMandatory()){
+    anydata @{dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getQName().getLocalName()}@if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getStatus() == Status.CURRENT && !dataSchemaNode.asInstanceOf[AnyDataSchemaNode].isMandatory()){;} else { {
+        @if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].isMandatory()){
             mandatory true;
         }
         @if(dataSchemaNode.asInstanceOf[AnyDataSchemaNode].getStatus() != Status.CURRENT) {
@@ -96,7 +96,7 @@
         @if(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getConstraints() != null){
                 @yangTemplateWriteConstraints(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getConstraints())
         }
-        @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getCases()) {
+        @for(childNode <- dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getCases().values()) {
             @yangTemplateWriteDataSchemaNode(childNode, module)
         }
         @if(dataSchemaNode.asInstanceOf[ChoiceSchemaNode].getStatus() != Status.CURRENT) {

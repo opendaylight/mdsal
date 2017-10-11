@@ -12,11 +12,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -27,11 +25,9 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class ExtendedTypedefTest {
 
     @Test
-    public void constantGenerationTest() throws Exception {
-        File abstractTopology = new File(getClass().getResource("/typedef-of-typedef/typedef_of_typedef.yang").toURI());
-        File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
-
-        final SchemaContext context = YangParserTestUtils.parseYangSources(abstractTopology, ietfInetTypes);
+    public void constantGenerationTest() {
+        final SchemaContext context = YangParserTestUtils.parseYangResources(ExtendedTypedefTest.class,
+            "/typedef-of-typedef/typedef_of_typedef.yang", "/ietf/ietf-inet-types.yang");
         assertNotNull("Schema Context is null", context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
