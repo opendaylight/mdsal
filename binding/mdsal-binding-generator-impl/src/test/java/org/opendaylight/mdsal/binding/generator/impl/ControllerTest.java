@@ -10,11 +10,9 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
-import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
@@ -22,12 +20,10 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class ControllerTest {
 
     @Test
-    public void controllerAugmentationTest() throws Exception {
-        File cn = new File(getClass().getResource("/controller-models/controller-network.yang").toURI());
-        File co = new File(getClass().getResource("/controller-models/controller-openflow.yang").toURI());
-        File ietfInetTypes = new File(getClass().getResource("/ietf/ietf-inet-types.yang").toURI());
-
-        final SchemaContext context = YangParserTestUtils.parseYangSources(cn, co, ietfInetTypes);
+    public void controllerAugmentationTest() {
+        final SchemaContext context = YangParserTestUtils.parseYangResources(ControllerTest.class,
+            "/controller-models/controller-network.yang", "/controller-models/controller-openflow.yang",
+            "/ietf/ietf-inet-types.yang");
         assertNotNull("Schema Context is null", context);
 
         final BindingGenerator bindingGen = new BindingGeneratorImpl(true);

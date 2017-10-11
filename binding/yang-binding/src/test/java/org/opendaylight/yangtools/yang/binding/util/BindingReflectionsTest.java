@@ -46,7 +46,7 @@ public class BindingReflectionsTest {
 
         assertNull(findHierarchicalParent(mock(DataObject.class)));
         assertEquals(GroupingFoo.class, BindingReflections.findHierarchicalParent(FooChild.class));
-        final ChildOf childOf = mock(FooChild.class);
+        final ChildOf<?> childOf = mock(FooChild.class);
         doReturn(FooChild.class).when(childOf).getImplementedInterface();
         assertEquals(GroupingFoo.class, BindingReflections.findHierarchicalParent(childOf));
         assertTrue(BindingReflections.isRpcMethod(TestImplementation.class.getDeclaredMethod("rpcMethodTest")));
@@ -63,7 +63,7 @@ public class BindingReflectionsTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testPrivateConstructor() throws Throwable {
         assertFalse(BindingReflections.class.getDeclaredConstructor().isAccessible());
-        final Constructor constructor = BindingReflections.class.getDeclaredConstructor();
+        final Constructor<?> constructor = BindingReflections.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();

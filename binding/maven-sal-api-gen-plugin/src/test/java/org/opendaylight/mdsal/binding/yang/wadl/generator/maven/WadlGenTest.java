@@ -22,7 +22,6 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.yang.wadl.generator.maven.WadlGenerator;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
@@ -52,29 +51,29 @@ public class WadlGenTest {
     @Test
     public void testListGeneration() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/wadl-gen");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         final Set<Module> modules = context.getModules();
         final BasicCodeGenerator generator = new WadlGenerator();
         Collection<File> generatedWadlFiles = generator.generateSources(context, GENERATOR_OUTPUT_DIR, modules);
         assertEquals(3, generatedWadlFiles.size());
-        generatedWadlFiles.forEach((file -> assertTrue(file.exists())));
+        generatedWadlFiles.forEach(file -> assertTrue(file.exists()));
     }
 
     @Test
     public void testListGenerationWithoutPath() throws Exception {
         final List<File> sourceFiles = getSourceFiles("/wadl-gen");
-        final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
+        final SchemaContext context = YangParserTestUtils.parseYangFiles(sourceFiles);
         final Set<Module> modules = context.getModules();
         final BasicCodeGenerator generator = new WadlGenerator();
         Collection<File> generatedWadlFiles = generator.generateSources(context, null, modules);
         assertEquals(3, generatedWadlFiles.size());
-        generatedWadlFiles.forEach((file -> {
+        generatedWadlFiles.forEach(file -> {
             deleteTestDir(file);
             assertFalse(file.exists());
-        }));
+        });
     }
 
-    private static List<File> getSourceFiles(String path) throws Exception {
+    private static List<File> getSourceFiles(final String path) throws Exception {
         final URI resPath = WadlGenTest.class.getResource(path).toURI();
         final File sourcesDir = new File(resPath);
         if (sourcesDir.exists()) {
@@ -90,7 +89,7 @@ public class WadlGenTest {
         }
     }
 
-    private static void deleteTestDir(File file) {
+    private static void deleteTestDir(final File file) {
         if (file.isDirectory()) {
             File[] filesToDelete = file.listFiles();
             if (filesToDelete != null) {
