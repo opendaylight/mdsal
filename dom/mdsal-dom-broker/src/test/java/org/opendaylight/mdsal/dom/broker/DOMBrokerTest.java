@@ -58,7 +58,7 @@ public class DOMBrokerTest {
     private CommitExecutorService commitExecutor;
 
     @Before
-    public void setupStore() throws Exception {
+    public void setupStore() {
         final InMemoryDOMDataStore operStore = new InMemoryDOMDataStore("OPER",
                 MoreExecutors.newDirectExecutorService());
         final InMemoryDOMDataStore configStore = new InMemoryDOMDataStore("CFG",
@@ -75,7 +75,7 @@ public class DOMBrokerTest {
                 .build();
 
         commitExecutor = new CommitExecutorService(Executors.newSingleThreadExecutor());
-        futureExecutor = SpecialExecutors.newBlockingBoundedCachedThreadPool(1, 5, "FCB");
+        futureExecutor = SpecialExecutors.newBlockingBoundedCachedThreadPool(1, 5, "FCB", DOMBrokerTest.class);
         executor = new DeadlockDetectingListeningExecutorService(commitExecutor,
                 TransactionCommitDeadlockException.DEADLOCK_EXCEPTION_SUPPLIER, futureExecutor);
         domBroker = new SerializedDOMDataBroker(stores, executor);

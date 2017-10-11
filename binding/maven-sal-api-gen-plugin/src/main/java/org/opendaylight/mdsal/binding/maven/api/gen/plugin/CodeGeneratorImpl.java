@@ -52,13 +52,6 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     private File resourceBaseDir;
 
     @Override
-    public Collection<File> generateSources(final SchemaContext context, final File outputBaseDir,
-            final Set<Module> currentModules) throws IOException {
-        return generateSources(context, outputBaseDir, currentModules,
-            module -> Optional.of("/" + module.getModuleSourcePath().replace(File.separator, "/")));
-    }
-
-    @Override
     public Collection<File> generateSources(final SchemaContext context, final File outputDir,
             final Set<Module> yangModules, final Function<Module, Optional<String>> moduleResourcePathResolver)
                     throws IOException {

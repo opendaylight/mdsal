@@ -13,9 +13,9 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.common.collect.ImmutableSet;
 import java.net.URI;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 
 public class FutureSchemaTest {
 
@@ -23,7 +23,7 @@ public class FutureSchemaTest {
     public void basicTest() throws Exception {
         final FutureSchema futureSchema = FutureSchema.create(0, TimeUnit.MICROSECONDS, true);
         assertNotNull(futureSchema);
-        assertFalse(futureSchema.waitForSchema(new URI("test"), new Date(0)));
+        assertFalse(futureSchema.waitForSchema(QNameModule.create(new URI("test"))));
         assertFalse(futureSchema.waitForSchema(ImmutableSet.of()));
         assertEquals(0, futureSchema.getDuration());
         assertEquals(TimeUnit.MICROSECONDS, futureSchema.getUnit());
