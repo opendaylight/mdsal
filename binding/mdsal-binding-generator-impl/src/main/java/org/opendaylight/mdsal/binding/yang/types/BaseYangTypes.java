@@ -218,7 +218,7 @@ public final class BaseYangTypes {
         }
     };
 
-    private static <T extends Number> Restrictions singleRangeRestrictions(final T min, final T max) {
+    private static <T extends Number & Comparable<T>> Restrictions singleRangeRestrictions(final T min, final T max) {
         return Types.getDefaultRestrictions(min, max);
     }
 

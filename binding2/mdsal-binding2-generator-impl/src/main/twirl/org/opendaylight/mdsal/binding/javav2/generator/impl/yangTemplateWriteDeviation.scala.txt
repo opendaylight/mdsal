@@ -19,11 +19,11 @@
 
 @(deviation: Deviation)
 deviation @{deviation.asInstanceOf[DeviationEffectiveStatementImpl].getDeclared().rawArgument()} {
-    @if(deviation.getReference() != null && !deviation.getReference().isEmpty()) {
-        reference "@{deviation.getReference()}";
+    @if(deviation.getReference().isPresent()) {
+        reference "@{deviation.getReference().get()}";
     }
-    @if(deviation.getDescription() != null && !deviation.getDescription().isEmpty()) {
-        description "@{deviation.getDescription()}";
+    @if(deviation.getDescription().isPresent()) {
+        description "@{deviation.getDescription().get()}";
     }
     @for(deviate <- deviation.getDeviates()) {
         @if(deviate != null && deviate.getDeviateType() != null ) {

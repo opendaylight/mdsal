@@ -8,12 +8,12 @@
 package org.opendaylight.mdsal.binding.yang.unified.doc.generator
 
 import com.google.common.collect.Iterables
+import com.google.common.collect.Lists
 import java.io.BufferedWriter
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Collection
 import java.util.HashMap
@@ -21,6 +21,7 @@ import java.util.HashSet
 import java.util.LinkedHashMap
 import java.util.List
 import java.util.Map
+import java.util.Optional
 import java.util.Set
 import org.opendaylight.yangtools.yang.common.QName
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier
@@ -32,6 +33,7 @@ import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode
+import org.opendaylight.yangtools.yang.model.api.ElementCountConstraintAware
 import org.opendaylight.yangtools.yang.model.api.ExtensionDefinition
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition
 import org.opendaylight.yangtools.yang.model.api.LeafListSchemaNode
@@ -46,21 +48,25 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.UsesNode
 import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.IntegerTypeDefinition
+import org.opendaylight.yangtools.yang.model.api.type.Int8TypeDefinition
+import org.opendaylight.yangtools.yang.model.api.type.Int16TypeDefinition
+import org.opendaylight.yangtools.yang.model.api.type.Int32TypeDefinition
+import org.opendaylight.yangtools.yang.model.api.type.Int64TypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition
-import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition
+import org.opendaylight.yangtools.yang.model.api.type.Uint8TypeDefinition
+import org.opendaylight.yangtools.yang.model.api.type.Uint16TypeDefinition
+import org.opendaylight.yangtools.yang.model.api.type.Uint32TypeDefinition
+import org.opendaylight.yangtools.yang.model.api.type.Uint64TypeDefinition
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.sonatype.plexus.build.incremental.BuildContext
 import org.sonatype.plexus.build.incremental.DefaultBuildContext
-import com.google.common.collect.Lists
 
 class GeneratorImpl {
 
     File path
-    static val REVISION_FORMAT = new SimpleDateFormat("yyyy-MM-dd")
     static val Logger LOG = LoggerFactory.getLogger(GeneratorImpl)
     static val BuildContext CTX = new DefaultBuildContext();
     var Module currentModule;
@@ -341,9 +347,9 @@ class GeneratorImpl {
     private def parseTargetPath(SchemaPath path) {
         val List<DataSchemaNode> nodes = new ArrayList<DataSchemaNode>();
         for (QName pathElement : path.pathFromRoot) {
-            val module = ctx.findModuleByNamespaceAndRevision(pathElement.namespace, pathElement.revision);
-            if (module !== null) {
-                var foundNode = module.getDataChildByName(pathElement)
+            val module = ctx.findModule(pathElement.module)
+            if (module.isPresent) {
+                var foundNode = module.get.getDataChildByName(pathElement)
                 if (foundNode === null) {
                     val child = nodes.last
                     if (child instanceof DataNodeContainer) {
@@ -427,7 +433,7 @@ class GeneratorImpl {
     }
 
     private def printChoiceNode(ChoiceSchemaNode child) {
-        val List<ChoiceCaseNode> cases = new ArrayList(child.cases);
+        val List<ChoiceCaseNode> cases = new ArrayList(child.cases.values);
         if(!cases.empty) {
             val ChoiceCaseNode aCase = cases.get(0)
             for(caseChildNode : aCase.childNodes)
@@ -719,8 +725,10 @@ class GeneratorImpl {
                 <td>«module.namespace»</td>
             </tr>
             <tr>
+                «IF module.revision.isPresent»
                 <td>«strong("revision")»</td>
-                <td>«REVISION_FORMAT.format(module.revision)»</td>
+                <td>«module.revision.get.toString»</td>
+                «ENDIF»
             </tr>
             <tr>
                 <td>«strong("description")»</td>
@@ -732,7 +740,7 @@ class GeneratorImpl {
             </tr>
             <tr>
                 «FOR imp : module.imports BEFORE '''<td>«strong("imports")»</td><td>''' AFTER '''</td>'''»
-                    «imp.prefix»:«imp.moduleName»«IF imp.revision !== null» «REVISION_FORMAT.format(imp.revision)»«ENDIF»;
+                    «imp.prefix»:«imp.moduleName»«IF imp.revision.isPresent» «imp.revision.get.toString»«ENDIF»;
                 «ENDFOR»
             </tr>
         </table>
@@ -757,10 +765,10 @@ class GeneratorImpl {
 
     private def dispatch CharSequence tree(ChoiceSchemaNode node,YangInstanceIdentifier path) '''
         «node.nodeName» (choice)
-        «casesTree(node.cases,path)»
+        «casesTree(node.cases.values, path)»
     '''
 
-    def casesTree(Set<ChoiceCaseNode> nodes,YangInstanceIdentifier path) '''
+    def casesTree(Collection<ChoiceCaseNode> nodes, YangInstanceIdentifier path) '''
         <ul>
         «FOR node : nodes»
             <li>
@@ -847,8 +855,8 @@ class GeneratorImpl {
             return '''
                 «printInfo(node, "leaf")»
                 «listItem("type", typeAnchorLink(node.type?.path, node.type.QName.localName))»
-                «listItem("units", node.units)»
-                «listItem("default", node.^default)»
+                «listItem("units", node.type.units.orElse(null))»
+                «listItem("default", node.type.defaultValue.map([ Object o | o.toString]).orElse(null))»
                 </ul>
             '''
         } else if(node instanceof LeafListSchemaNode) {
@@ -868,8 +876,8 @@ class GeneratorImpl {
         } else if(node instanceof ChoiceSchemaNode) {
             return '''
                 «printInfo(node, "choice")»
-                «listItem("default case", node.defaultCase)»
-                «FOR caseNode : node.cases»
+                «listItem("default case", node.defaultCase.map([ ChoiceCaseNode n | n.getQName.localName]).orElse(null))»
+                «FOR caseNode : node.cases.values»
                     «caseNode.printSchemaNodeInfo»
                 «ENDFOR»
                 </ul>
@@ -906,12 +914,19 @@ class GeneratorImpl {
                 «strong(listItem(nodeType, node.QName.localName))»
             «ENDIF»
             <ul>
-            «listItem("description", node.description)»
-            «listItem("reference", node.reference)»
+            «listItem("description", node.description.orElse(null))»
+            «listItem("reference", node.reference.orElse(null))»
             «IF node instanceof DataSchemaNode»
-                «listItem("when condition", node.constraints.whenCondition?.toString)»
-                «listItem("min elements", node.constraints.minElements?.toString)»
-                «listItem("max elements", node.constraints.maxElements?.toString)»
+                «IF node.whenCondition.present»
+                «listItem("when condition", node.whenCondition.get.toString)»
+                «ENDIF»
+            «ENDIF»
+            «IF node instanceof ElementCountConstraintAware»
+                «IF node.elementCountConstraint.present»
+                    «val constraint = node.elementCountConstraint.get»
+                    «listItem("min elements", constraint.minElements?.toString)»
+                    «listItem("max elements", constraint.maxElements?.toString)»
+                «ENDIF»
             «ENDIF»
         '''
     }
@@ -1076,12 +1091,12 @@ class GeneratorImpl {
     '''
 
     private def dispatch CharSequence printInfo(ChoiceSchemaNode node, int level, YangInstanceIdentifier path) '''
-        «val Set<DataSchemaNode> choiceCases = new HashSet(node.cases)»
-        «choiceCases.printChildren(level,path)»
+        «val Set<DataSchemaNode> choiceCases = new HashSet(node.cases.values)»
+        «choiceCases.printChildren(level, path)»
     '''
 
     private def dispatch CharSequence printInfo(ChoiceCaseNode node, int level, YangInstanceIdentifier path) '''
-        «node.childNodes.printChildren(level,path)»
+        «node.childNodes.printChildren(level, path)»
     '''
 
 
@@ -1113,7 +1128,7 @@ class GeneratorImpl {
             <li>«strong((node.QName.localName))» (anyxml)
             <ul>
                 <li>configuration data: «strong(String.valueOf(node.configuration))»</li>
-                <li>mandatory: «strong(String.valueOf(node.constraints.mandatory))»</li>
+                <li>mandatory: «strong(String.valueOf(node.mandatory))»</li>
             </ul>
             </li>
         '''
@@ -1124,7 +1139,7 @@ class GeneratorImpl {
             <li>«strong((node.QName.localName))» (leaf)
             <ul>
                 <li>configuration data: «strong(String.valueOf(node.configuration))»</li>
-                <li>mandatory: «strong(String.valueOf(node.constraints.mandatory))»</li>
+                <li>mandatory: «strong(String.valueOf(node.mandatory))»</li>
             </ul>
             </li>
         '''
@@ -1200,7 +1215,7 @@ class GeneratorImpl {
         }
 
         val QName qname = path.get(0)
-        var Object parent = ctx.findModuleByNamespaceAndRevision(qname.namespace, qname.revision)
+        var Object parent = ctx.findModule(qname.module).orElse(null)
 
         for (name : path) {
             if (parent instanceof DataNodeContainer) {
@@ -1222,7 +1237,7 @@ class GeneratorImpl {
                     }
                 }
 
-                val pathElementModule = ctx.findModuleByNamespaceAndRevision(name.namespace, name.revision)
+                val pathElementModule = ctx.findModule(name.module).get
                 val String moduleName = pathElementModule.name
                 pathString.append(moduleName)
                 pathString.append(':')
@@ -1301,38 +1316,62 @@ class GeneratorImpl {
     }
 
     private def dispatch toLength(BinaryTypeDefinition type) '''
-        «type.lengthConstraints.toLengthStmt»
+        «type.lengthConstraint.toLengthStmt»
     '''
 
     private def dispatch toLength(StringTypeDefinition type) '''
-        «type.lengthConstraints.toLengthStmt»
+        «type.lengthConstraint.toLengthStmt»
     '''
 
     private def dispatch toRange(TypeDefinition<?> type) {
     }
 
     private def dispatch toRange(DecimalTypeDefinition type) '''
-        «type.rangeConstraints.toRangeStmt»
+        «type.rangeConstraint.toRangeStmt»
     '''
 
-    private def dispatch toRange(IntegerTypeDefinition type) '''
-        «type.rangeConstraints.toRangeStmt»
+    private def dispatch toRange(Int8TypeDefinition type) '''
+        «type.rangeConstraint.toRangeStmt»
     '''
 
-    private def dispatch toRange(UnsignedIntegerTypeDefinition type) '''
-        «type.rangeConstraints.toRangeStmt»
+    private def dispatch toRange(Int16TypeDefinition type) '''
+        «type.rangeConstraint.toRangeStmt»
     '''
 
-    def toLengthStmt(Collection<LengthConstraint> lengths) '''
-        «IF lengths !== null && !lengths.empty»
+    private def dispatch toRange(Int32TypeDefinition type) '''
+        «type.rangeConstraint.toRangeStmt»
+    '''
+
+    private def dispatch toRange(Int64TypeDefinition type) '''
+        «type.rangeConstraint.toRangeStmt»
+    '''
+
+    private def dispatch toRange(Uint8TypeDefinition type) '''
+        «type.rangeConstraint.toRangeStmt»
+    '''
+
+    private def dispatch toRange(Uint16TypeDefinition type) '''
+        «type.rangeConstraint.toRangeStmt»
+    '''
+
+    private def dispatch toRange(Uint32TypeDefinition type) '''
+        «type.rangeConstraint.toRangeStmt»
+    '''
+
+    private def dispatch toRange(Uint64TypeDefinition type) '''
+        «type.rangeConstraint.toRangeStmt»
+    '''
+
+    def toLengthStmt(Optional<LengthConstraint> lengths) '''
+        «IF lengths.isPresent»
             «listItem("Length restrictions:")»
             <ul>
-            «FOR length : lengths»
+            «FOR length : lengths.get.allowedRanges.asRanges»
                 <li>
-                «IF length.min == length.max»
-                    «length.min»
+                «IF length.lowerEndpoint == length.upperEndpoint»
+                    «length.lowerEndpoint»
                 «ELSE»
-                    &lt;«length.min», «length.max»&gt;
+                    &lt;«length.lowerEndpoint», «length.upperEndpoint»&gt;
                 «ENDIF»
                 </li>
             «ENDFOR»
@@ -1340,16 +1379,16 @@ class GeneratorImpl {
         «ENDIF»
     '''
 
-    def toRangeStmt(Collection<RangeConstraint> ranges) '''
-        «IF ranges !== null && !ranges.empty»
+    def toRangeStmt(Optional<? extends RangeConstraint<?>> constraint) '''
+        «IF constraint.present»
             «listItem("Range restrictions:")»
             <ul>
-            «FOR range : ranges»
+            «FOR range : constraint.get.allowedRanges.asRanges»
                 <li>
-                «IF range.min == range.max»
-                    «range.min»
+                «IF range.lowerEndpoint == range.upperEndpoint»
+                    «range.lowerEndpoint»
                 «ELSE»
-                    &lt;«range.min», «range.max»&gt;
+                    &lt;«range.lowerEndpoint», «range.upperEndpoint»&gt;
                 «ENDIF»
                 </li>
             «ENDFOR»
@@ -1370,8 +1409,8 @@ class GeneratorImpl {
     private def italic(CharSequence str) '''<i>«str»</i>'''
 
     def CharSequence descAndRefLi(SchemaNode node) '''
-        «listItem("Description", node.description)»
-        «listItem("Reference", node.reference)»
+        «listItem("Description", node.description.orElse(null))»
+        «listItem("Reference", node.reference.orElse(null))»
     '''
 
     def CharSequence descAndRef(SchemaNode node) '''
