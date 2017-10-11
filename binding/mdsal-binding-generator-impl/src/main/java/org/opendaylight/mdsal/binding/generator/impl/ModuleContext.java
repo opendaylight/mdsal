@@ -25,7 +25,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -42,7 +42,7 @@ public final class ModuleContext {
     private final Map<QName,GeneratedTOBuilder> identities = new HashMap<>();
     private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<>();
     private final List<GeneratedTypeBuilder> augmentations = new ArrayList<>();
-    private final BiMap<Type, AugmentationSchema> typeToAugmentation = HashBiMap.create();
+    private final BiMap<Type, AugmentationSchemaNode> typeToAugmentation = HashBiMap.create();
 
     private final Map<Type,Object> typeToSchema = new HashMap<>();
 
@@ -173,11 +173,11 @@ public final class ModuleContext {
         return Collections.unmodifiableList(augmentations);
     }
 
-    public BiMap<Type, AugmentationSchema> getTypeToAugmentation() {
+    public BiMap<Type, AugmentationSchemaNode> getTypeToAugmentation() {
         return Maps.unmodifiableBiMap(typeToAugmentation);
     }
 
-    public void addTypeToAugmentation(final GeneratedTypeBuilder builder, final AugmentationSchema schema) {
+    public void addTypeToAugmentation(final GeneratedTypeBuilder builder, final AugmentationSchemaNode schema) {
         typeToAugmentation.put(builder, schema);
         typeToSchema.put(builder, schema);
     }
@@ -196,7 +196,7 @@ public final class ModuleContext {
      *
      * Returns mapping of type to its schema.
      *
-     * Valid values are only instances of {@link DataSchemaNode} or {@link AugmentationSchema}
+     * Valid values are only instances of {@link DataSchemaNode} or {@link AugmentationSchemaNode}
      *
      * @return Mapping from type to corresponding schema
      */
@@ -204,7 +204,7 @@ public final class ModuleContext {
         return Collections.unmodifiableMap(typeToSchema);
     }
 
-    protected void addTypeToSchema(Type type, TypeDefinition<?> typedef) {
+    protected void addTypeToSchema(final Type type, final TypeDefinition<?> typedef) {
         typeToSchema.put(type, typedef);
     }
 
@@ -214,11 +214,11 @@ public final class ModuleContext {
      * @param path
      * @param enumBuilder
      */
-    void addInnerTypedefType(SchemaPath path, EnumBuilder enumBuilder) {
+    void addInnerTypedefType(final SchemaPath path, final EnumBuilder enumBuilder) {
         innerTypes.put(path, enumBuilder);
     }
 
-    public Type getInnerType(SchemaPath path) {
+    public Type getInnerType(final SchemaPath path) {
         return innerTypes.get(path);
     }
 

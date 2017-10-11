@@ -14,12 +14,12 @@
 
 @(currentType: Type, paramName: String, returnType: Type, rangeGenerator: AbstractRangeGenerator[_])
 @if(getRestrictions(currentType) != null) {
-    @if(!getRestrictions(currentType).getLengthConstraints.isEmpty || !getRestrictions(currentType).getRangeConstraints.isEmpty) {
+    @if(getRestrictions(currentType).getLengthConstraint.isPresent || getRestrictions(currentType).getRangeConstraint.isPresent) {
     if (@{paramName} != null) {
-        @if(!getRestrictions(currentType).getLengthConstraints.isEmpty) {
+        @if(getRestrictions(currentType).getLengthConstraint.isPresent) {
             @{LengthGenerator.generateLengthCheckerCall(paramName, paramValue(returnType, paramName))}
         }
-        @if(!getRestrictions(currentType).getRangeConstraints.isEmpty) {
+        @if(getRestrictions(currentType).getRangeConstraint.isPresent) {
             @{rangeGenerator.generateRangeCheckerCall(paramName, paramValue(returnType, paramName))}
         }
     }

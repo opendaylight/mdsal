@@ -22,7 +22,7 @@ public class DOMExceptionsTest {
     private static final String TEST_MESSAGE = "TestMessage";
     private static final String TEST_LISTS = "test-lists";
     private static final QNameModule TEST_MODULE = QNameModule.create(URI.create(
-            "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"), null);
+            "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
     private static final YangInstanceIdentifier TEST_YI_ID = YangInstanceIdentifier.create(
             new YangInstanceIdentifier.NodeIdentifier(QName.create(TEST_MODULE, TEST_LISTS)));
     private static final DOMDataTreeIdentifier TEST_TREE = new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL,

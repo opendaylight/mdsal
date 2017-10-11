@@ -29,7 +29,7 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 public class RpcRoutingStrategyTest {
 
     private static RpcRoutingStrategy rpcRoutingStrategy;
-    private static final QName Q_NAME = QName.create("testQname");
+    private static final QName Q_NAME = QName.create("", "testQname");
     private static final RpcDefinition RPC_DEFINITION = mock(RpcDefinition.class);
     private static final DataSchemaNode DATA_SCHEMA_NODE = mock(DataSchemaNode.class);
     private static final UnknownSchemaNode UNKNOWN_SCHEMA_NODE = mock(UnknownSchemaNode.class);
@@ -41,7 +41,7 @@ public class RpcRoutingStrategyTest {
         doReturn(containerSchemaNode).when(RPC_DEFINITION).getInput();
         doReturn(ImmutableSet.of(DATA_SCHEMA_NODE)).when(containerSchemaNode).getChildNodes();
         doReturn(ImmutableList.of(UNKNOWN_SCHEMA_NODE)).when(DATA_SCHEMA_NODE).getUnknownSchemaNodes();
-        doReturn(QName.create("testNode")).when(UNKNOWN_SCHEMA_NODE).getNodeType();
+        doReturn(QName.create("", "testNode")).when(UNKNOWN_SCHEMA_NODE).getNodeType();
         doReturn(Q_NAME).when(RPC_DEFINITION).getQName();
 
         rpcRoutingStrategy = RpcRoutingStrategy.from(RPC_DEFINITION);

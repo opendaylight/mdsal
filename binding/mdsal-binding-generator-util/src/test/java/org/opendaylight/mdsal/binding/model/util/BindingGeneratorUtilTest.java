@@ -17,13 +17,12 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import java.io.File;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Range;
 import java.io.Serializable;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,10 +34,12 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuil
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.ConstraintMetaDefinition;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.stmt.ValueRange;
 import org.opendaylight.yangtools.yang.model.api.type.DecimalTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IntegerTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnsignedIntegerTypeDefinition;
@@ -46,27 +47,16 @@ import org.opendaylight.yangtools.yang.model.util.BaseConstraints;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.type.DerivedTypes;
+import org.opendaylight.yangtools.yang.model.util.type.InvalidLengthConstraintException;
 import org.opendaylight.yangtools.yang.model.util.type.RestrictedTypes;
 import org.opendaylight.yangtools.yang.model.util.type.StringTypeBuilder;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class BindingGeneratorUtilTest {
-    private static final SchemaPath ROOT_PATH = SchemaPath.create(true, QName.create("/root"));
+    private static final SchemaPath ROOT_PATH = SchemaPath.create(true, QName.create("test", "/root"));
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
-
-    private static List<File> loadTestResources(final String testFile) {
-        final List<File> testModels = new ArrayList<>();
-        File listModelFile;
-        try {
-            listModelFile = new File(BindingGeneratorUtilTest.class.getResource(testFile).toURI());
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Failed to load sources from " + testFile);
-        }
-        testModels.add(listModelFile);
-        return testModels;
-    }
 
     /**
      * Tests methods:
@@ -80,10 +70,9 @@ public class BindingGeneratorUtilTest {
      * - without revision &lt;/ul&gt;
      */
     @Test
-    public void testBindingGeneratorUtilMethods() throws Exception {
-        List<File> testModels = loadTestResources("/module.yang");
-
-        final Set<Module> modules = YangParserTestUtils.parseYangSources(testModels).getModules();
+    public void testBindingGeneratorUtilMethods() {
+        final Set<Module> modules = YangParserTestUtils.parseYangResources(BindingGeneratorUtilTest.class,
+            "/module.yang").getModules();
         String packageName = "";
         Module module = null;
         for (Module m : modules) {
@@ -93,7 +82,7 @@ public class BindingGeneratorUtilTest {
         assertNotNull("Module can't be null", module);
 
         // test of the method moduleNamespaceToPackageName()
-        packageName = BindingGeneratorUtil.moduleNamespaceToPackageName(module);
+        packageName = BindingMapping.getRootPackageName(module.getQNameModule());
         assertEquals("Generated package name is incorrect.",
                 "org.opendaylight.yang.gen.v1.urn.m.o.d.u.l.e.n.a.m.e.t.e.s.t._case._1digit.rev130910", packageName);
 
@@ -309,26 +298,23 @@ public class BindingGeneratorUtilTest {
     }
 
     @Test
-    public void getRestrictionsTest() {
-        final Optional<String> absent = Optional.absent();
+    public void getRestrictionsTest() throws InvalidLengthConstraintException {
+        final Optional<String> absent = Optional.empty();
         final StringTypeBuilder builder =
                 RestrictedTypes.newStringBuilder(BaseTypes.stringType(), ROOT_PATH);
 
         builder.addPatternConstraint(BaseConstraints.newPatternConstraint(".*", absent, absent));
-        builder.setLengthAlternatives(ImmutableList.of(
-            BaseConstraints.newLengthConstraint(1, 2, absent, absent)));
+        builder.setLengthConstraint(mock(ConstraintMetaDefinition.class), ImmutableList.of(ValueRange.of(1, 2)));
 
         Restrictions restrictions = BindingGeneratorUtil.getRestrictions(builder.build());
 
         assertNotNull(restrictions);
-
-        assertEquals(1, restrictions.getLengthConstraints().size());
-        assertEquals(0, restrictions.getRangeConstraints().size());
+        assertEquals(ImmutableSet.of(Range.closed(1, 2)),
+            restrictions.getLengthConstraint().get().getAllowedRanges().asRanges());
+        assertFalse(restrictions.getRangeConstraint().isPresent());
         assertEquals(1, restrictions.getPatternConstraints().size());
 
         assertFalse(restrictions.isEmpty());
-        assertTrue(restrictions.getLengthConstraints().contains(
-                BaseConstraints.newLengthConstraint(1, 2, absent, absent)));
         assertTrue(restrictions.getPatternConstraints().contains(
                 BaseConstraints.newPatternConstraint(".*", absent, absent)));
     }
@@ -349,9 +335,9 @@ public class BindingGeneratorUtilTest {
 
         assertNotNull(restrictions);
         assertFalse(restrictions.isEmpty());
-        assertEquals(((IntegerTypeDefinition) type.getBaseType()).getRangeConstraints(),
-                restrictions.getRangeConstraints());
-        assertTrue(restrictions.getLengthConstraints().isEmpty());
+        assertEquals(((IntegerTypeDefinition) type.getBaseType()).getRangeConstraint(),
+                restrictions.getRangeConstraint());
+        assertFalse(restrictions.getLengthConstraint().isPresent());
         assertTrue(restrictions.getPatternConstraints().isEmpty());
     }
 
@@ -362,9 +348,9 @@ public class BindingGeneratorUtilTest {
 
         assertNotNull(restrictions);
         assertFalse(restrictions.isEmpty());
-        assertEquals(((UnsignedIntegerTypeDefinition) type.getBaseType()).getRangeConstraints(),
-                restrictions.getRangeConstraints());
-        assertTrue(restrictions.getLengthConstraints().isEmpty());
+        assertEquals(((UnsignedIntegerTypeDefinition) type.getBaseType()).getRangeConstraint(),
+                restrictions.getRangeConstraint());
+        assertFalse(restrictions.getLengthConstraint().isPresent());
         assertTrue(restrictions.getPatternConstraints().isEmpty());
     }
 
@@ -377,8 +363,8 @@ public class BindingGeneratorUtilTest {
 
         assertNotNull(restrictions);
         assertFalse(restrictions.isEmpty());
-        assertEquals(base.getRangeConstraints(), restrictions.getRangeConstraints());
-        assertTrue(restrictions.getLengthConstraints().isEmpty());
+        assertEquals(base.getRangeConstraint(), restrictions.getRangeConstraint());
+        assertFalse(restrictions.getLengthConstraint().isPresent());
         assertTrue(restrictions.getPatternConstraints().isEmpty());
     }
 }

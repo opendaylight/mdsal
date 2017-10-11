@@ -19,7 +19,6 @@ import com.google.common.util.concurrent.Uninterruptibles;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +43,6 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.ModuleIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.util.AbstractSchemaContext;
@@ -172,11 +170,6 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
         @Override
         public Set<Module> getModules() {
             return Collections.emptySet();
-        }
-
-        @Override
-        protected Map<ModuleIdentifier, String> getIdentifiersToSources() {
-            return Collections.emptyMap();
         }
 
         @Override
