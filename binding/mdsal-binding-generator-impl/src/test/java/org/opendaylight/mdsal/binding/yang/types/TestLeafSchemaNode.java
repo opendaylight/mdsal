@@ -8,9 +8,18 @@
 
 package org.opendaylight.mdsal.binding.yang.types;
 
+import com.google.common.collect.ImmutableSet;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.*;
+import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.MustDefinition;
+import org.opendaylight.yangtools.yang.model.api.RevisionAwareXPath;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.Status;
+import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
 /**
  * Mock Leaf Schema Node designated to increase branch coverage in test cases.
@@ -18,55 +27,67 @@ import org.opendaylight.yangtools.yang.model.api.*;
  * @author Lukas Sedlak &lt;lsedlak@cisco.com&gt;
  */
 public class TestLeafSchemaNode implements LeafSchemaNode {
-    @Override public TypeDefinition<?> getType() {
+    @Override
+    public TypeDefinition<?> getType() {
         return null;
     }
 
-    @Override public String getDefault() {
-        return null;
-    }
-
-    @Override public String getUnits() {
-        return null;
-    }
-
-    @Override public boolean isAugmenting() {
+    @Override
+    public boolean isAugmenting() {
         return false;
     }
 
-    @Override public boolean isAddedByUses() {
+    @Override
+    public boolean isAddedByUses() {
         return false;
     }
 
-    @Override public boolean isConfiguration() {
+    @Override
+    public boolean isConfiguration() {
         return false;
     }
 
-    @Override public ConstraintDefinition getConstraints() {
+    @Override
+    public QName getQName() {
         return null;
     }
 
-    @Override public QName getQName() {
+    @Override
+    public SchemaPath getPath() {
         return null;
     }
 
-    @Override public SchemaPath getPath() {
+    @Override
+    public List<UnknownSchemaNode> getUnknownSchemaNodes() {
         return null;
     }
 
-    @Override public List<UnknownSchemaNode> getUnknownSchemaNodes() {
-        return null;
+    @Override
+    public Optional<String> getDescription() {
+        return Optional.empty();
     }
 
-    @Override public String getDescription() {
-        return null;
-    }
-
-    @Override public String getReference() {
-        return null;
+    @Override
+    public Optional<String> getReference() {
+        return Optional.empty();
     }
 
     @Override public Status getStatus() {
         return null;
+    }
+
+    @Override
+    public boolean isMandatory() {
+        return false;
+    }
+
+    @Override
+    public Optional<RevisionAwareXPath> getWhenCondition() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Collection<MustDefinition> getMustConstraints() {
+        return ImmutableSet.of();
     }
 }

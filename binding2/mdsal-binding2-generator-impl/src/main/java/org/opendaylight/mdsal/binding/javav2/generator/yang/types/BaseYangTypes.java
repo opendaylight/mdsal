@@ -156,7 +156,7 @@ public final class BaseYangTypes {
          */
         @Override
         public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
-                ModuleContext context) {
+                final ModuleContext context) {
             if (type != null) {
                 return TYPE_MAP.get(type.getQName().getLocalName());
             }
@@ -166,7 +166,7 @@ public final class BaseYangTypes {
 
         @Override
         public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
-                final Restrictions restrictions, ModuleContext context) {
+                final Restrictions restrictions, final ModuleContext context) {
 
             final String typeName = type.getQName().getLocalName();
             switch (typeName) {
@@ -218,7 +218,7 @@ public final class BaseYangTypes {
         }
     };
 
-    private static <T extends Number> Restrictions singleRangeRestrictions(final T min, final T max) {
+    private static <T extends Number & Comparable<T>> Restrictions singleRangeRestrictions(final T min, final T max) {
         return Types.getDefaultRestrictions(min, max);
     }
 

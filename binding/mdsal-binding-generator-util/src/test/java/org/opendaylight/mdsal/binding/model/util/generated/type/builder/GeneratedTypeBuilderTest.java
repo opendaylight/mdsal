@@ -15,8 +15,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
-import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
@@ -28,6 +26,8 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBu
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -290,7 +290,7 @@ public class GeneratedTypeBuilderTest {
         generatedTypeBuilder.setDescription("My description ...");
         generatedTypeBuilder.setModuleName("myModuleName");
         generatedTypeBuilder.setReference("myReference");
-        generatedTypeBuilder.setSchemaPath(SchemaPath.create(true, QName.create("/path")).getPathFromRoot());
+        generatedTypeBuilder.setSchemaPath(SchemaPath.create(true, QName.create("test", "/path")).getPathFromRoot());
         assertNotNull(generatedTypeBuilder.addComment("My comment.."));
 
         assertEquals(
@@ -302,7 +302,7 @@ public class GeneratedTypeBuilderTest {
         assertEquals("My description ...", instance.getDescription());
         assertEquals("myModuleName", instance.getModuleName());
         assertEquals("myReference", instance.getReference());
-        assertEquals(SchemaPath.create(true, QName.create("/path")).getPathFromRoot(), instance.getSchemaPath());
+        assertEquals(SchemaPath.create(true, QName.create("test", "/path")).getPathFromRoot(), instance.getSchemaPath());
         assertEquals("My comment..", instance.getComment());
     }
 }

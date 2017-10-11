@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base;
 import com.google.common.annotations.Beta;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.InvocationHandler;
@@ -21,6 +20,7 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.api.AugmentationReader;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
@@ -139,7 +139,7 @@ class LazyTreeNode<D extends TreeNode> implements InvocationHandler, Augmentatio
             result = prime * result + Objects.hashCode(value);
         }
         if (Augmentable.class.isAssignableFrom(context.getBindingClass())) {
-            result = prime * result + (getAugmentationsImpl().hashCode());
+            result = prime * result + getAugmentationsImpl().hashCode();
         }
         cachedHashcode = result;
         return result;
@@ -191,7 +191,7 @@ class LazyTreeNode<D extends TreeNode> implements InvocationHandler, Augmentatio
         Preconditions.checkNotNull(cls,"Supplied augmentation must not be null.");
 
         @SuppressWarnings({"unchecked","rawtypes"})
-        final Optional<DataContainerCodecContext<?,?>> augCtx = context.possibleStreamChild((Class) cls);
+        final Optional<DataContainerCodecContext<?,?>> augCtx = context.possibleStreamChild((Class) cls).toJavaUtil();
         if (augCtx.isPresent()) {
             final Optional<NormalizedNode<?, ?>> augData = data.getChild(augCtx.get().getDomPathArgument());
             if (augData.isPresent()) {

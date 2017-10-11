@@ -16,7 +16,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
-import java.io.File;
 import java.net.URI;
 import java.util.NoSuchElementException;
 import org.junit.Test;
@@ -44,13 +43,11 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class TypeProviderImplTest {
 
-    @Test (expected = IllegalArgumentException.class)
-    public void testLeafRefRelativeSelfReference() throws Exception {
-        File relative = new File(getClass().getResource("/leafref/leafref-relative-invalid.yang").toURI());
-
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(relative);
-        final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrr")).iterator()
-                .next();
+    @Test(expected = IllegalArgumentException.class)
+    public void testLeafRefRelativeSelfReference() {
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
+            "/leafref/leafref-relative-invalid.yang");
+        final Module moduleRelative = schemaContext.findModules(URI.create("urn:xml:ns:yang:lrr")).iterator().next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
         final QName listNode = QName.create(moduleRelative.getQNameModule(), "neighbor");
@@ -63,13 +60,11 @@ public class TypeProviderImplTest {
         assertNotNull(leafrefResolvedType);
     }
 
-    @Test (expected = IllegalArgumentException.class)
-    public void testLeafRefAbsoluteSelfReference() throws Exception {
-        File relative = new File(getClass().getResource("/leafref/leafref-absolute-invalid.yang").toURI());
-
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(relative);
-        final Module moduleRelative = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lra")).iterator()
-                .next();
+    @Test(expected = IllegalArgumentException.class)
+    public void testLeafRefAbsoluteSelfReference() {
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
+            "/leafref/leafref-absolute-invalid.yang");
+        final Module moduleRelative = schemaContext.findModules(URI.create("urn:xml:ns:yang:lra")).iterator().next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
         final QName listNode = QName.create(moduleRelative.getQNameModule(), "neighbor");
@@ -83,12 +78,9 @@ public class TypeProviderImplTest {
     }
 
     @Test
-    public void testLeafRefRelativeAndAbsoluteValidReference() throws Exception {
-        File valid = new File(getClass().getResource("/leafref/leafref-valid.yang").toURI());
-
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(valid);
-        final Module moduleValid = schemaContext.findModuleByNamespace(new URI("urn:xml:ns:yang:lrv")).iterator()
-                .next();
+    public void testLeafRefRelativeAndAbsoluteValidReference() {
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/leafref/leafref-valid.yang");
+        final Module moduleValid = schemaContext.findModules(URI.create("urn:xml:ns:yang:lrv")).iterator().next();
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
         final QName listNode = QName.create(moduleValid.getQNameModule(), "neighbor");
@@ -110,14 +102,12 @@ public class TypeProviderImplTest {
     }
 
     @Test
-    public void testMethodsOfTypeProviderImpl() throws Exception {
-        final File abstractTopology = new File(getClass().getResource("/base-yang-types.yang").toURI());
-
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangSources(abstractTopology);
+    public void testMethodsOfTypeProviderImpl() {
+        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/base-yang-types.yang");
 
         final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
 
-        final SchemaPath refTypePath = SchemaPath.create(true, QName.create("cont1"), QName.create("list1"));
+        final SchemaPath refTypePath = SchemaPath.create(true, QName.create("", "cont1"), QName.create("", "list1"));
         final GeneratedTypeBuilderImpl refType = new GeneratedTypeBuilderImpl("org.opendaylight.yangtools.test",
             "TestType");
         typeProvider.putReferencedType(refTypePath, refType);
@@ -126,7 +116,7 @@ public class TypeProviderImplTest {
         final LeafSchemaNode leafSchemaNode = mock(LeafSchemaNode.class);
         doReturn(stringType).when(leafSchemaNode).getType();
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
+        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
 
         // test constructor
         assertNotNull(typeProvider);
@@ -150,7 +140,7 @@ public class TypeProviderImplTest {
         reset(leafSchemaNode);
         doReturn(binaryType).when(leafSchemaNode).getType();
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
+        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
 
         assertEquals("new byte[] {-45}", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "01"));
 
@@ -160,7 +150,7 @@ public class TypeProviderImplTest {
         reset(leafSchemaNode);
         doReturn(booleanType).when(leafSchemaNode).getType();
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
+        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
 
         assertEquals("java.lang.Boolean.FALSE", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "false"));
 
@@ -171,7 +161,7 @@ public class TypeProviderImplTest {
         reset(leafSchemaNode);
         doReturn(decimalType).when(leafSchemaNode).getType();
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
+        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
 
         assertEquals("new java.math.BigDecimal(\"111\")", typeProvider.getTypeDefaultConstruction(leafSchemaNode,
             "111"));
@@ -182,7 +172,7 @@ public class TypeProviderImplTest {
         reset(leafSchemaNode);
         doReturn(emptyType).when(leafSchemaNode).getType();
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
+        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
 
         assertEquals("java.lang.Boolean.valueOf(\"default value\")", typeProvider.getTypeDefaultConstruction(
             leafSchemaNode, "default value"));
@@ -193,7 +183,7 @@ public class TypeProviderImplTest {
         reset(leafSchemaNode);
         doReturn(enumType).when(leafSchemaNode).getType();
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
+        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
 
         try {
             assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
@@ -211,7 +201,7 @@ public class TypeProviderImplTest {
         reset(leafSchemaNode);
         doReturn(identityRef).when(leafSchemaNode).getType();
         doReturn(SchemaPath.ROOT).when(leafSchemaNode).getPath();
-        doReturn(QName.create("Cont1")).when(leafSchemaNode).getQName();
+        doReturn(QName.create("", "Cont1")).when(leafSchemaNode).getQName();
 
         try {
             assertEquals("\"default value\"", typeProvider.getTypeDefaultConstruction(leafSchemaNode, "default value"));
