@@ -58,23 +58,10 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableCo
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableLeafNodeBuilder;
 import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableMapNodeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ShardedDOMDataTreeTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTreeProducerMultiShardTest.class);
-
-    private static SchemaContext schemaContext = null;
-
-    static {
-        try {
-            schemaContext = TestModel.createTestContext();
-        } catch (final ReactorException e) {
-            LOG.error("Unable to create schema context for TestModel", e);
-        }
-    }
+    private static final SchemaContext SCHEMA_CONTEXT = TestModel.createTestContext();
 
     private static final DOMDataTreeIdentifier ROOT_ID =
             new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.EMPTY);
@@ -108,7 +95,7 @@ public class ShardedDOMDataTreeTest {
         MockitoAnnotations.initMocks(this);
 
         rootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1);
-        rootShard.onGlobalContextUpdated(schemaContext);
+        rootShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
 
         final ShardedDOMDataTree dataTree = new ShardedDOMDataTree();
         final DOMDataTreeProducer shardRegProducer = dataTree.createProducer(Collections.singletonList(ROOT_ID));
@@ -129,7 +116,7 @@ public class ShardedDOMDataTreeTest {
         rootShardReg.close();
 
         final InMemoryDOMDataTreeShard newRootShard = InMemoryDOMDataTreeShard.create(ROOT_ID, executor, 1);
-        newRootShard.onGlobalContextUpdated(schemaContext);
+        newRootShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
         final DOMDataTreeProducer shardRegProducer = dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
 
         final ListenerRegistration<InMemoryDOMDataTreeShard> newRootShardReg =
@@ -137,7 +124,7 @@ public class ShardedDOMDataTreeTest {
         shardRegProducer.close();
 
         final InMemoryDOMDataTreeShard innerShard = InMemoryDOMDataTreeShard.create(INNER_CONTAINER_ID, executor, 1);
-        innerShard.onGlobalContextUpdated(schemaContext);
+        innerShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
         final DOMDataTreeProducer shardRegProducer2 =
                 dataTreeService.createProducer(Collections.singletonList(INNER_CONTAINER_ID));
         ListenerRegistration<InMemoryDOMDataTreeShard> innerShardReg =
@@ -220,7 +207,7 @@ public class ShardedDOMDataTreeTest {
         doNothing().when(mockedDataTreeListener).onDataTreeChanged(anyCollection(), anyMap());
 
         InMemoryDOMDataTreeShard testShard = InMemoryDOMDataTreeShard.create(TEST_ID, executor, 1);
-        testShard.onGlobalContextUpdated(schemaContext);
+        testShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
 
         final DOMDataTreeProducer regProducer = dataTreeService.createProducer(Collections.singleton(TEST_ID));
         dataTreeService.registerDataTreeShard(TEST_ID, testShard, regProducer);
@@ -267,7 +254,7 @@ public class ShardedDOMDataTreeTest {
         final DOMDataTreeProducer shardProducer = dataTreeService.createProducer(
                 Collections.singletonList(outerListPath));
         final InMemoryDOMDataTreeShard outerListShard = InMemoryDOMDataTreeShard.create(outerListPath, executor, 1000);
-        outerListShard.onGlobalContextUpdated(schemaContext);
+        outerListShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
 
         final ListenerRegistration<InMemoryDOMDataTreeShard> oid1ShardRegistration =
                 dataTreeService.registerDataTreeShard(outerListPath, outerListShard, shardProducer);
@@ -412,7 +399,7 @@ public class ShardedDOMDataTreeTest {
     public void testLargerSubshardSpace() throws Exception {
 
         final InMemoryDOMDataTreeShard outerListShard = InMemoryDOMDataTreeShard.create(OUTER_LIST_ID, executor, 1, 1);
-        outerListShard.onGlobalContextUpdated(schemaContext);
+        outerListShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
 
         try (DOMDataTreeProducer producer =
                      dataTreeService.createProducer(Collections.singletonList(OUTER_LIST_ID))) {

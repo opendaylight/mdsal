@@ -18,11 +18,11 @@
 
 @(feature: FeatureDefinition)
 feature @{feature.getQName().getLocalName()} {
-    @if(feature.getDescription() != null && !feature.getDescription().isEmpty()) {
-        description "@{feature.getDescription()}";
+    @if(feature.getDescription().isPresent()) {
+        description "@{feature.getDescription().get()}";
     }
-    @if(feature.getReference() != null && !feature.getReference().isEmpty()) {
-        reference "@{feature.getReference()}";
+    @if(feature.getReference().isPresent()) {
+        reference "@{feature.getReference().get()}";
     }
     @if(feature.getStatus() != Status.CURRENT) {
         status @{feature.getStatus()};

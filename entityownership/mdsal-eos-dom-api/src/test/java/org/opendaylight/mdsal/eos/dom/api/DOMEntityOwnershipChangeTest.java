@@ -16,7 +16,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class DOMEntityOwnershipChangeTest {
     private static final String ENTITY_TYPE = "type";
-    private static final YangInstanceIdentifier ID = YangInstanceIdentifier.of(QName.create("test"));
+    private static final YangInstanceIdentifier ID = YangInstanceIdentifier.of(QName.create("", "test"));
     private static final DOMEntity ENTITY = new DOMEntity(ENTITY_TYPE, ID);
 
     @Test

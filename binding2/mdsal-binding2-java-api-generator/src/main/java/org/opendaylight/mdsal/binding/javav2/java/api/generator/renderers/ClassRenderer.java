@@ -80,8 +80,7 @@ public class ClassRenderer extends BaseRenderer {
         Collections.sort(sorted, function);
         allProperties = ImmutableList.copyOf(sorted);
 
-        if (restrictions != null && (restrictions.getRangeConstraints() != null && !restrictions.getRangeConstraints()
-                .isEmpty())) {
+        if (restrictions != null && restrictions.getRangeConstraint().isPresent()) {
             rangeGenerator = AbstractRangeGenerator.forType(findProperty(genType, "value").getReturnType());
             Preconditions.checkNotNull(rangeGenerator);
         } else {
@@ -220,14 +219,14 @@ public class ClassRenderer extends BaseRenderer {
 
         final StringBuilder lengthRangeCheckerBuilder = new StringBuilder();
         if (restrictions != null) {
-            if (restrictions.getLengthConstraints() != null && !restrictions.getLengthConstraints().isEmpty()) {
+            if (restrictions.getLengthConstraint().isPresent()) {
                 lengthRangeCheckerBuilder.append(LengthGenerator.generateLengthChecker("_value", findProperty(genTO,
-                        "value").getReturnType(), restrictions.getLengthConstraints()))
+                        "value").getReturnType(), restrictions.getLengthConstraint().get()))
                         .append("\n");
             }
-            if (restrictions.getRangeConstraints() != null && !restrictions.getRangeConstraints().isEmpty()) {
+            if (restrictions.getRangeConstraint().isPresent()) {
                 lengthRangeCheckerBuilder.append(rangeGenerator.generateRangeChecker("_value", restrictions
-                        .getRangeConstraints()))
+                        .getRangeConstraint().get()))
                         .append("\n");
             }
         }
