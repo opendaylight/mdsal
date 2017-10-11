@@ -90,9 +90,7 @@ final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<
         if (prefixEndIndex != -1) {
             String defaultValuePrefix = defaultValue.substring(0, prefixEndIndex);
 
-            Module module = schemaContext.findModuleByNamespaceAndRevision(schema.getQName().getNamespace(),
-                    schema.getQName().getRevision());
-
+            Module module = schemaContext.findModule(schema.getQName().getModule()).get();
             if (module.getPrefix().equals(defaultValuePrefix)) {
                 qname = QName.create(module.getQNameModule(), defaultValue.substring(prefixEndIndex + 1));
                 return codec.deserialize(qname);
@@ -101,8 +99,8 @@ final class LeafNodeCodecContext<D extends DataObject> extends NodeCodecContext<
             Set<ModuleImport> imports = module.getImports();
             for (ModuleImport moduleImport : imports) {
                 if (moduleImport.getPrefix().equals(defaultValuePrefix)) {
-                    Module importedModule = schemaContext.findModuleByName(moduleImport.getModuleName(),
-                        moduleImport.getRevision());
+                    Module importedModule = schemaContext.findModule(moduleImport.getModuleName(),
+                        moduleImport.getRevision()).get();
                     qname = QName.create(importedModule.getQNameModule(), defaultValue.substring(prefixEndIndex + 1));
                     return codec.deserialize(qname);
                 }

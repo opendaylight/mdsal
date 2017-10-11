@@ -260,9 +260,9 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
                 @{AbstractRangeGenerator.forType(field.getReturnType).generateRangeChecker(toFirstUpper(field.getName),
                 getRestrictions(field.getReturnType).getRangeConstraints)}
             }
-            @if(getRestrictions(field.getReturnType).getLengthConstraints != null && !getRestrictions(field.getReturnType).getLengthConstraints.isEmpty) {
+            @if(getRestrictions(field.getReturnType).getLengthConstraints.isPresent) {
                 @{LengthGenerator.generateLengthChecker(fieldName(field), field.getReturnType,
-                getRestrictions(field.getReturnType).getLengthConstraints)}
+                getRestrictions(field.getReturnType).getLengthConstraints.get)}
             }
         }
 
@@ -276,7 +276,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
                     @{AbstractRangeGenerator.forType(field.getReturnType).generateRangeCheckerCall(toFirstUpper(field.getName), "value.getValue()")}
                 }
             }
-            @if(getRestrictions(field.getReturnType).getLengthConstraints != null && !getRestrictions(field.getReturnType).getLengthConstraints.isEmpty) {
+            @if(getRestrictions(field.getReturnType).getLengthConstraints.isPresent) {
                 @if(field.getReturnType.isInstanceOf[ConcreteType]) {
                     @{LengthGenerator.generateLengthCheckerCall(fieldName(field), "value")}
                 } else {

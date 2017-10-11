@@ -287,7 +287,7 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
          */
         @SuppressWarnings("rawtypes")
         final Class<?> augTarget = BindingReflections.findAugmentationTarget((Class) childClass);
-        if ((getBindingClass().equals(augTarget))) {
+        if (getBindingClass().equals(augTarget)) {
             for (final DataContainerCodecPrototype<?> realChild : byStreamAugmented.values()) {
                 if (Augmentation.class.isAssignableFrom(realChild.getBindingClass())
                         && BindingReflections.isSubstitutionFor(childClass, realChild.getBindingClass())) {
@@ -319,7 +319,7 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
     public Object getBindingChildValue(final Method method, final NormalizedNodeContainer domData) {
         final NodeCodecContext<?> childContext = byMethod.get(method).get();
         @SuppressWarnings("unchecked")
-        final Optional<NormalizedNode<?, ?>> domChild = domData.getChild(childContext.getDomPathArgument());
+        final java.util.Optional<NormalizedNode<?, ?>> domChild = domData.getChild(childContext.getDomPathArgument());
         if (domChild.isPresent()) {
             return childContext.deserializeObject(domChild.get());
         } else if (childContext instanceof LeafNodeCodecContext) {
@@ -356,7 +356,7 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
             }
         }
         for (final DataContainerCodecPrototype<?> value : byStreamAugmented.values()) {
-            final Optional<NormalizedNode<?, ?>> augData = data.getChild(value.getYangArg());
+            final java.util.Optional<NormalizedNode<?, ?>> augData = data.getChild(value.getYangArg());
             if (augData.isPresent()) {
                 map.put(value.getBindingClass(), value.get().deserializeObject(augData.get()));
             }

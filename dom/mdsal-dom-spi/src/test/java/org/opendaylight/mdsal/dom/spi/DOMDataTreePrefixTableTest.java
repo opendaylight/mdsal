@@ -22,12 +22,12 @@ public class DOMDataTreePrefixTableTest {
     public void basicTest() throws Exception {
         final DOMDataTreePrefixTable<Object> domDataTreePrefixTable = DOMDataTreePrefixTable.create();
         final Object testObject = new Object();
-        final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("test"));
+        final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.of(QName.create("", "test"));
         final DOMDataTreeIdentifier domDataTreeIdentifier =
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, yangInstanceIdentifier);
 
         domDataTreePrefixTable.store(domDataTreeIdentifier, testObject);
-        assertEquals(QName.create("test"),
+        assertEquals(QName.create("", "test"),
                 domDataTreePrefixTable.lookup(domDataTreeIdentifier).getIdentifier().getNodeType());
         domDataTreePrefixTable.remove(domDataTreeIdentifier);
         assertNull(domDataTreePrefixTable.lookup(domDataTreeIdentifier).getIdentifier());

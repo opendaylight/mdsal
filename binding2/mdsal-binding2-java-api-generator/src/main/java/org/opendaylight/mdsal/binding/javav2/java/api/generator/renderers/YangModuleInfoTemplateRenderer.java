@@ -34,6 +34,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.WildcardType;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModelBindingProvider;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModuleInfo;
 import org.opendaylight.yangtools.concepts.SemVer;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.repo.api.SchemaSourceRepresentation;
@@ -214,7 +215,7 @@ public class YangModuleInfoTemplateRenderer {
     }
 
     public static Module getSortedQName(final Set<Module> modules, final String name) {
-        final TreeMap<Date, Module> sorted = new TreeMap<>();
+        final TreeMap<java.util.Optional<Revision>, Module> sorted = new TreeMap<>(Revision::compare);
         for (Module module : modules) {
             if (name.equals(module.getName())) {
                 sorted.put(module.getRevision(), module);
