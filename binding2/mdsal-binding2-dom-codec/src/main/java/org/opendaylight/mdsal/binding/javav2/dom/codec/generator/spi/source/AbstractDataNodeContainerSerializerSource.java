@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.impl.StreamWriterGenerator;
@@ -49,6 +50,7 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
     protected static final String INPUT = "_input";
     private static final String CHOICE_PREFIX = "CHOICE_";
 
+    //Note: the field takes no effects by augmentation.
     private final DataNodeContainer schemaNode;
     private final GeneratedType dtoType;
 
@@ -143,9 +145,19 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
         return true;
     }
 
+    /**
+     * Note: the method would be overrided by {@link AbstractAugmentSerializerSource#getChildNodes()},
+     * since all augmentation schema nodes of same target would be grouped into sort of one node,
+     * so call {@link AbstractAugmentSerializerSource#getChildNodes()} to get all these children
+     * nodes of same target augmentation schemas.
+     */
+    protected Collection<DataSchemaNode> getChildNodes() {
+        return schemaNode.getChildNodes();
+    }
+
     private void emitBody(final StringBuilder builder) {
         final Map<String, Type> getterToType = collectAllProperties(dtoType, new HashMap<String, Type>());
-        for (final DataSchemaNode schemaChild : schemaNode.getChildNodes()) {
+        for (final DataSchemaNode schemaChild : getChildNodes()) {
             /**
              * As before, it only emitted data nodes which were not added by uses or augment, now
              * according to binding v2 specification, augment of the same module is same as inlining,

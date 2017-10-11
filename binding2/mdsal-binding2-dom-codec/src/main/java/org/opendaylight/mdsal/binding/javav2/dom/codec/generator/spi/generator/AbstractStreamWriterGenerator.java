@@ -15,6 +15,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Map.Entry;
 import javassist.CannotCompileException;
 import javassist.CtClass;
@@ -30,6 +31,8 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source.Abst
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.AugmentableDispatchSerializer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.runtime.javassist.JavassistUtils;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
@@ -38,6 +41,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImplementation;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerRegistry;
+import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
@@ -168,11 +172,18 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
     private AbstractTreeNodeSerializerSource generateEmitterSource(final Class<?> type, final String serializerName) {
         Types.typeForClass(type);
         javassist.appendClassLoaderIfMissing(type.getClassLoader());
+        final AbstractTreeNodeSerializerSource source;
+
+        if (Augmentation.class.isAssignableFrom(type)) {
+            final Entry<Type, Collection<AugmentationSchemaNode>> entry = context.getAugmentationDefinition(type);
+            source = generateAugmentSerializer(((GeneratedTypeBuilder) entry.getKey()).toInstance(), entry.getValue());
+            return source;
+        }
+
         final Entry<GeneratedType, Object> typeWithSchema = context.getTypeWithSchema(type);
         final GeneratedType generatedType = typeWithSchema.getKey();
         final Object schema = typeWithSchema.getValue();
 
-        final AbstractTreeNodeSerializerSource source;
         if (schema instanceof ContainerSchemaNode) {
             source = generateContainerSerializer(generatedType, (ContainerSchemaNode) schema);
         } else if (schema instanceof ListSchemaNode) {
@@ -182,8 +193,6 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
             } else {
                 source = generateMapEntrySerializer(generatedType, casted);
             }
-        } else if (schema instanceof AugmentationSchemaNode) {
-            source = generateSerializer(generatedType, (AugmentationSchemaNode) schema);
         } else if (schema instanceof CaseSchemaNode) {
             source = generateCaseSerializer(generatedType, (CaseSchemaNode) schema);
         } else if (schema instanceof NotificationDefinition) {
@@ -310,11 +319,11 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * binding objects.
      *
      * @param type - binding type of augmentation
-     * @param schema - schema of augmentation
+     * @param schemas - schemas of augmentation
      * @return source for augmentation node writer
      */
-    protected abstract AbstractTreeNodeSerializerSource generateSerializer(GeneratedType type,
-            AugmentationSchemaNode schema);
+    protected abstract AbstractTreeNodeSerializerSource generateAugmentSerializer(GeneratedType type,
+        Collection<AugmentationSchemaNode> schemas);
 
     /**
      * Generates serializer source for notification node, which will read
