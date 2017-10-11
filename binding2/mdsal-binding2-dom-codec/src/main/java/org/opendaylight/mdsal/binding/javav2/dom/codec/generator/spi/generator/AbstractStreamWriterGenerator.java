@@ -39,8 +39,8 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWrit
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImplementation;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerRegistry;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
-import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
@@ -182,10 +182,10 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
             } else {
                 source = generateMapEntrySerializer(generatedType, casted);
             }
-        } else if (schema instanceof AugmentationSchema) {
-            source = generateSerializer(generatedType, (AugmentationSchema) schema);
-        } else if (schema instanceof ChoiceCaseNode) {
-            source = generateCaseSerializer(generatedType, (ChoiceCaseNode) schema);
+        } else if (schema instanceof AugmentationSchemaNode) {
+            source = generateSerializer(generatedType, (AugmentationSchemaNode) schema);
+        } else if (schema instanceof CaseSchemaNode) {
+            source = generateCaseSerializer(generatedType, (CaseSchemaNode) schema);
         } else if (schema instanceof NotificationDefinition) {
             source = generateNotificationSerializer(generatedType, (NotificationDefinition) schema);
         } else {
@@ -266,7 +266,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * @param node - schema of case
      * @return source for case node writer
      */
-    protected abstract AbstractTreeNodeSerializerSource generateCaseSerializer(GeneratedType type, ChoiceCaseNode node);
+    protected abstract AbstractTreeNodeSerializerSource generateCaseSerializer(GeneratedType type, CaseSchemaNode node);
 
     /**
      * Generates serializer source for supplied list node, which will read
@@ -314,7 +314,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * @return source for augmentation node writer
      */
     protected abstract AbstractTreeNodeSerializerSource generateSerializer(GeneratedType type,
-            AugmentationSchema schema);
+            AugmentationSchemaNode schema);
 
     /**
      * Generates serializer source for notification node, which will read

@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.yang.data.api.schema.AugmentationNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 
 /**
  * Context for prototype of augmentation node.
@@ -26,7 +26,7 @@ import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
  */
 @Beta
 public final class AugmentationNodeContext<D extends TreeNode & Augmentation<?>>
-        extends TreeNodeCodecContext<D, AugmentationSchema> {
+        extends TreeNodeCodecContext<D, AugmentationSchemaNode> {
 
     /**
      * Prepare context for augmentation node from prototype.
@@ -34,7 +34,7 @@ public final class AugmentationNodeContext<D extends TreeNode & Augmentation<?>>
      * @param prototype
      *            - codec prototype of augmentation node
      */
-    public AugmentationNodeContext(final DataContainerCodecPrototype<AugmentationSchema> prototype) {
+    public AugmentationNodeContext(final DataContainerCodecPrototype<AugmentationSchemaNode> prototype) {
         super(prototype);
     }
 

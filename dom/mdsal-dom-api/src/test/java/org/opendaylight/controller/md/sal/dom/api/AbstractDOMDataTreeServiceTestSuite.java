@@ -34,7 +34,7 @@ import org.opendaylight.yangtools.yang.data.impl.schema.builder.impl.ImmutableCo
  */
 public abstract class AbstractDOMDataTreeServiceTestSuite {
     protected static final QNameModule TEST_MODULE =
-            QNameModule.create(URI.create("urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"), null);
+            QNameModule.create(URI.create("urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
 
     protected static final YangInstanceIdentifier UNORDERED_CONTAINER_IID = YangInstanceIdentifier.create(
         new NodeIdentifier(QName.create(TEST_MODULE, "lists")),

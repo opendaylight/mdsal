@@ -11,20 +11,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import org.opendaylight.mdsal.binding.yang.unified.doc.generator.GeneratorImpl;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
 
 public class DocumentationGeneratorImpl extends GeneratorImpl implements BasicCodeGenerator {
-
-    @Override
-    public Collection<File> generateSources(final SchemaContext arg0, final File arg1, final Set<Module> arg2)
-            throws IOException {
-        return generate(arg0, arg1, arg2);
-    }
-
     @Override
     public void setAdditionalConfig(final Map<String, String> additionalConfiguration) {
         // no additional config utilized
@@ -33,5 +28,12 @@ public class DocumentationGeneratorImpl extends GeneratorImpl implements BasicCo
     @Override
     public void setResourceBaseDir(final File resourceBaseDir) {
         // no resource processing necessary
+    }
+
+    @Override
+    public Collection<File> generateSources(final SchemaContext context, final File outputBaseDir,
+            final Set<Module> currentModules, final Function<Module, Optional<String>> moduleResourcePathResolver)
+            throws IOException {
+        return generate(context, outputBaseDir, currentModules);
     }
 }

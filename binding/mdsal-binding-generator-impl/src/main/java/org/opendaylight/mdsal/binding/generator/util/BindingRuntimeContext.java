@@ -41,9 +41,9 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
-import org.opendaylight.yangtools.yang.model.api.AugmentationSchema;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationTarget;
-import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
+import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -79,7 +79,7 @@ public class BindingRuntimeContext implements Immutable {
     private final ClassLoadingStrategy strategy;
     private final SchemaContext schemaContext;
 
-    private final Map<Type, AugmentationSchema> augmentationToSchema = new HashMap<>();
+    private final Map<Type, AugmentationSchemaNode> augmentationToSchema = new HashMap<>();
     private final BiMap<Type, Object> typeToDefiningSchema = HashBiMap.create();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final Map<QName, Type> identities = new HashMap<>();
@@ -158,7 +158,7 @@ public class BindingRuntimeContext implements Immutable {
      * which may be present in runtime for them, thus returned schema is unsuitable
      * for use for validation of data.
      * <p>
-     * For retrieving {@link AugmentationSchema}, which will contains
+     * For retrieving {@link AugmentationSchemaNode}, which will contains
      * full model for child nodes, you should use method {@link #getResolvedAugmentationSchema(DataNodeContainer, Class)}
      * which will return augmentation schema derived from supplied augmentation target
      * schema.
@@ -167,8 +167,9 @@ public class BindingRuntimeContext implements Immutable {
      * @return Schema of augmentation or null if augmentaiton is not known in this context
      * @throws IllegalArgumentException If supplied class is not an augmentation
      */
-    public @Nullable AugmentationSchema getAugmentationDefinition(final Class<?> augClass) throws IllegalArgumentException {
-        Preconditions.checkArgument(Augmentation.class.isAssignableFrom(augClass), "Class %s does not represent augmentation", augClass);
+    public @Nullable AugmentationSchemaNode getAugmentationDefinition(final Class<?> augClass) {
+        Preconditions.checkArgument(Augmentation.class.isAssignableFrom(augClass),
+            "Class %s does not represent augmentation", augClass);
         return augmentationToSchema.get(referencedType(augClass));
     }
 
@@ -191,9 +192,9 @@ public class BindingRuntimeContext implements Immutable {
         return (DataSchemaNode) typeToDefiningSchema.get(referencedType(cls));
     }
 
-    public Entry<AugmentationIdentifier, AugmentationSchema> getResolvedAugmentationSchema(final DataNodeContainer target,
-            final Class<? extends Augmentation<?>> aug) {
-        final AugmentationSchema origSchema = getAugmentationDefinition(aug);
+    public Entry<AugmentationIdentifier, AugmentationSchemaNode> getResolvedAugmentationSchema(
+            final DataNodeContainer target, final Class<? extends Augmentation<?>> aug) {
+        final AugmentationSchemaNode origSchema = getAugmentationDefinition(aug);
         Preconditions.checkArgument(origSchema != null, "Augmentation %s is not known in current schema context",aug);
         /*
          * FIXME: Validate augmentation schema lookup
@@ -226,7 +227,7 @@ public class BindingRuntimeContext implements Immutable {
         }
 
         final AugmentationIdentifier identifier = new AugmentationIdentifier(childNames);
-        final AugmentationSchema proxy = new EffectiveAugmentationSchema(origSchema, realChilds);
+        final AugmentationSchemaNode proxy = new EffectiveAugmentationSchema(origSchema, realChilds);
         return new SimpleEntry<>(identifier, proxy);
     }
 
@@ -240,9 +241,9 @@ public class BindingRuntimeContext implements Immutable {
      *         the given context.
      * @throws IllegalArgumentException If supplied class does not represent case.
      */
-    public Optional<ChoiceCaseNode> getCaseSchemaDefinition(final ChoiceSchemaNode schema, final Class<?> childClass) throws IllegalArgumentException {
+    public Optional<CaseSchemaNode> getCaseSchemaDefinition(final ChoiceSchemaNode schema, final Class<?> childClass) throws IllegalArgumentException {
         final DataSchemaNode origSchema = getSchemaDefinition(childClass);
-        Preconditions.checkArgument(origSchema instanceof ChoiceCaseNode, "Supplied schema %s is not case.", origSchema);
+        Preconditions.checkArgument(origSchema instanceof CaseSchemaNode, "Supplied schema %s is not case.", origSchema);
 
         /* FIXME: Make sure that if there are multiple augmentations of same
          * named case, with same structure we treat it as equals
@@ -250,8 +251,8 @@ public class BindingRuntimeContext implements Immutable {
          * that user may be unaware that he is using incorrect case
          * which was generated for choice inside grouping.
          */
-        final Optional<ChoiceCaseNode> found = BindingSchemaContextUtils.findInstantiatedCase(schema,
-                (ChoiceCaseNode) origSchema);
+        final Optional<CaseSchemaNode> found = BindingSchemaContextUtils.findInstantiatedCase(schema,
+                (CaseSchemaNode) origSchema);
         return found;
     }
 
@@ -265,14 +266,14 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     /**
-     * Returns schema ({@link DataSchemaNode}, {@link AugmentationSchema} or {@link TypeDefinition})
+     * Returns schema ({@link DataSchemaNode}, {@link AugmentationSchemaNode} or {@link TypeDefinition})
      * from which supplied class was generated. Returned schema may be augmented with
      * additional information, which was not available at compile type
      * (e.g. third party augmentations).
      *
      * @param type Binding Class for which schema should be retrieved.
      * @return Instance of generated type (definition of Java API), along with
-     *     {@link DataSchemaNode}, {@link AugmentationSchema} or {@link TypeDefinition}
+     *     {@link DataSchemaNode}, {@link AugmentationSchemaNode} or {@link TypeDefinition}
      *     which was used to generate supplied class.
      */
     public Entry<GeneratedType, Object> getTypeWithSchema(final Class<?> type) {
@@ -381,10 +382,10 @@ public class BindingRuntimeContext implements Immutable {
     public ImmutableMap<AugmentationIdentifier,Type> getAvailableAugmentationTypes(final DataNodeContainer container) {
         final Map<AugmentationIdentifier,Type> identifierToType = new HashMap<>();
         if (container instanceof AugmentationTarget) {
-            final Set<AugmentationSchema> augments = ((AugmentationTarget) container).getAvailableAugmentations();
-            for (final AugmentationSchema augment : augments) {
+            final Set<AugmentationSchemaNode> augments = ((AugmentationTarget) container).getAvailableAugmentations();
+            for (final AugmentationSchemaNode augment : augments) {
                 // Augmentation must have child nodes if is to be used with Binding classes
-                AugmentationSchema augOrig = augment;
+                AugmentationSchemaNode augOrig = augment;
                 while (augOrig.getOriginalDefinition().isPresent()) {
                     augOrig = augOrig.getOriginalDefinition().get();
                 }
@@ -401,7 +402,7 @@ public class BindingRuntimeContext implements Immutable {
         return ImmutableMap.copyOf(identifierToType);
     }
 
-    private static AugmentationIdentifier getAugmentationIdentifier(final AugmentationSchema augment) {
+    private static AugmentationIdentifier getAugmentationIdentifier(final AugmentationSchemaNode augment) {
         final Set<QName> childNames = new HashSet<>();
         for (final DataSchemaNode child : augment.getChildNodes()) {
             childNames.add(child.getQName());
