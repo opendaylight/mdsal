@@ -26,7 +26,7 @@ public class DOMDataTreeIdentifierTest {
     private static final String COMPARE_FIRST_LISTS = "A-test-lists";
     private static final String COMPARE_SECOND_LISTS = "B-test-lists";
     private static final QNameModule TEST_MODULE = QNameModule.create(URI.create(
-            "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"), null);
+            "urn:opendaylight:params:xml:ns:yang:controller:md:sal:test:store"));
     private static final YangInstanceIdentifier REF_YII_IID = YangInstanceIdentifier.create(
             new YangInstanceIdentifier.NodeIdentifier(QName.create(TEST_MODULE, REF_LISTS)));
     private static final YangInstanceIdentifier TEST_YII_IID = YangInstanceIdentifier.create(

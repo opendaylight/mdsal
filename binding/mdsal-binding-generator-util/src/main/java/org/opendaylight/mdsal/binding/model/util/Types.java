@@ -8,7 +8,6 @@
 package org.opendaylight.mdsal.binding.model.util;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.cache.CacheBuilder;
@@ -18,6 +17,7 @@ import com.google.common.collect.Iterables;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Future;
 import javax.annotation.Nullable;
@@ -259,9 +259,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents concrete JAVA type with changed restriction values.
-     *
      */
     private static final class BaseTypeWithRestrictionsImpl extends AbstractBaseType implements BaseTypeWithRestrictions {
         private final Restrictions restrictions;
@@ -287,9 +285,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents parametrized JAVA type.
-     *
      */
     private static class ParametrizedTypeImpl extends AbstractBaseType implements ParameterizedType {
         /**
@@ -331,9 +327,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents JAVA bounded wildcard type.
-     *
      */
     private static class WildcardTypeImpl extends AbstractBaseType implements WildcardType {
         /**
@@ -361,8 +355,8 @@ public final class Types {
         private DefaultRestrictions(final T min, final T max) {
             this.min = Preconditions.checkNotNull(min);
             this.max = Preconditions.checkNotNull(max);
-            this.rangeConstraints = Collections.singletonList(BaseConstraints.newRangeConstraint(min, max, Optional
-                    .<String>absent(), Optional.<String>absent()));
+            this.rangeConstraints = Collections.singletonList(BaseConstraints.newRangeConstraint(min, max,
+                Optional.empty(), Optional.empty()));
         }
 
         @Override
@@ -381,8 +375,8 @@ public final class Types {
         }
 
         @Override
-        public List<LengthConstraint> getLengthConstraints() {
-            return Collections.emptyList();
+        public Optional<LengthConstraint> getLengthConstraint() {
+            return Optional.empty();
         }
     }
 }

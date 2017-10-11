@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.impl;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.io.ByteSource;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
@@ -24,6 +25,7 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
@@ -54,8 +56,10 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
     private static final Logger LOG = LoggerFactory.getLogger(ModuleInfoBackedContext.class);
 
-    private final ConcurrentMap<String, WeakReference<ClassLoader>> packageNameToClassLoader = new ConcurrentHashMap<>();
-    private final ConcurrentMap<SourceIdentifier, YangModuleInfo> sourceIdentifierToModuleInfo = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, WeakReference<ClassLoader>> packageNameToClassLoader =
+            new ConcurrentHashMap<>();
+    private final ConcurrentMap<SourceIdentifier, YangModuleInfo> sourceIdentifierToModuleInfo =
+            new ConcurrentHashMap<>();
 
     private final ClassLoadingStrategy backingLoadingStrategy;
 
@@ -87,7 +91,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     // Implement remove ModuleInfo to update SchemaContext
 
     public Optional<SchemaContext> tryToCreateSchemaContext() {
-        return ctxResolver.getSchemaContext();
+        return Optional.fromJavaUtil(ctxResolver.getSchemaContext());
     }
 
     private boolean resolveModuleInfo(final Class<?> cls) {
@@ -121,7 +125,8 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         return true;
     }
 
-    private static YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier, final YangModuleInfo moduleInfo) {
+    private static YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier,
+            final YangModuleInfo moduleInfo) {
         return new YangTextSchemaSource(identifier) {
 
             @Override
@@ -137,7 +142,9 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     private static SourceIdentifier sourceIdentifierFrom(final YangModuleInfo moduleInfo) {
-        return RevisionSourceIdentifier.create(moduleInfo.getName(), Optional.of(moduleInfo.getRevision()));
+        final String rev = moduleInfo.getRevision();
+        return Strings.isNullOrEmpty(rev) ? RevisionSourceIdentifier.create(moduleInfo.getName())
+                : RevisionSourceIdentifier.create(moduleInfo.getName(), Revision.valueOf(rev));
     }
 
     public void addModuleInfos(final Iterable<? extends YangModuleInfo> moduleInfos) {
@@ -153,7 +160,8 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         return registration;
     }
 
-    @Override public CheckedFuture<? extends YangTextSchemaSource, SchemaSourceException> getSource(
+    @Override
+    public CheckedFuture<? extends YangTextSchemaSource, SchemaSourceException> getSource(
         final SourceIdentifier sourceIdentifier) {
         final YangModuleInfo yangModuleInfo = sourceIdentifierToModuleInfo.get(sourceIdentifier);
 

@@ -16,12 +16,11 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -41,7 +40,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPro
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
-import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.ChoiceCaseNode;
@@ -124,8 +123,8 @@ final class TypeGenHelper {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef, final
             TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName, final SchemaContext
-            schemaContext, final Map<String, Map<Date, Map<String, Type>>> genTypeDefsContextMap,
-            ModuleContext context) {
+            schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final ModuleContext context) {
 
         Preconditions.checkArgument(innerExtendedType != null, "Extended type cannot be NULL!");
         Preconditions.checkArgument(basePackageName != null, "String with base package name cannot be NULL!");
@@ -150,7 +149,7 @@ final class TypeGenHelper {
             genTOBuilder.setIsUnion(true);
         }
 
-        Map<Date, Map<String, Type>> modulesByDate = null;
+        Map<Optional<Revision>, Map<String, Type>> modulesByDate = null;
         Map<String, Type> typeMap = null;
         final Module parentModule = findParentModule(schemaContext, innerExtendedType);
         if (parentModule != null) {
@@ -182,7 +181,7 @@ final class TypeGenHelper {
      * @return generated transfer object which represent<code>javaType</code>
      */
     static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
-           final Type javaType, final String moduleName, ModuleContext context) {
+           final Type javaType, final String moduleName, final ModuleContext context) {
         Preconditions.checkNotNull(javaType, "javaType cannot be null");
         final String propertyName = "value";
 
@@ -441,7 +440,7 @@ final class TypeGenHelper {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static Enumeration provideTypeForEnum(final EnumTypeDefinition enumTypeDef, final String enumName,
-           final SchemaNode parentNode, final SchemaContext schemaContext, ModuleContext context) {
+           final SchemaNode parentNode, final SchemaContext schemaContext, final ModuleContext context) {
         Preconditions.checkArgument(enumTypeDef != null, "EnumTypeDefinition reference cannot be NULL!");
         Preconditions.checkArgument(enumTypeDef.getQName().getLocalName() != null,
                 "Local Name in EnumTypeDefinition QName cannot be NULL!");
@@ -479,10 +478,10 @@ final class TypeGenHelper {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static GeneratedTOBuilderImpl typedefToTransferObject(final String basePackageName,
-            final TypeDefinition<?> typedef, final String moduleName, ModuleContext context) {
+            final TypeDefinition<?> typedef, final String moduleName, final ModuleContext context) {
         final String typeDefTOName = typedef.getQName().getLocalName();
 
-        if ((basePackageName != null) && (typeDefTOName != null)) {
+        if (basePackageName != null && typeDefTOName != null) {
             final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(basePackageName, typeDefTOName, context);
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription());
 
@@ -497,9 +496,6 @@ final class TypeGenHelper {
     }
 
     static Module getParentModule(final SchemaNode node, final SchemaContext schemaContext) {
-        final QName qname = node.getPath().getPathFromRoot().iterator().next();
-        final URI namespace = qname.getNamespace();
-        final Date revision = qname.getRevision();
-        return schemaContext.findModuleByNamespaceAndRevision(namespace, revision);
+        return schemaContext.findModule(node.getPath().getPathFromRoot().iterator().next().getModule()).orElse(null);
     }
 }

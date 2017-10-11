@@ -50,7 +50,7 @@ public class InmemoryDOMDataTreeShardWriteTransactionTest {
     private static final ShardRootModificationContext SHARD_ROOT_MODIFICATION_CONTEXT =
             mock(ShardRootModificationContext.class);
     private static final YangInstanceIdentifier YANG_INSTANCE_IDENTIFIER =
-            YangInstanceIdentifier.of(QName.create("test"));
+            YangInstanceIdentifier.of(QName.create("", "test"));
     private static final DOMDataTreeIdentifier DOM_DATA_TREE_IDENTIFIER =
             new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YANG_INSTANCE_IDENTIFIER);
     private static final ForeignShardModificationContext FOREIGN_SHARD_MODIFICATION_CONTEXT =

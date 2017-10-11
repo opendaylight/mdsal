@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.javav2.runtime.reflection;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
@@ -46,6 +47,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.common.Revision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,7 +267,12 @@ public final class BindingReflections {
      * @return {@link QNameModule} from module info
      */
     public static final QNameModule getQNameModule(final YangModuleInfo modInfo) {
-        return QNameModule.create(URI.create(modInfo.getNamespace()), QName.parseRevision(modInfo.getRevision()));
+        final String rev = modInfo.getRevision();
+        if (rev != null) {
+            return QNameModule.create(URI.create(modInfo.getNamespace()), Revision.valueOf(rev));
+        }
+
+        return QNameModule.create(URI.create(modInfo.getNamespace()));
     }
 
     /**
