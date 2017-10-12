@@ -23,10 +23,10 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedN
 import org.opendaylight.mdsal.binding.javav2.dom.codec.modification.LazyDataTreeModification;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
+import org.opendaylight.mdsal.common.api.MappingCheckedFuture;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohort;
-import org.opendaylight.yangtools.util.concurrent.MappingCheckedFuture;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 /**

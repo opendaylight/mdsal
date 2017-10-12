@@ -18,11 +18,11 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.MappingCheckedFuture;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
-import org.opendaylight.yangtools.util.concurrent.MappingCheckedFuture;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 

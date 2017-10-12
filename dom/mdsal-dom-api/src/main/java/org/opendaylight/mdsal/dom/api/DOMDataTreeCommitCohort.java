@@ -18,9 +18,9 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
+import org.opendaylight.mdsal.common.api.MappingCheckedFuture;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
-import org.opendaylight.yangtools.util.concurrent.MappingCheckedFuture;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.slf4j.LoggerFactory;
 
