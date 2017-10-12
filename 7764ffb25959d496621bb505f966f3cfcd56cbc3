@@ -68,6 +68,30 @@
       "revId": "7764ffb25959d496621bb505f966f3cfcd56cbc3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_dda1e7aa",
+        "filename": "binding2/mdsal-binding2-spec/src/main/java/org/opendaylight/mdsal/binding/javav2/spec/base/Identifier.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-10-12T06:43:33Z",
+      "side": 1,
+      "message": "The only difference between them  is that this generic Identifier would take raw type of list which may be used in some cases, otherwise it\u0027s ok. Anyway, I have imported the concepts.Identifier in new updates and let go and see.",
+      "parentUuid": "9a245df4_42c5255a",
+      "range": {
+        "startLine": 17,
+        "startChar": 17,
+        "endLine": 17,
+        "endChar": 109
+      },
+      "revId": "7764ffb25959d496621bb505f966f3cfcd56cbc3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
