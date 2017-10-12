@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_cc401a59",
+        "filename": "model/yang-ext/src/main/yang/yang-ext.yang",
+        "patchSetId": 13
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-10-12T14:21:16Z",
+      "side": 1,
+      "message": "4 spaces instead of tab please.",
+      "range": {
+        "startLine": 78,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 5
+      },
+      "revId": "a08d0600455e4eb8852598621a7cea281309ae98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
