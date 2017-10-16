@@ -44,16 +44,19 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
 
     @Override
     public DOMMountPointBuilder createMountPoint(final YangInstanceIdentifier path) {
+        LOG.debug("Creating mount point for path {}", path);
         checkState(!mountPoints.containsKey(path), "Mount point already exists");
         return new DOMMountPointBuilderImpl(path);
     }
 
     @Override
     public ListenerRegistration<DOMMountPointListener> registerProvisionListener(final DOMMountPointListener listener) {
+        LOG.debug("Registering provision listener {}", listener);
         return listeners.register(listener);
     }
 
     public ObjectRegistration<DOMMountPoint> registerMountPoint(final DOMMountPoint mountPoint) {
+        LOG.debug("Registering mount point {}", mountPoint);
         final YangInstanceIdentifier mountPointId = mountPoint.getIdentifier();
         synchronized (mountPoints) {
             final DOMMountPoint prev = mountPoints.putIfAbsent(mountPointId, mountPoint);
@@ -64,12 +67,14 @@ public class DOMMountPointServiceImpl implements DOMMountPointService {
         return new AbstractObjectRegistration<DOMMountPoint>(mountPoint) {
             @Override
             protected void removeRegistration() {
+                LOG.debug("Removing mount registration fro mount point {}", mountPoint);
                 unregisterMountPoint(getInstance().getIdentifier());
             }
         };
     }
 
     public void unregisterMountPoint(final YangInstanceIdentifier mountPointId) {
+        LOG.debug("Unregistering mount point for id {}", mountPointId);
         synchronized (mountPoints) {
             if (mountPoints.remove(mountPointId) == null) {
                 LOG.warn("Removed non-existend mount point {} at", mountPointId, new Throwable());
