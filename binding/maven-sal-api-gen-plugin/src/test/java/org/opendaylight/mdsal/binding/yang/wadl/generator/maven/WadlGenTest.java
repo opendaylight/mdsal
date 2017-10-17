@@ -22,7 +22,6 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.yang.wadl.generator.maven.WadlGenerator;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
