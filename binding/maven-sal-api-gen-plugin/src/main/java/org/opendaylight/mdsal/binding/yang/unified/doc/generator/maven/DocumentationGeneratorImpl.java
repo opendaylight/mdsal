@@ -20,8 +20,9 @@ import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
 public class DocumentationGeneratorImpl extends GeneratorImpl implements BasicCodeGenerator {
 
     @Override
-    public Collection<File> generateSources(final SchemaContext arg0, final File arg1, final Set<Module> arg2) throws IOException {
-         return generate(arg0, arg1, arg2);
+    public Collection<File> generateSources(final SchemaContext arg0, final File arg1, final Set<Module> arg2)
+            throws IOException {
+        return generate(arg0, arg1, arg2);
     }
 
     @Override
