@@ -20,8 +20,8 @@ import org.opendaylight.yangtools.yang2sources.spi.BasicCodeGenerator;
 public class WadlGenerator implements BasicCodeGenerator {
 
     @Override
-    public Collection<File> generateSources(final SchemaContext context, final File outputDir, final Set<Module> currentModules)
-            throws IOException {
+    public Collection<File> generateSources(final SchemaContext context, final File outputDir,
+            final Set<Module> currentModules) throws IOException {
 
         final File outputBaseDir;
         if (outputDir == null) {

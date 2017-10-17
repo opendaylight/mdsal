@@ -52,6 +52,13 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     private File resourceBaseDir;
 
     @Override
+    public Collection<File> generateSources(final SchemaContext context, final File outputBaseDir,
+            final Set<Module> currentModules) throws IOException {
+        return generateSources(context, outputBaseDir, currentModules,
+            module -> Optional.of("/" + module.getModuleSourcePath().replace(File.separator, "/")));
+    }
+
+    @Override
     public Collection<File> generateSources(final SchemaContext context, final File outputDir,
             final Set<Module> yangModules, final Function<Module, Optional<String>> moduleResourcePathResolver)
                     throws IOException {
@@ -150,7 +157,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
     private Set<File> generateYangModuleInfo(final File outputBaseDir, final Module module, final SchemaContext ctx,
             final Function<Module, Optional<String>> moduleResourcePathResolver,
             final Builder<String> providerSourceSet) {
-        Builder<File> generatedFiles = ImmutableSet.<File> builder();
+        Builder<File> generatedFiles = ImmutableSet.builder();
 
         final YangModuleInfoTemplate template = new YangModuleInfoTemplate(module, ctx, moduleResourcePathResolver);
         String moduleInfoSource = template.generate();
@@ -180,10 +187,11 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         return file;
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     private File writeFile(final File file, final String source) {
-        try (final OutputStream stream = buildContext.newFileOutputStream(file)) {
-            try (final Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
-                try (final BufferedWriter bw = new BufferedWriter(fw)) {
+        try (OutputStream stream = buildContext.newFileOutputStream(file)) {
+            try (Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+                try (BufferedWriter bw = new BufferedWriter(fw)) {
                     bw.write(source);
                 }
             } catch (Exception e) {
@@ -194,12 +202,4 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         }
         return file;
     }
-
-    @Override
-    public Collection<File> generateSources(final SchemaContext context, final File outputBaseDir, final Set<Module> currentModules)
-            throws IOException {
-        return generateSources(context, outputBaseDir, currentModules,
-            m -> Optional.of("/" + m.getModuleSourcePath().replace(File.separator, "/")));
-    }
-
 }

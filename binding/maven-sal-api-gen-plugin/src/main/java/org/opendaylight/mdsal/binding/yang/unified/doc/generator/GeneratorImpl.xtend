@@ -66,9 +66,9 @@ class GeneratorImpl {
     var Module currentModule;
     val Map<String, String> imports = new HashMap();
     var SchemaContext ctx;
-    
+
     StringBuilder augmentChildNodesAsString
-    
+
     DataSchemaNode lastNodeInTargetPath = null
 
     def generate(SchemaContext context, File targetPath, Set<Module> modulesToGen) throws IOException {
@@ -305,7 +305,7 @@ class GeneratorImpl {
         }
         return '''
             <h2>Augmentations</h2>
-            
+
             <ul>
             «FOR augment : module.augmentations»
                 <li>
@@ -322,7 +322,7 @@ class GeneratorImpl {
                     «FOR childNode : augment.childNodes»
                         «childNode.printSchemaNodeInfo»
                     «ENDFOR»
-                    
+
                     <h3>Example</h3>
                     «createAugmentChildNodesAsString(new ArrayList(augment.childNodes))»
                     «printNodeChildren(parseTargetPath(augment.targetPath))»
@@ -331,13 +331,13 @@ class GeneratorImpl {
             </ul>
         '''
     }
-    
+
     private def createAugmentChildNodesAsString(List<DataSchemaNode> childNodes) {
         augmentChildNodesAsString = new StringBuilder();
         augmentChildNodesAsString.append(printNodeChildren(childNodes))
         return ''
     }
-    
+
     private def parseTargetPath(SchemaPath path) {
         val List<DataSchemaNode> nodes = new ArrayList<DataSchemaNode>();
         for (QName pathElement : path.pathFromRoot) {
@@ -359,13 +359,13 @@ class GeneratorImpl {
         if(! nodes.empty) {
             lastNodeInTargetPath = nodes.get(nodes.size() - 1)
         }
-        
+
         val List<DataSchemaNode> targetPathNodes = new ArrayList<DataSchemaNode>();
         targetPathNodes.add(lastNodeInTargetPath)
-        
+
         return targetPathNodes
     }
-    
+
     private def DataSchemaNode findNodeInChildNodes(QName findingNode, Iterable<DataSchemaNode> childNodes) {
         for(child : childNodes) {
             if (child.QName.equals(findingNode))
@@ -384,25 +384,25 @@ class GeneratorImpl {
             }
         }
     }
-    
+
     private def printNodeChildren(List<DataSchemaNode> childNodes) {
         if (childNodes.empty) {
             return ''
         }
-        
-        return 
+
+        return
         '''
         <pre>
         «printAugmentedNode(childNodes.get(0))»
         </pre>
         '''
     }
-    
+
     private def CharSequence printAugmentedNode(DataSchemaNode child) {
-        
+
         if(child instanceof ChoiceCaseNode)
             return ''
-            
+
         return
         '''
         «IF child instanceof ContainerSchemaNode»
@@ -425,7 +425,7 @@ class GeneratorImpl {
         «ENDIF»
         '''
     }
-    
+
     private def printChoiceNode(ChoiceSchemaNode child) {
         val List<ChoiceCaseNode> cases = new ArrayList(child.cases);
         if(!cases.empty) {
@@ -434,7 +434,7 @@ class GeneratorImpl {
                 printAugmentedNode(caseChildNode)
         }
     }
-    
+
     private def printListNode(ListSchemaNode listNode) {
         return
         '''
@@ -445,7 +445,7 @@ class GeneratorImpl {
             &lt;/«listNode.QName.localName»&gt;
         '''
     }
-    
+
     private def printContainerNode(ContainerSchemaNode containerNode) {
         return
         '''
@@ -456,7 +456,7 @@ class GeneratorImpl {
             &lt;/«containerNode.QName.localName»&gt;
         '''
     }
-    
+
     private def printLeafListNode(LeafListSchemaNode leafListNode) {
         return
         '''
@@ -465,16 +465,16 @@ class GeneratorImpl {
             &lt;«leafListNode.QName.localName»&gt;. . .&lt;/«leafListNode.QName.localName»&gt;
         '''
     }
-    
+
     private def printAnyXmlNode(AnyXmlSchemaNode anyXmlNode) {
-        return 
+        return
         '''
             &lt;«anyXmlNode.QName.localName»&gt;. . .&lt;/«anyXmlNode.QName.localName»&gt;
         '''
     }
-    
+
     private def printLeafNode(LeafSchemaNode leafNode) {
-        return 
+        return
         '''
             &lt;«leafNode.QName.localName»&gt;. . .&lt;/«leafNode.QName.localName»&gt;
         '''
