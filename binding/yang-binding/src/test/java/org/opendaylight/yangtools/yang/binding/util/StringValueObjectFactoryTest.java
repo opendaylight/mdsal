@@ -16,7 +16,7 @@ public class StringValueObjectFactoryTest {
 
     @Test
     public void createTest() throws Exception {
-        final StringValueObjectFactory stringValueObjectFactory =
+        final StringValueObjectFactory<?> stringValueObjectFactory =
                 StringValueObjectFactory.create(TestClass.class, "testTemplate");
         assertNotNull(stringValueObjectFactory);
         assertEquals("testTemplate", stringValueObjectFactory.getTemplate().toString());
@@ -24,7 +24,7 @@ public class StringValueObjectFactoryTest {
 
     @Test
     public void newInstanceTest() throws Exception {
-        final StringValueObjectFactory instance = StringValueObjectFactory.create(TestClass.class, "testTemplate");
+        final StringValueObjectFactory<?> instance = StringValueObjectFactory.create(TestClass.class, "testTemplate");
 
         assertEquals("instanceTest", instance.newInstance("instanceTest").toString());
     }
@@ -41,13 +41,14 @@ public class StringValueObjectFactoryTest {
 
     private static final class TestClass {
 
+        @SuppressWarnings("checkstyle:memberName")
         private final String _value;
 
-        public TestClass(TestClass parrent) {
-            this._value = parrent._value;
+        TestClass(final TestClass parent) {
+            this._value = parent._value;
         }
 
-        public TestClass(String value) {
+        TestClass(final String value) {
             this._value = value;
         }
 
