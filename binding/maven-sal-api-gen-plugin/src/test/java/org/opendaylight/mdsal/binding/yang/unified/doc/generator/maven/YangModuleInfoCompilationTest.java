@@ -113,17 +113,20 @@ public class YangModuleInfoCompilationTest {
             String name = ymi.getName();
 
             switch (name) {
-            case "import-module":
-                infoImport = ymi;
-                break;
-            case "submodule1":
-                infoSub1 = ymi;
-                break;
-            case "submodule2":
-                infoSub2 = ymi;
-                break;
-            case "submodule3":
-                infoSub3 = ymi;
+                case "import-module":
+                    infoImport = ymi;
+                    break;
+                case "submodule1":
+                    infoSub1 = ymi;
+                    break;
+                case "submodule2":
+                    infoSub2 = ymi;
+                    break;
+                case "submodule3":
+                    infoSub3 = ymi;
+                    break;
+                default:
+                    // no-op
             }
         }
         assertNotNull(infoImport);
@@ -134,7 +137,8 @@ public class YangModuleInfoCompilationTest {
         cleanUp(sourcesOutputDir, compiledOutputDir);
     }
 
-    private static void generateTestSources(final String resourceDirPath, final File sourcesOutputDir) throws Exception {
+    private static void generateTestSources(final String resourceDirPath, final File sourcesOutputDir)
+            throws Exception {
         final List<File> sourceFiles = getSourceFiles(resourceDirPath);
         final SchemaContext context = YangParserTestUtils.parseYangSources(sourceFiles);
         CodeGeneratorImpl codegen = new CodeGeneratorImpl();
@@ -153,10 +157,10 @@ public class YangModuleInfoCompilationTest {
         codegen.setAdditionalConfig(ImmutableMap.of("test", "test"));
         Collection<File> files = codegen.generateSources(context, null, context.getModules());
         assertFalse(files.isEmpty());
-        files.forEach((file -> {
+        files.forEach(file -> {
             deleteTestDir(file);
             assertFalse(file.exists());
-        }));
+        });
     }
 
     private static void testCompilation(final File sourcesOutputDir, final File compiledOutputDir) {
@@ -210,8 +214,8 @@ public class YangModuleInfoCompilationTest {
         if (file.isDirectory()) {
             File[] filesToDelete = file.listFiles();
             if (filesToDelete != null) {
-                for (File f : filesToDelete) {
-                    deleteTestDir(f);
+                for (File ftd : filesToDelete) {
+                    deleteTestDir(ftd);
                 }
             }
         }
@@ -220,10 +224,11 @@ public class YangModuleInfoCompilationTest {
         }
     }
 
-    private static Method assertContainsMethod(final Class<?> clazz, final Class<?> returnType, final String name, final Class<?>... args) {
+    private static Method assertContainsMethod(final Class<?> clazz, final Class<?> returnType, final String name,
+            final Class<?>... args) {
         try {
-            Method m = clazz.getDeclaredMethod(name, args);
-            assertEquals(returnType, m.getReturnType());
+            Method method = clazz.getDeclaredMethod(name, args);
+            assertEquals(returnType, method.getReturnType());
             return m;
         } catch (NoSuchMethodException e) {
             throw new AssertionError("Method " + name + " with args " + Arrays.toString(args)
