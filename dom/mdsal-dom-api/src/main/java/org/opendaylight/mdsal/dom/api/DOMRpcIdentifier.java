@@ -16,10 +16,9 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
- * Identifier of a RPC context. This is an extension of the YANG RPC, which
- * always has global context. It allows an RPC to have a instance identifier
- * attached, so that there can be multiple implementations bound to different
- * contexts concurrently.
+ * Identifier of a RPC context. This is an extension of the YANG RPC, which always has global context. It allows an RPC
+ * to have a instance identifier attached, so that there can be multiple implementations bound to different contexts
+ * concurrently.
  */
 public abstract class DOMRpcIdentifier {
     private static final class Global extends DOMRpcIdentifier {
@@ -76,9 +75,9 @@ public abstract class DOMRpcIdentifier {
             @Nullable final YangInstanceIdentifier contextReference) {
         if (contextReference == null || contextReference.isEmpty()) {
             return new Global(type);
-        } else {
-            return new Local(type, contextReference);
         }
+
+        return new Local(type, contextReference);
     }
 
     /**
