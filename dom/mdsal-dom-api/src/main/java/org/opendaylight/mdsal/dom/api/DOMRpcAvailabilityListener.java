@@ -12,9 +12,11 @@ import java.util.EventListener;
 import javax.annotation.Nonnull;
 
 /**
- * An {@link EventListener} used to track RPC implementations becoming (un)available
- * to a {@link DOMRpcService}.
+ * An {@link EventListener} used to track RPC implementations becoming (un)available to a {@link DOMRpcService}.
+ *
+ * @deprecated Use {@link DOMOperationAvailabilityListener} instead.
  */
+@Deprecated
 public interface DOMRpcAvailabilityListener extends EventListener {
     /**
      * Method invoked whenever an RPC type becomes available.
