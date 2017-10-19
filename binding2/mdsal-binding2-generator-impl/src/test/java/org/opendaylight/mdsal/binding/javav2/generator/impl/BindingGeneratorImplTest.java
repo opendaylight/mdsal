@@ -243,26 +243,26 @@ public class BindingGeneratorImplTest {
                 assertBaseGeneratedType(genTransferObj, "MyListKey",
                         "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list");
                 assertEquals(3, genTransferObj.getProperties().size());
-                int test_j = 0;
+                int testJ = 0;
                 for (final GeneratedProperty generatedProperty : genTransferObj.getProperties()) {
                     switch (generatedProperty.getName()) {
                         case "keyReservedWord":
                             assertEquals("String", generatedProperty.getReturnType().getName());
-                            test_j++;
+                            testJ++;
                             break;
                         case "key1":
                             assertEquals("String", generatedProperty.getReturnType().getName());
-                            test_j++;
+                            testJ++;
                             break;
                         case "key2":
                             assertEquals("String", generatedProperty.getReturnType().getName());
-                            test_j++;
+                            testJ++;
                             break;
                         default:
                             fail();
                     }
                 }
-                assertEquals(3, test_j);
+                assertEquals(3, testJ);
                 test_i[0] += 1;
             } else {
                 testActualType((GeneratedType) t, test_i);
@@ -317,79 +317,79 @@ public class BindingGeneratorImplTest {
         }
     }
 
-    private void testActualType(final GeneratedType t, final int[] test_i) {
+    private void testActualType(final GeneratedType type, final int[] testI) {
         MethodSignature methodSignature = null;
-        switch (t.getName()) {
+        switch (type.getName()) {
             case "TestListData":
                 assertEquals("org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314",
-                        t.getPackageName());
-                methodSignature = t.getMethodDefinitions().get(0);
-                assertMethod(t, "getMyList", "List", "java.util", methodSignature);
-                test_i[0] += 1;
+                        type.getPackageName());
+                methodSignature = type.getMethodDefinitions().get(0);
+                assertMethod(type, "getMyList", "List", "java.util", methodSignature);
+                testI[0] += 1;
                 break;
             case "MyListKey":
                 assertEquals("org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list",
-                        t.getPackageName());
-                methodSignature = t.getMethodDefinitions().get(0);
-                assertMethod(t, "getKey", "String", "java.lang", methodSignature);
-                test_i[0] += 1;
+                        type.getPackageName());
+                methodSignature = type.getMethodDefinitions().get(0);
+                assertMethod(type, "getKey", "String", "java.lang", methodSignature);
+                testI[0] += 1;
                 break;
             case "MyListKey1":
                 assertEquals("org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list",
-                        t.getPackageName());
-                methodSignature = t.getMethodDefinitions().get(0);
-                assertMethod(t, "getKey1", "String", "java.lang", methodSignature);
-                test_i[0] += 1;
+                        type.getPackageName());
+                methodSignature = type.getMethodDefinitions().get(0);
+                assertMethod(type, "getKey1", "String", "java.lang", methodSignature);
+                testI[0] += 1;
                 break;
             case "MyListKey2":
                 assertEquals("org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list",
-                        t.getPackageName());
-                methodSignature = t.getMethodDefinitions().get(0);
-                assertMethod(t, "getKey2", "String", "java.lang", methodSignature);
-                test_i[0] += 1;
+                        type.getPackageName());
+                methodSignature = type.getMethodDefinitions().get(0);
+                assertMethod(type, "getKey2", "String", "java.lang", methodSignature);
+                testI[0] += 1;
                 break;
             case "MyListFoo":
                 assertEquals("org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.data.my_list",
-                        t.getPackageName());
-                methodSignature = t.getMethodDefinitions().get(0);
-                assertMethod(t, "getFoo", "String", "java.lang", methodSignature);
-                test_i[0] += 1;
+                        type.getPackageName());
+                methodSignature = type.getMethodDefinitions().get(0);
+                assertMethod(type, "getFoo", "String", "java.lang", methodSignature);
+                testI[0] += 1;
                 break;
             case "MyList":
                 assertEquals("org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.data",
-                        t.getPackageName());
-                assertEquals(5, t.getMethodDefinitions().size());
-                int test_j = 0;
-                for (final MethodSignature m : t.getMethodDefinitions()) {
+                        type.getPackageName());
+                assertEquals(5, type.getMethodDefinitions().size());
+                int testJ = 0;
+                for (final MethodSignature m : type.getMethodDefinitions()) {
                     switch (m.getName()) {
                         case "getIdentifier":
-                                assertMethod(t, "getIdentifier", "MyListKey",
-                                        "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list",
+                            assertMethod(type, "getIdentifier", "MyListKey",
+                                "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list",
                                         m);
-                            test_j++;
+                            testJ++;
                             break;
                         case "getKey1":
-                            assertMethod(t, "getKey1", "String","java.lang", m);
-                            test_j++;
+                            assertMethod(type, "getKey1", "String","java.lang", m);
+                            testJ++;
                             break;
                         case "getKey2":
-                            assertMethod(t, "getKey2", "String","java.lang", m);
-                            test_j++;
+                            assertMethod(type, "getKey2", "String","java.lang", m);
+                            testJ++;
                             break;
                         case "getFoo":
-                            assertMethod(t, "getFoo", "String","java.lang", m);
-                            test_j++;
+                            assertMethod(type, "getFoo", "String","java.lang", m);
+                            testJ++;
                             break;
                         case "getKeyReservedWord":
-                            assertMethod(t, "getKeyReservedWord", "String","java.lang", m);
-                            test_j++;
+                            assertMethod(type, "getKeyReservedWord", "String","java.lang", m);
+                            testJ++;
                             break;
                         default:
                             fail();
                     }
                 }
-                assertEquals(5, test_j);
-                test_i[0] += 1;
+                assertEquals(5, testJ);
+                testI[0] += 1;
                 break;
             default:
                 fail();

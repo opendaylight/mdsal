@@ -47,7 +47,6 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -57,7 +56,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
 /**
- * Auxiliary util class for {@link GenHelperUtil} class
+ * Auxiliary util class for {@link GenHelperUtil} class.
  */
 @Beta
 final class AuxiliaryGenUtils {
@@ -95,6 +94,7 @@ final class AuxiliaryGenUtils {
      * Created a method signature builder as part of
      * <code>interfaceBuilder</code>.
      *
+     * <p>
      * The method signature builder is created for the getter method of
      * <code>schemaNodeName</code>. Also <code>comment</code> and
      * <code>returnType</code> information are added to the builder.
@@ -184,6 +184,7 @@ final class AuxiliaryGenUtils {
     }
 
     /**
+     * Returns augmentation identifier defined in augment.
      * @param unknownSchemaNodes unknown schema nodes
      * @return nodeParameter of UnknownSchemaNode
      */
@@ -202,6 +203,7 @@ final class AuxiliaryGenUtils {
      * Adds enumeration builder created from <code>enumTypeDef</code> to
      * <code>typeBuilder</code>.
      *
+     * <p>
      * Each <code>enumTypeDef</code> item is added to builder with its name and
      * value.
      *
@@ -237,6 +239,7 @@ final class AuxiliaryGenUtils {
      * {@link UnionTypeDefinition} or {@link BitsTypeDefinition} which are
      * also added to <code>typeBuilder</code> as enclosing transfer object.
      *
+     * <p>
      * If more then one generated TO builder is created for enclosing then all
      * of the generated TO builders are added to <code>typeBuilder</code> as
      * enclosing transfer objects.
@@ -361,8 +364,8 @@ final class AuxiliaryGenUtils {
      *         <li>true - other cases</li>
      *         </ul>
      */
-    static boolean resolveLeafSchemaNodeAsProperty(final String nodeName, final GeneratedTOBuilder toBuilder, final LeafSchemaNode leaf,
-        final Type returnType, final boolean isReadOnly) {
+    static boolean resolveLeafSchemaNodeAsProperty(final String nodeName, final GeneratedTOBuilder toBuilder,
+            final LeafSchemaNode leaf, final Type returnType, final boolean isReadOnly) {
 
         if (returnType == null) {
             return false;
@@ -379,8 +382,8 @@ final class AuxiliaryGenUtils {
         }
 
         final String leafDesc = encodeAngleBrackets(leaf.getDescription().orElse(null));
-        final GeneratedPropertyBuilder propBuilder =
-                toBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafGetterName, JavaIdentifier.METHOD));
+        final GeneratedPropertyBuilder propBuilder = toBuilder.addProperty(
+            JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafGetterName, JavaIdentifier.METHOD));
         propBuilder.setReadOnly(isReadOnly);
         propBuilder.setReturnType(returnType);
         propBuilder.setComment(leafDesc);
@@ -396,7 +399,7 @@ final class AuxiliaryGenUtils {
     }
 
     @VisibleForTesting
-    public static String replaceAllIllegalChars(final StringBuilder stringBuilder){
+    public static String replaceAllIllegalChars(final StringBuilder stringBuilder) {
         final String ret = UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
         return ret.isEmpty() ? "" : ret;
     }

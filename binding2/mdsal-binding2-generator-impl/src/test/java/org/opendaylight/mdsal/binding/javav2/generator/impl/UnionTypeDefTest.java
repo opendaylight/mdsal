@@ -58,6 +58,8 @@ public class UnionTypeDefTest {
                         case "value":
                             assertEquals(Types.CHAR_ARRAY, generatedProperty.getReturnType());
                             break;
+                        default:
+                            break;
                     }
                 }
             }

@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -58,14 +59,15 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AuxiliaryGenUtilsTest {
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void constructorTest() throws Throwable {
+    @Test
+    public void constructorTest() throws NoSuchMethodException {
         final Constructor<AuxiliaryGenUtils> constructor = AuxiliaryGenUtils.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();
-        } catch (final Exception e) {
-            throw e.getCause();
+        } catch (final InstantiationException | IllegalAccessException
+            | InvocationTargetException | IllegalArgumentException e) {
+            assertTrue(e.getCause() instanceof UnsupportedOperationException);
         }
     }
 
@@ -141,7 +143,8 @@ public class AuxiliaryGenUtilsTest {
 
     @Test
     public void getterMethodNameBooleanTest() throws Exception {
-        assertEquals("isBooleanMethod", AuxiliaryGenUtils.getterMethodName("boolean_method", Types.BOOLEAN));
+        assertEquals("isBooleanMethod",
+            AuxiliaryGenUtils.getterMethodName("boolean_method", Types.BOOLEAN));
     }
 
     @Test

@@ -32,6 +32,7 @@ public class GroupingDefinitionDependencySort {
     /**
      * Sorts set <code>groupingDefinitions</code> according to the mutual dependencies.<br>
      *
+     * <p>
      * Elements of <code>groupingDefinitions</code> are firstly transformed to {@link Node} interfaces and then are
      * sorted by {@link TopologicalSort#sort(Set)} method.
      * <br>
@@ -72,6 +73,7 @@ public class GroupingDefinitionDependencySort {
      * Wraps every grouping definition to node type and adds to every node
      * information about dependencies.
      *
+     * <p>
      * The map with mapping from schema path (represents grouping definition) to
      * node is created. For every created node (next <i>nodeFrom</i>) is for its
      * wrapped grouping definition passed the set of its <i>uses nodes</i>

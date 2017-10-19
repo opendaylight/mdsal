@@ -13,25 +13,29 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 
 /**
+ * Example Action interface.
  * It represents following YANG snippet:
  *
+ * <p>
  * module list-action-module {
  *
+ * <p>
  *   list my-list {
  *      action list-action-call {
  *
+ * <p>
  *          input {
  *              leaf v1 {
  *                  type string;
  *              }
  *          }
  *
+ * <p>
  *          output {
  *              leaf v2 {
  *                  type string
  *              }
  *          }
- *
  *      }
  *   }
  * }
@@ -39,5 +43,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 public interface ListActionModuleListActionCall extends ListAction<MyList, ListActionCallInput, ListActionCallOutput> {
 
     @Override
-    <K> void invoke(ListActionCallInput input, KeyedInstanceIdentifier<MyList, K> kii, RpcCallback<ListActionCallOutput> callback);
+    <K> void invoke(ListActionCallInput input, KeyedInstanceIdentifier<MyList, K> kii,
+            RpcCallback<ListActionCallOutput> callback);
 }

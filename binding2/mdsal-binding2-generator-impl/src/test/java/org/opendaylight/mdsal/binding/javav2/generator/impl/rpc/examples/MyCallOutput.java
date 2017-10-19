@@ -13,7 +13,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.Output;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
 /**
- *  rpc my-call output
+ *  rpc my-call output.
  */
 public interface MyCallOutput extends Output<MyCallOutput>, Instantiable<MyCallOutput>, TreeNode {
 

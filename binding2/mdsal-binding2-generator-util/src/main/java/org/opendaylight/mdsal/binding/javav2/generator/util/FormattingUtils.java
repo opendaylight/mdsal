@@ -17,7 +17,7 @@ import javax.annotation.RegEx;
 import org.opendaylight.yangtools.yang.common.QName;
 
 /**
- * Util class
+ * Util class.
  */
 @Beta
 public final class FormattingUtils {
@@ -48,7 +48,7 @@ public final class FormattingUtils {
     }
 
     /**
-     * Used in #yangtemplateformodule.scala.txt for formating revision description
+     * Used in #yangtemplateformodule.scala.txt for formating revision description.
      *
      * @param text Content of tag description
      * @param nextLineIndent Number of spaces from left side default is 12
@@ -99,7 +99,7 @@ public final class FormattingUtils {
     }
 
     /**
-     * Used in all yangtemplates for formating augmentation target
+     * Used in all yangtemplates for formating augmentation target.
      *
      * @param schemaPath path to augmented node
      * @return path in string format

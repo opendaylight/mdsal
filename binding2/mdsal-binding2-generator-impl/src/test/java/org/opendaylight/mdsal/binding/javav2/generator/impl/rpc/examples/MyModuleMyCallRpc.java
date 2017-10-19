@@ -12,18 +12,23 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 
 /**
+ * Example RPC interface.
  * It represents following YANG snippet:
  *
+ * <p>
  * module my-module {
  *
+ * <p>
  *  rpc my-call {
  *
+ * <p>
  *     input {
  *       leaf v1 {
  *          type string;
  *       }
  *     }
  *
+ * <p>
  *     output {
  *       leaf v2 {
  *          type string
