@@ -13,7 +13,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
 /**
- * rpc my-call input
+ * rpc my-call input.
  */
 public interface MyCallInput extends Input<MyCallInput>, Instantiable<MyCallInput>, TreeNode {
 

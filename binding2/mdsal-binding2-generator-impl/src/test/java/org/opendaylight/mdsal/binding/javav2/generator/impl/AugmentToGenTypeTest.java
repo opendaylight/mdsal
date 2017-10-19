@@ -15,6 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,7 +30,6 @@ import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
@@ -37,7 +37,6 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
@@ -51,15 +50,16 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AugmentToGenTypeTest {
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void constructorTest() throws Throwable {
+    @Test
+    public void constructorTest() throws NoSuchMethodException {
         final Constructor<AugmentToGenType> constructor = AugmentToGenType.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         final Object[] objs = {};
         try {
             constructor.newInstance(objs);
-        } catch (final Exception e) {
-            throw e.getCause();
+        } catch (final InstantiationException | IllegalAccessException
+            | InvocationTargetException | IllegalArgumentException e) {
+            assertTrue(e.getCause() instanceof UnsupportedOperationException);
         }
     }
 
@@ -727,7 +727,8 @@ public class AugmentToGenTypeTest {
         when(targetNode.getReference()).thenReturn(Optional.empty());
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext moduleContext = new ModuleContext();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", moduleContext);
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment",
+            moduleContext);
         when(targetType.getParentTypeForBuilder()).thenReturn(gtb);
         genCtx.put(module, moduleContext);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();

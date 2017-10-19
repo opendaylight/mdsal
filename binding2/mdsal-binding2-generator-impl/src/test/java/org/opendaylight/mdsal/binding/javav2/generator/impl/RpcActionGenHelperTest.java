@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,20 +44,21 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 public class RpcActionGenHelperTest {
     // Bridge for method references
     @FunctionalInterface
-    private static interface GeneratorMethod {
+    private interface GeneratorMethod {
         Map<Module, ModuleContext> generate(Module module, Map<Module, ModuleContext> genCtx,
                 SchemaContext schemaContext, boolean verboseClassComments,
                 Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, TypeProvider typeProvider);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void constructorTest() throws Throwable {
+    @Test
+    public void constructorTest() throws NoSuchMethodException {
         final Constructor<RpcActionGenHelper> constructor = RpcActionGenHelper.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();
-        } catch (final Exception e) {
-            throw e.getCause();
+        } catch (final InstantiationException | IllegalAccessException
+            | InvocationTargetException | IllegalArgumentException e) {
+            assertTrue(e.getCause() instanceof UnsupportedOperationException);
         }
     }
 

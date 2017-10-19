@@ -27,7 +27,6 @@ import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
@@ -40,7 +39,6 @@ import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DerivableSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.Module;
-import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -138,7 +136,8 @@ final class AugmentToGenType {
         Collections.sort(sortedAugmentationsGrouped, AUGMENTS_COMP);
 
         //process child nodes of grouped augment entries
-        for (Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry : sortedAugmentationsGrouped) {
+        for (Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry
+                : sortedAugmentationsGrouped) {
             resultCtx = augmentationToGenTypes(basePackageName, schemaPathAugmentListEntry, module, schemaContext,
                     verboseClassComments, resultCtx, genTypeBuilders, typeProvider);
 
@@ -169,7 +168,8 @@ final class AugmentToGenType {
     static List<AugmentationSchemaNode> resolveAugmentations(final Module module,
             final SchemaContext schemaContext) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
-        Preconditions.checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
+        Preconditions.checkState(module.getAugmentations() != null,
+            "Augmentations Set cannot be NULL.");
 
         final List<AugmentationSchemaNode> sortedAugmentations = module.getAugmentations().stream()
                 .filter(aug -> !module.equals(findAugmentTargetModule(schemaContext, aug)))
@@ -216,7 +216,8 @@ final class AugmentToGenType {
             Map<Module, ModuleContext> genCtx, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
             final TypeProvider typeProvider) {
         Preconditions.checkArgument(basePackageName != null, "Package Name cannot be NULL.");
-        Preconditions.checkArgument(schemaPathAugmentListEntry != null, "Augmentation List Entry cannot be NULL.");
+        Preconditions.checkArgument(schemaPathAugmentListEntry != null,
+            "Augmentation List Entry cannot be NULL.");
         final SchemaPath targetPath = schemaPathAugmentListEntry.getKey();
         Preconditions.checkState(targetPath != null,
                 "Augmentation List Entry does not contain Target Path (Target Path is NULL).");
@@ -258,6 +259,7 @@ final class AugmentToGenType {
     /**
      * Convenient method to find node added by uses statement.
      * @param schemaContext
+     *            actual schema context
      * @param targetPath
      *            node path
      * @param parentUsesNode
@@ -320,7 +322,7 @@ final class AugmentToGenType {
             }
         } else {
             throw new IllegalStateException(
-                    "Target node of uses-augment statement must be DataSchemaNode. Failed to generate code for augment in "
+                "Target node of uses-augment statement must be DataSchemaNode. Failed to generate code for augment in "
                             + parentUsesNode);
         }
     }
@@ -330,6 +332,7 @@ final class AugmentToGenType {
      * added to the choice through the augment.
      *
      * @param schemaContext
+     *            actual schema context
      * @param module
      *            current module
      * @param basePackageName

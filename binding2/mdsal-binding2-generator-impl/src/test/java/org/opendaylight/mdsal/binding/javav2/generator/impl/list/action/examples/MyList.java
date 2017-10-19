@@ -12,7 +12,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 
 /**
- * list my-list
+ * list my-list.
  */
 public interface MyList extends TreeNode, Augmentable<MyList> {
 }

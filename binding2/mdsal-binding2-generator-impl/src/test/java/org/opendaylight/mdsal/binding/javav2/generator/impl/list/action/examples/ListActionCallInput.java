@@ -13,7 +13,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
 /**
- * action list-action-call input
+ * action list-action-call input.
  */
 public interface ListActionCallInput extends Input<ListActionCallInput>, Instantiable<ListActionCallInput>, TreeNode {
 

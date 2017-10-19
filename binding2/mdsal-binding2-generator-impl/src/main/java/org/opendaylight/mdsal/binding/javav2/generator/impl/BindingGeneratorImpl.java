@@ -66,6 +66,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
     /**
      * Resolves generated types from <code>context</code> schema nodes of all modules.
      *
+     * <p>
      * Generated types are created for modules, groupings, types, containers, lists, choices, augments, rpcs,
      * notification, identities.
      *
@@ -87,6 +88,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * Resolves generated types from <code>context</code> schema nodes only for
      * modules specified in <code>modules</code>
      *
+     * <p>
      * Generated types are created for modules, groupings, types, containers,
      * lists, choices, augments, rpcs, notification, identities.
      *
