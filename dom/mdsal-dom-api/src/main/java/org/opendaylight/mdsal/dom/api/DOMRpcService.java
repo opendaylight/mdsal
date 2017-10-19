@@ -20,6 +20,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
  * dynamically. The service allows users to add a listener to track the process of
  * RPCs becoming available.
  */
+@Deprecated
 public interface DOMRpcService extends DOMService {
     /**
      * Initiate invocation of an RPC. This method is guaranteed to not block on any external
