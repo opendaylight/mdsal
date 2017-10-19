@@ -49,6 +49,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AugmentToGenTypeTest {
 
+    @SuppressWarnings({"checkstyle:avoidHidingCauseException", "checkstyle:illegalThrows", "checkstyle:illegalCatch"})
     @Test(expected = UnsupportedOperationException.class)
     public void constructorTest() throws Throwable {
         final Constructor<AugmentToGenType> constructor = AugmentToGenType.class.getDeclaredConstructor();
@@ -725,7 +726,8 @@ public class AugmentToGenTypeTest {
         when(targetNode.getReference()).thenReturn(Optional.empty());
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext moduleContext = new ModuleContext();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", moduleContext);
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment",
+                moduleContext);
         when(targetType.getParentTypeForBuilder()).thenReturn(gtb);
         genCtx.put(module, moduleContext);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();

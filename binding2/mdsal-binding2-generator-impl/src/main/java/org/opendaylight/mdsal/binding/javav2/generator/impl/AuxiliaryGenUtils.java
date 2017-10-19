@@ -15,10 +15,12 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.BOOLEAN
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
@@ -57,7 +59,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
 /**
- * Auxiliary util class for {@link GenHelperUtil} class
+ * Auxiliary util class for {@link GenHelperUtil} class.
  */
 @Beta
 final class AuxiliaryGenUtils {
@@ -95,27 +97,24 @@ final class AuxiliaryGenUtils {
      * Created a method signature builder as part of
      * <code>interfaceBuilder</code>.
      *
+     * <p>
      * The method signature builder is created for the getter method of
      * <code>schemaNodeName</code>. Also <code>comment</code> and
      * <code>returnType</code> information are added to the builder.
      *
-     * @param interfaceBuilder
-     *            generated type builder for which the getter method should be
-     *            created
-     * @param schemaNodeName
-     *            string with schema node name. The name will be the part of the
-     *            getter method name.
-     * @param comment
-     *            string with comment for the getter method
-     * @param returnType
-     *            type which represents the return type of the getter method
-     * @param status
-     *            status from yang file, for deprecated annotation
+     * @param interfaceBuilder generated type builder for which the getter method should be
+     *                         created
+     * @param schemaNodeName   string with schema node name. The name will be the part of the
+     *                         getter method name.
+     * @param comment          string with comment for the getter method
+     * @param returnType       type which represents the return type of the getter method
+     * @param status           status from yang file, for deprecated annotation
      * @return method signature builder which represents the getter method of
-     *         <code>interfaceBuilder</code>
+     * <code>interfaceBuilder</code>
      */
     static MethodSignatureBuilder constructGetter(final GeneratedTypeBuilder interfaceBuilder,
-            final String schemaNodeName, final String comment, final Type returnType, final Status status) {
+                                                  final String schemaNodeName, final String comment, final Type
+                                                          returnType, final Status status) {
 
         final MethodSignatureBuilder getMethod = interfaceBuilder
                 .addMethod(getterMethodName(schemaNodeName, returnType));
@@ -130,12 +129,10 @@ final class AuxiliaryGenUtils {
     /**
      * Creates the name of the getter method name from <code>localName</code>.
      *
-     * @param localName
-     *            string with the name of the getter method
-     * @param returnType
-     *            return type
+     * @param localName  string with the name of the getter method
+     * @param returnType return type
      * @return string with the name of the getter method for
-     *         <code>methodName</code> in JAVA method format
+     * <code>methodName</code> in JAVA method format
      */
     @VisibleForTesting
     static String getterMethodName(final String localName, final Type returnType) {
@@ -146,14 +143,14 @@ final class AuxiliaryGenUtils {
             method.append("get");
         }
         return method.append(JavaIdentifierNormalizer.normalizeSpecificIdentifier(localName, JavaIdentifier.CLASS))
-            .toString();
+                .toString();
     }
 
     public static boolean hasBuilderClass(final SchemaNode schemaNode, final BindingNamespaceType namespaceType) {
         return (BindingNamespaceType.isData(namespaceType)
-            && (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode
-            || schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition
-            || schemaNode instanceof CaseSchemaNode));
+                && (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode
+                || schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition
+                || schemaNode instanceof CaseSchemaNode));
     }
 
     @VisibleForTesting
@@ -166,11 +163,9 @@ final class AuxiliaryGenUtils {
      * generated type builder name for augment consists from name of augmented
      * node and serial number of its augmentation.
      *
-     * @param builders
-     *            map of builders which were created in the package to which the
-     *            augmentation belongs
-     * @param genTypeName
-     *            string with name of augmented node
+     * @param builders    map of builders which were created in the package to which the
+     *                    augmentation belongs
+     * @param genTypeName string with name of augmented node
      * @return string with unique name for augmentation builder
      */
     static String augGenTypeName(final Map<String, GeneratedTypeBuilder> builders, final String genTypeName) {
@@ -184,6 +179,8 @@ final class AuxiliaryGenUtils {
     }
 
     /**
+     * Return augment identifier.
+     *
      * @param unknownSchemaNodes unknown schema nodes
      * @return nodeParameter of UnknownSchemaNode
      */
@@ -202,23 +199,21 @@ final class AuxiliaryGenUtils {
      * Adds enumeration builder created from <code>enumTypeDef</code> to
      * <code>typeBuilder</code>.
      *
+     * <p>
      * Each <code>enumTypeDef</code> item is added to builder with its name and
      * value.
      *
-     * @param enumTypeDef
-     *            EnumTypeDefinition contains enum data
-     * @param enumName
-     *            string contains name which will be assigned to enumeration
-     *            builder
-     * @param typeBuilder
-     *            GeneratedTypeBuilder to which will be enum builder assigned
-     * @param module
-     *            Module in which type should be generated
+     * @param enumTypeDef EnumTypeDefinition contains enum data
+     * @param enumName    string contains name which will be assigned to enumeration
+     *                    builder
+     * @param typeBuilder GeneratedTypeBuilder to which will be enum builder assigned
+     * @param module      Module in which type should be generated
      * @return enumeration builder which contains data from
-     *         <code>enumTypeDef</code>
+     * <code>enumTypeDef</code>
      */
     static EnumBuilder resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
-            final Map<Module, ModuleContext> genCtx, final GeneratedTypeBuilder typeBuilder, final Module module) {
+                                                          final Map<Module, ModuleContext> genCtx, final
+                                                          GeneratedTypeBuilder typeBuilder, final Module module) {
         if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
             final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumName.getLocalName(), genCtx.get(module));
             final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription().orElse(null));
@@ -237,33 +232,30 @@ final class AuxiliaryGenUtils {
      * {@link UnionTypeDefinition} or {@link BitsTypeDefinition} which are
      * also added to <code>typeBuilder</code> as enclosing transfer object.
      *
+     * <p>
      * If more then one generated TO builder is created for enclosing then all
      * of the generated TO builders are added to <code>typeBuilder</code> as
      * enclosing transfer objects.
      *
-     * @param typeDef
-     *            type definition which can be of type <code>UnionType</code> or
-     *            <code>BitsTypeDefinition</code>
-     * @param typeBuilder
-     *            generated type builder to which is added generated TO created
-     *            from <code>typeDef</code>
-     * @param leaf
-     *            string with name for generated TO builder
-     * @param parentModule
-     *            parent module
+     * @param typeDef      type definition which can be of type <code>UnionType</code> or
+     *                     <code>BitsTypeDefinition</code>
+     * @param typeBuilder  generated type builder to which is added generated TO created
+     *                     from <code>typeDef</code>
+     * @param leaf         string with name for generated TO builder
+     * @param parentModule parent module
      * @return generated TO builder for <code>typeDef</code>
      */
     static GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef, final GeneratedTypeBuilder
             typeBuilder, final DataSchemaNode leaf, final Module parentModule, final TypeProvider typeProvider,
-            final SchemaContext schemaContext, ModuleContext context, final Map<Module, ModuleContext> genCtx) {
+                                                 final SchemaContext schemaContext, ModuleContext context, final
+                                                 Map<Module, ModuleContext> genCtx) {
         final String classNameFromLeaf = leaf.getQName().getLocalName();
         GeneratedTOBuilder genTOBuilder = null;
         final String packageName = typeBuilder.getFullyQualifiedName();
         if (typeDef instanceof UnionTypeDefinition) {
             genTOBuilder = ((TypeProviderImpl) typeProvider)
                     .provideGeneratedTOBuilderForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
-                            classNameFromLeaf, leaf, schemaContext,
-                            ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap(), context);
+                            classNameFromLeaf, leaf, context);
         } else if (typeDef instanceof BitsTypeDefinition) {
             genTOBuilder = (((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
                     packageName, typeDef, classNameFromLeaf, parentModule.getName(), context);
@@ -277,10 +269,11 @@ final class AuxiliaryGenUtils {
 
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     static Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final TypeDefinition<?> typeDef,
-            final GeneratedTypeBuilder typeBuilder, final Module parentModule, final TypeProvider typeProvider,
-            final boolean verboseClassComments) {
+                                         final GeneratedTypeBuilder typeBuilder, final Module parentModule, final
+                                             TypeProvider typeProvider,
+                                         final boolean verboseClassComments) {
         final GeneratedTOBuilderImpl returnType = (GeneratedTOBuilderImpl) genTOBuilder;
 
         if (verboseClassComments) {
@@ -308,16 +301,14 @@ final class AuxiliaryGenUtils {
      * Generates for the <code>list</code> which contains any list keys special
      * generated TO builder.
      *
-     * @param packageName
-     *            string with package name to which the list belongs
-     * @param list
-     *            schema node of list
+     * @param packageName string with package name to which the list belongs
+     * @param list        schema node of list
      * @return generated TO builder which represents the keys of the
-     *         <code>list</code> or empty TO builder if <code>list</code> is null or list of
-     *         key definitions is null or empty.
+     * <code>list</code> or empty TO builder if <code>list</code> is null or list of
+     *      key definitions is null or empty.
      */
     static GeneratedTOBuilder resolveListKeyTOBuilder(final String packageName, final ListSchemaNode list,
-            ModuleContext context) {
+                                                      ModuleContext context) {
         GeneratedTOBuilder genTOBuilder = null;
         if ((list.getKeyDefinition() != null) && (!list.getKeyDefinition().isEmpty())) {
             // underscore used as separator for distinction of class name parts
@@ -330,7 +321,7 @@ final class AuxiliaryGenUtils {
     }
 
     static GeneratedTypeBuilder resolveListKeyTypeBuilder(final String packageName, final ListSchemaNode list,
-            ModuleContext context) {
+                                                          ModuleContext context) {
         GeneratedTypeBuilder genTypeBuilder = null;
         if ((list.getKeyDefinition() != null) && (!list.getKeyDefinition().isEmpty())) {
             // underscore used as separator for distinction of class name parts
@@ -346,25 +337,22 @@ final class AuxiliaryGenUtils {
      * Converts <code>leaf</code> schema node to property of generated TO
      * builder.
      *
-     * @param toBuilder
-     *            generated TO builder to which is <code>leaf</code> added as
-     *            property
-     * @param leaf
-     *            leaf schema node which is added to <code>toBuilder</code> as
-     *            property
-     * @param returnType
-     *            property type
-     * @param isReadOnly
-     *            boolean value which says if leaf property is|isn't read only
+     * @param toBuilder  generated TO builder to which is <code>leaf</code> added as
+     *                   property
+     * @param leaf       leaf schema node which is added to <code>toBuilder</code> as
+     *                   property
+     * @param returnType property type
+     * @param isReadOnly boolean value which says if leaf property is|isn't read only
      * @return boolean value
-     *         <ul>
-     *         <li>false - if <code>leaf</code>, <code>toBuilder</code> or leaf
-     *         name equals null or if leaf is added by <i>uses</i>.</li>
-     *         <li>true - other cases</li>
-     *         </ul>
+     * <ul>
+     * <li>false - if <code>leaf</code>, <code>toBuilder</code> or leaf
+     * name equals null or if leaf is added by <i>uses</i>.</li>
+     * <li>true - other cases</li>
+     * </ul>
      */
-    static boolean resolveLeafSchemaNodeAsProperty(final String nodeName, final GeneratedTOBuilder toBuilder, final LeafSchemaNode leaf,
-        final Type returnType, final boolean isReadOnly) {
+    static boolean resolveLeafSchemaNodeAsProperty(final String nodeName, final GeneratedTOBuilder toBuilder,
+                                                   final LeafSchemaNode leaf, final Type returnType, final boolean
+                                                           isReadOnly) {
 
         if (returnType == null) {
             return false;
@@ -382,7 +370,8 @@ final class AuxiliaryGenUtils {
 
         final String leafDesc = encodeAngleBrackets(leaf.getDescription().orElse(null));
         final GeneratedPropertyBuilder propBuilder =
-                toBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafGetterName, JavaIdentifier.METHOD));
+                toBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafGetterName,
+                        JavaIdentifier.METHOD));
         propBuilder.setReadOnly(isReadOnly);
         propBuilder.setReturnType(returnType);
         propBuilder.setComment(leafDesc);
@@ -398,7 +387,7 @@ final class AuxiliaryGenUtils {
     }
 
     @VisibleForTesting
-    public static String replaceAllIllegalChars(final StringBuilder stringBuilder){
+    public static String replaceAllIllegalChars(final StringBuilder stringBuilder) {
         final String ret = UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
         return ret.isEmpty() ? "" : ret;
     }

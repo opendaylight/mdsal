@@ -39,83 +39,83 @@ public final class BaseYangTypes {
     private static final Map<String, Type> TYPE_MAP;
 
     /**
-     * <code>Type</code> representation of <code>binary</code> YANG type
+     * <code>Type</code> representation of <code>binary</code> YANG type.
      */
     public static final Type BINARY_TYPE = Types.primitiveType("byte[]", null);
 
     /**
-     * <code>Type</code> representation of <code>boolean</code> YANG type
+     * <code>Type</code> representation of <code>boolean</code> YANG type.
      */
     public static final Type BOOLEAN_TYPE = Types.typeForClass(Boolean.class);
 
     /**
-     * <code>Type</code> representation of <code>decimal64</code> YANG type
+     * <code>Type</code> representation of <code>decimal64</code> YANG type.
      */
     public static final Type DECIMAL64_TYPE = Types.typeForClass(BigDecimal.class);
 
     /**
-     * <code>Type</code> representation of <code>empty</code> YANG type
+     * <code>Type</code> representation of <code>empty</code> YANG type.
      */
     public static final Type EMPTY_TYPE = Types.typeForClass(Empty.class);
 
     /**
-     * <code>Type</code> representation of <code>enumeration</code> YANG type
+     * <code>Type</code> representation of <code>enumeration</code> YANG type.
      */
     public static final Type ENUM_TYPE = Types.typeForClass(Enum.class);
 
     /**
-     * <code>Type</code> representation of <code>instance-identifier</code> YANG type
+     * <code>Type</code> representation of <code>instance-identifier</code> YANG type.
      */
     public static final Type INSTANCE_IDENTIFIER = Types.parameterizedTypeFor(Types
             .typeForClass(InstanceIdentifier.class));
 
     /**
-     * <code>Type</code> representation of <code>int8</code> YANG type
+     * <code>Type</code> representation of <code>int8</code> YANG type.
      */
     public static final Type INT8_TYPE = Types.typeForClass(Byte.class);
 
     /**
-     * <code>Type</code> representation of <code>int16</code> YANG type
+     * <code>Type</code> representation of <code>int16</code> YANG type.
      */
     public static final Type INT16_TYPE = Types.typeForClass(Short.class);
 
     /**
-     * <code>Type</code> representation of <code>int32</code> YANG type
+     * <code>Type</code> representation of <code>int32</code> YANG type.
      */
     public static final Type INT32_TYPE = Types.typeForClass(Integer.class);
 
     /**
-     * <code>Type</code> representation of <code>int64</code> YANG type
+     * <code>Type</code> representation of <code>int64</code> YANG type.
      */
     public static final Type INT64_TYPE = Types.typeForClass(Long.class);
 
     /**
-     * <code>Type</code> representation of <code>string</code> YANG type
+     * <code>Type</code> representation of <code>string</code> YANG type.
      */
     public static final Type STRING_TYPE = Types.typeForClass(String.class);
 
     /**
-     * <code>Type</code> representation of <code>uint8</code> YANG type
+     * <code>Type</code> representation of <code>uint8</code> YANG type.
      */
     public static final Type UINT8_TYPE = Types.typeForClass(Uint8.class);
 
     /**
-     * <code>Type</code> representation of <code>uint16</code> YANG type
+     * <code>Type</code> representation of <code>uint16</code> YANG type.
      */
     public static final Type UINT16_TYPE = Types.typeForClass(Uint16.class);
 
     /**
-     * <code>Type</code> representation of <code>uint32</code> YANG type
+     * <code>Type</code> representation of <code>uint32</code> YANG type.
      */
     public static final Type UINT32_TYPE = Types.typeForClass(Uint32.class);
 
     /**
-     * <code>Type</code> representation of <code>uint64</code> YANG type
+     * <code>Type</code> representation of <code>uint64</code> YANG type.
      */
     public static final Type UINT64_TYPE = Types.typeForClass(Uint64.class);
 
     /**
-     * <code>Type</code> representation of <code>union</code> YANG type
+     * <code>Type</code> representation of <code>union</code> YANG type.
      */
     public static final Type UNION_TYPE = new UnionType();
 
@@ -231,10 +231,12 @@ public final class BaseYangTypes {
         public String getPackageName() {
             return BindingMapping.PACKAGE_PREFIX;
         }
+
         @Override
         public String getName() {
             return "Union";
         }
+
         @Override
         public String getFullyQualifiedName() {
             return "Union";

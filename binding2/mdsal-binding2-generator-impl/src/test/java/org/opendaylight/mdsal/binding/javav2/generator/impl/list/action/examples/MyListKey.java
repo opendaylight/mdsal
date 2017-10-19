@@ -11,7 +11,7 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl.list.action.example
 import org.opendaylight.yangtools.concepts.Identifier;
 
 /**
- * key of list my-list
+ * key of list my-list.
  */
 public class MyListKey implements Identifier {
 

@@ -58,6 +58,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AuxiliaryGenUtilsTest {
 
+    @SuppressWarnings({"checkstyle:avoidHidingCauseException", "checkstyle:illegalThrows", "checkstyle:illegalCatch"})
     @Test(expected = UnsupportedOperationException.class)
     public void constructorTest() throws Throwable {
         final Constructor<AuxiliaryGenUtils> constructor = AuxiliaryGenUtils.class.getDeclaredConstructor();
