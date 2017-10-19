@@ -15,29 +15,34 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 /**
  * It represents following YANG snippet:
  *
+ * <p>
  * module list-action-module {
  *
+ * <p>
  *   list my-list {
  *      action list-action-call {
  *
+ * <p>
  *          input {
  *              leaf v1 {
  *                  type string;
  *              }
  *          }
  *
+ * <p>
  *          output {
  *              leaf v2 {
  *                  type string
  *              }
  *          }
- *
  *      }
  *   }
- * }
+ * }.
  */
-public interface ListActionModuleListActionCall extends ListAction<MyList, MyListKey, ListActionCallInput, ListActionCallOutput> {
+public interface ListActionModuleListActionCall extends ListAction<MyList, MyListKey, ListActionCallInput,
+        ListActionCallOutput> {
 
     @Override
-    void invoke(ListActionCallInput input, KeyedInstanceIdentifier<MyList, MyListKey> kii, RpcCallback<ListActionCallOutput> callback);
+    void invoke(ListActionCallInput input, KeyedInstanceIdentifier<MyList, MyListKey> kii,
+        RpcCallback<ListActionCallOutput> callback);
 }
