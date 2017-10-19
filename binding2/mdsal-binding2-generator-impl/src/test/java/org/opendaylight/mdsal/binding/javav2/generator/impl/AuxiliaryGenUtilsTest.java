@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -58,14 +59,15 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AuxiliaryGenUtilsTest {
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void constructorTest() throws Throwable {
+    @Test
+    public void constructorTest() throws NoSuchMethodException {
         final Constructor<AuxiliaryGenUtils> constructor = AuxiliaryGenUtils.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         try {
             constructor.newInstance();
-        } catch (final Exception e) {
-            throw e.getCause();
+        } catch (final InstantiationException | IllegalAccessException
+            | InvocationTargetException | IllegalArgumentException e) {
+            assertTrue(e.getCause() instanceof UnsupportedOperationException);
         }
     }
 
@@ -141,7 +143,8 @@ public class AuxiliaryGenUtilsTest {
 
     @Test
     public void getterMethodNameBooleanTest() throws Exception {
-        assertEquals("isBooleanMethod", AuxiliaryGenUtils.getterMethodName("boolean_method", Types.BOOLEAN));
+        assertEquals("isBooleanMethod",
+            AuxiliaryGenUtils.getterMethodName("boolean_method", Types.BOOLEAN));
     }
 
     @Test
@@ -165,8 +168,10 @@ public class AuxiliaryGenUtilsTest {
         assertTrue(result.contains("leaf key1"));
         assertTrue(result.contains("leaf key2"));
         assertTrue(result.contains("leaf foo"));
-        assertTrue(result.contains("@see org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.dto.MyListBuilder"));
-        assertTrue(result.contains("@see org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list.MyListKey"));
+        assertTrue(result.contains("@see org.opendaylight.mdsal.gen.javav2.urn.test"
+            + ".simple.test.list.rev170314.dto.MyListBuilder"));
+        assertTrue(result.contains("@see org.opendaylight.mdsal.gen.javav2.urn.test"
+            + ".simple.test.list.rev170314.key.my_list.MyListKey"));
     }
 
     @Test
@@ -194,7 +199,8 @@ public class AuxiliaryGenUtilsTest {
 
     @Test
     public void createDescriptionWithSchemaNodesTest() {
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/base/test-rpc-and-notification.yang");
+        final SchemaContext schemaContext =
+            YangParserTestUtils.parseYangResource("/base/test-rpc-and-notification.yang");
         final Module module = schemaContext.getModules().iterator().next();
         Set<SchemaNode> schemaNodes = new HashSet<>();
         schemaNodes.add(module.getRpcs().iterator().next());
@@ -202,7 +208,8 @@ public class AuxiliaryGenUtilsTest {
         String result = AuxiliaryGenUtils.createDescription(schemaNodes, module, true);
         assertNotNull(result);
         assertTrue(result.contains(
-                "Interface for implementing the following YANG RPCs defined in module <b>test-rpc-and-notification-module</b>"));
+                "Interface for implementing the following YANG RPCs defined in module "
+                + "<b>test-rpc-and-notification-module</b>"));
         assertTrue(result.contains("rpc my-rpc"));
         assertTrue(!result.contains("notification my-notification"));
 
@@ -212,7 +219,8 @@ public class AuxiliaryGenUtilsTest {
         result = AuxiliaryGenUtils.createDescription(schemaNodes, module, true);
         assertNotNull(result);
         assertTrue(result.contains(
-                "Interface for receiving the following YANG notifications defined in module <b>test-rpc-and-notification-module</b>"));
+            "Interface for receiving the following YANG notifications defined in module "
+            + "<b>test-rpc-and-notification-module</b>"));
         assertTrue(!result.contains("rpc my-rpc"));
         assertTrue(result.contains("notification my-notification"));
     }
