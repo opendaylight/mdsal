@@ -43,12 +43,13 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 public class RpcActionGenHelperTest {
     // Bridge for method references
     @FunctionalInterface
-    private static interface GeneratorMethod {
+    private interface GeneratorMethod {
         Map<Module, ModuleContext> generate(Module module, Map<Module, ModuleContext> genCtx,
                 SchemaContext schemaContext, boolean verboseClassComments,
                 Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, TypeProvider typeProvider);
     }
 
+    @SuppressWarnings({"checkstyle:avoidHidingCauseException", "checkstyle:illegalThrows", "checkstyle:illegalCatch"})
     @Test(expected = UnsupportedOperationException.class)
     public void constructorTest() throws Throwable {
         final Constructor<RpcActionGenHelper> constructor = RpcActionGenHelper.class.getDeclaredConstructor();

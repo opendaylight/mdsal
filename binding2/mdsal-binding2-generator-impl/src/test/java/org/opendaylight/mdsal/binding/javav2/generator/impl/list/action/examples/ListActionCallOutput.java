@@ -13,9 +13,10 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.Output;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
 /**
- *  action list-action-call output
+ *  action list-action-call output.
  */
-public interface ListActionCallOutput extends Output<ListActionCallOutput>, Instantiable<ListActionCallOutput>, TreeNode {
+public interface ListActionCallOutput extends Output<ListActionCallOutput>, Instantiable<ListActionCallOutput>,
+        TreeNode {
 
     @Override
     Class<ListActionCallOutput> implementedInterface();

@@ -16,6 +16,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
@@ -65,7 +67,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Auxiliary util class for {@link TypeProviderImpl} class
+ * Auxiliary util class for {@link TypeProviderImpl} class.
  */
 @Beta
 public final class TypeGenHelper {
@@ -79,11 +81,9 @@ public final class TypeGenHelper {
      * Gets base type definition for <code>extendTypeDef</code>. The method is
      * recursively called until non <code>ExtendedType</code> type is found.
      *
-     * @param extendTypeDef
-     *            type definition for which is the base type definition sought
+     * @param extendTypeDef type definition for which is the base type definition sought
      * @return type definition which is base type for <code>extendTypeDef</code>
-     * @throws IllegalArgumentException
-     *             if <code>extendTypeDef</code> equal null
+     * @throws IllegalArgumentException if <code>extendTypeDef</code> equal null
      */
     static TypeDefinition<?> baseTypeDefForExtendedType(final TypeDefinition<?> extendTypeDef) {
         Preconditions.checkArgument(extendTypeDef != null, "Type Definition reference cannot be NULL!");
@@ -102,31 +102,28 @@ public final class TypeGenHelper {
      * <code>typedefName</code> and about the generated TO name
      * <code>typedefName</code>.
      *
+     * <p>
      * It is supposed that <code>innerExtendedType</code> is already present in
      * {@link TypeProviderImpl#genTypeDefsContextMap genTypeDefsContextMap} to
      * be possible set it as extended type for the returning generated TO.
      *
-     * @param typedef
-     *            Type Definition
-     * @param innerExtendedType
-     *            extended type which is part of some other extended type
-     * @param basePackageName
-     *            string with the package name of the module
-     * @param moduleName
-     *            Module Name
+     * @param typedef           Type Definition
+     * @param innerExtendedType extended type which is part of some other extended type
+     * @param basePackageName   string with the package name of the module
+     * @param moduleName        Module Name
      * @return generated TO which extends generated TO for
-     *         <code>innerExtendedType</code>
-     * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>extendedType</code> equals null</li>
-     *             <li>if <code>basePackageName</code> equals null</li>
-     *             <li>if <code>typedefName</code> equals null</li>
-     *             </ul>
+     * <code>innerExtendedType</code>
+     * @throws IllegalArgumentException <ul>
+     *                                  <li>if <code>extendedType</code> equals null</li>
+     *                                  <li>if <code>basePackageName</code> equals null</li>
+     *                                  <li>if <code>typedefName</code> equals null</li>
+     *                                  </ul>
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    static GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef, final
-            TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName, final SchemaContext
-            schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    static GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef,
+            final TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName,
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
             final ModuleContext context) {
 
         Preconditions.checkArgument(innerExtendedType != null, "Extended type cannot be NULL!");
@@ -175,16 +172,14 @@ public final class TypeGenHelper {
     /**
      * Wraps base YANG type to generated TO.
      *
-     * @param basePackageName
-     *            string with name of package to which the module belongs
-     * @param typedef
-     *            type definition which is converted to the TO
-     * @param javaType
-     *            JAVA <code>Type</code> to which is <code>typedef</code> mapped
+     * @param basePackageName string with name of package to which the module belongs
+     * @param typedef         type definition which is converted to the TO
+     * @param javaType        JAVA <code>Type</code> to which is <code>typedef</code> mapped
      * @return generated transfer object which represent<code>javaType</code>
      */
     static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
-           final Type javaType, final String moduleName, final ModuleContext context) {
+                                                      final Type javaType, final String moduleName, final
+                                                      ModuleContext context) {
         Preconditions.checkNotNull(javaType, "javaType cannot be null");
         final String propertyName = "value";
 
@@ -211,12 +206,9 @@ public final class TypeGenHelper {
      * Converts the pattern constraints from <code>typedef</code> to the list of
      * the strings which represents these constraints.
      *
-     * @param typedef
-     *            extended type in which are the pattern constraints sought
+     * @param typedef extended type in which are the pattern constraints sought
      * @return map of strings which represents the constraint patterns
-     * @throws IllegalArgumentException
-     *             if <code>typedef</code> equals null
-     *
+     * @throws IllegalArgumentException if <code>typedef</code> equals null
      */
     static Map<String, String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
         if (!(typedef instanceof StringTypeDefinition)) {
@@ -231,8 +223,7 @@ public final class TypeGenHelper {
      * Converts the pattern constraints to the list of
      * the strings which represents these constraints.
      *
-     * @param patternConstraints
-     *            list of pattern constraints
+     * @param patternConstraints list of pattern constraints
      * @return list of strings which represents the constraint patterns
      */
     public static Map<String, String> resolveRegExpressions(final List<PatternConstraint> patternConstraints) {
@@ -274,11 +265,10 @@ public final class TypeGenHelper {
      * list in ascending order according to their depth. All type definitions
      * are in the list behind all type definitions on which depends.
      *
-     * @param unsortedTypeDefinitions
-     *            list of type definitions which should be sorted by depth
+     * @param unsortedTypeDefinitions list of type definitions which should be sorted by depth
      * @return list of type definitions sorted according their each other
-     *         dependencies (type definitions which are depend on other type
-     *         definitions are in list behind them).
+     *      dependencies (type definitions which are depend on other type
+     *      definitions are in list behind them).
      */
     static List<TypeDefinition<?>> sortTypeDefinitionAccordingDepth(
             final Collection<TypeDefinition<?>> unsortedTypeDefinitions) {
@@ -287,7 +277,8 @@ public final class TypeGenHelper {
         final Map<Integer, List<TypeDefinition<?>>> typeDefinitionsDepths = new TreeMap<>();
         for (TypeDefinition<?> unsortedTypeDefinition : unsortedTypeDefinitions) {
             final int depth = getTypeDefinitionDepth(unsortedTypeDefinition);
-            final List<TypeDefinition<?>> typeDefinitionsConcreteDepth = typeDefinitionsDepths.computeIfAbsent(depth, k -> new ArrayList<>());
+            final List<TypeDefinition<?>> typeDefinitionsConcreteDepth = typeDefinitionsDepths.computeIfAbsent(depth,
+                k -> new ArrayList<>());
             typeDefinitionsConcreteDepth.add(unsortedTypeDefinition);
         }
 
@@ -298,20 +289,17 @@ public final class TypeGenHelper {
     }
 
     /**
-     *
      * Adds to the <code>genTOBuilder</code> the constant which contains regular
-     * expressions from the <code>regularExpressions</code>
+     * expressions from the <code>regularExpressions</code>.
      *
-     * @param genTOBuilder
-     *            generated TO builder to which are
-     *            <code>regular expressions</code> added
-     * @param expressions
-     *            list of string which represent regular expressions
+     * @param genTOBuilder generated TO builder to which are
+     *                     <code>regular expressions</code> added
+     * @param expressions  list of string which represent regular expressions
      */
     static void addStringRegExAsConstant(final GeneratedTOBuilder genTOBuilder, final Map<String, String> expressions) {
         if (!expressions.isEmpty()) {
             genTOBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), BindingMapping.PATTERN_CONSTANT_NAME,
-                ImmutableMap.copyOf(expressions));
+                    ImmutableMap.copyOf(expressions));
         }
     }
 
@@ -319,10 +307,9 @@ public final class TypeGenHelper {
      * Returns how many immersion is necessary to get from the type definition
      * to the base type.
      *
-     * @param typeDefinition
-     *            type definition for which is depth sought.
+     * @param typeDefinition type definition for which is depth sought.
      * @return number of immersions which are necessary to get from the type
-     *         definition to the base type
+     *      definition to the base type
      */
     private static int getTypeDefinitionDepth(final TypeDefinition<?> typeDefinition) {
         if (typeDefinition == null) {
@@ -379,7 +366,7 @@ public final class TypeGenHelper {
         for (DataSchemaNode potential : potentials) {
             if (potential instanceof ActionNodeContainer) {
                 final Set<ActionDefinition> actions = ((ActionNodeContainer) potential).getActions();
-                for (ActionDefinition action: actions) {
+                for (ActionDefinition action : actions) {
                     final ContainerSchemaNode input = action.getInput();
                     if (input != null) {
                         fillRecursively(ret, input);
@@ -425,8 +412,7 @@ public final class TypeGenHelper {
      * Add {@link Serializable} to implemented interfaces of this TO. Also
      * compute and add serialVersionUID property.
      *
-     * @param gto
-     *            transfer object which needs to be serializable
+     * @param gto transfer object which needs to be serializable
      */
     static void makeSerializable(final GeneratedTOBuilderImpl gto) {
         gto.addImplementsType(Types.typeForClass(Serializable.class));
@@ -440,23 +426,21 @@ public final class TypeGenHelper {
      * {@link Enumeration
      * enumeration}.
      *
-     * @param enumTypeDef
-     *            enumeration type definition which is converted to enumeration
-     * @param enumName
-     *            string with name which is used as the enumeration name
+     * @param enumTypeDef enumeration type definition which is converted to enumeration
+     * @param enumName    string with name which is used as the enumeration name
      * @return enumeration type which is built with data (name, enum values)
-     *         from <code>enumTypeDef</code>
-     * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>enumTypeDef</code> equals null</li>
-     *             <li>if enum values of <code>enumTypeDef</code> equal null</li>
-     *             <li>if Q name of <code>enumTypeDef</code> equal null</li>
-     *             <li>if name of <code>enumTypeDef</code> equal null</li>
-     *             </ul>
+     *      from <code>enumTypeDef</code>
+     * @throws IllegalArgumentException <ul>
+     *                                  <li>if <code>enumTypeDef</code> equals null</li>
+     *                                  <li>if enum values of <code>enumTypeDef</code> equal null</li>
+     *                                  <li>if Q name of <code>enumTypeDef</code> equal null</li>
+     *                                  <li>if name of <code>enumTypeDef</code> equal null</li>
+     *                                  </ul>
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     static Enumeration provideTypeForEnum(final EnumTypeDefinition enumTypeDef, final String enumName,
-           final SchemaNode parentNode, final SchemaContext schemaContext, final ModuleContext context) {
+                                          final SchemaNode parentNode, final SchemaContext schemaContext, final
+                                              ModuleContext context) {
         Preconditions.checkArgument(enumTypeDef != null, "EnumTypeDefinition reference cannot be NULL!");
         Preconditions.checkArgument(enumTypeDef.getQName().getLocalName() != null,
                 "Local Name in EnumTypeDefinition QName cannot be NULL!");
@@ -485,16 +469,15 @@ public final class TypeGenHelper {
     /**
      * Converts <code>typedef</code> to the generated TO builder.
      *
-     * @param basePackageName
-     *            string with name of package to which the module belongs
-     * @param typedef
-     *            type definition from which is the generated TO builder created
+     * @param basePackageName string with name of package to which the module belongs
+     * @param typedef         type definition from which is the generated TO builder created
      * @return generated TO builder which contains data from
-     *         <code>typedef</code> and <code>basePackageName</code>
+     * <code>typedef</code> and <code>basePackageName</code>
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private static GeneratedTOBuilderImpl typedefToTransferObject(final String basePackageName,
-            final TypeDefinition<?> typedef, final String moduleName, final ModuleContext context) {
+                                                                  final TypeDefinition<?> typedef, final String
+                                                                              moduleName, final ModuleContext context) {
         final String typeDefTOName = typedef.getQName().getLocalName();
 
         if (basePackageName != null && typeDefTOName != null) {

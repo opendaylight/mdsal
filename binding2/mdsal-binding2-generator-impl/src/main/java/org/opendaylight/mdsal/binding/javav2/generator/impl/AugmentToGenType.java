@@ -135,7 +135,8 @@ final class AugmentToGenType {
         sortedAugmentationsGrouped.sort(AUGMENTS_COMP);
 
         //process child nodes of grouped augment entries
-        for (Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry : sortedAugmentationsGrouped) {
+        for (Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry
+                : sortedAugmentationsGrouped) {
             resultCtx = augmentationToGenTypes(basePackageName, schemaPathAugmentListEntry, module, schemaContext,
                     verboseClassComments, resultCtx, genTypeBuilders, typeProvider);
 
@@ -256,6 +257,7 @@ final class AugmentToGenType {
     /**
      * Convenient method to find node added by uses statement.
      * @param schemaContext
+     *            actual schema context
      * @param targetPath
      *            node path
      * @param parentUsesNode
@@ -318,7 +320,7 @@ final class AugmentToGenType {
             }
         } else {
             throw new IllegalStateException(
-                    "Target node of uses-augment statement must be DataSchemaNode. Failed to generate code for augment in "
+                "Target node of uses-augment statement must be DataSchemaNode. Failed to generate code for augment in "
                             + parentUsesNode);
         }
     }
@@ -328,6 +330,7 @@ final class AugmentToGenType {
      * added to the choice through the augment.
      *
      * @param schemaContext
+     *            actual schema context
      * @param module
      *            current module
      * @param basePackageName

@@ -13,7 +13,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**
- * list my-list
+ * list my-list.
  */
 public interface MyList extends TreeNode, Augmentable<MyList>, Identifiable<MyListKey> {
 }

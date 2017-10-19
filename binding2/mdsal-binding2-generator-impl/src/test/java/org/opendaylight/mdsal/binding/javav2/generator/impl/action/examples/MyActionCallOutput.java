@@ -13,7 +13,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.Output;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
 /**
- *  action my-action-call output
+ *  action my-action-call output.
  */
 public interface MyActionCallOutput extends Output<MyActionCallOutput>, Instantiable<MyActionCallOutput>, TreeNode {
 
