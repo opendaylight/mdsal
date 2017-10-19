@@ -13,25 +13,31 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 
 /**
+ * Example Action interface.
  * It represents following YANG snippet:
  *
+ * <p>
  * module my-action-module {
  *
+ * <p>
  *   container my-cont {
  *      action my-action-call {
  *
+ * <p>
  *          input {
  *              leaf v1 {
  *                  type string;
  *              }
  *          }
  *
+ * <p>
  *          output {
  *              leaf v2 {
  *                  type string
  *              }
  *          }
  *
+ * <p>
  *      }
  *   }
  * }

@@ -15,7 +15,6 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.Set;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
@@ -35,7 +34,7 @@ public class YangTemplateTest {
     }
 
     @Test
-    public void printYangSnippetForModule() throws Exception{
+    public void printYangSnippetForModule() throws Exception {
         Iterator<Module> iterator = this.modules.iterator();
         String moduleBody = yangTemplateForModule.render(iterator.next()).body().trim();
         String cleanedModuleBody = YangSnippetCleaner.clean(moduleBody);

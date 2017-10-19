@@ -46,7 +46,7 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 
 public class RpcActionGenHelperTest {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "checkstyle:illegalCatch", "checkstyle:illegalThrows" })
     @Test(expected = UnsupportedOperationException.class)
     public void constructorTest() throws Throwable {
         final Constructor<RpcActionGenHelper> constructor =
@@ -116,11 +116,11 @@ public class RpcActionGenHelperTest {
         actionMethodsToGenType(ListSchemaNode.class, false);
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes" })
     @Test
     public void rpcMethodsToGenTypeNullRpcsTest() throws Exception {
         final Class[] parameterTypes =
-                { Module.class, Map.class, SchemaContext.class, boolean.class, Map.class, TypeProvider.class };
+            { Module.class, Map.class, SchemaContext.class, boolean.class, Map.class, TypeProvider.class };
         final Method generate = RpcActionGenHelper.class.getDeclaredMethod("rpcMethodsToGenType", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -144,9 +144,8 @@ public class RpcActionGenHelperTest {
         try {
             generate.invoke(RpcActionGenHelper.class, args);
             fail();
-        } catch (final Exception e) {
+        } catch (final InvocationTargetException e) {
             assertNotNull(e);
-            assertTrue(e instanceof InvocationTargetException);
             final Throwable cause = e.getCause();
             assertNotNull(cause);
             assertTrue(cause instanceof IllegalStateException);
@@ -157,7 +156,7 @@ public class RpcActionGenHelperTest {
     @Test
     public void rpcMethodsToGenTypeEmptyRpcsTest() throws Exception {
         final Class[] parameterTypes =
-                { Module.class, Map.class, SchemaContext.class, boolean.class, Map.class, TypeProvider.class };
+            { Module.class, Map.class, SchemaContext.class, boolean.class, Map.class, TypeProvider.class };
         final Method generate = RpcActionGenHelper.class.getDeclaredMethod("rpcMethodsToGenType", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -192,7 +191,7 @@ public class RpcActionGenHelperTest {
     @Test
     public void rpcMethodsToGenTypeRpcTest() throws Exception {
         final Class[] parameterTypes =
-                { Module.class, Map.class, SchemaContext.class, boolean.class, Map.class, TypeProvider.class };
+            { Module.class, Map.class, SchemaContext.class, boolean.class, Map.class, TypeProvider.class };
         final Method generate = RpcActionGenHelper.class.getDeclaredMethod("rpcMethodsToGenType", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -252,7 +251,7 @@ public class RpcActionGenHelperTest {
     private <T extends ActionNodeContainer> void actionMethodsToGenType(final Class<T> clazz,
             final boolean isRoutedRpc) throws Exception {
         final Class[] parameterTypes =
-                { Module.class, Map.class, SchemaContext.class, boolean.class, Map.class, TypeProvider.class };
+            { Module.class, Map.class, SchemaContext.class, boolean.class, Map.class, TypeProvider.class };
         Method generate;
         if (isRoutedRpc) {
             generate = RpcActionGenHelper.class.getDeclaredMethod("rpcMethodsToGenType", parameterTypes);
