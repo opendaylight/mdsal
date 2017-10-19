@@ -61,7 +61,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AuxiliaryGenUtilsTest {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "checkstyle:IllegalCatch", "checkstyle:IllegalThrows" })
     @Test(expected = UnsupportedOperationException.class)
     public void constructorTest() throws Throwable {
         final Constructor<AuxiliaryGenUtils> constructor =
@@ -145,7 +145,8 @@ public class AuxiliaryGenUtilsTest {
         assertNotNull(generate);
         generate.setAccessible(true);
 
-        final GeneratedTypeBuilderBase gtbb = new GeneratedTypeBuilderImpl("test", "qname_constants", new ModuleContext());
+        final GeneratedTypeBuilderBase gtbb = new GeneratedTypeBuilderImpl("test",
+            "qname_constants", new ModuleContext());
         final String constantName = "ConstantName";
         final QName constantQName = QName.create("urn:constant", "2017-04-06", constantName);
 
@@ -158,7 +159,7 @@ public class AuxiliaryGenUtilsTest {
     @Test
     public void constructGetterTest() throws Exception {
         final Class[] parameterTypes =
-                { GeneratedTypeBuilder.class, String.class, String.class, Type.class, Status.class };
+            { GeneratedTypeBuilder.class, String.class, String.class, Type.class, Status.class };
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("constructGetter", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -189,7 +190,7 @@ public class AuxiliaryGenUtilsTest {
     @Test
     public void createDescriptionWithSchemaNodeTest() throws Exception {
         final Class[] parameterTypes = { SchemaNode.class, String.class, SchemaContext.class, boolean.class,
-        BindingNamespaceType.class};
+            BindingNamespaceType.class};
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("createDescription", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -200,7 +201,8 @@ public class AuxiliaryGenUtilsTest {
         final String fullyQualifiedName =
                 "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.data.MyList";
 
-        final Object[] args = { containerSchemaNode, fullyQualifiedName, schemaContext, true, BindingNamespaceType.Data };
+        final Object[] args = { containerSchemaNode, fullyQualifiedName, schemaContext, true,
+            BindingNamespaceType.Data };
         final String result = (String) generate.invoke(AuxiliaryGenUtils.class, args);
         assertNotNull(result);
         assertTrue(result.contains("list my-list"));
@@ -208,15 +210,17 @@ public class AuxiliaryGenUtilsTest {
         assertTrue(result.contains("leaf key1"));
         assertTrue(result.contains("leaf key2"));
         assertTrue(result.contains("leaf foo"));
-        assertTrue(result.contains("@see org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.dto.MyListBuilder"));
-        assertTrue(result.contains("@see org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list.MyListKey"));
+        assertTrue(result.contains(
+            "@see org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.dto.MyListBuilder"));
+        assertTrue(result.contains(
+            "@see org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list.MyListKey"));
     }
 
     @SuppressWarnings("rawtypes")
     @Test
     public void createDescriptionWithSchemaNodeWithDescriptionTest() throws Exception {
         final Class[] parameterTypes = { SchemaNode.class, String.class, SchemaContext.class, boolean.class,
-                BindingNamespaceType.class};
+            BindingNamespaceType.class};
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("createDescription", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -227,7 +231,8 @@ public class AuxiliaryGenUtilsTest {
                 (LeafSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
         final String fullyQualifiedName = "test.base.cont.with.leaf.MyList";
 
-        final Object[] args = { containerSchemaNode, fullyQualifiedName, schemaContext, true, BindingNamespaceType.Data};
+        final Object[] args = { containerSchemaNode, fullyQualifiedName, schemaContext, true,
+            BindingNamespaceType.Data};
         final String result = (String) generate.invoke(AuxiliaryGenUtils.class, args);
         assertNotNull(result);
         assertTrue(result.contains("I am leaf."));
@@ -266,8 +271,8 @@ public class AuxiliaryGenUtilsTest {
         final Object[] args = { schemaNodes, module, true };
         String result = (String) generate.invoke(AuxiliaryGenUtils.class, args);
         assertNotNull(result);
-        assertTrue(result.contains(
-                "Interface for implementing the following YANG RPCs defined in module <b>test-rpc-and-notification-module</b>"));
+        assertTrue(result.contains("Interface for implementing the following YANG RPCs defined in module "
+            + "<b>test-rpc-and-notification-module</b>"));
         assertTrue(result.contains("rpc my-rpc"));
         assertTrue(!result.contains("notification my-notification"));
 
@@ -277,8 +282,8 @@ public class AuxiliaryGenUtilsTest {
         final Object[] args_n = { schemaNodes, module, true };
         result = (String) generate.invoke(AuxiliaryGenUtils.class, args_n);
         assertNotNull(result);
-        assertTrue(result.contains(
-                "Interface for receiving the following YANG notifications defined in module <b>test-rpc-and-notification-module</b>"));
+        assertTrue(result.contains("Interface for receiving the following YANG notifications defined in module "
+            + "<b>test-rpc-and-notification-module</b>"));
         assertTrue(!result.contains("rpc my-rpc"));
         assertTrue(result.contains("notification my-notification"));
     }
@@ -388,8 +393,9 @@ public class AuxiliaryGenUtilsTest {
     @Test
     public void resolveInnerEnumFromTypeDefinitionNullTest() throws Exception {
         final Class[] parameterTypes =
-                { EnumTypeDefinition.class, QName.class, Map.class, GeneratedTypeBuilder.class, Module.class };
-        final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("resolveInnerEnumFromTypeDefinition", parameterTypes);
+            { EnumTypeDefinition.class, QName.class, Map.class, GeneratedTypeBuilder.class, Module.class };
+        final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("resolveInnerEnumFromTypeDefinition",
+            parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
 
@@ -413,7 +419,7 @@ public class AuxiliaryGenUtilsTest {
     @Test
     public void resolveInnerEnumFromTypeDefinitionTest() throws Exception {
         final Class[] parameterTypes =
-                { EnumTypeDefinition.class, QName.class, Map.class, GeneratedTypeBuilder.class, Module.class };
+            { EnumTypeDefinition.class, QName.class, Map.class, GeneratedTypeBuilder.class, Module.class };
         final Method generate =
                 AuxiliaryGenUtils.class.getDeclaredMethod("resolveInnerEnumFromTypeDefinition", parameterTypes);
         assertNotNull(generate);
@@ -425,7 +431,8 @@ public class AuxiliaryGenUtilsTest {
         when(enumTypeDefinition.getQName()).thenReturn(enumQName);
         final SchemaPath schemaPath = SchemaPath.create(true, enumQName);
         when(enumTypeDefinition.getPath()).thenReturn(schemaPath);
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("urn.enum.test.pckg", "enum-test", new ModuleContext());
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("urn.enum.test.pckg",
+            "enum-test", new ModuleContext());
         final Map<Module, ModuleContext> map = new HashMap<>();
         final Module module = mock(Module.class);
         final ModuleContext moduleContext = new ModuleContext();
@@ -440,8 +447,8 @@ public class AuxiliaryGenUtilsTest {
     @Test
     public void addTOToTypeBuilderNullTest() throws Exception {
         final Class[] parameterTypes =
-                { TypeDefinition.class, GeneratedTypeBuilder.class, DataSchemaNode.class, Module.class,
-                        TypeProvider.class, SchemaContext.class, ModuleContext.class, Map.class };
+            { TypeDefinition.class, GeneratedTypeBuilder.class, DataSchemaNode.class, Module.class, TypeProvider.class,
+                SchemaContext.class, ModuleContext.class, Map.class };
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("addTOToTypeBuilder", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -460,7 +467,8 @@ public class AuxiliaryGenUtilsTest {
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         genCtx.put(parentModule, new ModuleContext());
 
-        final Object[] args1 = { typeDef, typeBuilder, leaf, parentModule, typeProvider, schemaContext, new ModuleContext(), genCtx };
+        final Object[] args1 = { typeDef, typeBuilder, leaf, parentModule, typeProvider, schemaContext,
+            new ModuleContext(), genCtx };
         final GeneratedTOBuilder result = (GeneratedTOBuilder) generate.invoke(AuxiliaryGenUtils.class, args1);
         assertEquals(null, result);
     }
@@ -480,7 +488,7 @@ public class AuxiliaryGenUtilsTest {
             throws NoSuchMethodException, ReactorException, FileNotFoundException, URISyntaxException,
             IllegalAccessException, InvocationTargetException {
         final Class[] parameterTypes = { TypeDefinition.class, GeneratedTypeBuilder.class, DataSchemaNode.class,
-                Module.class, TypeProvider.class, SchemaContext.class, ModuleContext.class, Map.class };
+            Module.class, TypeProvider.class, SchemaContext.class, ModuleContext.class, Map.class };
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("addTOToTypeBuilder", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -496,7 +504,7 @@ public class AuxiliaryGenUtilsTest {
         genCtx.put(schemaContext.getModules().iterator().next(), new ModuleContext());
 
         final Object[] args1 = { typeDef, typeBuilder, leafSchemaNode, schemaContext.getModules().iterator().next(),
-                typeProvider, schemaContext, new ModuleContext(), genCtx };
+            typeProvider, schemaContext, new ModuleContext(), genCtx };
         return (GeneratedTOBuilder) generate.invoke(AuxiliaryGenUtils.class, args1);
     }
 
@@ -504,7 +512,7 @@ public class AuxiliaryGenUtilsTest {
     @Test
     public void createReturnTypeForUnionTest() throws Exception {
         final Class[] parameterTypes = { GeneratedTOBuilder.class, TypeDefinition.class, GeneratedTypeBuilder.class,
-                Module.class, TypeProvider.class };
+            Module.class, TypeProvider.class };
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("createReturnTypeForUnion", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);
@@ -604,7 +612,8 @@ public class AuxiliaryGenUtilsTest {
     @SuppressWarnings({ "rawtypes" })
     @Test
     public void resolveLeafSchemaNodeAsPropertyFalseTest() throws Exception {
-        final Class[] parameterTypes = { String.class, GeneratedTOBuilder.class, LeafSchemaNode.class, Type.class, boolean.class };
+        final Class[] parameterTypes = { String.class, GeneratedTOBuilder.class, LeafSchemaNode.class,
+            Type.class, boolean.class };
         final Method generate =
                 AuxiliaryGenUtils.class.getDeclaredMethod("resolveLeafSchemaNodeAsProperty", parameterTypes);
         assertNotNull(generate);
@@ -624,7 +633,8 @@ public class AuxiliaryGenUtilsTest {
     @SuppressWarnings({ "rawtypes" })
     @Test
     public void resolveLeafSchemaNodeAsPropertyTrueTest() throws Exception {
-        final Class[] parameterTypes = { String.class, GeneratedTOBuilder.class, LeafSchemaNode.class, Type.class, boolean.class };
+        final Class[] parameterTypes = { String.class, GeneratedTOBuilder.class, LeafSchemaNode.class,
+            Type.class, boolean.class };
         final Method generate =
                 AuxiliaryGenUtils.class.getDeclaredMethod("resolveLeafSchemaNodeAsProperty", parameterTypes);
         assertNotNull(generate);
@@ -660,7 +670,7 @@ public class AuxiliaryGenUtilsTest {
     private String getterMethodName(final String schemaNodeName, final Type returnType)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         final Class[] parameterTypes =
-                { String.class, Type.class };
+            { String.class, Type.class };
         final Method generate = AuxiliaryGenUtils.class.getDeclaredMethod("getterMethodName", parameterTypes);
         assertNotNull(generate);
         generate.setAccessible(true);

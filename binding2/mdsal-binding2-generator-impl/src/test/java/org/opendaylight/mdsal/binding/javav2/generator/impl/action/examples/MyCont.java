@@ -12,7 +12,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 
 /**
- *  container my-cont
+ *  container my-cont.
  */
 public interface MyCont extends TreeNode, Augmentable<MyCont> {
 }

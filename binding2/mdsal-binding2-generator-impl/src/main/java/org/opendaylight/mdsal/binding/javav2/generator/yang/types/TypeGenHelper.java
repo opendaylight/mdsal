@@ -64,7 +64,7 @@ import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 
 /**
- * Auxiliary util class for {@link TypeProviderImpl} class
+ * Auxiliary util class for {@link TypeProviderImpl} class.
  */
 @Beta
 final class TypeGenHelper {
@@ -100,6 +100,7 @@ final class TypeGenHelper {
      * <code>typedefName</code> and about the generated TO name
      * <code>typedefName</code>.
      *
+     * <p>
      * It is supposed that <code>innerExtendedType</code> is already present in
      * {@link TypeProviderImpl#genTypeDefsContextMap genTypeDefsContextMap} to
      * be possible set it as extended type for the returning generated TO.
@@ -122,13 +123,14 @@ final class TypeGenHelper {
      *             </ul>
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    static GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef, final
-            TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName, final SchemaContext
-            schemaContext, final Map<String, Map<Date, Map<String, Type>>> genTypeDefsContextMap,
+    static GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef,
+            final TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName,
+            final SchemaContext schemaContext, final Map<String, Map<Date, Map<String, Type>>> genTypeDefsContextMap,
             ModuleContext context) {
 
         Preconditions.checkArgument(innerExtendedType != null, "Extended type cannot be NULL!");
-        Preconditions.checkArgument(basePackageName != null, "String with base package name cannot be NULL!");
+        Preconditions.checkArgument(basePackageName != null,
+            "String with base package name cannot be NULL!");
 
         final String typedefName = typedef.getQName().getLocalName();
         final String innerTypeDef = innerExtendedType.getQName().getLocalName();
@@ -258,7 +260,8 @@ final class TypeGenHelper {
         final Map<Integer, List<TypeDefinition<?>>> typeDefinitionsDepths = new TreeMap<>();
         for (final TypeDefinition<?> unsortedTypeDefinition : unsortedTypeDefinitions) {
             final int depth = getTypeDefinitionDepth(unsortedTypeDefinition);
-            final List<TypeDefinition<?>> typeDefinitionsConcreteDepth = typeDefinitionsDepths.computeIfAbsent(depth, k -> new ArrayList<>());
+            final List<TypeDefinition<?>> typeDefinitionsConcreteDepth =
+                typeDefinitionsDepths.computeIfAbsent(depth, k -> new ArrayList<>());
             typeDefinitionsConcreteDepth.add(unsortedTypeDefinition);
         }
 
@@ -269,9 +272,8 @@ final class TypeGenHelper {
     }
 
     /**
-     *
      * Adds to the <code>genTOBuilder</code> the constant which contains regular
-     * expressions from the <code>regularExpressions</code>
+     * expressions from the <code>regularExpressions</code>.
      *
      * @param genTOBuilder
      *            generated TO builder to which are

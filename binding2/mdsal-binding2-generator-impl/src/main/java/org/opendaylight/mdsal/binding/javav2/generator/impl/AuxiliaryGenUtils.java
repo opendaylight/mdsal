@@ -68,7 +68,7 @@ import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 
 /**
- * Auxiliary util class for {@link GenHelperUtil} class
+ * Auxiliary util class for {@link GenHelperUtil} class.
  */
 @Beta
 final class AuxiliaryGenUtils {
@@ -113,6 +113,7 @@ final class AuxiliaryGenUtils {
      * Created a method signature builder as part of
      * <code>interfaceBuilder</code>.
      *
+     * <p>
      * The method signature builder is created for the getter method of
      * <code>schemaNodeName</code>. Also <code>comment</code> and
      * <code>returnType</code> information are added to the builder.
@@ -133,7 +134,7 @@ final class AuxiliaryGenUtils {
      *         <code>interfaceBuilder</code>
      */
     static MethodSignatureBuilder constructGetter(final GeneratedTypeBuilder interfaceBuilder,
-                                                  final String schemaNodeName, final String comment, final Type returnType, final Status status) {
+            final String schemaNodeName, final String comment, final Type returnType, final Status status) {
 
         final MethodSignatureBuilder getMethod = interfaceBuilder
                 .addMethod(getterMethodName(schemaNodeName, returnType));
@@ -162,7 +163,8 @@ final class AuxiliaryGenUtils {
         } else {
             method.append("get");
         }
-        return method.append(JavaIdentifierNormalizer.normalizeSpecificIdentifier(localName, JavaIdentifier.CLASS)).toString();
+        return method.append(JavaIdentifierNormalizer.normalizeSpecificIdentifier(localName, JavaIdentifier.CLASS))
+            .toString();
     }
 
     static String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName,
@@ -214,14 +216,15 @@ final class AuxiliaryGenUtils {
                 if (schemaNode instanceof ListSchemaNode) {
                     final StringBuilder linkToKeyClass = new StringBuilder();
 
-                    final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
+                    final String[] namespace =
+                        Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
                     final String className = namespace[namespace.length - 1];
 
-                    linkToKeyClass.append(BindingGeneratorUtil.packageNameForSubGeneratedType(basePackageName, schemaNode,
-                            BindingNamespaceType.Key))
-                            .append('.')
-                            .append(className)
-                            .append("Key");
+                    linkToKeyClass.append(BindingGeneratorUtil.packageNameForSubGeneratedType(basePackageName,
+                            schemaNode, BindingNamespaceType.Key))
+                        .append('.')
+                        .append(className)
+                        .append("Key");
 
                     final List<QName> keyDef = ((ListSchemaNode)schemaNode).getKeyDefinition();
                     if (keyDef != null && !keyDef.isEmpty()) {
@@ -270,9 +273,11 @@ final class AuxiliaryGenUtils {
             final SchemaNode node = schemaNodes.iterator().next();
 
             if (node instanceof RpcDefinition) {
-                sb.append("Interface for implementing the following YANG RPCs defined in module <b>" + module.getName() + "</b>");
+                sb.append("Interface for implementing the following YANG RPCs defined in module <b>"
+                    + module.getName() + "</b>");
             } else if (node instanceof NotificationDefinition) {
-                sb.append("Interface for receiving the following YANG notifications defined in module <b>" + module.getName() + "</b>");
+                sb.append("Interface for receiving the following YANG notifications defined in module <b>"
+                    + module.getName() + "</b>");
             }
         }
         sb.append(NEW_LINE);
@@ -315,6 +320,7 @@ final class AuxiliaryGenUtils {
     }
 
     /**
+     * Returns augmentation identifier defined in augment.
      * @param unknownSchemaNodes unknown schema nodes
      * @return nodeParameter of UnknownSchemaNode
      */
@@ -333,6 +339,7 @@ final class AuxiliaryGenUtils {
      * Adds enumeration builder created from <code>enumTypeDef</code> to
      * <code>typeBuilder</code>.
      *
+     * <p>
      * Each <code>enumTypeDef</code> item is added to builder with its name and
      * value.
      *
@@ -368,6 +375,7 @@ final class AuxiliaryGenUtils {
      * {@link UnionTypeDefinition} or {@link BitsTypeDefinition} which are
      * also added to <code>typeBuilder</code> as enclosing transfer object.
      *
+     * <p>
      * If more then one generated TO builder is created for enclosing then all
      * of the generated TO builders are added to <code>typeBuilder</code> as
      * enclosing transfer objects.
@@ -490,8 +498,8 @@ final class AuxiliaryGenUtils {
      *         <li>true - other cases</li>
      *         </ul>
      */
-    static boolean resolveLeafSchemaNodeAsProperty(final String nodeName, final GeneratedTOBuilder toBuilder, final LeafSchemaNode leaf,
-        final Type returnType, final boolean isReadOnly) {
+    static boolean resolveLeafSchemaNodeAsProperty(final String nodeName, final GeneratedTOBuilder toBuilder,
+            final LeafSchemaNode leaf, final Type returnType, final boolean isReadOnly) {
 
         if (returnType == null) {
             return false;
@@ -508,8 +516,8 @@ final class AuxiliaryGenUtils {
         }
 
         final String leafDesc = encodeAngleBrackets(leaf.getDescription());
-        final GeneratedPropertyBuilder propBuilder =
-                toBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafGetterName, JavaIdentifier.METHOD));
+        final GeneratedPropertyBuilder propBuilder = toBuilder.addProperty(
+            JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafGetterName, JavaIdentifier.METHOD));
         propBuilder.setReadOnly(isReadOnly);
         propBuilder.setReturnType(returnType);
         propBuilder.setComment(leafDesc);
@@ -525,7 +533,7 @@ final class AuxiliaryGenUtils {
     }
 
     @VisibleForTesting
-    public static String replaceAllIllegalChars(final StringBuilder stringBuilder){
+    public static String replaceAllIllegalChars(final StringBuilder stringBuilder) {
         final String ret = UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
         return ret.isEmpty() ? "" : ret;
     }
