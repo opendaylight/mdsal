@@ -13,6 +13,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 /**
  * Caching variant of Binding to Normalized Node codec.
  *
+ * <p>
  * Caching may introduce performance penalty to serialization / deserialization
  * but may decrease use of heap for repetitive objects.
  *
@@ -27,6 +28,7 @@ public interface BindingNormalizedNodeCachingCodec<T extends TreeNode>
      * Invoking close will invalidate this codec and any of its child codecs and
      * will invalidate cache.
      *
+     * <p>
      * Any subsequent calls to this codec will fail with
      * {@link IllegalStateException} thrown.
      */

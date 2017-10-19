@@ -18,6 +18,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
  * obtain augmentations from proxy implementations of {@link Augmentable}
  * object.
  *
+ * <p>
  * If implemented proxy does not implement this interface, its augmentations are
  * not properly serialized / deserialized.
  */

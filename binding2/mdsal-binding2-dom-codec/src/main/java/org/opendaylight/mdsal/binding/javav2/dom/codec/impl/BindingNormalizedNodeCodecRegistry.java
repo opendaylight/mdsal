@@ -61,7 +61,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Serializing and deserializing Binding and DOM data
+ * Serializing and deserializing Binding and DOM data.
  */
 @Beta
 public class BindingNormalizedNodeCodecRegistry implements TreeNodeSerializerRegistry, BindingTreeCodecFactory,
@@ -298,6 +298,7 @@ public class BindingNormalizedNodeCodecRegistry implements TreeNodeSerializerReg
     }
 
     @Override
+    @SuppressWarnings("checkstyle:illegalCatch")
     public BindingCodecContext create(final SchemaContext context, final Class<?>... bindingClasses) {
         final ModuleInfoBackedContext strategy = ModuleInfoBackedContext.create();
         for (final Class<?> bindingCls : bindingClasses) {

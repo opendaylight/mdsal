@@ -69,8 +69,7 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
                     return qnameDomValueFromString(codec, schema, (String) defaultValue, schemaContext);
                 }
                 return domValueFromString(codec, type, defaultValue);
-            }
-            else {
+            } else {
                 while (type.getBaseType() != null && type.getDefaultValue() == null) {
                     type = type.getBaseType();
                 }
@@ -149,7 +148,7 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
         return this;
     }
 
-    public final Method getGetter() {
+    public Method getGetter() {
         return getter;
     }
 

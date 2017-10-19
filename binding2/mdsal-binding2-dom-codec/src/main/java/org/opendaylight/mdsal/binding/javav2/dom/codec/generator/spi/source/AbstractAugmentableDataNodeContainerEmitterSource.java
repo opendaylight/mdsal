@@ -34,7 +34,7 @@ public abstract class AbstractAugmentableDataNodeContainerEmitterSource
     }
 
     @Override
-    protected void emitAfterBody(final StringBuilder b) {
-        b.append(statement(invoke(AUGMENTABLE_SERIALIZER, "serialize", REGISTRY, INPUT, STREAM)));
+    protected void emitAfterBody(final StringBuilder builder) {
+        builder.append(statement(invoke(AUGMENTABLE_SERIALIZER, "serialize", REGISTRY, INPUT, STREAM)));
     }
 }

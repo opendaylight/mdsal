@@ -36,7 +36,7 @@ public class MissingSchemaException extends IllegalArgumentException {
     }
 
     public static void checkModulePresent(final SchemaContext schemaContext, final QName name) {
-        if(schemaContext.findModuleByNamespaceAndRevision(name.getNamespace(), name.getRevision()) == null) {
+        if (schemaContext.findModuleByNamespaceAndRevision(name.getNamespace(), name.getRevision()) == null) {
             throw MissingSchemaException.create("Module %s is not present in current schema context.",name.getModule());
         }
     }
@@ -47,7 +47,7 @@ public class MissingSchemaException extends IllegalArgumentException {
     }
 
     private static QName extractName(final PathArgument child) {
-        if(child instanceof YangInstanceIdentifier.AugmentationIdentifier) {
+        if (child instanceof YangInstanceIdentifier.AugmentationIdentifier) {
             final Set<QName> children = ((YangInstanceIdentifier.AugmentationIdentifier) child).getPossibleChildNames();
             Preconditions.checkArgument(!children.isEmpty(),"Augmentation without childs must not be used in data");
             return children.iterator().next();

@@ -41,7 +41,8 @@ public final class ValueContext {
         try {
             getter = MethodHandles.publicLookup().unreflect(identifier.getMethod(getterName)).asType(OBJECT_METHOD);
         } catch (IllegalAccessException | NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException(String.format("Cannot find method %s in class %s", getterName, identifier), e);
+            throw new IllegalStateException(
+                String.format("Cannot find method %s in class %s", getterName, identifier), e);
         }
         this.identifier = identifier;
         codec = leaf.getValueCodec();
@@ -54,6 +55,7 @@ public final class ValueContext {
      *            - input object
      * @return serialized invoked object
      */
+    @SuppressWarnings("checkstyle:illegalCatch")
     public Object getAndSerialize(final Object obj) {
         final Object value;
         try {

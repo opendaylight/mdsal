@@ -87,6 +87,7 @@ public class UnionValueOptionContext {
      *            - input object for deserializing
      * @return deserialized union binding type object
      */
+    @SuppressWarnings("checkstyle:illegalCatch")
     public Object deserializeUnion(final Object input) {
         // Side-step potential exceptions by checking the type if it is available
         if (codec instanceof EncapsulatedValueCodec && !((EncapsulatedValueCodec) codec).canAcceptObject(input)) {
@@ -112,6 +113,7 @@ public class UnionValueOptionContext {
         }
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     private Object getValueFrom(final Object input) {
         try {
             return getter.invokeExact(input);

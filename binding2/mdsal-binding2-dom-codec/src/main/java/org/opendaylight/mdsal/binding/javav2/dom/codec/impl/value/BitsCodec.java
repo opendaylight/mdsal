@@ -76,6 +76,7 @@ final class BitsCodec extends ReflectionBasedCodec implements SchemaUnawareCodec
     }
 
     @Override
+    @SuppressWarnings("checkstyle:illegalCatch")
     public Object deserialize(Object input) {
         Preconditions.checkArgument(input instanceof Set);
         @SuppressWarnings("unchecked")
@@ -88,7 +89,7 @@ final class BitsCodec extends ReflectionBasedCodec implements SchemaUnawareCodec
          * This means we will construct correct array for construction
          * of bits object.
          */
-        final Boolean args[] = new Boolean[ctorArgs.size()];
+        final Boolean[] args = new Boolean[ctorArgs.size()];
         int currentArg = 0;
         for (String value : ctorArgs) {
             args[currentArg++] = casted.contains(value);

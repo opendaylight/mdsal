@@ -104,6 +104,7 @@ public interface BindingTreeNodeCodec<T extends TreeNode> extends BindingNormali
     /**
      * Returns codec which uses caches serialization / deserialization results.
      *
+     * <p>
      * Caching may introduce performance penalty to serialization /
      * deserialization but may decrease use of heap for repetitive objects.
      *

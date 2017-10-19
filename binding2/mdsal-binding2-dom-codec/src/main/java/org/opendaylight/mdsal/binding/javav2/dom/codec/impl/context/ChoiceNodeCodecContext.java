@@ -126,19 +126,19 @@ public class ChoiceNodeCodecContext<D extends TreeNode> extends DataContainerCod
     @SuppressWarnings("unchecked")
     @Nonnull
     @Override
-    public <DV extends TreeNode> DataContainerCodecContext<DV, ?> streamChild(@Nonnull final Class<DV> childClass) {
+    public <C extends TreeNode> DataContainerCodecContext<C, ?> streamChild(@Nonnull final Class<C> childClass) {
         final DataContainerCodecPrototype<?> child = byClass.get(childClass);
-        return (DataContainerCodecContext<DV,
+        return (DataContainerCodecContext<C,
                 ?>) childNonNull(child, childClass, "Supplied class %s is not valid case", childClass).get();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <DV extends TreeNode> Optional<DataContainerCodecContext<DV, ?>>
-            possibleStreamChild(@Nonnull final Class<DV> childClass) {
+    public <C extends TreeNode> Optional<DataContainerCodecContext<C, ?>>
+            possibleStreamChild(@Nonnull final Class<C> childClass) {
         final DataContainerCodecPrototype<?> child = byClass.get(childClass);
         if (child != null) {
-            return Optional.of((DataContainerCodecContext<DV, ?>) child.get());
+            return Optional.of((DataContainerCodecContext<C, ?>) child.get());
         }
         return Optional.absent();
     }

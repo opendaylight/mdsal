@@ -64,7 +64,7 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
     }
 
     /**
-     * Returns nested node context using supplied YANG Instance Identifier
+     * Returns nested node context using supplied YANG Instance Identifier.
      *
      * @param arg Yang Instance Identifier Argument
      * @return Context of child
@@ -72,7 +72,7 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
      */
     @Nonnull
     @Override
-    public abstract NodeCodecContext<?> yangPathArgumentChild(final YangInstanceIdentifier.PathArgument arg);
+    public abstract NodeCodecContext<?> yangPathArgumentChild(YangInstanceIdentifier.PathArgument arg);
 
     /**
      * Returns nested node context using supplied Binding Instance Identifier
@@ -129,7 +129,8 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
      */
     @Nonnull
     @Override
-    public abstract <DV extends TreeNode> DataContainerCodecContext<DV,?> streamChild(@Nonnull final Class<DV> childClass) throws IllegalArgumentException;
+    public abstract <C extends TreeNode> DataContainerCodecContext<C,?> streamChild(@Nonnull Class<C> childClass)
+        throws IllegalArgumentException;
 
     /**
      * Returns child context as if it was walked by {@link BindingStreamEventWriter}. This means that to enter
@@ -139,8 +140,8 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
      * @return Context of child or Optional absent is supplied class is not applicable in context.
      */
     @Override
-    public abstract <DV extends TreeNode> Optional<DataContainerCodecContext<DV, ?>> possibleStreamChild(@Nonnull
-        final Class<DV> childClass);
+    public abstract <C extends TreeNode> Optional<DataContainerCodecContext<C, ?>> possibleStreamChild(@Nonnull
+        Class<C> childClass);
 
     @Override
     public String toString() {
@@ -193,7 +194,7 @@ public abstract class DataContainerCodecContext<D extends TreeNode, T> extends N
     }
 
     public TreeNodeSerializer eventStreamSerializer() {
-        if(eventStreamSerializer == null) {
+        if (eventStreamSerializer == null) {
             eventStreamSerializer = factory().getEventStreamSerializer(getBindingClass());
         }
         return eventStreamSerializer;

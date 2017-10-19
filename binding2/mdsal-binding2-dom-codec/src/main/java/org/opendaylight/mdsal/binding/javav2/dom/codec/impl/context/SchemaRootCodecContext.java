@@ -150,6 +150,20 @@ public final class SchemaRootCodecContext<D extends TreeNode> extends DataContai
         return null;
     }
 
+    private ContainerSchemaNode getOperationDataSchema(final OperationDefinition operation, final QName qname) {
+        Preconditions.checkNotNull(operation, "Operation Schema must not be null.");
+        Preconditions.checkNotNull(qname, "QName must not be null.");
+        switch (qname.getLocalName()) {
+            case "input":
+                return operation.getInput();
+            case "output":
+                return operation.getOutput();
+            default:
+                throw new IllegalArgumentException(
+                    "Supplied qname " + qname + " does not represent operation input or output.");
+        }
+    }
+
     private final LoadingCache<SchemaPath, NotificationCodecContext<?>> notificationsByPath =
             CacheBuilder.newBuilder().build(new CacheLoader<SchemaPath, NotificationCodecContext<?>>() {
 
@@ -181,7 +195,7 @@ public final class SchemaRootCodecContext<D extends TreeNode> extends DataContai
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Nonnull
     @Override
-    public <DV extends TreeNode> DataContainerCodecContext<DV, ?> streamChild(@Nonnull final Class<DV> childClass)
+    public <C extends TreeNode> DataContainerCodecContext<C, ?> streamChild(@Nonnull final Class<C> childClass)
             throws IllegalArgumentException {
         /*
          * FIXME: This is still not solved for operations TODO: Probably performance wise operations, Data and
@@ -189,9 +203,9 @@ public final class SchemaRootCodecContext<D extends TreeNode> extends DataContai
          * determine which is faster (keeping them separate or in same cache).
          */
         if (Notification.class.isAssignableFrom(childClass)) {
-            return (DataContainerCodecContext<DV, ?>) getNotification((Class<? extends Notification>) childClass);
+            return (DataContainerCodecContext<C, ?>) getNotification((Class<? extends Notification>) childClass);
         }
-        return (DataContainerCodecContext<DV, ?>) getOrRethrow(childrenByClass, childClass);
+        return (DataContainerCodecContext<C, ?>) getOrRethrow(childrenByClass, childClass);
     }
 
     @Override
@@ -243,6 +257,17 @@ public final class SchemaRootCodecContext<D extends TreeNode> extends DataContai
     }
 
     /**
+     * Get operation input as binding object according to schema path of operation.
+     *
+     * @param operation
+     *            - schema path of operation
+     * @return operation input codec of operation
+     */
+    public OperationInputCodec<?> getOperation(final SchemaPath operation) {
+        return getOrRethrow(operationDataByPath, operation);
+    }
+
+    /**
      * Get notification as binding object of binding class.
      *
      * @param notification
@@ -265,16 +290,7 @@ public final class SchemaRootCodecContext<D extends TreeNode> extends DataContai
         return getOrRethrow(notificationsByPath, notification);
     }
 
-    /**
-     * Get operation input as binding object according to schema path of operation.
-     *
-     * @param operation
-     *            - schema path of operation
-     * @return operation input codec of operation
-     */
-    public OperationInputCodec<?> getOperation(final SchemaPath operation) {
-        return getOrRethrow(operationDataByPath, operation);
-    }
+
 
     private DataContainerCodecContext<?, ?> createDataTreeChildContext(final Class<?> key) {
         final QName qname = BindingReflections.findQName(key);
@@ -292,26 +308,13 @@ public final class SchemaRootCodecContext<D extends TreeNode> extends DataContai
         if ((operation = findPotentialOperation(schemaContext.getOperations(), module, key, qname)) == null) {
             operation = findPotentialOperation(schemaContext.getActions(), module, key, qname);
         }
-        Preconditions.checkArgument(operation != null, "Supplied class %s is not valid operation class.", key);
-        final ContainerSchemaNode schema = getOperationDataSchema(operation, qname);// SchemaNodeUtils.getRpcDataSchema(operation,
-                                                                           // qname);
+        Preconditions.checkArgument(operation != null,
+            "Supplied class %s is not valid operation class.", key);
+        final ContainerSchemaNode schema = getOperationDataSchema(operation, qname);// SchemaNodeUtils
+        // .getRpcDataSchema(operation, qname);
         Preconditions.checkArgument(schema != null, "Schema for %s does not define input / output.",
                 operation.getQName());
         return (ContainerNodeCodecContext<?>) DataContainerCodecPrototype.from(key, schema, factory()).get();
-    }
-
-    private ContainerSchemaNode getOperationDataSchema(final OperationDefinition operation, final QName qname) {
-        Preconditions.checkNotNull(operation, "Operation Schema must not be null.");
-        Preconditions.checkNotNull(qname, "QName must not be null.");
-        switch (qname.getLocalName()) {
-            case "input":
-                return operation.getInput();
-            case "output":
-                return operation.getOutput();
-            default:
-                throw new IllegalArgumentException(
-                        "Supplied qname " + qname + " does not represent operation input or output.");
-        }
     }
 
     private OperationDefinition findPotentialOperation(final Set<? extends OperationDefinition> set,

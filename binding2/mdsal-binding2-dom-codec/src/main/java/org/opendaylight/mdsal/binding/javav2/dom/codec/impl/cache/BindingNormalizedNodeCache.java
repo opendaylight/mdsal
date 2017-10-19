@@ -44,6 +44,7 @@ public class BindingNormalizedNodeCache extends CacheLoader<TreeNode, Normalized
     /**
      * Returns cached NormalizedNode representation of TreeNode.
      *
+     * <p>
      * If representation is not cached, serializes TreeNode and updates cache
      * with representation.
      *

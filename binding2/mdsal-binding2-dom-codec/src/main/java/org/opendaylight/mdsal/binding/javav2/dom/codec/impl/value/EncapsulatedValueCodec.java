@@ -64,6 +64,7 @@ public final class EncapsulatedValueCodec extends ReflectionBasedCodec implement
     }
 
     @Override
+    @SuppressWarnings("checkstyle:illegalCatch")
     public Object deserialize(final Object input) {
         try {
             return constructor.invokeExact(input);
@@ -73,6 +74,7 @@ public final class EncapsulatedValueCodec extends ReflectionBasedCodec implement
     }
 
     @Override
+    @SuppressWarnings("checkstyle:illegalCatch")
     public Object serialize(final Object input) {
         try {
             return getter.invokeExact(input);

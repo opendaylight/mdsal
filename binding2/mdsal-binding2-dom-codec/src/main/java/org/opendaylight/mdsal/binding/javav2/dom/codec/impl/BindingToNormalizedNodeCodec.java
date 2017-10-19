@@ -123,7 +123,8 @@ public final class BindingToNormalizedNodeCodec
      *            - Binding Instance Identifier
      * @return DOM Instance Identifier
      */
-    public YangInstanceIdentifier toYangInstanceIdentifierBlocking(final InstanceIdentifier<? extends TreeNode> binding) {
+    public YangInstanceIdentifier toYangInstanceIdentifierBlocking(
+            final InstanceIdentifier<? extends TreeNode> binding) {
         try {
             return codecRegistry.toYangInstanceIdentifier(binding);
         } catch (final MissingSchemaException e) {
@@ -255,6 +256,7 @@ public final class BindingToNormalizedNodeCodec
      *            - DOM object
      * @return Binding object
      * @throws DeserializationException
+     *            If fail to deserialize
      */
     @SuppressWarnings("unchecked")
     public Optional<Entry<InstanceIdentifier<? extends TreeNode>, TreeNode>>

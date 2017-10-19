@@ -174,6 +174,19 @@ abstract class AbstractSource {
     }
 
     /**
+     * Cast value to specific type.
+     *
+     * @param type
+     *            - specific type
+     * @param value
+     *            - value for cast
+     * @return casted value to specifc type as char sequence
+     */
+    static final CharSequence cast(final String type, final CharSequence value) {
+        return "((" + type + ") " + value + ')';
+    }
+
+    /**
      * Create loop through iterable object with specific body.
      *
      * @param iterable
@@ -196,19 +209,6 @@ abstract class AbstractSource {
         sb.append(statement(assign(valueType, valueName, cast(valueType, invoke(iteratorName, "next")))));
         sb.append(body);
         return sb.append("\n}\n");
-    }
-
-    /**
-     * Cast value to specific type.
-     *
-     * @param type
-     *            - specific type
-     * @param value
-     *            - value for cast
-     * @return casted value to specifc type as char sequence
-     */
-    static final CharSequence cast(final String type, final CharSequence value) {
-        return "((" + type + ") " + value + ')';
     }
 
     /**

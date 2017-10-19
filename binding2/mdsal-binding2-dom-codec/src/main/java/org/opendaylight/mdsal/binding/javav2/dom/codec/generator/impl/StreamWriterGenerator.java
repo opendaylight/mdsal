@@ -32,6 +32,7 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
  * {@link TreeNodeSerializerImplementation} interface and are used to serialize
  * Binding {@link TreeNode}.
  *
+ * <p>
  * Actual implementation of codecs is done via static methods, which allows for
  * static wiring of codecs. Choice codec and Augmentable codecs are static
  * properties of parent codec and stateless implementations are used (

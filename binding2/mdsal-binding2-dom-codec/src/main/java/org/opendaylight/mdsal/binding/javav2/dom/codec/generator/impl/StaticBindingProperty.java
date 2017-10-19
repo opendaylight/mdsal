@@ -11,7 +11,8 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 
 /**
- * Definition of static property for Binding objects
+ * Definition of static property for Binding objects.
+ *
  * <p>
  * This definition consists of
  * <ul>

@@ -118,7 +118,8 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
         }
         reloadAllAugmentations();
 
-        final Class<?> proxyClass = Proxy.getProxyClass(getBindingClass().getClassLoader(),  new Class[] { getBindingClass(), AugmentationHolder.class });
+        final Class<?> proxyClass = Proxy.getProxyClass(getBindingClass().getClassLoader(),
+            new Class[] { getBindingClass(), AugmentationHolder.class });
         try {
             proxyConstructor = MethodHandles.publicLookup().findConstructor(proxyClass, CONSTRUCTOR_TYPE)
                     .asType(TREENODE_TYPE);
@@ -140,13 +141,13 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
     @Nonnull
     @SuppressWarnings("unchecked")
     @Override
-    public <DV extends TreeNode> DataContainerCodecContext<DV, ?> streamChild(@Nonnull final Class<DV> childClass) {
+    public <C extends TreeNode> DataContainerCodecContext<C, ?> streamChild(@Nonnull final Class<C> childClass) {
         final DataContainerCodecPrototype<?> childProto = streamChildPrototype(childClass);
-        return (DataContainerCodecContext<DV, ?>) childNonNull(childProto, childClass, " Child %s is not valid child.",
+        return (DataContainerCodecContext<C, ?>) childNonNull(childProto, childClass, " Child %s is not valid child.",
                 childClass).get();
     }
 
-    private final DataContainerCodecPrototype<?> streamChildPrototype(final Class<?> childClass) {
+    private DataContainerCodecPrototype<?> streamChildPrototype(final Class<?> childClass) {
         final DataContainerCodecPrototype<?> childProto = byStreamClass.get(childClass);
         if (childProto != null) {
             return childProto;
@@ -159,11 +160,11 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
 
     @SuppressWarnings("unchecked")
     @Override
-    public <DV extends TreeNode> Optional<DataContainerCodecContext<DV, ?>> possibleStreamChild(
-            @Nonnull final Class<DV> childClass) {
+    public <C extends TreeNode> Optional<DataContainerCodecContext<C, ?>> possibleStreamChild(
+            @Nonnull final Class<C> childClass) {
         final DataContainerCodecPrototype<?> childProto = streamChildPrototype(childClass);
         if (childProto != null) {
-            return Optional.of((DataContainerCodecContext<DV,?>) childProto.get());
+            return Optional.of((DataContainerCodecContext<C,?>) childProto.get());
         }
         return Optional.absent();
     }
@@ -271,7 +272,7 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
     }
 
     @Nullable
-    private final DataContainerCodecPrototype<?> augmentationByClassOrEquivalentClass(@Nonnull final Class<?> childClass) {
+    private DataContainerCodecPrototype<?> augmentationByClassOrEquivalentClass(@Nonnull final Class<?> childClass) {
         final DataContainerCodecPrototype<?> childProto = byStreamAugmented.get(childClass);
         if (childProto != null) {
             return childProto;
@@ -328,6 +329,7 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
         }
     }
 
+    @SuppressWarnings("checkstyle:illegalCatch")
     protected final D createBindingProxy(final NormalizedNodeContainer<?, ?, ?> node) {
         try {
             return (D) proxyConstructor.invokeExact((InvocationHandler) new LazyTreeNode<>(this, node));

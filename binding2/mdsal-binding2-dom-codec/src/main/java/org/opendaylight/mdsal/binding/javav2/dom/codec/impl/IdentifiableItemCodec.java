@@ -101,6 +101,7 @@ public final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPred
     }
 
     @Override
+    @SuppressWarnings("checkstyle:illegalCatch")
     public IdentifiableItem<?, ?> deserialize(final NodeIdentifierWithPredicates input) {
         final Object[] bindingValues = new Object[keysInBindingOrder.size()];
         int offset = 0;
@@ -135,8 +136,7 @@ public final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPred
 
     @SuppressWarnings("unchecked")
     private static Constructor<? extends Identifier> getConstructor(final Class<? extends Identifier> clazz) {
-        for (@SuppressWarnings("rawtypes")
-        final Constructor constr : clazz.getConstructors()) {
+        for (@SuppressWarnings("rawtypes") final Constructor constr : clazz.getConstructors()) {
             final Class<?>[] parameters = constr.getParameterTypes();
             if (!clazz.equals(parameters[0])) {
                 // It is not copy constructor;

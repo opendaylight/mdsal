@@ -39,8 +39,8 @@ public final class TreeNodeSerializerPrototype implements TreeNodeSerializerImpl
     }
 
     @Override
-    public void serialize(final TreeNodeSerializerRegistry reg, final TreeNode obj, final BindingStreamEventWriter stream)
-            throws IOException {
+    public void serialize(final TreeNodeSerializerRegistry reg, final TreeNode obj,
+            final BindingStreamEventWriter stream) throws IOException {
         throw new UnsupportedOperationException("Prototype body, this code should never be invoked.");
     }
 

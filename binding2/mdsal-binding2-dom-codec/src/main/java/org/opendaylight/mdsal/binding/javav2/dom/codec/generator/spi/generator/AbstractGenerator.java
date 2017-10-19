@@ -23,5 +23,5 @@ public abstract class AbstractGenerator {
      *            - data tree class
      * @return serializer class name
      */
-    public abstract String loadSerializerFor(final Class<?> cls);
+    public abstract String loadSerializerFor(Class<?> cls);
 }

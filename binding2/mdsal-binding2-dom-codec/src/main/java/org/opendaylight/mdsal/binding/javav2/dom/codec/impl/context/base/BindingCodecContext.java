@@ -322,9 +322,9 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
         return getLeafNodesUsingReflection(parentClass, getterToLeafSchema);
     }
 
-    private static String getGetterName(final QName qName, final TypeDefinition<?> typeDef) {
+    private static String getGetterName(final QName qname, final TypeDefinition<?> typeDef) {
         final String suffix =
-                JavaIdentifierNormalizer.normalizeSpecificIdentifier(qName.getLocalName(), JavaIdentifier.CLASS);
+                JavaIdentifierNormalizer.normalizeSpecificIdentifier(qname.getLocalName(), JavaIdentifier.CLASS);
         if (typeDef instanceof BooleanTypeDefinition || typeDef instanceof EmptyTypeDefinition) {
             return "is" + suffix;
         }
@@ -397,6 +397,7 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
         return ValueTypeCodec.NOOP_CODEC;
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private Codec<Object, Object> getCodecForBindingClass(final Class<?> valueType, final TypeDefinition<?> typeDef) {
         if (typeDef instanceof IdentityrefTypeDefinition) {
             return ValueTypeCodec.encapsulatedValueCodecFor(valueType, identityCodec);

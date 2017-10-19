@@ -25,11 +25,11 @@ import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 
 /**
- *
  * Location specific context for schema nodes, which contains codec specific
  * information to properly serialize / deserialize from Java YANG Binding data
  * to NormalizedNode data.
  *
+ * <p>
  * Two core subtypes of codec context are available:
  * <ul>
  * <li>{@link LeafNodeCodecContext} - Context for nodes, which does not contain
@@ -43,16 +43,16 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 @Beta
 public abstract class NodeCodecContext<D extends TreeNode> implements BindingTreeNodeCodec<D> {
     /**
-     * Returns Yang Instance Identifier Path Argument of current node
+     * Returns Yang Instance Identifier Path Argument of current node.
      *
      * @return DOM Path Argument of node
      */
     public abstract YangInstanceIdentifier.PathArgument getDomPathArgument();
 
     /**
-     *
      * Immutable factory, which provides access to runtime context,
      * create leaf nodes and provides path argument codecs.
+     *
      * <p>
      * During lifetime of factory all calls for same arguments to method must return
      * equal result (not necessary same instance of result).
@@ -75,20 +75,19 @@ public abstract class NodeCodecContext<D extends TreeNode> implements BindingTre
         ImmutableMap<String, LeafNodeCodecContext<?>> getLeafNodes(Class<?> type, DataNodeContainer schema);
 
         /**
-         * Returns Path argument codec for list item
+         * Returns Path argument codec for list item.
          *
          * @param type Type of list item
          * @param schema Schema of list item
          * @return Path argument codec for supplied list item.
          */
         Codec<NodeIdentifierWithPredicates, IdentifiableItem<?, ?>> getPathArgumentCodec(Class<?> type,
-           ListSchemaNode schema);
+            ListSchemaNode schema);
 
         TreeNodeSerializer getEventStreamSerializer(Class<?> type);
     }
 
     /**
-     *
      * Serializes supplied Binding Path Argument
      * and adds all necessary YANG instance identifiers to supplied list.
      *

@@ -16,6 +16,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
  * to mark both {@link UnmappedOperationInputCodec} and ContainerNodeCodecContext, which results in bimorphic
  * invocation in BindingNormalizedNodeCodecRegistry.
  *
+ * <p>
  * Without this interface we could end up with megamorphic invocation, as the two implementations cannot share
  * class hierarchy.
  *

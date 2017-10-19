@@ -18,6 +18,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
  * Thrown when Java Binding class was used in data for which codec does not
  * have schema.
  *
+ * <p>
  * By serialization / deserialization of this exception {@link #getBindingClass()}
  * will return null.
  */

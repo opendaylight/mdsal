@@ -68,15 +68,15 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
          * fix the static declared fields to final once we initialize them. If
          * we cannot get access, that's fine, too.
          */
-        Field f = null;
+        Field field = null;
         try {
-            f = Field.class.getDeclaredField("modifiers");
-            f.setAccessible(true);
+            field = Field.class.getDeclaredField("modifiers");
+            field.setAccessible(true);
         } catch (NoSuchFieldException | SecurityException e) {
             LOG.warn("Could not get Field modifiers field, serializers run at decreased efficiency", e);
         }
 
-        FIELD_MODIFIERS = f;
+        FIELD_MODIFIERS = field;
     }
 
     protected AbstractStreamWriterGenerator(final JavassistUtils utils) {
@@ -214,22 +214,22 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
 
         try {
             product = javassist.instantiatePrototype(TreeNodeSerializerPrototype.class.getName(), serializerName,
-                    cls -> {
-                        // Generate any static fields
-                        for (final StaticBindingProperty def : source.getStaticConstants()) {
-                            final CtField field = new CtField(javassist.asCtClass(def.getType()), def.getName(), cls);
-                            field.setModifiers(Modifier.PRIVATE + Modifier.STATIC);
-                            cls.addField(field);
-                        }
+                cls -> {
+                    // Generate any static fields
+                    for (final StaticBindingProperty def : source.getStaticConstants()) {
+                        final CtField field = new CtField(javassist.asCtClass(def.getType()), def.getName(), cls);
+                        field.setModifiers(Modifier.PRIVATE + Modifier.STATIC);
+                        cls.addField(field);
+                    }
 
-                        // Replace serialize() -- may reference static fields
-                        final CtMethod serializeTo = cls.getDeclaredMethod(SERIALIZE_METHOD_NAME, serializeArguments);
-                        serializeTo.setBody(body);
+                    // Replace serialize() -- may reference static fields
+                    final CtMethod serializeTo = cls.getDeclaredMethod(SERIALIZE_METHOD_NAME, serializeArguments);
+                    serializeTo.setBody(body);
 
-                        // The prototype is not visible, so we need to take care
-                        // of that
-                        cls.setModifiers(Modifier.setPublic(cls.getModifiers()));
-                    });
+                    // The prototype is not visible, so we need to take care
+                    // of that
+                    cls.setModifiers(Modifier.setPublic(cls.getModifiers()));
+                });
         } catch (final NotFoundException e) {
             LOG.error("Failed to instatiate serializer {}", source, e);
             throw new LinkageError("Unexpected instantation problem: serializer prototype not found", e);
@@ -241,6 +241,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * Generates serializer source code for supplied container node, which will
      * read supplied binding type and invoke proper methods on supplied
      * {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events for all reachable
      * binding objects.
@@ -256,6 +257,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * Generates serializer source for supplied case node, which will read
      * supplied binding type and invoke proper methods on supplied
      * {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events for all reachable
      * binding objects.
@@ -270,6 +272,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * Generates serializer source for supplied list node, which will read
      * supplied binding type and invoke proper methods on supplied
      * {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events for all reachable
      * binding objects.
@@ -278,12 +281,14 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * @param node - schema of list
      * @return source for list node writer
      */
-    protected abstract AbstractTreeNodeSerializerSource generateMapEntrySerializer(GeneratedType type, ListSchemaNode node);
+    protected abstract AbstractTreeNodeSerializerSource generateMapEntrySerializer(GeneratedType type,
+            ListSchemaNode node);
 
     /**
      * Generates serializer source for supplied list node, which will read
      * supplied binding type and invoke proper methods on supplied
      * {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events for all reachable
      * binding objects.
@@ -299,6 +304,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * Generates serializer source for supplied augmentation node, which will
      * read supplied binding type and invoke proper methods on supplied
      * {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events for all reachable
      * binding objects.
@@ -307,12 +313,14 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * @param schema - schema of augmentation
      * @return source for augmentation node writer
      */
-    protected abstract AbstractTreeNodeSerializerSource generateSerializer(GeneratedType type, AugmentationSchema schema);
+    protected abstract AbstractTreeNodeSerializerSource generateSerializer(GeneratedType type,
+            AugmentationSchema schema);
 
     /**
      * Generates serializer source for notification node, which will read
      * supplied binding type and invoke proper methods on supplied
      * {@link BindingStreamEventWriter}.
+     *
      * <p>
      * Implementation is required to recursively invoke events for all reachable
      * binding objects.
