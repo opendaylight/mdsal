@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2017 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import java.util.function.BiConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -16,18 +16,14 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  * Interface implemented by an individual RPC implementation. This API allows for dispatch
  * implementations, e.g. an individual object handling a multitude of RPCs.
  */
-@Deprecated
-public interface DOMRpcImplementation extends DOMImplementation {
+public interface DOMOperationImplementation extends DOMImplementation {
     /**
      * Initiate invocation of the RPC. Implementations of this method are
      * expected to not block on external resources.
      *
-     * @param rpc RPC identifier which was invoked
+     * @param operation Operation identifier which was invoked
      * @param input Input arguments, null if the RPC does not take any.
-     * @return A {@link CheckedFuture} which will return either a result structure,
-     *         or report a subclass of {@link DOMRpcException} reporting a transport
-     *         error.
      */
-    @Nonnull CheckedFuture<DOMRpcResult, DOMRpcException>
-        invokeRpc(@Nonnull DOMRpcIdentifier rpc, @Nullable NormalizedNode<?, ?> input);
+    void invokeOperation(@Nonnull DOMRpcIdentifier operation, @Nullable NormalizedNode<?, ?> input,
+            @Nonnull BiConsumer<DOMRpcResult, DOMRpcException> callback);
 }
