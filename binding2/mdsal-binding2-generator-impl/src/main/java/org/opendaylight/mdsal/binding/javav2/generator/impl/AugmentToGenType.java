@@ -136,7 +136,8 @@ final class AugmentToGenType {
         Collections.sort(sortedAugmentationsGrouped, AUGMENTS_COMP);
 
         //process child nodes of grouped augment entries
-        for (Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry : sortedAugmentationsGrouped) {
+        for (Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry
+                : sortedAugmentationsGrouped) {
             resultCtx = augmentationToGenTypes(basePackageName, schemaPathAugmentListEntry, module, schemaContext,
                     verboseClassComments, resultCtx, genTypeBuilders, typeProvider);
 
@@ -167,7 +168,8 @@ final class AugmentToGenType {
     static List<AugmentationSchemaNode> resolveAugmentations(final Module module,
             final SchemaContext schemaContext) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
-        Preconditions.checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
+        Preconditions.checkState(module.getAugmentations() != null,
+            "Augmentations Set cannot be NULL.");
 
         final List<AugmentationSchemaNode> sortedAugmentations = module.getAugmentations().stream()
                 .filter(aug -> !module.equals(findAugmentTargetModule(schemaContext, aug)))
@@ -214,7 +216,8 @@ final class AugmentToGenType {
             Map<Module, ModuleContext> genCtx, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
             final TypeProvider typeProvider) {
         Preconditions.checkArgument(basePackageName != null, "Package Name cannot be NULL.");
-        Preconditions.checkArgument(schemaPathAugmentListEntry != null, "Augmentation List Entry cannot be NULL.");
+        Preconditions.checkArgument(schemaPathAugmentListEntry != null,
+            "Augmentation List Entry cannot be NULL.");
         final SchemaPath targetPath = schemaPathAugmentListEntry.getKey();
         Preconditions.checkState(targetPath != null,
                 "Augmentation List Entry does not contain Target Path (Target Path is NULL).");
@@ -242,8 +245,8 @@ final class AugmentToGenType {
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentPackageName,
-                    targetTypeBuilder.toInstance(), targetSchemaNode, schemaPathAugmentListEntry.getValue(), genTypeBuilders, genCtx,
-                    schemaContext, verboseClassComments, typeProvider, BindingNamespaceType.Data);
+                targetTypeBuilder.toInstance(), targetSchemaNode, schemaPathAugmentListEntry.getValue(),
+                genTypeBuilders, genCtx, schemaContext, verboseClassComments, typeProvider, BindingNamespaceType.Data);
         } else {
             genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, basePackageName,
                     targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode,
@@ -297,9 +300,9 @@ final class AugmentToGenType {
                 packageName = BindingGeneratorUtil.packageNameForAugmentedGeneratedType(
                     parentTypeBuilder.getPackageName(), (AugmentationSchemaNode)usesNodeParent);
             }
-            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName,
-                    targetTypeBuilder.toInstance(), targetSchemaNode, schemaPathAugmentListEntry, genTypeBuilders, genCtx,
-                    schemaContext, verboseClassComments, typeProvider, namespaceType);
+            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, packageName, targetTypeBuilder.toInstance(),
+                targetSchemaNode, schemaPathAugmentListEntry, genTypeBuilders, genCtx, schemaContext,
+                verboseClassComments, typeProvider, namespaceType);
             return genCtx;
         } else {
             genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, augmentPackageName,
@@ -313,6 +316,7 @@ final class AugmentToGenType {
     /**
      * Convenient method to find node added by uses statement.
      * @param schemaContext
+     *            actual schema context
      * @param targetPath
      *            node path
      * @param parentUsesNode
@@ -375,7 +379,7 @@ final class AugmentToGenType {
             }
         } else {
             throw new IllegalStateException(
-                    "Target node of uses-augment statement must be DataSchemaNode. Failed to generate code for augment in "
+                "Target node of uses-augment statement must be DataSchemaNode. Failed to generate code for augment in "
                             + parentUsesNode);
         }
     }
@@ -385,6 +389,7 @@ final class AugmentToGenType {
      * added to the choice through the augment.
      *
      * @param schemaContext
+     *            actual schema context
      * @param module
      *            current module
      * @param basePackageName
@@ -424,9 +429,9 @@ final class AugmentToGenType {
         for (final AugmentationSchemaNode augmentationSchema : schemaPathAugmentListEntry) {
             for (final DataSchemaNode caseNode : augmentationSchema.getChildNodes()) {
                 if (caseNode != null) {
-                    final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(basePackageName,
-                            caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
-                            namespaceType);
+                    final GeneratedTypeBuilder caseTypeBuilder =
+                        GenHelperUtil.addDefaultInterfaceDefinition(basePackageName, caseNode, module, genCtx,
+                            schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                     caseTypeBuilder.addImplementsType(targetType);
 
                     SchemaNode parent;
@@ -455,8 +460,8 @@ final class AugmentToGenType {
                     } else if (findNamedCase(targetNode, caseLocalName) == null) {
                         final String targetNodeLocalName = targetNode.getQName().getLocalName();
                         for (DataSchemaNode dataSchemaNode : usesNodeParent.getChildNodes()) {
-                            if (dataSchemaNode instanceof ChoiceSchemaNode && targetNodeLocalName.equals(dataSchemaNode.getQName
-                                    ().getLocalName())) {
+                            if (dataSchemaNode instanceof ChoiceSchemaNode
+                                    && targetNodeLocalName.equals(dataSchemaNode.getQName().getLocalName())) {
                                 node = findNamedCase((ChoiceSchemaNode) dataSchemaNode, caseLocalName);
                                 break;
                             }

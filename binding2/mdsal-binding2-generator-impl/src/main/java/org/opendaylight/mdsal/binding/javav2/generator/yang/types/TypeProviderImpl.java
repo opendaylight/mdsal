@@ -98,12 +98,12 @@ public final class TypeProviderImpl implements TypeProvider {
     /**
      * Contains the schema data red from YANG files.
      */
-    private final SchemaContext schemaContext;
+    private final SchemaContext schemaCtx;
 
     /**
-     * Map<moduleName, Map<moduleDate, Map<typeName, type>>>
+     * Map&lt;moduleName, Map&lt;moduleDate, Map&lt;typeName, type&gt;&gt;&gt;.
      */
-    private final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap;
+    private final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsCtxMap;
 
     /**
      * Map which maps schema paths to JAVA <code>Type</code>.
@@ -111,7 +111,7 @@ public final class TypeProviderImpl implements TypeProvider {
     private final Map<SchemaPath, Type> referencedTypes;
 
     /**
-     * Map for additional types e.g unions
+     * Map for additional types e.g unions.
      */
     private final Map<Module, Set<Type>> additionalTypes;
 
@@ -124,11 +124,11 @@ public final class TypeProviderImpl implements TypeProvider {
      *             if <code>schemaContext</code> equal null.
      */
     public TypeProviderImpl(final SchemaContext schemaContext) {
-        this.schemaContext = schemaContext;
-        this.genTypeDefsContextMap = new HashMap<>();
+        this.schemaCtx = schemaContext;
+        this.genTypeDefsCtxMap = new HashMap<>();
         this.referencedTypes = new HashMap<>();
         this.additionalTypes = new HashMap<>();
-        resolveTypeDefsFromContext(schemaContext, this.genTypeDefsContextMap, this.additionalTypes);
+        resolveTypeDefsFromContext(schemaContext, this.genTypeDefsCtxMap, this.additionalTypes);
     }
 
     @Override
@@ -139,7 +139,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
     /**
      * Converts schema definition type <code>typeDefinition</code> to JAVA
-     * <code>Type</code>
+     * <code>Type</code>.
      *
      * @param type
      *            type definition which is converted to JAVA type
@@ -153,8 +153,8 @@ public final class TypeProviderImpl implements TypeProvider {
     @Override
     public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode, final
             Restrictions restrictions, final ModuleContext context) {
-        return javaTypeForSchemaDefType(type, parentNode, restrictions, this.schemaContext, this
-                .genTypeDefsContextMap, context);
+        return javaTypeForSchemaDefType(type, parentNode, restrictions, this.schemaCtx, this.genTypeDefsCtxMap,
+            context);
     }
 
     @Override
@@ -173,26 +173,27 @@ public final class TypeProviderImpl implements TypeProvider {
     }
 
     public Map<String, Map<Optional<Revision>, Map<String, Type>>> getGenTypeDefsContextMap() {
-        return this.genTypeDefsContextMap;
+        return this.genTypeDefsCtxMap;
     }
 
     /**
      * Passes through all modules and through all its type definitions and
      * convert it to generated types.
      *
+     * <p>
      * The modules are firstly sorted by mutual dependencies. The modules are
      * sequentially passed. All type definitions of a module are at the
      * beginning sorted so that type definition with less amount of references
      * to other type definition are processed first.<br />
      * For each module is created mapping record in the map
-     * {@link TypeProviderImpl#genTypeDefsContextMap genTypeDefsContextMap}
+     * {@link TypeProviderImpl#genTypeDefsCtxMap genTypeDefsCtxMap}
      * which map current module name to the map which maps type names to
      * returned types (generated types).
      *
      */
     private void resolveTypeDefsFromContext(final SchemaContext schemaContext,
             final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
-            final Map<Module, Set<Type>> additionalTypes) {
+            final Map<Module, Set<Type>> additionaltypes) {
 
         final Set<Module> modules = schemaContext.getModules();
         Preconditions.checkArgument(modules != null, "Set of Modules cannot be NULL!");
@@ -216,7 +217,7 @@ public final class TypeProviderImpl implements TypeProvider {
             if (listTypeDefinitions != null) {
                 for (final TypeDefinition<?> typedef : listTypeDefinitions) {
                     typedefToGeneratedType(basePackageName, module, typedef, genTypeDefsContextMap,
-                            additionalTypes, schemaContext, context);
+                            additionaltypes, schemaContext, context);
                 }
             }
         });
@@ -237,17 +238,19 @@ public final class TypeProviderImpl implements TypeProvider {
      *             <li>if name of <code>typeDefinition</code></li>
      *             </ul>
      */
-    public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode) {
+    public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition,
+            final SchemaNode parentNode) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         Preconditions.checkArgument(typeDefinition.getQName().getLocalName() != null,
                 "Type Definitions Local Name cannot be NULL!");
 
         final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
         if (!(baseTypeDef instanceof LeafrefTypeDefinition) && !(baseTypeDef instanceof IdentityrefTypeDefinition)) {
-            final Module module = findParentModule(this.schemaContext, parentNode);
+            final Module module = findParentModule(this.schemaCtx, parentNode);
 
             if (module != null) {
-                final Map<Optional<Revision>, Map<String, Type>> modulesByDate = this.genTypeDefsContextMap.get(module.getName());
+                final Map<Optional<Revision>, Map<String, Type>> modulesByDate =
+                    this.genTypeDefsCtxMap.get(module.getName());
                 final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
                 if (genTOs != null) {
                     return genTOs.get(typeDefinition.getQName().getLocalName());
@@ -258,7 +261,7 @@ public final class TypeProviderImpl implements TypeProvider {
     }
 
     /**
-     * Puts <code>refType</code> to map with key <code>refTypePath</code>
+     * Puts <code>refType</code> to map with key <code>refTypePath</code>.
      *
      * @param refTypePath
      *            schema path used as the map key
@@ -282,6 +285,7 @@ public final class TypeProviderImpl implements TypeProvider {
      * Converts <code>typeDef</code> which should be of the type
      * <code>BitsTypeDefinition</code> to <code>GeneratedTOBuilder</code>.
      *
+     * <p>
      * All the bits of the typeDef are added to returning generated TO as
      * properties.
      *
@@ -300,7 +304,8 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final String basePackageName,
-            final TypeDefinition<?> typeDef, final String typeDefName, final String moduleName, final ModuleContext context) {
+            final TypeDefinition<?> typeDef, final String typeDefName, final String moduleName,
+            final ModuleContext context) {
 
         Preconditions.checkArgument(typeDef != null, "typeDef cannot be NULL!");
         Preconditions.checkArgument(basePackageName != null, "Base Package Name cannot be NULL!");
@@ -322,8 +327,8 @@ public final class TypeProviderImpl implements TypeProvider {
             GeneratedPropertyBuilder genPropertyBuilder;
             for (final Bit bit : bitList) {
                 final String name = bit.getName();
-                genPropertyBuilder =
-                        genTOBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(name, JavaIdentifier.METHOD));
+                genPropertyBuilder = genTOBuilder.addProperty(
+                    JavaIdentifierNormalizer.normalizeSpecificIdentifier(name, JavaIdentifier.METHOD));
                 genPropertyBuilder.setReadOnly(true);
                 genPropertyBuilder.setReturnType(BaseYangTypes.BOOLEAN_TYPE);
 
@@ -360,7 +365,9 @@ public final class TypeProviderImpl implements TypeProvider {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<GeneratedTOBuilder> provideGeneratedTOBuildersForUnionTypeDef(final String basePackageName,
             final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap, final ModuleContext context) {
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final ModuleContext context) {
         Preconditions.checkNotNull(basePackageName, "Base Package Name cannot be NULL!");
         Preconditions.checkNotNull(typedef, "Type Definition cannot be NULL!");
         Preconditions.checkNotNull(typedef.getQName(), "Type definition QName cannot be NULL!");
@@ -423,8 +430,9 @@ public final class TypeProviderImpl implements TypeProvider {
     }
 
     private Type javaTypeForSchemaDefType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode,
-            final Restrictions r, final SchemaContext schemaContext,
-            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap, final ModuleContext context) {
+            final Restrictions restrictions, final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final ModuleContext context) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         final String typedefName = typeDefinition.getQName().getLocalName();
         Preconditions.checkArgument(typedefName != null, "Type Definitions Local Name cannot be NULL!");
@@ -435,8 +443,8 @@ public final class TypeProviderImpl implements TypeProvider {
             // and generated an enclosing ExtendedType to hold any range constraints. The new parser instantiates
             // a base type which holds these constraints.
             if (typeDefinition instanceof DecimalTypeDefinition) {
-                final Type ret = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType
-                        (typeDefinition, parentNode, r, context);
+                final Type ret = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(typeDefinition,
+                    parentNode, restrictions, context);
                 if (ret != null) {
                     return ret;
                 }
@@ -444,7 +452,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
             // Deal with leafrefs/identityrefs
             Type ret = javaTypeForLeafrefOrIdentityRef(typeDefinition, parentNode, schemaContext,
-                    genTypeDefsContextMap, context);
+                genTypeDefsContextMap, context);
             if (ret != null) {
                 return ret;
             }
@@ -459,7 +467,7 @@ public final class TypeProviderImpl implements TypeProvider {
         }
 
         Type returnType = javaTypeForExtendedType(typeDefinition, schemaContext, genTypeDefsContextMap, context);
-        if (r != null && !r.isEmpty() && returnType instanceof GeneratedTransferObject) {
+        if (restrictions != null && !restrictions.isEmpty() && returnType instanceof GeneratedTransferObject) {
             final GeneratedTransferObject gto = (GeneratedTransferObject) returnType;
             final Module module = findParentModule(schemaContext, parentNode);
             final Module module1 = findParentModule(schemaContext, typeDefinition);
@@ -470,13 +478,14 @@ public final class TypeProviderImpl implements TypeProvider {
                     JavaIdentifierNormalizer.normalizeSpecificIdentifier(typedefName, JavaIdentifier.CLASS);
             final String name = packageName + "." + genTOName;
             if (module.equals(module1) && !returnType.getFullyQualifiedName().equals(name)) {
-                returnType = shadedTOWithRestrictions(gto, r, context);
+                returnType = shadedTOWithRestrictions(gto, restrictions, context);
             }
         }
         return returnType;
     }
 
     /**
+     * Returns <code>Type</code> for <code>TypeDefinition</code>.
      *
      * @param basePackageName
      *            string with name of package to which the module belongs
@@ -484,7 +493,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *            string with the name of the module for to which the
      *            <code>typedef</code> belongs
      * @param typedef
-     *            type definition of the node for which should be creted JAVA
+     *            type definition of the node for which should be created JAVA
      *            <code>Type</code> (usually generated TO)
      * @return JAVA <code>Type</code> representation of <code>typedef</code> or
      *         <code>null</code> value if <code>basePackageName</code> or
@@ -494,7 +503,8 @@ public final class TypeProviderImpl implements TypeProvider {
     private Type typedefToGeneratedType(final String basePackageName, final Module module,
             final TypeDefinition<?> typedef,
             final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
-            final Map<Module, Set<Type>> additionalTypes, final SchemaContext schemaContext, final ModuleContext context) {
+            final Map<Module, Set<Type>> additionaltypes, final SchemaContext schemaContext,
+            final ModuleContext context) {
         final String moduleName = module.getName();
         final Optional<Revision> moduleRevision = module.getRevision();
         if (basePackageName != null && moduleName != null && typedef != null) {
@@ -535,7 +545,8 @@ public final class TypeProviderImpl implements TypeProvider {
                     returnType = wrapJavaTypeIntoTO(basePackageName, typedef, javaType, module.getName(), context);
                 }
                 if (returnType != null) {
-                    final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(moduleName);
+                    final Map<Optional<Revision>, Map<String, Type>> modulesByDate =
+                        genTypeDefsContextMap.get(moduleName);
                     Map<String, Type> typeMap = modulesByDate.get(moduleRevision);
                     if (typeMap != null) {
                         if (typeMap.isEmpty()) {
@@ -560,7 +571,8 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return JAVA <code>Type</code> instance for <code>typeDefinition</code>
      */
     private Type javaTypeForExtendedType(final TypeDefinition<?> typeDefinition, final SchemaContext schemaContext,
-            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap, final ModuleContext context) {
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final ModuleContext context) {
 
         final String typedefName = typeDefinition.getQName().getLocalName();
         final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
@@ -570,7 +582,8 @@ public final class TypeProviderImpl implements TypeProvider {
             final Module module = findParentModule(schemaContext, typeDefinition);
             final Restrictions r = BindingGeneratorUtil.getRestrictions(typeDefinition);
             if (module != null) {
-                final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
+                final Map<Optional<Revision>, Map<String, Type>> modulesByDate =
+                    genTypeDefsContextMap.get(module.getName());
                 final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
                 if (genTOs != null) {
                     returnType = genTOs.get(typedefName);
@@ -594,7 +607,8 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return JAVA <code>Type</code> instance for <code>typeDefinition</code>
      */
     private Type javaTypeForLeafrefOrIdentityRef(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
             final ModuleContext context) {
         if (typeDefinition instanceof LeafrefTypeDefinition) {
             final LeafrefTypeDefinition leafref = (LeafrefTypeDefinition) typeDefinition;
@@ -612,6 +626,7 @@ public final class TypeProviderImpl implements TypeProvider {
     /**
      * Converts <code>leafrefType</code> to JAVA <code>Type</code>.
      *
+     * <p>
      * The path of <code>leafrefType</code> is followed to find referenced node
      * and its <code>Type</code> is returned.
      *
@@ -627,11 +642,13 @@ public final class TypeProviderImpl implements TypeProvider {
      *
      */
     public Type provideTypeForLeafref(final LeafrefTypeDefinition leafrefType, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
             final ModuleContext context) {
 
         Type returnType = null;
-        Preconditions.checkArgument(leafrefType != null, "Leafref Type Definition reference cannot be NULL!");
+        Preconditions.checkArgument(leafrefType != null,
+            "Leafref Type Definition reference cannot be NULL!");
 
         Preconditions.checkArgument(leafrefType.getPathStatement() != null,
                 "The Path Statement for Leafref Type Definition cannot be NULL!");
@@ -643,7 +660,8 @@ public final class TypeProviderImpl implements TypeProvider {
                 final Module module;
                 final SchemaNode actualParentSchemaNode;
                 if (parentNode instanceof DerivableSchemaNode && ((DerivableSchemaNode) parentNode).isAddedByUses()) {
-                    final Optional<? extends SchemaNode> originalNode = ((DerivableSchemaNode) parentNode).getOriginal();
+                    final Optional<? extends SchemaNode> originalNode =
+                        ((DerivableSchemaNode) parentNode).getOriginal();
                     Preconditions.checkArgument(originalNode.isPresent(), "originalNode can not be null.");
                     actualParentSchemaNode = originalNode.get();
                     module = findParentModule(schemaContext, originalNode.get());
@@ -651,7 +669,8 @@ public final class TypeProviderImpl implements TypeProvider {
                     actualParentSchemaNode = parentNode;
                     module = findParentModule(schemaContext, parentNode);
                 }
-                Preconditions.checkArgument(module != null, "Failed to find module for parent %s", parentNode);
+                Preconditions.checkArgument(module != null,
+                    "Failed to find module for parent %s", parentNode);
 
                 final SchemaNode dataNode;
                 if (xpath.isAbsolute()) {
@@ -659,8 +678,9 @@ public final class TypeProviderImpl implements TypeProvider {
                 } else {
                     dataNode = findDataSchemaNodeForRelativeXPath(schemaContext, module, actualParentSchemaNode, xpath);
                 }
-                Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s)",
-                        strXPath, getParentModule(parentNode, schemaContext).getName(), parentNode.getQName().getModule());
+                Preconditions.checkArgument(dataNode != null,
+                    "Failed to find leafref target: %s in module %s (%s)",
+                    strXPath, getParentModule(parentNode, schemaContext).getName(), parentNode.getQName().getModule());
 
                 if (leafContainsEnumDefinition(dataNode)) {
                     returnType = this.referencedTypes.get(dataNode.getPath());
@@ -734,7 +754,8 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return JAVA <code>Type</code> representation of <code>dataNode</code>
      */
     private Type resolveTypeFromDataSchemaNode(final SchemaNode dataNode, final SchemaContext schemaContext,
-            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap, final ModuleContext context) {
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final ModuleContext context) {
         Type returnType = null;
         if (dataNode != null) {
             if (dataNode instanceof LeafSchemaNode) {
@@ -766,7 +787,8 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return JAVA <code>Type</code> of the identity which is refrenced through
      *         <code>idref</code>
      */
-    private static Type provideTypeForIdentityref(final IdentityrefTypeDefinition idref, final SchemaContext schemaContext) {
+    private static Type provideTypeForIdentityref(final IdentityrefTypeDefinition idref,
+            final SchemaContext schemaContext) {
         //TODO: incompatibility with Binding spec v2, get first or only one
         final QName baseIdQName = idref.getIdentities().iterator().next().getQName();
         final Module module = schemaContext.findModule(baseIdQName.getModule()).orElse(null);
@@ -779,11 +801,11 @@ public final class TypeProviderImpl implements TypeProvider {
         Preconditions.checkArgument(identity != null, "Target identity '" + baseIdQName + "' do not exists");
 
         final String basePackageName = BindingMapping.getRootPackageName(module);
-        final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, identity.getPath
-                (), BindingNamespaceType.Identity);
+        final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
+            identity.getPath(), BindingNamespaceType.Identity);
 
-        final String genTypeName = JavaIdentifierNormalizer.normalizeSpecificIdentifier(identity.getQName().getLocalName(),
-                JavaIdentifier.CLASS);
+        final String genTypeName = JavaIdentifierNormalizer.normalizeSpecificIdentifier(
+            identity.getQName().getLocalName(), JavaIdentifier.CLASS);
 
         final Type baseType = Types.typeForClass(Class.class);
         final Type paramType = Types.wildcardTypeFor(packageName, genTypeName, true, true, null);
@@ -791,13 +813,13 @@ public final class TypeProviderImpl implements TypeProvider {
     }
 
     private static GeneratedTransferObject shadedTOWithRestrictions(final GeneratedTransferObject gto,
-            final Restrictions r, final ModuleContext context) {
+            final Restrictions restrictions, final ModuleContext context) {
         final GeneratedTOBuilder gtob = new GeneratedTOBuilderImpl(gto.getPackageName(), gto.getName(), context);
         final GeneratedTransferObject parent = gto.getSuperType();
         if (parent != null) {
             gtob.setExtendsType(parent);
         }
-        gtob.setRestrictions(r);
+        gtob.setRestrictions(restrictions);
         for (final GeneratedProperty gp : gto.getProperties()) {
             final GeneratedPropertyBuilder gpb = gtob.addProperty(gp.getName());
             gpb.setValue(gp.getValue());
@@ -823,10 +845,11 @@ public final class TypeProviderImpl implements TypeProvider {
      *            string with name of property which should be added to
      *            <code>unionGentransObject</code>
      */
-    private static void updateUnionTypeAsProperty(final GeneratedTOBuilder unionGenTransObject, final Type type, final String propertyName) {
+    private static void updateUnionTypeAsProperty(final GeneratedTOBuilder unionGenTransObject, final Type type,
+            final String propertyName) {
         if (unionGenTransObject != null && type != null && !unionGenTransObject.containsProperty(propertyName)) {
-            final GeneratedPropertyBuilder propBuilder = unionGenTransObject
-                    .addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(propertyName, JavaIdentifier.METHOD));
+            final GeneratedPropertyBuilder propBuilder = unionGenTransObject.addProperty(
+                JavaIdentifierNormalizer.normalizeSpecificIdentifier(propertyName, JavaIdentifier.METHOD));
             propBuilder.setReturnType(type);
 
             unionGenTransObject.addEqualsIdentity(propBuilder);
@@ -839,9 +862,11 @@ public final class TypeProviderImpl implements TypeProvider {
      * Wraps code which handle case when union subtype is also of the type
      * <code>UnionType</code>.
      *
+     * <p>
      * In this case the new generated TO is created for union subtype (recursive
      * call of method
-     * {@link #provideGeneratedTOBuilderForUnionTypeDef(String, UnionTypeDefinition, String, SchemaNode, SchemaContext, Map, ModuleContext)}
+     * {@link #provideGeneratedTOBuilderForUnionTypeDef(String, UnionTypeDefinition, String, SchemaNode, SchemaContext,
+     * Map, ModuleContext)}
      * provideGeneratedTOBuilderForUnionTypeDef} and in parent TO builder
      * <code>parentUnionGenTOBuilder</code> is created property which type is
      * equal to new generated TO.
@@ -859,7 +884,8 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     private GeneratedTOBuilder resolveUnionSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
             final UnionTypeDefinition unionSubtype, final String basePackageName, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
             final ModuleContext context) {
 
         final String newTOBuilderName = provideAvailableNameForGenTOBuilder(parentUnionGenTOBuilder.getName());
@@ -868,8 +894,8 @@ public final class TypeProviderImpl implements TypeProvider {
                 context);
 
         final GeneratedPropertyBuilder propertyBuilder;
-        propertyBuilder = parentUnionGenTOBuilder
-                .addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(newTOBuilderName, JavaIdentifier.METHOD));
+        propertyBuilder = parentUnionGenTOBuilder.addProperty(
+            JavaIdentifierNormalizer.normalizeSpecificIdentifier(newTOBuilderName, JavaIdentifier.METHOD));
         propertyBuilder.setReturnType(subUnionGenTOBUilder);
         parentUnionGenTOBuilder.addEqualsIdentity(propertyBuilder);
         parentUnionGenTOBuilder.addToStringProperty(propertyBuilder);
@@ -893,7 +919,8 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     public GeneratedTOBuilder provideGeneratedTOBuilderForUnionTypeDef(final String basePackageName,
             final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
             final ModuleContext context) {
 
         final List<GeneratedTOBuilder> builders = provideGeneratedTOBuildersForUnionTypeDef(basePackageName,
@@ -912,7 +939,7 @@ public final class TypeProviderImpl implements TypeProvider {
         resultTOBuilder.addHashIdentity(genPropBuilder);
         resultTOBuilder.addToStringProperty(genPropBuilder);
 
-        provideGeneratedTOBuilderForUnionBuilder(findParentModule(schemaContext, parentNode), resultTOBuilder);
+        provideGeneratedTOBuilderForUnionBuilder(findParentModule(this.schemaCtx, parentNode), resultTOBuilder);
 
         return resultTOBuilder;
     }
@@ -954,6 +981,7 @@ public final class TypeProviderImpl implements TypeProvider {
      * Wraps code which handle case when union subtype is of the type
      * <code>ExtendedType</code>.
      *
+     * <p>
      * If TO for this type already exists it is used for the creation of the
      * property in <code>parentUnionGenTOBuilder</code>. In other case the base
      * type is used for the property creation.
@@ -971,7 +999,8 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     private static void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
             final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap) {
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap) {
 
         final String unionTypeName = unionSubtype.getQName().getLocalName();
         final Type genTO = findGenTO(unionTypeName, unionSubtype, schemaContext, genTypeDefsContextMap);
@@ -1013,7 +1042,7 @@ public final class TypeProviderImpl implements TypeProvider {
 
     /**
      * Searches for generated TO for <code>searchedTypeDef</code> type
-     * definition in {@link #genTypeDefsContextMap genTypeDefsContextMap}
+     * definition in {@link #genTypeDefsContextMap genTypeDefsContextMap}.
      *
      * @param searchedTypeName
      *            string with name of <code>searchedTypeDef</code>
@@ -1021,11 +1050,13 @@ public final class TypeProviderImpl implements TypeProvider {
      *         <code>null</code> it it doesn't exist
      */
     private static Type findGenTO(final String searchedTypeName, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap) {
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap) {
 
         final Module typeModule = findParentModule(schemaContext, parentNode);
         if (typeModule != null && typeModule.getName() != null) {
-            final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(typeModule.getName());
+            final Map<Optional<Revision>, Map<String, Type>> modulesByDate =
+                genTypeDefsContextMap.get(typeModule.getName());
             final Map<String, Type> genTOs = modulesByDate.get(typeModule.getRevision());
             if (genTOs != null) {
                 return genTOs.get(searchedTypeName);

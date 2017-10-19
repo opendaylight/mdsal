@@ -15,6 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,15 +51,16 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AugmentToGenTypeTest {
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void constructorTest() throws Throwable {
+    @Test
+    public void constructorTest() throws NoSuchMethodException {
         final Constructor<AugmentToGenType> constructor = AugmentToGenType.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         final Object[] objs = {};
         try {
             constructor.newInstance(objs);
-        } catch (final Exception e) {
-            throw e.getCause();
+        } catch (final InstantiationException | IllegalAccessException
+            | InvocationTargetException | IllegalArgumentException e) {
+            assertTrue(e.getCause() instanceof UnsupportedOperationException);
         }
     }
 
@@ -481,7 +483,8 @@ public class AugmentToGenTypeTest {
     @Test
     public void usesAugmentationToGenTypesNullPckgNameTest() {
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(null, null, null, null, null, null, null, null, false, null, null);
+            AugmentToGenType.usesAugmentationToGenTypes(null, null, null,
+                null, null, null, null, null, false, null, null);
         } catch (final IllegalArgumentException e) {
             assertEquals(e.getMessage(), "Package Name cannot be NULL.");
         }
@@ -491,7 +494,8 @@ public class AugmentToGenTypeTest {
     @Test
     public void usesAugmentationToGenTypesNullAugSchemaListEntryTest() {
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(null, "", null, null, null, null, null, null, false, null, null);
+            AugmentToGenType.usesAugmentationToGenTypes(null, "", null,
+                null, null, null, null, null, false, null, null);
         } catch (final IllegalArgumentException e) {
             assertEquals(e.getMessage(), "Augmentation Schema List Entry cannot be NULL.");
         }
@@ -502,8 +506,9 @@ public class AugmentToGenTypeTest {
     public void usesAugmentationToGenTypesEmptyAugSchemaListTest() {
         final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(null, "", AugmentationSchemaNodeList, null, null, null, null, null,
-                    false, null, null);
+            AugmentToGenType.usesAugmentationToGenTypes(null, "", AugmentationSchemaNodeList,
+                null, null, null, null, null,
+                false, null, null);
         } catch (final IllegalStateException e) {
             assertEquals(e.getMessage(), "Augmentation Schema List cannot be empty");
         }
@@ -517,8 +522,9 @@ public class AugmentToGenTypeTest {
         final List<AugmentationSchemaNode> AugmentationSchemaNodeList = new ArrayList<>();
         AugmentationSchemaNodeList.add(AugmentationSchemaNode);
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(null, "", AugmentationSchemaNodeList, null, null, null, null, null,
-                    false, null, null);
+            AugmentToGenType.usesAugmentationToGenTypes(null, "", AugmentationSchemaNodeList,
+                null, null, null, null, null,
+                false, null, null);
         } catch (final IllegalStateException e) {
             assertEquals(e.getMessage(), "Augmentation Schema does not contain Target Path (Target Path is NULL).");
         }
@@ -560,8 +566,8 @@ public class AugmentToGenTypeTest {
         when(usesNode.getGroupingPath()).thenReturn(path);
 
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(context, "pckg.test.augm", AugmentationSchemaNodeList, moduleAug,
-                    usesNode, usesNodeParent, genCtx, genTypeBuilders, false, null, null);
+            AugmentToGenType.usesAugmentationToGenTypes(context, "pckg.test.augm", AugmentationSchemaNodeList,
+                moduleAug, usesNode, usesNodeParent, genCtx, genTypeBuilders, false, null, null);
         } catch (final IllegalArgumentException e) {
             assertEquals(e.getMessage(), "augment target not found: " + path);
         }
@@ -604,8 +610,9 @@ public class AugmentToGenTypeTest {
         when(usesNode.getGroupingPath()).thenReturn(path);
 
         try {
-            AugmentToGenType.usesAugmentationToGenTypes(context, "pckg.test.augm", AugmentationSchemaNodeList, moduleAug,
-                    usesNode, usesNodeParent, genCtx, genTypeBuilders, false, null, null);
+            AugmentToGenType.usesAugmentationToGenTypes(context, "pckg.test.augm",
+                AugmentationSchemaNodeList, moduleAug, usesNode, usesNodeParent, genCtx, genTypeBuilders,
+                false, null, null);
         } catch (final NullPointerException e) {
             assertEquals(e.getMessage(), "Target type not yet generated: " + schNode);
         }
@@ -964,7 +971,8 @@ public class AugmentToGenTypeTest {
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         genCtx.put(module, new ModuleContext());
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", genCtx.get(module));
+        final GeneratedTypeBuilder gtb =
+            new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", genCtx.get(module));
         genCtx.get(module).addCaseType(path, gtb);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
@@ -1017,7 +1025,8 @@ public class AugmentToGenTypeTest {
         when(targetNode.getReference()).thenReturn(Optional.empty());
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext moduleContext = new ModuleContext();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", moduleContext);
+        final GeneratedTypeBuilder gtb =
+            new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", moduleContext);
         moduleContext.addCaseType(path, gtb);
         genCtx.put(module, moduleContext);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
