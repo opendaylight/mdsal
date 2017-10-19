@@ -54,10 +54,12 @@ final class ModuleToGenType {
         genCtx = allTypeDefinitionsToGenTypes(module, genCtx, typeProvider);
         genCtx = groupingsToGenTypes(module, module.getGroupings(), genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
-        genCtx = allIdentitiesToGenTypes(module, schemaContext, genCtx, verboseClassComments,  genTypeBuilders, typeProvider);
+        genCtx = allIdentitiesToGenTypes(module, schemaContext, genCtx, verboseClassComments,  genTypeBuilders,
+            typeProvider);
 
         if (!module.getChildNodes().isEmpty()) {
-            final GeneratedTypeBuilder moduleType = GenHelperUtil.moduleToDataType(module, genCtx, verboseClassComments);
+            final GeneratedTypeBuilder moduleType =
+                GenHelperUtil.moduleToDataType(module, genCtx, verboseClassComments);
             genCtx.get(module).addModuleNode(moduleType);
             final String basePackageName = BindingMapping.getRootPackageName(module);
             GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
@@ -66,7 +68,8 @@ final class ModuleToGenType {
             processUsesImplements(module, module, schemaContext, genCtx, BindingNamespaceType.Data);
         }
 
-        genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments, typeProvider);
+        genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments,
+            typeProvider);
 
         //after potential parent data schema nodes
         genCtx = actionsAndRPCMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
@@ -89,8 +92,8 @@ final class ModuleToGenType {
      * @throws IllegalStateException
      *             if set of type definitions from module is null
      */
-    private static Map<Module, ModuleContext> allTypeDefinitionsToGenTypes(final Module module, final Map<Module, ModuleContext> genCtx,
-            final TypeProvider typeProvider) {
+    private static Map<Module, ModuleContext> allTypeDefinitionsToGenTypes(final Module module,
+            final Map<Module, ModuleContext> genCtx, final TypeProvider typeProvider) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         Preconditions.checkArgument(module.getName() != null, "Module name cannot be NULL.");
         final DataNodeIterator it = new DataNodeIterator(module);
@@ -130,7 +133,8 @@ final class ModuleToGenType {
      *            iterate over them
      * @param schemaContext
      *            schema context only used as input parameter for method
-     *            {@link GenHelperUtil#identityToGenType(Module, String, IdentitySchemaNode, SchemaContext, Map, boolean)}
+     *            {@link GenHelperUtil#identityToGenType(Module, String, IdentitySchemaNode, SchemaContext, Map,
+     *            boolean)}
      * @param genCtx generated context
      * @return returns generated context
      *
@@ -168,9 +172,10 @@ final class ModuleToGenType {
      * @throws IllegalStateException
      *             if set of notifications from module is null
      */
-    private static Map<Module, ModuleContext> notificationsToGenType(final Module module, final Map<Module, ModuleContext> genCtx,
-            final SchemaContext schemaContext, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
-            final boolean verboseClassComments, final TypeProvider typeProvider) {
+    private static Map<Module, ModuleContext> notificationsToGenType(final Module module,
+            final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext,
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments,
+            final TypeProvider typeProvider) {
         checkArgument(module != null, "Module reference cannot be NULL.");
         checkArgument(module.getName() != null, "Module name cannot be NULL.");
         final Set<NotificationDefinition> notifications = module.getNotifications();
@@ -202,9 +207,10 @@ final class ModuleToGenType {
                 for (final NotificationDefinition tiedNotification: tiedNotifications) {
                     if (tiedNotification != null) {
                         resolveNotification(listenerInterface, potential.getQName().getLocalName(), basePackageName,
-                                tiedNotification, module, schemaContext, verboseClassComments, genTypeBuilders,
-                                typeProvider, genCtx);
-                        processUsesImplements(tiedNotification, module, schemaContext, genCtx, BindingNamespaceType.Data);
+                            tiedNotification, module, schemaContext, verboseClassComments, genTypeBuilders,
+                            typeProvider, genCtx);
+                        processUsesImplements(tiedNotification, module, schemaContext, genCtx,
+                            BindingNamespaceType.Data);
                     }
                 }
             }

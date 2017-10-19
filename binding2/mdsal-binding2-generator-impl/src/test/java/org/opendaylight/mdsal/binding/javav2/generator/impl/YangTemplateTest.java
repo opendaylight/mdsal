@@ -31,7 +31,7 @@ public class YangTemplateTest {
     }
 
     @Test
-    public void printYangSnippetForModule() throws Exception{
+    public void printYangSnippetForModule() throws Exception {
         Iterator<Module> iterator = this.modules.iterator();
         String moduleBody = yangTemplateForModule.render(iterator.next()).body().trim();
         String cleanedModuleBody = YangSnippetCleaner.clean(moduleBody);
@@ -42,7 +42,6 @@ public class YangTemplateTest {
 
         moduleBody = yangTemplateForModule.render(iterator.next()).body().trim();
         cleanedModuleBody = YangSnippetCleaner.clean(moduleBody);
-        System.out.println(cleanedModuleBody);
         assertTrue(cleanedModuleBody.contains("module yang-template-test {"));
         assertTrue(cleanedModuleBody.contains("    import yang-template-import {"));
         assertTrue(cleanedModuleBody.contains("        prefix \"yti\";"));
