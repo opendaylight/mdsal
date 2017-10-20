@@ -28,14 +28,14 @@ public final class GeneratedPropertyBuilderImpl extends AbstractTypeMemberBuilde
     }
 
     @Override
-    public GeneratedPropertyBuilder setValue(String value) {
-        this.value = value;
+    public GeneratedPropertyBuilder setValue(String strValue) {
+        this.value = strValue;
         return this;
     }
 
     @Override
-    public GeneratedPropertyBuilder setReadOnly(boolean isReadOnly) {
-        this.isReadOnly = isReadOnly;
+    public GeneratedPropertyBuilder setReadOnly(boolean beReadOnly) {
+        this.isReadOnly = beReadOnly;
         return this;
     }
 

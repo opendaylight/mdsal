@@ -97,7 +97,7 @@ public final class BindingGeneratorUtil {
     }
 
     /**
-     * Encodes angle brackets in yang statement description
+     * Encodes angle brackets in yang statement description.
      * @param description description of a yang statement which is used to generate javadoc comments
      * @return string with encoded angle brackets
      */
@@ -112,7 +112,7 @@ public final class BindingGeneratorUtil {
 
     public static long computeDefaultSUID(final GeneratedTypeBuilderBase<?> to) {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        try (final DataOutputStream dout = new DataOutputStream(bout)) {
+        try (DataOutputStream dout = new DataOutputStream(bout)) {
             dout.writeUTF(to.getName());
             dout.writeInt(to.isAbstract() ? 3 : 7);
 
@@ -148,10 +148,12 @@ public final class BindingGeneratorUtil {
      * Creates package name from specified <code>basePackageName</code> (package
      * name for module) and <code>schemaPath</code>.
      *
+     * <p>
      * Resulting package name is concatenation of <code>basePackageName</code>
      * and all local names of YANG nodes which are parents of some node for
      * which <code>schemaPath</code> is specified.
      *
+     * <p>
      * Based on type of node, there is also possible suffix added in order
      * to prevent package name conflicts.
      *
@@ -161,6 +163,8 @@ public final class BindingGeneratorUtil {
      * @param schemaPath
      *            list of names of YANG nodes which are parents of some node +
      *            name of this node
+     * @param namespaceType
+     *            namespace type of this node
      * @return string with valid JAVA package name
      * @throws NullPointerException if any of the arguments are null
      */
@@ -174,8 +178,8 @@ public final class BindingGeneratorUtil {
             if (namespaceType != null) {
                 final StringBuilder sb = new StringBuilder();
                 sb.append(basePackageName)
-                  .append('.')
-                  .append(namespaceType.getPackagePrefix());
+                    .append('.')
+                    .append(namespaceType.getPackagePrefix());
                 return JavaIdentifierNormalizer.normalizeFullPackageName(sb.toString());
             }
             return JavaIdentifierNormalizer.normalizeFullPackageName(basePackageName);
@@ -188,6 +192,7 @@ public final class BindingGeneratorUtil {
      * Creates package name from specified <code>basePackageName</code> (package
      * name for module) and <code>namespaceType</code>.
      *
+     *<p>
      * Resulting package name is concatenation of <code>basePackageName</code>
      * and prefix of <code>namespaceType</code>.
      *
@@ -314,14 +319,17 @@ public final class BindingGeneratorUtil {
             public Optional<? extends RangeConstraint<?>> getRangeConstraint() {
                 return range;
             }
+
             @Override
             public List<PatternConstraint> getPatternConstraints() {
                 return pattern;
             }
+
             @Override
             public Optional<LengthConstraint> getLengthConstraint() {
                 return length;
             }
+
             @Override
             public boolean isEmpty() {
                 return false;
@@ -333,10 +341,12 @@ public final class BindingGeneratorUtil {
      * Creates package name from specified <code>basePackageName</code> (package
      * name for module) and <code>schemaPath</code> which crosses an augmentation.
      *
+     * <p>
      * Resulting package name is concatenation of <code>basePackageName</code>
      * and all local names of YANG nodes which are parents of some node for
      * which <code>schemaPath</code> is specified.
      *
+     * <p>
      * Based on type of node, there is also possible suffix added in order
      * to prevent package name conflicts.
      *
@@ -349,7 +359,8 @@ public final class BindingGeneratorUtil {
      * @return string with valid JAVA package name
      * @throws NullPointerException if any of the arguments are null
      */
-    public static String packageNameForAugmentedGeneratedType(final String basePackageName, final SchemaPath schemaPath) {
+    public static String packageNameForAugmentedGeneratedType(final String basePackageName,
+            final SchemaPath schemaPath) {
         final Iterable<QName> pathTowardsRoot = schemaPath.getPathTowardsRoot();
         final Iterable<QName> pathFromRoot = schemaPath.getPathFromRoot();
         final int size = Iterables.size(pathTowardsRoot);
@@ -364,9 +375,11 @@ public final class BindingGeneratorUtil {
      * Creates package name from <code>parentAugmentPackageName</code> (package
      * name for direct parent augmentation) and <code>augmentationSchema</code> .
      *
+     * <p>
      * Resulting package name is concatenation of <code>parentAugmentPackageName</code>
      * and the local name of <code>schemaPath</code>.
      *
+     * <p>
      * Based on type of node, there is also possible suffix added in order
      * to prevent package name conflicts.
      *
