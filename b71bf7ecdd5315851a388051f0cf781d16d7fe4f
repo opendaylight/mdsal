@@ -22,6 +22,30 @@
       "revId": "b71bf7ecdd5315851a388051f0cf781d16d7fe4f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1e1cf9c0",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMOperationService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2017-10-20T09:14:15Z",
+      "side": 1,
+      "message": "Or maybe like:\nvoid invokeAction(@Nonnull SchemaPath type, @Nonnull YangInstanceIdentifier parent, @Nullable NormalizedNode\u003c?, ?\u003e input, BiConsumer\u003cDOMRpcException, DOMRpcResult\u003e result);",
+      "parentUuid": "9a245df4_be368d50",
+      "range": {
+        "startLine": 37,
+        "startChar": 2,
+        "endLine": 37,
+        "endChar": 17
+      },
+      "revId": "b71bf7ecdd5315851a388051f0cf781d16d7fe4f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
