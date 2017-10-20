@@ -11,15 +11,13 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 
 /**
- *
  * Wraps combination of <code>packageName</code> and <code>name</code> to the
- * object representation
- *
+ * object representation.
  */
 public final class ReferencedTypeImpl extends AbstractBaseType {
 
     /**
-     * Creates instance of this class with concrete package name and type name
+     * Creates instance of this class with concrete package name and type name.
      *
      * @param packageName
      *            string with the package name
@@ -32,7 +30,7 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
 
     /**
      * Creates instance of this class with concrete package name and type name
-     * for already normalized identifier
+     * for already normalized identifier.
      *
      * @param packageName
      *            string with the package name

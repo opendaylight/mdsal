@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 import com.google.common.annotations.Beta;
 
 /**
- *
  * Contains constants used in relations with <code>Type</code>.
  */
 @Beta
