@@ -42,13 +42,13 @@ import org.w3c.dom.Document;
 @Beta
 public final class Types {
     private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
-            new CacheLoader<Class<?>, ConcreteType>() {
+        new CacheLoader<Class<?>, ConcreteType>() {
 
-                @Override
-                public ConcreteType load(@Nonnull final Class<?> key) throws Exception {
-                    return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
-                }
-            };
+            @Override
+            public ConcreteType load(@Nonnull final Class<?> key) throws Exception {
+                return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
+            }
+        };
 
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
@@ -92,6 +92,8 @@ public final class Types {
      * @param primitiveType
      *            string containing programmatic construction based on
      *            primitive type (e.g byte[])
+     * @param restrictions
+     *            restrictions of a yang build-in type
      * @return <code>ConcreteType</code> instance which represents programmatic
      *         construction with primitive JAVA type
      */
@@ -100,7 +102,7 @@ public final class Types {
     }
 
     /**
-     * Returns an instance of {@link ConcreteType} describing the class
+     * Returns an instance of {@link ConcreteType} describing the class.
      *
      * @param cls
      *            Class to describe
@@ -139,7 +141,7 @@ public final class Types {
 
     /**
      * Returns an instance of {@link ParameterizedType} describing the typed
-     * {@link Map}&lt;K,V&gt;
+     * {@link Map}&lt;K,V&gt;.
      *
      * @param keyType
      *            Key Type
@@ -178,7 +180,7 @@ public final class Types {
     /**
      * Creates instance of type
      * {@link ParameterizedType
-     * ParameterizedType}
+     * ParameterizedType}.
      *
      * @param type
      *            JAVA <code>Type</code> for raw type
@@ -194,7 +196,7 @@ public final class Types {
     /**
      * Creates instance of type
      * {@link WildcardType
-     * WildcardType}
+     * WildcardType}.
      *
      * @param packageName
      *            string with the package name
@@ -210,7 +212,7 @@ public final class Types {
     /**
      * Creates instance of type
      * {@link WildcardType
-     * WildcardType}
+     * WildcardType}.
      *
      * @param packageName
      *            string with the package name
@@ -220,6 +222,8 @@ public final class Types {
      *            if the package name has been normalized
      * @param isTypeNormalized
      *            if the type name has been normalized
+     * @param context
+     *            context of yang module
      * @return <code>WildcardType</code> representation of
      *         <code>packageName</code> and <code>typeName</code>
      */
@@ -286,9 +290,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents concrete JAVA type.
-     *
      */
     private static final class ConcreteTypeImpl extends AbstractBaseType implements ConcreteType {
 
@@ -314,12 +316,11 @@ public final class Types {
         }
     }
 
-    /**
-     *
+    /*
      * Represents concrete JAVA type with changed restriction values.
-     *
      */
-    private static final class BaseTypeWithRestrictionsImpl extends AbstractBaseType implements BaseTypeWithRestrictions {
+    private static final class BaseTypeWithRestrictionsImpl extends AbstractBaseType
+            implements BaseTypeWithRestrictions {
         private final Restrictions restrictions;
 
         /**
@@ -349,9 +350,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents parametrized JAVA type.
-     *
      */
     private static class ParameterizedTypeImpl extends AbstractBaseType implements ParameterizedType {
         /**
@@ -360,7 +359,7 @@ public final class Types {
         private final Type[] actualTypes;
 
         /**
-         * JAVA raw type (like List, Set, Map...)
+         * JAVA raw type (like List, Set, Map...).
          */
         private final Type rawType;
 
@@ -373,7 +372,7 @@ public final class Types {
          * @param actTypes
          *            array of actual parameters
          */
-        public ParameterizedTypeImpl(final Type rawType, final Type[] actTypes) {
+        ParameterizedTypeImpl(final Type rawType, final Type[] actTypes) {
             super(rawType.getPackageName(), rawType.getName(), true, null);
             this.rawType = rawType;
             this.actualTypes = actTypes.clone();
@@ -392,9 +391,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents JAVA bounded wildcard type.
-     *
      */
     private static class WildcardTypeImpl extends AbstractBaseType implements WildcardType {
         /**
@@ -406,7 +403,7 @@ public final class Types {
          *            string with the name of type
          */
         //FIXME: doesn't seem to be called at all
-        public WildcardTypeImpl(final String packageName, final String typeName) {
+        WildcardTypeImpl(final String packageName, final String typeName) {
             super(packageName, typeName, null);
         }
 
@@ -422,7 +419,7 @@ public final class Types {
          * @param isTypeNormalized
          *            if the type name has been normalized
          */
-        public WildcardTypeImpl(final String packageName, final String typeName, final boolean isPkNameNormalized,
+        WildcardTypeImpl(final String packageName, final String typeName, final boolean isPkNameNormalized,
                 final boolean isTypeNormalized, ModuleContext context) {
             super(packageName, typeName, isPkNameNormalized, isTypeNormalized, context);
         }
