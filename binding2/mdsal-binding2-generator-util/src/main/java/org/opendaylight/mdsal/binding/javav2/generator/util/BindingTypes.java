@@ -60,7 +60,7 @@ public final class BindingTypes {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    public static ParameterizedType augmentable(Type t) {
-        return parameterizedTypeFor(AUGMENTABLE, t);
+    public static ParameterizedType augmentable(Type type) {
+        return parameterizedTypeFor(AUGMENTABLE, type);
     }
 }

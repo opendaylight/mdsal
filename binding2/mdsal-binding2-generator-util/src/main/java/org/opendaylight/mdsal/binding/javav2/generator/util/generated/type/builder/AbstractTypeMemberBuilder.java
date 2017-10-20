@@ -32,7 +32,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     private AccessModifier accessModifier;
     private List<AnnotationTypeBuilder> annotationBuilders = ImmutableList.of();
 
-    public AbstractTypeMemberBuilder(final String name) {
+    AbstractTypeMemberBuilder(final String name) {
         this.name = name;
     }
 

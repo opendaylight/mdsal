@@ -193,7 +193,8 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
         return builder.toString();
     }
 
-    private static final class GeneratedTransferObjectImpl extends AbstractGeneratedType implements GeneratedTransferObject {
+    private static final class GeneratedTransferObjectImpl extends AbstractGeneratedType
+            implements GeneratedTransferObject {
 
         private final List<GeneratedProperty> equalsProperties;
         private final List<GeneratedProperty> hashCodeProperties;
@@ -210,7 +211,7 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
         private final String moduleName;
         private final List<QName> schemaPath;
 
-        public GeneratedTransferObjectImpl(final GeneratedTOBuilderImpl builder) {
+        GeneratedTransferObjectImpl(final GeneratedTOBuilderImpl builder) {
             super(builder);
 
             this.extendsType = builder.extendsType;
