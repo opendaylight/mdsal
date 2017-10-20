@@ -11,20 +11,20 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 
 /**
- *
  * Wraps combination of <code>packageName</code> and <code>name</code> to the
- * object representation
- *
+ * object representation.
  */
 public final class ReferencedTypeImpl extends AbstractBaseType {
 
     /**
-     * Creates instance of this class with concrete package name and type name
+     * Creates instance of this class with concrete package name and type name.
      *
      * @param packageName
      *            string with the package name
      * @param name
      *            string with the name for referenced type
+     * @param context
+     *            context of yang module
      */
     public ReferencedTypeImpl(String packageName, String name, ModuleContext context) {
         super(packageName, name, context);
@@ -32,7 +32,7 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
 
     /**
      * Creates instance of this class with concrete package name and type name
-     * for already normalized identifier
+     * for already normalized identifier.
      *
      * @param packageName
      *            string with the package name
@@ -40,6 +40,8 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
      *            string with the name for referenced type
      * @param isNormalized
      *            indicates if identifier name is normalized
+     * @param context
+     *            context of yang module
      */
     public ReferencedTypeImpl(String packageName, String name, boolean isNormalized, ModuleContext context) {
         super(packageName, name, isNormalized, context);

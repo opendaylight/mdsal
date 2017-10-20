@@ -19,7 +19,7 @@ final class MethodParameterImpl implements Parameter {
     private final String name;
     private final Type type;
 
-    public MethodParameterImpl(final String name, final Type type) {
+    MethodParameterImpl(final String name, final Type type) {
         this.name = name;
         this.type = type;
     }

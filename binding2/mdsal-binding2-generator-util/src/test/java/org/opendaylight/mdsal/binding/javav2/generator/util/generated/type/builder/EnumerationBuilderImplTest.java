@@ -20,7 +20,8 @@ public class EnumerationBuilderImplTest {
     @Test
     public void sameEnumTest() {
         ModuleContext context = new ModuleContext();
-        EnumerationBuilderImpl enumerationBuilderImpl = new EnumerationBuilderImpl("package.same.test", "test", context);
+        EnumerationBuilderImpl enumerationBuilderImpl = new EnumerationBuilderImpl("package.same.test",
+            "test", context);
         Enumeration enumeration = enumerationBuilderImpl.toInstance(enumerationBuilderImpl);
         String formattedString = enumeration.toFormattedString();
 

@@ -20,7 +20,7 @@ import com.google.common.annotations.Beta;
  * <li>variable</li>
  * <li>constant</li>
  * <li>package</li>
- * </ul>
+ * </ul>.
  */
 @Beta
 public enum JavaIdentifier {

@@ -21,7 +21,7 @@ final class ConstantImpl implements Constant {
     private final String name;
     private final Object value;
 
-    public ConstantImpl(final Type definingType, final Type type, final String name, final Object value) {
+    ConstantImpl(final Type definingType, final Type type, final String name, final Object value) {
         this.definingType = definingType;
         this.type = type;
         this.name = name;
@@ -81,7 +81,8 @@ final class ConstantImpl implements Constant {
         }
 
         ConstantImpl other = (ConstantImpl) obj;
-        return Objects.equals(name, other.name) && Objects.equals(type, other.type) && Objects.equals(value, other.value);
+        return Objects.equals(name, other.name) && Objects.equals(type, other.type)
+            && Objects.equals(value, other.value);
     }
 
     @Override
