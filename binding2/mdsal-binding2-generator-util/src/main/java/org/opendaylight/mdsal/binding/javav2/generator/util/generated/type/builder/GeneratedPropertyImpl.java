@@ -21,7 +21,7 @@ final class GeneratedPropertyImpl extends AbstractTypeMember implements Generate
     private String value;
     private boolean isReadOnly;
 
-    public GeneratedPropertyImpl(Type definingType, String name, List<AnnotationType> annotations, String comment,
+    GeneratedPropertyImpl(Type definingType, String name, List<AnnotationType> annotations, String comment,
                                  AccessModifier accessModifier, Type returnType, boolean isFinal, boolean isStatic,
                                  boolean isReadOnly, String value) {
         super(definingType, name, annotations, comment, accessModifier, returnType, isFinal, isStatic);

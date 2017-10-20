@@ -20,12 +20,14 @@ import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
@@ -43,13 +45,13 @@ import org.w3c.dom.Document;
 @Beta
 public final class Types {
     private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
-            new CacheLoader<Class<?>, ConcreteType>() {
+        new CacheLoader<Class<?>, ConcreteType>() {
 
-                @Override
-                public ConcreteType load(@Nonnull final Class<?> key) throws Exception {
-                    return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
-                }
-            };
+            @Override
+            public ConcreteType load(@Nonnull final Class<?> key) throws Exception {
+                return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
+            }
+        };
 
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
@@ -78,7 +80,7 @@ public final class Types {
      * ConcreteType} which represents JAVA <code>void</code> type.
      *
      * @return <code>ConcreteType</code> instance which represents JAVA
-     *         <code>void</code>
+     * <code>void</code>
      */
     public static ConcreteType voidType() {
         return VOID;
@@ -90,21 +92,19 @@ public final class Types {
      * ConcreteType} which represents primitive JAVA type for which package
      * doesn't exist.
      *
-     * @param primitiveType
-     *            string containing programmatic construction based on
-     *            primitive type (e.g byte[])
+     * @param primitiveType string containing programmatic construction based on
+     *                      primitive type (e.g byte[])
      * @return <code>ConcreteType</code> instance which represents programmatic
-     *         construction with primitive JAVA type
+     *      construction with primitive JAVA type
      */
     public static ConcreteType primitiveType(final String primitiveType, final Restrictions restrictions) {
         return new ConcreteTypeImpl("", primitiveType, restrictions);
     }
 
     /**
-     * Returns an instance of {@link ConcreteType} describing the class
+     * Returns an instance of {@link ConcreteType} describing the class.
      *
-     * @param cls
-     *            Class to describe
+     * @param cls Class to describe
      * @return Description of class
      */
     public static ConcreteType typeForClass(final Class<?> cls) {
@@ -124,7 +124,7 @@ public final class Types {
     }
 
     public static ConcreteType typeForClass(final Class<?> cls, final Restrictions restrictions,
-            final ModuleContext moduleContext) {
+                                            final ModuleContext moduleContext) {
         if (restrictions == null) {
             return typeForClass(cls);
         }
@@ -132,18 +132,16 @@ public final class Types {
             return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
         } else {
             return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions,
-                moduleContext);
+                    moduleContext);
         }
     }
 
     /**
-     * Returns an instance of {@link ParameterizedType} describing the typed
+     * Returns an instance of {@link ParameterizedType} describing the typed.
      * {@link Map}&lt;K,V&gt;
      *
-     * @param keyType
-     *            Key Type
-     * @param valueType
-     *            Value Type
+     * @param keyType   Key Type
+     * @param valueType Value Type
      * @return Description of generic type instance
      */
     public static ParameterizedType mapTypeFor(final Type keyType, final Type valueType) {
@@ -154,8 +152,7 @@ public final class Types {
      * Returns an instance of {@link ParameterizedType} describing the typed
      * {@link Set}&lt;V&gt; with concrete type of value.
      *
-     * @param valueType
-     *            Value Type
+     * @param valueType Value Type
      * @return Description of generic type instance of Set
      */
     public static ParameterizedType setTypeFor(final Type valueType) {
@@ -166,8 +163,7 @@ public final class Types {
      * Returns an instance of {@link ParameterizedType} describing the typed
      * {@link List}&lt;V&gt; with concrete type of value.
      *
-     * @param valueType
-     *            Value Type
+     * @param valueType Value Type
      * @return Description of type instance of List
      */
     public static ParameterizedType listTypeFor(final Type valueType) {
@@ -175,55 +171,42 @@ public final class Types {
     }
 
     /**
-     * Creates instance of type
-     * {@link ParameterizedType
-     * ParameterizedType}
+     * Creates instance of type {@link ParameterizedType ParameterizedType}.
      *
-     * @param type
-     *            JAVA <code>Type</code> for raw type
-     * @param parameters
-     *            JAVA <code>Type</code>s for actual parameter types
+     * @param type       JAVA <code>Type</code> for raw type
+     * @param parameters JAVA <code>Type</code>s for actual parameter types
      * @return <code>ParametrizedType</code> reprezentation of <code>type</code>
-     *         and its parameters <code>parameters</code>
+     *      and its parameters <code>parameters</code>
      */
     public static ParameterizedType parameterizedTypeFor(final Type type, final Type... parameters) {
         return new ParameterizedTypeImpl(type, parameters);
     }
 
     /**
-     * Creates instance of type
-     * {@link WildcardType
-     * WildcardType}
+     * Creates instance of type {@link WildcardType WildcardType}.
      *
-     * @param packageName
-     *            string with the package name
-     * @param typeName
-     *            string with the type name
+     * @param packageName string with the package name
+     * @param typeName    string with the type name
      * @return <code>WildcardType</code> representation of
-     *         <code>packageName</code> and <code>typeName</code>
+     * <code>packageName</code> and <code>typeName</code>
      */
     public static WildcardType wildcardTypeFor(final String packageName, final String typeName) {
         return new WildcardTypeImpl(packageName, typeName);
     }
 
     /**
-     * Creates instance of type
-     * {@link WildcardType
-     * WildcardType}
+     * Creates instance of type {@link WildcardType WildcardType}.
      *
-     * @param packageName
-     *            string with the package name
-     * @param typeName
-     *            string with the type name
-     * @param isPkNameNormalized
-     *            if the package name has been normalized
-     * @param isTypeNormalized
-     *            if the type name has been normalized
+     * @param packageName        string with the package name
+     * @param typeName           string with the type name
+     * @param isPkNameNormalized if the package name has been normalized
+     * @param isTypeNormalized   if the type name has been normalized
      * @return <code>WildcardType</code> representation of
-     *         <code>packageName</code> and <code>typeName</code>
+     * <code>packageName</code> and <code>typeName</code>
      */
     public static WildcardType wildcardTypeFor(final String packageName, final String typeName,
-            final boolean isPkNameNormalized, final boolean isTypeNormalized, final ModuleContext context) {
+                                               final boolean isPkNameNormalized, final boolean isTypeNormalized,
+                                               final ModuleContext context) {
         return new WildcardTypeImpl(packageName, typeName, isPkNameNormalized, isTypeNormalized, context);
     }
 
@@ -234,11 +217,10 @@ public final class Types {
      * {@link Augmentable} and actual
      * parameter is <code>valueType</code>.
      *
-     * @param valueType
-     *            JAVA <code>Type</code> with actual parameter
+     * @param valueType JAVA <code>Type</code> with actual parameter
      * @return <code>ParametrizedType</code> representation of raw type
-     *         <code>Augmentable</code> with actual parameter
-     *         <code>valueType</code>
+     * <code>Augmentable</code> with actual parameter
+     * <code>valueType</code>
      */
     public static ParameterizedType augmentableTypeFor(final Type valueType) {
         final Type augmentable = typeForClass(Augmentable.class);
@@ -252,11 +234,10 @@ public final class Types {
      * {@link Augmentation} and actual
      * parameter is <code>valueType</code>.
      *
-     * @param valueType
-     *            JAVA <code>Type</code> with actual parameter
+     * @param valueType JAVA <code>Type</code> with actual parameter
      * @return <code>ParametrizedType</code> reprezentation of raw type
-     *         <code>Augmentation</code> with actual parameter
-     *         <code>valueType</code>
+     * <code>Augmentation</code> with actual parameter
+     * <code>valueType</code>
      */
     public static ParameterizedType augmentationTypeFor(final Type valueType) {
         final Type augmentation = typeForClass(Augmentation.class);
@@ -285,9 +266,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents concrete JAVA type.
-     *
      */
     private static final class ConcreteTypeImpl extends AbstractBaseType implements ConcreteType {
 
@@ -297,13 +276,11 @@ public final class Types {
          * Creates instance of this class with package <code>pkName</code> and
          * with the type name <code>name</code>.
          *
-         * @param pkName
-         *            string with package name
-         * @param name
-         *            string with the name of the type
+         * @param pkName string with package name
+         * @param name   string with the name of the type
          */
         private ConcreteTypeImpl(final String pkName, final String name, final Restrictions restrictions) {
-            super(pkName, name, true,null);
+            super(pkName, name, true, null);
             this.restrictions = restrictions;
         }
 
@@ -314,21 +291,18 @@ public final class Types {
     }
 
     /**
-     *
      * Represents concrete JAVA type with changed restriction values.
-     *
      */
-    private static final class BaseTypeWithRestrictionsImpl extends AbstractBaseType implements BaseTypeWithRestrictions {
+    private static final class BaseTypeWithRestrictionsImpl extends AbstractBaseType implements
+            BaseTypeWithRestrictions {
         private final Restrictions restrictions;
 
         /**
          * Creates instance of this class with package <code>pkName</code> and
          * with the type name <code>name</code>.
          *
-         * @param pkName
-         *            string with package name
-         * @param name
-         *            string with the name of the type
+         * @param pkName string with package name
+         * @param name   string with the name of the type
          */
         private BaseTypeWithRestrictionsImpl(final String pkName, final String name, final Restrictions restrictions) {
             super(pkName, name, null);
@@ -336,7 +310,7 @@ public final class Types {
         }
 
         private BaseTypeWithRestrictionsImpl(final String pkName, final String name, final Restrictions restrictions,
-                final ModuleContext moduleContext) {
+                                             final ModuleContext moduleContext) {
             super(pkName, name, moduleContext);
             this.restrictions = Preconditions.checkNotNull(restrictions);
         }
@@ -348,9 +322,7 @@ public final class Types {
     }
 
     /**
-     *
      * Represents parametrized JAVA type.
-     *
      */
     private static class ParameterizedTypeImpl extends AbstractBaseType implements ParameterizedType {
         /**
@@ -359,7 +331,7 @@ public final class Types {
         private final Type[] actualTypes;
 
         /**
-         * JAVA raw type (like List, Set, Map...)
+         * JAVA raw type (like List, Set, Map...).
          */
         private final Type rawType;
 
@@ -367,12 +339,10 @@ public final class Types {
          * Creates instance of this class with concrete rawType and array of
          * actual parameters.
          *
-         * @param rawType
-         *            JAVA <code>Type</code> for raw type
-         * @param actTypes
-         *            array of actual parameters
+         * @param rawType  JAVA <code>Type</code> for raw type
+         * @param actTypes array of actual parameters
          */
-        public ParameterizedTypeImpl(final Type rawType, final Type[] actTypes) {
+        ParameterizedTypeImpl(final Type rawType, final Type[] actTypes) {
             super(rawType.getPackageName(), rawType.getName(), true, null);
             this.rawType = rawType;
             this.actualTypes = actTypes.clone();
@@ -391,44 +361,36 @@ public final class Types {
     }
 
     /**
-     *
      * Represents JAVA bounded wildcard type.
-     *
      */
     private static class WildcardTypeImpl extends AbstractBaseType implements WildcardType {
         /**
          * Creates instance of this class with concrete package and type name.
          *
-         * @param packageName
-         *            string with the package name
-         * @param typeName
-         *            string with the name of type
+         * @param packageName string with the package name
+         * @param typeName    string with the name of type
          */
         //FIXME: doesn't seem to be called at all
-        public WildcardTypeImpl(final String packageName, final String typeName) {
+        WildcardTypeImpl(final String packageName, final String typeName) {
             super(packageName, typeName, null);
         }
 
         /**
          * Creates instance of this class with concrete package and type name.
          *
-         * @param packageName
-         *            string with the package name
-         * @param typeName
-         *            string with the name of type
-         * @param isPkNameNormalized
-         *            if the package name has been normalized
-         * @param isTypeNormalized
-         *            if the type name has been normalized
+         * @param packageName        string with the package name
+         * @param typeName           string with the name of type
+         * @param isPkNameNormalized if the package name has been normalized
+         * @param isTypeNormalized   if the type name has been normalized
          */
-        public WildcardTypeImpl(final String packageName, final String typeName, final boolean isPkNameNormalized,
-                final boolean isTypeNormalized, final ModuleContext context) {
+        WildcardTypeImpl(final String packageName, final String typeName, final boolean isPkNameNormalized,
+                                final boolean isTypeNormalized, final ModuleContext context) {
             super(packageName, typeName, isPkNameNormalized, isTypeNormalized, context);
         }
     }
 
     public static <T extends Number & Comparable<T>> DefaultRestrictions<T> getDefaultRestrictions(final T min,
-            final T max) {
+                                                                                                   final T max) {
         return new DefaultRestrictions<>(min, max);
     }
 

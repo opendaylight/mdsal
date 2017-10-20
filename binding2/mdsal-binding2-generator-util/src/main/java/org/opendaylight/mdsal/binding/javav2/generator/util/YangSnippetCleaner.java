@@ -13,7 +13,7 @@ import javax.annotation.RegEx;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Utility class for cleaning yang models of excess whitespaces
+ * Utility class for cleaning yang models of excess whitespaces.
  */
 @Beta
 public final class YangSnippetCleaner {
@@ -44,7 +44,7 @@ public final class YangSnippetCleaner {
     }
 
     /**
-     * Cleaning yang model of excess whitespaces, adding indentations
+     * Cleaning yang model of excess whitespaces, adding indentations.
      *
      * @param unformedYang
      *            - unformed yang model
@@ -69,7 +69,7 @@ public final class YangSnippetCleaner {
                 indentCount = lineIndent(sb, indentCount, line);
                 sb.append(line).append(NEW_LINE);
                 if (!StringUtils.startsWithAny(line, RESERVED_LINES) && indentCount == 1 && i != 0) {
-                        sb.append(NEW_LINE);
+                    sb.append(NEW_LINE);
                 }
             }
         }
@@ -86,11 +86,11 @@ public final class YangSnippetCleaner {
     }
 
     private static int mergeWithPrevious(final StringBuilder sb, final int indentCount) {
-        int newIndentCount = indentCount;
         removeRemainingWhitespace(sb);
         sb.append(SPACE);
         sb.append(START_BODY);
         sb.append(NEW_LINE);
+        int newIndentCount = indentCount;
         return ++newIndentCount;
     }
 
