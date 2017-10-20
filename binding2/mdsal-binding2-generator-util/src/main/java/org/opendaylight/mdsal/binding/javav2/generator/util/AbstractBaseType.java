@@ -15,7 +15,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 
 /**
- * This class represents ancestor for other <code>Type</code>s
+ * This class represents ancestor for other <code>Type</code>s.
  */
 @Beta
 public abstract class AbstractBaseType implements Type {
@@ -39,13 +39,15 @@ public abstract class AbstractBaseType implements Type {
      *            belongs
      * @param name
      *            string with the name for this <code>Type</code>
+     * @param context
+     *            context of yang module
      */
     protected AbstractBaseType(final String pkName, final String name, ModuleContext context) {
         Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
         Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
         this.packageName = JavaIdentifierNormalizer.normalizeFullPackageName(pkName);
-        Preconditions.checkNotNull(context, "In case of not having identifiers normalized, " +
-                "ModuleContext instance must be provided.");
+        Preconditions.checkNotNull(context, "In case of not having identifiers normalized, "
+            + "ModuleContext instance must be provided.");
         this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name, context);
     }
 
@@ -60,6 +62,8 @@ public abstract class AbstractBaseType implements Type {
      *            string with the name for this <code>Type</code>
      * @param isNormalized
      *            true if pkName and name are normalized
+     * @param context
+     *            context of yang module
      */
     protected AbstractBaseType(final String pkName, final String name, final boolean isNormalized,
             ModuleContext context) {
@@ -70,14 +74,14 @@ public abstract class AbstractBaseType implements Type {
             this.name = name;
         } else {
             this.packageName = JavaIdentifierNormalizer.normalizeFullPackageName(pkName);
-            Preconditions.checkNotNull(context, "In case of not having identifiers normalized, " +
-                    "ModuleContext instance must be provided.");
+            Preconditions.checkNotNull(context, "In case of not having identifiers normalized, "
+                + "ModuleContext instance must be provided.");
             this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name, context);
         }
     }
 
     protected AbstractBaseType(final String pkName, final String name, final boolean isPkNameNormalized,
-            final boolean isTypeNormalized, ModuleContext context ) {
+            final boolean isTypeNormalized, ModuleContext context) {
         Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
         Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
         if (isPkNameNormalized) {
@@ -89,8 +93,8 @@ public abstract class AbstractBaseType implements Type {
         if (isTypeNormalized) {
             this.name = name;
         } else {
-            Preconditions.checkNotNull(context, "In case of not having identifiers normalized, " +
-                    "ModuleContext instance must be provided.");
+            Preconditions.checkNotNull(context, "In case of not having identifiers normalized, "
+                + "ModuleContext instance must be provided.");
             this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name, context);
         }
     }

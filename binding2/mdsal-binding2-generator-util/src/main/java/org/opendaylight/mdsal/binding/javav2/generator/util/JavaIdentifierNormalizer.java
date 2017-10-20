@@ -122,6 +122,7 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
  * </li>
  * </ul>
  *
+ * <p>
  * There is special case in CLASS, INTERFACE, ENUM, ENUM VALUE, CONSTANT, METHOD
  * and VARIABLE if identifier contains single dash - then the converter ignores
  * the single dash in the way of the non-java chars. In other way, if dash is
@@ -158,6 +159,7 @@ import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
  * </li>
  * </ul>
  *
+ * <p>
  * Next special case talks about normalizing class name which already exists in
  * package - but with different camel cases (foo, Foo, fOo, ...). To every next
  * classes with same names will by added their actual rank (serial number),
@@ -245,6 +247,7 @@ public final class JavaIdentifierNormalizer {
      * }
      * </pre>
      *
+     * <p>
      * YANG enum values will be mapped to 'FOO' and 'FOO_1' Java enum values.
      *
      * @param name
@@ -362,6 +365,39 @@ public final class JavaIdentifierNormalizer {
     }
 
     /**
+     * Checking while there doesn't exist any class name with the same name
+     * (regardless of camel cases) in package.
+     *
+     * @param packageName
+     *            - package of class name
+     * @param origClassName
+     *            - original class name
+     * @param actualClassName
+     *            - actual class name with rank (serial number)
+     * @param rank
+     *            - actual rank (serial number)
+     * @return converted identifier
+     */
+    private static String normalizeClassIdentifier(final String packageName, final String origClassName,
+            final String actualClassName, final int rank, final ModuleContext context) {
+
+        final ListMultimap<String, String> packagesMap = context.getPackagesMap();
+
+        synchronized (packagesMap) {
+            if (packagesMap.containsKey(packageName)) {
+                for (final String existingName : packagesMap.get(packageName)) {
+                    if (actualClassName.equalsIgnoreCase(existingName)) {
+                        return normalizeClassIdentifier(packageName, origClassName,
+                            origClassName + rank, rank + 1, context);
+                    }
+                }
+            }
+            context.putToPackagesMap(packageName, actualClassName);
+            return actualClassName;
+        }
+    }
+
+    /**
      * Find and convert non Java chars in identifiers of generated transfer objects, initially
      * derived from corresponding YANG.
      *
@@ -409,44 +445,12 @@ public final class JavaIdentifierNormalizer {
         }
 
         // apply camel case in appropriate way
-        return fixCasesByJavaType(DOUBLE_UNDERSCORE_PATTERN.matcher(sb).replaceAll("_").toLowerCase(), javaIdentifier);
+        return fixCasesByJavaType(DOUBLE_UNDERSCORE_PATTERN.matcher(sb).replaceAll("_").toLowerCase(),
+            javaIdentifier);
     }
 
     /**
-     * Checking while there doesn't exist any class name with the same name
-     * (regardless of camel cases) in package.
-     *
-     * @param packageName
-     *            - package of class name
-     * @param origClassName
-     *            - original class name
-     * @param actualClassName
-     *            - actual class name with rank (serial number)
-     * @param rank
-     *            - actual rank (serial number)
-     * @return converted identifier
-     */
-    private static String normalizeClassIdentifier(final String packageName, final String origClassName,
-            final String actualClassName, final int rank, final ModuleContext context) {
-
-        final ListMultimap<String, String> packagesMap = context.getPackagesMap();
-
-        synchronized (packagesMap) {
-            if (packagesMap.containsKey(packageName)) {
-                for (final String existingName : packagesMap.get(packageName)) {
-                    if (actualClassName.equalsIgnoreCase(existingName)) {
-                       return normalizeClassIdentifier(packageName, origClassName, origClassName + rank,
-                           rank + 1, context);
-                    }
-                }
-            }
-            context.putToPackagesMap(packageName, actualClassName);
-            return actualClassName;
-        }
-    }
-
-    /**
-     * Fix cases of converted identifiers by Java type
+     * Fix cases of converted identifiers by Java type.
      *
      * @param convertedIdentifier
      *            - converted identifier
@@ -495,7 +499,7 @@ public final class JavaIdentifierNormalizer {
     }
 
     /**
-     * Check if there exist next char in identifier behind actual char position
+     * Check if there exist next char in identifier behind actual char position.
      *
      * @param identifier
      *            - original identifier
@@ -511,22 +515,22 @@ public final class JavaIdentifierNormalizer {
      * Converting first char of identifier. This happen only if this char is
      * non-java char
      *
-     * @param c
+     * @param firstChar
      *            - first char
      * @param existNext
      *            - existing of next char behind actual char
      * @return converted char
      */
-    private static String convertFirst(final char c, final boolean existNext) {
-        final String name = DASH_OR_SPACE_MATCHER.replaceFrom(Character.getName(c), UNDERSCORE);
+    private static String convertFirst(final char firstChar, final boolean existNext) {
+        final String name = DASH_OR_SPACE_MATCHER.replaceFrom(Character.getName(firstChar), UNDERSCORE);
         return existNext ? name + '_' : name;
     }
 
     /**
      * Converting any char in java identifier, This happen only if this char is
-     * non-java char
+     * non-java char.
      *
-     * @param c
+     * @param actualChar
      *            - actual char
      * @param existNext
      *            - existing of next char behind actual char
@@ -534,12 +538,12 @@ public final class JavaIdentifierNormalizer {
      *            - last char of partial converted identifier
      * @return converted char
      */
-    private static String convert(final char c, final boolean existNext, final char partialLastChar) {
-        return partialLastChar == '_' ? convertFirst(c, existNext) : "_" + convertFirst(c, existNext);
+    private static String convert(final char actualChar, final boolean existNext, final char partialLastChar) {
+        return partialLastChar == '_' ? convertFirst(actualChar, existNext) : "_" + convertFirst(actualChar, existNext);
     }
 
     /**
-     * Capitalize input string
+     * Capitalize input string.
      *
      * @param identifier
      *            - string to be capitalized
