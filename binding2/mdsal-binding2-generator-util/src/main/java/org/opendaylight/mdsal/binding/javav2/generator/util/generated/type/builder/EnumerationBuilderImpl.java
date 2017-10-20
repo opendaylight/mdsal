@@ -81,15 +81,16 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
     }
 
     @Override
-    public void addValue(final String name, final int value, final String description, final String reference, final Status status) {
-        final EnumPairImpl p = new EnumPairImpl(name, value, description, reference, status, this.values);
+    public void addValue(final String name, final int value, final String desc, final String ref,
+            final Status status) {
+        final EnumPairImpl p = new EnumPairImpl(name, value, desc, ref, status, this.values);
         this.values = LazyCollections.lazyAdd(this.values, p);
     }
 
     @Override
     public Enumeration toInstance(final Type definingType) {
-        return new EnumerationImpl(definingType, this.annotationBuilders, this.packageName, this.name, this.values, this.description,
-                this.reference, this.moduleName, this.schemaPath);
+        return new EnumerationImpl(definingType, this.annotationBuilders, this.packageName, this.name, this.values,
+            this.description, this.reference, this.moduleName, this.schemaPath);
     }
 
     @Override
@@ -124,7 +125,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         private final String reference;
         private final Status status;
 
-        public EnumPairImpl(final String name, final int value, final String description,
+        EnumPairImpl(final String name, final int value, final String description,
                 final String reference, final Status status, final List<Pair> values) {
 
             this.name = name;
@@ -165,7 +166,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         @Nonnull
         @Override
         public Status getStatus() {
-           return this.status;
+            return this.status;
         }
 
         @Override
@@ -220,8 +221,8 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         private final List<Pair> values;
         private final List<AnnotationType> annotations;
 
-        public EnumerationImpl(final Type definingType, final List<AnnotationTypeBuilder> annotationBuilders,
-                               final String packageName, final String name, final List<Pair> values, final String description,
+        EnumerationImpl(final Type definingType, final List<AnnotationTypeBuilder> annotationBuilders,
+                final String packageName, final String name, final List<Pair> values, final String description,
                 final String reference, final String moduleName, final List<QName> schemaPath) {
             super(packageName, name, true, null);
             this.definingType = definingType;
@@ -257,6 +258,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         }
 
         @Override
+        @SuppressWarnings("checkstyle:LocalVariableName")
         public String toFormattedString() {
             final StringBuilder builder = new StringBuilder();
             builder.append("public enum");

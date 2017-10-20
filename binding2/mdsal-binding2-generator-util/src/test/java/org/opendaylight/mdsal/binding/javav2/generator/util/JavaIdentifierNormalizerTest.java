@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
@@ -30,53 +31,64 @@ public class JavaIdentifierNormalizerTest {
                         "QName", context);
         assertEquals("QName", normalizeIdentifier);
         // non reserved
-        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("qname.non.reserved", "QName", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("qname.non.reserved",
+            "QName", context);
         assertEquals("Qname", normalizeIdentifier);
         // again non reserved
-        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("qname.non.reserved", "QName", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("qname.non.reserved",
+            "QName", context);
         assertEquals("Qname1", normalizeIdentifier);
 
         // Augmentable - reserved & non reserved
-        normalizeIdentifier = JavaIdentifierNormalizer
-                .normalizeClassIdentifier("org.opendaylight.mdsal.binding.javav2.spec.structural", "Augmentable", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.opendaylight.mdsal.binding.javav2.spec.structural", "Augmentable", context);
         assertEquals("Augmentable", normalizeIdentifier);
         // again reserved
-        normalizeIdentifier = JavaIdentifierNormalizer
-                .normalizeClassIdentifier("org.opendaylight.mdsal.binding.javav2.spec.structural", "Augmentable", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.opendaylight.mdsal.binding.javav2.spec.structural", "Augmentable", context);
         assertEquals("Augmentable", normalizeIdentifier);
         // non reserved
-        normalizeIdentifier = JavaIdentifierNormalizer
-                .normalizeClassIdentifier("augmentable.non.reserved", "Augmentable", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("augmentable.non.reserved",
+            "Augmentable", context);
         assertEquals("Augmentable", normalizeIdentifier);
         // again non reserved
         normalizeIdentifier =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("augmentable.non.reserved", "Augmentable", context);
+                JavaIdentifierNormalizer.normalizeClassIdentifier("augmentable.non.reserved",
+                    "Augmentable", context);
         assertEquals("Augmentable1", normalizeIdentifier);
 
         // List - reserved & non reserved
-        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.util", "List", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.util",
+            "List", context);
         assertEquals("List", normalizeIdentifier);
         // again reserved
-        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.util", "List", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.util",
+            "List", context);
         assertEquals("List", normalizeIdentifier);
         // non reserved
-        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("list.non.reserved", "List", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("list.non.reserved",
+            "List", context);
         assertEquals("List", normalizeIdentifier);
         // again non reserved
-        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("list.non.reserved", "List", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("list.non.reserved",
+            "List", context);
         assertEquals("List1", normalizeIdentifier);
 
         // String - reserved & non reserved
-        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.lang", "String", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.lang",
+            "String", context);
         assertEquals("String", normalizeIdentifier);
         // again reserved
-        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.lang", "String", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("java.lang",
+            "String", context);
         assertEquals("String", normalizeIdentifier);
         // non reserved
-        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("string.non.reserved", "String", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("string.non.reserved",
+            "String", context);
         assertEquals("String", normalizeIdentifier);
         // again non reserved
-        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("string.non.reserved", "String", context);
+        normalizeIdentifier = JavaIdentifierNormalizer.normalizeClassIdentifier("string.non.reserved",
+            "String", context);
         assertEquals("String1", normalizeIdentifier);
     }
 
@@ -86,20 +98,20 @@ public class JavaIdentifierNormalizerTest {
     @Test
     public void sameClassNamesSamePackageTest() {
         ModuleContext context = new ModuleContext();
-        String normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package",
-                "Foo", context);
-        String normalizeIdentifier2 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package",
-                "fOo", context);
-        final String normalizeIdentifier3 =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package", "foo", context);
+        String normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.same.package", "Foo", context);
+        String normalizeIdentifier2 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.same.package", "fOo", context);
+        final String normalizeIdentifier3 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.same.package", "foo", context);
         assertEquals(normalizeIdentifier1, "Foo");
         assertEquals(normalizeIdentifier2, "Foo1");
         assertEquals(normalizeIdentifier3, "Foo2");
 
-        normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package", "*",
-                context);
-        normalizeIdentifier2 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package",
-                "asterisk", context);
+        normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.same.package", "*", context);
+        normalizeIdentifier2 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.same.package", "asterisk", context);
         assertEquals(normalizeIdentifier1, "Asterisk");
         assertEquals(normalizeIdentifier2, "Asterisk1");
     }
@@ -110,20 +122,20 @@ public class JavaIdentifierNormalizerTest {
     @Test
     public void sameClassNamesOtherPackageTest() {
         ModuleContext context = new ModuleContext();
-        String normalizeIdentifier1 =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package", "Foo", context);
-        String normalizeIdentifier2 =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package.next", "fOo", context);
-        final String normalizeIdentifier3 =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package.next.next", "foo", context);
+        String normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.other.package", "Foo", context);
+        String normalizeIdentifier2 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.other.package.next", "fOo", context);
+        final String normalizeIdentifier3 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.other.package.next.next", "foo", context);
         assertEquals(normalizeIdentifier1, "Foo");
         assertEquals(normalizeIdentifier2, "Foo");
         assertEquals(normalizeIdentifier3, "Foo");
 
-        normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package", "*",
-                context);
-        normalizeIdentifier2 =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package.next", "asterisk", context);
+        normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.other.package", "*", context);
+        normalizeIdentifier2 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.other.package.next", "asterisk", context);
         assertEquals(normalizeIdentifier1, "Asterisk");
         assertEquals(normalizeIdentifier2, "Asterisk");
     }
@@ -151,13 +163,12 @@ public class JavaIdentifierNormalizerTest {
     @Test
     public void sameClassNamesOtherPackageReservedWordsTest() {
         ModuleContext context = new ModuleContext();
-        final String normalizeIdentifier1 =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package", "int", context);
-        final String normalizeIdentifier2 =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package.next", "InT", context);
-        final String normalizeIdentifier3 =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package.next.next",
-                        "inT", context);
+        final String normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.keywords.other.package", "int", context);
+        final String normalizeIdentifier2 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.keywords.other.package.next", "InT", context);
+        final String normalizeIdentifier3 = JavaIdentifierNormalizer.normalizeClassIdentifier(
+            "org.example.keywords.other.package.next.next", "inT", context);
         assertEquals(normalizeIdentifier1, "IntReservedKeyword");
         assertEquals(normalizeIdentifier2, "IntReservedKeyword");
         assertEquals(normalizeIdentifier3, "IntReservedKeyword");

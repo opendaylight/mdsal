@@ -125,7 +125,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         private final String moduleName;
         private final List<QName> schemaPath;
 
-        public GeneratedTypeImpl(final GeneratedTypeBuilderImpl builder) {
+        GeneratedTypeImpl(final GeneratedTypeBuilderImpl builder) {
             super(builder);
 
             this.description = builder.description;
@@ -161,7 +161,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         private final String basePackageName;
         private final String builderPackageName;
 
-        public GeneratedTypeWithBuilderImpl(GeneratedTypeBuilderImpl builder) {
+        GeneratedTypeWithBuilderImpl(GeneratedTypeBuilderImpl builder) {
             super(builder);
             Preconditions.checkState(builder.getBasePackageName() != null,
                     "Base package name can not be null for type with builder!");

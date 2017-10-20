@@ -19,19 +19,20 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignat
 import org.opendaylight.yangtools.util.LazyCollections;
 
 @Beta
-final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodSignatureBuilder> implements MethodSignatureBuilder {
+final class MethodSignatureBuilderImpl extends AbstractTypeMemberBuilder<MethodSignatureBuilder>
+        implements MethodSignatureBuilder {
 
     private List<MethodSignature.Parameter> parameters = ImmutableList.of();
     private List<MethodSignature.Parameter> unmodifiableParams  = ImmutableList.of();
     private boolean isAbstract;
 
-    public MethodSignatureBuilderImpl(final String name) {
+    MethodSignatureBuilderImpl(final String name) {
         super(name);
     }
 
     @Override
-    public MethodSignatureBuilder setAbstract(final boolean isAbstract) {
-        this.isAbstract = isAbstract;
+    public MethodSignatureBuilder setAbstract(final boolean beAbstract) {
+        this.isAbstract = beAbstract;
         return this;
     }
 

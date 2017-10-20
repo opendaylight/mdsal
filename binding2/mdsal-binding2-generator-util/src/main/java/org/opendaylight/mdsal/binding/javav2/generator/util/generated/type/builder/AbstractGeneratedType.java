@@ -44,7 +44,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     private final List<GeneratedProperty> properties;
     private final boolean isAbstract;
 
-    public AbstractGeneratedType(final AbstractGeneratedTypeBuilder<?> builder) {
+    AbstractGeneratedType(final AbstractGeneratedTypeBuilder<?> builder) {
         super(builder.getPackageName(), builder.getName(), true, null);
         this.parent = builder.getParent();
         this.parentTypeForBuilder = builder.getParentTypeForBuilder();
@@ -60,12 +60,12 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         this.isAbstract = builder.isAbstract();
     }
 
-    public AbstractGeneratedType(final Type parent, final String packageName, final String name, final String comment,
-                                 final List<AnnotationTypeBuilder> annotationBuilders, final boolean isAbstract,
-                                 final List<Type> implementsTypes, final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
-                                 final List<GeneratedTOBuilder> enclosedGenTOBuilders, final List<EnumBuilder> enumBuilders,
-                                 final List<Constant> constants, final List<MethodSignatureBuilder> methodBuilders,
-                                 final List<GeneratedPropertyBuilder> propertyBuilders, final Type parentTypeForBuilder) {
+    AbstractGeneratedType(final Type parent, final String packageName, final String name, final String comment,
+             final List<AnnotationTypeBuilder> annotationBuilders, final boolean isAbstract,
+             final List<Type> implementsTypes, final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
+             final List<GeneratedTOBuilder> enclosedGenTOBuilders, final List<EnumBuilder> enumBuilders,
+             final List<Constant> constants, final List<MethodSignatureBuilder> methodBuilders,
+             final List<GeneratedPropertyBuilder> propertyBuilders, final Type parentTypeForBuilder) {
         //TODO: not called by actual codebase, fix this up (provide context) if needed - 07/20/2017
         super(packageName, name, null);
         this.parent = parent;
@@ -92,37 +92,47 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         }
     }
 
-    private static List<GeneratedType> toUnmodifiableEnclosedTypes(final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
-                                                                   final List<GeneratedTOBuilder> enclosedGenTOBuilders) {
-        final ArrayList<GeneratedType> enclosedTypesList = new ArrayList<>(enclosedGenTypeBuilders.size() + enclosedGenTOBuilders.size());
-        enclosedTypesList.addAll(enclosedGenTypeBuilders.stream().filter(builder -> builder != null).map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
+    private static List<GeneratedType> toUnmodifiableEnclosedTypes(
+            final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
+            final List<GeneratedTOBuilder> enclosedGenTOBuilders) {
+        final ArrayList<GeneratedType> enclosedTypesList =
+            new ArrayList<>(enclosedGenTypeBuilders.size() + enclosedGenTOBuilders.size());
+        enclosedTypesList.addAll(enclosedGenTypeBuilders.stream().filter(builder -> builder != null)
+            .map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
 
-        enclosedTypesList.addAll(enclosedGenTOBuilders.stream().filter(builder -> builder != null).map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
+        enclosedTypesList.addAll(enclosedGenTOBuilders.stream().filter(builder -> builder != null)
+            .map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
 
         return makeUnmodifiable(enclosedTypesList);
     }
 
-    protected static final List<AnnotationType> toUnmodifiableAnnotations(final List<AnnotationTypeBuilder> annotationBuilders) {
+    protected static final List<AnnotationType> toUnmodifiableAnnotations(
+            final List<AnnotationTypeBuilder> annotationBuilders) {
         final List<AnnotationType> annotationList = new ArrayList<>(annotationBuilders.size());
-        annotationList.addAll(annotationBuilders.stream().map(AnnotationTypeBuilder::toInstance).collect(Collectors.toList()));
+        annotationList.addAll(annotationBuilders.stream()
+            .map(AnnotationTypeBuilder::toInstance).collect(Collectors.toList()));
         return makeUnmodifiable(annotationList);
     }
 
     protected final List<MethodSignature> toUnmodifiableMethods(final List<MethodSignatureBuilder> methodBuilders) {
         final List<MethodSignature> methods = new ArrayList<>(methodBuilders.size());
-        methods.addAll(methodBuilders.stream().map(methodBuilder -> methodBuilder.toInstance(this)).collect(Collectors.toList()));
+        methods.addAll(methodBuilders.stream()
+            .map(methodBuilder -> methodBuilder.toInstance(this)).collect(Collectors.toList()));
         return makeUnmodifiable(methods);
     }
 
     protected final List<Enumeration> toUnmodifiableEnumerations(final List<EnumBuilder> enumBuilders) {
         final List<Enumeration> enums = new ArrayList<>(enumBuilders.size());
-        enums.addAll(enumBuilders.stream().map(enumBuilder -> enumBuilder.toInstance(this)).collect(Collectors.toList()));
+        enums.addAll(enumBuilders.stream()
+            .map(enumBuilder -> enumBuilder.toInstance(this)).collect(Collectors.toList()));
         return makeUnmodifiable(enums);
     }
 
-    protected final List<GeneratedProperty> toUnmodifiableProperties(final List<GeneratedPropertyBuilder> methodBuilders) {
+    protected final List<GeneratedProperty> toUnmodifiableProperties(
+            final List<GeneratedPropertyBuilder> methodBuilders) {
         final List<GeneratedProperty> methods = new ArrayList<>(methodBuilders.size());
-        methods.addAll(methodBuilders.stream().map(methodBuilder -> methodBuilder.toInstance(this)).collect(Collectors.toList()));
+        methods.addAll(methodBuilders.stream()
+            .map(methodBuilder -> methodBuilder.toInstance(this)).collect(Collectors.toList()));
         return makeUnmodifiable(methods);
     }
 

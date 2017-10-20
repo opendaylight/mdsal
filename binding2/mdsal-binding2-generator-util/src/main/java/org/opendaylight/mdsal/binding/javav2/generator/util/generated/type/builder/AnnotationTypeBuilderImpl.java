@@ -28,16 +28,16 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
     private List<AnnotationTypeBuilder> annotationBuilders = ImmutableList.of();
     private List<AnnotationType.Parameter> parameters = ImmutableList.of();
 
-    public AnnotationTypeBuilderImpl(final String packageName, final String name) {
-        super(packageName, name, true, null);
-        this.packageName = packageName;
-        this.name = name;
+    AnnotationTypeBuilderImpl(final String pkgName, final String strName) {
+        super(pkgName, strName, true, null);
+        this.packageName = pkgName;
+        this.name = strName;
     }
 
     @Override
-    public AnnotationTypeBuilder addAnnotation(final String packageName, final String name) {
-        if (packageName != null && name != null) {
-            final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
+    public AnnotationTypeBuilder addAnnotation(final String pkgName, final String strName) {
+        if (pkgName != null && strName != null) {
+            final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(pkgName, strName);
             if (!annotationBuilders.contains(builder)) {
                 annotationBuilders = LazyCollections.lazyAdd(annotationBuilders, builder);
                 return builder;
@@ -125,7 +125,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         private final List<AnnotationType.Parameter> parameters;
         private final List<String> paramNames;
 
-        public AnnotationTypeImpl(final String packageName, final String name,
+        AnnotationTypeImpl(final String packageName, final String name,
                 final List<AnnotationTypeBuilder> annotationBuilders,
                 final List<AnnotationType.Parameter> parameters) {
             this.packageName = packageName;
@@ -205,7 +205,8 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
                     .compare(this.name, other.getName())
                     .compare(this.packageName, other.getPackageName())
                     //FIXME: what is natural ordering for AnnotationType?
-                    .compare(this.annotations, other.getAnnotations(), Ordering.<AnnotationType>natural().lexicographical())
+                    .compare(this.annotations, other.getAnnotations(),
+                        Ordering.<AnnotationType>natural().lexicographical())
                     .compare(this.paramNames, other.getParameterNames(), Ordering.<String>natural().lexicographical())
                     .result();
         }
@@ -251,13 +252,13 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         private final String value;
         private final List<String> values;
 
-        public ParameterImpl(final String name, final String value) {
+        ParameterImpl(final String name, final String value) {
             this.name = name;
             this.value = value;
             this.values = ImmutableList.of();
         }
 
-        public ParameterImpl(final String name, final List<String> values) {
+        ParameterImpl(final String name, final List<String> values) {
             this.name = name;
             this.values = values;
             this.value = null;
@@ -280,7 +281,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
 
         @Override
         public int hashCode() {
-           return Objects.hash(name);
+            return Objects.hash(name);
         }
 
         @Override
