@@ -11,8 +11,10 @@ package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.buil
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
@@ -56,7 +58,7 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
     }
 
     public GeneratedTOBuilderImpl(final String packageName, final String name, final boolean isPkNameNormalized,
-            final boolean isTypeNormalized, ModuleContext context) {
+                                  final boolean isTypeNormalized, ModuleContext context) {
         super(packageName, name, isPkNameNormalized, isTypeNormalized, context);
         setAbstract(false);
     }
@@ -78,8 +80,7 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
      * {TypeMemberBuilder#setFinal(boolean)} and
      * {TypeMemberBuilder#setAccessModifier(boolean)}
      *
-     * @param name
-     *            Name of Method
+     * @param name Name of Method
      * @return <code>new</code> instance of Method Signature Builder.
      */
     @Override
@@ -118,8 +119,8 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
     }
 
     @Override
-    public void setTypedef(boolean isTypedef) {
-        this.isTypedef = isTypedef;
+    public void setTypedef(boolean typedefOrNot) {
+        this.isTypedef = typedefOrNot;
     }
 
     @Override
@@ -133,13 +134,13 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
     }
 
     @Override
-    public void setIsUnionBuilder(boolean isUnionTypeBuilder) {
-        this.isUnionTypeBuilder = isUnionTypeBuilder;
+    public void setIsUnionBuilder(boolean unionTypeBuilderOrNot) {
+        this.isUnionTypeBuilder = unionTypeBuilderOrNot;
     }
 
     @Override
-    public void setSUID(GeneratedPropertyBuilder suid) {
-        this.suid = suid;
+    public void setSUID(GeneratedPropertyBuilder suidBuilder) {
+        this.suid = suidBuilder;
     }
 
     @Override
@@ -194,7 +195,8 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
         return builder.toString();
     }
 
-    private static final class GeneratedTransferObjectImpl extends AbstractGeneratedType implements GeneratedTransferObject {
+    private static final class GeneratedTransferObjectImpl extends AbstractGeneratedType implements
+            GeneratedTransferObject {
 
         private final List<GeneratedProperty> equalsProperties;
         private final List<GeneratedProperty> hashCodeProperties;
@@ -211,7 +213,7 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
         private final String moduleName;
         private final List<QName> schemaPath;
 
-        public GeneratedTransferObjectImpl(final GeneratedTOBuilderImpl builder) {
+        GeneratedTransferObjectImpl(final GeneratedTOBuilderImpl builder) {
             super(builder);
 
             this.extendsType = builder.extendsType;

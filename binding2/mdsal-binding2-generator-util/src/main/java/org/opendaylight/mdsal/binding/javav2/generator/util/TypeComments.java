@@ -32,6 +32,10 @@ public final class TypeComments {
             .addEscape('@', "&#64;").build();
     private static final Pattern TAIL_COMMENT_PATTERN = Pattern.compile("*/", Pattern.LITERAL);
 
+    private TypeComments() {
+        //Defeat initialization.
+    }
+
     /**
      * Create a {@link TypeComment} for a javadoc-compliant text snippet. This snippet must be eligible for direct
      * inclusion in a Java comment without further escaping.

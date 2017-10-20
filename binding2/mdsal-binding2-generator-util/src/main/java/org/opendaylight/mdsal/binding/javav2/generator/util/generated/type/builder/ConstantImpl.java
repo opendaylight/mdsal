@@ -72,7 +72,8 @@ final class ConstantImpl implements Constant {
         }
 
         ConstantImpl other = (ConstantImpl) obj;
-        return Objects.equals(name, other.name) && Objects.equals(type, other.type) && Objects.equals(value, other.value);
+        return Objects.equals(name, other.name) && Objects.equals(type, other.type)
+                && Objects.equals(value, other.value);
     }
 
     @Override
