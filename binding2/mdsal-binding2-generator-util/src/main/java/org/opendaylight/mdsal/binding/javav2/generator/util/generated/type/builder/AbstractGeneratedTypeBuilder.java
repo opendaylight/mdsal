@@ -11,9 +11,11 @@ package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.buil
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.AbstractBaseType;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
@@ -54,12 +56,12 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     protected AbstractGeneratedTypeBuilder(final String packageName, final String name, final boolean isNormalized,
-            ModuleContext context) {
+                                           ModuleContext context) {
         super(packageName, name, true, null);
     }
 
-    protected AbstractGeneratedTypeBuilder(final String packageName, final String name, final boolean isPkNameNormalized,
-            final boolean isTypeNormalized, ModuleContext context) {
+    protected AbstractGeneratedTypeBuilder(final String packageName, final String name,
+            final boolean isPkNameNormalized, final boolean isTypeNormalized, ModuleContext context) {
         super(packageName, name, isPkNameNormalized, isTypeNormalized, context);
     }
 
@@ -109,7 +111,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         Preconditions.checkArgument(name != null, "Name for Enclosing Generated Transfer Object cannot be null!");
         GeneratedTOBuilder builder = new GeneratedTOBuilderImpl(getFullyQualifiedName(), name, true);
 
-        Preconditions.checkArgument(!enclosedTransferObjects.contains(builder), "This generated type already contains equal enclosing transfer object.");
+        Preconditions.checkArgument(!enclosedTransferObjects.contains(builder),
+                "This generated type already contains equal enclosing transfer object.");
         enclosedTransferObjects = LazyCollections.lazyAdd(enclosedTransferObjects, builder);
         return builder;
     }
@@ -117,14 +120,15 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     @Override
     public T addEnclosingTransferObject(final GeneratedTOBuilder genTOBuilder) {
         Preconditions.checkArgument(genTOBuilder != null, "Parameter genTOBuilder cannot be null!");
-        Preconditions.checkArgument(!enclosedTransferObjects.contains(genTOBuilder), "This generated type already contains equal enclosing transfer object.");
+        Preconditions.checkArgument(!enclosedTransferObjects.contains(genTOBuilder),
+                "This generated type already contains equal enclosing transfer object.");
         enclosedTransferObjects = LazyCollections.lazyAdd(enclosedTransferObjects, genTOBuilder);
         return thisInstance();
     }
 
     @Override
-    public T addComment(final TypeComment comment) {
-        this.comment = Preconditions.checkNotNull(comment);
+    public T addComment(final TypeComment typeComment) {
+        this.comment = Preconditions.checkNotNull(typeComment);
         return thisInstance();
     }
 
@@ -135,21 +139,23 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
 
         final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
 
-        Preconditions.checkArgument(!annotationBuilders.contains(builder), "This generated type already contains equal annotation.");
+        Preconditions.checkArgument(!annotationBuilders.contains(builder),
+                "This generated type already contains equal annotation.");
         annotationBuilders = LazyCollections.lazyAdd(annotationBuilders, builder);
         return builder;
     }
 
     @Override
-    public T setAbstract(final boolean isAbstract) {
-        this.isAbstract = isAbstract;
+    public T setAbstract(final boolean isabstract) {
+        this.isAbstract = isabstract;
         return thisInstance();
     }
 
     @Override
     public T addImplementsType(final Type genType) {
         Preconditions.checkArgument(genType != null, "Type cannot be null");
-        Preconditions.checkArgument(!implementsTypes.contains(genType), "This generated type already contains equal implements type.");
+        Preconditions.checkArgument(!implementsTypes.contains(genType),
+                "This generated type already contains equal implements type.");
         implementsTypes = LazyCollections.lazyAdd(implementsTypes, genType);
         return thisInstance();
     }
@@ -158,13 +164,13 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     public Constant addConstant(final Type type, final String name, final Object value) {
         Preconditions.checkArgument(type != null, "Returning Type for Constant cannot be null!");
         Preconditions.checkArgument(name != null, "Name of constant cannot be null!");
-        Preconditions.checkArgument(!containsConstant(name), "This generated type already contains constant with the same name.");
+        Preconditions.checkArgument(!containsConstant(name),
+                "This generated type already contains constant with the same name.");
 
         final Constant constant = new ConstantImpl(this, type, name, value);
         constants = LazyCollections.lazyAdd(constants, constant);
         return constant;
     }
-
 
 
     @Override
@@ -178,8 +184,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     @Override
-    public void setBindingNamespaceType(BindingNamespaceType namespaceType) {
-        this.namespaceType = namespaceType;
+    public void setBindingNamespaceType(BindingNamespaceType type) {
+        this.namespaceType = type;
     }
 
     public boolean containsConstant(final String name) {
@@ -198,7 +204,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         final EnumBuilder builder = new EnumerationBuilderImpl(getFullyQualifiedName(), name, true, false,
                 context);
 
-        Preconditions.checkArgument(!enumDefinitions.contains(builder), "This generated type already contains equal enumeration.");
+        Preconditions.checkArgument(!enumDefinitions.contains(builder),
+                "This generated type already contains equal enumeration.");
         enumDefinitions = LazyCollections.lazyAdd(enumDefinitions, builder);
         return builder;
     }
@@ -227,7 +234,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     @Override
     public GeneratedPropertyBuilder addProperty(final String name) {
         Preconditions.checkArgument(name != null, "Parameter name can't be null");
-        Preconditions.checkArgument(!containsProperty(name), "This generated type already contains property with the same name.");
+        Preconditions.checkArgument(!containsProperty(name),
+                "This generated type already contains property with the same name.");
 
         final GeneratedPropertyBuilder builder = new GeneratedPropertyBuilderImpl(name);
         builder.setAccessModifier(AccessModifier.PUBLIC);

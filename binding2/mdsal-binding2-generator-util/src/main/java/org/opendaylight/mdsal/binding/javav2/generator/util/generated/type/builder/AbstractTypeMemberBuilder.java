@@ -32,16 +32,16 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     private AccessModifier accessModifier;
     private List<AnnotationTypeBuilder> annotationBuilders = ImmutableList.of();
 
-    public AbstractTypeMemberBuilder(final String name) {
+    AbstractTypeMemberBuilder(final String name) {
         this.name = name;
     }
 
     @Override
-    public AnnotationTypeBuilder addAnnotation(final String packageName, final String name) {
+    public AnnotationTypeBuilder addAnnotation(final String packageName, final String typeName) {
         Preconditions.checkArgument(packageName != null, "Annotation Type cannot have package name null!");
-        Preconditions.checkArgument(name != null, "Annotation Type cannot have name as null!");
+        Preconditions.checkArgument(typeName != null, "Annotation Type cannot have name as null!");
 
-        final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
+        final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, typeName);
         annotationBuilders = LazyCollections.lazyAdd(annotationBuilders, builder);
         return builder;
     }
@@ -79,9 +79,9 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     }
 
     @Override
-    public T setReturnType(final Type returnType) {
-        Preconditions.checkArgument(returnType != null, "Return Type of member cannot be null!");
-        this.returnType = returnType;
+    public T setReturnType(final Type retType) {
+        Preconditions.checkArgument(retType != null, "Return Type of member cannot be null!");
+        this.returnType = retType;
         return thisInstance();
     }
 
@@ -93,23 +93,23 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     }
 
     @Override
-    public T setComment(final String comment) {
-        if (comment == null) {
+    public T setComment(final String commentText) {
+        if (commentText == null) {
             this.comment = "";
         }
-        this.comment = comment;
+        this.comment = commentText;
         return thisInstance();
     }
 
     @Override
-    public T setFinal(final boolean isFinal) {
-        this.isFinal = isFinal;
+    public T setFinal(final boolean finalOrNot) {
+        this.isFinal = finalOrNot;
         return thisInstance();
     }
 
     @Override
-    public T setStatic(final boolean isStatic) {
-        this.isStatic = isStatic;
+    public T setStatic(final boolean staticOrNot) {
+        this.isStatic = staticOrNot;
         return thisInstance();
     }
 

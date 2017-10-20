@@ -21,7 +21,7 @@ class MethodSignatureImpl extends AbstractTypeMember implements MethodSignature 
     private final List<Parameter> params;
     private final boolean isAbstract;
 
-    public MethodSignatureImpl(final Type definingType, final String name,
+    MethodSignatureImpl(final Type definingType, final String name,
             final List<AnnotationType> annotations,
             final String comment, final AccessModifier accessModifier,
             final Type returnType, final List<Parameter> params, final boolean isFinal,

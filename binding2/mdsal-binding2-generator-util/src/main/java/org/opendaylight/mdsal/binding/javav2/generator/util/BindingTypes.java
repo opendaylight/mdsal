@@ -32,8 +32,8 @@ import org.opendaylight.mdsal.binding.javav2.spec.runtime.NotificationListener;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.TreeChildNode;
-import org.opendaylight.yangtools.concepts.Identifier;
 import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.concepts.Identifier;
 
 public final class BindingTypes {
 
@@ -62,7 +62,7 @@ public final class BindingTypes {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    public static ParameterizedType augmentable(Type t) {
-        return parameterizedTypeFor(AUGMENTABLE, t);
+    public static ParameterizedType augmentable(Type type) {
+        return parameterizedTypeFor(AUGMENTABLE, type);
     }
 }
