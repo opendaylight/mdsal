@@ -44,6 +44,11 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
                 "DataTreeChangeListenerQueueMgr");
     }
 
+    private InMemoryDOMStoreTreeChangePublisher(QueuedNotificationManager<
+            AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> notificationManager) {
+        this.notificationManager = notificationManager;
+    }
+
     @Override
     protected void notifyListener(AbstractDOMDataTreeChangeListenerRegistration<?> registration,
             Collection<DataTreeCandidate> changes) {
@@ -63,10 +68,15 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
             final YangInstanceIdentifier treeId, final L listener, final DataTreeSnapshot snapshot) {
         final AbstractDOMDataTreeChangeListenerRegistration<L> reg = registerTreeChangeListener(treeId, listener);
 
-        final Optional<NormalizedNode<?, ?>> node = snapshot.readNode(treeId);
+        final Optional<NormalizedNode<?, ?>> node = snapshot.readNode(YangInstanceIdentifier.EMPTY);
         if (node.isPresent()) {
-            final DataTreeCandidate candidate = DataTreeCandidates.fromNormalizedNode(treeId, node.get());
-            notificationManager.submitNotification(reg, candidate);
+            final DataTreeCandidate candidate = DataTreeCandidates.fromNormalizedNode(
+                    YangInstanceIdentifier.EMPTY, node.get());
+
+            InMemoryDOMStoreTreeChangePublisher publisher =
+                    new InMemoryDOMStoreTreeChangePublisher(notificationManager);
+            publisher.registerTreeChangeListener(treeId, listener);
+            publisher.publishChange(candidate);
         }
 
         return reg;
