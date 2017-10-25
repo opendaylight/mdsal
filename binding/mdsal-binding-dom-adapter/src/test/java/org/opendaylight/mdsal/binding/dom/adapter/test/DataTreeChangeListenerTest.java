@@ -143,6 +143,20 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         verifyModification(barDeleteEvent.getRootNode(), BAR_ARGUMENT, ModificationType.DELETE);
     }
 
+    @Test
+    public void testWildcardedListListenerWithPreexistingData() throws Exception {
+        putTx(TOP_PATH, TOP_INITIAL_DATA).submit().get();
+
+        final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
+        final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.create(
+                LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
+        dataBrokerImpl.registerDataTreeChangeListener(wildcard, listener);
+
+        final DataTreeModification<TopLevelList> fooWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
+        assertEquals(FOO_PATH, fooWriteEvent.getRootPath().getRootIdentifier());
+        verifyModification(fooWriteEvent.getRootNode(), FOO_ARGUMENT, ModificationType.WRITE);
+    }
+
     private void createAndVerifyTop(final EventCapturingListener<Top> listener) throws Exception {
         putTx(TOP_PATH,TOP_INITIAL_DATA).submit().get();
         final Collection<DataTreeModification<Top>> events = listener.nextEvent();
