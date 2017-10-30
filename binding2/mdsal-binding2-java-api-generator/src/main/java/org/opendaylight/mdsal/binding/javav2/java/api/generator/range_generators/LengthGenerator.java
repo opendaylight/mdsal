@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators;
+package org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators;
 
 import com.google.common.collect.Range;
 import java.util.ArrayList;
@@ -110,7 +110,8 @@ public final class LengthGenerator {
         }
     }
 
-    public static String generateLengthCheckerCall(@Nullable final String member, @Nonnull final String valueReference) {
+    public static String generateLengthCheckerCall(@Nullable final String member,
+            @Nonnull final String valueReference) {
         return lengthCheckerName(member) + '(' + valueReference + ");\n";
     }
 }

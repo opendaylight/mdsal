@@ -16,6 +16,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.BaseEncoding;
+
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +25,9 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.AbstractRangeGenerator;
-import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.LengthGenerator;
+
+import org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators.AbstractRangeGenerator;
+import org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators.LengthGenerator;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplateConstructors;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplateRestrictions;
@@ -163,7 +165,7 @@ public class ClassRenderer extends BaseRenderer {
         if (!enclosedGeneratedTypes.isEmpty()) {
             for (GeneratedType innerClass : enclosedGeneratedTypes) {
                 if (innerClass instanceof GeneratedTransferObject) {
-                    classTemplateBuilder.add(generateInnerClassBody((GeneratedTransferObject)innerClass));
+                    classTemplateBuilder.add(generateInnerClassBody((GeneratedTransferObject) innerClass));
                 }
             }
         }
@@ -177,7 +179,8 @@ public class ClassRenderer extends BaseRenderer {
         }
         final String enumerations = String.join("\n", enumList);
 
-        final String constants = constantsTemplate.render(getType(), getImportedNames(), this::importedName, false).body();
+        final String constants = constantsTemplate.render(getType(), getImportedNames(), this::importedName, false)
+                .body();
 
         if (genTO.getSuperType() != null) {
             getImportedNames().put("superType", importedName(genTO.getSuperType()));
@@ -219,7 +222,8 @@ public class ClassRenderer extends BaseRenderer {
         final String fields = sb2.toString();
         getImportedNames().put("baseEncoding", importedName(BaseEncoding.class));
         if (!allProperties.isEmpty()) {
-            getImportedNames().put("defProp", importedName(((GeneratedProperty)((List) allProperties).get(0)).getReturnType()));
+            getImportedNames().put("defProp", importedName(((GeneratedProperty) ((List) allProperties).get(0))
+                    .getReturnType()));
         }
 
         final StringBuilder sb3 = new StringBuilder();
@@ -254,7 +258,7 @@ public class ClassRenderer extends BaseRenderer {
                 final List other = new ArrayList<>(properties);
                 if (other.remove(allProperty)) {
                     sb2.append(classTemplateUnionConstr.render(getType(), parentProperties, allProperty,
-                        other, importedName(allProperty.getReturnType()), genRestrictions).body());
+                            other, importedName(allProperty.getReturnType()), genRestrictions).body());
                 }
             }
         }
@@ -269,34 +273,32 @@ public class ClassRenderer extends BaseRenderer {
      * Selects from input list of properties only those which have read only
      * attribute set to true.
      *
-     * @param properties
-     *            list of properties of generated transfer object
+     * @param props list of properties of generated transfer object
      * @return subset of <code>properties</code> which have read only attribute
-     *         set to true
+     *      set to true
      */
-    private List<GeneratedProperty> resolveReadOnlyPropertiesFromTO(final List<GeneratedProperty> properties) {
-        return new ArrayList<>(Collections2.filter(properties, GeneratedProperty::isReadOnly));
+    private List<GeneratedProperty> resolveReadOnlyPropertiesFromTO(final List<GeneratedProperty> props) {
+        return new ArrayList<>(Collections2.filter(props, GeneratedProperty::isReadOnly));
     }
 
     /**
      * Returns the list of the read only properties of all extending generated
      * transfer object from <code>genTO</code> to highest parent generated
-     * transfer object
+     * transfer object.
      *
-     * @param genTO
-     *            generated transfer object for which is the list of read only
-     *            properties generated
+     * @param transferObject generated transfer object for which is the list of read only
+     *                       properties generated
      * @return list of all read only properties from actual to highest parent
-     *         generated transfer object. In case when extension exists the
-     *         method is recursive called.
+     *      generated transfer object. In case when extension exists the
+     *      method is recursive called.
      */
-    private List<GeneratedProperty> getPropertiesOfAllParents(final GeneratedTransferObject genTO) {
+    private List<GeneratedProperty> getPropertiesOfAllParents(final GeneratedTransferObject transferObject) {
         final List<GeneratedProperty> propertiesOfAllParents = new ArrayList<>();
-        if (genTO.getSuperType() != null) {
-            final List<GeneratedProperty> allPropertiesOfTO = genTO.getSuperType().getProperties();
+        if (transferObject.getSuperType() != null) {
+            final List<GeneratedProperty> allPropertiesOfTO = transferObject.getSuperType().getProperties();
             List<GeneratedProperty> readOnlyPropertiesOfTO = resolveReadOnlyPropertiesFromTO(allPropertiesOfTO);
             propertiesOfAllParents.addAll(readOnlyPropertiesOfTO);
-            propertiesOfAllParents.addAll(getPropertiesOfAllParents(genTO.getSuperType()));
+            propertiesOfAllParents.addAll(getPropertiesOfAllParents(transferObject.getSuperType()));
         }
         return propertiesOfAllParents;
     }
