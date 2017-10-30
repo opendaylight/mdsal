@@ -14,11 +14,13 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
@@ -66,29 +68,29 @@ public final class TextTemplateUtil {
     private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile(" +");
 
     private static DeclaredStatementFormatter YANG_FORMATTER = DeclaredStatementFormatter.builder()
-        .addIgnoredStatement(YangStmtMapping.CONTACT)
-        .addIgnoredStatement(YangStmtMapping.DESCRIPTION)
-        .addIgnoredStatement(YangStmtMapping.REFERENCE)
-        .addIgnoredStatement(YangStmtMapping.ORGANIZATION)
-        .build();
+            .addIgnoredStatement(YangStmtMapping.CONTACT)
+            .addIgnoredStatement(YangStmtMapping.DESCRIPTION)
+            .addIgnoredStatement(YangStmtMapping.REFERENCE)
+            .addIgnoredStatement(YangStmtMapping.ORGANIZATION)
+            .build();
 
     private TextTemplateUtil() {
         throw new UnsupportedOperationException("Util class");
     }
 
     /**
-     * Makes start of getter name LowerCase
+     * Makes start of getter name LowerCase.
      *
-     * @param s getter name without prefix
+     * @param str getter name without prefix
      * @return getter name starting in LowerCase
      */
-    public static String toFirstLower(final String s) {
-        return s != null && s.length() != 0 ? Character.isLowerCase(s.charAt(0)) ? s : s.length() == 1 ?
-                s.toLowerCase() : s.substring(0, 1).toLowerCase() + s.substring(1) : s;
+    public static String toFirstLower(final String str) {
+        return str != null && str.length() != 0 ? Character.isLowerCase(str.charAt(0)) ? str : str.length() == 1
+                ? str.toLowerCase() : str.substring(0, 1).toLowerCase() + str.substring(1) : str;
     }
 
     /**
-     * Wraps text as documentation, used in enum description
+     * Wraps text as documentation, used in enum description.
      *
      * @param text text for wrapping
      * @return wrapped text
@@ -113,7 +115,8 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Returns formatted Javadoc, based on type
+     * Returns formatted Javadoc, based on type.
+     *
      * @param typeName given type name
      * @return formatted Javadoc, based on type
      */
@@ -129,8 +132,9 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Returns formatted Javadoc with possible additional comment, based on type
-     * @param type given type
+     * Returns formatted Javadoc with possible additional comment, based on type.
+     *
+     * @param type              given type
      * @param additionalComment additional comment to format
      * @return formatted Javadoc with possible additional comment, based on type
      */
@@ -138,6 +142,39 @@ public final class TextTemplateUtil {
         final StringBuilder javaDoc = new StringBuilder();
         javaDoc.append(formatDataForJavaDoc(type)).append(additionalComment);
         return javaDoc.toString();
+    }
+
+    /**
+     * Returns formatted type description.
+     *
+     * @param type given type
+     * @return formatted type description
+     */
+    public static String formatDataForJavaDoc(final GeneratedType type) {
+        final StringBuilder javaDoc = new StringBuilder();
+        final TypeComment comment = type.getComment();
+        if (comment != null) {
+            javaDoc.append(comment.getJavadoc())
+                    .append(NEW_LINE)
+                    .append(NEW_LINE)
+                    .append(NEW_LINE);
+        }
+
+        appendSnippet(javaDoc, type);
+
+        return javaDoc.toString();
+    }
+
+    private static String formatDataForJavaDoc(final TypeMember type, final String additionalComment) {
+        final StringBuilder javaDoc = new StringBuilder();
+        if (type.getComment() != null && !type.getComment().isEmpty()) {
+            javaDoc.append(formatToParagraph(type.getComment(), 0))
+                    .append(NEW_LINE)
+                    .append(NEW_LINE)
+                    .append(NEW_LINE);
+        }
+        javaDoc.append(additionalComment);
+        return wrapToDocumentation(javaDoc.toString());
     }
 
     private static void appendSnippet(final StringBuilder sb, final GeneratedType type) {
@@ -149,36 +186,37 @@ public final class TextTemplateUtil {
             if (def instanceof Single) {
                 DocumentedNode node = ((Single) def).getNode();
                 sb.append("<p>\n")
-                    .append("This class represents the following YANG schema fragment defined in module <b>")
-                    .append(def.getModule().argument()).append("</b>\n")
-                    .append("<pre>\n");
+                        .append("This class represents the following YANG schema fragment defined in module <b>")
+                        .append(def.getModule().argument()).append("</b>\n")
+                        .append("<pre>\n");
                 appendYangSnippet(sb, def.getModule(), ((EffectiveStatement<?, ?>) node).getDeclared());
                 sb.append("</pre>");
 
                 if (node instanceof SchemaNode) {
                     sb.append("The schema path to identify an instance is\n")
-                        .append("<i>")
-                        .append(formatSchemaPath(def.getModule().argument(), ((SchemaNode) node).getPath().getPathFromRoot()))
-                        .append("</i>\n");
+                            .append("<i>")
+                            .append(formatSchemaPath(def.getModule().argument(), ((SchemaNode) node).getPath()
+                                    .getPathFromRoot()))
+                            .append("</i>\n");
 
                     if (hasBuilderClass(type)) {
                         final String builderName = new StringBuilder()
-                            .append(((GeneratedTypeForBuilder) type).getPackageNameForBuilder())
-                            .append(".").append(type.getName()).append("Builder").toString();
+                                .append(((GeneratedTypeForBuilder) type).getPackageNameForBuilder())
+                                .append(".").append(type.getName()).append("Builder").toString();
 
                         sb.append("\n<p>To create instances of this class use {@link ").append(builderName)
-                            .append("}.\n")
-                            .append("@see ").append(builderName).append('\n');
+                                .append("}.\n")
+                                .append("@see ").append(builderName).append('\n');
                         if (node instanceof ListSchemaNode) {
                             final StringBuilder linkToKeyClass = new StringBuilder();
 
                             final String[] namespace = Iterables.toArray(
-                                BSDOT_SPLITTER.split(type.getFullyQualifiedName()), String.class);
+                                    BSDOT_SPLITTER.split(type.getFullyQualifiedName()), String.class);
                             final String className = namespace[namespace.length - 1];
 
                             linkToKeyClass.append(BindingGeneratorUtil.packageNameForSubGeneratedType(
-                                ((GeneratedTypeForBuilder) type).getBasePackageName(), (SchemaNode) node,
-                                BindingNamespaceType.Key)).append('.').append(className).append("Key");
+                                    ((GeneratedTypeForBuilder) type).getBasePackageName(), (SchemaNode) node,
+                                    BindingNamespaceType.Key)).append('.').append(className).append("Key");
 
                             List<QName> keyDef = ((ListSchemaNode) node).getKeyDefinition();
                             if (keyDef != null && !keyDef.isEmpty()) {
@@ -199,7 +237,7 @@ public final class TextTemplateUtil {
     }
 
     private static void appendYangSnippet(StringBuilder sb, ModuleEffectiveStatement module,
-            DeclaredStatement<?> stmt) {
+                                          DeclaredStatement<?> stmt) {
         for (String str : YANG_FORMATTER.toYangTextSnippet(module, stmt)) {
             sb.append(encodeAngleBrackets(encodeJavadocSymbols(str)));
         }
@@ -227,7 +265,8 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Returns properties names in formatted string
+     * Returns properties names in formatted string.
+     *
      * @param properties list of given properties
      * @return properties names in formatted string
      */
@@ -237,29 +276,10 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Returns formatted type description
-     * @param type given type
-     * @return formatted type description
-     */
-    public static String formatDataForJavaDoc(final GeneratedType type) {
-        final StringBuilder javaDoc = new StringBuilder();
-        final TypeComment comment = type.getComment();
-        if (comment != null) {
-            javaDoc.append(comment.getJavadoc())
-                .append(NEW_LINE)
-                .append(NEW_LINE)
-                .append(NEW_LINE);
-        }
-
-        appendSnippet(javaDoc, type);
-
-        return javaDoc.toString();
-    }
-
-    /**
-     * Returns parameter name, based on given Type
+     * Returns parameter name, based on given Type.
+     *
      * @param returnType given type
-     * @param paramName parameter name
+     * @param paramName  parameter name
      * @return parameter name, based on given Type
      */
     public static String paramValue(final Type returnType, final String paramName) {
@@ -276,20 +296,9 @@ public final class TextTemplateUtil {
         return comment == null ? "" : wrapToDocumentation(formatToParagraph(comment.trim(), 0));
     }
 
-    private static String formatDataForJavaDoc(final TypeMember type, final String additionalComment) {
-        final StringBuilder javaDoc = new StringBuilder();
-        if (type.getComment() != null && !type.getComment().isEmpty()) {
-            javaDoc.append(formatToParagraph(type.getComment(), 0))
-                    .append(NEW_LINE)
-                    .append(NEW_LINE)
-                    .append(NEW_LINE);
-        }
-        javaDoc.append(additionalComment);
-        return wrapToDocumentation(javaDoc.toString());
-    }
-
     /**
-     * Returns related Javadoc
+     * Returns related Javadoc.
+     *
      * @param methodSignature method signature
      * @return related Javadoc
      */
@@ -313,7 +322,8 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Encodes angle brackets in yang statement description
+     * Encodes angle brackets in yang statement description.
+     *
      * @param description description of a yang statement which is used to generate javadoc comments
      * @return string with encoded angle brackets
      */
@@ -326,7 +336,8 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Returns collection of properties as formatted String
+     * Returns collection of properties as formatted String.
+     *
      * @param properties list of given properties
      * @return generated properties as formatted String
      */
@@ -335,8 +346,9 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Returns properties as formatted String
-     * @param properties list of given properties
+     * Returns properties as formatted String.
+     *
+     * @param properties  list of given properties
      * @param booleanName Java Boolean type name
      * @return Properties as formatted String
      */
@@ -346,7 +358,8 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Extracts available restrictions from given type
+     * Extracts available restrictions from given type.
+     *
      * @param currentType given type
      * @return restrictions from given type
      */
@@ -361,7 +374,7 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * sets fieldname according to property for return type
+     * sets fieldname according to property for return type.
      * method(type fieldname)
      *
      * @param property type from getter
@@ -397,12 +410,14 @@ public final class TextTemplateUtil {
 
     /**
      * Returns built setter method body from input parameters.
-     * @param field generated property
-     * @param typeName type name
+     *
+     * @param field          generated property
+     * @param typeName       type name
      * @param returnTypeName return type name
      * @return built setter method body
      */
-    public static String setterMethod(final GeneratedProperty field, final String typeName, final String returnTypeName) {
+    public static String setterMethod(final GeneratedProperty field, final String typeName, final String
+            returnTypeName) {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("public ")
                 .append(typeName)
@@ -417,7 +432,8 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Returns simple name of underlying class
+     * Returns simple name of underlying class.
+     *
      * @return Simple name of underlying class
      */
     public static String getSimpleNameForBuilder() {
@@ -425,14 +441,14 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * Makes start of getter name uppercase
+     * Makes start of getter name uppercase.
      *
-     * @param s getter name without prefix
+     * @param str getter name without prefix
      * @return getter name starting in uppercase
      */
-    public static String toFirstUpper(final String s) {
-        return s != null && s.length() != 0 ? Character.isUpperCase(s.charAt(0)) ? s : s.length() == 1 ?
-                s.toUpperCase() : s.substring(0, 1).toUpperCase() + s.substring(1) : s;
+    public static String toFirstUpper(final String str) {
+        return str != null && str.length() != 0 ? Character.isUpperCase(str.charAt(0)) ? str : str.length() == 1
+                ? str.toUpperCase() : str.substring(0, 1).toUpperCase() + str.substring(1) : str;
     }
 
     /**
@@ -456,6 +472,7 @@ public final class TextTemplateUtil {
 
     /**
      * Returns list of properties as formatted String.
+     *
      * @param properties input list of generated properties
      * @return formatted property list as String
      */
@@ -464,16 +481,20 @@ public final class TextTemplateUtil {
     }
 
     /**
-     * util method for unionTemplateBuilderTemplate
+     * util method for unionTemplateBuilderTemplate.
+     *
      * @return string with clarification for javadoc
      */
     public static String getClarification() {
         final StringBuilder clarification = new StringBuilder();
-        clarification.append("The purpose of generated class in src/main/java for Union types is to create new instances of unions from a string representation.\n")
-                .append("In some cases it is very difficult to automate it since there can be unions such as (uint32 - uint16), or (string - uint32).\n")
+        clarification.append("The purpose of generated class in src/main/java for Union types is to create new "
+                + "instances of unions from a string representation.\n")
+                .append("In some cases it is very difficult to automate it since there can be unions such as (uint32 "
+                        + "- uint16), or (string - uint32).\n")
                 .append("\n")
                 .append("The reason behind putting it under src/main/java is:\n")
-                .append("This class is generated in form of a stub and needs to be finished by the user. This class is generated only once to prevent\n")
+                .append("This class is generated in form of a stub and needs to be finished by the user. This class "
+                        + "is generated only once to prevent\n")
                 .append("loss of user code.\n")
                 .append("\n");
         return clarification.toString();
@@ -481,33 +502,41 @@ public final class TextTemplateUtil {
 
     /**
      * Returns source path as String.
-     * @param module module
+     *
+     * @param module                 module
      * @param moduleFilePathResolver function module to module file path
      * @return formatted String source path
      */
-    public static String getSourcePath(final Module module, final Function<Module, Optional<String>> moduleFilePathResolver) {
+    public static String getSourcePath(final Module module, final Function<Module, Optional<String>>
+            moduleFilePathResolver) {
         final java.util.Optional<String> moduleFilePath = moduleFilePathResolver.apply(module);
-        Preconditions.checkArgument(moduleFilePath.isPresent(),"Module file path for %s is not present", module);
+        Preconditions.checkArgument(moduleFilePath.isPresent(), "Module file path for %s is not present", module);
 
         return moduleFilePath.get();
     }
 
     /**
      * Util method for unionTemplateBuilderTemplate.
+     *
      * @param modifier enum representing Java access modifier
      * @return needed access modifier
      */
     public static String getAccessModifier(final AccessModifier modifier) {
         switch (modifier) {
-            case PUBLIC: return "public ";
-            case PROTECTED: return "protected ";
-            case PRIVATE: return "private ";
-            default: return "";
+            case PUBLIC:
+                return "public ";
+            case PROTECTED:
+                return "protected ";
+            case PRIVATE:
+                return "private ";
+            default:
+                return "";
         }
     }
 
     /**
-     * @param text Content of tag description
+     * Return formatted description.
+     * @param text           Content of tag description
      * @param nextLineIndent Number of spaces from left side default is 12
      * @return formatted description
      */

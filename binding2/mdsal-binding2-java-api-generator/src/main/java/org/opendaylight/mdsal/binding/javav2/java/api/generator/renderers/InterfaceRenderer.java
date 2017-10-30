@@ -113,10 +113,11 @@ public class InterfaceRenderer extends BaseRenderer {
     }
 
     /**
+     * Return string of annotations.
      * @param annotationTypeList list of annotations
      * @return String of annotations in format:
-     * "@"annotation
-     * (parameterName1=ParameterSingleValue1,...)
+     *     "@"annotation
+     *     (parameterName1=ParameterSingleValue1,...)
      *
      */
     private String generateAnnotations(final List<AnnotationType> annotationTypeList) {
@@ -129,9 +130,7 @@ public class InterfaceRenderer extends BaseRenderer {
             final List<String> parameterList = new ArrayList<>(annotationType.getParameters().size());
             for (AnnotationType.Parameter parameter : annotationType.getParameters()) {
                 final StringBuilder sb2 = new StringBuilder();
-                sb2.append(parameter.getName())
-                   .append('=')
-                   .append(parameter.getSingleValue());
+                sb2.append(parameter.getName()).append('=').append(parameter.getSingleValue());
                 parameterList.add(sb2.toString());
             }
             sb1.append(String.join(",", parameterList));
@@ -149,9 +148,9 @@ public class InterfaceRenderer extends BaseRenderer {
      */
     private Entry<String, String> generateInstanceIdentifier() {
         //Only tree data nodes need to generate the method.
-        if (null == getType().getBindingNamespaceType() ||
-            !BindingNamespaceType.isTreeData(getType().getBindingNamespaceType()) ||
-            !getType().getImplements().contains(BindingTypes.TREE_CHILD_NODE) ) {
+        if (null == getType().getBindingNamespaceType()
+                || !BindingNamespaceType.isTreeData(getType().getBindingNamespaceType())
+                || !getType().getImplements().contains(BindingTypes.TREE_CHILD_NODE)) {
             return new SimpleEntry<>(null, null);
         }
 
@@ -200,6 +199,7 @@ public class InterfaceRenderer extends BaseRenderer {
 
 
     /**
+     * Return list of parameters.
      * @param parameters list of parameters
      * @return list of parameters separated with ","
      */

@@ -19,6 +19,7 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
@@ -62,17 +64,17 @@ import org.opendaylight.yangtools.yang.common.QName;
 public class BuilderRenderer extends BaseRenderer {
 
     /**
-     * Set of class attributes (fields) which are derived from the getter methods names
+     * Set of class attributes (fields) which are derived from the getter methods names.
      */
     private final Set<GeneratedProperty> properties;
 
     /**
-     * Set of name from properties
+     * Set of name from properties.
      */
     private final Map<GeneratedProperty, String> importedNamesForProperties = new HashMap<>();
 
     /**
-     * Generated property is set if among methods is found one with the name GET_AUGMENTATION_METHOD_NAME
+     * Generated property is set if among methods is found one with the name GET_AUGMENTATION_METHOD_NAME.
      */
     private GeneratedProperty augmentField;
 
@@ -89,14 +91,14 @@ public class BuilderRenderer extends BaseRenderer {
     protected String packageDefinition() {
         final StringBuilder sb = new StringBuilder();
         sb.append("package ")
-                .append(((GeneratedTypeForBuilder)getType()).getPackageNameForBuilder())
+                .append(((GeneratedTypeForBuilder) getType()).getPackageNameForBuilder())
                 .append(";\n\n");
         return sb.toString();
     }
 
     @Override
     protected boolean hasSamePackage(final String importedTypePackageName) {
-        return ((GeneratedTypeForBuilder)getType()).getPackageNameForBuilder()
+        return ((GeneratedTypeForBuilder) getType()).getPackageNameForBuilder()
                 .equals(importedTypePackageName);
     }
 
@@ -129,23 +131,22 @@ public class BuilderRenderer extends BaseRenderer {
      *
      * @param method method signature from which is the method name and return type obtained
      * @return generated property instance for the getter <code>method</code>
-     * @throws IllegalArgumentException
-     *  <li>if the <code>method</code> equals <code>null</code></li>
-     *  <li>if the name of the <code>method</code> equals <code>null</code></li>
-     *  <li>if the name of the <code>method</code> is empty</li>
-     *  <li>if the return type of the <code>method</code> equals <code>null</code></li>
+     * @throws IllegalArgumentException <li>if the <code>method</code> equals <code>null</code></li>
+     *                                  <li>if the name of the <code>method</code> equals <code>null</code></li>
+     *                                  <li>if the name of the <code>method</code> is empty</li>
+     *                                  <li>if the return type of the <code>method</code> equals <code>null</code></li>
      */
     private GeneratedProperty propertyFromGetter(final MethodSignature method) {
         Preconditions.checkArgument(method != null, "Method cannot be NULL");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(method.getName()),
-            "Method name cannot be NULL or empty");
+                "Method name cannot be NULL or empty");
         Preconditions.checkArgument(method.getReturnType() != null,
-            "Method return type reference cannot be NULL");
+                "Method return type reference cannot be NULL");
         final String prefix = Types.BOOLEAN.equals(method.getReturnType()) ? "is" : "get";
         if (method.getName().startsWith(prefix)) {
             final String fieldName = toFirstLower(method.getName().substring(prefix.length()));
             final GeneratedTOBuilderImpl tmpGenTO =
-                new GeneratedTOBuilderImpl("foo", "foo", true);
+                    new GeneratedTOBuilderImpl("foo", "foo", true);
             tmpGenTO.addProperty(fieldName).setReturnType(method.getReturnType());
             return tmpGenTO.toInstance().getProperties().get(0);
         }
@@ -173,7 +174,7 @@ public class BuilderRenderer extends BaseRenderer {
      * Adds to the <code>methods</code> set all the methods of the <code>implementedIfcs</code>
      * and recursively their implemented interfaces.
      *
-     * @param methods set of method signatures
+     * @param methods         set of method signatures
      * @param implementedIfcs list of implemented interfaces
      */
     private void collectImplementedMethods(final Set<MethodSignature> methods, List<Type> implementedIfcs) {
@@ -194,21 +195,22 @@ public class BuilderRenderer extends BaseRenderer {
                             final GeneratedTOBuilderImpl generatedTOBuilder = new GeneratedTOBuilderImpl(aPackage,
                                     name, true);
                             final ReferencedTypeImpl referencedType = new ReferencedTypeImpl(aPackage, name,
-                                true, null);
+                                    true, null);
                             final ReferencedTypeImpl generic = new ReferencedTypeImpl(getType().getPackageName(),
                                     getType().getName(), true, null);
                             final ParameterizedType parametrizedReturnType =
-                                Types.parameterizedTypeFor(referencedType, generic);
+                                    Types.parameterizedTypeFor(referencedType, generic);
                             generatedTOBuilder.addMethod(method.getName()).setReturnType(parametrizedReturnType);
                             augmentField = propertyFromGetter(generatedTOBuilder.toInstance().getMethodDefinitions()
-                                .get(0));
+                                    .get(0));
                             getImportedNames().put("map", importedName(Map.class));
                             getImportedNames().put("hashMap", importedName(HashMap.class));
                             getImportedNames().put("class", importedName(Class.class));
 //                            To do This is for third party, is it needed ?
                             getImportedNames().put("augmentationHolder", importedName(AugmentationHolder.class));
                             getImportedNames().put("collections", importedName(Collections.class));
-                            getImportedNames().put("augmentFieldReturnType", importedName(augmentField.getReturnType()));
+                            getImportedNames().put("augmentFieldReturnType", importedName(
+                                    augmentField.getReturnType()));
                         }
                     }
                 } else if (Instantiable.class.getName().equals(implementedIfc.getFullyQualifiedName())) {
@@ -231,7 +233,7 @@ public class BuilderRenderer extends BaseRenderer {
     }
 
     /**
-     * Returns the name of tye type from <code>fullyQualifiedName</code>
+     * Returns the name of the type from <code>fullyQualifiedName</code>.
      *
      * @param fullyQualifiedName string with fully qualified type name (package + type)
      * @return string with the name of the type
@@ -244,8 +246,8 @@ public class BuilderRenderer extends BaseRenderer {
     public static Set<Type> getAllIfcs(final Type type) {
         final Set<Type> baseIfcs = new HashSet<>();
         if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-            for (Type impl : ((GeneratedType)type).getImplements()) {
-                if (impl instanceof GeneratedType && !(((GeneratedType)impl).getMethodDefinitions().isEmpty())) {
+            for (Type impl : ((GeneratedType) type).getImplements()) {
+                if (impl instanceof GeneratedType && !(((GeneratedType) impl).getMethodDefinitions().isEmpty())) {
                     baseIfcs.add(impl);
                 }
                 baseIfcs.addAll(getAllIfcs(impl));
@@ -262,7 +264,7 @@ public class BuilderRenderer extends BaseRenderer {
      */
     public static boolean hasImplementsFromUses(GeneratedType type) {
         for (Type impl : getAllIfcs(type)) {
-            if ((impl instanceof GeneratedType) && !(((GeneratedType)impl).getMethodDefinitions().isEmpty())) {
+            if ((impl instanceof GeneratedType) && !(((GeneratedType) impl).getMethodDefinitions().isEmpty())) {
                 return true;
             }
         }
@@ -314,7 +316,7 @@ public class BuilderRenderer extends BaseRenderer {
             if (getType().getImplements().contains(BindingTypes.IDENTIFIABLE)) {
                 childTreeNodeIdent = true;
                 final ParameterizedType pType = (ParameterizedType) getType().getImplements().get(getType()
-                    .getImplements().indexOf(BindingTypes.IDENTIFIABLE));
+                        .getImplements().indexOf(BindingTypes.IDENTIFIABLE));
                 keyTypeName = pType.getActualTypeArguments()[0].getName();
             }
         }
@@ -322,21 +324,23 @@ public class BuilderRenderer extends BaseRenderer {
         getImportedNames().put("augmentation", importedName(Augmentation.class));
         getImportedNames().put("classInstMap", importedName(ClassToInstanceMap.class));
 
-        final String constants = constantsTemplate.render(getType(), getImportedNames(), this::importedName, false).body();
+        final String constants = constantsTemplate.render(getType(), getImportedNames(), this::importedName, false)
+                .body();
 
         // list for generate copy constructor
         final String copyConstructorHelper = generateListForCopyConstructor();
         List<String> getterMethods = new ArrayList<>(Collections2.transform(properties, this::getterMethod));
 
-        return builderTemplate.render(getType(), properties, getImportedNames(), importedNamesForProperties, augmentField,
-            copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, childTreeNodeIdent,
-            keyTypeName, instantiable, constants).body();
+        return builderTemplate.render(getType(), properties, getImportedNames(), importedNamesForProperties,
+                augmentField,
+                copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, childTreeNodeIdent,
+                keyTypeName, instantiable, constants).body();
     }
 
     private String generateListForCopyConstructor() {
         final List allProps = new ArrayList<>(properties);
         final boolean isList = implementsIfc(getType(),
-            Types.parameterizedTypeFor(typeForClass(Identifiable.class), getType()));
+                Types.parameterizedTypeFor(typeForClass(Identifiable.class), getType()));
         final Type keyType = getKey(getType());
         if (isList && keyType != null) {
             final List<GeneratedProperty> keyProps = ((GeneratedTransferObject) keyType).getProperties();
@@ -345,8 +349,8 @@ public class BuilderRenderer extends BaseRenderer {
             }
             removeProperty(allProps, "key");
             getImportedNames().put("keyTypeConstructor", importedName(keyType));
-            return builderConstructorHelperTemplate.render(allProps, keyProps, getImportedNames(), getPropertyList(keyProps))
-                    .body();
+            return builderConstructorHelperTemplate.render(allProps, keyProps, getImportedNames(),
+                    getPropertyList(keyProps)).body();
         }
         return builderConstructorHelperTemplate.render(allProps, null, getImportedNames(), null).body();
     }
@@ -364,10 +368,10 @@ public class BuilderRenderer extends BaseRenderer {
         return type.getImplements().contains(impl);
     }
 
-    private void removeProperty(final Collection<GeneratedProperty> properties, final String name) {
-        for (final GeneratedProperty property : properties) {
+    private void removeProperty(final Collection<GeneratedProperty> props, final String name) {
+        for (final GeneratedProperty property : props) {
             if (name.equals(property.getName())) {
-                properties.remove(property);
+                props.remove(property);
                 break;
             }
         }

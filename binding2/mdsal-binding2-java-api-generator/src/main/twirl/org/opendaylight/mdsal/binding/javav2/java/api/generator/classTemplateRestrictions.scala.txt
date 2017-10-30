@@ -8,8 +8,8 @@
 
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.getRestrictions
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.paramValue
-@import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.AbstractRangeGenerator
-@import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.LengthGenerator
+@import org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators.AbstractRangeGenerator
+@import org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators.LengthGenerator
 @import org.opendaylight.mdsal.binding.javav2.model.api.Type
 
 @(currentType: Type, paramName: String, returnType: Type, rangeGenerator: AbstractRangeGenerator[_])
