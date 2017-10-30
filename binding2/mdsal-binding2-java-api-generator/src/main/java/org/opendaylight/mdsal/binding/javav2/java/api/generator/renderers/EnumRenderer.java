@@ -13,8 +13,8 @@ import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.Text
 
 import java.util.LinkedList;
 import java.util.List;
-import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.enumTemplate;
+import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 
 public class EnumRenderer extends BaseRenderer {
     private final Enumeration enums;
@@ -31,7 +31,8 @@ public class EnumRenderer extends BaseRenderer {
     }
 
     /**
-     * @param enumeration enumeration to write
+     * Return list of enumeration pairs with javadoc.
+     * @param enumeration enumeration to write.
      * @return List of enumeration pairs with javadoc
      */
     public static String writeEnumeration(final Enumeration enumeration) {
