@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators;
+package org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -22,8 +22,9 @@ public abstract class AbstractRangeGenerator<T extends Number & Comparable<T>> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRangeGenerator.class);
     private static final Map<String, AbstractRangeGenerator<?>> GENERATORS;
 
-    private static void addGenerator(final Builder<String, AbstractRangeGenerator<?>> b, final AbstractRangeGenerator<?> generator) {
-        b.put(generator.getTypeClass().getCanonicalName(), generator);
+    private static void addGenerator(final Builder<String, AbstractRangeGenerator<?>> builder,
+            final AbstractRangeGenerator<?> generator) {
+        builder.put(generator.getTypeClass().getCanonicalName(), generator);
     }
 
     static {
@@ -84,14 +85,15 @@ public abstract class AbstractRangeGenerator<T extends Number & Comparable<T>> {
         final AbstractRangeGenerator<?> gen = GENERATORS.get(value.getClass().getName());
         final Number check = gen.convert(ret);
         if (!value.equals(check)) {
-            LOG.warn("Number class conversion from {} to {} truncated value {} to {}", value.getClass(), type, value, ret);
+            LOG.warn("Number class conversion from {} to {} truncated value {} to {}", value.getClass(),
+                type, value, ret);
         }
 
         return ret;
     }
 
     // FIXME: Once BUG-3399 is fixed, we should never need this
-    protected abstract T convert(final Number value);
+    protected abstract T convert(Number value);
 
     /**
      * Format a value into a Java-compilable expression which results in the appropriate
@@ -100,7 +102,7 @@ public abstract class AbstractRangeGenerator<T extends Number & Comparable<T>> {
      * @param value Number value
      * @return Java language string representation
      */
-    @Nonnull protected abstract String format(final T value);
+    @Nonnull protected abstract String format(T value);
 
     /**
      * Generate the checker method source code.
@@ -108,8 +110,8 @@ public abstract class AbstractRangeGenerator<T extends Number & Comparable<T>> {
      * @param constraint Restrictions which need to be applied.
      * @return Method source code.
      */
-    @Nonnull protected abstract String generateRangeCheckerImplementation(@Nonnull final String checkerName,
-            @Nonnull final RangeConstraint<?> constraint);
+    @Nonnull protected abstract String generateRangeCheckerImplementation(@Nonnull String checkerName,
+            @Nonnull RangeConstraint<?> constraint);
 
     private static String rangeCheckerName(final String member) {
         return "check" + member + "Range";

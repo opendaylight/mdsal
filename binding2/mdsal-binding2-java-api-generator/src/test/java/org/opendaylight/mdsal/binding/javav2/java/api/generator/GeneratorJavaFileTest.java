@@ -41,6 +41,7 @@ public class GeneratorJavaFileTest {
             Assert.assertNotNull(f);
         }
         final List<String> files = new ArrayList<>();
+        final RuntimeException runtimeException = new RuntimeException();
         for (final File file : generateToFile) {
             BufferedReader br = null;
             FileReader fr = null;
@@ -48,13 +49,13 @@ public class GeneratorJavaFileTest {
                 fr = new FileReader(file.getAbsolutePath());
                 br = new BufferedReader(fr);
                 final StringBuilder sb = new StringBuilder();
-                String sCurrentLine;
-                while ((sCurrentLine = br.readLine()) != null) {
-                    sb.append(sCurrentLine).append('\n');
+                String currentLine;
+                while ((currentLine = br.readLine()) != null) {
+                    sb.append(currentLine).append('\n');
                 }
                 files.add(sb.toString());
             } catch (final IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             } finally {
                 try {
                     if (br != null) {
@@ -64,7 +65,7 @@ public class GeneratorJavaFileTest {
                         fr.close();
                     }
                 } catch (final IOException ex) {
-                    ex.printStackTrace();
+                    runtimeException.addSuppressed(ex);
                 }
             }
         }

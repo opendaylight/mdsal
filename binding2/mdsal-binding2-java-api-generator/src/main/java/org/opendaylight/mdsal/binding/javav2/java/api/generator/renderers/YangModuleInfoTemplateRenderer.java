@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -66,7 +65,7 @@ public class YangModuleInfoTemplateRenderer {
 
     protected String body() {
         /**
-         * list of all imported names for template
+         * list of all imported names for template.
          */
         final Map<String, String> importedNames = new HashMap<>();
 
@@ -87,7 +86,7 @@ public class YangModuleInfoTemplateRenderer {
     }
 
     /**
-     * Builds template
+     * Builds template.
      * @return generated final template
      */
     public String generateTemplate() {
@@ -108,7 +107,7 @@ public class YangModuleInfoTemplateRenderer {
     }
 
     /**
-     * Walks through map of imports
+     * Walks through map of imports.
      * @return string of imports for template
      */
     private String imports() {
@@ -188,16 +187,16 @@ public class YangModuleInfoTemplateRenderer {
         return sb;
     }
 
-    private String getParameters(final Type[] pTypes) {
-        if (pTypes == null || pTypes.length == 0) {
+    private String getParameters(final Type[] ptypes) {
+        if (ptypes == null || ptypes.length == 0) {
             return "?";
         }
         final StringBuilder sb = new StringBuilder();
-        int i = 0;
-        for (Type pType : pTypes) {
-            final Type type = pTypes[i];
+        int count = 0;
+        for (Type ptype : ptypes) {
+            final Type type = ptypes[count];
             String separator = ",";
-            if (i == (pTypes.length - 1)) {
+            if (count == (ptypes.length - 1)) {
                 separator = "";
             }
             String wildcardParam = "";
@@ -208,7 +207,7 @@ public class YangModuleInfoTemplateRenderer {
                     wildcardParam = "? extends ";
                 }
                 sb.append(wildcardParam + getExplicitType(type) + separator);
-                i = i + 1;
+                count = count + 1;
             }
         }
         return sb.toString();

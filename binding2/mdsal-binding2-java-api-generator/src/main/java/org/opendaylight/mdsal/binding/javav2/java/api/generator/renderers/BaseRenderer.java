@@ -36,22 +36,22 @@ public abstract class BaseRenderer {
     private static final String COMMA = ",";
     private static final String DOT = ".";
 
-    private final GeneratedType type;
+    private final GeneratedType genType;
     private final Map<String, String> importMap;
 
     protected BaseRenderer(final GeneratedType type) {
-        this.type = Preconditions.checkNotNull(type);
+        this.genType = Preconditions.checkNotNull(type);
         this.importMap = new HashMap<>();
     }
 
     /**
-     * Implementation needs to call Scala template render() method to generate string body
+     * Implementation needs to call Scala template render() method to generate string body.
      * @return rendered body
      */
     protected abstract String body();
 
     protected GeneratedType getType() {
-        return type;
+        return genType;
     }
 
     protected String getFromImportMap(@NonNull final String typeName) {
@@ -71,12 +71,13 @@ public abstract class BaseRenderer {
     }
 
     /**
+     * Return string with type name for type in the full format or in the short format.
      * @param intype type to format and add to imports
      * @return formatted type
      */
     protected String importedName(final Type intype) {
-        putTypeIntoImports(type, intype);
-        return getExplicitType(type, intype);
+        putTypeIntoImports(genType, intype);
+        return getExplicitType(genType, intype);
     }
 
     protected String importedName(final Class<?> cls) {
@@ -84,18 +85,19 @@ public abstract class BaseRenderer {
     }
 
     /**
+     * Generate package definition for template.
      * @return package definition for template
      */
     protected String packageDefinition() {
         final StringBuilder sb = new StringBuilder();
         sb.append("package ")
-                .append(type.getPackageName())
+                .append(genType.getPackageName())
                 .append(";\n\n");
         return sb.toString();
     }
 
     /**
-     * walks through map of imports
+     * walks through map of imports.
      * @return string of imports for template
      */
     private String imports() {
@@ -136,12 +138,12 @@ public abstract class BaseRenderer {
     }
 
     /**
-     * Checks if package of generated type and imported type is the same
+     * Checks if package of generated type and imported type is the same.
      * @param importedTypePackageName imported types package name
      * @return equals packages
      */
     protected boolean hasSamePackage(final String importedTypePackageName) {
-        return type.getPackageName().equals(importedTypePackageName);
+        return genType.getPackageName().equals(importedTypePackageName);
     }
 
     /**
@@ -222,7 +224,8 @@ public abstract class BaseRenderer {
      * @param parentGenType generated type which contains type
      * @return adds actual type parameters to builder
      */
-    private StringBuilder addActualTypeParameters(final StringBuilder sb, final Type type, final GeneratedType parentGenType) {
+    private StringBuilder addActualTypeParameters(final StringBuilder sb, final Type type,
+            final GeneratedType parentGenType) {
         if (type instanceof ParameterizedType) {
             final ParameterizedType pType = (ParameterizedType) type;
             final Type[] pTypes = pType.getActualTypeArguments();
@@ -247,6 +250,7 @@ public abstract class BaseRenderer {
     }
 
     /**
+     * Generate string with constant wrapped in code.
      * @param constant constant to emit
      * @return string with constant wrapped in code
      */
@@ -276,22 +280,22 @@ public abstract class BaseRenderer {
     }
 
     /**
-     * Generates the string with all actual type parameters from
+     * Generates the string with all actual type parameters from types.
      *
      * @param parentGenType generated type for which is the JAVA code generated
-     * @param pTypes array of Type instances = actual type parameters
-     * @return string with all actual type parameters from pTypes
+     * @param types array of Type instances = actual type parameters
+     * @return string with all actual type parameters from types
      */
-    private String getParameters(final GeneratedType parentGenType, final Type[] pTypes) {
-        if (pTypes == null || pTypes.length == 0) {
+    private String getParameters(final GeneratedType parentGenType, final Type[] types) {
+        if (types == null || types.length == 0) {
             return "?";
         }
         final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < pTypes.length; i++) {
-            final Type t = pTypes[i];
+        for (int i = 0; i < types.length; i++) {
+            final Type t = types[i];
 
             String separator = COMMA;
-            if (i == pTypes.length - 1) {
+            if (i == types.length - 1) {
                 separator = "";
             }
 
@@ -335,7 +339,7 @@ public abstract class BaseRenderer {
     }
 
     /**
-     * Template method which generates the getter method for field
+     * Template method which generates the getter method for field.
      *
      * @param field generated property with data about field which is generated as the getter method
      * @return string with the getter method source code in JAVA format
@@ -362,7 +366,7 @@ public abstract class BaseRenderer {
     }
 
     /**
-     * builds template
+     * builds template.
      * @return generated final template
      */
     public String generateTemplate() {

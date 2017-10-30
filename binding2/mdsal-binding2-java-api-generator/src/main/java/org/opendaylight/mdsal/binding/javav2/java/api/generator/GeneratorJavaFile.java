@@ -25,9 +25,9 @@ import java.util.List;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.JavaCodePrettyPrint;
 import org.opendaylight.mdsal.binding.javav2.model.api.CodeGenerator;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.UnitName;
-import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
@@ -52,7 +52,7 @@ public final class GeneratorJavaFile {
     private final Collection<? extends Type> types;
 
     /**
-     * BuildContext used for instantiating files
+     * BuildContext used for instantiating files.
      */
     private final BuildContext buildContext;
 
@@ -60,6 +60,7 @@ public final class GeneratorJavaFile {
      * Creates instance of this class with the set of <code>types</code> for
      * which the JAVA code is generated.
      *
+     * <p>
      * The instances of concrete JAVA code generator are created.
      *
      * @param buildContext
@@ -207,9 +208,9 @@ public final class GeneratorJavaFile {
                 return null;
             }
 
-            try (final OutputStream stream = this.buildContext.newFileOutputStream(file)) {
-                try (final Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
-                    try (final BufferedWriter bw = new BufferedWriter(fw)) {
+            try (OutputStream stream = this.buildContext.newFileOutputStream(file)) {
+                try (Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+                    try (BufferedWriter bw = new BufferedWriter(fw)) {
                         bw.write(generatedCode);
                     }
                 } catch (final IOException e) {

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -57,22 +56,22 @@ import org.opendaylight.yangtools.concepts.Identifiable;
 public class BuilderRenderer extends BaseRenderer {
 
     /**
-     * Set of class attributes (fields) which are derived from the getter methods names
+     * Set of class attributes (fields) which are derived from the getter methods names.
      */
     private final Set<GeneratedProperty> properties;
 
     /**
-     * Set of name from properties
+     * Set of name from properties.
      */
     private final Map<GeneratedProperty, String> importedNamesForProperties = new HashMap<>();
 
     /**
-     * list of all imported names for template
+     * list of all imported names for template.
      */
     private final Map<String, String> importedNames = new HashMap<>();
 
     /**
-     * Generated property is set if among methods is found one with the name GET_AUGMENTATION_METHOD_NAME
+     * Generated property is set if among methods is found one with the name GET_AUGMENTATION_METHOD_NAME.
      */
     private GeneratedProperty augmentField;
 
@@ -202,7 +201,7 @@ public class BuilderRenderer extends BaseRenderer {
                             importedNames.put("map", importedName(Map.class));
                             importedNames.put("hashMap", importedName(HashMap.class));
                             importedNames.put("class", importedName(Class.class));
-//                            To do This is for third party, is it needed ?
+                            //To do This is for third party, is it needed ?
                             importedNames.put("augmentationHolder", importedName(AugmentationHolder.class));
                             importedNames.put("collections", importedName(Collections.class));
                             importedNames.put("augmentFieldReturnType", importedName(augmentField.getReturnType()));
@@ -228,7 +227,7 @@ public class BuilderRenderer extends BaseRenderer {
     }
 
     /**
-     * Returns the name of tye type from <code>fullyQualifiedName</code>
+     * Returns the name of the type from <code>fullyQualifiedName</code>.
      *
      * @param fullyQualifiedName string with fully qualified type name (package + type)
      * @return string with the name of the type
@@ -353,10 +352,10 @@ public class BuilderRenderer extends BaseRenderer {
         return type.getImplements().contains(impl);
     }
 
-    private void removeProperty(final Collection<GeneratedProperty> properties, final String name) {
-        for (final GeneratedProperty property : properties) {
+    private void removeProperty(final Collection<GeneratedProperty> props, final String name) {
+        for (final GeneratedProperty property : props) {
             if (name.equals(property.getName())) {
-                properties.remove(property);
+                props.remove(property);
                 break;
             }
         }

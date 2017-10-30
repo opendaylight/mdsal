@@ -30,7 +30,7 @@ public class TOGenerator implements CodeGenerator {
     public String generate(Type type) {
         if (type instanceof GeneratedTransferObject) {
             final GeneratedTransferObject genTO = (GeneratedTransferObject) type;
-            if(genTO.isUnionType()) {
+            if (genTO.isUnionType()) {
                 return new UnionRenderer(genTO).generateTemplate();
             } else if (genTO.isUnionTypeBuilder()) {
                 return new UnionBuilderRenderer(genTO).generateTemplate();

@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.TypeMember;
  *
  * @param <T> type
  */
-public class AlphabeticallyTypeMemberComparator<T extends TypeMember> implements Comparator<T>{
+public class AlphabeticallyTypeMemberComparator<T extends TypeMember> implements Comparator<T> {
 
     @Override
     public int compare(T member1, T member2) {

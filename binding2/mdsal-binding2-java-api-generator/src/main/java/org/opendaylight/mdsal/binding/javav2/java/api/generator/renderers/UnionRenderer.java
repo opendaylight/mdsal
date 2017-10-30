@@ -36,7 +36,7 @@ public class UnionRenderer extends ClassRenderer {
         // list of all imported names for template
         final Map<String, String> importedNames = new HashMap<>();
 
-        if(isBaseEncodingImportRequired()) {
+        if (isBaseEncodingImportRequired()) {
             this.putToImportMap("BaseEncoding","com.google.common.io");
         }
         for (GeneratedProperty finalProperty : getFinalProperties()) {
@@ -46,7 +46,7 @@ public class UnionRenderer extends ClassRenderer {
         }
 
         for (GeneratedProperty property : getProperties()) {
-            if("char[]".equals(property.getReturnType().getName())) {
+            if ("char[]".equals(property.getReturnType().getName())) {
                 importedNames.put("constructorProperties", importedName(ConstructorProperties.class));
                 importedNames.put("string", importedName(String.class));
                 importedNames.put(property.getName(), importedName(property.getReturnType()));
@@ -77,10 +77,10 @@ public class UnionRenderer extends ClassRenderer {
             final Type returnType = property.getReturnType();
             if (returnType instanceof GeneratedTransferObject) {
                 final GeneratedTransferObject returnTypeGto = (GeneratedTransferObject)returnType;
-                if (returnTypeGto.isTypedef() && returnTypeGto.getProperties() != null &&
-                        !returnTypeGto.getProperties().isEmpty() && returnTypeGto.getProperties().size() == 1 &&
-                        "value".equals(returnTypeGto.getProperties().get(0).getName()) &&
-                        "byte[]".equals(returnTypeGto.getProperties().get(0).getReturnType().getName())) {
+                if (returnTypeGto.isTypedef() && returnTypeGto.getProperties() != null
+                    && !returnTypeGto.getProperties().isEmpty() && returnTypeGto.getProperties().size() == 1
+                    && "value".equals(returnTypeGto.getProperties().get(0).getName())
+                    && "byte[]".equals(returnTypeGto.getProperties().get(0).getReturnType().getName())) {
                     return true;
                 }
             }
@@ -110,9 +110,9 @@ public class UnionRenderer extends ClassRenderer {
         final StringBuilder sb = new StringBuilder();
         final List<GeneratedProperty> retTypeCastProperties = typedefType.getProperties();
 
-        if (retTypeCastProperties != null &&
-                !retTypeCastProperties.isEmpty() && retTypeCastProperties.size() == 1 &&
-                retTypeCastProperties.get(0).getName().equals("value")) {
+        if (retTypeCastProperties != null
+            && !retTypeCastProperties.isEmpty() && retTypeCastProperties.size() == 1
+            && retTypeCastProperties.get(0).getName().equals("value")) {
 
             final StringBuilder sb1 = new StringBuilder(fieldName);
             sb1.append(".")
@@ -121,15 +121,15 @@ public class UnionRenderer extends ClassRenderer {
 
             sb.append(generateCharArrayField(sb1.toString(), retTypeCastProperties.get(0)));
             // generated bits typedef
-        } else if (retTypeCastProperties != null && !retTypeCastProperties.isEmpty() &&
-                typedefType.getBaseType() instanceof BitsTypeDefinition) {
+        } else if (retTypeCastProperties != null && !retTypeCastProperties.isEmpty()
+                && typedefType.getBaseType() instanceof BitsTypeDefinition) {
             sb.append("java.util.Arrays.toString(")
                     .append(fieldName)
                     .append(".getValue()).toCharArray();");
 
             //generated typedef typedef
         } else if ((retTypeCastProperties == null || retTypeCastProperties.isEmpty())) {
-            Preconditions.checkState(typedefType.getSuperType() != null );
+            Preconditions.checkState(typedefType.getSuperType() != null);
 
             sb.append(generateCharArrayFieldForTypedef(fieldName,
                     (GeneratedTransferObject) typedefType.getSuperType()));
@@ -146,10 +146,9 @@ public class UnionRenderer extends ClassRenderer {
         if ("java.lang.String".equals(propertyReturnType.getFullyQualifiedName())) {
             sb.append(fieldName).append(".toCharArray();");
             // generated type InstanceIdentifier
-        } else if ("org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier".equals(propertyReturnType
-                .getFullyQualifiedName())) {
-                    sb.append(fieldName)
-                    .append(".toString().toCharArray();");
+        } else if ("org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier"
+                .equals(propertyReturnType.getFullyQualifiedName())) {
+            sb.append(fieldName).append(".toString().toCharArray();");
             //generated type binary, boolean, empty
         } else if (BOOLEAN.equals(propertyReturnType)) {
             sb.append(fieldName).append(".toString().toCharArray();");
@@ -158,9 +157,9 @@ public class UnionRenderer extends ClassRenderer {
             sb.append("BaseEncoding.base64().encode(").append(fieldName)
                     .append(").toCharArray();");
             //generated type int*, uint, decimal64 or enumeration*
-        } else if (propertyReturnType.getFullyQualifiedName().startsWith("java.lang") ||
-                propertyReturnType instanceof Enumeration ||
-                propertyReturnType.getFullyQualifiedName().startsWith("java.math")) {
+        } else if (propertyReturnType.getFullyQualifiedName().startsWith("java.lang")
+            || propertyReturnType instanceof Enumeration
+            || propertyReturnType.getFullyQualifiedName().startsWith("java.math")) {
             sb.append(fieldName).append(".toString().toCharArray();");
 
         } else if (propertyReturnType instanceof GeneratedTransferObject) {
