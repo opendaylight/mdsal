@@ -5,10 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators;
+package org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators;
 
-abstract class AbstractSubIntegerRangeGenerator<T extends Number & Comparable<T>> extends AbstractPrimitiveRangeGenerator<T> {
-    protected AbstractSubIntegerRangeGenerator(final Class<T> typeClass, final String primitiveName, final T minValue, final T maxValue) {
+abstract class AbstractSubIntegerRangeGenerator<T extends Number & Comparable<T>>
+        extends AbstractPrimitiveRangeGenerator<T> {
+    protected AbstractSubIntegerRangeGenerator(final Class<T> typeClass, final String primitiveName, final T minValue,
+            final T maxValue) {
         super(typeClass, primitiveName, minValue, maxValue);
     }
 

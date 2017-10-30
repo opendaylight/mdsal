@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators;
+package org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Range;
@@ -23,7 +23,8 @@ abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
     private final T minValue;
     private final T maxValue;
 
-    protected AbstractPrimitiveRangeGenerator(final Class<T> typeClass, final String primitiveName, final T minValue, final T maxValue) {
+    protected AbstractPrimitiveRangeGenerator(final Class<T> typeClass, final String primitiveName, final T minValue,
+            final T maxValue) {
         super(typeClass);
         this.primitiveName = Preconditions.checkNotNull(primitiveName);
         this.minValue = Preconditions.checkNotNull(minValue);
@@ -90,7 +91,8 @@ abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
         final StringBuilder sb = new StringBuilder();
         final Collection<String> expressions = createExpressions(constraint);
 
-        sb.append("private static void ").append(checkerName).append("(final ").append(primitiveName).append(" value) {\n");
+        sb.append("private static void ").append(checkerName).append("(final ").append(primitiveName)
+            .append(" value) {\n");
 
         if (!expressions.isEmpty()) {
             for (String exp : expressions) {
