@@ -97,15 +97,16 @@ public class InterfaceRenderer extends BaseRenderer {
                 generatedConstants, generatedInnerClasses).body();
     }
 
-    private boolean isAccessor (final MethodSignature maybeGetter) {
+    private boolean isAccessor(final MethodSignature maybeGetter) {
         return maybeGetter.getName().startsWith("is") || maybeGetter.getName().startsWith("get");
     }
 
     /**
+     * Return string of annotations.
      * @param annotationTypeList list of annotations
      * @return String of annotations in format:
-     * "@"annotation
-     * (parameterName1=ParameterSingleValue1,...)
+     *     "@"annotation
+     *     (parameterName1=ParameterSingleValue1,...)
      *
      */
     private String generateAnnotations(final List<AnnotationType> annotationTypeList) {
@@ -118,9 +119,7 @@ public class InterfaceRenderer extends BaseRenderer {
             final List<String> parameterList = new ArrayList<>(annotationType.getParameters().size());
             for (AnnotationType.Parameter parameter : annotationType.getParameters()) {
                 final StringBuilder sb2 = new StringBuilder();
-                sb2.append(parameter.getName())
-                   .append('=')
-                   .append(parameter.getSingleValue());
+                sb2.append(parameter.getName()).append('=').append(parameter.getSingleValue());
                 parameterList.add(sb2.toString());
             }
             sb1.append(String.join(",", parameterList));
@@ -133,7 +132,8 @@ public class InterfaceRenderer extends BaseRenderer {
     }
 
     /**
-     * @param parameters list of parameters
+     * Generate string of parameters.
+     * @param parameters list of parameters.
      * @return list of parameters separated with ","
      */
     private String generateImports(final List<Type> parameters) {

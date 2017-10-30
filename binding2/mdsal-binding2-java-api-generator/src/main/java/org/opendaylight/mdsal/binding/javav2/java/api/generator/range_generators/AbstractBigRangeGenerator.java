@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators;
+package org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators;
 
 import com.google.common.collect.Range;
 import java.util.Collection;
@@ -35,7 +35,8 @@ abstract class AbstractBigRangeGenerator<T extends Number & Comparable<T>> exten
     }
 
     @Override
-    protected final String generateRangeCheckerImplementation(final String checkerName, @Nonnull final Collection<RangeConstraint> constraints) {
+    protected final String generateRangeCheckerImplementation(final String checkerName,
+            @Nonnull final Collection<RangeConstraint> constraints) {
         final String fieldName = checkerName.toUpperCase() + "_RANGES";
         final StringBuilder sb = new StringBuilder();
 
@@ -46,27 +47,31 @@ abstract class AbstractBigRangeGenerator<T extends Number & Comparable<T>> exten
         sb.append("static {\n");
         sb.append("    @SuppressWarnings(\"unchecked\")\n");
         sb.append("    final ").append(arrayType()).append(" a = (").append(arrayType())
-        .append(") java.lang.reflect.Array.newInstance(").append(RANGE).append(".class, ").append(constraints.size()).append(");\n");
+            .append(") java.lang.reflect.Array.newInstance(").append(RANGE).append(".class, ")
+            .append(constraints.size()).append(");\n");
 
-        int i = 0;
+        int count = 0;
         for (RangeConstraint r : constraints) {
             final String min = format(getValue(r.getMin()));
             final String max = format(getValue(r.getMax()));
 
-            sb.append("    a[").append(i++).append("] = ").append(RANGE).append(".closed(").append(min).append(", ").append(max).append(");\n");
+            sb.append("    a[").append(count++).append("] = ").append(RANGE).append(".closed(").append(min).append(", ")
+                .append(max).append(");\n");
         }
 
         sb.append("    ").append(fieldName).append(" = a;\n");
         sb.append("}\n");
 
         // Static enforcement method
-        sb.append("private static void ").append(checkerName).append("(final ").append(getTypeName()).append(" value) {\n");
+        sb.append("private static void ").append(checkerName).append("(final ").append(getTypeName())
+            .append(" value) {\n");
         sb.append("    for (").append(itemType()).append(" r : ").append(fieldName).append(") {\n");
         sb.append("        if (r.contains(value)) {\n");
         sb.append("            return;\n");
         sb.append("        }\n");
         sb.append("    }\n");
-        sb.append("    throw new IllegalArgumentException(String.format(\"Invalid range: %s, expected: %s.\", value, java.util.Arrays.asList(").append(fieldName).append(")));\n");
+        sb.append("    throw new IllegalArgumentException(String.format(\"Invalid range: %s, expected: %s.\", "
+            + "value, java.util.Arrays.asList(").append(fieldName).append(")));\n");
         sb.append("}\n");
 
         return sb.toString();

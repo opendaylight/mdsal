@@ -18,8 +18,8 @@
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers.BuilderRenderer.getAllIfcs
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers.BuilderRenderer.hasImplementsFromUses
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers.BuilderRenderer.toListOfNames
-@import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.AbstractRangeGenerator
-@import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.LengthGenerator
+@import org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators.AbstractRangeGenerator
+@import org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators.LengthGenerator
 @import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder

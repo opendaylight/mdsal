@@ -157,7 +157,7 @@ public final class JavaCodePrettyPrint {
             }
         }
 
-        for(int i = classStartEnd; i < splittedByNewLine.length; i++){
+        for (int i = classStartEnd; i < splittedByNewLine.length; i++) {
             i = appendJDoc(splittedByNewLine, fixedLines, i);
             if (!splittedByNewLine[i].startsWith(COMMENTS)
                     && !splittedByNewLine[i].endsWith(String.valueOf(END_LINE))
@@ -204,22 +204,22 @@ public final class JavaCodePrettyPrint {
         return fixedLines.toArray(new String[fixedLines.size()]);
     }
 
-    private static int appendJDoc(final String[] splittedByNewLine, final List<String> fixedLines, int i) {
-        if (splittedByNewLine[i].contains(JDOC_START)) {
-            fixedLines.add(new StringBuilder(splittedByNewLine[i]).append(NEW_LINE).toString());
-            for (int j = i + 1; j < splittedByNewLine.length - 1; j++) {
-                if (splittedByNewLine[j].contains(JDOC_END)) {
+    private static int appendJDoc(final String[] splittedByNewLine, final List<String> fixedLines, int cur) {
+        if (splittedByNewLine[cur].contains(JDOC_START)) {
+            fixedLines.add(new StringBuilder(splittedByNewLine[cur]).append(NEW_LINE).toString());
+            for (int next = cur + 1; next < splittedByNewLine.length - 1; next++) {
+                if (splittedByNewLine[next].contains(JDOC_END)) {
                     fixedLines.add(new StringBuilder(SPACE)
-                            .append(SPACE).append(splittedByNewLine[j]).append(NEW_LINE).toString());
-                    i = j + 1;
+                            .append(SPACE).append(splittedByNewLine[next]).append(NEW_LINE).toString());
+                    cur = next + 1;
                     break;
                 } else {
                     fixedLines.add(new StringBuilder(SPACE)
-                            .append(SPACE).append(splittedByNewLine[j]).append(NEW_LINE).toString());
+                            .append(SPACE).append(splittedByNewLine[next]).append(NEW_LINE).toString());
                 }
             }
         }
-        return i;
+        return cur;
     }
 
     /**

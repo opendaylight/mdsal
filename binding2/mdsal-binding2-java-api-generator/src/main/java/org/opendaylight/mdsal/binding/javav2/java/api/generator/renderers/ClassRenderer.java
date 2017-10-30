@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
-import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.AbstractRangeGenerator;
-import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.LengthGenerator;
+import org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators.AbstractRangeGenerator;
+import org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators.LengthGenerator;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplateConstructors;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplateInitBlock;
@@ -248,7 +248,8 @@ public class ClassRenderer extends BaseRenderer {
         final String fields = sb2.toString();
         importedNames.put("baseEncoding", importedName(BaseEncoding.class));
         if (!allProperties.isEmpty()) {
-            importedNames.put("defProp", importedName(((GeneratedProperty)((List) allProperties).get(0)).getReturnType()));
+            importedNames.put("defProp",
+                importedName(((GeneratedProperty)((List) allProperties).get(0)).getReturnType()));
         }
 
         final StringBuilder sb3 = new StringBuilder();
@@ -310,7 +311,7 @@ public class ClassRenderer extends BaseRenderer {
     /**
      * Returns the list of the read only properties of all extending generated
      * transfer object from <code>genTO</code> to highest parent generated
-     * transfer object
+     * transfer object.
      *
      * @param genTO
      *            generated transfer object for which is the list of read only

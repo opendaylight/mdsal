@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators;
+package org.opendaylight.mdsal.binding.javav2.java.api.generator.range_generators;
 
 import com.google.common.collect.Range;
 import java.math.BigInteger;
@@ -59,7 +59,8 @@ public final class LengthGenerator {
         return ranges.toString();
     }
 
-    private static String generateArrayLengthChecker(final String member, final Collection<LengthConstraint> constraints) {
+    private static String generateArrayLengthChecker(final String member,
+            final Collection<LengthConstraint> constraints) {
         final StringBuilder sb = new StringBuilder();
         final Collection<String> expressions = createExpressions(constraints);
 
@@ -83,7 +84,8 @@ public final class LengthGenerator {
         return sb.toString();
     }
 
-    private static String generateStringLengthChecker(final String member, final Collection<LengthConstraint> constraints) {
+    private static String generateStringLengthChecker(final String member,
+            final Collection<LengthConstraint> constraints) {
         final StringBuilder sb = new StringBuilder();
         final Collection<String> expressions = createExpressions(constraints);
 
@@ -116,7 +118,8 @@ public final class LengthGenerator {
         }
     }
 
-    public static String generateLengthCheckerCall(@Nullable final String member, @Nonnull final String valueReference) {
+    public static String generateLengthCheckerCall(@Nullable final String member,
+            @Nonnull final String valueReference) {
         return lengthCheckerName(member) + '(' + valueReference + ");\n";
     }
 }

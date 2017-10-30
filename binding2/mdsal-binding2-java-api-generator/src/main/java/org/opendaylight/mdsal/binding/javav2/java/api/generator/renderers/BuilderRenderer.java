@@ -56,22 +56,22 @@ import org.opendaylight.yangtools.concepts.Identifiable;
 public class BuilderRenderer extends BaseRenderer {
 
     /**
-     * Set of class attributes (fields) which are derived from the getter methods names
+     * Set of class attributes (fields) which are derived from the getter methods names.
      */
     private final Set<GeneratedProperty> properties;
 
     /**
-     * Set of name from properties
+     * Set of name from properties.
      */
     private final Map<GeneratedProperty, String> importedNamesForProperties = new HashMap<>();
 
     /**
-     * list of all imported names for template
+     * list of all imported names for template.
      */
     private final Map<String, String> importedNames = new HashMap<>();
 
     /**
-     * Generated property is set if among methods is found one with the name GET_AUGMENTATION_METHOD_NAME
+     * Generated property is set if among methods is found one with the name GET_AUGMENTATION_METHOD_NAME.
      */
     private GeneratedProperty augmentField;
 
@@ -191,9 +191,11 @@ public class BuilderRenderer extends BaseRenderer {
                                     null);
                             final ReferencedTypeImpl generic = new ReferencedTypeImpl(getType().getPackageName(),
                                     getType().getName(), true, null);
-                            final ParameterizedType parametrizedReturnType = Types.parameterizedTypeFor(referencedType, generic);
+                            final ParameterizedType parametrizedReturnType =
+                                Types.parameterizedTypeFor(referencedType, generic);
                             generatedTOBuilder.addMethod(method.getName()).setReturnType(parametrizedReturnType);
-                            augmentField = propertyFromGetter(generatedTOBuilder.toInstance().getMethodDefinitions().get(0));
+                            augmentField =
+                                propertyFromGetter(generatedTOBuilder.toInstance().getMethodDefinitions().get(0));
                             importedNames.put("map", importedName(Map.class));
                             importedNames.put("hashMap", importedName(HashMap.class));
                             importedNames.put("class", importedName(Class.class));
@@ -223,7 +225,7 @@ public class BuilderRenderer extends BaseRenderer {
     }
 
     /**
-     * Returns the name of tye type from <code>fullyQualifiedName</code>
+     * Returns the name of the type from <code>fullyQualifiedName</code>.
      *
      * @param fullyQualifiedName string with fully qualified type name (package + type)
      * @return string with the name of the type
@@ -310,8 +312,8 @@ public class BuilderRenderer extends BaseRenderer {
 
     private String generateListForCopyConstructor() {
         final List allProps = new ArrayList<>(properties);
-        final boolean isList = implementsIfc(getType(), Types.parameterizedTypeFor(Types.typeForClass(Identifiable.class),
-                getType()));
+        final boolean isList = implementsIfc(getType(),
+            Types.parameterizedTypeFor(Types.typeForClass(Identifiable.class), getType()));
         final Type keyType = getKey(getType());
         if (isList && keyType != null) {
             final List<GeneratedProperty> keyProps = ((GeneratedTransferObject) keyType).getProperties();
