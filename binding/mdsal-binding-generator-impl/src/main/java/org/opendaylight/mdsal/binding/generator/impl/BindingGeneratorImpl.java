@@ -510,6 +510,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 final ContainerSchemaNode input = rpc.getInput();
                 final ContainerSchemaNode output = rpc.getOutput();
 
+                // Do not refer to annotation class, as it may not be available at runtime
+                method.addAnnotation("javax.annotation", "CheckReturnValue");
+
                 //in case of implicit RPC input (StatementSource.CONTEXT),
                 // stay compatible (no input argument generated)
                 if (input != null && isExplicitStatement(input)) {
