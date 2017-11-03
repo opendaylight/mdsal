@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import javax.annotation.CheckReturnValue;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
@@ -509,6 +510,9 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 final MethodSignatureBuilder method = interfaceBuilder.addMethod(rpcMethodName);
                 final ContainerSchemaNode input = rpc.getInput();
                 final ContainerSchemaNode output = rpc.getOutput();
+
+                method.addAnnotation(CheckReturnValue.class.getPackage().getName(),
+                    CheckReturnValue.class.getSimpleName());
 
                 //in case of implicit RPC input (StatementSource.CONTEXT),
                 // stay compatible (no input argument generated)

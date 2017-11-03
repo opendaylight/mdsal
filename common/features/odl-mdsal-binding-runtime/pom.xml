@@ -46,6 +46,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.opendaylight.odlparent</groupId>
             <artifactId>odl-javassist-3</artifactId>
             <type>xml</type>
