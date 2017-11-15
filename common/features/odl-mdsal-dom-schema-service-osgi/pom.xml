@@ -40,6 +40,12 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>odl-mdsal-dom-broker</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>mdsal-dom-schema-service-osgi</artifactId>
         </dependency>
     </dependencies>
