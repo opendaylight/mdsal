@@ -23,7 +23,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
  * will return null.
  */
 @Beta
-public class MissingSchemaForClassException extends MissingSchemaException {
+public final class MissingSchemaForClassException extends MissingSchemaException {
 
     private static final long serialVersionUID = 1L;
 

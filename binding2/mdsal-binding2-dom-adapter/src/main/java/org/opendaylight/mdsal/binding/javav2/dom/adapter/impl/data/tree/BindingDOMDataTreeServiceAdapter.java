@@ -27,7 +27,7 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
  *
  */
 @Beta
-public class BindingDOMDataTreeServiceAdapter implements DataTreeService {
+public final class BindingDOMDataTreeServiceAdapter implements DataTreeService {
 
     private final DOMDataTreeService delegate;
     private final BindingToNormalizedNodeCodec codec;

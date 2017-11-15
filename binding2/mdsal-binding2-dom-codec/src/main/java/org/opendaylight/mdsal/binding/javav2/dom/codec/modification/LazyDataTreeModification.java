@@ -34,7 +34,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
  *
  */
 @Beta
-public class LazyDataTreeModification<T extends TreeNode> implements DataTreeModification<T> {
+public final class LazyDataTreeModification<T extends TreeNode> implements DataTreeModification<T> {
 
     private final DataTreeIdentifier<T> path;
     private final TreeNodeModification<T> rootNode;

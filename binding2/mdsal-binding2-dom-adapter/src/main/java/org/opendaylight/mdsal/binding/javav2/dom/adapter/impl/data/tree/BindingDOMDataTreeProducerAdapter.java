@@ -25,7 +25,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
  * Producer adapter.
  */
 @Beta
-public class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
+public final class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
 
     private final DOMDataTreeProducer delegate;
     private final BindingToNormalizedNodeCodec codec;

@@ -25,7 +25,7 @@ public abstract class BindingDOMAdapterBuilder<T extends BindingService> extends
 
     private BindingToNormalizedNodeCodec codec;
 
-    protected abstract T createInstance(BindingToNormalizedNodeCodec codec, ClassToInstanceMap<DOMService> delegates);
+    protected abstract T createInstance(BindingToNormalizedNodeCodec myCodec, ClassToInstanceMap<DOMService> delegates);
 
     @Override
     protected final T createInstance(final ClassToInstanceMap<DOMService> delegates) {

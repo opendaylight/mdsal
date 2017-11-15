@@ -28,7 +28,7 @@ public abstract class AdapterBuilder<T, D> implements Builder<T> {
 
     private final ClassToInstanceMap<D> delegates = MutableClassToInstanceMap.create();
 
-    protected abstract T createInstance(ClassToInstanceMap<D> delegates);
+    protected abstract T createInstance(ClassToInstanceMap<D> immutableDelegates);
 
     /**
      * Get required delegates.

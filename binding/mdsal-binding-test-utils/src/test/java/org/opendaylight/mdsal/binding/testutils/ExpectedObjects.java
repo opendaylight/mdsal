@@ -26,7 +26,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
  * @see AssertDataObjects
  * @see AssertDataObjectsTest
  */
-public class ExpectedObjects {
+public final class ExpectedObjects {
+
+    private ExpectedObjects() {
+
+    }
 
     public static TopLevelList topLevelList() {
         TopLevelListBuilder it = new TopLevelListBuilder();

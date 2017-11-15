@@ -32,7 +32,7 @@ public class AbstractDataBrokerTest extends AbstractSchemaAwareTest {
         setupWithDataBroker(dataBroker);
     }
 
-    protected void setupWithDataBroker(final DataBroker dataBroker) {
+    protected void setupWithDataBroker(final DataBroker broker) {
         // Intentionally left No-op, subclasses may customize it
     }
 

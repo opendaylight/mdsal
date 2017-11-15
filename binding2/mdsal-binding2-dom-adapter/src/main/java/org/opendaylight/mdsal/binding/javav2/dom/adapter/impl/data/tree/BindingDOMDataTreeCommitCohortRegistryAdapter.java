@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
  * Data tree commit cohort registry adapter.
  */
 @Beta
-public class BindingDOMDataTreeCommitCohortRegistryAdapter implements DataTreeCommitCohortRegistry {
+public final class BindingDOMDataTreeCommitCohortRegistryAdapter implements DataTreeCommitCohortRegistry {
 
     private final BindingToNormalizedNodeCodec codec;
     private final DOMDataTreeCommitCohortRegistry registry;

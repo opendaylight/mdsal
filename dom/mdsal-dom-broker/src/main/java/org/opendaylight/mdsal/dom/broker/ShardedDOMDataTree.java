@@ -174,7 +174,7 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
         return createProducer(subtrees, shardMap);
     }
 
-    @SuppressWarnings("checkstyle:IllegalCatch")
+    @SuppressWarnings({ "checkstyle:IllegalCatch", "checkstyle:hiddenField" })
     @Override
     public synchronized <T extends DOMDataTreeListener> ListenerRegistration<T> registerListener(final T listener,
             final Collection<DOMDataTreeIdentifier> subtrees, final boolean allowRxMerges,

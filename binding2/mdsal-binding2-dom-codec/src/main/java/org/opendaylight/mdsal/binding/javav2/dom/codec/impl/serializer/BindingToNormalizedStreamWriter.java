@@ -65,8 +65,8 @@ public final class BindingToNormalizedStreamWriter
         return new BindingToNormalizedStreamWriter(schema, delegate);
     }
 
-    private void emitSchema(final Object schema) {
-        delegate.nextDataSchemaNode((DataSchemaNode) schema);
+    private void emitSchema(final Object schemaNode) {
+        delegate.nextDataSchemaNode((DataSchemaNode) schemaNode);
     }
 
     /**

@@ -30,9 +30,9 @@ abstract class BindingDOMAdapterBuilder<T extends BindingService> extends Adapte
     @Override
     protected final T createInstance(final ClassToInstanceMap<DOMService> delegates) {
         Preconditions.checkState(codec != null);
-        return createInstance(codec,delegates);
+        return createInstance(codec, delegates);
     }
 
-    protected abstract T createInstance(BindingToNormalizedNodeCodec codec2, ClassToInstanceMap<DOMService> delegates);
+    protected abstract T createInstance(BindingToNormalizedNodeCodec myCodec, ClassToInstanceMap<DOMService> delegates);
 
 }

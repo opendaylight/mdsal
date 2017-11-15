@@ -124,7 +124,7 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
             proxyConstructor = MethodHandles.publicLookup().findConstructor(proxyClass, CONSTRUCTOR_TYPE)
                     .asType(TREENODE_TYPE);
         } catch (NoSuchMethodException | IllegalAccessException e) {
-            throw new IllegalStateException("Failed to find contructor for class " + proxyClass);
+            throw new IllegalStateException("Failed to find contructor for class " + proxyClass, e);
         }
     }
 

@@ -32,11 +32,11 @@ public class AbstractDOMForwardedCompositeTransactionTest {
         domForwardedCompositeTransaction.closeSubtransactions();
     }
 
-    private static class DOMForwardedCompositeTransactionTestImpl
+    private static final class DOMForwardedCompositeTransactionTestImpl
             extends AbstractDOMForwardedCompositeTransaction<String, DOMStoreTransaction> {
 
-        private DOMForwardedCompositeTransactionTestImpl(final Object identifier,
-                                                         final Map<String, DOMStoreTransaction> backingTxs) {
+        DOMForwardedCompositeTransactionTestImpl(final Object identifier,
+                                                 final Map<String, DOMStoreTransaction> backingTxs) {
             super(identifier, backingTxs);
         }
     }
