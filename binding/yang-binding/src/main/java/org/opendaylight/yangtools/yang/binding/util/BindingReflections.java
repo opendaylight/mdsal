@@ -50,7 +50,7 @@ import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BindingReflections {
+public final class BindingReflections {
 
     private static final long EXPIRATION_TIME = 60;
 
