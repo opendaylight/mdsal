@@ -32,7 +32,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableIt
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 
-public class DataObjectReadingUtil {
+public final class DataObjectReadingUtil {
 
     private static final DataObjectReadingStrategy REAUSABLE_AUGMENTATION_READING_STRATEGY =
             new AugmentationReadingStrategy();
