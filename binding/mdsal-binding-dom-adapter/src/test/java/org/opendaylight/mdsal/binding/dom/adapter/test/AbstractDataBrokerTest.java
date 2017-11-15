@@ -21,7 +21,6 @@ public class AbstractDataBrokerTest extends AbstractSchemaAwareTest {
     private DataBroker dataBroker;
     private DOMDataBroker domBroker;
 
-
     @Override
     protected void setupWithSchema(final SchemaContext context) {
         testCustomizer = createDataBrokerTestCustomizer();
@@ -31,7 +30,7 @@ public class AbstractDataBrokerTest extends AbstractSchemaAwareTest {
         setupWithDataBroker(dataBroker);
     }
 
-    protected void setupWithDataBroker(final DataBroker dataBroker) {
+    protected void setupWithDataBroker(final DataBroker broker) {
         // Intentionally left No-op, subclasses may customize it
     }
 
@@ -54,6 +53,4 @@ public class AbstractDataBrokerTest extends AbstractSchemaAwareTest {
             throw new IllegalStateException(e);
         }
     }
-
-
 }

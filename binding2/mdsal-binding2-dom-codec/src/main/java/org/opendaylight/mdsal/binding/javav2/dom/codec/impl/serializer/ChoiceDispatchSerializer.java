@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * Dispatch serializer, which emit DOM data from Binding v2 via stream writer.
  */
 @Beta
-public class ChoiceDispatchSerializer implements TreeNodeSerializerImplementation {
+public final class ChoiceDispatchSerializer implements TreeNodeSerializerImplementation {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChoiceDispatchSerializer.class);
 
@@ -43,7 +43,7 @@ public class ChoiceDispatchSerializer implements TreeNodeSerializerImplementatio
      *            - class choice
      * @return instance of serializer
      */
-    public static final ChoiceDispatchSerializer from(final Class<? extends Instantiable<?>> choiceClass) {
+    public static ChoiceDispatchSerializer from(final Class<? extends Instantiable<?>> choiceClass) {
         return new ChoiceDispatchSerializer(choiceClass);
     }
 

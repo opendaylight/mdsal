@@ -86,8 +86,8 @@ final class ProducerLayout {
         return new ProducerLayout(shardMap, idToProducer, cb.build());
     }
 
-    ProducerLayout reshard(final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
-        return new ProducerLayout(shardMap, mapIdsToProducer(shardMap), children);
+    ProducerLayout reshard(final Map<DOMDataTreeIdentifier, DOMDataTreeShard> newShardMap) {
+        return new ProducerLayout(newShardMap, mapIdsToProducer(newShardMap), children);
     }
 
     boolean haveSubtree(final DOMDataTreeIdentifier subtree) {

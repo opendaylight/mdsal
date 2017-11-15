@@ -58,15 +58,15 @@ public class MountPointServiceTest {
         final DOMMountPointListener listener = mock(DOMMountPointListener.class);
         doNothing().when(listener).onMountPointCreated(PATH);
         doNothing().when(listener).onMountPointRemoved(PATH);
-        final DOMMountPointServiceImpl mountService = new DOMMountPointServiceImpl();
-        mountService.registerProvisionListener(listener);
-        mountService.createMountPoint(PATH).register();
+        final DOMMountPointServiceImpl service = new DOMMountPointServiceImpl();
+        service.registerProvisionListener(listener);
+        service.createMountPoint(PATH).register();
 
-        assertTrue(mountService.getMountPoint(PATH).isPresent());
+        assertTrue(service.getMountPoint(PATH).isPresent());
 
-        mountService.unregisterMountPoint(PATH);
+        service.unregisterMountPoint(PATH);
 
-        assertFalse(mountService.getMountPoint(PATH).isPresent());
+        assertFalse(service.getMountPoint(PATH).isPresent());
     }
 
     @Test

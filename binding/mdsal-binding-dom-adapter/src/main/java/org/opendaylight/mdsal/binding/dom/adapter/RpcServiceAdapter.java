@@ -74,6 +74,7 @@ class RpcServiceAdapter implements InvocationHandler {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:hiddenField")
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 
         final RpcInvocationStrategy rpc = rpcNames.get(method);
@@ -152,13 +153,13 @@ class RpcServiceAdapter implements InvocationHandler {
         }
 
         private ListenableFuture<RpcResult<?>> transformFuture(final SchemaPath rpc,
-                final ListenableFuture<DOMRpcResult> domFuture, final BindingNormalizedNodeCodecRegistry codec) {
+                final ListenableFuture<DOMRpcResult> domFuture, final BindingNormalizedNodeCodecRegistry resultCodec) {
             return Futures.transform(domFuture, (Function<DOMRpcResult, RpcResult<?>>) input -> {
                 final NormalizedNode<?, ?> domData = input.getResult();
                 final DataObject bindingResult;
                 if (domData != null) {
                     final SchemaPath rpcOutput = rpc.createChild(QName.create(rpc.getLastComponent(), "output"));
-                    bindingResult = codec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
+                    bindingResult = resultCodec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
                 } else {
                     bindingResult = null;
                 }

@@ -77,12 +77,11 @@ public class SnapshotBackedWriteTransactionTest {
 
     @Test
     public void readyTest() throws Exception {
-        SnapshotBackedWriteTransaction<Object> snapshotBackedWriteTransaction =
-                new SnapshotBackedWriteTransaction<>(
-                        new Object(), false, DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE);
-        Assert.assertNotNull(snapshotBackedWriteTransaction.ready());
+        SnapshotBackedWriteTransaction<Object> tx = new SnapshotBackedWriteTransaction<>(new Object(), false,
+                DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE);
+        Assert.assertNotNull(tx.ready());
         verify(TRANSACTION_READY_PROTOTYPE).transactionReady(any(), any());
-        snapshotBackedWriteTransaction.close();
+        tx.close();
     }
 
     @Test(expected = IllegalArgumentException.class)

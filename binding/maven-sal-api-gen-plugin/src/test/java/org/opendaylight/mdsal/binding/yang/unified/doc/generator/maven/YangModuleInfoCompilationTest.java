@@ -232,7 +232,7 @@ public class YangModuleInfoCompilationTest {
             return method;
         } catch (NoSuchMethodException e) {
             throw new AssertionError("Method " + name + " with args " + Arrays.toString(args)
-                    + " does not exists in class " + clazz.getSimpleName());
+                    + " does not exists in class " + clazz.getSimpleName(), e);
         }
     }
 

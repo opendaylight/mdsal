@@ -168,8 +168,8 @@ public class ScanningSchemaServiceProviderTest {
         schemaService.getSessionContext();
     }
 
-    private void addYangs(final ScanningSchemaServiceProvider schemaService) {
-        final List<Registration> registerAvailableYangs = schemaService.registerAvailableYangs(yangs);
+    private void addYangs(final ScanningSchemaServiceProvider service) {
+        final List<Registration> registerAvailableYangs = service.registerAvailableYangs(yangs);
         assertTrue(!registerAvailableYangs.isEmpty());
     }
 

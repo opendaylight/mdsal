@@ -61,8 +61,8 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     private final DOMDataTreeIdentifier prefix;
     private final DataTree dataTree;
 
-    private InMemoryDOMDataTreeShard(final DOMDataTreeIdentifier prefix, final Executor dataTreeChangeExecutor,
-                                     final int maxDataChangeListenerQueueSize, final int submitQueueSize) {
+    InMemoryDOMDataTreeShard(final DOMDataTreeIdentifier prefix, final Executor dataTreeChangeExecutor,
+            final int maxDataChangeListenerQueueSize, final int submitQueueSize) {
         this.prefix = Preconditions.checkNotNull(prefix);
 
         final TreeType treeType = treeTypeFor(prefix.getDatastoreType());
@@ -97,20 +97,20 @@ public class InMemoryDOMDataTreeShard implements ReadableWriteableDOMDataTreeSha
     }
 
     @Override
-    public void onChildAttached(final DOMDataTreeIdentifier prefix, final DOMDataTreeShard child) {
+    public void onChildAttached(final DOMDataTreeIdentifier childPrefix, final DOMDataTreeShard child) {
         Preconditions.checkArgument(child != this, "Attempted to attach child %s onto self", this);
-        reparentChildShards(prefix, child);
+        reparentChildShards(childPrefix, child);
 
-        final ChildShardContext context = createContextFor(prefix, child);
-        childShards.put(prefix, context);
-        childShardsTable.store(prefix, context);
+        final ChildShardContext context = createContextFor(childPrefix, child);
+        childShards.put(childPrefix, context);
+        childShardsTable.store(childPrefix, context);
         updateProducers();
     }
 
     @Override
-    public void onChildDetached(final DOMDataTreeIdentifier prefix, final DOMDataTreeShard child) {
-        childShards.remove(prefix);
-        childShardsTable.remove(prefix);
+    public void onChildDetached(final DOMDataTreeIdentifier childPrefix, final DOMDataTreeShard child) {
+        childShards.remove(childPrefix);
+        childShardsTable.remove(childPrefix);
         updateProducers();
     }
 

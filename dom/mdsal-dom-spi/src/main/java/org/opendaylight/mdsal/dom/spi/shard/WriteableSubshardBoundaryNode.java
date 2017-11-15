@@ -22,7 +22,7 @@ public class WriteableSubshardBoundaryNode extends WriteableModificationNode {
 
     private final ForeignShardModificationContext boundary;
 
-    private WriteableSubshardBoundaryNode(final ForeignShardModificationContext boundary) {
+    WriteableSubshardBoundaryNode(final ForeignShardModificationContext boundary) {
         this.boundary = Preconditions.checkNotNull(boundary);
     }
 

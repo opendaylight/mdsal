@@ -61,7 +61,7 @@ public final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPred
         try {
             ctor = MethodHandles.publicLookup().unreflectConstructor(getConstructor(keyClass));
         } catch (final IllegalAccessException e) {
-            throw new IllegalArgumentException("Missing construct in class " + keyClass);
+            throw new IllegalArgumentException("Missing construct in class " + keyClass, e);
         }
         final MethodHandle inv = MethodHandles.spreadInvoker(ctor.type(), 0);
         this.ctorInvoker = inv.asType(inv.type().changeReturnType(Identifier.class));

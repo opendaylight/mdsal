@@ -49,14 +49,14 @@ public class WriteableNodeWithSubshardTest {
         TestUtils.resetMocks();
     }
 
-    private class WriteableNodeWithSubshardImpl extends WriteableNodeWithSubshard {
+    private static final class WriteableNodeWithSubshardImpl extends WriteableNodeWithSubshard {
 
-        private WriteableNodeWithSubshardImpl(Map<PathArgument, WriteableModificationNode> children) {
+        WriteableNodeWithSubshardImpl(final Map<PathArgument, WriteableModificationNode> children) {
             super(children);
         }
 
         @Override
-        public WriteCursorStrategy createOperation(DOMDataTreeWriteCursor parentCursor) {
+        public WriteCursorStrategy createOperation(final DOMDataTreeWriteCursor parentCursor) {
             return null;
         }
 

@@ -38,10 +38,9 @@ import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
  * properties of parent codec and stateless implementations are used (
  * {@link ChoiceDispatchSerializer}, {@link AugmentableDispatchSerializer},
  * which uses registry to dispatch to concrete item codec.
- *
  */
 @Beta
-public class StreamWriterGenerator extends AbstractStreamWriterGenerator {
+public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
 
     private static final String UNKNOWN_SIZE = BindingStreamEventWriter.class.getName() + ".UNKNOWN_SIZE";
 

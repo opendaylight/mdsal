@@ -15,7 +15,7 @@ package org.opendaylight.mdsal.dom.store.inmemory;
  * @author Thomas Pantelis
  * @see InMemoryDOMDataStoreFactory
  */
-public class InMemoryDOMDataStoreConfigProperties {
+public final class InMemoryDOMDataStoreConfigProperties {
 
     public static final int DEFAULT_MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE = 1000;
     public static final int DEFAULT_MAX_DATA_CHANGE_EXECUTOR_POOL_SIZE = 20;
@@ -33,8 +33,9 @@ public class InMemoryDOMDataStoreConfigProperties {
     private final int maxDataChangeListenerQueueSize;
     private final int maxDataStoreExecutorQueueSize;
 
-    private InMemoryDOMDataStoreConfigProperties(int maxDataChangeExecutorPoolSize, int maxDataChangeExecutorQueueSize,
-            int maxDataChangeListenerQueueSize, int maxDataStoreExecutorQueueSize) {
+    private InMemoryDOMDataStoreConfigProperties(final int maxDataChangeExecutorPoolSize,
+            final int maxDataChangeExecutorQueueSize, final int maxDataChangeListenerQueueSize,
+            final int maxDataStoreExecutorQueueSize) {
         this.maxDataChangeExecutorQueueSize = maxDataChangeExecutorQueueSize;
         this.maxDataChangeExecutorPoolSize = maxDataChangeExecutorPoolSize;
         this.maxDataChangeListenerQueueSize = maxDataChangeListenerQueueSize;
@@ -53,16 +54,16 @@ public class InMemoryDOMDataStoreConfigProperties {
      * @param maxDataStoreExecutorQueueSize
      *            maximum queue size for the data store executor.
      */
-    public static InMemoryDOMDataStoreConfigProperties create(int maxDataChangeExecutorPoolSize,
-            int maxDataChangeExecutorQueueSize, int maxDataChangeListenerQueueSize,
-            int maxDataStoreExecutorQueueSize) {
+    public static InMemoryDOMDataStoreConfigProperties create(final int maxDataChangeExecutorPoolSize,
+            final int maxDataChangeExecutorQueueSize, final int maxDataChangeListenerQueueSize,
+            final int maxDataStoreExecutorQueueSize) {
         return new InMemoryDOMDataStoreConfigProperties(maxDataChangeExecutorPoolSize,
                 maxDataChangeExecutorQueueSize, maxDataChangeListenerQueueSize,
                 maxDataStoreExecutorQueueSize);
     }
 
-    public static InMemoryDOMDataStoreConfigProperties create(int maxDataChangeExecutorPoolSize,
-            int maxDataChangeExecutorQueueSize, int maxDataChangeListenerQueueSize) {
+    public static InMemoryDOMDataStoreConfigProperties create(final int maxDataChangeExecutorPoolSize,
+            final int maxDataChangeExecutorQueueSize, final int maxDataChangeListenerQueueSize) {
         return new InMemoryDOMDataStoreConfigProperties(maxDataChangeExecutorPoolSize,
                 maxDataChangeExecutorQueueSize, maxDataChangeListenerQueueSize,
                 DEFAULT_MAX_DATA_STORE_EXECUTOR_QUEUE_SIZE);
