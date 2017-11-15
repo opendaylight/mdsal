@@ -39,29 +39,29 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
     private enum SimpleCursorOperation {
         MERGE {
             @Override
-            void applyOnLeaf(final DOMDataTreeWriteCursor cursor, final PathArgument child,
+            void applyOnLeaf(final DOMDataTreeWriteCursor cur, final PathArgument child,
                              final NormalizedNode<?, ?> data) {
-                cursor.merge(child, data);
+                cur.merge(child, data);
             }
         },
         DELETE {
             @Override
-            void applyOnLeaf(final DOMDataTreeWriteCursor cursor, final PathArgument child,
+            void applyOnLeaf(final DOMDataTreeWriteCursor cur, final PathArgument child,
                              final NormalizedNode<?, ?> data) {
-                cursor.delete(child);
+                cur.delete(child);
             }
         },
         WRITE {
             @Override
-            void applyOnLeaf(final DOMDataTreeWriteCursor cursor, final PathArgument child,
+            void applyOnLeaf(final DOMDataTreeWriteCursor cur, final PathArgument child,
                              final NormalizedNode<?, ?> data) {
-                cursor.write(child, data);
+                cur.write(child, data);
             }
         };
 
-        abstract void applyOnLeaf(DOMDataTreeWriteCursor cursor, PathArgument child, NormalizedNode<?, ?> data);
+        abstract void applyOnLeaf(DOMDataTreeWriteCursor cur, PathArgument child, NormalizedNode<?, ?> data);
 
-        void apply(final DOMDataTreeWriteCursor cursor, final YangInstanceIdentifier path,
+        void apply(final DOMDataTreeWriteCursor cur, final YangInstanceIdentifier path,
                    final NormalizedNode<?, ?> data) {
             int enterCount = 0;
             final Iterator<PathArgument> it = path.getPathArguments().iterator();
@@ -69,17 +69,17 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
                 while (true) {
                     final PathArgument currentArg = it.next();
                     if (!it.hasNext()) {
-                        applyOnLeaf(cursor, currentArg, data);
+                        applyOnLeaf(cur, currentArg, data);
                         break;
                     }
 
                     // We need to enter one level deeper, we are not at leaf (modified) node
-                    cursor.enter(currentArg);
+                    cur.enter(currentArg);
                     enterCount++;
                 }
             }
 
-            cursor.exit(enterCount);
+            cur.exit(enterCount);
         }
     }
 

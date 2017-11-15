@@ -18,7 +18,7 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgum
  * Writable node that is located at a boundary to a subshard.
  */
 @Beta
-public class WriteableSubshardBoundaryNode extends WriteableModificationNode {
+public final class WriteableSubshardBoundaryNode extends WriteableModificationNode {
 
     private final ForeignShardModificationContext boundary;
 

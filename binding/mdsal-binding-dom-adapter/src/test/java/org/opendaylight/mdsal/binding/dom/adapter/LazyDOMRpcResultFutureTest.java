@@ -81,7 +81,7 @@ public class LazyDOMRpcResultFutureTest {
         assertNotNull(lazyDOMRpcResultFuture.get());
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows","checkstyle:IllegalCatch"})
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch", "checkstyle:avoidHidingCauseException"})
     @Test(expected = InterruptedException.class)
     public void checkedGetWithException() throws Throwable {
         doThrow(InterruptedException.class).when(future).get();
@@ -92,7 +92,7 @@ public class LazyDOMRpcResultFutureTest {
         }
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows","checkstyle:IllegalCatch"})
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch", "checkstyle:avoidHidingCauseException"})
     @Test(expected = InterruptedException.class)
     public void checkedGetWithException2() throws Throwable {
         doThrow(InterruptedException.class).when(future).get(1, TimeUnit.SECONDS);

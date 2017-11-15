@@ -16,6 +16,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.base.Optional;
+import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
@@ -50,38 +51,38 @@ public class SnapshotBackedReadWriteTransactionTest {
         assertEquals(optional, snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.EMPTY).get());
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = ReadFailedException.class)
     public void readTestWithNullException() throws Throwable {
         doReturn(null).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.EMPTY);
         try {
             snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.EMPTY).get();
             fail("Expected ReadFailedException");
-        } catch (Exception e) {
+        } catch (ExecutionException e) {
             throw e.getCause();
         }
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException"})
     @Test(expected = ReadFailedException.class)
     public void readNodeTestWithException() throws Throwable {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_MODIFICATION).readNode(any());
         try {
             snapshotBackedReadWriteTransaction.read(YangInstanceIdentifier.EMPTY).get();
             fail("Expected ReadFailedException");
-        } catch (Exception e) {
+        } catch (ExecutionException e) {
             throw e.getCause();
         }
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException"})
     @Test(expected = ReadFailedException.class)
     public void existsTestWithException() throws Throwable {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_MODIFICATION).readNode(any());
         try {
             snapshotBackedReadWriteTransaction.exists(YangInstanceIdentifier.EMPTY).get();
             fail("Expected ReadFailedException");
-        } catch (Exception e) {
+        } catch (ExecutionException e) {
             throw e.getCause();
         }
     }

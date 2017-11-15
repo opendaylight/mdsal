@@ -20,6 +20,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
@@ -43,7 +44,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
     public void setUp() throws Exception {
         reset(IN_MEMORY_DOM_DATA_STORE);
         DataTreeSnapshot dataTreeSnapshot = mock(DataTreeSnapshot.class);
-        TransactionReadyPrototype transactionReadyPrototype = mock(TransactionReadyPrototype.class);
+        TransactionReadyPrototype<String> transactionReadyPrototype = mock(TransactionReadyPrototype.class);
         DataTreeModification dataTreeModification = mock(DataTreeModification.class);
         doReturn(dataTreeModification).when(dataTreeSnapshot).newModification();
         doReturn("testModification").when(dataTreeModification).toString();
@@ -62,7 +63,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         verify(IN_MEMORY_DOM_DATA_STORE).validate(any());
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
+    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = OptimisticLockFailedException.class)
     public void canCommitTestWithOptimisticLockFailedException() throws Throwable {
         doThrow(new ConflictingModificationAppliedException(YangInstanceIdentifier.EMPTY, "testException"))
@@ -70,13 +71,13 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         try {
             inMemoryDOMStoreThreePhaseCommitCohort.canCommit().get();
             fail("Expected exception");
-        } catch (Exception e) {
+        } catch (ExecutionException e) {
             assertTrue(e.getCause() instanceof OptimisticLockFailedException);
             throw e.getCause();
         }
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
+    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = TransactionCommitFailedException.class)
     public void canCommitTestWithTransactionCommitFailedException() throws Throwable {
         doThrow(new DataValidationFailedException(YangInstanceIdentifier.EMPTY, "testException"))
@@ -84,13 +85,13 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         try {
             inMemoryDOMStoreThreePhaseCommitCohort.canCommit().get();
             fail("Expected exception");
-        } catch (Exception e) {
+        } catch (ExecutionException e) {
             assertTrue(e.getCause() instanceof TransactionCommitFailedException);
             throw e.getCause();
         }
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
+    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = UnsupportedOperationException.class)
     public void canCommitTestWithUnknownException() throws Throwable {
         doThrow(new UnsupportedOperationException("testException"))
@@ -98,7 +99,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         try {
             inMemoryDOMStoreThreePhaseCommitCohort.canCommit().get();
             fail("Expected exception");
-        } catch (Exception e) {
+        } catch (ExecutionException e) {
             assertTrue(e.getCause() instanceof UnsupportedOperationException);
             throw e.getCause();
         }
@@ -111,7 +112,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         verify(IN_MEMORY_DOM_DATA_STORE).prepare(any());
     }
 
-    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})
+    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = UnsupportedOperationException.class)
     public void preCommitTestWithUnknownException() throws Throwable {
         doThrow(new UnsupportedOperationException("testException"))
@@ -119,7 +120,7 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         try {
             inMemoryDOMStoreThreePhaseCommitCohort.preCommit().get();
             fail("Expected exception");
-        } catch (Exception e) {
+        } catch (ExecutionException e) {
             assertTrue(e.getCause() instanceof UnsupportedOperationException);
             throw e.getCause();
         }

@@ -26,7 +26,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeShard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
+final class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTreeProducer.class);
 
     private final Set<DOMDataTreeIdentifier> subtrees;
@@ -150,6 +150,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:hiddenField")
     public DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees) {
         checkNotClosed();
         checkIdle();

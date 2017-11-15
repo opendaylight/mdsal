@@ -23,19 +23,20 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapter implements DataTreeCo
     private final BindingToNormalizedNodeCodec codec;
     private final DOMDataTreeCommitCohortRegistry registry;
 
-    BindingDOMDataTreeCommitCohortRegistryAdapter(BindingToNormalizedNodeCodec codec,
-            DOMDataTreeCommitCohortRegistry registry) {
+    BindingDOMDataTreeCommitCohortRegistryAdapter(final BindingToNormalizedNodeCodec codec,
+            final DOMDataTreeCommitCohortRegistry registry) {
         this.codec = Preconditions.checkNotNull(codec);
         this.registry = Preconditions.checkNotNull(registry);
     }
 
-    DataTreeCommitCohortRegistry from(BindingToNormalizedNodeCodec codec, DOMDataTreeCommitCohortRegistry registry) {
+    static DataTreeCommitCohortRegistry from(final BindingToNormalizedNodeCodec codec,
+            final DOMDataTreeCommitCohortRegistry registry) {
         return new BindingDOMDataTreeCommitCohortRegistryAdapter(codec, registry);
     }
 
     @Override
     public <D extends DataObject, T extends DataTreeCommitCohort<D>> ObjectRegistration<T> registerCommitCohort(
-            DataTreeIdentifier<D> subtree, final T cohort) {
+            final DataTreeIdentifier<D> subtree, final T cohort) {
         final BindingDOMDataTreeCommitCohortAdapter<D> adapter =
                 new BindingDOMDataTreeCommitCohortAdapter<>(codec, cohort);
         final DOMDataTreeIdentifier domPath = codec.toDOMDataTreeIdentifier(subtree);

@@ -134,7 +134,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             final BiConsumer<ShardedDOMDataTreeWriteTransaction, Throwable> failure) {
         LOG.debug("Readying tx {}", identifier);
 
-        final ListenableFuture<?> future;
+        final ListenableFuture<?> internalFuture;
         switch (transactions.size()) {
             case 0:
                 success.accept(this);
@@ -142,17 +142,17 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
             case 1: {
                 final DOMDataTreeShardWriteTransaction tx = transactions.values().iterator().next();
                 tx.ready();
-                future = tx.submit();
+                internalFuture = tx.submit();
                 break;
             }
             default:
-                future = Futures.allAsList(transactions.values().stream().map(tx -> {
+                internalFuture = Futures.allAsList(transactions.values().stream().map(tx -> {
                     tx.ready();
                     return tx.submit();
                 }).collect(Collectors.toList()));
         }
 
-        Futures.addCallback(future, new FutureCallback<Object>() {
+        Futures.addCallback(internalFuture, new FutureCallback<Object>() {
             @Override
             public void onSuccess(final Object result) {
                 success.accept(ShardedDOMDataTreeWriteTransaction.this);
@@ -178,21 +178,21 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     }
 
     private class DelegatingCursor implements DOMDataTreeWriteCursor {
-        private final Deque<PathArgument> path = new ArrayDeque<>();
+        private final Deque<PathArgument> currentArgs = new ArrayDeque<>();
         private final DOMDataTreeWriteCursor delegate;
         private final DOMDataTreeIdentifier rootPosition;
 
         DelegatingCursor(final DOMDataTreeWriteCursor delegate, final DOMDataTreeIdentifier rootPosition) {
             this.delegate = Preconditions.checkNotNull(delegate);
             this.rootPosition = Preconditions.checkNotNull(rootPosition);
-            path.addAll(rootPosition.getRootIdentifier().getPathArguments());
+            currentArgs.addAll(rootPosition.getRootIdentifier().getPathArguments());
         }
 
         @Override
         public void enter(@Nonnull final PathArgument child) {
             checkAvailable(child);
             delegate.enter(child);
-            path.push(child);
+            currentArgs.push(child);
         }
 
         @Override
@@ -212,20 +212,20 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         @Override
         public void exit() {
             delegate.exit();
-            path.pop();
+            currentArgs.pop();
         }
 
         @Override
         public void exit(final int depth) {
             delegate.exit(depth);
             for (int i = 0; i < depth; i++) {
-                path.pop();
+                currentArgs.pop();
             }
         }
 
         @Override
         public void close() {
-            int depthEntered = path.size() - rootPosition.getRootIdentifier().getPathArguments().size();
+            int depthEntered = currentArgs.size() - rootPosition.getRootIdentifier().getPathArguments().size();
             if (depthEntered > 0) {
                 // clean up existing modification cursor in case this tx will be reused for batching
                 delegate.exit(depthEntered);
@@ -254,7 +254,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         }
 
         void checkAvailable(final PathArgument child) {
-            layout.checkAvailable(path, child);
+            layout.checkAvailable(currentArgs, child);
         }
     }
 

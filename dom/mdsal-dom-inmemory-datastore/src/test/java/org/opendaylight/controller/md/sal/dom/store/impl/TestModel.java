@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException
 import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
-public class TestModel {
+public final class TestModel {
 
     public static final QName TEST_QNAME =
             QName.create("urn:opendaylight:params:xml:ns:yang:controller:md:sal:dom:store:test", "2014-03-13", "test");
@@ -33,6 +33,10 @@ public class TestModel {
     public static final YangInstanceIdentifier OUTER_LIST_PATH =
             YangInstanceIdentifier.builder(TEST_PATH).node(OUTER_LIST_QNAME).build();
     private static final String DATASTORE_TEST_YANG = "/odl-datastore-test.yang";
+
+    private TestModel() {
+        throw new UnsupportedOperationException();
+    }
 
     public static SchemaContext createTestContext() throws IOException, YangSyntaxErrorException, ReactorException {
         return YangParserTestUtils.parseYangStreams(Collections.singletonList(getInputStream()));

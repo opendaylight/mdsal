@@ -51,7 +51,7 @@ public class SnapshotBackedReadTransactionTest {
         assertNull(stableSnapshot);
     }
 
-    @SuppressWarnings("checkstyle:IllegalThrows")
+    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = ReadFailedException.class)
     public void readTestWithException() throws Throwable {
         snapshotBackedReadTransaction.close();
@@ -63,7 +63,7 @@ public class SnapshotBackedReadTransactionTest {
         }
     }
 
-    @SuppressWarnings("checkstyle:IllegalThrows")
+    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = ReadFailedException.class)
     public void readNodeTestWithException() throws Throwable {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_SNAPSHOT).readNode(any());
@@ -76,7 +76,7 @@ public class SnapshotBackedReadTransactionTest {
         }
     }
 
-    @SuppressWarnings("checkstyle:IllegalThrows")
+    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     @Test(expected = ReadFailedException.class)
     public void existsTestWithException() throws Throwable  {
         doThrow(new NullPointerException("no Node")).when(DATA_TREE_SNAPSHOT).readNode(any());
