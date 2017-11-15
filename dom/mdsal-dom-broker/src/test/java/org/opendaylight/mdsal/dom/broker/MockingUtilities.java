@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.dom.broker;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-class MockingUtilities {
+final class MockingUtilities {
 
     private MockingUtilities() {
         throw new UnsupportedOperationException("Utility class");

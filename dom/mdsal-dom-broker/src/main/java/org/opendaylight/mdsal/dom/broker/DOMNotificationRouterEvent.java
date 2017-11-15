@@ -21,13 +21,7 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
  * so they do have mutable state.
  */
 final class DOMNotificationRouterEvent {
-    public static final EventFactory<DOMNotificationRouterEvent> FACTORY =
-            new EventFactory<DOMNotificationRouterEvent>() {
-        @Override
-        public DOMNotificationRouterEvent newInstance() {
-            return new DOMNotificationRouterEvent();
-        }
-    };
+    static final EventFactory<DOMNotificationRouterEvent> FACTORY = DOMNotificationRouterEvent::new;
 
     private Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers;
     private DOMNotification notification;
@@ -37,6 +31,7 @@ final class DOMNotificationRouterEvent {
         // Hidden on purpose, initialized in initialize()
     }
 
+    @SuppressWarnings("checkstyle:hiddenField")
     ListenableFuture<Void> initialize(final DOMNotification notification,
             final Collection<ListenerRegistration<? extends DOMNotificationListener>> subscribers) {
         this.notification = Preconditions.checkNotNull(notification);

@@ -54,7 +54,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     private volatile DOMDataTreeListener attachedListener;
     private volatile ProducerLayout layout;
 
-    private ShardedDOMDataTreeProducer(final ShardedDOMDataTree dataTree,
+    ShardedDOMDataTreeProducer(final ShardedDOMDataTree dataTree,
                                final Collection<DOMDataTreeIdentifier> subtrees,
                                final Map<DOMDataTreeIdentifier, DOMDataTreeShard> shardMap) {
         this.dataTree = Preconditions.checkNotNull(dataTree);
@@ -150,6 +150,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:hiddenField")
     public DOMDataTreeProducer createProducer(final Collection<DOMDataTreeIdentifier> subtrees) {
         checkNotClosed();
         checkIdle();

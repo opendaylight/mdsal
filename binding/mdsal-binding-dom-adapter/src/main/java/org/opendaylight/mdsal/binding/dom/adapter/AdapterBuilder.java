@@ -20,7 +20,7 @@ public abstract class AdapterBuilder<T,D> implements Builder<T> {
 
     public abstract Set<? extends Class<? extends D>> getRequiredDelegates();
 
-    protected abstract T createInstance(ClassToInstanceMap<D> delegates);
+    protected abstract T createInstance(ClassToInstanceMap<D> immutableDelegates);
 
     private void checkAllRequiredServices() {
         for (final Class<? extends D> type : getRequiredDelegates()) {

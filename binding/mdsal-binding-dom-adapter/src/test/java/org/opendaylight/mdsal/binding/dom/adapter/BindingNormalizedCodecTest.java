@@ -67,8 +67,8 @@ public class BindingNormalizedCodecTest extends AbstractSchemaAwareTest {
     private SchemaContext context;
 
     @Override
-    protected void setupWithSchema(final SchemaContext context) {
-        this.context = context;
+    protected void setupWithSchema(final SchemaContext schemaContext) {
+        this.context = schemaContext;
         final DataObjectSerializerGenerator streamWriter = StreamWriterGenerator.create(JavassistUtils.forClassPool(
                     ClassPool.getDefault()));
         final BindingNormalizedNodeCodecRegistry registry = new BindingNormalizedNodeCodecRegistry(streamWriter);

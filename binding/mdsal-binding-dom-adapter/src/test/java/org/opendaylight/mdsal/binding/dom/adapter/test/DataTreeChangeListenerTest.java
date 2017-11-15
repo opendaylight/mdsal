@@ -63,20 +63,19 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
 
     private static final class EventCapturingListener<T extends DataObject> implements DataTreeChangeListener<T> {
 
-        private SettableFuture<Collection<DataTreeModification<T>>> changes = SettableFuture.create();
+        private SettableFuture<Collection<DataTreeModification<T>>> futureChanges = SettableFuture.create();
 
         @Override
         public void onDataTreeChanged(final Collection<DataTreeModification<T>> changes) {
-            this.changes.set(changes);
+            this.futureChanges.set(changes);
 
         }
 
         Collection<DataTreeModification<T>> nextEvent() throws Exception {
-            final Collection<DataTreeModification<T>> result = changes.get(200,TimeUnit.MILLISECONDS);
-            changes = SettableFuture.create();
+            final Collection<DataTreeModification<T>> result = futureChanges.get(200,TimeUnit.MILLISECONDS);
+            futureChanges = SettableFuture.create();
             return result;
         }
-
     }
 
     @Override

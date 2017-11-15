@@ -94,9 +94,9 @@ public final class DOMDataTreeListenerAggregator
         @Override
         protected void append(final State state) {
             if (state instanceof Changes) {
-                final Changes changes = (Changes) state;
-                this.changes.addAll(changes.changes);
-                subtrees = ImmutableMap.copyOf(changes.subtrees);
+                final Changes changesState = (Changes) state;
+                this.changes.addAll(changesState.changes);
+                subtrees = ImmutableMap.copyOf(changesState.subtrees);
             } else if (state instanceof Failure) {
                 causes.addAll(((Failure) state).causes);
             } else {
@@ -108,9 +108,9 @@ public final class DOMDataTreeListenerAggregator
         protected synchronized void appendInitial(final State state) {
             // TODO: we could index and compress state changes here
             if (state instanceof Changes) {
-                final Changes changes = (Changes) state;
-                this.changes.addAll(changes.changes);
-                subtrees = ImmutableMap.copyOf(changes.subtrees);
+                final Changes changesState = (Changes) state;
+                this.changes.addAll(changesState.changes);
+                subtrees = ImmutableMap.copyOf(changesState.subtrees);
             } else if (state instanceof Failure) {
                 causes.addAll(((Failure) state).causes);
             } else {

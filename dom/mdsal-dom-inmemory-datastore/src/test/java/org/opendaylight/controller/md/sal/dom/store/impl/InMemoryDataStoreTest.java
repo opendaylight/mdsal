@@ -304,7 +304,7 @@ public class InMemoryDataStoreTest {
         doReadAndThrowEx(readTx);
     }
 
-    @SuppressWarnings("checkstyle:IllegalThrows")
+    @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
     private static void doReadAndThrowEx(final DOMStoreReadTransaction readTx) throws Throwable {
         try {
             readTx.read(TestModel.TEST_PATH).get();

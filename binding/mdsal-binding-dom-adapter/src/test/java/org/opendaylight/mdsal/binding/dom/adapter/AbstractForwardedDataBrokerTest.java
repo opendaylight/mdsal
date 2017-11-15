@@ -39,7 +39,7 @@ public class AbstractForwardedDataBrokerTest {
     private NormalizedNode<?, ?> normalizedNode;
 
     @Before
-    public void basicTest() throws Exception {
+    public void basicTest() {
         final BindingBrokerTestFactory testFactory = new BindingBrokerTestFactory();
         testFactory.setExecutor(Executors.newCachedThreadPool());
 
@@ -53,24 +53,24 @@ public class AbstractForwardedDataBrokerTest {
     }
 
     @Test
-    public void toBindingTestWithMap() throws Exception {
-        final NormalizedNode<?, ?> normalizedNode = mock(NormalizedNode.class);
-        assertNotNull(forwardedDataBroker.toBinding(BA_TREE_LEAF_ONLY, ImmutableMap.of(data, normalizedNode)));
+    public void toBindingTestWithMap() {
+        final NormalizedNode<?, ?> mockNode = mock(NormalizedNode.class);
+        assertNotNull(forwardedDataBroker.toBinding(BA_TREE_LEAF_ONLY, ImmutableMap.of(data, mockNode)));
     }
 
     @Test
-    public void toBindingTestWithSet() throws Exception {
+    public void toBindingTestWithSet() {
         assertNotNull(forwardedDataBroker.toBinding(BA_TREE_LEAF_ONLY, ImmutableSet.of(data)));
     }
 
     @Test
-    public void toBindingDataTest() throws Exception {
+    public void toBindingDataTest() {
         assertNotNull(forwardedDataBroker.toBindingData(BA_TOP_LEVEL_LIST, normalizedNode));
     }
 
-    private class AbstractForwardedDataBrokerImpl extends AbstractForwardedDataBroker {
+    private static final class AbstractForwardedDataBrokerImpl extends AbstractForwardedDataBroker {
 
-        private AbstractForwardedDataBrokerImpl(final DOMDataBroker domDataBroker,
+        AbstractForwardedDataBrokerImpl(final DOMDataBroker domDataBroker,
                 final BindingToNormalizedNodeCodec codec) {
             super(domDataBroker, codec);
         }

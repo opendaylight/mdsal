@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
-public class SimpleDOMMountPoint implements DOMMountPoint {
+public final class SimpleDOMMountPoint implements DOMMountPoint {
 
     private final YangInstanceIdentifier identifier;
     private final ClassToInstanceMap<DOMService> services;
@@ -29,7 +29,7 @@ public class SimpleDOMMountPoint implements DOMMountPoint {
         this.schemaContext = ctx;
     }
 
-    public static final SimpleDOMMountPoint create(final YangInstanceIdentifier identifier,
+    public static SimpleDOMMountPoint create(final YangInstanceIdentifier identifier,
             final ClassToInstanceMap<DOMService> services, final SchemaContext ctx) {
         return new SimpleDOMMountPoint(identifier, services, ctx);
     }
