@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_51c6f168",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/RpcServiceAdapter.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T13:43:12Z",
+      "side": 1,
+      "message": "I assume this hides field - why not just rename it instead of suppressing?",
+      "range": {
+        "startLine": 78,
+        "startChar": 38,
+        "endLine": 78,
+        "endChar": 43
+      },
+      "revId": "67d0d71b7218015f5eaf311d732a0db1dd079021",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_519d5165",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/MissingSchemaForClassException.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T13:43:12Z",
+      "side": 1,
+      "message": "What\u0027s the violation/reason that requires this to be final?",
+      "range": {
+        "startLine": 20,
+        "startChar": 7,
+        "endLine": 20,
+        "endChar": 12
+      },
+      "revId": "67d0d71b7218015f5eaf311d732a0db1dd079021",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
