@@ -93,6 +93,30 @@
       "revId": "67d0d71b7218015f5eaf311d732a0db1dd079021",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_28b787f6",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/MissingSchemaForClassException.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-11-20T08:50:43Z",
+      "side": 1,
+      "message": "What I did for these was to either make them final or make the constructor package-private when they are being mocked (which also shuts up checkstyle).",
+      "parentUuid": "9a245df4_08be03d5",
+      "range": {
+        "startLine": 20,
+        "startChar": 7,
+        "endLine": 20,
+        "endChar": 12
+      },
+      "revId": "67d0d71b7218015f5eaf311d732a0db1dd079021",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
