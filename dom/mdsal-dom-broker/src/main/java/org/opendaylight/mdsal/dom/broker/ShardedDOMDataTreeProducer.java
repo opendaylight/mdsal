@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -186,7 +188,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     }
 
     @Override
-    public void close() throws DOMDataTreeProducerException {
+    public ListenableFuture<? extends Object> shutdown() throws DOMDataTreeProducerException {
         if (openTx != null) {
             throw new DOMDataTreeProducerBusyException(String.format("Transaction %s is still open", openTx));
         }
@@ -196,6 +198,8 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
                 dataTree.destroyProducer(this);
             }
         }
+
+        return Futures.immediateFuture(null);
     }
 
     protected Set<DOMDataTreeIdentifier> getSubtrees() {
