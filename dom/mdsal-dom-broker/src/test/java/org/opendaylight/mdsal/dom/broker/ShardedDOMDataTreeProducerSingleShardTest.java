@@ -16,6 +16,7 @@ import static org.mockito.Mockito.doReturn;
 import com.google.common.util.concurrent.Futures;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -95,17 +96,17 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void createProducerWithEmptyList() {
-        treeService.createProducer(Collections.<DOMDataTreeIdentifier>emptySet());
+        treeService.createProducer(Collections.emptySet());
     }
 
     @Test(expected = DOMDataTreeProducerBusyException.class)
-    public void closeWithTxOpened() throws DOMDataTreeProducerException {
+    public void closeWithTxOpened() throws DOMDataTreeProducerException, InterruptedException, ExecutionException {
         producer.createTransaction(false);
         producer.close();
     }
 
     @Test
-    public void closeWithTxSubmitted() throws DOMDataTreeProducerException {
+    public void closeWithTxSubmitted() throws DOMDataTreeProducerException, InterruptedException, ExecutionException {
         final DOMDataTreeCursorAwareTransaction tx = producer.createTransaction(false);
         tx.submit();
         producer.close();
