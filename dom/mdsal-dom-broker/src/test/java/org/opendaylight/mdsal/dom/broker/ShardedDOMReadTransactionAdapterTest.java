@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
@@ -90,7 +91,7 @@ public class ShardedDOMReadTransactionAdapterTest {
         @Nonnull
         @Override
         public DOMDataTreeProducer createProducer(@Nonnull final Collection<DOMDataTreeIdentifier> subtrees) {
-            return null;
+            return Mockito.mock(DOMDataTreeProducer.class);
         }
     }
 }
