@@ -23,12 +23,14 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -63,17 +65,17 @@ public class ShardedDOMDataTreeTest {
 
     private static final SchemaContext SCHEMA_CONTEXT = TestModel.createTestContext();
 
-    private static final DOMDataTreeIdentifier ROOT_ID =
+    private static final @NonNull DOMDataTreeIdentifier ROOT_ID =
             new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, YangInstanceIdentifier.EMPTY);
-    private static final DOMDataTreeIdentifier TEST_ID =
+    private static final @NonNull DOMDataTreeIdentifier TEST_ID =
             new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
 
-    private static final DOMDataTreeIdentifier INNER_CONTAINER_ID =
+    private static final @NonNull DOMDataTreeIdentifier INNER_CONTAINER_ID =
             new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, TestModel.INNER_CONTAINER_PATH);
 
     private static final YangInstanceIdentifier OUTER_LIST_YID = TestModel.OUTER_LIST_PATH.node(
             new NodeIdentifierWithPredicates(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1));
-    private static final DOMDataTreeIdentifier OUTER_LIST_ID =
+    private static final @NonNull DOMDataTreeIdentifier OUTER_LIST_ID =
             new DOMDataTreeIdentifier(LogicalDatastoreType.CONFIGURATION, OUTER_LIST_YID);
 
     private InMemoryDOMDataTreeShard rootShard;
@@ -401,9 +403,8 @@ public class ShardedDOMDataTreeTest {
         final InMemoryDOMDataTreeShard outerListShard = InMemoryDOMDataTreeShard.create(OUTER_LIST_ID, executor, 1, 1);
         outerListShard.onGlobalContextUpdated(SCHEMA_CONTEXT);
 
-        try (DOMDataTreeProducer producer =
-                     dataTreeService.createProducer(Collections.singletonList(OUTER_LIST_ID))) {
-            dataTreeService.registerDataTreeShard(OUTER_LIST_ID, outerListShard, producer);
+        try (DOMDataTreeProducer outerProducer = dataTreeService.createProducer(Arrays.asList(OUTER_LIST_ID))) {
+            dataTreeService.registerDataTreeShard(OUTER_LIST_ID, outerListShard, outerProducer);
         }
 
         final DOMDataTreeProducer producer = dataTreeService.createProducer(Collections.singletonList(ROOT_ID));
@@ -424,8 +425,6 @@ public class ShardedDOMDataTreeTest {
                 false, Collections.emptyList());
 
         verify(listener, times(2)).onDataTreeChanged(any(), any());
-
-
     }
 
     private static ContainerNode createCrossShardContainer2() {

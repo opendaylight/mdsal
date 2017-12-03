@@ -5,18 +5,20 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verifyNotNull;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,10 +53,10 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
     public ShardedDOMTransactionChainAdapter(final Object txChainIdentifier,
                                              final DOMDataTreeService dataTreeService,
                                              final TransactionChainListener txChainListener) {
-        Preconditions.checkNotNull(dataTreeService);
-        Preconditions.checkNotNull(txChainIdentifier);
-        this.dataTreeService = dataTreeService;
-        this.txChainIdentifier = txChainIdentifier;
+        this.dataTreeService = requireNonNull(dataTreeService);
+        this.txChainIdentifier = requireNonNull(txChainIdentifier);
+
+        // FIXME: nullable listener?
         this.txChainListener = txChainListener;
         this.cachedDataTreeService = new CachedDataTreeService(dataTreeService);
     }
@@ -137,15 +139,15 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
     }
 
     private void checkWriteTxClosed() {
-        Preconditions.checkState(writeTx == null);
+        checkState(writeTx == null);
     }
 
     private void checkReadTxClosed() {
-        Preconditions.checkState(readTx == null);
+        checkState(readTx == null);
     }
 
     private void checkRunning() {
-        Preconditions.checkState(!finished);
+        checkState(!finished);
     }
 
     public void transactionFailed(final AsyncTransaction<?, ?> tx, final Throwable cause) {
@@ -185,15 +187,14 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
 
         @Override
         public DOMDataTreeProducer createProducer(@Nonnull final Collection<DOMDataTreeIdentifier> subtrees) {
-            Preconditions.checkState(subtrees.size() == 1);
-            NoopCloseDataProducer producer = null;
-            for (final DOMDataTreeIdentifier treeId : subtrees) {
-                producer =
-                        new NoopCloseDataProducer(delegateTreeService.createProducer(Collections.singleton(treeId)));
-                producersMap.putIfAbsent(treeId.getDatastoreType(),
-                        producer);
-            }
-            return producer;
+            // FIXME: this needs to be documented or fixed.
+            checkState(subtrees.size() == 1);
+
+            final DOMDataTreeIdentifier treeId = subtrees.iterator().next();
+            final NoopCloseDataProducer producer = new NoopCloseDataProducer(
+                delegateTreeService.createProducer(subtrees));
+            producersMap.putIfAbsent(treeId.getDatastoreType(), producer);
+            return verifyNotNull(producer);
         }
 
         static class NoopCloseDataProducer implements DOMDataTreeProducer {
@@ -217,14 +218,15 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
             }
 
             @Override
-            public void close() throws DOMDataTreeProducerException {
+            public ListenableFuture<? extends Object> shutdown() {
                 // noop
+                return Futures.immediateFuture(null);
             }
 
-            public void closeDelegate() {
+            void closeDelegate() {
                 try {
                     delegateTreeProducer.close();
-                } catch (final DOMDataTreeProducerException e) {
+                } catch (final DOMDataTreeProducerException | InterruptedException | ExecutionException e) {
                     throw new IllegalStateException("Trying to close DOMDataTreeProducer with open transaction", e);
                 }
             }
