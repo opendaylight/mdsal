@@ -54,9 +54,8 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
             parentReg = shards.lookup(prefix).getValue();
 
             /*
-             * FIXME: adjust all producers and listeners. This is tricky, as we need different
-             * locking strategy, simply because we risk AB/BA deadlock with a producer being split
-             * off from a producer.
+             * FIXME: adjust all producers and listeners. This is tricky, as we need different locking strategy, simply
+             * because we risk AB/BA deadlock with a producer being split off from a producer.
              */
         }
 

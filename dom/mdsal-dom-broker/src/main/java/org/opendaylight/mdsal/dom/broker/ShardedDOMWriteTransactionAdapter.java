@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
@@ -177,7 +178,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
         producerMap.values().forEach(domDataTreeProducer -> {
             try {
                 domDataTreeProducer.close();
-            } catch (final DOMDataTreeProducerException e) {
+            } catch (final DOMDataTreeProducerException | InterruptedException | ExecutionException e) {
                 throw new IllegalStateException("Trying to close DOMDataTreeProducer with open transaction", e);
             }
         });
