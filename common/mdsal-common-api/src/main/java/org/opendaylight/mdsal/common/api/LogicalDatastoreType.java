@@ -7,23 +7,25 @@
  */
 package org.opendaylight.mdsal.common.api;
 
+/**
+ * Datastore instantiation handle. Note this is a hybrid between RFC7950/RFC6241 and
+ * draft-ietf-netmod-revised-datastores and may need to be revised if we decide to formalize NMDA at MD-SAL layer
+ * as opposed to application layer.
+ */
 public enum LogicalDatastoreType {
-
     /**
-     * Logical atastore representing operational state of the system
-     * and it's components
-     * This datastore is used to describe operational state of
-     * the system and it's operation related data.
+     * Logical Datastore representing operational state of the system and it's components.
+     * This datastore is used to describe operational state of the system and it's operation related data.
      *
+     * <p>
+     * This datastore allows storage of both config=true and config=false YANG data.
      */
     OPERATIONAL,
     /**
-     * Logical Datastore representing configuration state of the system
-     * and it's components.
-     * This datastore is used to describe intended state of
-     * the system and intended operation mode.
-     *
+     * Logical Datastore representing configuration state of the system and it's components.
+     * This datastore is used to describe intended state of the system and intended operation mode.
+     * <p>
+     * This datastore allows storage of only config=true YANG data.
      */
     CONFIGURATION
-
 }
