@@ -468,6 +468,7 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * @deprecated Use {@link #commit()} instead.
      */
     @Deprecated
+    @CheckReturnValue
     CheckedFuture<Void, TransactionCommitFailedException> submit();
 
     /**
