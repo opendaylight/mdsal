@@ -44,13 +44,15 @@ class YangTemplate {
 
     private static val String SKIP_PROPERTY_NAME = "mdsal.skip.verbose"
 
-    private static val SKIP = Boolean.getBoolean(SKIP_PROPERTY_NAME);
+    private static val SKIP = Boolean.getBoolean(SKIP_PROPERTY_NAME)
+
+    private static val SKIPPED_EMPTY = '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
 
     def static String generateYangSnipet(SchemaNode schemaNode) {
         if (schemaNode === null)
             return ''
         if (SKIP)
-            return '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
+            return SKIPPED_EMPTY
         '''
             «IF schemaNode instanceof DataSchemaNode»
             «writeDataSchemaNode(schemaNode)»
@@ -89,7 +91,7 @@ class YangTemplate {
         if (nodes.nullOrEmpty)
             return ''
         if (SKIP)
-            return '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
+            return SKIPPED_EMPTY
         '''
             «FOR node : nodes»
                 «IF node instanceof NotificationDefinition»
@@ -134,7 +136,7 @@ class YangTemplate {
 
     def static String generateYangSnipet(Module module) {
         if (SKIP)
-            return '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
+            return SKIPPED_EMPTY
         '''
             module «module.name» {
                 yang-version «module.yangVersion»;
