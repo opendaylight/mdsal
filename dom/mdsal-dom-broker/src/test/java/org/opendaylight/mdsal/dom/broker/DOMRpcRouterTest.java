@@ -41,6 +41,7 @@ public class DOMRpcRouterTest extends TestUtils {
         }
     }
 
+    @Deprecated
     @Test
     public void invokeRpc() throws Exception {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
