@@ -8,16 +8,16 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import org.opendaylight.mdsal.dom.api.DOMOperationImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
@@ -32,21 +32,21 @@ final class RoutedDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
 
     private RoutedDOMRpcRoutingTableEntry(final DOMRpcIdentifier globalRpcId,
             final YangInstanceIdentifier keyId,
-            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
+            final Map<YangInstanceIdentifier, List<DOMOperationImplementation>> impls) {
         super(globalRpcId.getType(), impls);
         this.keyId = Preconditions.checkNotNull(keyId);
         this.globalRpcId = Preconditions.checkNotNull(globalRpcId);
     }
 
     RoutedDOMRpcRoutingTableEntry(final RpcDefinition def, final YangInstanceIdentifier keyId,
-            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
+            final Map<YangInstanceIdentifier, List<DOMOperationImplementation>> impls) {
         super(def.getPath(), impls);
         this.keyId = Preconditions.checkNotNull(keyId);
         this.globalRpcId = DOMRpcIdentifier.create(def.getPath());
     }
 
     @Override
-    protected CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final NormalizedNode<?, ?> input) {
+    protected void invokeRpc(NormalizedNode<?, ?> input, BiConsumer<DOMRpcResult, DOMRpcException> callback) {
         final Optional<NormalizedNode<?, ?>> maybeKey = NormalizedNodes.findNode(input, keyId);
 
         // Routing key is present, attempt to deliver as a routed RPC
@@ -56,20 +56,23 @@ final class RoutedDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
             if (value instanceof YangInstanceIdentifier) {
                 final YangInstanceIdentifier iid = (YangInstanceIdentifier) value;
 
-                // Find a DOMRpcImplementation for a specific iid
-                final List<DOMRpcImplementation> specificImpls = getImplementations(iid);
+                // Find a DOMOperationImplementation for a specific iid
+                final List<DOMOperationImplementation> specificImpls = getImplementations(iid);
                 if (specificImpls != null) {
-                    return specificImpls.get(0).invokeRpc(DOMRpcIdentifier.create(getSchemaPath(), iid), input);
+                    specificImpls.get(0).invokeOperation(DOMRpcIdentifier.create(getSchemaPath(), iid), input,
+                        callback);
                 }
 
                 LOG.debug("No implementation for context {} found will now look for wildcard id", iid);
 
-                // Find a DOMRpcImplementation for a wild card. Usually remote-rpc-connector would register an
+                // Find a DOMOperationImplementation for a wild card. Usually remote-rpc-connector would register an
                 // implementation this way
-                final List<DOMRpcImplementation> mayBeRemoteImpls = getImplementations(YangInstanceIdentifier.EMPTY);
+                final List<DOMOperationImplementation> mayBeRemoteImpls =
+                    getImplementations(YangInstanceIdentifier.EMPTY);
 
                 if (mayBeRemoteImpls != null) {
-                    return mayBeRemoteImpls.get(0).invokeRpc(DOMRpcIdentifier.create(getSchemaPath(), iid), input);
+                    mayBeRemoteImpls.get(0).invokeOperation(DOMRpcIdentifier.create(getSchemaPath(), iid), input,
+                        callback);
                 }
 
             } else {
@@ -77,18 +80,18 @@ final class RoutedDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
             }
         }
 
-        final List<DOMRpcImplementation> impls = getImplementations(null);
+        final List<DOMOperationImplementation> impls = getImplementations(null);
         if (impls != null) {
-            return impls.get(0).invokeRpc(globalRpcId, input);
+            impls.get(0).invokeOperation(globalRpcId, input, callback);
         }
 
-        return Futures.<DOMRpcResult, DOMRpcException>immediateFailedCheckedFuture(
+        callback.accept(new DefaultDOMRpcResult(),
             new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", getSchemaPath()));
     }
 
     @Override
     protected RoutedDOMRpcRoutingTableEntry newInstance(final Map<YangInstanceIdentifier,
-            List<DOMRpcImplementation>> impls) {
+            List<DOMOperationImplementation>> impls) {
         return new RoutedDOMRpcRoutingTableEntry(globalRpcId, keyId, impls);
     }
 }

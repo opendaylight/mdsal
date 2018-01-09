@@ -8,12 +8,12 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import org.opendaylight.mdsal.dom.api.DOMOperationImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -24,7 +24,7 @@ final class GlobalDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
     private final DOMRpcIdentifier rpcId;
 
     private GlobalDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId, final Map<YangInstanceIdentifier,
-            List<DOMRpcImplementation>> impls) {
+            List<DOMOperationImplementation>> impls) {
         super(rpcId.getType(), impls);
         this.rpcId = Preconditions.checkNotNull(rpcId);
     }
@@ -32,19 +32,20 @@ final class GlobalDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
     // We do not need the RpcDefinition, but this makes sure we do not
     // forward something we don't know to be an RPC.
     GlobalDOMRpcRoutingTableEntry(final RpcDefinition def, final Map<YangInstanceIdentifier,
-            List<DOMRpcImplementation>> impls) {
+            List<DOMOperationImplementation>> impls) {
         super(def.getPath(), impls);
         this.rpcId = DOMRpcIdentifier.create(def.getPath());
     }
 
     @Override
-    protected CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final NormalizedNode<?, ?> input) {
-        return getImplementations(ROOT).get(0).invokeRpc(rpcId, input);
+    protected void invokeRpc(final NormalizedNode<?, ?> input,
+            final BiConsumer<DOMRpcResult, DOMRpcException> callback) {
+        getImplementations(ROOT).get(0).invokeOperation(rpcId, input, callback);
     }
 
     @Override
     protected GlobalDOMRpcRoutingTableEntry newInstance(final Map<YangInstanceIdentifier,
-            List<DOMRpcImplementation>> impls) {
+            List<DOMOperationImplementation>> impls) {
         return new GlobalDOMRpcRoutingTableEntry(rpcId, impls);
     }
 }

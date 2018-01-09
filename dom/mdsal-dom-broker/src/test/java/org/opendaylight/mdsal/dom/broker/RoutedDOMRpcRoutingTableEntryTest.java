@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.broker;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -32,11 +31,8 @@ public class RoutedDOMRpcRoutingTableEntryTest extends TestUtils {
                 new RoutedDOMRpcRoutingTableEntry(rpcDefinition, TestModel.TEST_PATH, new HashMap<>());
         assertNotNull(routedDOMRpcRoutingTableEntry.newInstance(new HashMap<>()));
 
-        try {
-            routedDOMRpcRoutingTableEntry.invokeRpc(TEST_CHILD).checkedGet();
-            fail("Expected DOMRpcImplementationNotAvailableException");
-        } catch (final Exception e) {
-            assertTrue(e instanceof DOMRpcImplementationNotAvailableException);
-        }
+        routedDOMRpcRoutingTableEntry.invokeRpc(TEST_CHILD, (result, throwable) -> {
+            assertTrue(throwable instanceof DOMRpcImplementationNotAvailableException);
+        });
     }
 }

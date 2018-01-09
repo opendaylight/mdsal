@@ -12,8 +12,10 @@ import static org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes.le
 
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+import java.util.function.BiConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.dom.api.DOMOperationImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -64,10 +66,12 @@ abstract class TestUtils {
 
     static final String EXCEPTION_TEXT = "TestRpcImplementationException";
 
+    @Deprecated
     static TestRpcImplementation getTestRpcImplementation() {
         return new TestRpcImplementation();
     }
 
+    @Deprecated
     private static final class TestRpcImplementation implements DOMRpcImplementation {
         private final CheckedFuture<DOMRpcResult, DOMRpcException> unknownRpc;
 
@@ -80,6 +84,24 @@ abstract class TestUtils {
         public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(
                 @Nonnull final DOMRpcIdentifier rpc, @Nullable final NormalizedNode<?, ?> input) {
             return unknownRpc;
+        }
+    }
+
+    static TestOperationImplementation getTestOperationImplementation() {
+        return new TestOperationImplementation();
+    }
+
+    private static final class TestOperationImplementation implements DOMOperationImplementation {
+        private final DOMRpcImplementationNotAvailableException unknownRpc;
+
+        private TestOperationImplementation() {
+            unknownRpc = new DOMRpcImplementationNotAvailableException(EXCEPTION_TEXT);
+        }
+
+        @Override
+        public void invokeOperation(@Nonnull DOMRpcIdentifier operation, @Nullable NormalizedNode<?, ?> input,
+                                    @Nonnull BiConsumer<DOMRpcResult, DOMRpcException> callback) {
+            callback.accept(null ,unknownRpc);
         }
     }
 }

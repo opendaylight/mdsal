@@ -16,20 +16,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
+import org.opendaylight.mdsal.dom.api.DOMOperationImplementation;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class UnknownDOMRpcRoutingTableEntryTest extends TestUtils {
-    private static final List<DOMRpcImplementation> TEST_LIST = new ArrayList<>();
+    private static final List<DOMOperationImplementation> TEST_LIST = new ArrayList<>();
 
     @Test
     public void basicTest() throws Exception {
-        final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> emptyImpls = new HashMap<>();
+        final Map<YangInstanceIdentifier, List<DOMOperationImplementation>> emptyImpls = new HashMap<>();
         final List<YangInstanceIdentifier> addList1 = new ArrayList<>();
         final List<YangInstanceIdentifier> addList2 = new ArrayList<>();
-        final DOMRpcImplementation testClass = getTestRpcImplementation();
+        final DOMOperationImplementation testClass = getTestOperationImplementation();
         final UnknownDOMRpcRoutingTableEntry test = new UnknownDOMRpcRoutingTableEntry(SchemaPath.ROOT, emptyImpls);
 
         TEST_LIST.add(testClass);
@@ -37,7 +37,9 @@ public class UnknownDOMRpcRoutingTableEntryTest extends TestUtils {
 
         assertNotNull(test);
         assertNotNull(test.newInstance(emptyImpls));
-        assertNotNull(test.invokeRpc(TEST_CONTAINER));
+        test.invokeRpc(TEST_CONTAINER, (result, throwable) -> {
+            assertNotNull(throwable);
+        });
         assertNotNull(test.getImplementations());
         assertEquals(test.getImplementations(YangInstanceIdentifier.EMPTY), TEST_LIST);
         assertTrue(test.containsContext(YangInstanceIdentifier.EMPTY));
@@ -47,9 +49,9 @@ public class UnknownDOMRpcRoutingTableEntryTest extends TestUtils {
         addList1.add(YangInstanceIdentifier.of(TestModel.TEST_QNAME));
         addList2.add(YangInstanceIdentifier.of(TestModel.TEST2_QNAME));
 
-        final AbstractDOMRpcRoutingTableEntry tst = test.add(testClass, addList1);
-        final AbstractDOMRpcRoutingTableEntry tst1 = tst.add(testClass, addList2);
-        final AbstractDOMRpcRoutingTableEntry tst2 = tst1.remove(testClass, addList1);
+        final AbstractDOMOperationRoutingTableEntry tst = test.add(testClass, addList1);
+        final AbstractDOMOperationRoutingTableEntry tst1 = tst.add(testClass, addList2);
+        final AbstractDOMOperationRoutingTableEntry tst2 = tst1.remove(testClass, addList1);
 
         assertEquals(1, test.getImplementations().size());
         assertEquals(2, tst.getImplementations().size());
