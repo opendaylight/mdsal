@@ -41,6 +41,12 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.util.BindingSchemaContextUtils;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
+import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
+import org.opendaylight.mdsal.binding.javav2.spec.base.KeyedInstanceIdentifier;
+import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -482,13 +488,18 @@ public class BindingRuntimeContext implements Immutable {
 
     public Method findOperationMethod(final Class<?> key, final OperationDefinition operationDef)
             throws NoSuchMethodException {
-        final String methodName =
-                JavaIdentifierNormalizer.normalizeSpecificIdentifier(operationDef.getQName().getLocalName(),
-                JavaIdentifier.METHOD);
+        final String methodName = "invoke";
         if (operationDef.getInput() != null && isExplicitStatement(operationDef.getInput())) {
             final Class<?> inputClz = this.getClassForSchema(operationDef.getInput());
-            return key.getMethod(methodName, inputClz);
+            if (Rpc.class.isAssignableFrom(key)) {
+                return key.getMethod(methodName, inputClz, RpcCallback.class);
+            } else if (Action.class.isAssignableFrom(key)) {
+                return key.getMethod(methodName, inputClz, InstanceIdentifier.class, RpcCallback.class);
+            } else if (ListAction.class.isAssignableFrom(key)) {
+                return key.getMethod(methodName, inputClz, KeyedInstanceIdentifier.class, RpcCallback.class);
+            }
         }
+
         return key.getMethod(methodName);
     }
 

@@ -25,8 +25,8 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNod
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.serialized.LazySerializedContainerNode;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Input;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
-import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -196,10 +196,10 @@ class RpcServiceAdapter implements InvocationHandler {
 
         protected RoutedStrategy(final SchemaPath path, final Method rpcMethod, final QName leafName) {
             super(path);
-            final Optional<Class<? extends Instantiable<?>>> maybeInputType =
+            final Optional<Class<? extends Input<?>>> maybeInputType =
                     BindingReflections.resolveOperationInputClass(rpcMethod);
             Preconditions.checkState(maybeInputType.isPresent(), "RPC method %s has no input", rpcMethod.getName());
-            final Class<? extends Instantiable<?>> inputType = maybeInputType.get();
+            final Class<? extends Input<?>> inputType = maybeInputType.get();
             refExtractor = ContextReferenceExtractor.from(inputType);
             this.contextName = new NodeIdentifier(leafName);
         }

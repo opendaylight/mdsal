@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableSet.Builder;
 import com.google.common.collect.Sets;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.HashMap;
@@ -35,9 +36,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.spec.base.BaseIdentity;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Input;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
+import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
+import org.opendaylight.mdsal.binding.javav2.spec.base.KeyedInstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Notification;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Output;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModelBindingProvider;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.YangModuleInfo;
@@ -129,13 +135,13 @@ public final class BindingReflections {
      */
     public static boolean isOperationMethod(final Method possibleMethod) {
         return possibleMethod != null && Operation.class.isAssignableFrom(possibleMethod.getDeclaringClass())
-                && Future.class.isAssignableFrom(possibleMethod.getReturnType())
-                // length <= 2: it seemed to be impossible to get correct OperationMethodInvoker because of
+                && void.class.isAssignableFrom(possibleMethod.getReturnType())
+                // length <= 3: it seemed to be impossible to get correct OperationMethodInvoker because of
                 // resolveOperationInputClass() check.While OperationMethodInvoker counts with one argument
                 // for
                 // non input type and two arguments for input type, resolveOperationInputClass() counting
                 // with zero for non input and one for input type
-                && possibleMethod.getParameterTypes().length <= 2;
+                && possibleMethod.getParameterTypes().length <= 3;
     }
 
     /**
@@ -147,13 +153,56 @@ public final class BindingReflections {
      *         is Void.
      */
     @SuppressWarnings("rawtypes")
-    public static Optional<Class<?>> resolveOperationOutputClass(final Method targetMethod) {
-        checkState(isOperationMethod(targetMethod), "Supplied method is not a RPC or Action invocation method");
-        final Type futureType = targetMethod.getGenericReturnType();
-        final Type operationResultType = ClassLoaderUtils.getFirstGenericParameter(futureType);
-        final Type operationResultArgument = ClassLoaderUtils.getFirstGenericParameter(operationResultType);
-        if (operationResultArgument instanceof Class && !Void.class.equals(operationResultArgument)) {
-            return Optional.of((Class) operationResultArgument);
+    public static Optional<Class<? extends Output<?>>> resolveOperationOutputClass(final Method targetMethod) {
+        checkState(isOperationMethod(targetMethod),
+            "Supplied method is not a RPC or Action invocation method");
+        for (final Type type : targetMethod.getGenericParameterTypes()) {
+            if (type instanceof ParameterizedType
+                    && ((ParameterizedType) type).getRawType().equals(RpcCallback.class)) {
+                final Type output =  ClassLoaderUtils.getFirstGenericParameter(type);
+                if (output instanceof Class) {
+                    return Optional.of((Class) output);
+                }
+            }
+        }
+
+        return Optional.absent();
+    }
+
+    /**
+     * Extracts input class for RPC or Action
+     *
+     * @param targetMethod
+     *            - method to scan
+     * @return Optional.absent() if RPC or Action has no input, RPC input type
+     *         otherwise.
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static Optional<Class<? extends Input<?>>> resolveOperationInputClass(final Method targetMethod) {
+        checkState(isOperationMethod(targetMethod),
+            "Supplied method is not a RPC or Action invocation method");
+        for (final Class clazz : targetMethod.getParameterTypes()) {
+            if (Input.class.isAssignableFrom(clazz)) {
+                return Optional.of(clazz);
+            }
+        }
+        return Optional.absent();
+    }
+
+    /**
+     * Extracts parent class for RPC or Action
+     *
+     * @param targetMethod
+     *            - method to scan
+     * @return Optional.absent() if RPC or Action has no input, RPC input type
+     *         otherwise.
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static Optional<Class<InstanceIdentifier<? extends TreeNode>>> resolveOperationIIClass(final Method targetMethod) {
+        for (final Class clazz : targetMethod.getParameterTypes()) {
+            if (InstanceIdentifier.class.equals(clazz)) {
+                return Optional.of(clazz);
+            }
         }
         return Optional.absent();
     }
@@ -167,9 +216,9 @@ public final class BindingReflections {
      *         otherwise.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static Optional<Class<? extends Instantiable<?>>> resolveOperationInputClass(final Method targetMethod) {
+    public static Optional<Class<KeyedInstanceIdentifier<? extends TreeNode, ?>>> resolveOperationKeyedIIClass(final Method targetMethod) {
         for (final Class clazz : targetMethod.getParameterTypes()) {
-            if (Instantiable.class.isAssignableFrom(clazz)) {
+            if (KeyedInstanceIdentifier.class.equals(clazz)) {
                 return Optional.of(clazz);
             }
         }

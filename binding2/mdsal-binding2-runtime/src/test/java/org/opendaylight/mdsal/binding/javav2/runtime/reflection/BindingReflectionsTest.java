@@ -22,6 +22,8 @@ import org.opendaylight.mdsal.binding.javav2.runtime.reflection.test.mock.FooChi
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.test.mock.GroupingFoo;
 import org.opendaylight.mdsal.binding.javav2.spec.base.BaseIdentity;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Input;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Output;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
@@ -46,13 +48,18 @@ public class BindingReflectionsTest {
 
         assertEquals(GroupingFoo.class, BindingReflections.findHierarchicalParent(FooChild.class));
 
-        assertTrue(BindingReflections.isOperationMethod(TestImplementation.class.getDeclaredMethod("rpcMethodTest")));
+        assertTrue(BindingReflections.isOperationMethod(TestImplementation.class
+            .getDeclaredMethod("invoke", TestInput.class, RpcCallback.class)));
         assertEquals(TestImplementation.class, BindingReflections.findAugmentationTarget(TestImplementation.class));
 
-        assertEquals(Object.class, BindingReflections
-                .resolveOperationOutputClass(TestImplementation.class.getDeclaredMethod("rpcMethodTest")).get());
-        assertFalse(BindingReflections
-                .resolveOperationOutputClass(TestImplementation.class.getDeclaredMethod("rpcMethodTest2")).isPresent());
+        assertEquals(TestOutput.class, BindingReflections.resolveOperationOutputClass(TestImplementation.class
+                    .getDeclaredMethod("invoke", TestInput.class, RpcCallback.class)).get());
+        assertEquals(TestInput.class, BindingReflections.resolveOperationInputClass(TestImplementation.class
+                .getDeclaredMethod("invoke", TestInput.class, RpcCallback.class)).get());
+        assertFalse(BindingReflections.resolveOperationIIClass(TestImplementation.class
+                    .getDeclaredMethod("invoke", TestInput.class, RpcCallback.class)).isPresent());
+        assertFalse(BindingReflections.resolveOperationKeyedIIClass(TestImplementation.class
+                .getDeclaredMethod("invoke", TestInput.class, RpcCallback.class)).isPresent());
 
         assertTrue(BindingReflections.getQName(TestImplementation.class).toString().equals("()test"));
         assertNotNull(BindingReflections.getQNameModule(TestImplementation.class));
@@ -71,9 +78,26 @@ public class BindingReflectionsTest {
         }
     }
 
+    private static final class TestInput implements Input<TestInput>, Instantiable<TestInput> {
+
+        @Override
+        public Class<? extends TestInput> implementedInterface() {
+            return TestInput.class;
+        }
+    }
+
+
+    private static final class TestOutput implements Output<TestOutput>, Instantiable<TestOutput> {
+
+        @Override
+        public Class<? extends TestOutput> implementedInterface() {
+            return TestOutput.class;
+        }
+    }
+
     @SuppressWarnings({ "rawtypes", "unused" })
     private static final class TestImplementation extends BaseIdentity
-            implements Augmentation<TestImplementation>, Rpc {
+            implements Augmentation<TestImplementation>, Rpc<TestInput, TestOutput> {
 
         public static final QName QNAME = QName.create("", "test");
 
@@ -86,7 +110,7 @@ public class BindingReflectionsTest {
         }
 
         @Override
-        public void invoke(final Input input, final RpcCallback callback) {
+        public void invoke(final TestInput input, final RpcCallback<TestOutput> callback) {
         }
     }
 }
