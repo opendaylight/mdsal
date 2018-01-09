@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
  * A {@link DOMService} which allows registration of RPC implementations with a conceptual
  * router. The client counterpart of this service is {@link DOMRpcService}.
  */
+@Deprecated
 public interface DOMRpcProviderService extends DOMService {
     /**
      * Register an {@link DOMRpcImplementation} object with this service.
