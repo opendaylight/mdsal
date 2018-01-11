@@ -26,7 +26,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMOperationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 
 //FIXME implement after improve DOM part of MD-SAL for support of Yang 1.1
@@ -38,13 +38,13 @@ public class BindingDOMOperationServiceAdapter implements RpcActionConsumerRegis
 
     public static final Factory<RpcActionConsumerRegistry> BUILDER_FACTORY = Builder::new;
 
-    private final DOMRpcService domService;
+    private final DOMOperationService domService;
     private final BindingToNormalizedNodeCodec codec;
-    private final LoadingCache<Class<? extends Operation>, RpcServiceAdapter> proxies = CacheBuilder.newBuilder()
-            .weakKeys().build(new CacheLoader<Class<? extends Operation>, RpcServiceAdapter>() {
+    private final LoadingCache<Class<? extends Operation>, OperationServiceAdapter> proxies = CacheBuilder.newBuilder()
+            .weakKeys().build(new CacheLoader<Class<? extends Operation>, OperationServiceAdapter>() {
 
                 @SuppressWarnings("unchecked")
-                private RpcServiceAdapter createProxy(final Class<? extends Operation> key) {
+                private OperationServiceAdapter createProxy(final Class<? extends Operation> key) {
                     Preconditions.checkArgument(BindingReflections.isBindingClass(key));
                     Preconditions.checkArgument(key.isInterface(),
                             "Supplied Operation service type must be interface.");
@@ -57,13 +57,14 @@ public class BindingDOMOperationServiceAdapter implements RpcActionConsumerRegis
 
                 @Nonnull
                 @Override
-                public RpcServiceAdapter load(@Nonnull final Class<? extends Operation> key) throws Exception {
+                public OperationServiceAdapter load(@Nonnull final Class<? extends Operation> key) throws Exception {
                     return createProxy(key);
                 }
 
             });
 
-    public BindingDOMOperationServiceAdapter(final DOMRpcService domService, final BindingToNormalizedNodeCodec codec) {
+    public BindingDOMOperationServiceAdapter(final DOMOperationService domService,
+        final BindingToNormalizedNodeCodec codec) {
         this.domService = Preconditions.checkNotNull(domService);
         this.codec = Preconditions.checkNotNull(codec);
     }
@@ -80,13 +81,13 @@ public class BindingDOMOperationServiceAdapter implements RpcActionConsumerRegis
         @Override
         protected RpcActionConsumerRegistry createInstance(final BindingToNormalizedNodeCodec codec,
                 final ClassToInstanceMap<DOMService> delegates) {
-            final DOMRpcService domRpc = delegates.getInstance(DOMRpcService.class);
+            final DOMOperationService domRpc = delegates.getInstance(DOMOperationService.class);
             return new BindingDOMOperationServiceAdapter(domRpc, codec);
         }
 
         @Override
         public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
-            return ImmutableSet.of(DOMRpcService.class);
+            return ImmutableSet.of(DOMOperationService.class);
         }
     }
 
