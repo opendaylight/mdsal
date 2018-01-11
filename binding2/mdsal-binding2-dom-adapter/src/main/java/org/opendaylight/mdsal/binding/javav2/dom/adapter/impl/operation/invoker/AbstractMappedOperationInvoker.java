@@ -54,8 +54,17 @@ abstract class AbstractMappedOperationInvoker<T> extends OperationServiceInvoker
         Preconditions.checkNotNull(impl, "Implementation must be supplied");
 
         final OperationMethodInvoker invoker = map.get(qnameToKey(operationName));
-        Preconditions.checkArgument(invoker != null, "Supplied operation is not valid for implementation %s", impl);
-        //TODO: Action method invoker
-        invoker.invokeOn(impl, input);
+        Preconditions.checkArgument(invoker != null,
+            "Supplied operation is not valid for implementation %s", impl);
+
+        if (invoker instanceof ActionMethodInvokerWithInput) {
+            Preconditions.checkNotNull(parent, "InstanceIdentifier must be supplied");
+            ((ActionMethodInvokerWithInput) invoker).invokeOn(impl, input, parent, rpcCallback);
+        } else if (invoker instanceof RpcMethodInvokerWithInput) {
+            Preconditions.checkNotNull(input, "TreeNode must be supplied");
+            ((RpcMethodInvokerWithInput) invoker).invokeOn(impl, input, rpcCallback);
+        } else if (invoker instanceof OperationMethodInvokerWithoutInput) {
+            ((OperationMethodInvokerWithoutInput) invoker).invokeOn(impl, rpcCallback);
+        }
     }
 }
