@@ -11,14 +11,14 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * <p>
  * Operation Service invoker provides common invocation interface for any subtype of operation. via
- * {@link #invoke(Operation, QName, TreeNode)} method.
+ * {@link #invoke(Operation, QName, InstanceIdentifier, TreeNode, RpcCallback)} method.
  */
 @Beta
 public abstract class OperationServiceInvoker {
@@ -82,10 +82,13 @@ public abstract class OperationServiceInvoker {
      *            Implementation on which operation should be invoked.
      * @param operationName
      *            Name of operation to be invoked.
+     * @param ii
+     *            Parent yang instance identifier if it is an action, else null.
      * @param input
      *            Input data for operation.
-     * @return Future which will complete once operation processing is finished.
+     * @param callback
+     *        callback of invoke.
      */
-    public abstract <T extends Operation> Future<RpcResult<?>> invoke(@Nonnull T impl, @Nonnull QName operationName,
-            @Nullable TreeNode input);
+    public abstract <T extends Operation> void invoke(@Nonnull T impl, @Nonnull QName operationName,
+            @Nullable InstanceIdentifier<?> ii, @Nullable TreeNode input, @Nonnull RpcCallback<?> callback);
 }

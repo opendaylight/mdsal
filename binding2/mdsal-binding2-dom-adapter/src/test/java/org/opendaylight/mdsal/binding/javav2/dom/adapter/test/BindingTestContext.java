@@ -40,7 +40,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
-import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
+import org.opendaylight.mdsal.dom.api.DOMOperationProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl;
 import org.opendaylight.mdsal.dom.broker.DOMNotificationRouter;
@@ -119,7 +119,7 @@ public class BindingTestContext implements AutoCloseable {
         checkState(executor != null, "Executor needs to be set");
 
         baConsumerRpc = new BindingDOMOperationServiceAdapter(getDomRpcInvoker(), codec);
-        baProviderRpc = new BindingDOMOperationProviderServiceAdapter(getDomRpcRegistry(), codec);
+        baProviderRpc = new BindingDOMOperationProviderServiceAdapter(getDomOperationRegistry(), codec);
         final MountPointService mountService = new BindingDOMMountPointServiceAdapter(biMountImpl, codec);
     }
 
@@ -194,7 +194,7 @@ public class BindingTestContext implements AutoCloseable {
         updateYangSchema(moduleInfos);
     }
 
-    public DOMRpcProviderService getDomRpcRegistry() {
+    public DOMOperationProviderService getDomOperationRegistry() {
         return domRouter;
     }
 

@@ -14,14 +14,14 @@ import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
+import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,13 +48,14 @@ abstract class AbstractMappedOperationInvoker<T> extends OperationServiceInvoker
     protected abstract T qnameToKey(QName qname);
 
     @Override
-    public final <I extends Operation> Future<RpcResult<?>> invoke(@Nonnull final I impl,
-            @Nonnull final QName operationName, @Nullable final TreeNode input) {
-
+    public final <I extends Operation> void invoke(@Nonnull final I impl,
+            @Nonnull final QName operationName, @Nullable final InstanceIdentifier<?> parent,
+            @Nullable final TreeNode input, RpcCallback<?> rpcCallback) {
         Preconditions.checkNotNull(impl, "Implementation must be supplied");
 
         final OperationMethodInvoker invoker = map.get(qnameToKey(operationName));
         Preconditions.checkArgument(invoker != null, "Supplied operation is not valid for implementation %s", impl);
-        return invoker.invokeOn(impl, input);
+        //TODO: Action method invoker
+        invoker.invokeOn(impl, input);
     }
 }
