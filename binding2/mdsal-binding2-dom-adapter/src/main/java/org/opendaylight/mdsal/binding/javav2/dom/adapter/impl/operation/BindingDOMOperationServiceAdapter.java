@@ -29,7 +29,6 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.dom.api.DOMOperationService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 
-//FIXME implement after improve DOM part of MD-SAL for support of Yang 1.1
 /**
  * Adapter for operation service.
  */
@@ -51,7 +50,11 @@ public class BindingDOMOperationServiceAdapter implements RpcActionConsumerRegis
                     if (Rpc.class.isAssignableFrom(key)) {
                         return new RpcServiceAdapter((Class<? extends Rpc<?, ?>>) key, codec, domService);
                     }
-                    // TODO implement after improve DOM part of MD-SAL for support of Yang 1.1
+
+                    if (Action.class.isAssignableFrom(key) || ListAction.class.isAssignableFrom(key)) {
+                        return new ActionServiceAdapter(key, codec, domService);
+                    }
+
                     throw new UnsupportedOperationException();
                 }
 
@@ -91,15 +94,18 @@ public class BindingDOMOperationServiceAdapter implements RpcActionConsumerRegis
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends Action<? extends TreeNode, ?, ?>> T getActionService(final Class<T> serviceInterface) {
-        // TODO implement after improve DOM part of MD-SAL for support of Yang 1.1
-        throw new UnsupportedOperationException();
+        Preconditions.checkArgument(serviceInterface != null, "Action needs to be specified.");
+        return (T) proxies.getUnchecked(serviceInterface).getProxy();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends ListAction<? extends TreeNode, ?, ?>> T getListActionService(final Class<T> serviceInterface) {
-        // TODO implement after improve DOM part of MD-SAL for support of Yang 1.1
-        throw new UnsupportedOperationException();
+        Preconditions.checkArgument(serviceInterface != null,
+            "ListAction needs to be specified.");
+        return (T) proxies.getUnchecked(serviceInterface).getProxy();
     }
 }
