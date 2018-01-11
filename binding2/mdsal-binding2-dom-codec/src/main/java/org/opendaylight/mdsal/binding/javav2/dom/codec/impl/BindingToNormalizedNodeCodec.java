@@ -336,6 +336,13 @@ public final class BindingToNormalizedNodeCodec
         return ret.build();
     }
 
+    public ImmutableBiMap<Method, SchemaPath> getOprMethodToSchemaPath(final Class<?> key) {
+        final ImmutableBiMap.Builder<Method, SchemaPath> ret = ImmutableBiMap.builder();
+        final Entry<Method, OperationDefinition> entry = getOprMethodToSchema(key);
+        ret.put(entry.getKey(), entry.getValue().getPath());
+        return ret.build();
+    }
+
     /**
      * Resolve method with path of specific Action as binding object.
      *
@@ -382,6 +389,19 @@ public final class BindingToNormalizedNodeCodec
             throw new IllegalStateException("RPC defined in model does not have representation in generated class.", e);
         }
         return ret.build();
+    }
+
+    public Entry<Method, OperationDefinition> getOprMethodToSchema(final Class<?> key) {
+        final Object operation = runtimeContext.getSchemaDefinition(key);
+        Preconditions.checkArgument(operation != null, "Can not find schema by class %s.", key);
+        Preconditions.checkArgument(operation instanceof OperationDefinition, "Wrong schema type.");
+
+        try {
+            final Method method = runtimeContext.findOperationMethod(key, (OperationDefinition) operation);
+            return new SimpleEntry<>(method,  (OperationDefinition) operation);
+        } catch (final NoSuchMethodException e) {
+            throw new IllegalStateException("RPC defined in model does not have representation in generated class.", e);
+        }
     }
 
     /**

@@ -22,16 +22,16 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.KeyedInstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.ListAction;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
+import org.opendaylight.mdsal.dom.api.DOMOperationImplementationRegistration;
+import org.opendaylight.mdsal.dom.api.DOMOperationProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
-import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-//FIXME missing support of Action operation (dependence on support of Yang 1.1 in DOM part of MD-SAL)
 /**
  * Operation service provider adapter.
  */
@@ -40,12 +40,12 @@ public class BindingDOMOperationProviderServiceAdapter implements RpcActionProvi
 
     private static final Set<YangInstanceIdentifier> GLOBAL = ImmutableSet.of(YangInstanceIdentifier.builder().build());
     private final BindingToNormalizedNodeCodec codec;
-    private final DOMRpcProviderService domRpcRegistry;
+    private final DOMOperationProviderService domOperationRegistry;
 
-    public BindingDOMOperationProviderServiceAdapter(final DOMRpcProviderService domRpcRegistry,
+    public BindingDOMOperationProviderServiceAdapter(final DOMOperationProviderService domOperationRegistry,
             final BindingToNormalizedNodeCodec codec) {
         this.codec = codec;
-        this.domRpcRegistry = domRpcRegistry;
+        this.domOperationRegistry = domOperationRegistry;
     }
 
     @Override
@@ -60,14 +60,15 @@ public class BindingDOMOperationProviderServiceAdapter implements RpcActionProvi
         return register(type, implementation, toYangInstanceIdentifiers(paths));
     }
 
-    private <S extends Rpc<?, ?>, T extends S> ObjectRegistration<T> register(final Class<S> type,
+    private <S extends Operation, T extends S> ObjectRegistration<T> register(final Class<S> type,
             final T implementation, final Collection<YangInstanceIdentifier> rpcContextPaths) {
-        final Map<SchemaPath, Method> rpcs = codec.getRPCMethodToSchemaPath(type).inverse();
+        final Map<SchemaPath, Method> operations = codec.getOprMethodToSchemaPath(type).inverse();
 
         final BindingDOMOperationImplementationAdapter adapter =
-                new BindingDOMOperationImplementationAdapter(codec.getCodecRegistry(), type, rpcs, implementation);
-        final Set<DOMRpcIdentifier> domRpcs = createDomRpcIdentifiers(rpcs.keySet(), rpcContextPaths);
-        final DOMRpcImplementationRegistration<?> domReg = domRpcRegistry.registerRpcImplementation(adapter, domRpcs);
+            new BindingDOMOperationImplementationAdapter(codec.getCodecRegistry(), type, operations, implementation);
+        final Set<DOMRpcIdentifier> domRpcs = createDomRpcIdentifiers(operations.keySet(), rpcContextPaths);
+        final DOMOperationImplementationRegistration<?> domReg =
+            domOperationRegistry.registerOperationImplementation(adapter, domRpcs);
         return new BindingDOMOperationAdapterRegistration<>(implementation, domReg);
     }
 
@@ -94,15 +95,13 @@ public class BindingDOMOperationProviderServiceAdapter implements RpcActionProvi
     public <S extends Action<? extends TreeNode, ?, ?>, T extends S, P extends TreeNode> ObjectRegistration<T>
             registerActionImplementation(final Class<S> type, final InstanceIdentifier<P> parent,
                     final T implementation) {
-     // TODO implement after improve DOM part of MD-SAL for support of Yang 1.1
-        throw new UnsupportedOperationException();
+        return register(type, implementation, toYangInstanceIdentifiers(ImmutableSet.of(parent)));
     }
 
     @Override
     public <S extends ListAction<? extends TreeNode, ?, ?>, T extends S, P extends TreeNode, K> ObjectRegistration<T>
             registerListActionImplementation(final Class<S> type, final KeyedInstanceIdentifier<P, K> parent,
                     final T implementation) {
-     // TODO implement after improve DOM part of MD-SAL for support of Yang 1.1
-        throw new UnsupportedOperationException();
+        return register(type, implementation, toYangInstanceIdentifiers(ImmutableSet.of(parent)));
     }
 }
