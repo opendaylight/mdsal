@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.operation.invoker
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Action;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
@@ -17,16 +16,12 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 
 public class ClassBaseOperationServiceInvokerTest {
 
-    //TODO: fix operation method invoker
-    @Ignore
     @Test
     public void rpcTest() {
         final OperationServiceInvoker serviceInvoker = ClassBasedOperationServiceInvoker.instanceFor(DummyRpc.class);
         assertNotNull(serviceInvoker);
     }
 
-    //TODO: fix operation method invoker
-    @Ignore
     @Test
     public void actionTest() {
         final OperationServiceInvoker serviceInvoker = ClassBasedOperationServiceInvoker.instanceFor(DummyAction.class);
