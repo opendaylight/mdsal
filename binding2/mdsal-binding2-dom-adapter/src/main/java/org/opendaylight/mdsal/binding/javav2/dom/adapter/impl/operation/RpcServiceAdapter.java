@@ -7,9 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.operation;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -18,16 +20,18 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
-import java.util.Map.Entry;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.extractor.ContextReferenceExtractor;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.serialized.LazySerializedContainerNode;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Input;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Output;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Rpc;
+import org.opendaylight.mdsal.binding.javav2.spec.base.RpcCallback;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -43,14 +47,13 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
-import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 @Beta
 class RpcServiceAdapter implements InvocationHandler {
 
-    private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
+    private final RpcInvocationStrategy strategy;
     private final Class<? extends Rpc<?, ?>> type;
     private final BindingToNormalizedNodeCodec codec;
     private final DOMRpcService delegate;
@@ -61,20 +64,22 @@ class RpcServiceAdapter implements InvocationHandler {
         this.type = Preconditions.checkNotNull(type);
         this.codec = Preconditions.checkNotNull(codec);
         this.delegate = Preconditions.checkNotNull(domService);
-        final ImmutableMap.Builder<Method, RpcInvocationStrategy> rpcBuilder = ImmutableMap.builder();
-        for (final Entry<Method, OperationDefinition> rpc : codec.getRPCMethodToSchema(type).entrySet()) {
-            rpcBuilder.put(rpc.getKey(), createStrategy(rpc.getKey(), (RpcDefinition) rpc.getValue()));
-        }
-        rpcNames = rpcBuilder.build();
+        strategy = createStrategy(type);
         proxy = (Rpc<?, ?>) Proxy.newProxyInstance(type.getClassLoader(), new Class[] { type }, this);
     }
 
-    private RpcInvocationStrategy createStrategy(final Method method, final RpcDefinition schema) {
-        final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(schema);
-        if (strategy.isContextBasedRouted()) {
-            return new RoutedStrategy(schema.getPath(), method, strategy.getLeaf());
+    private RpcInvocationStrategy createStrategy(final Class<? extends Rpc<?, ?>> rpcInterface) {
+        final RpcDefinition rpc = codec.getRpcDefinition(rpcInterface);
+        final RpcRoutingStrategy domStrategy = RpcRoutingStrategy.from(rpc);
+        if (domStrategy.isContextBasedRouted()) {
+            try {
+                return new RoutedStrategy(rpc.getPath(),
+                    rpcInterface.getMethod("invoke", Input.class, RpcCallback.class), domStrategy.getLeaf());
+            } catch (final NoSuchMethodException e) {
+                throw new IllegalStateException("Can not find 'invoke' method", e);
+            }
         }
-        return new NonRoutedStrategy(schema.getPath());
+        return new NonRoutedStrategy(rpc.getPath());
     }
 
     Rpc<?, ?> getProxy() {
@@ -84,49 +89,41 @@ class RpcServiceAdapter implements InvocationHandler {
     @Override
     @SuppressWarnings("checkstyle:hiddenField")
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-
-        final RpcInvocationStrategy rpc = rpcNames.get(method);
-        if (rpc != null) {
-            if (method.getParameterTypes().length == 0) {
-                return rpc.invokeEmpty();
-            }
-            if (args.length != 1) {
-                throw new IllegalArgumentException("Input must be provided.");
-            }
-            return rpc.invoke((TreeNode) args[0]);
-        }
-
-        if (isObjectMethod(method)) {
-            return callObjectMethod(proxy, method, args);
-        }
-        throw new UnsupportedOperationException("Method " + method.toString() + "is unsupported.");
-    }
-
-    private static boolean isObjectMethod(final Method method) {
-        switch (method.getName()) {
-            case "toString":
-                return method.getReturnType().equals(String.class) && method.getParameterTypes().length == 0;
-            case "hashCode":
-                return method.getReturnType().equals(int.class) && method.getParameterTypes().length == 0;
-            case "equals":
-                return method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 1
-                        && method.getParameterTypes()[0] == Object.class;
-            default:
-                return false;
-        }
-    }
-
-    private Object callObjectMethod(final Object self, final Method method, final Object[] args) {
         switch (method.getName()) {
             case "toString":
                 return type.getName() + "$Adapter{delegate=" + delegate.toString() + "}";
             case "hashCode":
-                return System.identityHashCode(self);
+                return System.identityHashCode(proxy);
             case "equals":
-                return self == args[0];
+                return proxy == args[0];
+            case "invoke":
+                if (args.length == 2) {
+                    final Input<?> input = (Input<?>) requireNonNull(args[0]);
+                    final RpcCallback<Output> callback = (RpcCallback<Output>) requireNonNull(args[1]);
+                    ListenableFuture<RpcResult<?>> future =  strategy.invoke((TreeNode) input);
+                    Futures.addCallback(future, new FutureCallback<RpcResult<?>>() {
+
+                        @Override
+                        public void onSuccess(final RpcResult<?> result) {
+                            if (result.getErrors().isEmpty()) {
+                                callback.onSuccess((Output) result.getResult());
+                            } else {
+                                result.getErrors().forEach(e -> callback.onFailure(e.getCause()));
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(final Throwable throwable) {
+                            callback.onFailure(throwable);
+                        }
+                    }, MoreExecutors.directExecutor());
+                }
+                return 0;
             default:
-                return null;
+                break;
         }
+
+        throw new UnsupportedOperationException("Method " + method.toString() + "is unsupported.");
     }
 
     private abstract class RpcInvocationStrategy {
