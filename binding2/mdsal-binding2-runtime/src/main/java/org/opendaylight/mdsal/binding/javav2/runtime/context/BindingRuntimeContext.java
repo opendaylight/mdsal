@@ -210,9 +210,9 @@ public class BindingRuntimeContext implements Immutable {
      *            - class which represents list, container, choice or case.
      * @return Schema node, from which class was generated.
      */
-    public DataSchemaNode getSchemaDefinition(final Class<?> cls) {
+    public Object getSchemaDefinition(final Class<?> cls) {
         Preconditions.checkArgument(!Augmentation.class.isAssignableFrom(cls),"Supplied class must not be augmentation (%s is)", cls);
-        return (DataSchemaNode) this.typeToDefiningSchema.get(referencedType(cls));
+        return this.typeToDefiningSchema.get(referencedType(cls));
     }
 
     /**
@@ -277,7 +277,7 @@ public class BindingRuntimeContext implements Immutable {
      *             - if supplied class does not represent case
      */
     public Optional<CaseSchemaNode> getCaseSchemaDefinition(final ChoiceSchemaNode schema, final Class<?> childClass) throws IllegalArgumentException {
-        final DataSchemaNode origSchema = getSchemaDefinition(childClass);
+        final DataSchemaNode origSchema = (DataSchemaNode) getSchemaDefinition(childClass);
         Preconditions.checkArgument(origSchema instanceof CaseSchemaNode, "Supplied schema %s is not case.", origSchema);
 
         /*

@@ -74,7 +74,7 @@ abstract class OperationServiceAdapter implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+    public Object invoke(final Object self, final Method method, final Object[] args) {
         final OprInvocationStrategy strategy = strategyEntry.getValue();
 
         if (method.equals(strategyEntry.getKey())) {
@@ -83,7 +83,7 @@ abstract class OperationServiceAdapter implements InvocationHandler {
         }
 
         if (isObjectMethod(method)) {
-            return callObjectMethod(proxy, method, args);
+            return callObjectMethod(self, method, args);
         }
         throw new UnsupportedOperationException("Method " + method.toString() + "is unsupported.");
     }
