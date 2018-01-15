@@ -250,6 +250,7 @@ final class RpcActionGenHelper {
 
         if (isAction) {
             requireNonNull(parent, "Parent must be specified for action.");
+            //action
             GeneratedTypeBuilder parentType = genCtx.get(module).getChildNode(parent.getPath());
             checkState(parentType != null, "Parent generated type for " + parent
                     + " data schema node must have been generated already");
@@ -259,18 +260,20 @@ final class RpcActionGenHelper {
                 //ListAction
                 GeneratedTransferObject keyType = null;
                 for (MethodSignatureBuilder method : parentType.getMethodDefinitions()) {
-                    if (method.getName().equals("getKey")) {
+                    if (method.getName().equals("getIdentifier")) {
                         keyType = (GeneratedTransferObject) method.toInstance(parentType).getReturnType();
                     }
                 }
 
-                operationMethod.addParameter(
-                        parameterizedTypeFor(KEYED_INSTANCE_IDENTIFIER, parentType, keyType), "kii");
-                interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
+                operationMethod.addParameter(parameterizedTypeFor(KEYED_INSTANCE_IDENTIFIER, parentType, keyType),
+                    "kii");
+                interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, keyType, inType,
+                    outType));
             } else {
                 //Action
                 operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
-                interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType, inType, outType));
+                interfaceBuilder.addImplementsType(parameterizedTypeFor(ACTION, parentType,
+                    parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType) ,inType, outType));
             }
         } else {
             //RPC

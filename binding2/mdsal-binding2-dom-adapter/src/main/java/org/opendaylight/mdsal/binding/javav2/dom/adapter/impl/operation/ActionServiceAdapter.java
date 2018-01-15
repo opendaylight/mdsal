@@ -94,7 +94,7 @@ class ActionServiceAdapter implements InvocationHandler {
                 }
                 break;
             case "invoke":
-                if (args.length == 2) {
+                if (args.length == 3) {
                     final Input<?> input = (Input<?>) requireNonNull(args[0]);
                     final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[1]);
                     final RpcCallback<Output> callback = (RpcCallback<Output>) requireNonNull(args[2]);
@@ -146,7 +146,7 @@ class ActionServiceAdapter implements InvocationHandler {
                         }, MoreExecutors.directExecutor());
                     }
                 }
-                break;
+                return 0;
             default:
                 break;
         }
