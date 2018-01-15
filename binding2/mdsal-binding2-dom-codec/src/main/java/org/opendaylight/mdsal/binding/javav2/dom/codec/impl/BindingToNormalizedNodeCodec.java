@@ -365,6 +365,12 @@ public final class BindingToNormalizedNodeCodec
         return schema.getPath();
     }
 
+    public RpcDefinition getRpcDefinition(final Class<? extends Rpc<?, ?>> type) {
+        final RpcDefinition schema = runtimeContext.getRpcDefinition(type);
+        checkArgument(schema != null, "Failed to find schema for %s", type);
+        return schema;
+    }
+
     /**
      * Resolve method with definition of specific RPC as binding object.
      *
