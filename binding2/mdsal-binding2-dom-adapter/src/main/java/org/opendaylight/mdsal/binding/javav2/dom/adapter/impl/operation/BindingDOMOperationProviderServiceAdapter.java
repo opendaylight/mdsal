@@ -167,7 +167,7 @@ public class BindingDOMOperationProviderServiceAdapter implements RpcActionProvi
 
                         public void onFailure(Throwable error) {
                             bindingResult.set(RpcResultBuilder.failed().withError(ErrorType.APPLICATION,
-                                error.getMessage()).build());
+                                error.getMessage(), error).build());
                         }
                     })
                 );
@@ -198,7 +198,7 @@ public class BindingDOMOperationProviderServiceAdapter implements RpcActionProvi
 
                         public void onFailure(Throwable error) {
                             bindingResult.set(RpcResultBuilder.failed().withError(ErrorType.APPLICATION,
-                                error.getMessage()).build());
+                                error.getMessage(), error).build());
                         }
                     })
                 );
