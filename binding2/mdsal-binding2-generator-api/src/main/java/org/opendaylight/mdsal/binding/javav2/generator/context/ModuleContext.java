@@ -208,8 +208,8 @@ public final class ModuleContext {
         return Collections.unmodifiableMap(this.typeToSchema);
     }
 
-    public void addTypeToSchema(final Type type, final TypeDefinition<?> typedef) {
-        this.typeToSchema.put(type, typedef);
+    public void addTypeToSchema(final Type type, final Object schema) {
+        this.typeToSchema.put(type, schema);
     }
 
     /**

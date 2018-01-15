@@ -210,7 +210,7 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
     }
 
     private DataContainerCodecPrototype<?> loadChildPrototype(final Class<?> childClass) {
-        final DataSchemaNode origDef = factory().getRuntimeContext().getSchemaDefinition(childClass);
+        final DataSchemaNode origDef = (DataSchemaNode) factory().getRuntimeContext().getSchemaDefinition(childClass);
         // Direct instantiation or use in same module in which grouping
         // was defined.
         DataSchemaNode sameName;

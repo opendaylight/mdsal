@@ -44,6 +44,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
@@ -60,6 +61,8 @@ import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
 
 /**
  *
@@ -114,9 +117,11 @@ final class RpcActionGenHelper {
                 if (potential instanceof ActionNodeContainer) {
                     final Set<ActionDefinition> actions = ((ActionNodeContainer) potential).getActions();
                     for (ActionDefinition action : actions) {
-                        genCtx.get(module).addTopLevelNodeType(resolveOperation(potential, action, module,
+                        final GeneratedTypeBuilder typeBuilder = resolveOperation(potential, action, module,
                             schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
-                            namespaceType1));
+                            namespaceType1);
+                        genCtx.get(module).addTopLevelNodeType(typeBuilder);
+                        genCtx.get(module).addTypeToSchema(typeBuilder, action);
                     }
                 }
 
@@ -194,18 +199,10 @@ final class RpcActionGenHelper {
                 }
             }
 
-            //routedRPC?
-            if (isAction) {
-                genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
-                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
-                        BindingNamespaceType.Data));
-            } else {
-                //global RPC only
-                genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
-                        verboseClassComments, genTypeBuilders, genCtx, typeProvider, false,
-                        BindingNamespaceType.Data));
-
-            }
+            final GeneratedTypeBuilder typeBuilder = resolveOperation(parent, rpc, module, schemaContext,
+                verboseClassComments, genTypeBuilders, genCtx, typeProvider, isAction, BindingNamespaceType.Data);
+            genCtx.get(module).addTopLevelNodeType(typeBuilder);
+            genCtx.get(module).addTypeToSchema(typeBuilder, rpc);
         }
         return genCtx;
     }
@@ -240,24 +237,38 @@ final class RpcActionGenHelper {
 
         //input
         final ContainerSchemaNode input = operation.getInput();
-        final GeneratedTypeBuilder inType = resolveOperationNode(interfaceBuilder, module, operation.getInput(),
+        final Type inType;
+        if (input != null && input instanceof EffectiveStatement
+                && ((EffectiveStatement) input).getDeclared().getStatementSource() == StatementSource.DECLARATION) {
+            final GeneratedTypeBuilder inTypeBuilder = resolveOperationNode(interfaceBuilder, module, operation.getInput(),
                 basePackageName, schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders,
                 genCtx, true, namespaceType);
-        annotateDeprecatedIfNecessary(operation.getStatus(), inType);
-        inType.setParentTypeForBuilder(interfaceBuilder);
-        genCtx.get(module).addChildNodeType(input, inType);
-
+            annotateDeprecatedIfNecessary(operation.getStatus(), inTypeBuilder);
+            inTypeBuilder.setParentTypeForBuilder(interfaceBuilder);
+            genCtx.get(module).addChildNodeType(input, inTypeBuilder);
+            inType = inTypeBuilder;
+        } else {
+            //TODO: support operation without output
+            inType = null;
+        }
         //output
         final ContainerSchemaNode output = operation.getOutput();
-        final GeneratedTypeBuilder outType = resolveOperationNode(interfaceBuilder, module, operation.getOutput(),
+        final Type outType;
+        if (output != null && output instanceof EffectiveStatement
+                && ((EffectiveStatement) output).getDeclared().getStatementSource() == StatementSource.DECLARATION) {
+            final GeneratedTypeBuilder outTypeBuilder = resolveOperationNode(interfaceBuilder, module, operation.getOutput(),
                 basePackageName, schemaContext, operationName, verboseClassComments, typeProvider, genTypeBuilders,
                 genCtx, false, namespaceType);
-        annotateDeprecatedIfNecessary(operation.getStatus(), outType);
-        outType.setParentTypeForBuilder(interfaceBuilder);
-        genCtx.get(module).addChildNodeType(output, outType);
+            annotateDeprecatedIfNecessary(operation.getStatus(), outTypeBuilder);
+            outTypeBuilder.setParentTypeForBuilder(interfaceBuilder);
+            genCtx.get(module).addChildNodeType(output, outTypeBuilder);
+            outType = outTypeBuilder;
+        }else {
+            //TODO: support operation without output
+            outType = null;
+        }
 
-        final GeneratedType inTypeInstance = inType.toInstance();
-        operationMethod.addParameter(inTypeInstance, "input");
+        operationMethod.addParameter(inType, "input");
 
         if (isAction) {
             if (parent != null) {
@@ -271,14 +282,15 @@ final class RpcActionGenHelper {
                     //ListAction
                     GeneratedTransferObject keyType = null;
                     for (MethodSignatureBuilder method : parentType.getMethodDefinitions()) {
-                        if (method.getName().equals("getKey")) {
+                        if (method.getName().equals("getIdentifier")) {
                             keyType = (GeneratedTransferObject) method.toInstance(parentType).getReturnType();
                         }
                     }
 
                     operationMethod.addParameter(
                             parameterizedTypeFor(KEYED_INSTANCE_IDENTIFIER, parentType, keyType), "kii");
-                    interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType, inType, outType));
+                    interfaceBuilder.addImplementsType(parameterizedTypeFor(LIST_ACTION, parentType,
+                        inType, outType));
                 } else {
                     //Action
                     operationMethod.addParameter(parameterizedTypeFor(INSTANCE_IDENTIFIER, parentType), "ii");
@@ -294,7 +306,8 @@ final class RpcActionGenHelper {
         }
 
         interfaceBuilder.addImplementsType(TREE_NODE);
-        operationMethod.addParameter(parameterizedTypeFor(RPC_CALLBACK, outType), "callback");
+        operationMethod.addParameter(parameterizedTypeFor(RPC_CALLBACK, outType),
+            "callback");
 
         operationMethod.setComment(operationComment);
         operationMethod.setReturnType(VOID);
