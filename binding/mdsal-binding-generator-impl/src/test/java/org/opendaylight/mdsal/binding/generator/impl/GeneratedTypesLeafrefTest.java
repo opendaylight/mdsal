@@ -50,7 +50,9 @@ public class GeneratedTypesLeafrefTest {
         GeneratedType gtTopology = null;
         for (final Type type : genTypes) {
             String name = type.getName();
-            if ("InterfaceKey".equals(name)) {
+            if ("InterfaceKey".equals(name)
+                    && "org.opendaylight.yang.gen.v1.urn.model._abstract.topology.rev130208.topology.interfaces".equals(
+                        type.getPackageName())) {
                 gtIfcKey = (GeneratedTransferObject) type;
             } else if ("Interface".equals(name)) {
                 gtIfc = (GeneratedType) type;
