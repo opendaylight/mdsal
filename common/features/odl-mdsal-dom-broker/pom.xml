@@ -75,10 +75,8 @@
             <artifactId>mdsal-dom-broker</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-dom-schema-service-osgi</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-dom-schema-service-osgi</artifactId>
         </dependency>
     </dependencies>
 

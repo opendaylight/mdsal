@@ -46,7 +46,6 @@
         <module>odl-mdsal-dom</module>
         <module>odl-mdsal-dom-api</module>
         <module>odl-mdsal-dom-broker</module>
-        <module>odl-mdsal-dom-schema-service-osgi</module>
 
         <!-- EOS -->
         <module>odl-mdsal-eos-binding</module>
