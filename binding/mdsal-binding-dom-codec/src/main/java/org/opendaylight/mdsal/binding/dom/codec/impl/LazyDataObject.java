@@ -143,16 +143,10 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     }
 
     private Object getBindingData(final Method method) {
-        Object cached = cachedData.get(method);
-        if (cached == null) {
-            final Object readedValue = context.getBindingChildValue(method, data);
-            if (readedValue == null) {
-                cached = NULL_VALUE;
-            } else {
-                cached = readedValue;
-            }
-            cachedData.putIfAbsent(method, cached);
-        }
+        final Object cached = cachedData.computeIfAbsent(method, key -> {
+            final Object readValue = context.getBindingChildValue(key, data);
+            return readValue == null ? NULL_VALUE : readValue;
+        });
 
         return cached == NULL_VALUE ? null : cached;
     }
