@@ -516,6 +516,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 //in case of implicit RPC input (StatementSource.CONTEXT),
                 // stay compatible (no input argument generated)
                 if (input != null && isExplicitStatement(input)) {
+                    processUsesAugments(input, module);
                     final GeneratedTypeBuilder inType = addRawInterfaceDefinition(basePackageName, input, rpcName);
                     addImplementedInterfaceFromUses(input, inType);
                     inType.addImplementsType(DATA_OBJECT);
@@ -531,6 +532,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 //in case of implicit RPC output (StatementSource.CONTEXT),
                 //stay compatible (Future<RpcResult<Void>> return type generated)
                 if (output != null && isExplicitStatement(output)) {
+                    processUsesAugments(output, module);
                     final GeneratedTypeBuilder outType = addRawInterfaceDefinition(basePackageName, output, rpcName);
                     addImplementedInterfaceFromUses(output, outType);
                     outType.addImplementsType(DATA_OBJECT);
