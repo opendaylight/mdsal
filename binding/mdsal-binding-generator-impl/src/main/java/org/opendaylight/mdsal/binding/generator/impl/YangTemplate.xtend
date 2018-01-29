@@ -657,8 +657,9 @@ class YangTemplate {
 
         '''
             list «listSchemaNode.getQName.localName» {
-                key «FOR listKey : listSchemaNode.keyDefinition SEPARATOR " "»"«listKey.localName»"
-                «ENDFOR»
+                «IF !listSchemaNode.keyDefinition.empty»
+                    key «FOR listKey : listSchemaNode.keyDefinition SEPARATOR " "»"«listKey.localName»"«ENDFOR»;
+                «ENDIF»
                 «IF !listSchemaNode.childNodes.nullOrEmpty»
                     «writeDataSchemaNodes(listSchemaNode.childNodes)»
                 «ENDIF»
