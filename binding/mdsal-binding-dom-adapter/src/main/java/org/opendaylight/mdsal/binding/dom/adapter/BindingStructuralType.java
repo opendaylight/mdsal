@@ -22,6 +22,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListEntryNode;
+import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
 
 /**
@@ -131,7 +133,8 @@ enum BindingStructuralType {
         return normalizedNode instanceof LeafNode
                 || normalizedNode instanceof AnyXmlNode
                 || normalizedNode instanceof LeafSetNode
-                || normalizedNode instanceof LeafSetEntryNode;
+                || normalizedNode instanceof LeafSetEntryNode
+                || normalizedNode instanceof UnkeyedListNode
+                || normalizedNode instanceof UnkeyedListEntryNode;
     }
-
 }
