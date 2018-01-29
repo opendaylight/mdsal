@@ -22,6 +22,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.LeafSetNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.opendaylight.yangtools.yang.data.api.schema.MapNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListEntryNode;
+import org.opendaylight.yangtools.yang.data.api.schema.UnkeyedListNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidateNode;
 
 /**
@@ -123,6 +125,35 @@ enum BindingStructuralType {
         return UNKNOWN;
     }
 
+    static BindingStructuralType recursiveFrom(final DataTreeCandidateNode node) {
+        final BindingStructuralType type = BindingStructuralType.from(node);
+        switch (type) {
+            case INVISIBLE_CONTAINER:
+            case INVISIBLE_LIST:
+                // This node is invisible, try to resolve using a child node
+                for (final DataTreeCandidateNode child : node.getChildNodes()) {
+                    final BindingStructuralType childType = recursiveFrom(child);
+                    switch (childType) {
+                        case INVISIBLE_CONTAINER:
+                        case INVISIBLE_LIST:
+                            // Invisible nodes are not addressable
+                            return BindingStructuralType.NOT_ADDRESSABLE;
+                        case NOT_ADDRESSABLE:
+                        case UNKNOWN:
+                        case VISIBLE_CONTAINER:
+                            return childType;
+                        default:
+                            throw new IllegalStateException("Unhandled child type " + childType + " for child "
+                                    + child);
+                    }
+                }
+
+                return BindingStructuralType.NOT_ADDRESSABLE;
+            default:
+                return type;
+        }
+    }
+
     private static boolean isVisibleContainer(final NormalizedNode<?, ?> data) {
         return data instanceof MapEntryNode || data instanceof ContainerNode || data instanceof AugmentationNode;
     }
@@ -131,7 +162,8 @@ enum BindingStructuralType {
         return normalizedNode instanceof LeafNode
                 || normalizedNode instanceof AnyXmlNode
                 || normalizedNode instanceof LeafSetNode
-                || normalizedNode instanceof LeafSetEntryNode;
+                || normalizedNode instanceof LeafSetEntryNode
+                || normalizedNode instanceof UnkeyedListNode
+                || normalizedNode instanceof UnkeyedListEntryNode;
     }
-
 }
