@@ -54,6 +54,7 @@ import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
@@ -380,7 +381,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
         final BindingCodecTreeNode<?> mapCodec = requireNonNull(
                 codecRegistry.getCodecContext().getSubtreeCodec(parentMapPath),
                 "Codec not found for yang instance identifier: " + parentMapPath);
-        final Object schema = mapCodec.getSchema();
+        final WithStatus schema = mapCodec.getSchema();
         if (schema instanceof ListSchemaNode) {
             final ListSchemaNode castedSchema = (ListSchemaNode) schema;
             return castedSchema.isUserOrdered() ? Builders.orderedMapBuilder(castedSchema).build()
