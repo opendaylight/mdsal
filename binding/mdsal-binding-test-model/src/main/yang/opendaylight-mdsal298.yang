@@ -1,0 +1,24 @@
+module opendaylight-mdsal298 {
+    namespace "urn:test:opendaylight-mdsal298";
+    prefix mdsal298;
+
+    revision 2018-01-29;
+
+    container container {
+        list unkeyed {
+            ordered-by user;
+            leaf foo {
+                type string;
+            }
+        }
+
+        list keyed {
+            ordered-by user;
+            key foo;
+            leaf foo {
+                type string;
+            }
+        }
+    }
+}
+
