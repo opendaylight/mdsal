@@ -11,18 +11,20 @@ package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.DOT;
 import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.getPropertyList;
 import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.toFirstLower;
+import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MEMBER_PATTERN_LIST;
+import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.PATTERN_CONSTANT_NAME;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -30,13 +32,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
+import org.apache.commons.text.StringEscapeUtils;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.builderConstructorHelperTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.builderTemplate;
+import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplateInitBlock;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.AlphabeticallyTypeMemberComparator;
+import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
@@ -287,6 +293,7 @@ public class BuilderRenderer extends BaseRenderer {
         importedNames.put("instantiable", importedName(Instantiable.class));
         importedNames.put("item", importedName(Item.class));
         importedNames.put("identifiableItem", importedName(IdentifiableItem.class));
+        importedNames.put("preconditions", importedName(Preconditions.class));
         if (getType().getParentType() != null) {
             importedNames.put("parent", importedName(getType().getParentType()));
             parentTypeForBuilderName = getType().getParentType().getFullyQualifiedName();
@@ -313,13 +320,46 @@ public class BuilderRenderer extends BaseRenderer {
         importedNames.put("augmentation", importedName(Augmentation.class));
         importedNames.put("classInstMap", importedName(ClassToInstanceMap.class));
 
+        final StringBuilder sb1 = new StringBuilder();
+
+
+        for (Constant constant : getType().getConstantDefinitions()) {
+            if (constant.getName().startsWith(PATTERN_CONSTANT_NAME)) {
+                if (constant.getValue() instanceof List<?>) {
+                    final String field = constant.getName().substring(PATTERN_CONSTANT_NAME.length()).toLowerCase();
+                    sb1.append("private static final ")
+                            .append(importedName(Pattern.class))
+                            .append("[] ")
+                            .append(MEMBER_PATTERN_LIST)
+                            .append(field)
+                            .append(";\npublic static final ")
+                            .append(importedName(List.class))
+                            .append("<String> ")
+                            .append(constant.getName())
+                            .append(" = ")
+                            .append(importedName(ImmutableList.class))
+                            .append(".of(");
+                    final List<String> patternList = getPatternList(constant);
+                    sb1.append(String.join(", ", patternList));
+                    sb1.append(");\n\n");
+                    final String initBlock = classTemplateInitBlock.render(importedName(Pattern.class),
+                        constant.getName(), field).body();
+                    sb1.append(initBlock).append("\n");
+                }
+            } else {
+                sb1.append(emitConstant(constant));
+            }
+        }
+
+        final String constantsBlock = sb1.toString();
+
         // list for generate copy constructor
         final String copyConstructorHelper = generateListForCopyConstructor();
         List<String> getterMethods = new ArrayList<>(Collections2.transform(properties, this::getterMethod));
 
         return builderTemplate.render(getType(), properties, importedNames, importedNamesForProperties, augmentField,
             copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, childTreeNodeIdent,
-            keyTypeName, instantiable).body();
+            keyTypeName, instantiable, constantsBlock).body();
     }
 
     private String generateListForCopyConstructor() {
