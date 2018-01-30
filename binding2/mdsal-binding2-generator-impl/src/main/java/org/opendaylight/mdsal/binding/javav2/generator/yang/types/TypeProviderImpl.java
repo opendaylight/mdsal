@@ -243,6 +243,8 @@ public final class TypeProviderImpl implements TypeProvider {
                 "Type Definitions Local Name cannot be NULL!");
 
         final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
+        // FIXME: this is a Binding V1 screw up and needs to be cleaned up. Both these types should result in proper type
+        //        definitions being emitted.
         if (!(baseTypeDef instanceof LeafrefTypeDefinition) && !(baseTypeDef instanceof IdentityrefTypeDefinition)) {
             final Module module = findParentModule(this.schemaContext, parentNode);
 
@@ -500,6 +502,8 @@ public final class TypeProviderImpl implements TypeProvider {
         if (basePackageName != null && moduleName != null && typedef != null) {
             final String typedefName = typedef.getQName().getLocalName();
             final TypeDefinition<?> innerTypeDefinition = typedef.getBaseType();
+            // FIXME: this is a Binding V1 screw up and needs to be cleaned up. Both these types should result in proper
+            //        type definitions being emitted.
             if (!(innerTypeDefinition instanceof LeafrefTypeDefinition)
                     && !(innerTypeDefinition instanceof IdentityrefTypeDefinition)) {
                 Type returnType;
@@ -969,6 +973,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *            parent Schema Node for Extended Subtype
      *
      */
+    // FIXME: This needs BUG-8449 and MDSAL-298 port
     private static void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
             final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode,
             final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap) {
