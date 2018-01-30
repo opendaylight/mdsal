@@ -9,13 +9,13 @@
 @import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MEMBER_PATTERN_LIST
 @import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.PATTERN_CONSTANT_NAME
 
-@(patterName: String)
+@(patterName: String, patternConstName: String, fieldName: String)
 static {
-    final @{patterName} a[] = new @{patterName}[@{PATTERN_CONSTANT_NAME}.size()];
+    final @{patterName} a@{fieldName}[] = new @{patterName}[@{patternConstName}.size()];
     int i = 0;
-    for (String regEx : @{PATTERN_CONSTANT_NAME}) {
-        a[i++] = Pattern.compile(regEx);
+    for (String regEx : @{patternConstName}) {
+        a@{fieldName}[i++] = Pattern.compile(regEx);
     }
 
-    @{MEMBER_PATTERN_LIST} = a;
+    @{MEMBER_PATTERN_LIST}@{fieldName.toLowerCase} = a@{fieldName};
 }
