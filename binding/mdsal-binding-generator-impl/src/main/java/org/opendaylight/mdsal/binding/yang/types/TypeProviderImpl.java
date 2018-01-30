@@ -91,6 +91,7 @@ import org.slf4j.LoggerFactory;
 
 public final class TypeProviderImpl implements TypeProvider {
     private static final Logger LOG = LoggerFactory.getLogger(TypeProviderImpl.class);
+    private static final Pattern GROUPS_PATTERN = Pattern.compile("\\[(.*?)\\]");
     private static final Pattern NUMBERS_PATTERN = Pattern.compile("[0-9]+\\z");
 
     // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
@@ -262,8 +263,8 @@ public final class TypeProviderImpl implements TypeProvider {
     private boolean isLeafRefSelfReference(final LeafrefTypeDefinition leafref, final SchemaNode parentNode) {
         final SchemaNode leafRefValueNode;
         final RevisionAwareXPath leafRefXPath = leafref.getPathStatement();
-        final RevisionAwareXPath leafRefStrippedXPath = new RevisionAwareXPathImpl(leafRefXPath.toString()
-                .replaceAll("\\[(.*?)\\]", ""), leafRefXPath.isAbsolute());
+        final RevisionAwareXPath leafRefStrippedXPath = new RevisionAwareXPathImpl(
+            GROUPS_PATTERN.matcher(leafRefXPath.toString()).replaceAll(""), leafRefXPath.isAbsolute());
 
         ///// skip leafrefs in augments - they're checked once augments are resolved
         final Iterator<QName> iterator = parentNode.getPath().getPathFromRoot().iterator();
