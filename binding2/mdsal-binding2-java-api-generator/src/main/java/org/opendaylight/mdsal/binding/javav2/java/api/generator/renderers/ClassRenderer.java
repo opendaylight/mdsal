@@ -53,7 +53,7 @@ public class ClassRenderer extends BaseRenderer {
     private final List<Constant> consts;
     private final List<GeneratedType> enclosedGeneratedTypes;
     private final List<GeneratedProperty> allProperties;
-    private final Map<String, String> importedNames = new HashMap<>();
+
     private final AbstractRangeGenerator<?> rangeGenerator;
 
     public ClassRenderer(final GeneratedTransferObject genType) {
@@ -131,20 +131,20 @@ public class ClassRenderer extends BaseRenderer {
     }
 
     protected String generateBody(final boolean isInnerClass) {
-        importedNames.put("type", importedName(getType()));
-        importedNames.put("arrays", importedName(Arrays.class));
-        importedNames.put("objects", importedName(Objects.class));
-        importedNames.put("string", importedName(String.class));
-        importedNames.put("byte", importedName(Byte.class));
-        importedNames.put("short", importedName(Short.class));
-        importedNames.put("integer", importedName(Integer.class));
-        importedNames.put("long", importedName(Long.class));
-        importedNames.put("stringBuilder", importedName(StringBuilder.class));
-        importedNames.put("list", importedName(List.class));
-        importedNames.put("lists", importedName(Lists.class));
-        importedNames.put("illegalArgumentException", importedName(IllegalArgumentException.class));
-        importedNames.put("boolean", importedName(Boolean.class));
-        importedNames.put("qname", importedName(QName.class));
+        getImportedNames().put("type", importedName(getType()));
+        getImportedNames().put("arrays", importedName(Arrays.class));
+        getImportedNames().put("objects", importedName(Objects.class));
+        getImportedNames().put("string", importedName(String.class));
+        getImportedNames().put("byte", importedName(Byte.class));
+        getImportedNames().put("short", importedName(Short.class));
+        getImportedNames().put("integer", importedName(Integer.class));
+        getImportedNames().put("long", importedName(Long.class));
+        getImportedNames().put("stringBuilder", importedName(StringBuilder.class));
+        getImportedNames().put("list", importedName(List.class));
+        getImportedNames().put("lists", importedName(Lists.class));
+        getImportedNames().put("illegalArgumentException", importedName(IllegalArgumentException.class));
+        getImportedNames().put("boolean", importedName(Boolean.class));
+        getImportedNames().put("qname", importedName(QName.class));
 
         final List<String> implementsListBuilder = new LinkedList<>();
         if (!getType().getImplements().isEmpty()) {
@@ -172,14 +172,14 @@ public class ClassRenderer extends BaseRenderer {
         }
         final String enumerations = String.join("\n", enumList);
 
-        final String constants = constantsTemplate.render(getType(), importedNames, this::importedName).body();
+        final String constants = constantsTemplate.render(getType(), getImportedNames(), this::importedName, false).body();
 
         if (genTO.getSuperType() != null) {
-            importedNames.put("superType", importedName(genTO.getSuperType()));
+            getImportedNames().put("superType", importedName(genTO.getSuperType()));
         }
 
         for (GeneratedProperty property : properties) {
-            importedNames.put(property.getReturnType().toString(), importedName(property.getReturnType()));
+            getImportedNames().put(property.getReturnType().toString(), importedName(property.getReturnType()));
         }
 
         final String constructors = generateConstructors();
@@ -212,9 +212,9 @@ public class ClassRenderer extends BaseRenderer {
             }
         }
         final String fields = sb2.toString();
-        importedNames.put("baseEncoding", importedName(BaseEncoding.class));
+        getImportedNames().put("baseEncoding", importedName(BaseEncoding.class));
         if (!allProperties.isEmpty()) {
-            importedNames.put("defProp", importedName(((GeneratedProperty)((List) allProperties).get(0)).getReturnType()));
+            getImportedNames().put("defProp", importedName(((GeneratedProperty)((List) allProperties).get(0)).getReturnType()));
         }
 
         final StringBuilder sb3 = new StringBuilder();
@@ -227,14 +227,14 @@ public class ClassRenderer extends BaseRenderer {
         }
         final String propertyMethod = sb3.toString();
 
-        return classTemplate.render(getType(), genTO, importedNames, implementsList, innerClasses, enumerations,
+        return classTemplate.render(getType(), genTO, getImportedNames(), implementsList, innerClasses, enumerations,
                 constants, constructors, lengthRangeChecker, fields, allProperties, propertyMethod,
                 isInnerClass).body();
     }
 
     protected String generateConstructors() {
-        importedNames.put("constructorProperties", importedName(ConstructorProperties.class));
-        importedNames.put("preconditions", importedName(Preconditions.class));
+        getImportedNames().put("constructorProperties", importedName(ConstructorProperties.class));
+        getImportedNames().put("preconditions", importedName(Preconditions.class));
 
         final StringBuilder sb1 = new StringBuilder();
         for (GeneratedProperty allProperty : allProperties) {
@@ -257,7 +257,7 @@ public class ClassRenderer extends BaseRenderer {
 
         final String argumentsDeclaration = asArgumentsDeclaration(allProperties);
         return classTemplateConstructors.render(genTO, allProperties, properties, parentProperties,
-                importedNames, argumentsDeclaration, unionConstructor, genRestrictions).body();
+                getImportedNames(), argumentsDeclaration, unionConstructor, genRestrictions).body();
     }
 
     /**
