@@ -174,7 +174,8 @@ public class ClassRenderer extends BaseRenderer {
         final String enumerations = String.join("\n", enumList);
 
         final StringBuilder sb1 = new StringBuilder();
-        final String initBlock = classTemplateInitBlock.render(importedName(Pattern.class)).body();
+        final String initBlock = classTemplateInitBlock.render(importedName(Pattern.class), PATTERN_CONSTANT_NAME,
+            "").body();
         if (!consts.isEmpty()) {
             for (Constant constant : consts) {
                 if (PATTERN_CONSTANT_NAME.equals(constant.getName())) {
