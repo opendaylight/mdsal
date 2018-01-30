@@ -20,6 +20,7 @@
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers.BuilderRenderer.toListOfNames
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.AbstractRangeGenerator
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.LengthGenerator
+@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.PATTERN_CONSTANT_NAME
 @import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder
@@ -31,12 +32,14 @@
 @(genType: GeneratedType, properties: Set[GeneratedProperty], importedNames: Map[String, String],
 ImportedNamesWithProperties: Map[GeneratedProperty, String], augmentField: GeneratedProperty, copyConstructorHelper: String,
 getterMethods: List[String], parentTypeForBuilderName: String, childTreeNode: Boolean, childTreeNodeIdent: Boolean,
-keyTypeName: String, instantiable: Boolean)
+keyTypeName: String, instantiable: Boolean, constants: String)
 @if(genType != null) {
 @{wrapToDocumentation(formatDataForJavaDocBuilder(importedNames.get("genType")))}
 public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{importedNames.get("genType")}> {
 
     @generateFields(false)
+
+    @{constants}
 
     @generateAugmentField(false)
 
@@ -284,6 +287,15 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
                     @{LengthGenerator.generateLengthCheckerCall(fieldName(field), "value.getValue()")}
                 }
             }
+            @for(currentConstant <- genType.getConstantDefinitions) {
+                    @if(currentConstant.getName.startsWith(PATTERN_CONSTANT_NAME)
+                    && fieldName(field).toUpperCase().equals(currentConstant.getName.substring(PATTERN_CONSTANT_NAME.length))
+                    && currentConstant.getValue.isInstanceOf[List[_]]) {
+                        for (Pattern p : patterns@{fieldName(field)}) {
+                            @{importedNames.get("preconditions")}.checkArgument(p.matcher(value).matches(), "Supplied value \"%s\" does not match required pattern \"%s\"", value, p);
+                        }
+                    }
+                }
             }
         }
             this.@{fieldName(field)} = value;

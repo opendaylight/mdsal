@@ -34,12 +34,14 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
@@ -47,10 +49,12 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
+import org.opendaylight.mdsal.binding.javav2.generator.util.TypeConstants;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
+import org.opendaylight.mdsal.binding.javav2.generator.yang.types.BaseYangTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
@@ -92,6 +96,7 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
@@ -825,6 +830,22 @@ final class GenHelperUtil {
         }
     }
 
+    private static void addPatternConstants(final GeneratedTypeBuilder typeBuilder, final String leafName,
+            final List<PatternConstraint> patternConstraints) {
+        final List<String> regExps = new ArrayList<>(patternConstraints.size());
+        for (final PatternConstraint patternConstraint : patternConstraints) {
+            final String regEx = patternConstraint.getRegularExpressionString();
+            final String modifiedRegEx = StringEscapeUtils.escapeJava(regEx);
+            regExps.add(modifiedRegEx);
+        }
+
+        if (!regExps.isEmpty()) {
+            typeBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE),
+                TypeConstants.PATTERN_CONSTANT_NAME + "_" + leafName.toUpperCase(),
+                regExps);
+        }
+    }
+
     /**
      * Converts <code>leaf</code> to the getter method which is added to
      * <code>typeBuilder</code>.
@@ -909,10 +930,12 @@ final class GenHelperUtil {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(getBaseOrDeclaredType(typeDef), leaf,
                         restrictions, genCtx.get(module));
+                addPatternConstants(typeBuilder, leafName, restrictions.getPatternConstraints());
             }
         } else {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
             returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions, genCtx.get(module));
+            addPatternConstants(typeBuilder, leafName, restrictions.getPatternConstraints());
         }
 
         if (returnType == null) {
@@ -990,10 +1013,15 @@ final class GenHelperUtil {
             } else {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions, genCtx.get(module));
+
+                addPatternConstants(typeBuilder, nodeName.getLocalName(), restrictions.getPatternConstraints());
+
             }
         } else {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
             returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions, genCtx.get(module));
+
+            addPatternConstants(typeBuilder, nodeName.getLocalName(), restrictions.getPatternConstraints());
         }
 
         final ParameterizedType listType = Types.listTypeFor(returnType);
