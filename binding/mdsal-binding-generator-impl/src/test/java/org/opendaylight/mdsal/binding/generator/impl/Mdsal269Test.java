@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2018 Pantheon Technologies, s.r.o. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.opendaylight.mdsal.binding.generator.impl;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.util.List;
+import org.junit.Test;
+import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.parser.spi.meta.ReactorException;
+import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
+
+public class Mdsal269Test {
+
+    @Test
+    public void mdsal269Test() throws FileNotFoundException, ReactorException, URISyntaxException {
+        final SchemaContext context = YangParserTestUtils.parseYangSource("/mdsal269.yang");
+
+        final List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
+        assertNotNull(generateTypes);
+        assertEquals(4, generateTypes.size());
+
+        final Type mplsLabelType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
+            .equals("org.opendaylight.yang.gen.v1.mdsal269.rev180130.MplsLabel")).findFirst().get();
+
+        assertTrue(mplsLabelType instanceof GeneratedTransferObject);
+        final GeneratedTransferObject gto = (GeneratedTransferObject) mplsLabelType;
+        assertEquals(2, gto.getEqualsIdentifiers().size());
+    }
+}
