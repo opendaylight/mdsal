@@ -9,8 +9,10 @@
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.PATTERN_CONSTANT_NAME;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
 import java.util.HashMap;
@@ -268,9 +270,21 @@ public abstract class BaseRenderer {
                 sb.append("null");
             }
             sb.append(", \"").append(qname.getLocalName()).append("\").intern()");
+        } else if (constant.getName().startsWith(PATTERN_CONSTANT_NAME)
+            && constant.getValue() instanceof List<?>) {
+                sb.append(importedName(ImmutableList.class)).append(".of(");
+            final List<String> constantList = new LinkedList<>();
+            for (Object item : (List) constant.getValue()) {
+                if (item instanceof String) {
+                    constantList.add("\"" + item + "\"");
+                }
+            }
+            sb.append(String.join(", ", constantList));
+            sb.append(");\n");
         } else {
             sb.append(value);
         }
+
         sb.append(";\n");
         return sb.toString();
     }
