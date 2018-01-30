@@ -15,22 +15,23 @@
 @import org.opendaylight.yangtools.yang.common.QName;
 @import org.opendaylight.yangtools.yang.common.Revision;
 
-@(genType: GeneratedType, importedNames: Map[String, String], importedName: Function[Type, String])
+@(genType: GeneratedType, importedNames: Map[String, String], importedName: Function[Type, String], qnameOnly: Boolean)
 @for(c <- genType.getConstantDefinitions) {
-    @if(c.getName == BindingMapping.PATTERN_CONSTANT_NAME) {
+    @if(c.getName.startsWith(BindingMapping.PATTERN_CONSTANT_NAME)) {
+    @if(!qnameOnly) {
+        @defining(c.getName.substring(BindingMapping.PATTERN_CONSTANT_NAME.length).toLowerCase) { suffix =>
         @defining(c.getValue.asInstanceOf[Map[String, String]]) { cValue =>
-        public static final @{importedNames.get("list")}<@{importedNames.get("string")}> @{BindingMapping.PATTERN_CONSTANT_NAME} = @{importedNames.get("immutableList")}.of(
+        public static final @{importedNames.get("list")}<@{importedNames.get("string")}> @{c.getName} = @{importedNames.get("immutableList")}.of(
             @{(cValue.keySet map {escapeJava}).mkString("\"", "\", \"", "\"")});
         @if(cValue.size == 1) {
-            private static final @{importedNames.get("pattern")} @{BindingMapping.MEMBER_PATTERN_LIST} = @{importedNames.get("pattern")}.compile(@{BindingMapping.PATTERN_CONSTANT_NAME}.get(0));
-            private static final String @{BindingMapping.MEMBER_REGEX_LIST} = "@{escapeJava(cValue.values.stream.findFirst.get)}";
+            private static final @{importedNames.get("pattern")} @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix} = @{importedNames.get("pattern")}.compile(@{c.getName}.get(0));
+            private static final String @{BindingMapping.MEMBER_REGEX_LIST}@{suffix} = "@{escapeJava(cValue.values.stream.findFirst.get)}";
         } else {
-            private static final @{importedNames.get("pattern")}[] @{BindingMapping.MEMBER_PATTERN_LIST} = @{importedNames.get("codeHelpers")}.compilePatterns(@{BindingMapping.PATTERN_CONSTANT_NAME});
-            private static final String[] @{BindingMapping.MEMBER_REGEX_LIST} = {
+            private static final @{importedNames.get("pattern")}[] @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix} = @{importedNames.get("codeHelpers")}.compilePatterns(@{c.getName});
+            private static final String[] @{BindingMapping.MEMBER_REGEX_LIST}@{suffix} = {
                 @{(cValue.keySet map {escapeJava}).mkString("\"", "\", \"", "\"")}
             };
-        }
-        }
+        }}}}
     } else {
         public static final @{importedName(c.getType())} @{c.getName} =
         @if(c.getValue.isInstanceOf[QName]) {

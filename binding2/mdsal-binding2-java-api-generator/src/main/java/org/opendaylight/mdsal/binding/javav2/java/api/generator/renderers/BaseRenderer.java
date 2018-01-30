@@ -9,15 +9,19 @@
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.PATTERN_CONSTANT_NAME;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil;
@@ -38,6 +42,10 @@ public abstract class BaseRenderer {
 
     private final GeneratedType type;
     private final Map<String, String> importMap;
+    /**
+     * list of all imported names for template
+     */
+    private final Map<String, String> importedNames = new HashMap<>();
 
     protected BaseRenderer(final GeneratedType type) {
         this.type = Preconditions.checkNotNull(type);
@@ -52,6 +60,10 @@ public abstract class BaseRenderer {
 
     protected GeneratedType getType() {
         return type;
+    }
+
+    protected Map<String, String> getImportedNames() {
+        return importedNames;
     }
 
     protected String getFromImportMap(@NonNull final String typeName) {
@@ -248,6 +260,22 @@ public abstract class BaseRenderer {
 
     //FIXME: this should be deprecated in favor of contantsTemplate
     /**
+     * @param constant constant to pattern
+     * @return string list with pattern regular expression
+     */
+    protected List<String> getPatternList(final Constant constant) {
+        final List<String> patternList = new ArrayList<>();
+        for (Object item : (List) constant.getValue()) {
+            if (item instanceof String) {
+                final String escaped = StringEscapeUtils.escapeJava((String)item);
+                patternList.add("\"" + escaped + "\"");
+            }
+        }
+
+        return patternList;
+    }
+
+    /**
      * @param constant constant to emit
      * @return string with constant wrapped in code
      */
@@ -269,9 +297,16 @@ public abstract class BaseRenderer {
                 sb.append("null");
             }
             sb.append(", \"").append(qname.getLocalName()).append("\").intern()");
+        } else if (constant.getName().startsWith(PATTERN_CONSTANT_NAME)
+                && constant.getValue() instanceof List<?>) {
+            sb.append(importedName(ImmutableList.class)).append(".of(");
+            final List<String> patternList = getPatternList(constant);
+            sb.append(String.join(", ", patternList));
+            sb.append(");\n");
         } else {
             sb.append(value);
         }
+
         sb.append(";\n");
         return sb.toString();
     }

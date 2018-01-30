@@ -16,6 +16,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -29,12 +30,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.builderConstructorHelperTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.builderTemplate;
+import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.constantsTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.AlphabeticallyTypeMemberComparator;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
@@ -66,11 +69,6 @@ public class BuilderRenderer extends BaseRenderer {
      * Set of name from properties
      */
     private final Map<GeneratedProperty, String> importedNamesForProperties = new HashMap<>();
-
-    /**
-     * list of all imported names for template
-     */
-    private final Map<String, String> importedNames = new HashMap<>();
 
     /**
      * Generated property is set if among methods is found one with the name GET_AUGMENTATION_METHOD_NAME
@@ -200,17 +198,17 @@ public class BuilderRenderer extends BaseRenderer {
                             generatedTOBuilder.addMethod(method.getName()).setReturnType(parametrizedReturnType);
                             augmentField = propertyFromGetter(generatedTOBuilder.toInstance().getMethodDefinitions()
                                 .get(0));
-                            importedNames.put("map", importedName(Map.class));
-                            importedNames.put("hashMap", importedName(HashMap.class));
-                            importedNames.put("class", importedName(Class.class));
+                            getImportedNames().put("map", importedName(Map.class));
+                            getImportedNames().put("hashMap", importedName(HashMap.class));
+                            getImportedNames().put("class", importedName(Class.class));
 //                            To do This is for third party, is it needed ?
-                            importedNames.put("augmentationHolder", importedName(AugmentationHolder.class));
-                            importedNames.put("collections", importedName(Collections.class));
-                            importedNames.put("augmentFieldReturnType", importedName(augmentField.getReturnType()));
+                            getImportedNames().put("augmentationHolder", importedName(AugmentationHolder.class));
+                            getImportedNames().put("collections", importedName(Collections.class));
+                            getImportedNames().put("augmentFieldReturnType", importedName(augmentField.getReturnType()));
                         }
                     }
                 } else if (Instantiable.class.getName().equals(implementedIfc.getFullyQualifiedName())) {
-                    importedNames.put("class", importedName(Class.class));
+                    getImportedNames().put("class", importedName(Class.class));
                     instantiable = true;
                 }
             }
@@ -278,24 +276,27 @@ public class BuilderRenderer extends BaseRenderer {
     @Override
     protected String body() {
         final String parentTypeForBuilderName;
-        importedNames.put("genType", importedName(getType()));
-        importedNames.put("objects", importedName(Objects.class));
-        importedNames.put("object", importedName(Object.class));
-        importedNames.put("string", importedName(String.class));
-        importedNames.put("arrays", importedName(Arrays.class));
-        importedNames.put("stringBuilder", importedName(StringBuilder.class));
-        importedNames.put("treeNode", importedName(TreeNode.class));
-        importedNames.put("instantiable", importedName(Instantiable.class));
-        importedNames.put("item", importedName(Item.class));
-        importedNames.put("identifiableItem", importedName(IdentifiableItem.class));
-        importedNames.put("qname", importedName(QName.class));
-        importedNames.put("codeHelpers", importedName(CodeHelpers.class));
+        getImportedNames().put("genType", importedName(getType()));
+        getImportedNames().put("objects", importedName(Objects.class));
+        getImportedNames().put("object", importedName(Object.class));
+        getImportedNames().put("string", importedName(String.class));
+        getImportedNames().put("arrays", importedName(Arrays.class));
+        getImportedNames().put("stringBuilder", importedName(StringBuilder.class));
+        getImportedNames().put("treeNode", importedName(TreeNode.class));
+        getImportedNames().put("instantiable", importedName(Instantiable.class));
+        getImportedNames().put("item", importedName(Item.class));
+        getImportedNames().put("identifiableItem", importedName(IdentifiableItem.class));
+        getImportedNames().put("qname", importedName(QName.class));
+        getImportedNames().put("codeHelpers", importedName(CodeHelpers.class));
+        getImportedNames().put("list", importedName(List.class));
+        getImportedNames().put("immutableList", importedName(ImmutableList.class));
+        getImportedNames().put("pattern", importedName(Pattern.class));
 
         if (getType().getParentType() != null) {
-            importedNames.put("parent", importedName(getType().getParentType()));
+            getImportedNames().put("parent", importedName(getType().getParentType()));
             parentTypeForBuilderName = getType().getParentType().getFullyQualifiedName();
         } else if (getType().getParentTypeForBuilder() != null) {
-            importedNames.put("parentTypeForBuilder", importedName(getType().getParentTypeForBuilder()));
+            getImportedNames().put("parentTypeForBuilder", importedName(getType().getParentTypeForBuilder()));
             parentTypeForBuilderName = getType().getParentTypeForBuilder().getFullyQualifiedName();
         } else {
             parentTypeForBuilderName = null;
@@ -314,16 +315,18 @@ public class BuilderRenderer extends BaseRenderer {
             }
         }
 
-        importedNames.put("augmentation", importedName(Augmentation.class));
-        importedNames.put("classInstMap", importedName(ClassToInstanceMap.class));
+        getImportedNames().put("augmentation", importedName(Augmentation.class));
+        getImportedNames().put("classInstMap", importedName(ClassToInstanceMap.class));
+
+        final String constants = constantsTemplate.render(getType(), getImportedNames(), this::importedName, false).body();
 
         // list for generate copy constructor
         final String copyConstructorHelper = generateListForCopyConstructor();
         List<String> getterMethods = new ArrayList<>(Collections2.transform(properties, this::getterMethod));
 
-        return builderTemplate.render(getType(), properties, importedNames, importedNamesForProperties, augmentField,
+        return builderTemplate.render(getType(), properties, getImportedNames(), importedNamesForProperties, augmentField,
             copyConstructorHelper, getterMethods, parentTypeForBuilderName, childTreeNode, childTreeNodeIdent,
-            keyTypeName, instantiable).body();
+            keyTypeName, instantiable, constants).body();
     }
 
     private String generateListForCopyConstructor() {
@@ -337,11 +340,11 @@ public class BuilderRenderer extends BaseRenderer {
                 removeProperty(allProps, keyProp.getName());
             }
             removeProperty(allProps, "key");
-            importedNames.put("keyTypeConstructor", importedName(keyType));
-            return builderConstructorHelperTemplate.render(allProps, keyProps, importedNames, getPropertyList(keyProps))
+            getImportedNames().put("keyTypeConstructor", importedName(keyType));
+            return builderConstructorHelperTemplate.render(allProps, keyProps, getImportedNames(), getPropertyList(keyProps))
                     .body();
         }
-        return builderConstructorHelperTemplate.render(allProps, null, importedNames, null).body();
+        return builderConstructorHelperTemplate.render(allProps, null, getImportedNames(), null).body();
     }
 
     private Type getKey(final GeneratedType genType) {

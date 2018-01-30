@@ -11,6 +11,7 @@ package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
+import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.constantsTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.enumTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.interfaceTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil;
@@ -21,6 +22,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.yangtools.yang.common.QName;
 
 public class InterfaceRenderer extends BaseRenderer {
 
@@ -69,13 +71,10 @@ public class InterfaceRenderer extends BaseRenderer {
         final String enums = sb2.toString();
 
         final String generatedImports = generateImports(getType().getImplements());
-        // generatedConstants list of constants
-        final List<String> strings = new ArrayList<>(getType().getConstantDefinitions().size());
-        for (Constant constant : getType().getConstantDefinitions()) {
-            strings.add(emitConstant(constant));
-        }
 
-        final String generatedConstants = String.join("\n", strings);
+        getImportedNames().put("qname", importedName(QName.class));
+        final String generatedConstants = constantsTemplate.render(getType(), getImportedNames(),
+            this::importedName, true).body();
 
         final List<String> innerClasses = new ArrayList<>(getType().getEnclosedTypes().size());
         for (GeneratedType innerClass : getType().getEnclosedTypes()) {
