@@ -422,15 +422,65 @@ public final class TypeProviderImpl implements TypeProvider {
                 "Type Definitions Local Name cannot be NULL!");
 
         final TypeDefinition<?> baseTypeDef = baseTypeDefForExtendedType(typeDefinition);
-        if (!(baseTypeDef instanceof LeafrefTypeDefinition) && !(baseTypeDef instanceof IdentityrefTypeDefinition)) {
-            final Module module = findParentModule(schemaContext, parentNode);
+        if (baseTypeDef instanceof LeafrefTypeDefinition || baseTypeDef instanceof IdentityrefTypeDefinition) {
+            /*
+             * This is backwards compatibility baggage from way back when. The problem at hand is inconsistency between
+             * the fact that identity is mapped to a Class, which is also returned from leaves which specify it like
+             * this:
+             *
+             *     identity iden;
+             *
+             *     container foo {
+             *         leaf foo {
+             *             type identityref {
+             *                 base iden;
+             *             }
+             *         }
+             *     }
+             *
+             * This results in getFoo() returning Class<? extends Iden>, which looks fine on the surface, but gets more
+             * dicey when we throw in:
+             *
+             *     typedef bar-ref {
+             *         type identityref {
+             *             base iden;
+             *         }
+             *     }
+             *
+             *     container bar {
+             *         leaf bar {
+             *             type bar-ref;
+             *         }
+             *     }
+             *
+             * Now we have competing requirements: typedef would like us to use encapsulation to capture the defined
+             * type, while getBar() wants us to retain shape with getFoo(), as it should not matter how the identityref
+             * is formed.
+             *
+             * In this particular case getFoo() won just after the Binding Spec was frozen, hence we do not generate
+             * an encapsulation for identityref typedefs.
+             *
+             * In case you are thinking we could get by having foo-ref map to a subclass of Iden, that is not a good
+             * option, as it would look as though it is the product of a different construct:
+             *
+             *     identity bar-ref {
+             *         base iden;
+             *     }
+             *
+             * Leading to a rather nice namespace clash and also slight incompatibility with unknown third-party
+             * sub-identities of iden.
+             *
+             * The story behind leafrefs is probably similar, but that needs to be ascertained.
+             */
+            return null;
+        }
 
-            if (module != null) {
-                final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
-                final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
-                if (genTOs != null) {
-                    return genTOs.get(typeDefinition.getQName().getLocalName());
-                }
+        final Module module = findParentModule(schemaContext, parentNode);
+        if (module != null) {
+            final Map<Date, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(module.getName());
+            final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
+            if (genTOs != null) {
+                return genTOs.get(typeDefinition.getQName().getLocalName());
             }
         }
         return null;
@@ -737,6 +787,7 @@ public final class TypeProviderImpl implements TypeProvider {
         if (basePackageName != null && moduleName != null && typedef != null && typedef.getQName() != null) {
             final String typedefName = typedef.getQName().getLocalName();
             final TypeDefinition<?> innerTypeDefinition = typedef.getBaseType();
+            // See generatedTypeForExtendedDefinitionType() above for rationale behind this special case.
             if (!(innerTypeDefinition instanceof LeafrefTypeDefinition)
                     && !(innerTypeDefinition instanceof IdentityrefTypeDefinition)) {
                 Type returnType = null;
@@ -911,12 +962,14 @@ public final class TypeProviderImpl implements TypeProvider {
         final List<String> regularExpressions = new ArrayList<>();
         for (final TypeDefinition<?> unionType : unionTypes) {
             final String unionTypeName = unionType.getQName().getLocalName();
-            if (unionType.getBaseType() != null) {
-                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, regularExpressions,
-                        parentNode);
+
+            // If we have a base type we should follow the type definition backwards, except for identityrefs, as those
+            // do not follow type encapsulation -- we use the general case for that.
+            if (unionType.getBaseType() != null  && !(unionType instanceof IdentityrefTypeDefinition)) {
+                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, regularExpressions, parentNode);
             } else if (unionType instanceof UnionTypeDefinition) {
-                generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionTypeDefinition) unionType,
-                        basePackageName, parentNode));
+                generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder,
+                    (UnionTypeDefinition) unionType, basePackageName, parentNode));
             } else if (unionType instanceof EnumTypeDefinition) {
                 final Enumeration enumeration = addInnerEnumerationToTypeBuilder((EnumTypeDefinition) unionType,
                         unionTypeName, unionGenTOBuilder);
