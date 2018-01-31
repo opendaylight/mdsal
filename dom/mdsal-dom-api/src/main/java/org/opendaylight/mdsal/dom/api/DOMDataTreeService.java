@@ -29,7 +29,8 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
  * a consumer without accumulating excess work in the backlog stemming from its previous
  * activity.
  */
-public interface DOMDataTreeService extends DOMDataTreeProducerFactory, DOMService {
+public interface DOMDataTreeService extends DOMDataTreeProducerFactory,
+        DOMExtensibleService<DOMDataTreeService, DOMDataTreeServiceExtension> {
     /**
      * Register a {@link DOMDataTreeListener} instance. Once registered, the listener
      * will start receiving changes on the selected subtrees. If the listener cannot
