@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bfd5f6d8_6ace4898",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/generator/spi/source/AbstractDataNodeContainerSerializerSource.java",
+        "patchSetId": 28
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-01-31T01:13:09Z",
+      "side": 1,
+      "message": "DataSchemaNode.isAugmenting() is very probably going away. What is it that we are checking for? It looks like a simple QNameModule change between parent and child... is that it?\n\nAn explicit comment of 3-5 lines as to what exactly is going on (note we checked schemaChild.isAugmenting() before, so we know it to be true, so ...",
+      "range": {
+        "startLine": 129,
+        "startChar": 12,
+        "endLine": 129,
+        "endChar": 36
+      },
+      "revId": "41ada1b01651388654d59d068eb4af7574389030",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e7207b5_693b0cac",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/generator/spi/source/AbstractDataNodeContainerSerializerSource.java",
+        "patchSetId": 28
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-01-31T01:13:09Z",
+      "side": 1,
+      "message": "... return true here ...",
+      "range": {
+        "startLine": 134,
+        "startChar": 15,
+        "endLine": 134,
+        "endChar": 20
+      },
+      "revId": "41ada1b01651388654d59d068eb4af7574389030",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d285da74_a74b3d7c",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/generator/spi/source/AbstractDataNodeContainerSerializerSource.java",
+        "patchSetId": 28
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-01-31T01:13:09Z",
+      "side": 1,
+      "message": "... and remove this part?",
+      "range": {
+        "startLine": 140,
+        "startChar": 16,
+        "endLine": 140,
+        "endChar": 47
+      },
+      "revId": "41ada1b01651388654d59d068eb4af7574389030",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
