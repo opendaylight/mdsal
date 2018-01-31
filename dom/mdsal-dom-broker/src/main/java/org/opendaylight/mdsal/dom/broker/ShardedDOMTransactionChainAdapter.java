@@ -32,6 +32,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMTransactionChain;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -181,6 +182,11 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
                          final boolean allowRxMerges, @Nonnull final Collection<DOMDataTreeProducer> producers)
                 throws DOMDataTreeLoopException {
             return delegateTreeService.registerListener(listener, subtrees, allowRxMerges, producers);
+        }
+
+        @Override
+        public Map<Class<? extends DOMDataTreeServiceExtension>, DOMDataTreeServiceExtension> getSupportedExtensions() {
+            return delegateTreeService.getSupportedExtensions();
         }
 
         @Override
