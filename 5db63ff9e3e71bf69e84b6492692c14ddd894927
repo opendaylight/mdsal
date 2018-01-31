@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9dc9fa65_aa87da6a",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/serializer/CachingNormalizedNodeSerializer.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-01-31T01:02:12Z",
+      "side": 1,
+      "message": "this is a blind cast. This should be guarded at last via checkArgument, with appropriate comment.\n\nIs there a reason we are not receiving input with appropriate interface already present?",
+      "range": {
+        "startLine": 80,
+        "startChar": 31,
+        "endLine": 80,
+        "endChar": 49
+      },
+      "revId": "5db63ff9e3e71bf69e84b6492692c14ddd894927",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
