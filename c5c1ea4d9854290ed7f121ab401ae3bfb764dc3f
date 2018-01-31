@@ -22,6 +22,30 @@
       "revId": "c5c1ea4d9854290ed7f121ab401ae3bfb764dc3f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f91fad49_d18a77fa",
+        "filename": "binding2/mdsal-binding2-runtime/src/main/java/org/opendaylight/mdsal/binding/javav2/runtime/context/BindingRuntimeContext.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 420,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-01-31T08:45:23Z",
+      "side": 1,
+      "message": "Done, one thing, there already exists Optional from Guava, perhaps we should migrate to java.util.Optional later.",
+      "parentUuid": "117e3565_641a94aa",
+      "range": {
+        "startLine": 420,
+        "startChar": 64,
+        "endLine": 420,
+        "endChar": 76
+      },
+      "revId": "c5c1ea4d9854290ed7f121ab401ae3bfb764dc3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
