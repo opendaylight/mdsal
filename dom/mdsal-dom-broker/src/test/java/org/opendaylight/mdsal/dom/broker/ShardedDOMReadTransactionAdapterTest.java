@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeLoopException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeServiceExtension;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -60,6 +62,11 @@ public class ShardedDOMReadTransactionAdapterTest {
     }
 
     private static class TestTreeService implements DOMDataTreeService {
+
+        @Override
+        public Map<Class<? extends DOMDataTreeServiceExtension>, DOMDataTreeServiceExtension> getSupportedExtensions() {
+            return ImmutableMap.of();
+        }
 
         @Nonnull
         @Override
