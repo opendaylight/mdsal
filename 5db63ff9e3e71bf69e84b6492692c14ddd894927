@@ -22,6 +22,30 @@
       "revId": "5db63ff9e3e71bf69e84b6492692c14ddd894927",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "77a1bf18_a04fff99",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/serializer/CachingNormalizedNodeSerializer.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-01-31T06:43:31Z",
+      "side": 1,
+      "message": "Codec used to use generic \u003cT extend TreeNode\u003e to represent binding data,  such as in interfaces:\n1) BindingNormalizedNodeCache extends CacheLoader\u003cTreeNode, NormalizedNode\u003c?, ?\u003e\u003e\n2) BindingNormalizedNodeCodec\u003cT extends TreeNode\u003e\nand so on, in my opnion Instantiable is more like an assistant interface which is used to get the binding class, it\u0027s more representative to use TreeNode for data tree.",
+      "parentUuid": "9dc9fa65_aa87da6a",
+      "range": {
+        "startLine": 80,
+        "startChar": 31,
+        "endLine": 80,
+        "endChar": 49
+      },
+      "revId": "5db63ff9e3e71bf69e84b6492692c14ddd894927",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
