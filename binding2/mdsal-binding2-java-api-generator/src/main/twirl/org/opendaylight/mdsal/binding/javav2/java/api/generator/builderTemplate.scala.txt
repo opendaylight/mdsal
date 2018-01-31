@@ -27,6 +27,7 @@
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty
 @import org.opendaylight.mdsal.binding.javav2.model.api.Type
+@import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType
 @import org.opendaylight.yangtools.concepts.Builder
 
 @(genType: GeneratedType, properties: Set[GeneratedProperty], importedNames: Map[String, String],
@@ -259,49 +260,13 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
 
 @generateSetters() = {
     @for(field <- properties) {
-        @if(!field.getReturnType.isInstanceOf[GeneratedType] && getRestrictions(field.getReturnType) != null) {
-            @if(getRestrictions(field.getReturnType).getRangeConstraint.isPresent) {
-                @{AbstractRangeGenerator.forType(field.getReturnType).generateRangeChecker(toFirstUpper(field.getName),
-                getRestrictions(field.getReturnType).getRangeConstraint.get)}
-            }
-            @if(getRestrictions(field.getReturnType).getLengthConstraint.isPresent) {
-                @{LengthGenerator.generateLengthChecker(fieldName(field), field.getReturnType,
-                getRestrictions(field.getReturnType).getLengthConstraint.get)}
-            }
-        }
-
-        public @{genType.getName}Builder set@{toFirstUpper(field.getName)}(final @{field.getReturnType.getFullyQualifiedName} value) {
-        @if(!field.getReturnType.isInstanceOf[GeneratedType] && getRestrictions(field.getReturnType) != null) {
-            if (value != null) {
-            @if(getRestrictions(field.getReturnType).getRangeConstraint.isPresent) {
-                @if(field.getReturnType.isInstanceOf[ConcreteType]) {
-                    @{AbstractRangeGenerator.forType(field.getReturnType).generateRangeCheckerCall(toFirstUpper(field.getName), "value")}
-                } else {
-                    @{AbstractRangeGenerator.forType(field.getReturnType).generateRangeCheckerCall(toFirstUpper(field.getName), "value.getValue()")}
-                }
-            }
-            @if(getRestrictions(field.getReturnType).getLengthConstraint.isPresent) {
-                @if(field.getReturnType.isInstanceOf[ConcreteType]) {
-                    @{LengthGenerator.generateLengthCheckerCall(fieldName(field), "value")}
-                } else {
-                    @{LengthGenerator.generateLengthCheckerCall(fieldName(field), "value.getValue()")}
-                }
-            }
-            @for(currentConstant <- genType.getConstantDefinitions) {
-                    @if(currentConstant.getName.startsWith(PATTERN_CONSTANT_NAME)
-                    && fieldName(field).toUpperCase().equals(currentConstant.getName.substring(PATTERN_CONSTANT_NAME.length))
-                    && currentConstant.getValue.isInstanceOf[List[_]]) {
-                        for (Pattern p : patterns@{fieldName(field)}) {
-                            @{importedNames.get("preconditions")}.checkArgument(p.matcher(value).matches(), "Supplied value \"%s\" does not match required pattern \"%s\"", value, p);
-                        }
-                    }
-                }
-            }
-        }
-            this.@{fieldName(field)} = value;
-            return this;
+        @if(field.getReturnType.isInstanceOf[List]) {
+          @generateSetter(field, field.getReturnType.asInstanceOf[ParameterizedType].getActualTypeArguments()(0), true)
+        } else {
+          @generateSetter(field, field.getReturnType, false)
         }
     }
+
     @if(augmentField != null) {
         public @{genType.getName}Builder add@{toFirstUpper(augmentField.getName)}(@{importedNames.get("class")}<? extends @{importedNames.get("augmentFieldReturnType")}> augmentationType, @{importedNames.get("augmentFieldReturnType")} augmentation) {
             if (augmentation == null) {
@@ -323,6 +288,67 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
             }
             return this;
         }
+    }
+}
+
+@generateSetter(field: GeneratedProperty, actualType: Type, isPType: Boolean) = {
+    @if(!actualType.isInstanceOf[GeneratedType] && getRestrictions(actualType) != null) {
+        @if(getRestrictions(actualType).getRangeConstraint.isPresent) {
+            @{AbstractRangeGenerator.forType(actualType).generateRangeChecker(toFirstUpper(field.getName),
+            getRestrictions(actualType).getRangeConstraint.get)}
+        }
+        @if(getRestrictions(actualType).getLengthConstraint.isPresent) {
+            @{LengthGenerator.generateLengthChecker(fieldName(field), actualType,
+            getRestrictions(actualType).getLengthConstraint.get)}
+        }
+    }
+
+    @if(isPType) {
+        public @{genType.getName}Builder set@{toFirstUpper(field.getName)}(final @{field.getReturnType.getFullyQualifiedName}<@{actualType.getFullyQualifiedName}> values) {
+            if (values != null) {
+                for (@{actualType.getFullyQualifiedName} value : values) {
+                    @checkArgument(field, actualType)
+                }
+            }
+            this.@{fieldName(field)} = values;
+            return this;
+        }
+    } else {
+        public @{genType.getName}Builder set@{toFirstUpper(field.getName)}(final @{actualType.getFullyQualifiedName} value) {
+            if (value != null) {
+                @checkArgument(field, actualType)
+            }
+            this.@{fieldName(field)} = value;
+            return this;
+        }
+    }
+}
+
+@checkArgument(field: GeneratedProperty, actualType: Type) = {
+    @if(!actualType.isInstanceOf[GeneratedType] && getRestrictions(actualType) != null) {
+        @if(getRestrictions(actualType).getRangeConstraint.isPresent) {
+            @if(actualType.isInstanceOf[ConcreteType]) {
+                @{AbstractRangeGenerator.forType(actualType).generateRangeCheckerCall(toFirstUpper(field.getName), "value")}
+            } else {
+                @{AbstractRangeGenerator.forType(actualType).generateRangeCheckerCall(toFirstUpper(field.getName), "value.getValue()")}
+            }
+        }
+        @if(getRestrictions(actualType).getLengthConstraint.isPresent) {
+            @if(actualType.isInstanceOf[ConcreteType]) {
+                @{LengthGenerator.generateLengthCheckerCall(fieldName(field), "value")}
+            } else {
+                @{LengthGenerator.generateLengthCheckerCall(fieldName(field), "value.getValue()")}
+            }
+        }
+        @for(currentConstant <- genType.getConstantDefinitions) {
+                @if(currentConstant.getName.startsWith(PATTERN_CONSTANT_NAME)
+                && fieldName(field).toUpperCase().equals(currentConstant.getName.substring(PATTERN_CONSTANT_NAME.length))
+                && currentConstant.getValue.isInstanceOf[List[_]]) {
+                    for (Pattern p : patterns@{fieldName(field)}) {
+                        @{importedNames.get("preconditions")}.checkArgument(p.matcher(value).matches(), "Supplied value \"%s\" does not match required pattern \"%s\"", value, p);
+                    }
+                }
+            }
     }
 }
 
