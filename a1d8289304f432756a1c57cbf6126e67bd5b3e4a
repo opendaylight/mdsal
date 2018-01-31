@@ -22,6 +22,30 @@
       "revId": "a1d8289304f432756a1c57cbf6126e67bd5b3e4a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2cf827d7_1c896c30",
+        "filename": "binding2/mdsal-binding2-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/javav2/java/api/generator/util/JavaCodePrettyPrint.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-01-31T06:53:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "035c7be5_f277be02",
+      "range": {
+        "startLine": 136,
+        "startChar": 0,
+        "endLine": 137,
+        "endChar": 29
+      },
+      "revId": "a1d8289304f432756a1c57cbf6126e67bd5b3e4a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
