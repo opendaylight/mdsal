@@ -842,8 +842,9 @@ final class GenHelperUtil {
         if (!regExps.isEmpty()) {
             final StringBuilder field = new StringBuilder();
             field.append(TypeConstants.PATTERN_CONSTANT_NAME).append("_")
-                .append(BindingMapping.getPropertyName(leafName).toUpperCase());
-            typeBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), field.build(), regExps);
+                .append(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafName, JavaIdentifier.CLASS)
+                    .toUpperCase());
+            typeBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), field.toString(), regExps);
         }
     }
 
