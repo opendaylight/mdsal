@@ -10,43 +10,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.opendaylight.odlparent</groupId>
-        <artifactId>odlparent-lite</artifactId>
-        <version>2.0.5</version>
-        <relativePath/>
+        <groupId>org.opendaylight.mdsal</groupId>
+        <artifactId>binding-parent</artifactId>
+        <version>0.11.2-SNAPSHOT</version>
+        <relativePath>../../../binding/binding-parent</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.model</groupId>
-    <artifactId>model-ietf-aggregator</artifactId>
-    <version>0.11.2-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <artifactId>ietf-routing-types</artifactId>
+    <version>2017.02.27.11.2-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
+    <packaging>bundle</packaging>
 
-    <modules>
-        <module>ietf-inet-types</module>
-        <module>ietf-interfaces</module>
-        <module>ietf-yang-types</module>
-        <module>ietf-yang-types-20130715</module>
-        <module>ietf-network</module>
-        <module>ietf-packet-fields</module>
-        <module>ietf-access-control-list</module>
-        <module>ietf-lisp-address-types</module>
+    <dependencies>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>ietf-yang-types-20130715</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>ietf-inet-types-2013-07-15</artifactId>
+        </dependency>
+    </dependencies>
 
-        <!-- Legacy IETF topology models -->
-        <module>ietf-ted</module>
-        <module>ietf-topology</module>
-        <module>ietf-topology-isis</module>
-        <module>ietf-topology-l3-unicast-igp</module>
-        <module>ietf-topology-ospf</module>
-
-        <module>ietf-restconf</module>
-        <module>ietf-inet-types-2013-07-15</module>
-
-        <module>ietf-type-util</module>
-        <module>ietf-routing-types</module>
-    </modules>
 
   <!--
       Maven Site Configuration
