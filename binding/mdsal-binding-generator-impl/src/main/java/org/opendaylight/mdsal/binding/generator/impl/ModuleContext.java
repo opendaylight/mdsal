@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -209,13 +208,13 @@ public final class ModuleContext {
     }
 
     /**
-     * Adds mapping between schema path and inner enum.
+     * Adds mapping between schema path and an inner type.
      *
      * @param path
-     * @param enumBuilder
+     * @param type
      */
-    void addInnerTypedefType(final SchemaPath path, final EnumBuilder enumBuilder) {
-        innerTypes.put(path, enumBuilder);
+    void addInnerTypedefType(final SchemaPath path, final Type type) {
+        innerTypes.put(path, type);
     }
 
     public Type getInnerType(final SchemaPath path) {

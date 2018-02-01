@@ -308,7 +308,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         checkArgument(module.getName() != null, "Module name cannot be NULL.");
         final DataNodeIterator it = new DataNodeIterator(module);
         final List<TypeDefinition<?>> typeDefinitions = it.allTypedefs();
-        checkState(typeDefinitions != null, "Type Definitions for module «module.name» cannot be NULL.");
+        checkState(typeDefinitions != null, "Type Definitions for module %s cannot be NULL.", module.getName());
 
         for (final TypeDefinition<?> typedef : typeDefinitions) {
             if (typedef != null) {
@@ -1433,6 +1433,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
                 if (genTOBuilder != null) {
                     returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
+                    // Store the inner type within the union so that we can find the reference for it
+                    genCtx.get(module).addInnerTypedefType(typeDef.getPath(), returnType);
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
                 GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
@@ -1540,12 +1542,15 @@ public class BindingGeneratorImpl implements BindingGenerator {
             Type returnType;
             final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
             if (typeDef instanceof UnionTypeDefinition) {
-                // GeneratedType for this type definition should be already
-                // created
+                // GeneratedType for this type definition should have be already created
                 final QName qname = typeDef.getQName();
                 final Module unionModule = schemaContext.findModule(qname.getModule()).orElse(null);
                 final ModuleContext mc = genCtx.get(unionModule);
                 returnType = mc.getTypedefs().get(typeDef.getPath());
+                if (returnType == null) {
+                    // This may still be an inner type, try to find it
+                    returnType = mc.getInnerType(typeDef.getPath());
+                }
             } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
                 // Annonymous enumeration (already generated, since it is inherited via uses).
                 LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
@@ -1925,7 +1930,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         if (schemaNode instanceof LeafSchemaNode) {
             final LeafSchemaNode leaf = (LeafSchemaNode) schemaNode;
             final String leafName = leaf.getQName().getLocalName();
-            final Type type = resolveLeafSchemaNodeAsMethod(typeBuilder, leaf,module);
+            Type type = resolveLeafSchemaNodeAsMethod(typeBuilder, leaf, module);
             if (listKeys.contains(leafName)) {
                 if (type == null) {
                     resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, true, module);
