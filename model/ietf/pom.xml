@@ -49,5 +49,6 @@
         <module>ietf-restconf</module>
 
         <module>ietf-ip-2014-06-16</module>
+        <module>ietf-routing-types</module>
     </modules>
 </project>
