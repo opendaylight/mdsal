@@ -29,7 +29,6 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
-import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,14 +68,20 @@ public class CodegenTypeProvider extends AbstractTypeProvider {
         typeDef.getReference().ifPresent(genTOBuilder::setReference);
     }
 
+    /**
+     * Converts the pattern constraints to the list of
+     * the strings which represents these constraints.
+     *
+     * @param patternConstraints
+     *            list of pattern constraints
+     * @return list of strings which represents the constraint patterns
+     */
     @Override
-    Map<String, String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
-        if (!(typedef instanceof StringTypeDefinition)) {
+    public Map<String, String> resolveRegExpressions(final List<PatternConstraint> patternConstraints) {
+        if (patternConstraints.isEmpty()) {
             return ImmutableMap.of();
         }
 
-        // TODO: run diff against base ?
-        final List<PatternConstraint> patternConstraints = ((StringTypeDefinition) typedef).getPatternConstraints();
         final Map<String, String> regExps = Maps.newHashMapWithExpectedSize(patternConstraints.size());
         for (PatternConstraint patternConstraint : patternConstraints) {
             String regEx = patternConstraint.getJavaPatternString();

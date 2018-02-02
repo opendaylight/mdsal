@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.yang.types;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
+import java.util.List;
 import java.util.Map;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
@@ -21,6 +22,7 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeG
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 
 /**
  * {@link AbstractTypeProvider} which generates enough type information for runtime support. For a codegen-compatible
@@ -43,7 +45,7 @@ public final class RuntimeTypeProvider extends AbstractTypeProvider {
     }
 
     @Override
-    Map<String, String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
+    public Map<String, String> resolveRegExpressions(final List<PatternConstraint> patternConstraints) {
         return ImmutableMap.of();
     }
 
