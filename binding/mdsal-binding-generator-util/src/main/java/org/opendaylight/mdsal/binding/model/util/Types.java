@@ -47,9 +47,9 @@ public final class Types {
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
 
-    private static final Type SET_TYPE = typeForClass(Set.class);
-    private static final Type LIST_TYPE = typeForClass(List.class);
-    private static final Type MAP_TYPE = typeForClass(Map.class);
+    public static final Type SET_TYPE = typeForClass(Set.class);
+    public static final Type LIST_TYPE = typeForClass(List.class);
+    public static final Type MAP_TYPE = typeForClass(Map.class);
 
     public static final ConcreteType BOOLEAN = typeForClass(Boolean.class);
     public static final ConcreteType FUTURE = typeForClass(Future.class);
