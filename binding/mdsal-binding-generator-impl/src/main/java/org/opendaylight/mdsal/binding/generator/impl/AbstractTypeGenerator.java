@@ -24,6 +24,7 @@ import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.FUTURE;
 import static org.opendaylight.mdsal.binding.model.util.Types.VOID;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
+import static org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider.resolveRegExpressions;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
@@ -58,10 +59,12 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
+import org.opendaylight.mdsal.binding.model.util.TypeConstants;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider;
+import org.opendaylight.mdsal.binding.yang.types.BaseYangTypes;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
@@ -98,6 +101,7 @@ import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
@@ -1301,6 +1305,16 @@ abstract class AbstractTypeGenerator {
         return false;
     }
 
+    private static void addPatternConstant(final GeneratedTypeBuilder typeBuilder, final String leafName,
+            final List<PatternConstraint> patternConstraints) {
+        if (!patternConstraints.isEmpty()) {
+            final StringBuilder field = new StringBuilder().append(TypeConstants.PATTERN_CONSTANT_NAME).append("_")
+                .append(BindingMapping.getPropertyName(leafName).toUpperCase());
+            typeBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), field.toString(),
+                resolveRegExpressions(patternConstraints));
+        }
+    }
+
     /**
      * Converts <code>leaf</code> to the getter method which is added to
      * <code>typeBuilder</code>.
@@ -1359,10 +1373,12 @@ abstract class AbstractTypeGenerator {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(getBaseOrDeclaredType(typeDef), leaf,
                         restrictions);
+                addPatternConstant(typeBuilder, leaf.getQName().getLocalName(), restrictions.getPatternConstraints());
             }
         } else {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
             returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
+            addPatternConstant(typeBuilder, leaf.getQName().getLocalName(), restrictions.getPatternConstraints());
         }
 
         if (returnType == null) {
@@ -1560,10 +1576,12 @@ abstract class AbstractTypeGenerator {
             } else {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions);
+                addPatternConstant(typeBuilder, node.getQName().getLocalName(), restrictions.getPatternConstraints());
             }
         } else {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
             returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions);
+            addPatternConstant(typeBuilder, node.getQName().getLocalName(), restrictions.getPatternConstraints());
         }
 
         final ParameterizedType listType = Types.listTypeFor(returnType);
