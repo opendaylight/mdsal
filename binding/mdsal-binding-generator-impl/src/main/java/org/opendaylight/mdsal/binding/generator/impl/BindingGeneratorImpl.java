@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.apache.commons.text.StringEscapeUtils;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
@@ -63,10 +64,12 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuil
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
+import org.opendaylight.mdsal.binding.model.util.TypeConstants;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTypeBuilderImpl;
+import org.opendaylight.mdsal.binding.yang.types.BaseYangTypes;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.mdsal.binding.yang.types.TypeProviderImpl;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -103,6 +106,7 @@ import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
@@ -1386,6 +1390,23 @@ public class BindingGeneratorImpl implements BindingGenerator {
         return false;
     }
 
+    private static void addPatternConstants(final GeneratedTypeBuilder typeBuilder, final String leafName,
+            final List<PatternConstraint> patternConstraints) {
+        final List<String> regExps = new ArrayList<>(patternConstraints.size());
+        for (final PatternConstraint patternConstraint : patternConstraints) {
+            final String regEx = patternConstraint.getRegularExpressionString();
+            final String modifiedRegEx = StringEscapeUtils.escapeJava(regEx);
+            regExps.add(modifiedRegEx);
+        }
+
+        if (!regExps.isEmpty()) {
+            final StringBuilder field = new StringBuilder();
+            field.append(TypeConstants.PATTERN_CONSTANT_NAME).append("_")
+                .append(BindingMapping.getPropertyName(leafName).toUpperCase());
+            typeBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), field.toString(), regExps);
+        }
+    }
+
     /**
      * Converts <code>leaf</code> to the getter method which is added to
      * <code>typeBuilder</code>.
@@ -1447,10 +1468,12 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(getBaseOrDeclaredType(typeDef), leaf,
                         restrictions);
+                addPatternConstants(typeBuilder, leafName, restrictions.getPatternConstraints());
             }
         } else {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
             returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf, restrictions);
+            addPatternConstants(typeBuilder, leafName, restrictions.getPatternConstraints());
         }
 
         if (returnType == null) {
@@ -1647,10 +1670,12 @@ public class BindingGeneratorImpl implements BindingGenerator {
             } else {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions);
+                addPatternConstants(typeBuilder, nodeName.getLocalName(), restrictions.getPatternConstraints());
             }
         } else {
             final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
             returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node, restrictions);
+            addPatternConstants(typeBuilder, nodeName.getLocalName(), restrictions.getPatternConstraints());
         }
 
         final ParameterizedType listType = Types.listTypeFor(returnType);

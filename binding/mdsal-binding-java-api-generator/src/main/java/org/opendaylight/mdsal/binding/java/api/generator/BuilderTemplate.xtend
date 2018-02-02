@@ -7,7 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
+import com.google.common.base.Preconditions
 import com.google.common.collect.ImmutableSortedSet
+import com.google.common.collect.ImmutableList
 import java.util.ArrayList
 import java.util.Arrays
 import java.util.Collection
@@ -15,16 +17,20 @@ import java.util.Collections
 import java.util.HashMap
 import java.util.HashSet
 import java.util.LinkedHashSet
+import java.util.LinkedList;
 import java.util.List
 import java.util.Map
 import java.util.Objects
 import java.util.Set
+import java.util.regex.Pattern;
+import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
 import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.MethodSignature
 import org.opendaylight.mdsal.binding.model.api.Type
+import org.opendaylight.mdsal.binding.model.api.ParameterizedType
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl
 import org.opendaylight.mdsal.binding.model.util.Types
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTOBuilderImpl
@@ -60,6 +66,10 @@ class BuilderTemplate extends BaseTemplate {
      */
     val static IMPL = 'Impl'
 
+    val static PATTERN_CONSTANT_NAME = "PATTERN_CONSTANT"
+
+    val static MEMBER_PATTERN_LIST = "patterns"
+
     /**
      * Generated property is set if among methods is found one with the name GET_AUGMENTATION_METHOD_NAME
      */
@@ -70,6 +80,8 @@ class BuilderTemplate extends BaseTemplate {
      */
     val Set<GeneratedProperty> properties
 
+    val List<Constant> constants
+
     private static val METHOD_COMPARATOR = new AlphabeticallyTypeMemberComparator<MethodSignature>();
 
     /**
@@ -79,6 +91,7 @@ class BuilderTemplate extends BaseTemplate {
     new(GeneratedType genType) {
         super(genType)
         this.properties = propertiesFromMethods(createMethods)
+        this.constants = ImmutableList.copyOf(genType.getConstantDefinitions)
         importMap.put(Builder.simpleName, Builder.package.name)
     }
 
@@ -225,6 +238,8 @@ class BuilderTemplate extends BaseTemplate {
         public class «type.name»«BUILDER» implements «BUILDERFOR»<«type.importedName»> {
 
             «generateFields(false)»
+
+            «generatePatternConstField»
 
             «generateAugmentField(false)»
 
@@ -430,6 +445,118 @@ class BuilderTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
+    private def List<String> getPatternList(Constant constant) {
+        val List<String> patternList = new LinkedList
+        for (item : constant.getValue as List) {
+            if (item instanceof String) {
+                patternList.add("\"" + item + "\"")
+            }
+        }
+        return patternList
+    }
+
+    def private generatePatternConstField() '''
+        «IF constants !== null»
+            «FOR constant : constants»
+                «IF constant.getName.startsWith(PATTERN_CONSTANT_NAME)»
+                    «IF constant.getValue instanceof List»
+                        «val String field = constant.getName.substring(PATTERN_CONSTANT_NAME.length + 1).toLowerCase»
+                        private static final «Pattern.importedName»[]  «MEMBER_PATTERN_LIST»«field»;
+                        public static final «List.importedName»<String> «constant.getName» = «ImmutableList.importedName».of(«String.join(", ", getPatternList(constant))»);
+                        «generatePatternConstInitBlock(field, constant)»
+                    «ENDIF»
+                «ELSE»
+                    «emitConstant(constant)»
+                «ENDIF»
+            «ENDFOR»
+        «ENDIF»
+    '''
+
+    def private generatePatternConstInitBlock(String field, Constant constant) '''
+        static {
+            final «Pattern.importedName» a«field»[] = new «Pattern.importedName»[«constant.getName()».size()];
+            int i = 0;
+            for (String regEx : «constant.getName()») {
+                a«field»[i++] = Pattern.compile(regEx);
+            }
+
+            «MEMBER_PATTERN_LIST»«field.toLowerCase» = a«field»;
+        }
+    '''
+
+    def private generateCheckers(GeneratedProperty field, Type actualType) '''
+        «val restrictions = actualType.restrictions»
+        «IF !(actualType instanceof GeneratedType) && restrictions !== null»
+            «IF restrictions.rangeConstraint.present»
+                «val rangeGenerator = AbstractRangeGenerator.forType(actualType)»
+                «rangeGenerator.generateRangeChecker(field.name.toFirstUpper, restrictions.rangeConstraint.get)»
+            «ENDIF»
+
+            «IF restrictions.lengthConstraint.present»
+                «LengthGenerator.generateLengthChecker(field.fieldName.toString, actualType, restrictions.lengthConstraint.get)»
+            «ENDIF»
+        «ENDIF»
+    '''
+
+    def private checkArgument(GeneratedProperty field, Type actualType) '''
+        «IF !(actualType instanceof GeneratedType) && getRestrictions(actualType) != null»
+            «IF getRestrictions(actualType).getRangeConstraint.isPresent»
+                «IF actualType instanceof ConcreteType»
+                    «AbstractRangeGenerator.forType(actualType).generateRangeCheckerCall(field.getName.toFirstUpper, "value")»
+                «ELSE»
+                    @{AbstractRangeGenerator.forType(actualType).generateRangeCheckerCall(field.getName.toFirstUpper, "value.getValue()")»
+                «ENDIF»
+            «ENDIF»
+            «IF getRestrictions(actualType).getLengthConstraint.isPresent»
+                 «IF actualType instanceof ConcreteType»
+                    «LengthGenerator.generateLengthCheckerCall(field.fieldName.toString, "value")»
+                «ELSE»
+                    «LengthGenerator.generateLengthCheckerCall(field.fieldName.toString, "value.getValue()")»
+                «ENDIF»
+            «ENDIF»
+
+            «val fieldUpperCase = field.fieldName.toString.toUpperCase()»
+            «FOR currentConstant : type.getConstantDefinitions»
+                    «IF currentConstant.getName.startsWith(PATTERN_CONSTANT_NAME)
+                        && currentConstant.getValue instanceof List
+                        && fieldUpperCase.equals(currentConstant.getName.substring(PATTERN_CONSTANT_NAME.length + 1))»
+                        for (Pattern p : patterns«field.fieldName.toString») {
+                            «Preconditions.importedName».checkArgument(p.matcher(value).matches(), "Supplied value \"%s\" does not match required pattern \"%s\"", value, p);
+                        }
+                    «ENDIF»
+            «ENDFOR»
+        «ENDIF»
+    '''
+
+    def private generateSetter(GeneratedProperty field, Type actualType, boolean isPType) '''
+        «generateCheckers(field, actualType)»
+        
+        «IF isPType»
+            public «type.getName»Builder set«field.getName.toFirstUpper»(final «(field.getReturnType as ParameterizedType)
+                    .getRawType.getFullyQualifiedName»<«actualType.getFullyQualifiedName»> values) {
+                if (values != null) {
+                    for («actualType.getFullyQualifiedName» value : values) {
+                        «checkArgument(field, actualType)»
+                    }
+                }
+                this.«field.fieldName.toString» = values;
+                return this;
+            }
+        «ELSE»
+            public «type.getName»Builder set«field.getName.toFirstUpper»(final «actualType.getFullyQualifiedName» value) {
+                if (value != null) {
+                    «checkArgument(field, actualType)»
+                }
+                this.«field.fieldName.toString» = value;
+                return this;
+            }
+        «ENDIF»
+    '''
+
+    private def Type getActualType(ParameterizedType ptype) {
+        return ptype.getActualTypeArguments.get(0)
+    }
+
     /**
      * Template method which generates setter methods
      *
@@ -437,47 +564,15 @@ class BuilderTemplate extends BaseTemplate {
      */
     def private generateSetters() '''
         «FOR field : properties SEPARATOR '\n'»
-             «/* FIXME: generate checkers as simple blocks and embed them directly in setters  */»
-             «val restrictions = field.returnType.restrictions»
-             «IF !(field.returnType instanceof GeneratedType) && restrictions !== null»
-                    «IF restrictions.rangeConstraint.present»
-                        «val rangeGenerator = AbstractRangeGenerator.forType(field.returnType)»
-                        «rangeGenerator.generateRangeChecker(field.name.toFirstUpper, restrictions.rangeConstraint.get)»
-
-                    «ENDIF»
-                    «IF restrictions.lengthConstraint.present»
-                    «LengthGenerator.generateLengthChecker(field.fieldName.toString, field.returnType, restrictions.lengthConstraint.get)»
-
-                    «ENDIF»
+            «IF field.getReturnType instanceof ParameterizedType 
+                && (field.getReturnType as ParameterizedType).getRawType.equals(Types.typeForClass(List))»
+                «generateSetter(field, getActualType(field.getReturnType as ParameterizedType), true)»
+            «ELSE»
+                «generateSetter(field, field.getReturnType, false)»
             «ENDIF»
-            public «type.name»«BUILDER» set«field.name.toFirstUpper»(final «field.returnType.importedName» value) {
-            «IF !(field.returnType instanceof GeneratedType) && restrictions !== null»
-                «IF restrictions !== null && (restrictions.rangeConstraint.present || restrictions.lengthConstraint.present)»
-                if (value != null) {
-                    «IF restrictions.rangeConstraint.present»
-                        «val rangeGenerator = AbstractRangeGenerator.forType(field.returnType)»
-                        «IF field.returnType instanceof ConcreteType»
-                            «rangeGenerator.generateRangeCheckerCall(field.name.toFirstUpper, "value")»
-                        «ELSE»
-                            «rangeGenerator.generateRangeCheckerCall(field.name.toFirstUpper, "value.getValue()")»
-                        «ENDIF»
-                    «ENDIF»
-                    «IF restrictions.lengthConstraint.present»
-                        «IF field.returnType instanceof ConcreteType»
-                            «LengthGenerator.generateLengthCheckerCall(field.fieldName.toString, "value")»
-                         «ELSE»
-                            «LengthGenerator.generateLengthCheckerCall(field.fieldName.toString, "value.getValue()")»
-                        «ENDIF»
-                    «ENDIF»
-                }
-                «ENDIF»
-            «ENDIF»
-                this.«field.fieldName» = value;
-                return this;
-            }
         «ENDFOR»
-        «IF augmentField !== null»
 
+        «IF augmentField !== null»
             public «type.name»«BUILDER» add«augmentField.name.toFirstUpper»(«Class.importedName»<? extends «augmentField.returnType.importedName»> augmentationType, «augmentField.returnType.importedName» augmentationValue) {
                 if (augmentationValue == null) {
                     return remove«augmentField.name.toFirstUpper»(augmentationType);
