@@ -77,6 +77,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.InstanceIdentifierTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
@@ -708,6 +709,14 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     public abstract GeneratedTypeBuilder newGeneratedTypeBuilder(String packageName, String name);
 
+    /**
+     * Converts the pattern constraints to the list of the strings which represents these constraints.
+     *
+     * @param patternConstraints list of pattern constraints
+     * @return list of strings which represents the constraint patterns
+     */
+    public abstract Map<String, String> resolveRegExpressions(List<PatternConstraint> patternConstraints);
+
     abstract void addCodegenInformation(GeneratedTypeBuilderBase<?> genTOBuilder, TypeDefinition<?> typeDef);
 
     /**
@@ -721,7 +730,14 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *             if <code>typedef</code> equals null
      *
      */
-    abstract Map<String, String> resolveRegExpressionsFromTypedef(TypeDefinition<?> typedef);
+    private Map<String, String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
+        if (!(typedef instanceof StringTypeDefinition)) {
+            return ImmutableMap.of();
+        }
+
+        // TODO: run diff against base ?
+        return resolveRegExpressions(((StringTypeDefinition) typedef).getPatternConstraints());
+    }
 
     /**
      * Converts <code>dataNode</code> to JAVA <code>Type</code>.
