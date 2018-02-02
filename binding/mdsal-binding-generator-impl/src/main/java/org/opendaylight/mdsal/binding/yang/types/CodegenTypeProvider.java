@@ -76,31 +76,7 @@ public class CodegenTypeProvider extends AbstractTypeProvider {
         }
 
         // TODO: run diff against base ?
-        final List<PatternConstraint> patternConstraints = ((StringTypeDefinition) typedef).getPatternConstraints();
-        final Map<String, String> regExps = Maps.newHashMapWithExpectedSize(patternConstraints.size());
-        for (PatternConstraint patternConstraint : patternConstraints) {
-            String regEx = patternConstraint.getJavaPatternString();
-
-            // The pattern can be inverted
-            final Optional<ModifierKind> optModifier = patternConstraint.getModifier();
-            if (optModifier.isPresent()) {
-                regEx = applyModifier(optModifier.get(), regEx);
-            }
-
-            regExps.put(regEx, patternConstraint.getRegularExpressionString());
-        }
-
-        return regExps;
-    }
-
-    private static String applyModifier(final ModifierKind modifier, final String pattern) {
-        switch (modifier) {
-            case INVERT_MATCH:
-                return BindingMapping.negatePatternString(pattern);
-            default:
-                LOG.warn("Ignoring unhandled modifier {}", modifier);
-                return pattern;
-        }
+        return resolveRegExpressions(((StringTypeDefinition) typedef).getPatternConstraints());
     }
 
     @Override
