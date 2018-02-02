@@ -15,6 +15,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
 import java.io.Serializable;
@@ -77,6 +78,8 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.InstanceIdentifierTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
+import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
@@ -1727,5 +1730,44 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     @Override
     public String getParamNameFromType(final TypeDefinition<?> type) {
         return BindingMapping.getPropertyName(type.getQName().getLocalName());
+    }
+
+    /**
+     * Converts the pattern constraints to the list of
+     * the strings which represents these constraints.
+     *
+     * @param patternConstraints
+     *            list of pattern constraints
+     * @return list of strings which represents the constraint patterns
+     */
+    public static Map<String, String> resolveRegExpressions(final List<PatternConstraint> patternConstraints) {
+        if (patternConstraints.isEmpty()) {
+            return ImmutableMap.of();
+        }
+
+        final Map<String, String> regExps = Maps.newHashMapWithExpectedSize(patternConstraints.size());
+        for (PatternConstraint patternConstraint : patternConstraints) {
+            String regEx = patternConstraint.getJavaPatternString();
+
+            // The pattern can be inverted
+            final Optional<ModifierKind> optModifier = patternConstraint.getModifier();
+            if (optModifier.isPresent()) {
+                regEx = applyModifier(optModifier.get(), regEx);
+            }
+
+            regExps.put(regEx, patternConstraint.getRegularExpressionString());
+        }
+
+        return regExps;
+    }
+
+    private static String applyModifier(final ModifierKind modifier, final String pattern) {
+        switch (modifier) {
+            case INVERT_MATCH:
+                return BindingMapping.negatePatternString(pattern);
+            default:
+                LOG.warn("Ignoring unhandled modifier {}", modifier);
+                return pattern;
+        }
     }
 }
