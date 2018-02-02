@@ -11,8 +11,6 @@ import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.enc
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
@@ -23,12 +21,9 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.Abstract
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenEnumerationBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
-import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
-import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,31 +71,7 @@ public class CodegenTypeProvider extends AbstractTypeProvider {
         }
 
         // TODO: run diff against base ?
-        final List<PatternConstraint> patternConstraints = ((StringTypeDefinition) typedef).getPatternConstraints();
-        final Map<String, String> regExps = Maps.newHashMapWithExpectedSize(patternConstraints.size());
-        for (PatternConstraint patternConstraint : patternConstraints) {
-            String regEx = patternConstraint.getJavaPatternString();
-
-            // The pattern can be inverted
-            final Optional<ModifierKind> optModifier = patternConstraint.getModifier();
-            if (optModifier.isPresent()) {
-                regEx = applyModifier(optModifier.get(), regEx);
-            }
-
-            regExps.put(regEx, patternConstraint.getRegularExpressionString());
-        }
-
-        return regExps;
-    }
-
-    private static String applyModifier(final ModifierKind modifier, final String pattern) {
-        switch (modifier) {
-            case INVERT_MATCH:
-                return BindingMapping.negatePatternString(pattern);
-            default:
-                LOG.warn("Ignoring unhandled modifier {}", modifier);
-                return pattern;
-        }
+        return resolveRegExpressions(((StringTypeDefinition) typedef).getPatternConstraints());
     }
 
     @Override
