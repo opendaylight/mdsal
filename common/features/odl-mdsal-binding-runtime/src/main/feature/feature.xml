@@ -3,6 +3,7 @@
     <feature name="odl-mdsal-binding-runtime">
         <feature version="[3.0.0,4)">odl-javassist-3</feature>
         <feature version="[2.0.1,3)">odl-yangtools-data</feature>
-        <feature version="[2.0.1,3)">odl-yangtools-parser</feature>
+        <feature version="[2.0.2,3)">odl-yangtools-export</feature>
+        <feature version="[2.0.2,3)">odl-yangtools-parser</feature>
     </feature>
 </features>

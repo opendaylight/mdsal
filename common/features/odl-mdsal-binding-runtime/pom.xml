@@ -59,6 +59,12 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>odl-yangtools-export</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
             <artifactId>odl-yangtools-parser</artifactId>
             <type>xml</type>
             <classifier>features</classifier>
