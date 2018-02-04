@@ -24,11 +24,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <yangtools.version>2.0.1</yangtools.version>
         <salGeneratorPath>${project.build.directory}/generated-sources/sal</salGeneratorPath>
-
-        <!-- FIXME: these will be upstreamed -->
-        <maven.depends.version>1.2</maven.depends.version>
     </properties>
 
     <dependencyManagement>
@@ -201,7 +197,6 @@
                 <plugin>
                     <groupId>org.apache.servicemix.tooling</groupId>
                     <artifactId>depends-maven-plugin</artifactId>
-                    <version>${maven.depends.version}</version>
                     <executions>
                         <execution>
                             <id>generate-depends-file</id>
@@ -252,21 +247,4 @@
             </plugin>
         </plugins>
     </build>
-
-  <!--
-      Maven Site Configuration
-
-      The following configuration is necessary for maven-site-plugin to
-      correctly identify the correct deployment path for OpenDaylight Maven
-      sites.
-  -->
-  <url>${odl.site.url}/${project.groupId}/${stream}/${project.artifactId}/</url>
-
-  <distributionManagement>
-    <site>
-      <id>opendaylight-site</id>
-      <url>${nexus.site.url}/${project.artifactId}/</url>
-    </site>
-  </distributionManagement>
-
 </project>
