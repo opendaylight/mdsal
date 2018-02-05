@@ -306,10 +306,10 @@ final class GenHelperUtil {
                     type.addImplementsType(superType);
                     if (superChildNode instanceof ListSchemaNode
                             && !((ListSchemaNode) superChildNode).getKeyDefinition().isEmpty()) {
-                        if (namespaceType.equals(BindingNamespaceType.Grouping)) {
+                        if (BindingNamespaceType.isGrouping(namespaceType)) {
                             genCtx.get(module).getKeyType(childNode.getPath())
                                     .addImplementsType(genCtx.get(superModule).getKeyType(superChildNode.getPath()));
-                        } else if (namespaceType.equals(BindingNamespaceType.Data)) {
+                        } else if (BindingNamespaceType.isGeneralData(namespaceType)) {
                             genCtx.get(module).getKeyGenTO(childNode.getPath())
                                     .addImplementsType(genCtx.get(superModule).getKeyType(superChildNode.getPath()));
                         }
@@ -527,7 +527,7 @@ final class GenHelperUtil {
 
         GeneratedTypeBuilder it = addRawInterfaceDefinition(basePackageName, schemaNode, schemaContext, "", suffix,
                 verboseClassComments, genTypeBuilders, namespaceType, genCtx.get(module));
-        if (namespaceType.equals(BindingNamespaceType.Data)) {
+        if (BindingNamespaceType.isGeneralData(namespaceType)) {
             if (parent == null) {
                 it.addImplementsType(BindingTypes.TREE_NODE);
             } else {
@@ -561,7 +561,7 @@ final class GenHelperUtil {
             genTypeBuilders, final TypeProvider typeProvider, final Map<Module, ModuleContext> genCtx) {
         final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition
                 (basePackageName, notification, null, module, genCtx, schemaContext,
-                        verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
+                        verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Notification);
         annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
         notificationInterface.addImplementsType(NOTIFICATION);
         genCtx.get(module).addChildNodeType(notification, notificationInterface);
@@ -569,7 +569,7 @@ final class GenHelperUtil {
         // Notification object
         resolveDataSchemaNodes(module, basePackageName, notificationInterface,
                 notificationInterface, notification.getChildNodes(), genCtx, schemaContext,
-                verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
+                verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Notification);
 
         //in case of tied notification, incorporate parent's localName
         final StringBuilder sb = new StringBuilder("on_");
@@ -633,6 +633,7 @@ final class GenHelperUtil {
         final GeneratedTypeBuilderImpl newType = new GeneratedTypeBuilderImpl(packageName, schemaNodeName, context);
         final Module module = SchemaContextUtil.findParentModule(schemaContext, schemaNode);
         qNameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
+        newType.setNamespace(namespaceType);
         newType.addComment(schemaNode.getDescription().orElse(null));
         newType.setDescription(createDescription(schemaNode, newType.getFullyQualifiedName(), schemaContext,
                 verboseClassComments, namespaceType));
@@ -718,7 +719,7 @@ final class GenHelperUtil {
                 schemaContext, "", "", verboseClasssComments, genTypeBuilders, namespaceType, genCtx.get(module));
         constructGetter(parent, choiceNode.getQName().getLocalName(),
                 choiceNode.getDescription().orElse(null), choiceTypeBuilder, choiceNode.getStatus());
-        if (namespaceType.equals(BindingNamespaceType.Data)) {
+        if (BindingNamespaceType.isGeneralData(namespaceType)) {
             choiceTypeBuilder.setParentTypeForBuilder(parent);
         }
         annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
@@ -1049,7 +1050,7 @@ final class GenHelperUtil {
                 caseTypeBuilder.addImplementsType(refChoiceType);
                 annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
                 genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
-                if (namespaceType.equals(BindingNamespaceType.Data)) {
+                if (BindingNamespaceType.isGeneralData(namespaceType)) {
                     caseTypeBuilder.setParentTypeForBuilder(refChoiceType.getParentTypeForBuilder());
                     genCtx.get(module).addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
                 }
@@ -1271,7 +1272,10 @@ final class GenHelperUtil {
         genType.setModuleName(module.getName());
         genType.setReference(node.getReference().orElse(null));
         genType.setSchemaPath((List) node.getPath().getPathFromRoot());
-        genType.setParentTypeForBuilder(childOf);
+        if (BindingNamespaceType.isGeneralData(namespaceType)) {
+            genType.setParentTypeForBuilder(childOf);
+        }
+
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
         }
