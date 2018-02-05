@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.javav2.model.api;
 
 import com.google.common.annotations.Beta;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 
 /**
  * Java interface for builders to get package name and so on.
@@ -21,4 +22,10 @@ public interface GeneratedTypeForBuilder {
      */
     String getPackageNameForBuilder();
 
+    /**
+     * Returns the binding namespace, in which generated type was specified.
+     *
+     * @return the binding namespace, in which generated type was specified.
+     */
+    BindingNamespaceType getNamespace();
 }
