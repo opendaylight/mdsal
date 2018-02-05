@@ -28,6 +28,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
@@ -606,16 +607,15 @@ public class AugmentToGenTypeTest {
         final SchemaContext schemaContext = null;
         final Module module = null;
         final String pckgName = null;
-        final Type targetType = null;
+        final GeneratedType targetType = null;
         final ChoiceSchemaNode targetNode = null;
         final List<AugmentationSchemaNode> schemaPathAugmentListEntry = null;
-        final DataNodeContainer usesNodeParent = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
         try {
             AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
-                targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false, genTypeBuilder, null,
+                targetNode, schemaPathAugmentListEntry, genCtx, false, genTypeBuilder, null,
                 BindingNamespaceType.Data);
             fail();
         } catch (final IllegalArgumentException e) {
@@ -628,16 +628,15 @@ public class AugmentToGenTypeTest {
         final SchemaContext schemaContext = null;
         final Module module = null;
         final String pckgName = "";
-        final Type targetType = null;
+        final GeneratedType targetType = null;
         final ChoiceSchemaNode targetNode = null;
         final List<AugmentationSchemaNode> schemaPathAugmentListEntry = null;
-        final DataNodeContainer usesNodeParent = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
         try {
             AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
-                targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false, genTypeBuilder, null,
+                targetNode, schemaPathAugmentListEntry, genCtx, false, genTypeBuilder, null,
                 BindingNamespaceType.Data);
             fail();
         } catch (final IllegalArgumentException e) {
@@ -650,17 +649,15 @@ public class AugmentToGenTypeTest {
         final SchemaContext schemaContext = null;
         final Module module = null;
         final String pckgName = "";
-        final Type targetType = mock(Type.class);
+        final GeneratedType targetType = mock(GeneratedType.class);
         final ChoiceSchemaNode targetNode = null;
         final List<AugmentationSchemaNode> schemaPathAugmentListEntry = null;
-        final DataNodeContainer usesNodeParent = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
-        final Object[] args = {  };
         try {
             AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
-                targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false, genTypeBuilder, null,
+                targetNode, schemaPathAugmentListEntry, genCtx, false, genTypeBuilder, null,
                 BindingNamespaceType.Data);
             fail();
         } catch (final IllegalArgumentException e) {
@@ -673,7 +670,7 @@ public class AugmentToGenTypeTest {
         final SchemaContext schemaContext = null;
         final Module module = null;
         final String pckgName = "";
-        final Type targetType = mock(Type.class);
+        final GeneratedType targetType = mock(GeneratedType.class);
         final ChoiceSchemaNode targetNode = null;
         final Set<DataSchemaNode> augmentNodes = new HashSet<>();
         final DataSchemaNode caseNode = null;
@@ -684,68 +681,13 @@ public class AugmentToGenTypeTest {
         final List<AugmentationSchemaNode> schemaPathAugmentListEntry = new ArrayList<>();
         schemaPathAugmentListEntry.add(AugmentationSchemaNode);
 
-        final DataNodeContainer usesNodeParent = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
         final Map<Module, ModuleContext> result = AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext,
-            module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false,
+            module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, genCtx, false,
             genTypeBuilder, null, BindingNamespaceType.Data);
         assertEquals(genCtx, result);
-    }
-
-    @Test
-    public void generateTypesFromAugmentedChoiceCasesNullChildTest() {
-        final QName qnamePath = QName.create("test", "2017-04-04", "chcase");
-        final QName qnamePath2 = QName.create("test", "2017-04-04", "chcase2");
-        final SchemaPath path = SchemaPath.create(true, qnamePath, qnamePath2);
-
-        final SchemaContext schemaContext = mock(SchemaContext.class);
-        final Module module = mock(Module.class);
-        when(module.getName()).thenReturn("test-module-case");
-        final DataSchemaNode schemaNode = mock(DataSchemaNode.class);
-        when(module.getDataChildByName(qnamePath)).thenReturn(schemaNode);
-        when(module.getRevision()).thenReturn(qnamePath.getRevision());
-        when(module.getNamespace()).thenReturn(qnamePath.getNamespace());
-        final String pckgName = "test.augment.choice.cases";
-        final Type targetType = mock(Type.class);
-        when(targetType.getFullyQualifiedName()).thenReturn(Augmentable.class.getName());
-        final Set<DataSchemaNode> augmentNodes = new HashSet<>();
-        final CaseSchemaNode caseNode = mock(CaseSchemaNode.class);
-        when(caseNode.getPath()).thenReturn(path);
-        when(caseNode.getQName()).thenReturn(qnamePath);
-        when(caseNode.getDescription()).thenReturn(Optional.empty());
-        when(caseNode.getReference()).thenReturn(Optional.empty());
-
-        augmentNodes.add(caseNode);
-
-        final AugmentationSchemaNode AugmentationSchemaNode = mock(AugmentationSchemaNode.class);
-        when(AugmentationSchemaNode.getChildNodes()).thenReturn(augmentNodes);
-        final List<AugmentationSchemaNode> schemaPathAugmentListEntry = new ArrayList<>();
-        schemaPathAugmentListEntry.add(AugmentationSchemaNode);
-
-        final DataNodeContainer usesNodeParent = null;
-        final ChoiceSchemaNode targetNode = mock(ChoiceSchemaNode.class);
-        when(targetNode.getPath()).thenReturn(path);
-        when(targetNode.getDescription()).thenReturn(Optional.empty());
-        when(targetNode.getReference()).thenReturn(Optional.empty());
-
-        final Map<Module, ModuleContext> genCtx = new HashMap<>();
-        genCtx.put(module, new ModuleContext());
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", genCtx.get(module));
-        genCtx.get(module).addCaseType(path, gtb);
-        final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
-
-        when(schemaContext.findModule(qnamePath.getModule())).thenReturn(Optional.of(module));
-
-        try {
-            AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
-                targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false, genTypeBuilder, null,
-                BindingNamespaceType.Data);
-            fail();
-        } catch (final IllegalArgumentException e) {
-            assertEquals("Failed to find parent type of choice " + targetNode, e.getMessage());
-        }
     }
 
     @Test
@@ -763,8 +705,9 @@ public class AugmentToGenTypeTest {
         when(module.getRevision()).thenReturn(qnamePath.getRevision());
         when(module.getNamespace()).thenReturn(qnamePath.getNamespace());
         final String pckgName = "test.augment.choice.cases";
-        final Type targetType = mock(Type.class);
+        final GeneratedType targetType = mock(GeneratedType.class);
         when(targetType.getFullyQualifiedName()).thenReturn(Augmentable.class.getName());
+
         final Set<DataSchemaNode> augmentNodes = new HashSet<>();
         final CaseSchemaNode caseNode = mock(CaseSchemaNode.class);
         when(caseNode.getPath()).thenReturn(path);
@@ -778,7 +721,6 @@ public class AugmentToGenTypeTest {
         final List<AugmentationSchemaNode> schemaPathAugmentListEntry = new ArrayList<>();
         schemaPathAugmentListEntry.add(AugmentationSchemaNode);
 
-        final DataNodeContainer usesNodeParent = null;
         final ChoiceSchemaNode targetNode = mock(ChoiceSchemaNode.class);
         when(targetNode.getPath()).thenReturn(path);
         when(targetNode.getDescription()).thenReturn(Optional.empty());
@@ -786,14 +728,14 @@ public class AugmentToGenTypeTest {
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final ModuleContext moduleContext = new ModuleContext();
         final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", moduleContext);
-        moduleContext.addCaseType(path, gtb);
+        when(targetType.getParentTypeForBuilder()).thenReturn(gtb);
         genCtx.put(module, moduleContext);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
         when(schemaContext.findModule(qnamePath.getModule())).thenReturn(Optional.of(module));
 
         final Map<Module, ModuleContext> result = AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext,
-            module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, usesNodeParent, genCtx, false,
+            module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, genCtx, false,
             genTypeBuilder, null, BindingNamespaceType.Data);
         assertNotNull(result);
         assertEquals(result.get(module), moduleContext);
