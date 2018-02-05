@@ -9,8 +9,16 @@
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
 import com.google.common.base.Preconditions;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
+import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.enumTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.interfaceTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil;
@@ -19,8 +27,11 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 
 public class InterfaceRenderer extends BaseRenderer {
 
@@ -77,6 +88,8 @@ public class InterfaceRenderer extends BaseRenderer {
 
         final String generatedConstants = String.join("\n", strings);
 
+        final Entry<String, String> identifier = generateInstanceIdentifier();
+
         final List<String> innerClasses = new ArrayList<>(getType().getEnclosedTypes().size());
         for (GeneratedType innerClass : getType().getEnclosedTypes()) {
             if (innerClass instanceof GeneratedTransferObject) {
@@ -94,7 +107,7 @@ public class InterfaceRenderer extends BaseRenderer {
         final String generatedInnerClasses = String.join("\n", innerClasses);
 
         return interfaceTemplate.render(getType(), enums, mainAnnotations, methodList, generatedImports,
-                generatedConstants, generatedInnerClasses).body();
+                generatedConstants, generatedInnerClasses, identifier.getKey(), identifier.getValue()).body();
     }
 
     private static boolean isAccessor(final MethodSignature maybeGetter) {
@@ -131,6 +144,59 @@ public class InterfaceRenderer extends BaseRenderer {
         }
         return sb1.toString();
     }
+
+    /**
+     * Generate default method getInstanceIdentifier.
+     * @return  string pair of instance identifier and key parameters
+     */
+    private Entry<String, String> generateInstanceIdentifier() {
+
+        if (!(getType() instanceof GeneratedTypeForBuilder)
+            || getType().getParentTypeForBuilder() == null) {
+            return new SimpleEntry<>(null, null);
+        }
+
+        final Deque<GeneratedType> dataPath = new ArrayDeque<>();
+        GeneratedType type = getType();
+
+        while (type != null) {
+            dataPath.push(type);
+            importedName(type);
+            GeneratedTypeBuilder parentTypeBuilder = (GeneratedTypeBuilder) type.getParentTypeForBuilder();
+            type = parentTypeBuilder != null ? parentTypeBuilder.toInstance() : null;
+        }
+
+        dataPath.pop();
+
+        final StringBuilder iiBuidler = new StringBuilder();
+        type = dataPath.pop();
+        iiBuidler.append("InstanceIdentifier.builder(").append(type.getName()).append(".class)");
+        importedName(InstanceIdentifier.class);
+        final List<String> keys = new ArrayList<>();
+        while (dataPath.peek() != null) {
+            type = dataPath.pop();
+            if (type.getImplements().contains(BindingTypes.AUGMENTATION)) {
+                iiBuidler.append(".augmentation(").append(type.getName()).append(".class)");
+            } else {
+                final String[] key = new String[2];
+                Optional<MethodSignature> method = type.getMethodDefinitions().stream().filter(m ->
+                    m.getName().equals("getIdentifier")).findFirst();
+                if (method.isPresent()) {
+                    importedName(method.get().getReturnType());
+                    key[0] = method.get().getReturnType().getName();
+                    key[1] = JavaIdentifierNormalizer.normalizeSpecificIdentifier(key[0], JavaIdentifier.METHOD);
+                    keys.add(new StringBuilder().append("final ").append(key[0]).append(" _")
+                        .append(key[1]).toString());
+                    iiBuidler.append(".child(").append(type.getFullyQualifiedName()).append(".class, _").append(key[1]).append(")");
+                } else {
+                    iiBuidler.append(".child(").append(type.getFullyQualifiedName()).append(".class)");
+                }
+            }
+        }
+        iiBuidler.append(".build()");
+        return new SimpleEntry<>(iiBuidler.toString(), String.join(", ", keys));
+    }
+
 
     /**
      * @param parameters list of parameters

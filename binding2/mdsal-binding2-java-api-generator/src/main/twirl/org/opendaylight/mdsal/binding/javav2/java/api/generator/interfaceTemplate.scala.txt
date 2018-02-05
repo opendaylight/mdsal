@@ -8,11 +8,12 @@
 
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType
+@import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.formatDataForJavaDoc
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.wrapToDocumentation
 
 @(genType: GeneratedType, enums: String, annotations: String, generatedMethods: String, generatedImports: String,
-generatedConstants: String, innerClasses: String)
+generatedConstants: String, innerClasses: String, getII: String, keyParams: String)
 @*
  * Template method which generate the whole body of the interface.
  *
@@ -28,5 +29,11 @@ public interface @{genType.getName}
     @{enums}
     @{generatedConstants}
     @{generatedMethods}
+
+    @if(genType.isInstanceOf[GeneratedTypeForBuilder]) {
+    default InstanceIdentifier<@{genType.getName}> getInstanceIdentifier(@{keyParams}) {
+      return @{getII};
+    }
+    }
 }
 }
