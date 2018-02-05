@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.binding.generator.impl;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import com.google.common.io.ByteSource;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
