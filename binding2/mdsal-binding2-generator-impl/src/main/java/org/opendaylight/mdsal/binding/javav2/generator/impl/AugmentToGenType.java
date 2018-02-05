@@ -14,6 +14,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
@@ -242,14 +244,13 @@ final class AugmentToGenType {
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentPackageName,
-                    targetTypeBuilder.toInstance(), targetSchemaNode, schemaPathAugmentListEntry.getValue(), genTypeBuilders, genCtx,
-                    schemaContext, verboseClassComments, typeProvider, BindingNamespaceType.Data);
+                targetTypeBuilder.toInstance(), targetSchemaNode, schemaPathAugmentListEntry.getValue(),
+                genTypeBuilders, genCtx, schemaContext, verboseClassComments, typeProvider, BindingNamespaceType.Data);
         } else {
             genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, basePackageName,
-                    targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode,
-                    schemaPathAugmentListEntry.getValue(),
-                    null, genCtx, verboseClassComments, genTypeBuilders, typeProvider,
-                    BindingNamespaceType.Data);
+                targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode,
+                schemaPathAugmentListEntry.getValue(),genCtx, verboseClassComments, genTypeBuilders, typeProvider,
+                BindingNamespaceType.Data);
         }
         return genCtx;
     }
@@ -354,9 +355,8 @@ final class AugmentToGenType {
     @VisibleForTesting
     static Map<Module, ModuleContext> generateTypesFromAugmentedChoiceCases(
             final SchemaContext schemaContext, final Module module,
-            final String basePackageName, final Type targetType, final ChoiceSchemaNode targetNode,
+            final String basePackageName, final GeneratedType targetType, final ChoiceSchemaNode targetNode,
             final List<AugmentationSchemaNode> schemaPathAugmentListEntry,
-            final DataNodeContainer usesNodeParent,
             final Map<Module, ModuleContext> genCtx, final boolean verboseClassComments,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider,
             final BindingNamespaceType namespaceType) {
@@ -366,57 +366,40 @@ final class AugmentToGenType {
 
 
         for (final AugmentationSchemaNode augmentationSchema : schemaPathAugmentListEntry) {
-            for (final DataSchemaNode caseNode : augmentationSchema.getChildNodes()) {
-                if (caseNode != null) {
-                    final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(basePackageName,
-                            caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
-                            namespaceType);
+            for (final DataSchemaNode childNode : augmentationSchema.getChildNodes()) {
+                if (childNode != null) {
+                    final GeneratedTypeBuilder caseTypeBuilder =
+                        GenHelperUtil.addDefaultInterfaceDefinition(basePackageName, childNode, null, module,
+                            genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                     caseTypeBuilder.addImplementsType(targetType);
 
-                    SchemaNode parent;
-                    final SchemaPath nodeSp = targetNode.getPath();
-                    parent = SchemaContextUtil.findDataSchemaNode(schemaContext, nodeSp.getParent());
+                    final CaseSchemaNode caseNode;
 
-                    GeneratedTypeBuilder childOfType = null;
-                    if (parent instanceof Module) {
-                        childOfType = genCtx.get(parent).getModuleNode();
-                    } else if (parent instanceof CaseSchemaNode) {
-                        childOfType = GenHelperUtil.findCaseByPath(parent.getPath(), genCtx);
-                    } else if (parent instanceof DataSchemaNode || parent instanceof NotificationDefinition) {
-                        childOfType = GenHelperUtil.findChildNodeByPath(parent.getPath(), genCtx);
-                    } else if (parent instanceof GroupingDefinition) {
-                        childOfType = GenHelperUtil.findGroupingByPath(parent.getPath(), genCtx);
+                    //Since uses augment nodes has been processed as inline nodes,
+                    //we just take two situations below.
+                    if (childNode instanceof CaseSchemaNode) {
+                        caseNode = (CaseSchemaNode) childNode;
+                    } else {
+                        caseNode = findNamedCase(targetNode, childNode.getQName().getLocalName());
+                        if (caseNode == null) {
+                            throw new IllegalArgumentException("Failed to find case node " + childNode);
+                        }
                     }
 
-                    if (childOfType == null) {
+                    final GeneratedTypeBuilder childOf = (GeneratedTypeBuilder) targetType.getParentTypeForBuilder();
+                    if (childOf == null) {
                         throw new IllegalArgumentException("Failed to find parent type of choice " + targetNode);
                     }
 
-                    CaseSchemaNode node = null;
-                    final String caseLocalName = caseNode.getQName().getLocalName();
-                    if (caseNode instanceof CaseSchemaNode) {
-                        node = (CaseSchemaNode) caseNode;
-                    } else if (findNamedCase(targetNode, caseLocalName) == null) {
-                        final String targetNodeLocalName = targetNode.getQName().getLocalName();
-                        for (DataSchemaNode dataSchemaNode : usesNodeParent.getChildNodes()) {
-                            if (dataSchemaNode instanceof ChoiceSchemaNode && targetNodeLocalName.equals(dataSchemaNode.getQName
-                                    ().getLocalName())) {
-                                node = findNamedCase((ChoiceSchemaNode) dataSchemaNode, caseLocalName);
-                                break;
-                            }
-                        }
-                    } else {
-                        node = findNamedCase(targetNode, caseLocalName);
+                    final Collection<DataSchemaNode> childNodes = caseNode.getChildNodes();
+                    if (!childNodes.isEmpty()) {
+                        GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOf,
+                            childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
+                            namespaceType);
+                        processUsesImplements(caseNode, module, schemaContext, genCtx, namespaceType);
                     }
-                    final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
-                    if (childNodes != null) {
-                        GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType,
-                                childNodes, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
-                                namespaceType);
-                        processUsesImplements(node, module, schemaContext, genCtx, namespaceType);
-                    }
-                    genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
-                    genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
+                    genCtx.get(module).addCaseType(childNode.getPath(), caseTypeBuilder);
+                    genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, caseNode);
                 }
             }
         }
