@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
@@ -273,14 +274,6 @@ final class GenHelperUtil {
         final QName qname = schemaNode.getPath().getLastComponent();
         final Module originalModule = schemaContext.findModule(qname.getModule()).get();
         return module.equals(originalModule);
-    }
-
-    static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String basePackageName, final SchemaNode
-            schemaNode, final Module module, final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext,
-            final boolean verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
-            final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
-        return addDefaultInterfaceDefinition(basePackageName, schemaNode, null, module, genCtx, schemaContext,
-                verboseClassComments, genTypeBuilders, typeProvider , namespaceType);
     }
 
     private static QName createQNameFromSuperNode(final Module module, final Object node, final SchemaNode superChildNode) {
@@ -520,33 +513,36 @@ final class GenHelperUtil {
      *            string contains the module package name
      * @param schemaNode
      *            schema node for which is created generated type builder
-     * @param parent
-     *            parent type (can be null)
+     * @param childOf
+     *            parent generated type of data tree node, which should be
+     *            set null if current schema node is not a data tree node.
      * @param schemaContext schema context
      * @return generated type builder <code>schemaNode</code>
      */
-    private static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String basePackageName, final SchemaNode
-            schemaNode, final Type parent, final Module module, final Map<Module, ModuleContext> genCtx,
+    public static GeneratedTypeBuilder addDefaultInterfaceDefinition(final String basePackageName, final SchemaNode
+            schemaNode, @Nullable final Type childOf, final Module module, final Map<Module, ModuleContext> genCtx,
             final SchemaContext schemaContext, final boolean verboseClassComments, final Map<String, Map<String,
             GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
 
         GeneratedTypeBuilder it = addRawInterfaceDefinition(basePackageName, schemaNode, schemaContext, "", "",
                 verboseClassComments, genTypeBuilders, namespaceType, genCtx.get(module));
+
         if (namespaceType.equals(BindingNamespaceType.Data)) {
-            if (parent == null) {
+            if (childOf == null) {
                 it.addImplementsType(BindingTypes.TREE_NODE);
             } else {
                 if (!(schemaNode instanceof ListSchemaNode) ||
                         ((ListSchemaNode) schemaNode).getKeyDefinition().isEmpty()) {
-                    it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
-                            (BindingTypes.ITEM, it)));
+                    it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, childOf,
+                        parameterizedTypeFor(BindingTypes.ITEM, it)));
                 }
+            }
+
+            if (!(schemaNode instanceof CaseSchemaNode)) {
                 it.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, it));
             }
 
-            if (!(schemaNode instanceof GroupingDefinition)) {
-                it.addImplementsType(BindingTypes.augmentable(it));
-            }
+            it.addImplementsType(BindingTypes.augmentable(it));
         } else {
             it.addImplementsType(BindingTypes.TREE_NODE);
         }
@@ -569,7 +565,6 @@ final class GenHelperUtil {
                         verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
         annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
         notificationInterface.addImplementsType(NOTIFICATION);
-        notificationInterface.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, notificationInterface));
         genCtx.get(module).addChildNodeType(notification, notificationInterface);
 
         // Notification object
@@ -684,7 +679,7 @@ final class GenHelperUtil {
                 listToGenType(module, basePackageName, typeBuilder, childOf, (ListSchemaNode) node, schemaContext,
                         verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (node instanceof ChoiceSchemaNode) {
-                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, typeBuilder,
+                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, typeBuilder, childOf,
                         (ChoiceSchemaNode) node, genTypeBuilders, genCtx, typeProvider, namespaceType);
             } else if (node instanceof AnyXmlSchemaNode || node instanceof AnyDataSchemaNode) {
                 resolveAnyNodeAsMethod(schemaContext, typeBuilder, genCtx, node, module, typeProvider);
@@ -716,23 +711,26 @@ final class GenHelperUtil {
      *             </ul>
      */
     private static void choiceToGenType(final Module module, final SchemaContext schemaContext, final boolean
-            verboseClasssComments, final String basePackageName, final GeneratedTypeBuilder parent, final
-            ChoiceSchemaNode choiceNode, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
-            final Map<Module, ModuleContext> genCtx, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
+            verboseClasssComments, final String basePackageName, final GeneratedTypeBuilder parent,
+            final GeneratedTypeBuilder childOf, final ChoiceSchemaNode choiceNode,
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+            final Map<Module, ModuleContext> genCtx, final TypeProvider typeProvider,
+            final BindingNamespaceType namespaceType) {
         checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         checkArgument(choiceNode != null, "Choice Schema Node cannot be NULL.");
 
         final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(basePackageName, choiceNode,
-                schemaContext, "", "", verboseClasssComments, genTypeBuilders, namespaceType, genCtx.get(module));
+            schemaContext, "", "", verboseClasssComments, genTypeBuilders, namespaceType, genCtx.get(module));
         constructGetter(parent, choiceNode.getQName().getLocalName(),
                 choiceNode.getDescription().orElse(null), choiceTypeBuilder, choiceNode.getStatus());
         if (namespaceType.equals(BindingNamespaceType.Data)) {
+            choiceTypeBuilder.setParentTypeForBuilder(childOf);
             choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
         }
         annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
         genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
         generateTypesFromChoiceCases(module, schemaContext, genCtx, basePackageName, choiceTypeBuilder.toInstance(),
-            choiceNode, verboseClasssComments, typeProvider, genTypeBuilders, namespaceType);
+            childOf, choiceNode, verboseClasssComments, typeProvider, genTypeBuilders, namespaceType);
     }
 
     private static void containerToGenType(final Module module, final String basePackageName,
@@ -793,7 +791,7 @@ final class GenHelperUtil {
                     final Type identifiableMarker = Types.parameterizedTypeFor(IDENTIFIABLE, genTOBuilder);
                     genTOBuilder.addImplementsType(IDENTIFIER);
                     genType.addImplementsType(identifiableMarker);
-                    genType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
+                    genType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, childOf, parameterizedTypeFor
                         (BindingTypes.IDENTIFIABLE_ITEM, genType, genTOBuilder)));
 
                 }
@@ -1044,9 +1042,10 @@ final class GenHelperUtil {
      *             </ul>
      */
     private static void generateTypesFromChoiceCases(final Module module, final SchemaContext schemaContext,
-            final Map<Module, ModuleContext> genCtx, final String basePackageName, final Type refChoiceType,
-            final ChoiceSchemaNode choiceNode, final boolean verboseClassComments, final TypeProvider typeProvider,
-            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final BindingNamespaceType namespaceType) {
+            final Map<Module, ModuleContext> genCtx, final String basePackageName, final GeneratedType refChoiceType,
+            final GeneratedTypeBuilder childOf, final ChoiceSchemaNode choiceNode, final boolean verboseClassComments,
+            final TypeProvider typeProvider, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+            final BindingNamespaceType namespaceType) {
         checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         checkArgument(refChoiceType != null, "Referenced Choice Type cannot be NULL.");
         checkArgument(choiceNode != null, "ChoiceNode cannot be NULL.");
@@ -1054,53 +1053,18 @@ final class GenHelperUtil {
         for (final CaseSchemaNode caseNode : choiceNode.getCases().values()) {
             if (caseNode != null && resolveDataSchemaNodesCheck(module, schemaContext, caseNode)) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(basePackageName, caseNode,
-                    module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
+                    null, module, genCtx, schemaContext, verboseClassComments,
+                    genTypeBuilders, typeProvider, namespaceType);
                 caseTypeBuilder.addImplementsType(refChoiceType);
-                caseTypeBuilder.setParentTypeForBuilder(refChoiceType);
                 annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
                 genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
-                genCtx.get(module).addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
-                final Iterable<DataSchemaNode> caseChildNodes = caseNode.getChildNodes();
-                if (caseChildNodes != null) {
-                    final SchemaPath choiceNodeParentPath = choiceNode.getPath().getParent();
-
-                    if (!Iterables.isEmpty(choiceNodeParentPath.getPathFromRoot())) {
-                        SchemaNode parent = findDataSchemaNode(schemaContext, choiceNodeParentPath);
-
-                        if (parent instanceof AugmentationSchemaNode) {
-                            final AugmentationSchemaNode augSchema = (AugmentationSchemaNode) parent;
-                            final SchemaPath targetPath = augSchema.getTargetPath();
-                            SchemaNode targetSchemaNode = findDataSchemaNode(schemaContext, targetPath);
-                            if (targetSchemaNode instanceof DataSchemaNode
-                                    && ((DataSchemaNode) targetSchemaNode).isAddedByUses()) {
-                                if (targetSchemaNode instanceof DerivableSchemaNode) {
-                                    targetSchemaNode = ((DerivableSchemaNode) targetSchemaNode).getOriginal().orElse(null);
-                                }
-                                if (targetSchemaNode == null) {
-                                    throw new IllegalStateException(
-                                            "Failed to find target node from grouping for augmentation " + augSchema
-                                                    + " in module " + module.getName());
-                                }
-                            }
-                            parent = targetSchemaNode;
-                        }
-
-                        Preconditions.checkState(parent != null, "Could not find Choice node parent %s",
-                                choiceNodeParentPath);
-                        GeneratedTypeBuilder childOfType = findChildNodeByPath(parent.getPath(), genCtx);
-                        if (childOfType == null) {
-                            childOfType = findGroupingByPath(parent.getPath(), genCtx);
-                        }
-                        resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType, caseChildNodes,
-                                genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
-                    } else {
-                        final GeneratedTypeBuilder moduleType = genCtx.get(module).getModuleNode();
-                        Preconditions.checkNotNull(moduleType, "Module type can not be null.");
-                        resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, moduleType, caseChildNodes,
-                            genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
-                    }
-                    processUsesImplements(caseNode, module, schemaContext, genCtx, namespaceType);
+                if (namespaceType.equals(BindingNamespaceType.Data)) {
+                    genCtx.get(module).addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
                 }
+
+                resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOf, caseNode.getChildNodes(),
+                    genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
+                processUsesImplements(caseNode, module, schemaContext, genCtx, namespaceType);
             }
         }
     }
@@ -1189,7 +1153,7 @@ final class GenHelperUtil {
                 listToGenType(module, basePackageName, typeBuilder, typeBuilder, (ListSchemaNode) schemaNode,
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (schemaNode instanceof ChoiceSchemaNode) {
-                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, typeBuilder,
+                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, typeBuilder, typeBuilder,
                         (ChoiceSchemaNode) schemaNode, genTypeBuilders, genCtx, typeProvider, namespaceType);
             }
         }
@@ -1224,7 +1188,7 @@ final class GenHelperUtil {
                 listToGenType(module, basePackageName, typeBuilder, typeBuilder, (ListSchemaNode) schemaNode,
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (schemaNode instanceof ChoiceSchemaNode) {
-                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, typeBuilder,
+                choiceToGenType(module, schemaContext, verboseClassComments, basePackageName, typeBuilder, typeBuilder,
                         (ChoiceSchemaNode) schemaNode, genTypeBuilders, genCtx, typeProvider, namespaceType);
             }
         }
@@ -1351,7 +1315,7 @@ final class GenHelperUtil {
     private static Map<Module, ModuleContext> groupingToGenType(final String basePackageName, final GroupingDefinition grouping, final Module
             module, Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext, final boolean
             verboseClassComments, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
-        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(basePackageName, grouping, module, genCtx,
+        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(basePackageName, grouping, null, module, genCtx,
                 schemaContext, verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Grouping);
         annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
         genCtx.get(module).addGroupingType(grouping, genType);
