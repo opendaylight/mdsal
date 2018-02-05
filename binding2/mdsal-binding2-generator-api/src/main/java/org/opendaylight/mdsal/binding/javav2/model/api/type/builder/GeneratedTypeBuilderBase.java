@@ -138,10 +138,19 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
     EnumBuilder addEnumeration(String name, ModuleContext context);
 
     /**
-     * Sets parent type for data schema node node builder
+     * Gets parent type for data schema node builder, the parent
+     * MUST be a data tree node.
      *
-     * @param type generated parent type
-     * @return generated type
+     * @return parent generated type of tree node
+     */
+    Type getParentTypeForBuilder();
+
+    /**
+     * Sets parent type for data schema node builder, the parent
+     * MUST be a data tree node.
+     *
+     * @param type parent generated type of tree node
+     * @return parent generated type
      */
     Type setParentTypeForBuilder(Type type);
 

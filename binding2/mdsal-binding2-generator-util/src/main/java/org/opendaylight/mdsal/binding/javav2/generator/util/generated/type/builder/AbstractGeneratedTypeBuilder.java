@@ -163,6 +163,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         return constant;
     }
 
+
+
     @Override
     public Type setParentTypeForBuilder(Type type) {
         return this.parentTypeForBuilder = type;
@@ -272,6 +274,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         return null;
     }
 
+    @Override
     public Type getParentTypeForBuilder() {
         return parentTypeForBuilder;
     }
