@@ -438,11 +438,20 @@ final class GenHelperUtil {
         augTypeBuilder.setBindingNamespaceType(namespaceType);
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
 
+        //If target is case node then pass down parent type (the closest ancestor) to children data nodes.
+        final GeneratedTypeBuilder childOf;
+        if (targetNode instanceof CaseSchemaNode) {
+            childOf = (GeneratedTypeBuilder) targetTypeBuilder.getParentTypeForBuilder();
+        } else {
+            augTypeBuilder.setParentTypeForBuilder(targetTypeBuilder);
+            childOf = targetTypeBuilder;
+        }
+
         //produces getters for augTypeBuilder eventually
         for (AugmentationSchemaNode aug : schemaPathAugmentListEntry) {
             //apply all uses
             addImplementedInterfaceFromUses(aug, augTypeBuilder, genCtx);
-            augSchemaNodeToMethods(module, BindingMapping.getRootPackageName(module), augTypeBuilder, augTypeBuilder,
+            augSchemaNodeToMethods(module, BindingMapping.getRootPackageName(module), augTypeBuilder, childOf,
                 aug.getChildNodes(), genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders,
                 targetTypeBuilder.getBindingNamespaceType());
         }
