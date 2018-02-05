@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5edc84b0_4b496481",
+        "filename": "binding/mdsal-binding-generator-impl/src/test/resources/mdsal269.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-02-05T01:32:02Z",
+      "side": 1,
+      "message": "What if there is a default value for typedef of identityref:\n identity mpls-label-special-purpose-value {\n\n }\n\n identity mpls-label-special-purpose-value-extend-1 {\n       base mpls-label-special-purpose-value;\n }\n\n identity mpls-label-special-purpose-value-extend-2 {\n       base mpls-label-special-purpose-value;\n }\n\n typedef mpls-label-special-purpose-1 {\n        type identityref {\n            base mpls-label-special-purpose-value;\n        }\n\n       default \"mpls-label-special-purpose-value-extend-1\";\n }\n\n typedef mpls-label-special-purpose-2 {\n        type identityref {\n            base mpls-label-special-purpose-value;\n        }\n\n       default \"mpls-label-special-purpose-value-extend-2\";\n }\n\n typedef mpls-label-general-use {\n        type uint32 {\n            range \"16..1048575\";\n        }\n    }\n\n    typedef mpls-label-1 {\n        type union {\n            type mpls-label-special-purpose-1;\n            type mpls-label-general-use;\n        }\n    }\n\n    typedef mpls-label-2 {\n        type union {\n            type mpls-label-special-purpose-2;\n            type mpls-label-general-use;\n        }\n    }",
+      "range": {
+        "startLine": 11,
+        "startChar": 3,
+        "endLine": 15,
+        "endChar": 5
+      },
+      "revId": "efe48e633c3bb10f750fda4a451920d7fcde8f78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
