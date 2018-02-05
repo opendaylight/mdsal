@@ -536,9 +536,9 @@ final class GenHelperUtil {
                     it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
                             (BindingTypes.ITEM, it)));
                 }
-                it.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, it));
             }
 
+            it.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, it));
             if (!(schemaNode instanceof GroupingDefinition)) {
                 it.addImplementsType(BindingTypes.augmentable(it));
             }
@@ -719,7 +719,7 @@ final class GenHelperUtil {
         constructGetter(parent, choiceNode.getQName().getLocalName(),
                 choiceNode.getDescription().orElse(null), choiceTypeBuilder, choiceNode.getStatus());
         if (namespaceType.equals(BindingNamespaceType.Data)) {
-            choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
+            choiceTypeBuilder.setParentTypeForBuilder(parent);
         }
         annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
         genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
@@ -1034,7 +1034,7 @@ final class GenHelperUtil {
      *             </ul>
      */
     private static void generateTypesFromChoiceCases(final Module module, final SchemaContext schemaContext,
-            final Map<Module, ModuleContext> genCtx, final String basePackageName, final Type refChoiceType,
+            final Map<Module, ModuleContext> genCtx, final String basePackageName, final GeneratedType refChoiceType,
             final ChoiceSchemaNode choiceNode, final boolean verboseClassComments, final TypeProvider typeProvider,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final BindingNamespaceType namespaceType) {
         checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
@@ -1044,12 +1044,15 @@ final class GenHelperUtil {
         for (final CaseSchemaNode caseNode : choiceNode.getCases().values()) {
             if (caseNode != null && resolveDataSchemaNodesCheck(module, schemaContext, caseNode)) {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(basePackageName, caseNode,
-                    module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
+                    null, module, genCtx, schemaContext, verboseClassComments,
+                    genTypeBuilders, typeProvider, namespaceType);
                 caseTypeBuilder.addImplementsType(refChoiceType);
-                caseTypeBuilder.setParentTypeForBuilder(refChoiceType);
                 annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
                 genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
-                genCtx.get(module).addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
+                if (namespaceType.equals(BindingNamespaceType.Data)) {
+                    caseTypeBuilder.setParentTypeForBuilder(refChoiceType.getParentTypeForBuilder());
+                    genCtx.get(module).addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
+                }
                 final Iterable<DataSchemaNode> caseChildNodes = caseNode.getChildNodes();
                 if (caseChildNodes != null) {
                     final SchemaPath choiceNodeParentPath = choiceNode.getPath().getParent();
