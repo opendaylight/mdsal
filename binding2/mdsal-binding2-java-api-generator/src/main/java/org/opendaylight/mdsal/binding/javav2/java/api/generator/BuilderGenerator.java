@@ -13,6 +13,7 @@ import org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers.Builde
 import org.opendaylight.mdsal.binding.javav2.model.api.CodeGenerator;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.UnitName;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
@@ -34,7 +35,7 @@ public final class BuilderGenerator implements CodeGenerator {
 
     @Override
     public String generate(Type type) {
-        if ((type instanceof GeneratedType) && !(type instanceof GeneratedTransferObject)) {
+        if (type instanceof GeneratedTypeForBuilder) {
             final GeneratedType genType = (GeneratedType) type;
             return new BuilderRenderer(genType).generateTemplate();
         } else {
@@ -44,18 +45,7 @@ public final class BuilderGenerator implements CodeGenerator {
 
     @Override
     public boolean isAcceptable(Type type) {
-        if (type instanceof GeneratedType && !(type instanceof GeneratedTransferObject)) {
-            for (Type t : ((GeneratedType) type).getImplements()) {
-                // "rpc" and "grouping" elements do not implement Augmentable
-                if (t.getFullyQualifiedName().equals(Augmentable.class.getName())) {
-                    return true;
-                } else if (t.getFullyQualifiedName().equals(Augmentation.class.getName())) {
-                    return true;
-                }
-
-            }
-        }
-        return false;
+        return type instanceof GeneratedTypeForBuilder;
     }
 
     @Override

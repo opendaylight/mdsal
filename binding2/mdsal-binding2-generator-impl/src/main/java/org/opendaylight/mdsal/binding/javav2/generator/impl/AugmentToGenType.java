@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
@@ -425,7 +426,7 @@ final class AugmentToGenType {
             for (final DataSchemaNode caseNode : augmentationSchema.getChildNodes()) {
                 if (caseNode != null) {
                     final GeneratedTypeBuilder caseTypeBuilder = GenHelperUtil.addDefaultInterfaceDefinition(basePackageName,
-                            caseNode, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
+                            caseNode, null, module, genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
                             namespaceType);
                     caseTypeBuilder.addImplementsType(targetType);
 

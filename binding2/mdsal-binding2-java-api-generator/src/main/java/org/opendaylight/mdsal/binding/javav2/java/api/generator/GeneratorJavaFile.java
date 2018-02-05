@@ -187,7 +187,6 @@ public final class GeneratorJavaFile {
         if (generator.isAcceptable(type)) {
             File packageDir;
             if (generator instanceof BuilderGenerator) {
-                Preconditions.checkState(type instanceof GeneratedTypeForBuilder, type.getFullyQualifiedName());
                 packageDir = packageToDirectory(parentDir, ((GeneratedTypeForBuilder)type).getPackageNameForBuilder());
             } else {
                 packageDir = packageToDirectory(parentDir, type.getPackageName());
