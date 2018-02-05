@@ -23,7 +23,8 @@ public enum BindingNamespaceType {
      * Namespace containing all derived types, defined from grouping and data namespaces
      *
      */
-    Typedef("type"), Identity("ident"), Key("key"), Data("data"), Grouping("grp"), Builder("dto"),;
+    Typedef("type"), Identity("ident"), Key("key"), Data("data"), Grouping("grp"), Builder("dto"),
+    Notification("data"), Operation("data");
 
     private final String packagePrefix;
 

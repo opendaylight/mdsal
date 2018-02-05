@@ -30,6 +30,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
     private List<QName> schemaPath;
     private boolean isWithBuilder = false;
     private String basePackageName = null;
+    private BindingNamespaceType namespaceType;
 
     public GeneratedTypeBuilderImpl(final String packageName, final String name, ModuleContext context) {
         super(packageName, name, context);
@@ -59,6 +60,10 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
     @Override
     public void setModuleName(String moduleName) {
         this.moduleName = moduleName;
+    }
+
+    public void setNamespace(BindingNamespaceType namespaceType) {
+        this.namespaceType = namespaceType;
     }
 
     @Override
@@ -160,6 +165,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
 
         private final String basePackageName;
         private final String builderPackageName;
+        private final BindingNamespaceType namespaceType;
 
         public GeneratedTypeWithBuilderImpl(GeneratedTypeBuilderImpl builder) {
             super(builder);
@@ -167,6 +173,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
                     "Base package name can not be null for type with builder!");
             this.basePackageName = builder.getBasePackageName();
             this.builderPackageName = generatePackageNameForBuilder();
+            this.namespaceType = builder.namespaceType;
         }
 
         private String generatePackageNameForBuilder() {
@@ -177,6 +184,11 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         @Override
         public String getPackageNameForBuilder() {
             return this.builderPackageName;
+        }
+
+        @Override
+        public BindingNamespaceType getNamespace() {
+            return namespaceType;
         }
     }
 }

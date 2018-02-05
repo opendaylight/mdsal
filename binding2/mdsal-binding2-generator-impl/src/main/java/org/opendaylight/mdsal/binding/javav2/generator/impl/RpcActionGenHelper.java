@@ -142,7 +142,7 @@ final class RpcActionGenHelper {
 
         checkModuleAndModuleName(module);
         resolveActions(module, module, schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider,
-            BindingNamespaceType.Data);
+            BindingNamespaceType.Operation);
         return genCtx;
     }
 
@@ -198,12 +198,12 @@ final class RpcActionGenHelper {
             if (isAction) {
                 genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
                         verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
-                        BindingNamespaceType.Data));
+                        BindingNamespaceType.Operation));
             } else {
                 //global RPC only
                 genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
                         verboseClassComments, genTypeBuilders, genCtx, typeProvider, false,
-                        BindingNamespaceType.Data));
+                        BindingNamespaceType.Operation));
 
             }
         }

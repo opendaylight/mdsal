@@ -309,7 +309,9 @@ final class GenHelperUtil {
                         if (namespaceType.equals(BindingNamespaceType.Grouping)) {
                             genCtx.get(module).getKeyType(childNode.getPath())
                                     .addImplementsType(genCtx.get(superModule).getKeyType(superChildNode.getPath()));
-                        } else if (namespaceType.equals(BindingNamespaceType.Data)) {
+                        } else if (namespaceType.equals(BindingNamespaceType.Data)
+                            || namespaceType.equals(BindingNamespaceType.Notification)
+                            || namespaceType.equals(BindingNamespaceType.Operation)) {
                             genCtx.get(module).getKeyGenTO(childNode.getPath())
                                     .addImplementsType(genCtx.get(superModule).getKeyType(superChildNode.getPath()));
                         }
@@ -561,7 +563,7 @@ final class GenHelperUtil {
             genTypeBuilders, final TypeProvider typeProvider, final Map<Module, ModuleContext> genCtx) {
         final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition
                 (basePackageName, notification, null, module, genCtx, schemaContext,
-                        verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
+                        verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Notification);
         annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
         notificationInterface.addImplementsType(NOTIFICATION);
         genCtx.get(module).addChildNodeType(notification, notificationInterface);
@@ -569,7 +571,7 @@ final class GenHelperUtil {
         // Notification object
         resolveDataSchemaNodes(module, basePackageName, notificationInterface,
                 notificationInterface, notification.getChildNodes(), genCtx, schemaContext,
-                verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
+                verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Notification);
 
         //in case of tied notification, incorporate parent's localName
         final StringBuilder sb = new StringBuilder("on_");
@@ -633,6 +635,7 @@ final class GenHelperUtil {
         final GeneratedTypeBuilderImpl newType = new GeneratedTypeBuilderImpl(packageName, schemaNodeName, context);
         final Module module = SchemaContextUtil.findParentModule(schemaContext, schemaNode);
         qNameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
+        newType.setNamespace(namespaceType);
         newType.addComment(schemaNode.getDescription().orElse(null));
         newType.setDescription(createDescription(schemaNode, newType.getFullyQualifiedName(), schemaContext,
                 verboseClassComments, namespaceType));
@@ -1271,7 +1274,10 @@ final class GenHelperUtil {
         genType.setModuleName(module.getName());
         genType.setReference(node.getReference().orElse(null));
         genType.setSchemaPath((List) node.getPath().getPathFromRoot());
-        genType.setParentTypeForBuilder(childOf);
+        if (namespaceType.equals(BindingNamespaceType.Data)) {
+            genType.setParentTypeForBuilder(childOf);
+        }
+
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
         }

@@ -98,7 +98,9 @@ final class AuxiliaryGenUtils {
     }
 
     public static boolean hasBuilderClass(final SchemaNode schemaNode, final BindingNamespaceType namespaceType) {
-        return (namespaceType.equals(BindingNamespaceType.Data)
+        return ((namespaceType.equals(BindingNamespaceType.Data)
+                || namespaceType.equals(BindingNamespaceType.Notification)
+                || namespaceType.equals(BindingNamespaceType.Operation))
                 && (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode
                 || schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition
                 || schemaNode instanceof CaseSchemaNode));
