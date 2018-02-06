@@ -74,7 +74,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
         return isStatic;
     }
 
-    protected Type getReturnType() {
+    public Type getReturnType() {
         return returnType;
     }
 
