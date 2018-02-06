@@ -969,7 +969,7 @@ public final class TypeProviderImpl implements TypeProvider {
      *            parent Schema Node for Extended Subtype
      *
      */
-    private static void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
+    private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
             final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode,
             final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap) {
 
@@ -984,6 +984,22 @@ public final class TypeProviderImpl implements TypeProvider {
                         parentNode, null);
                 if (javaType != null) {
                     updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, unionTypeName);
+                }
+            } else if (baseType instanceof LeafrefTypeDefinition) {
+                final Type javaType = javaTypeForSchemaDefinitionType(baseType,
+                        parentNode, null);
+                boolean typeExist = false;
+                for (final GeneratedPropertyBuilder generatedPropertyBuilder : parentUnionGenTOBuilder
+                        .getProperties()) {
+                    final Type origType = ((GeneratedPropertyBuilderImpl) generatedPropertyBuilder).getReturnType();
+                    if (origType != null && javaType != null && javaType == origType) {
+                        typeExist = true;
+                        break;
+                    }
+                }
+                if (!typeExist && javaType != null) {
+                    updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, new StringBuilder(javaType.getName())
+                            .append(parentUnionGenTOBuilder.getName()).append("Value").toString());
                 }
             }
             if (baseType instanceof StringTypeDefinition) {

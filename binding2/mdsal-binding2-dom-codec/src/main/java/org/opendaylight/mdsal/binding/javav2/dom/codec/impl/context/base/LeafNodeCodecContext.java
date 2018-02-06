@@ -68,7 +68,7 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
                 if (type instanceof IdentityrefTypeDefinition) {
                     return qnameDomValueFromString(codec, schema, (String) defaultValue.get(), schemaContext);
                 }
-                return domValueFromString(codec, type, defaultValue);
+                return domValueFromString(codec, type, defaultValue.get());
             }
 
             while (type.getBaseType() != null && !type.getDefaultValue().isPresent()) {
@@ -76,11 +76,11 @@ public final class LeafNodeCodecContext<D extends TreeNode> extends NodeCodecCon
             }
 
             defaultValue = type.getDefaultValue();
-            if (defaultValue != null) {
+            if (defaultValue.isPresent()) {
                 if (type instanceof IdentityrefTypeDefinition) {
                     return qnameDomValueFromString(codec, schema, (String) defaultValue.get(), schemaContext);
                 }
-                return domValueFromString(codec, type, defaultValue);
+                return domValueFromString(codec, type, defaultValue.get());
             }
         }
         return null;
