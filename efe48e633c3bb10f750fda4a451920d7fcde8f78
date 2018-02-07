@@ -22,6 +22,30 @@
       "revId": "efe48e633c3bb10f750fda4a451920d7fcde8f78",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cb2a7063_89439479",
+        "filename": "binding/mdsal-binding-generator-impl/src/test/resources/mdsal269.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-02-07T12:13:16Z",
+      "side": 1,
+      "message": "I am not sure what the question is. Dealing with defaults is the job of binding-dom-codec and if it fails to get this information from Type, it can still arrive at the correct definition from SchemaContext -- that would be a separate issue and should not block us generating the code :)",
+      "parentUuid": "5edc84b0_4b496481",
+      "range": {
+        "startLine": 11,
+        "startChar": 3,
+        "endLine": 15,
+        "endChar": 5
+      },
+      "revId": "efe48e633c3bb10f750fda4a451920d7fcde8f78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
