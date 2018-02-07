@@ -8,6 +8,7 @@
 
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
+import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.typeForClass;
 import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.DOT;
 import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.getPropertyList;
 import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.toFirstLower;
@@ -58,6 +59,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.AugmentationHolder;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.yang.model.util.BaseTypes;
 
 public class BuilderRenderer extends BaseRenderer {
 
@@ -121,6 +123,9 @@ public class BuilderRenderer extends BaseRenderer {
             if (createdField != null) {
                 result.add(createdField);
                 importedNamesForProperties.put(createdField, importedName(createdField.getReturnType()));
+                if (createdField.getReturnType().equals(typeForClass(List.class))) {
+                    importedNames.put("arrayList", importedName(ArrayList.class));
+                }
             }
         }
         return result;
@@ -364,7 +369,7 @@ public class BuilderRenderer extends BaseRenderer {
     private String generateListForCopyConstructor() {
         final List allProps = new ArrayList<>(properties);
         final boolean isList = implementsIfc(getType(),
-            Types.parameterizedTypeFor(Types.typeForClass(Identifiable.class), getType()));
+            Types.parameterizedTypeFor(typeForClass(Identifiable.class), getType()));
         final Type keyType = getKey(getType());
         if (isList && keyType != null) {
             final List<GeneratedProperty> keyProps = ((GeneratedTransferObject) keyType).getProperties();
