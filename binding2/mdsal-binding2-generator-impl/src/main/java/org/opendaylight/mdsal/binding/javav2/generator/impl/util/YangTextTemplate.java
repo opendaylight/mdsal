@@ -12,6 +12,8 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+import javax.annotation.RegEx;
 import org.opendaylight.yangtools.yang.common.QName;
 
 /**
@@ -20,6 +22,9 @@ import org.opendaylight.yangtools.yang.common.QName;
 @Beta
 public final class YangTextTemplate {
     private static final CharMatcher NEWLINE_OR_TAB = CharMatcher.anyOf("\n\t");
+    @RegEx
+    private static final String SPACES_REGEX = " +";
+    private static final Pattern SPACES_PATTERN = Pattern.compile(SPACES_REGEX);
 
     private YangTextTemplate() {
         throw new UnsupportedOperationException("Util class");
@@ -58,7 +63,7 @@ public final class YangTextTemplate {
         final StringBuilder lineBuilder = new StringBuilder();
         final String lineIndent = Strings.repeat(" ", nextLineIndent);
         final String textToFormat = NEWLINE_OR_TAB.removeFrom(text);
-        final String formattedText = textToFormat.replaceAll(" +", " ");
+        final String formattedText = SPACES_PATTERN.matcher(textToFormat).replaceAll(" ");
         final StringTokenizer tokenizer = new StringTokenizer(formattedText, " ", true);
 
         while (tokenizer.hasMoreElements()) {
