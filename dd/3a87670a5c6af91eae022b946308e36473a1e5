@@ -1,0 +1,8 @@
+Code-Review+1: Marek Gradzki <mgradzki@cisco.com>
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Robert Varga <nite@hq.sk>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Wed, 07 Feb 2018 12:55:00 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/67810
+Project: mdsal
+Branch: refs/heads/stable/nitrogen
