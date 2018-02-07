@@ -17,6 +17,10 @@
 @if(genType != null) {
 @{wrapToDocumentation(formatDataForJavaDoc(genType, getClarification))}
 public class @{typeName} {
+    private @{typeName}() {
+        //Exists only to defeat instantiation.
+    }
+
     @for(method <- genType.getMethodDefinitions) {
         @{getAccessModifier(method.getAccessModifier)}
         @if(method.isStatic) {static}
