@@ -21,12 +21,11 @@ import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNode;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNodes;
 import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
@@ -51,6 +50,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -62,9 +62,13 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.meta.DeclaredStatement;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
+import org.opendaylight.yangtools.yang.model.export.YangTextSnippet;
 import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 
 /**
@@ -98,10 +102,10 @@ final class AuxiliaryGenUtils {
     }
 
     public static boolean hasBuilderClass(final SchemaNode schemaNode, final BindingNamespaceType namespaceType) {
-        return (namespaceType.equals(BindingNamespaceType.Data)
+        return namespaceType.equals(BindingNamespaceType.Data)
                 && (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode
                 || schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition
-                || schemaNode instanceof CaseSchemaNode));
+                || schemaNode instanceof CaseSchemaNode);
     }
 
     static Constant qNameConstant(final GeneratedTypeBuilderBase<?> toBuilder, final String constantName,
@@ -133,7 +137,8 @@ final class AuxiliaryGenUtils {
      *         <code>interfaceBuilder</code>
      */
     static MethodSignatureBuilder constructGetter(final GeneratedTypeBuilder interfaceBuilder,
-                                                  final String schemaNodeName, final String comment, final Type returnType, final Status status) {
+                                                  final String schemaNodeName, final String comment,
+                                                  final Type returnType, final Status status) {
 
         final MethodSignatureBuilder getMethod = interfaceBuilder
                 .addMethod(getterMethodName(schemaNodeName, returnType));
@@ -174,60 +179,50 @@ final class AuxiliaryGenUtils {
         final String formattedDescription = YangTextTemplate.formatToParagraph(nodeDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
-            sb.append(formattedDescription);
-            sb.append(NEW_LINE);
+            sb.append(formattedDescription).append(NEW_LINE);
         }
 
-        final Module module = SchemaContextUtil.findParentModule(schemaContext, schemaNode);
         if (verboseClassComments) {
-            sb.append("<p>");
-            sb.append("This class represents the following YANG schema fragment defined in module <b>");
-            sb.append(module.getName());
-            sb.append("</b>");
-            sb.append(NEW_LINE);
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            String formedYang = YangSnippetCleaner.clean(yangTemplateForNode.render(schemaNode, module).body());
-            sb.append(encodeAngleBrackets(formedYang));
-            sb.append("</pre>");
-            sb.append(NEW_LINE);
-            sb.append("The schema path to identify an instance is");
-            sb.append(NEW_LINE);
-            sb.append("<i>");
-            sb.append(YangTextTemplate.formatSchemaPath(module.getName(), schemaNode.getPath().getPathFromRoot()));
-            sb.append("</i>");
-            sb.append(NEW_LINE);
+            final Module module = SchemaContextUtil.findParentModule(schemaContext, schemaNode);
+            final Optional<String> optSnippet = yangSnippetForNode(module, schemaNode);
+            if (optSnippet.isPresent()) {
+                sb.append("<p>\n")
+                .append("This class represents the following YANG schema fragment defined in module <b>")
+                .append(module.getName()).append("</b>\n")
+                .append("<pre>\n")
+                .append(encodeAngleBrackets(YangSnippetCleaner.clean(optSnippet.get())))
+                .append("</pre>\n");
+            }
+
+            sb.append("The schema path to identify an instance is\n")
+            .append("<i>")
+            .append(YangTextTemplate.formatSchemaPath(module.getName(), schemaNode.getPath().getPathFromRoot()))
+            .append("</i>\n");
 
             if (hasBuilderClass(schemaNode, namespaceType) && !(schemaNode instanceof OperationDefinition)) {
                 final StringBuilder linkToBuilderClass = new StringBuilder();
                 final String basePackageName = BindingMapping.getRootPackageName(module);
 
                 linkToBuilderClass
-                        .append(replacePackageTopNamespace(basePackageName, fullyQualifiedName,
-                                namespaceType, BindingNamespaceType.Builder))
-                        .append("Builder");
-                sb.append(NEW_LINE);
-                sb.append("<p>To create instances of this class use " + "{@link " + linkToBuilderClass + "}.");
-                sb.append(NEW_LINE);
-                sb.append("@see ");
-                sb.append(linkToBuilderClass);
-                sb.append(NEW_LINE);
+                .append(replacePackageTopNamespace(basePackageName, fullyQualifiedName,
+                    namespaceType, BindingNamespaceType.Builder)).append("Builder");
+                sb.append("\n<p>To create instances of this class use {@link ").append(linkToBuilderClass)
+                .append("}.\n")
+                .append("@see ").append(linkToBuilderClass).append(NEW_LINE);
                 if (schemaNode instanceof ListSchemaNode) {
                     final StringBuilder linkToKeyClass = new StringBuilder();
 
-                    final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
+                    final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName),
+                        String.class);
                     final String className = namespace[namespace.length - 1];
 
-                    linkToKeyClass.append(BindingGeneratorUtil.packageNameForSubGeneratedType(basePackageName, schemaNode,
-                            BindingNamespaceType.Key))
-                            .append('.')
-                            .append(className)
-                            .append("Key");
+                    linkToKeyClass.append(BindingGeneratorUtil.packageNameForSubGeneratedType(basePackageName,
+                        schemaNode, BindingNamespaceType.Key))
+                    .append('.').append(className).append("Key");
 
                     final List<QName> keyDef = ((ListSchemaNode)schemaNode).getKeyDefinition();
                     if (keyDef != null && !keyDef.isEmpty()) {
-                        sb.append("@see ");
-                        sb.append(linkToKeyClass);
+                        sb.append("@see ").append(linkToKeyClass);
                     }
                     sb.append(NEW_LINE);
                 }
@@ -237,27 +232,37 @@ final class AuxiliaryGenUtils {
         return replaceAllIllegalChars(sb);
     }
 
+    private static Optional<String> yangSnippetForNode(final Module module, final DocumentedNode node) {
+        if (!(node instanceof EffectiveStatement) && !(module instanceof ModuleEffectiveStatement)) {
+            return Optional.empty();
+        }
+        final DeclaredStatement<?> declared = ((EffectiveStatement<?, ?>)node).getDeclared();
+        if (declared == null) {
+            return Optional.empty();
+        }
+        return Optional.of(YangTextSnippet.builder((ModuleEffectiveStatement) module, declared).build()
+            .stream().collect(Collectors.joining()));
+    }
+
     static String createDescription(final Module module, final boolean verboseClassComments) {
         final StringBuilder sb = new StringBuilder();
         final String moduleDescription = encodeAngleBrackets(module.getDescription().orElse(null));
         final String formattedDescription = YangTextTemplate.formatToParagraph(moduleDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
-            sb.append(formattedDescription);
-            sb.append(NEW_LINE);
+            sb.append(formattedDescription).append(NEW_LINE);
         }
 
         if (verboseClassComments) {
-            sb.append("<p>");
-            sb.append("This class represents the following YANG schema fragment defined in module <b>");
-            sb.append(module.getName());
-            sb.append("</b>");
-            sb.append(NEW_LINE);
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            String formedYang = YangSnippetCleaner.clean(yangTemplateForModule.render(module).body());
-            sb.append(encodeAngleBrackets(formedYang));
-            sb.append("</pre>");
+            final Optional<String> optSnippet = yangSnippetForNode(module, module);
+            if (optSnippet.isPresent()) {
+                sb.append("<p>\n")
+                .append("This class represents the following YANG schema fragment defined in module <b>")
+                .append(module.getName()).append("</b>\n")
+                .append("<pre>\n")
+                .append(encodeAngleBrackets(YangSnippetCleaner.clean(optSnippet.get())))
+                .append("</pre>");
+            }
         }
 
         return replaceAllIllegalChars(sb);
@@ -269,21 +274,24 @@ final class AuxiliaryGenUtils {
 
         if (!isNullOrEmpty(schemaNodes)) {
             final SchemaNode node = schemaNodes.iterator().next();
-
             if (node instanceof RpcDefinition) {
-                sb.append("Interface for implementing the following YANG RPCs defined in module <b>" + module.getName() + "</b>");
+                sb.append("Interface for implementing the following YANG RPCs defined in module <b>");
             } else if (node instanceof NotificationDefinition) {
-                sb.append("Interface for receiving the following YANG notifications defined in module <b>" + module.getName() + "</b>");
+                sb.append("Interface for receiving the following YANG notifications defined in module <b>");
             }
+            sb.append(module.getName()).append("</b>");
         }
         sb.append(NEW_LINE);
 
         if (verboseClassComments) {
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(yangTemplateForNodes.render(schemaNodes, module).body()));
-            sb.append("</pre>");
-            sb.append(NEW_LINE);
+            for (SchemaNode node : schemaNodes) {
+                final Optional<String> optSnippet = yangSnippetForNode(module, node);
+                if (optSnippet.isPresent()) {
+                    sb.append("<pre>\n");
+                    sb.append(encodeAngleBrackets(optSnippet.get()));
+                    sb.append("</pre>\n");
+                }
+            }
         }
 
         return replaceAllIllegalChars(sb);
@@ -394,11 +402,11 @@ final class AuxiliaryGenUtils {
         final String packageName = typeBuilder.getFullyQualifiedName();
         if (typeDef instanceof UnionTypeDefinition) {
             genTOBuilder = ((TypeProviderImpl) typeProvider)
-                    .provideGeneratedTOBuilderForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
+                    .provideGeneratedTOBuilderForUnionTypeDef(packageName, (UnionTypeDefinition) typeDef,
                             classNameFromLeaf, leaf, schemaContext,
                             ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap(), context);
         } else if (typeDef instanceof BitsTypeDefinition) {
-            genTOBuilder = (((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
+            genTOBuilder = ((TypeProviderImpl) typeProvider).provideGeneratedTOBuilderForBitsTypeDefinition(
                     packageName, typeDef, classNameFromLeaf, parentModule.getName(), context);
         }
         if (genTOBuilder != null) {
@@ -448,7 +456,7 @@ final class AuxiliaryGenUtils {
     static GeneratedTOBuilder resolveListKeyTOBuilder(final String packageName, final ListSchemaNode list,
             ModuleContext context) {
         GeneratedTOBuilder genTOBuilder = null;
-        if ((list.getKeyDefinition() != null) && (!list.getKeyDefinition().isEmpty())) {
+        if (list.getKeyDefinition() != null && !list.getKeyDefinition().isEmpty()) {
             // underscore used as separator for distinction of class name parts
             final String genTOName =
                     new StringBuilder(list.getQName().getLocalName()).append('_').append(BindingNamespaceType.Key)
@@ -461,7 +469,7 @@ final class AuxiliaryGenUtils {
     static GeneratedTypeBuilder resolveListKeyTypeBuilder(final String packageName, final ListSchemaNode list,
             ModuleContext context) {
         GeneratedTypeBuilder genTypeBuilder = null;
-        if ((list.getKeyDefinition() != null) && (!list.getKeyDefinition().isEmpty())) {
+        if (list.getKeyDefinition() != null && !list.getKeyDefinition().isEmpty()) {
             // underscore used as separator for distinction of class name parts
             final String genTOName =
                     new StringBuilder(list.getQName().getLocalName()).append('_').append(BindingNamespaceType.Key)
