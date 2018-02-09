@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.ChoiceNodeCodecContext;
 import org.opendaylight.mdsal.binding.javav2.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
@@ -108,9 +109,17 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
             byMethodBuilder.put(childDataObj.getValue(), childProto);
             byStreamClassBuilder.put(childProto.getBindingClass(), childProto);
             byYangBuilder.put(childProto.getYangArg(), childProto);
-            //TODO: get cases in consideration - finish in patches to come
-            //if (childProto.isChoice()) {
+
+            if (childProto.isChoice()) {
+                final ChoiceNodeCodecContext<?> choice = (ChoiceNodeCodecContext<?>) childProto.get();
+                choice.getClassCaseChildren().entrySet().forEach(entry ->
+                    byBindingArgClassBuilder.put(entry.getKey(), childProto));
+
+                choice.getYangCaseChildren().entrySet().forEach(entry ->
+                    byYangBuilder.put(entry.getKey(), childProto));
+            }
         }
+
         this.byMethod = ImmutableSortedMap.copyOfSorted(byMethodBuilder);
         this.byYang = ImmutableMap.copyOf(byYangBuilder);
         this.byStreamClass = ImmutableMap.copyOf(byStreamClassBuilder);
@@ -188,8 +197,15 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
         }
         final DataContainerCodecContext<?, ?> context =
                 childNonNull(ctxProto, argType, "Class %s is not valid child of %s", argType, getBindingClass()).get();
-        //TODO: get cases in consideration - finish in patches to come
-//        if (context instanceof ChoiceNodeCodecContext) {
+
+        if (context instanceof ChoiceNodeCodecContext) {
+            final ChoiceNodeCodecContext<?> choice = (ChoiceNodeCodecContext<?>) context;
+            final DataContainerCodecContext<?, ?> caze = choice.getCaseByChildClass(argType);
+            // FIXME: Instance identifier should not reference choice or case as they're
+            // not data tree nodes.
+            return caze.bindingPathArgumentChild(arg, builder);
+        }
+
         context.addYangPathArgument(arg, builder);
         return context;
     }
@@ -205,6 +221,16 @@ public abstract class TreeNodeCodecContext<D extends TreeNode, T extends DataNod
             childSupplier = yangAugmentationChild((AugmentationIdentifier) arg);
         } else {
             childSupplier = byYang.get(arg);
+        }
+
+        // FIXME: Since instance identifier does not reference choice or case,
+        // we should search in data children of choice/case
+        if (childSupplier instanceof DataContainerCodecPrototype) {
+            final DataContainerCodecContext<?,T> context = ((DataContainerCodecPrototype) childSupplier).get();
+            if (context instanceof ChoiceNodeCodecContext) {
+                return (NodeCodecContext<D>) childNonNull(((ChoiceNodeCodecContext) context).yangPathArgumentChild(arg),
+                    arg, "Argument %s is not valid child of %s", arg, getSchema());
+            }
         }
 
         return (NodeCodecContext<D>) childNonNull(childSupplier, arg,
