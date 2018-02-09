@@ -143,8 +143,15 @@ public class ChoiceNodeCodecContext<D extends TreeNode> extends DataContainerCod
         return Optional.absent();
     }
 
-    Iterable<Class<?>> getCaseChildrenClasses() {
+    public Iterable<Class<?>> getCaseChildrenClasses() {
         return byCaseChildClass.keySet();
+    }
+
+    public DataContainerCodecContext<?, ?> getCazeByChildClass(final @Nonnull Class<? extends TreeNode> type) {
+        final DataContainerCodecPrototype<?> protoCtx =
+            childNonNull(byCaseChildClass.get(type), type, "Class %s is not child of any cases for %s", type,
+                bindingArg());
+        return protoCtx.get();
     }
 
     private DataContainerCodecPrototype<CaseSchemaNode> loadCase(final Class<?> childClass) {
