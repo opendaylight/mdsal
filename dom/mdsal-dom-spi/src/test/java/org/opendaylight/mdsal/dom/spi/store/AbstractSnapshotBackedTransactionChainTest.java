@@ -39,7 +39,7 @@ public class AbstractSnapshotBackedTransactionChainTest extends AbstractSnapshot
         this.newWriteOnlyTransaction().close();
         this.newReadWriteTransaction().close();
 
-        this.transactionReady(snapshotBackedWriteTransaction, dataTreeModification);
+        this.transactionReady(snapshotBackedWriteTransaction, dataTreeModification, null);
 
 
         this.transactionAborted(snapshotBackedWriteTransaction);
@@ -67,7 +67,8 @@ public class AbstractSnapshotBackedTransactionChainTest extends AbstractSnapshot
 
     @Override
     protected DOMStoreThreePhaseCommitCohort createCohort(final SnapshotBackedWriteTransaction<Object> transaction,
-                                                          final DataTreeModification modification) {
+                                                          final DataTreeModification modification,
+                                                          final Exception operationError) {
         return domStoreThreePhaseCommitCohort;
     }
 }

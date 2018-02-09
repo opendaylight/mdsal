@@ -16,6 +16,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.ExecutionException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -330,6 +331,23 @@ public class InMemoryDataStoreTest {
 
         // Should throw ex
         writeTx.ready();
+    }
+
+    @Test
+    public void testReadyWithMissingMandatoryData() throws InterruptedException {
+        DOMStoreWriteTransaction writeTx = domStore.newWriteOnlyTransaction();
+        NormalizedNode<?, ?> testNode = ImmutableContainerNodeBuilder.create()
+                .withNodeIdentifier(new NodeIdentifier(TestModel.MANDATORY_DATA_TEST_QNAME))
+                .addChild(ImmutableNodes.leafNode(TestModel.OPTIONAL_QNAME, "data"))
+                .build();
+        writeTx.write(TestModel.MANDATORY_DATA_TEST_PATH, testNode);
+        DOMStoreThreePhaseCommitCohort ready = writeTx.ready();
+        try {
+            ready.canCommit().get();
+            Assert.fail("Expected exception on canCommit");
+        } catch (ExecutionException e) {
+            // nop
+        }
     }
 
     @Test

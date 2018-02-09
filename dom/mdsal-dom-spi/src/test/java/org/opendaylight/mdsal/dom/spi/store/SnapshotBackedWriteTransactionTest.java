@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.dom.spi.store;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -49,7 +51,9 @@ public class SnapshotBackedWriteTransactionTest {
         doNothing().when(TRANSACTION_READY_PROTOTYPE).transactionAborted(any());
         doReturn("testDataTreeModification").when(DATA_TREE_MODIFICATION).toString();
         doReturn("testNormalizedNode").when(NORMALIZED_NODE).toString();
-        doReturn(DOM_STORE_THREE_PHASE_COMMIT_COHORT).when(TRANSACTION_READY_PROTOTYPE).transactionReady(any(),any());
+        doReturn(DOM_STORE_THREE_PHASE_COMMIT_COHORT)
+                .when(TRANSACTION_READY_PROTOTYPE)
+                .transactionReady(any(),any(), any());
         doReturn(NORMALIZED_NODE_OPTIONAL).when(DATA_TREE_MODIFICATION).readNode(YangInstanceIdentifier.EMPTY);
         snapshotBackedWriteTransaction = new SnapshotBackedWriteTransaction<>(new Object(), false, DATA_TREE_SNAPSHOT,
                 TRANSACTION_READY_PROTOTYPE);
@@ -80,8 +84,16 @@ public class SnapshotBackedWriteTransactionTest {
         SnapshotBackedWriteTransaction<Object> tx = new SnapshotBackedWriteTransaction<>(new Object(), false,
                 DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE);
         Assert.assertNotNull(tx.ready());
-        verify(TRANSACTION_READY_PROTOTYPE).transactionReady(any(), any());
+        verify(TRANSACTION_READY_PROTOTYPE).transactionReady(any(), any(), eq(null));
         tx.close();
+    }
+
+    @Test
+    public void readyWithException() {
+        Exception thrown = new RuntimeException();
+        doThrow(thrown).when(DATA_TREE_MODIFICATION).ready();
+        Assert.assertNotNull(snapshotBackedWriteTransaction.ready());
+        verify(TRANSACTION_READY_PROTOTYPE).transactionReady(any(), any(), same(thrown));
     }
 
     @Test(expected = IllegalArgumentException.class)

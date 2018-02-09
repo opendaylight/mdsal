@@ -16,9 +16,11 @@ final class ChainedTransactionCommitImpl extends InMemoryDOMStoreThreePhaseCommi
     private final DOMStoreTransactionChainImpl txChain;
 
     ChainedTransactionCommitImpl(final InMemoryDOMDataStore store,
-        final SnapshotBackedWriteTransaction<String> transaction,final DataTreeModification modification,
-            final DOMStoreTransactionChainImpl txChain) {
-        super(store, transaction, modification);
+                                 final SnapshotBackedWriteTransaction<String> transaction,
+                                 final DataTreeModification modification,
+                                 final DOMStoreTransactionChainImpl txChain,
+                                 final Exception operationError) {
+        super(store, transaction, modification, operationError);
         this.txChain = Preconditions.checkNotNull(txChain);
     }
 

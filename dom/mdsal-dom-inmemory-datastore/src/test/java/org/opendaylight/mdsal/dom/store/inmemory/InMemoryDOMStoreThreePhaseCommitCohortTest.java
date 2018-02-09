@@ -15,14 +15,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
@@ -36,24 +36,34 @@ import org.opendaylight.yangtools.yang.data.api.schema.tree.DataValidationFailed
 
 public class InMemoryDOMStoreThreePhaseCommitCohortTest {
 
-    private static  InMemoryDOMStoreThreePhaseCommitCohort inMemoryDOMStoreThreePhaseCommitCohort = null;
-    private static final InMemoryDOMDataStore IN_MEMORY_DOM_DATA_STORE = mock(InMemoryDOMDataStore.class);
-    private static final DataTreeCandidate DATA_TREE_CANDIDATE = mock(DataTreeCandidate.class);
+    private static InMemoryDOMStoreThreePhaseCommitCohort inMemoryDOMStoreThreePhaseCommitCohort = null;
+
+    @Mock
+    private static InMemoryDOMDataStore IN_MEMORY_DOM_DATA_STORE;
+
+    @Mock
+    private static DataTreeCandidate DATA_TREE_CANDIDATE;
+
+    @Mock
+    private static TransactionReadyPrototype<String> TRANSACTION_READY_PROTOTYPE;
+
+    @Mock
+    private static DataTreeSnapshot DATA_TREE_SNAPSHOT;
+
+    @Mock
+    private static DataTreeModification DATA_TREE_MODIFICATION;
 
     @Before
     public void setUp() throws Exception {
-        reset(IN_MEMORY_DOM_DATA_STORE);
-        DataTreeSnapshot dataTreeSnapshot = mock(DataTreeSnapshot.class);
-        TransactionReadyPrototype<String> transactionReadyPrototype = mock(TransactionReadyPrototype.class);
-        DataTreeModification dataTreeModification = mock(DataTreeModification.class);
-        doReturn(dataTreeModification).when(dataTreeSnapshot).newModification();
-        doReturn("testModification").when(dataTreeModification).toString();
-
+        initMocks(this);
+        doReturn(DATA_TREE_MODIFICATION).when(DATA_TREE_SNAPSHOT).newModification();
+        doReturn("testModification").when(DATA_TREE_MODIFICATION).toString();
         inMemoryDOMStoreThreePhaseCommitCohort =
                 new InMemoryDOMStoreThreePhaseCommitCohort(IN_MEMORY_DOM_DATA_STORE,
-                        SnapshotBackedTransactions
-                                .newWriteTransaction("test", false, dataTreeSnapshot, transactionReadyPrototype),
-                        dataTreeModification);
+                        SnapshotBackedTransactions.newWriteTransaction(
+                                "test", false, DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE),
+                        DATA_TREE_MODIFICATION,
+                        null);
     }
 
     @Test
@@ -61,6 +71,24 @@ public class InMemoryDOMStoreThreePhaseCommitCohortTest {
         doNothing().when(IN_MEMORY_DOM_DATA_STORE).validate(any());
         inMemoryDOMStoreThreePhaseCommitCohort.canCommit();
         verify(IN_MEMORY_DOM_DATA_STORE).validate(any());
+    }
+
+    @Test
+    public void canCommitWithOperationError() throws Exception {
+        RuntimeException operationError = new RuntimeException();
+        inMemoryDOMStoreThreePhaseCommitCohort =
+                new InMemoryDOMStoreThreePhaseCommitCohort(IN_MEMORY_DOM_DATA_STORE,
+                        SnapshotBackedTransactions.newWriteTransaction(
+                                "test", false, DATA_TREE_SNAPSHOT, TRANSACTION_READY_PROTOTYPE),
+                        DATA_TREE_MODIFICATION,
+                        operationError);
+        doNothing().when(IN_MEMORY_DOM_DATA_STORE).validate(any());
+        try {
+            inMemoryDOMStoreThreePhaseCommitCohort.canCommit().get();
+            fail("Expected exception");
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() == operationError);
+        }
     }
 
     @SuppressWarnings({ "checkstyle:IllegalThrows", "checkstyle:avoidHidingCauseException" })
