@@ -25,9 +25,12 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.data.TreeLeafOnlyUsesAugment;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.dto.TreeLeafOnlyUsesAugmentBuilder;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.grp.LeafFromGrouping;
+import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.data.ChoiceContainer;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.data.Top;
+import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.data.choice_container.identifier.simple.SimpleId;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.data.top.TopLevelList;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.dto.TopBuilder;
+import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.dto.choice_container.identifier.simple.SimpleIdBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
@@ -46,6 +49,14 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
     private static final QName AUGMENTED_INT_QNAME = QName.create(TopLevelList.QNAME, "augmented-int");
     private static final QName SIMPLE_VALUE_QNAME = QName.create(LeafFromGrouping.QNAME, "simple-value");
     private static final QName SIMPLE_TYPE_QNAME = QName.create(LeafFromGrouping.QNAME, "simple-type");
+    private static final QName CHOICE_CONTAINER_QNAME = ChoiceContainer.QNAME;
+    private static final QName SIMPLE_ID_QNAME = SimpleId.QNAME;
+    private static final QName SIMPLE_LEAF_ID_QNAME = QName.create(SimpleId.QNAME, "id");
+
+    private static final InstanceIdentifier<SimpleId> BA_SIMPLE_ID = InstanceIdentifier
+        .builder(ChoiceContainer.class).child(SimpleId.class).build();
+    private static final YangInstanceIdentifier BI_SIMPLE_ID_PATH = YangInstanceIdentifier
+        .of(CHOICE_CONTAINER_QNAME).node(SIMPLE_ID_QNAME);
 
     @Before
     public void setup() {
@@ -120,6 +131,31 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
         final Entry<InstanceIdentifier<?>, TreeNode> entry =
             registry.fromNormalizedNode(YangInstanceIdentifier.of(Top.QNAME), topNormailziedData());
         assertEquals(topBindingData(), entry.getValue());
+    }
+
+    private static SimpleId simpleIdBindingData() {
+        return new SimpleIdBuilder().setId(10).build();
+    }
+
+    private static ContainerNode simpleIdNormailziedData() {
+        return ImmutableContainerNodeBuilder.create()
+            .withNodeIdentifier(new YangInstanceIdentifier.NodeIdentifier(SIMPLE_ID_QNAME))
+            .withChild(leafNode(SIMPLE_LEAF_ID_QNAME, 10))
+            .build();
+    }
+
+    @Test
+    public void testChoiceDataToNormalizedNode() {
+        final Map.Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry =
+            registry.toNormalizedNode(BA_SIMPLE_ID, simpleIdBindingData());
+        assertEquals(simpleIdNormailziedData(), entry.getValue());
+    }
+
+    @Test
+    public void testChoiceDataFromNormalizedNode() {
+        final Entry<InstanceIdentifier<?>, TreeNode> entry =
+            registry.fromNormalizedNode(BI_SIMPLE_ID_PATH, simpleIdNormailziedData());
+        assertEquals(simpleIdBindingData(), entry.getValue());
     }
 
 }

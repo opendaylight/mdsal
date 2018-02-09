@@ -66,6 +66,8 @@ public class ChoiceNodeCodecContext<D extends TreeNode> extends DataContainerCod
         final Map<Class<?>, DataContainerCodecPrototype<?>> byClassBuilder = new HashMap<>();
         final Map<Class<?>, DataContainerCodecPrototype<?>> byCaseChildClassBuilder = new HashMap<>();
         final Set<Class<?>> potentialSubstitutions = new HashSet<>();
+
+        //TODO: Collect all choice/cases' descendant data children including augmented data nodes.
         // Walks all cases for supplied choice in current runtime context
         for (final Class<?> caze : factory().getRuntimeContext().getCases(getBindingClass())) {
             // We try to load case using exact match thus name
@@ -143,8 +145,35 @@ public class ChoiceNodeCodecContext<D extends TreeNode> extends DataContainerCod
         return Optional.absent();
     }
 
-    Iterable<Class<?>> getCaseChildrenClasses() {
-        return byCaseChildClass.keySet();
+
+    /**
+     * Gets the map of case class and prototype for {@link
+     * org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.TreeNodeCodecContext}
+     * to catch choice/cases' data child by class.
+     *
+     * @return the map of case class and prototype
+     */
+    public Map<Class<?>, DataContainerCodecPrototype<?>> getClassCaseChildren() {
+        return byCaseChildClass;
+    }
+
+
+    /**
+     * Gets the map of case path argument and prototype for {@link
+     * org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.TreeNodeCodecContext}
+     * to catch choice/cases' data child by class.
+     *
+     * @return the the map of case path and prototype
+     */
+    public Map<YangInstanceIdentifier.PathArgument, DataContainerCodecPrototype<?>> getYangCaseChildren() {
+        return byYangCaseChild;
+    }
+
+    public DataContainerCodecContext<?, ?> getCaseByChildClass(final @Nonnull Class<? extends TreeNode> type) {
+        final DataContainerCodecPrototype<?> protoCtx =
+            childNonNull(byCaseChildClass.get(type), type, "Class %s is not child of any cases for %s", type,
+                bindingArg());
+        return protoCtx.get();
     }
 
     private DataContainerCodecPrototype<CaseSchemaNode> loadCase(final Class<?> childClass) {
