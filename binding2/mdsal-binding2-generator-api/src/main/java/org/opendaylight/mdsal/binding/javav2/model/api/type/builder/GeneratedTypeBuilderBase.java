@@ -17,6 +17,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
 
 @Beta
@@ -154,6 +155,13 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      */
     Type setParentTypeForBuilder(Type type);
 
+    /**
+     * Get the BindingNamespaceType.
+     *
+     * @return BindingNamespaceType which type belongs to.
+     */
+    BindingNamespaceType getBindingNamespaceType();
+
     List<MethodSignatureBuilder> getMethodDefinitions();
 
     /**
@@ -256,4 +264,11 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      * @param definition YANG source definition, must not be null
      */
     void setYangSourceDefinition(@NonNull YangSourceDefinition definition);
+
+    /**
+     * Set the BindingNamespaceType.
+     *
+     * @param namespaceType BindingNamespaceType which type belongs to, must not be null
+     */
+    void setBindingNamespaceType(@NonNull BindingNamespaceType namespaceType);
 }
