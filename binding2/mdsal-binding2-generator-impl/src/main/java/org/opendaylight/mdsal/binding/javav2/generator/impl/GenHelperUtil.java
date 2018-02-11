@@ -32,7 +32,6 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -309,10 +308,10 @@ final class GenHelperUtil {
                     type.addImplementsType(superType);
                     if (superChildNode instanceof ListSchemaNode
                             && !((ListSchemaNode) superChildNode).getKeyDefinition().isEmpty()) {
-                        if (namespaceType.equals(BindingNamespaceType.Grouping)) {
+                        if (BindingNamespaceType.isGrouping(namespaceType)) {
                             genCtx.get(module).getKeyType(childNode.getPath())
                                     .addImplementsType(genCtx.get(superModule).getKeyType(superChildNode.getPath()));
-                        } else if (namespaceType.equals(BindingNamespaceType.Data)) {
+                        } else if (BindingNamespaceType.isData(namespaceType)) {
                             genCtx.get(module).getKeyGenTO(childNode.getPath())
                                     .addImplementsType(genCtx.get(superModule).getKeyType(superChildNode.getPath()));
                         }
@@ -401,7 +400,7 @@ final class GenHelperUtil {
     }
 
     static Map<Module, ModuleContext> addRawAugmentGenTypeDefinition(final Module module,
-            final String augmentPackageName, final Type targetTypeRef, final SchemaNode targetNode,
+            final String augmentPackageName, final GeneratedTypeBuilder targetTypeBuilder, final SchemaNode targetNode,
             final List<AugmentationSchemaNode> schemaPathAugmentListEntry,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
             final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext,
@@ -433,9 +432,10 @@ final class GenHelperUtil {
 
         augTypeBuilder.addImplementsType(BindingTypes.TREE_NODE);
         augTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, augTypeBuilder));
-        augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
+        augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeBuilder.toInstance()));
         augTypeBuilder.setBasePackageName(BindingMapping.getRootPackageName(module));
         augTypeBuilder.setWithBuilder(true);
+        augTypeBuilder.setBindingNamespaceType(namespaceType);
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
 
         //produces getters for augTypeBuilder eventually
@@ -444,7 +444,7 @@ final class GenHelperUtil {
             addImplementedInterfaceFromUses(aug, augTypeBuilder, genCtx);
             augSchemaNodeToMethods(module, BindingMapping.getRootPackageName(module), augTypeBuilder, augTypeBuilder,
                 aug.getChildNodes(), genCtx, schemaContext, verboseClassComments, typeProvider, genTypeBuilders,
-                namespaceType);
+                targetTypeBuilder.getBindingNamespaceType());
         }
 
         augmentBuilders.put(augTypeBuilder.getName(), augTypeBuilder);
@@ -526,16 +526,12 @@ final class GenHelperUtil {
 
         GeneratedTypeBuilder it = addRawInterfaceDefinition(basePackageName, schemaNode, schemaContext, "", "",
                 verboseClassComments, genTypeBuilders, namespaceType, genCtx.get(module));
-
-        if (namespaceType.equals(BindingNamespaceType.Data)) {
-            if (childOf == null) {
-                it.addImplementsType(BindingTypes.TREE_NODE);
-            } else {
-                if (!(schemaNode instanceof ListSchemaNode) ||
-                        ((ListSchemaNode) schemaNode).getKeyDefinition().isEmpty()) {
-                    it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, childOf,
-                        parameterizedTypeFor(BindingTypes.ITEM, it)));
-                }
+        if (BindingNamespaceType.isData(namespaceType)) {
+            if (childOf != null && BindingNamespaceType.isTreeData(namespaceType)
+                && (!(schemaNode instanceof ListSchemaNode) ||
+                        ((ListSchemaNode) schemaNode).getKeyDefinition().isEmpty())) {
+                    it.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, childOf, parameterizedTypeFor
+                            (BindingTypes.ITEM, it)));
             }
 
             if (!(schemaNode instanceof CaseSchemaNode)) {
@@ -543,8 +539,6 @@ final class GenHelperUtil {
             }
 
             it.addImplementsType(BindingTypes.augmentable(it));
-        } else {
-            it.addImplementsType(BindingTypes.TREE_NODE);
         }
 
         if (schemaNode instanceof DataNodeContainer) {
@@ -562,7 +556,7 @@ final class GenHelperUtil {
             genTypeBuilders, final TypeProvider typeProvider, final Map<Module, ModuleContext> genCtx) {
         final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition
                 (basePackageName, notification, null, module, genCtx, schemaContext,
-                        verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
+                        verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Notification);
         annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
         notificationInterface.addImplementsType(NOTIFICATION);
         genCtx.get(module).addChildNodeType(notification, notificationInterface);
@@ -570,7 +564,7 @@ final class GenHelperUtil {
         // Notification object
         resolveDataSchemaNodes(module, basePackageName, notificationInterface,
                 notificationInterface, notification.getChildNodes(), genCtx, schemaContext,
-                verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Data);
+                verboseClassComments, genTypeBuilders, typeProvider, BindingNamespaceType.Notification);
 
         //in case of tied notification, incorporate parent's localName
         final StringBuilder sb = new StringBuilder("on_");
@@ -644,6 +638,7 @@ final class GenHelperUtil {
         newType.setModuleName(module.getName());
         newType.setBasePackageName(BindingMapping.getRootPackageName(module));
         newType.setWithBuilder(AuxiliaryGenUtils.hasBuilderClass(schemaNode, namespaceType));
+        newType.setBindingNamespaceType(namespaceType);
 
         if (!genTypeBuilders.containsKey(packageName)) {
             final Map<String, GeneratedTypeBuilder> builders = new HashMap<>();
@@ -723,7 +718,8 @@ final class GenHelperUtil {
             schemaContext, "", "", verboseClasssComments, genTypeBuilders, namespaceType, genCtx.get(module));
         constructGetter(parent, choiceNode.getQName().getLocalName(),
                 choiceNode.getDescription().orElse(null), choiceTypeBuilder, choiceNode.getStatus());
-        if (namespaceType.equals(BindingNamespaceType.Data)) {
+
+        if (BindingNamespaceType.isData(namespaceType)) {
             choiceTypeBuilder.setParentTypeForBuilder(childOf);
             choiceTypeBuilder.addImplementsType(parameterizedTypeFor(BindingTypes.INSTANTIABLE, choiceTypeBuilder));
         }
@@ -772,7 +768,7 @@ final class GenHelperUtil {
             final String packageName = new StringBuilder(packageNameForGeneratedType(basePackageName, node.getPath(),
                     BindingNamespaceType.Key)).append('.').append(nodeName).toString();
             //FIXME: Is it neccessary to generate interface of key and implemented by class?
-            if (namespaceType.equals(BindingNamespaceType.Grouping)) {
+            if (BindingNamespaceType.isGrouping(namespaceType)) {
                 final GeneratedTypeBuilder genTypeBuilder = resolveListKeyTypeBuilder(packageName, node, genCtx.get(module));
                 for (final DataSchemaNode schemaNode : node.getChildNodes()) {
                     if (resolveDataSchemaNodesCheck(module, schemaContext, schemaNode)) {
@@ -791,9 +787,10 @@ final class GenHelperUtil {
                     final Type identifiableMarker = Types.parameterizedTypeFor(IDENTIFIABLE, genTOBuilder);
                     genTOBuilder.addImplementsType(IDENTIFIER);
                     genType.addImplementsType(identifiableMarker);
-                    genType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, childOf, parameterizedTypeFor
-                        (BindingTypes.IDENTIFIABLE_ITEM, genType, genTOBuilder)));
-
+                    if (BindingNamespaceType.isTreeData(namespaceType)) {
+                        genType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, childOf,
+                            parameterizedTypeFor(BindingTypes.IDENTIFIABLE_ITEM, genType, genTOBuilder)));
+                    }
                 }
 
                 for (final DataSchemaNode schemaNode : node.getChildNodes()) {
@@ -1058,7 +1055,7 @@ final class GenHelperUtil {
                 caseTypeBuilder.addImplementsType(refChoiceType);
                 annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
                 genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
-                if (namespaceType.equals(BindingNamespaceType.Data)) {
+                if (BindingNamespaceType.isData(namespaceType)) {
                     genCtx.get(module).addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
                 }
 
@@ -1244,7 +1241,10 @@ final class GenHelperUtil {
             node.getReference().ifPresent(genType::setReference);
         }
         genType.setSchemaPath((List) node.getPath().getPathFromRoot());
-        genType.setParentTypeForBuilder(childOf);
+        if (BindingNamespaceType.isData(namespaceType)) {
+            genType.setParentTypeForBuilder(childOf);
+        }
+
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
         }

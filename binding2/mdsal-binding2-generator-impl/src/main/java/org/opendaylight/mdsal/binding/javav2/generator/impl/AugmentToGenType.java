@@ -244,13 +244,14 @@ final class AugmentToGenType {
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentPackageName,
-                targetTypeBuilder.toInstance(), targetSchemaNode, schemaPathAugmentListEntry.getValue(),
-                genTypeBuilders, genCtx, schemaContext, verboseClassComments, typeProvider, BindingNamespaceType.Data);
+                targetTypeBuilder, targetSchemaNode, schemaPathAugmentListEntry.getValue(),
+                genTypeBuilders, genCtx, schemaContext, verboseClassComments, typeProvider,
+                targetTypeBuilder.getBindingNamespaceType());
         } else {
             genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, basePackageName,
                 targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode,
                 schemaPathAugmentListEntry.getValue(),genCtx, verboseClassComments, genTypeBuilders, typeProvider,
-                BindingNamespaceType.Data);
+                targetTypeBuilder.getBindingNamespaceType());
         }
         return genCtx;
     }

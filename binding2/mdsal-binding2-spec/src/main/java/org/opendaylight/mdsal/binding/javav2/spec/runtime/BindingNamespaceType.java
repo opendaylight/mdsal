@@ -23,7 +23,8 @@ public enum BindingNamespaceType {
      * Namespace containing all derived types, defined from grouping and data namespaces
      *
      */
-    Typedef("type"), Identity("ident"), Key("key"), Data("data"), Grouping("grp"), Builder("dto"),;
+    Typedef("type"), Identity("ident"), Key("key"), Data("data"), Notification("data"), Operation("data"),
+    Grouping("grp"), Builder("dto");
 
     private final String packagePrefix;
 
@@ -33,5 +34,25 @@ public enum BindingNamespaceType {
 
     public String getPackagePrefix() {
         return packagePrefix;
+    }
+
+    public static Boolean isData(final BindingNamespaceType type) {
+        return type.equals(Data) || type.equals(Notification) || type.equals(Operation);
+    }
+
+    public static Boolean isTreeData(final BindingNamespaceType type) {
+        return type.equals(Data);
+    }
+
+    public static Boolean isNotificationData(final BindingNamespaceType type) {
+        return type.equals(Notification);
+    }
+
+    public static Boolean isOperationData(final BindingNamespaceType type) {
+        return type.equals(Operation);
+    }
+
+    public static Boolean isGrouping(final BindingNamespaceType type) {
+        return type.equals(Grouping);
     }
 }

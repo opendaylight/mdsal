@@ -28,6 +28,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOB
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.util.LazyCollections;
 
 @Beta
@@ -46,6 +47,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     private boolean isAbstract;
     private Type parentTypeForBuilder;
     private YangSourceDefinition yangSourceDefinition;
+    private BindingNamespaceType namespaceType;
 
     protected AbstractGeneratedTypeBuilder(final String packageName, final String name, ModuleContext context) {
         super(packageName, name, context);
@@ -168,6 +170,16 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     @Override
     public Type setParentTypeForBuilder(Type type) {
         return this.parentTypeForBuilder = type;
+    }
+
+    @Override
+    public BindingNamespaceType getBindingNamespaceType() {
+        return namespaceType;
+    }
+
+    @Override
+    public void setBindingNamespaceType(BindingNamespaceType namespaceType) {
+        this.namespaceType = namespaceType;
     }
 
     public boolean containsConstant(final String name) {
