@@ -189,7 +189,7 @@ final class ModuleToGenType {
             if (notification != null) {
                 resolveNotification(listenerInterface, null, basePackageName, notification, module, schemaContext,
                         verboseClassComments, genTypeBuilders, typeProvider, genCtx);
-                processUsesImplements(notification, module, schemaContext, genCtx, BindingNamespaceType.Data);
+                processUsesImplements(notification, module, schemaContext, genCtx, BindingNamespaceType.Notification);
             }
         }
 
@@ -206,7 +206,7 @@ final class ModuleToGenType {
                         resolveNotification(listenerInterface, potential.getQName().getLocalName(), basePackageName,
                                 tiedNotification, module, schemaContext, verboseClassComments, genTypeBuilders,
                                 typeProvider, genCtx);
-                        processUsesImplements(tiedNotification, module, schemaContext, genCtx, BindingNamespaceType.Data);
+                        processUsesImplements(tiedNotification, module, schemaContext, genCtx, BindingNamespaceType.Notification);
                     }
                 }
             }
