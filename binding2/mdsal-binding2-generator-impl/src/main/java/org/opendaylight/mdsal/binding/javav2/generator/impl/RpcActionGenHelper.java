@@ -106,7 +106,7 @@ final class RpcActionGenHelper {
         for (DataSchemaNode potential : potentials) {
             if (resolveDataSchemaNodesCheck(module, schemaContext,potential)) {
                 BindingNamespaceType namespaceType1 = namespaceType;
-                if (namespaceType.equals(BindingNamespaceType.Data)) {
+                if (BindingNamespaceType.isGeneralData(namespaceType)) {
                     if (potential instanceof GroupingDefinition) {
                         namespaceType1 = BindingNamespaceType.Grouping;
                     }
@@ -143,7 +143,7 @@ final class RpcActionGenHelper {
 
         checkModuleAndModuleName(module);
         resolveActions(module, module, schemaContext, verboseClassComments, genTypeBuilders, genCtx, typeProvider,
-            BindingNamespaceType.Data);
+            BindingNamespaceType.Operation);
         return genCtx;
     }
 
@@ -199,12 +199,12 @@ final class RpcActionGenHelper {
             if (isAction) {
                 genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
                         verboseClassComments, genTypeBuilders, genCtx, typeProvider, true,
-                        BindingNamespaceType.Data));
+                        BindingNamespaceType.Operation));
             } else {
                 //global RPC only
                 genCtx.get(module).addTopLevelNodeType(resolveOperation(parent, rpc, module, schemaContext,
                         verboseClassComments, genTypeBuilders, genCtx, typeProvider, false,
-                        BindingNamespaceType.Data));
+                        BindingNamespaceType.Operation));
 
             }
         }
@@ -316,8 +316,11 @@ final class RpcActionGenHelper {
         final GeneratedTypeBuilder nodeType = addRawInterfaceDefinition(basePackageName, operationNode, schemaContext,
                 operationName, "", verboseClassComments, genTypeBuilders, namespaceType, genCtx.get(module));
         addImplementedInterfaceFromUses(operationNode, nodeType, genCtx);
-        nodeType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
+        if (BindingNamespaceType.isData(namespaceType)) {
+            nodeType.addImplementsType(parameterizedTypeFor(BindingTypes.TREE_CHILD_NODE, parent, parameterizedTypeFor
                 (BindingTypes.ITEM, nodeType)));
+        }
+
         if (isInput) {
             nodeType.addImplementsType(parameterizedTypeFor(INPUT, nodeType));
         } else {
