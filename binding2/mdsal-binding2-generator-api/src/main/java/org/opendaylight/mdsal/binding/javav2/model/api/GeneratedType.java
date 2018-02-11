@@ -11,6 +11,7 @@ package org.opendaylight.mdsal.binding.javav2.model.api;
 import com.google.common.annotations.Beta;
 import java.util.List;
 import java.util.Optional;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 
 /**
  * Every Java interface has to be specified with:
@@ -128,4 +129,11 @@ public interface GeneratedType extends Type, DocumentedType {
      * @return YANG source definition, or empty when unavailable.
      */
     Optional<YangSourceDefinition> getYangSourceDefinition();
+
+    /**
+     * Get the BindingNamespaceType.
+     *
+     * @return BindingNamespaceType which type belongs to.
+     */
+    BindingNamespaceType getBindingNamespaceType();
 }

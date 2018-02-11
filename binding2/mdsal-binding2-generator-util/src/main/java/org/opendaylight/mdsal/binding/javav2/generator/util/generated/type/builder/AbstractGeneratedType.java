@@ -32,6 +32,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPro
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 
 @Beta
 abstract class AbstractGeneratedType extends AbstractBaseType implements GeneratedType {
@@ -48,6 +49,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     private final List<GeneratedProperty> properties;
     private final boolean isAbstract;
     private final YangSourceDefinition definition;
+    private final BindingNamespaceType namespaceType;
 
     public AbstractGeneratedType(final AbstractGeneratedTypeBuilder<?> builder) {
         super(builder.getPackageName(), builder.getName(), true, null);
@@ -64,28 +66,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         this.properties = toUnmodifiableProperties(builder.getProperties());
         this.isAbstract = builder.isAbstract();
         this.definition = builder.getYangSourceDefinition().orElse(null);
-    }
-
-    public AbstractGeneratedType(final Type parent, final String packageName, final String name, final TypeComment comment,
-                                 final List<AnnotationTypeBuilder> annotationBuilders, final boolean isAbstract,
-                                 final List<Type> implementsTypes, final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
-                                 final List<GeneratedTOBuilder> enclosedGenTOBuilders, final List<EnumBuilder> enumBuilders,
-                                 final List<Constant> constants, final List<MethodSignatureBuilder> methodBuilders,
-                                 final List<GeneratedPropertyBuilder> propertyBuilders, final Type parentTypeForBuilder) {
-        //TODO: not called by actual codebase, fix this up (provide context) if needed - 07/20/2017
-        super(packageName, name, null);
-        this.parent = parent;
-        this.parentTypeForBuilder = parentTypeForBuilder;
-        this.comment = comment;
-        this.annotations = toUnmodifiableAnnotations(annotationBuilders);
-        this.implementsTypes = makeUnmodifiable(implementsTypes);
-        this.constants = makeUnmodifiable(constants);
-        this.enumerations = toUnmodifiableEnumerations(enumBuilders);
-        this.methodSignatures = toUnmodifiableMethods(methodBuilders);
-        this.enclosedTypes = toUnmodifiableEnclosedTypes(enclosedGenTypeBuilders, enclosedGenTOBuilders);
-        this.properties = toUnmodifiableProperties(propertyBuilders);
-        this.isAbstract = isAbstract;
-        this.definition = null;
+        this.namespaceType = builder.getBindingNamespaceType();
     }
 
     protected static final <T> List<T> makeUnmodifiable(final List<T> list) {
@@ -191,6 +172,11 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     @Override
     public final Optional<YangSourceDefinition> getYangSourceDefinition() {
         return Optional.ofNullable(definition);
+    }
+
+    @Override
+    public BindingNamespaceType getBindingNamespaceType() {
+        return this.namespaceType;
     }
 
     @Override
