@@ -1561,7 +1561,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
                     returnType = mc.getInnerType(typeDef.getPath());
                 }
             } else if (typeDef instanceof EnumTypeDefinition && typeDef.getBaseType() == null) {
-                // Annonymous enumeration (already generated, since it is inherited via uses).
+                // Anonymous enumeration (already generated, since it is inherited via uses).
                 LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
                 QName qname = originalLeaf.getQName();
                 final Module enumModule =  schemaContext.findModule(qname.getModule()).orElse(null);
@@ -2143,9 +2143,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         if (verboseCommentGenerator != null) {
             final Module module = findParentModule(schemaContext, schemaNode);
-            final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
-
-            verboseCommentGenerator.appendYangSnippet(sb, module, schemaNode, namespace[namespace.length - 1]);
+            verboseCommentGenerator.appendYangSnippet(sb, module, schemaNode,
+                Iterables.getLast(BSDOT_SPLITTER.split(fullyQualifiedName)));
         }
 
         return replaceAllIllegalChars(sb);
