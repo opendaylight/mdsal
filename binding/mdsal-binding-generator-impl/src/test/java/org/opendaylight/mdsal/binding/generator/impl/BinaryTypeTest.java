@@ -42,7 +42,7 @@ public class BinaryTypeTest {
         final SchemaContext context = YangParserTestUtils.parseYangFiles(yangModels);
 
         assertNotNull("context is null", context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertNotNull("genTypes is null", genTypes);

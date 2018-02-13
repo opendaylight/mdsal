@@ -5,12 +5,14 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.generator.impl
+package org.opendaylight.mdsal.binding.java.api.generator
 
 import java.util.Collection
 import java.util.List
 import java.util.Map
 import java.util.Set
+import org.opendaylight.mdsal.binding.generator.spi.YangTextSnippetProvider
+import org.opendaylight.mdsal.binding.model.util.FormattingUtils
 import org.opendaylight.yangtools.yang.common.Revision
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode
@@ -39,7 +41,7 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPair
 
-class YangTemplate {
+final class YangTemplate implements YangTextSnippetProvider {
 
     private static val String SKIP_PROPERTY_NAME = "mdsal.skip.verbose"
 
@@ -47,93 +49,13 @@ class YangTemplate {
 
     private static val SKIPPED_EMPTY = '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
 
-    def static String generateYangSnipet(SchemaNode schemaNode) {
-        if (schemaNode === null)
-            return ''
-        if (SKIP)
-            return SKIPPED_EMPTY
-        '''
-            «IF schemaNode instanceof DataSchemaNode»
-            «writeDataSchemaNode(schemaNode)»
-            «ENDIF»
-            «IF schemaNode instanceof EnumTypeDefinition.EnumPair»
-            «writeEnumPair(schemaNode)»
-            «ENDIF»
-            «IF schemaNode instanceof ExtensionDefinition»
-            «writeExtension(schemaNode)»
-            «ENDIF»
-            «IF schemaNode instanceof FeatureDefinition»
-            «writeFeature(schemaNode)»
-            «ENDIF»
-            «IF schemaNode instanceof GroupingDefinition»
-            «writeGroupingDef(schemaNode)»
-            «ENDIF»
-            «IF schemaNode instanceof IdentitySchemaNode»
-            «writeIdentity(schemaNode)»
-            «ENDIF»
-            «IF schemaNode instanceof NotificationDefinition»
-            «writeNotification(schemaNode)»
-            «ENDIF»
-            «IF schemaNode instanceof RpcDefinition»
-            «writeRPC(schemaNode)»
-            «ENDIF»
-            «IF schemaNode instanceof TypeDefinition<?>»
-            «writeTypeDefinition(schemaNode)»
-            «ENDIF»
-            «IF schemaNode instanceof UnknownSchemaNode»
-            «writeUnknownSchemaNode(schemaNode)»
-            «ENDIF»
-        '''
+    private static val INSTANCE = new YangTemplate();
+
+    def static YangTemplate getInstance() {
+        return INSTANCE;
     }
 
-    def static String generateYangSnipet(Set<? extends SchemaNode> nodes) {
-        if (nodes.nullOrEmpty)
-            return ''
-        if (SKIP)
-            return SKIPPED_EMPTY
-        '''
-            «FOR node : nodes»
-                «IF node instanceof NotificationDefinition»
-                «writeNotification(node)»
-                «ELSEIF node instanceof RpcDefinition»
-                «writeRPC(node)»
-                «ENDIF»
-            «ENDFOR»
-        '''
-    }
-
-    def private static writeEnumPair(EnumPair pair) {
-        '''
-            enum «pair.name» {
-                value «pair.value»;
-            }
-        '''
-    }
-
-    def private static String writeModuleImports(Set<ModuleImport> moduleImports) {
-        if (moduleImports.nullOrEmpty)
-            return ''
-
-        '''
-            «FOR moduleImport : moduleImports SEPARATOR "\n"»
-                «IF moduleImport !== null && !moduleImport.moduleName.nullOrEmpty»
-                import «moduleImport.moduleName» { prefix "«moduleImport.prefix»"; }
-                «ENDIF»
-            «ENDFOR»
-        '''
-    }
-
-    def private static writeRevision(Revision moduleRevision, String moduleDescription) {
-        val revisionIndent = 12
-
-        '''
-            revision «moduleRevision.toString» {
-                description "«YangTextTemplate.formatToParagraph(moduleDescription, revisionIndent)»";
-            }
-        '''
-    }
-
-    def static String generateYangSnipet(Module module) {
+    override String generateYangSnippet(Module module) {
         if (SKIP)
             return SKIPPED_EMPTY
         '''
@@ -192,6 +114,76 @@ class YangTemplate {
 
                 «writeUsesNodes(module.uses)»
                 «ENDIF»
+            }
+        '''
+    }
+
+    override String generateYangSnippet(SchemaNode schemaNode) {
+        if (schemaNode === null)
+            return ''
+        if (SKIP)
+            return SKIPPED_EMPTY
+        '''
+            «IF schemaNode instanceof DataSchemaNode»
+            «writeDataSchemaNode(schemaNode)»
+            «ENDIF»
+            «IF schemaNode instanceof EnumTypeDefinition.EnumPair»
+            «writeEnumPair(schemaNode)»
+            «ENDIF»
+            «IF schemaNode instanceof ExtensionDefinition»
+            «writeExtension(schemaNode)»
+            «ENDIF»
+            «IF schemaNode instanceof FeatureDefinition»
+            «writeFeature(schemaNode)»
+            «ENDIF»
+            «IF schemaNode instanceof GroupingDefinition»
+            «writeGroupingDef(schemaNode)»
+            «ENDIF»
+            «IF schemaNode instanceof IdentitySchemaNode»
+            «writeIdentity(schemaNode)»
+            «ENDIF»
+            «IF schemaNode instanceof NotificationDefinition»
+            «writeNotification(schemaNode)»
+            «ENDIF»
+            «IF schemaNode instanceof RpcDefinition»
+            «writeRPC(schemaNode)»
+            «ENDIF»
+            «IF schemaNode instanceof TypeDefinition<?>»
+            «writeTypeDefinition(schemaNode)»
+            «ENDIF»
+            «IF schemaNode instanceof UnknownSchemaNode»
+            «writeUnknownSchemaNode(schemaNode)»
+            «ENDIF»
+        '''
+    }
+
+    def private static writeEnumPair(EnumPair pair) {
+        '''
+            enum «pair.name» {
+                value «pair.value»;
+            }
+        '''
+    }
+
+    def private static String writeModuleImports(Set<ModuleImport> moduleImports) {
+        if (moduleImports.nullOrEmpty)
+            return ''
+
+        '''
+            «FOR moduleImport : moduleImports SEPARATOR "\n"»
+                «IF moduleImport !== null && !moduleImport.moduleName.nullOrEmpty»
+                import «moduleImport.moduleName» { prefix "«moduleImport.prefix»"; }
+                «ENDIF»
+            «ENDFOR»
+        '''
+    }
+
+    def private static writeRevision(Revision moduleRevision, String moduleDescription) {
+        val revisionIndent = 12
+
+        '''
+            revision «moduleRevision.toString» {
+                description "«FormattingUtils.formatToParagraph(moduleDescription, revisionIndent)»";
             }
         '''
     }
@@ -519,7 +511,7 @@ class YangTemplate {
 
     def private static writeAugment(AugmentationSchemaNode augment) {
         '''
-            augment «YangTextTemplate.formatToAugmentPath(augment.targetPath.pathFromRoot)» {
+            augment «FormattingUtils.formatToAugmentPath(augment.targetPath.pathFromRoot)» {
                 «IF augment.whenCondition !== null && !augment.whenCondition.toString.nullOrEmpty»
                 when "«augment.whenCondition.toString»";
                 «ENDIF»

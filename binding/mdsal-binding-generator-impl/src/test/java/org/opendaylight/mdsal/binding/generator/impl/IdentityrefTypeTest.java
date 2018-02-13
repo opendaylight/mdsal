@@ -56,7 +56,7 @@ public class IdentityrefTypeTest {
         final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         GeneratedType moduleGenType = null;

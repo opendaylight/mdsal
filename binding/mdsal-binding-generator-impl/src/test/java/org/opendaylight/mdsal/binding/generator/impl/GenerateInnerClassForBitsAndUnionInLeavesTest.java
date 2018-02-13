@@ -26,7 +26,7 @@ public class GenerateInnerClassForBitsAndUnionInLeavesTest {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/bit_and_union_in_leaf.yang");
         assertTrue(context != null);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
         assertTrue(genTypes != null);
 

@@ -27,7 +27,7 @@ public class GeneratedTypesStringTest {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-string-demo.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         boolean typedefStringFound = false;

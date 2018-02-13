@@ -34,7 +34,7 @@ public class AugmentRelativeXPathTest extends AbstractTypesTest {
         final SchemaContext context = YangParserTestUtils.parseYangFiles(testModels);
 
         assertNotNull("context is null", context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertNotNull("genTypes is null", genTypes);
