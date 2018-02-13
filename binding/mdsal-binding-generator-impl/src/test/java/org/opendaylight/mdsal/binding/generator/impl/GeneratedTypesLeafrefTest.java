@@ -34,7 +34,7 @@ public class GeneratedTypesLeafrefTest {
         assertNotNull(context);
         assertEquals(4, context.getModules().size());
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertEquals(54, genTypes.size());
@@ -214,7 +214,7 @@ public class GeneratedTypesLeafrefTest {
         assertNotNull(context);
         assertEquals(1, context.getModules().size());
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         try {
             bindingGen.generateTypes(context);
             fail("Expected IllegalArgumentException caused by invalid leafref path");

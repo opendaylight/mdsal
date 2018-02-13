@@ -46,6 +46,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.generator.spi.YangTextSnippetProvider;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
@@ -62,6 +63,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
+import org.opendaylight.mdsal.binding.model.util.FormattingUtils;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
@@ -154,10 +156,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private final Map<Module, ModuleContext> genCtx = new HashMap<>();
 
     /**
-     * When set to true, generated classes will include javadoc comments which
-     * are useful for users.
+     * When set to non-null, generated classes will include javadoc comments which are useful for users, generated
+     * using specified generator.
      */
-    private final boolean verboseClassComments;
+    private final VerboseCommentGenerator verboseCommentGenerator;
 
     /**
      * Outer key represents the package name. Outer value represents map of all
@@ -179,12 +181,19 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private SchemaContext schemaContext;
 
     /**
+     * Create a new binding generator, which does not generate verbose class comments.
+     */
+    public BindingGeneratorImpl() {
+        verboseCommentGenerator = null;
+    }
+
+    /**
      * Create a new binding generator.
      *
-     * @param verboseClassComments generate verbose comments
+     * @param snippetProvider generate verbose comments using this generator
      */
-    public BindingGeneratorImpl(final boolean verboseClassComments) {
-        this.verboseClassComments = verboseClassComments;
+    public BindingGeneratorImpl(final YangTextSnippetProvider snippetProvider) {
+        this.verboseCommentGenerator = new VerboseCommentGenerator(snippetProvider);
     }
 
     /**
@@ -2115,12 +2124,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
         sb.append(NEW_LINE);
 
-        if (verboseClassComments) {
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(schemaNodes)));
-            sb.append("</pre>");
-            sb.append(NEW_LINE);
+        if (verboseCommentGenerator != null) {
+            verboseCommentGenerator.appendYangSnippet(sb, schemaNodes);
         }
 
         return replaceAllIllegalChars(sb);
@@ -2129,91 +2134,35 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName) {
         final StringBuilder sb = new StringBuilder();
         final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription().orElse(null));
-        final String formattedDescription = YangTextTemplate.formatToParagraph(nodeDescription, 0);
+        final String formattedDescription = FormattingUtils.formatToParagraph(nodeDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
             sb.append(formattedDescription);
             sb.append(NEW_LINE);
         }
 
-        if (verboseClassComments) {
+        if (verboseCommentGenerator != null) {
             final Module module = findParentModule(schemaContext, schemaNode);
-            final StringBuilder linkToBuilderClass = new StringBuilder();
             final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
-            final String className = namespace[namespace.length - 1];
 
-            if (hasBuilderClass(schemaNode)) {
-                linkToBuilderClass.append(className);
-                linkToBuilderClass.append("Builder");
-            }
-
-            sb.append("<p>");
-            sb.append("This class represents the following YANG schema fragment defined in module <b>");
-            sb.append(module.getName());
-            sb.append("</b>");
-            sb.append(NEW_LINE);
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(schemaNode)));
-            sb.append("</pre>");
-            sb.append(NEW_LINE);
-            sb.append("The schema path to identify an instance is");
-            sb.append(NEW_LINE);
-            sb.append("<i>");
-            sb.append(YangTextTemplate.formatSchemaPath(module.getName(), schemaNode.getPath().getPathFromRoot()));
-            sb.append("</i>");
-            sb.append(NEW_LINE);
-
-            if (hasBuilderClass(schemaNode)) {
-                sb.append(NEW_LINE);
-                sb.append("<p>To create instances of this class use " + "{@link " + linkToBuilderClass + "}.");
-                sb.append(NEW_LINE);
-                sb.append("@see ");
-                sb.append(linkToBuilderClass);
-                sb.append(NEW_LINE);
-                if (schemaNode instanceof ListSchemaNode) {
-                    final List<QName> keyDef = ((ListSchemaNode)schemaNode).getKeyDefinition();
-                    if (keyDef != null && !keyDef.isEmpty()) {
-                        sb.append("@see ");
-                        sb.append(className);
-                        sb.append("Key");
-                    }
-                    sb.append(NEW_LINE);
-                }
-            }
+            verboseCommentGenerator.appendYangSnippet(sb, module, schemaNode, namespace[namespace.length - 1]);
         }
 
         return replaceAllIllegalChars(sb);
     }
 
-    private static boolean hasBuilderClass(final SchemaNode schemaNode) {
-        if (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode ||
-                schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition) {
-            return true;
-        }
-        return false;
-    }
-
     private String createDescription(final Module module) {
         final StringBuilder sb = new StringBuilder();
         final String moduleDescription = encodeAngleBrackets(module.getDescription().orElse(null));
-        final String formattedDescription = YangTextTemplate.formatToParagraph(moduleDescription, 0);
+        final String formattedDescription = FormattingUtils.formatToParagraph(moduleDescription, 0);
 
         if (!Strings.isNullOrEmpty(formattedDescription)) {
             sb.append(formattedDescription);
             sb.append(NEW_LINE);
         }
 
-        if (verboseClassComments) {
-            sb.append("<p>");
-            sb.append("This class represents the following YANG schema fragment defined in module <b>");
-            sb.append(module.getName());
-            sb.append("</b>");
-            sb.append(NEW_LINE);
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(module)));
-            sb.append("</pre>");
+        if (verboseCommentGenerator != null) {
+            verboseCommentGenerator.appendModuleDescription(sb, module);
         }
 
         return replaceAllIllegalChars(sb);

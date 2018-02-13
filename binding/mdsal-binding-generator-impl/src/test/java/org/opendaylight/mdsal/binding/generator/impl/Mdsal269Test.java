@@ -27,7 +27,7 @@ public class Mdsal269Test {
     public void mdsal269Test() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal269.yang");
 
-        final List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
+        final List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
         assertNotNull(generateTypes);
         assertEquals(4, generateTypes.size());
 

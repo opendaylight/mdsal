@@ -33,7 +33,7 @@ public class BitAndUnionTOEnclosingTest {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/bit_and_union.yang");
 
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         genTypes = bindingGen.generateTypes(context);
 
         for (Type type : genTypes) {

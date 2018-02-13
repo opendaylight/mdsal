@@ -31,7 +31,7 @@ public class Bug6135Test {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/bug-6135/foo.yang");
         assertNotNull(context);
 
-        final List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
+        final List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
         assertFalse(generateTypes.isEmpty());
 
         GeneratedType genInterface = null;

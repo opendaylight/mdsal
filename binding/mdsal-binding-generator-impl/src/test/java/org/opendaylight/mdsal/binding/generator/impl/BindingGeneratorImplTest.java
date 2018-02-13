@@ -29,9 +29,7 @@ public class BindingGeneratorImplTest {
             "/isis-topology/l3-unicast-igp-topology@2013-10-21.yang");
         assertNotNull(context);
 
-        List<Type> generateTypes = new BindingGeneratorImpl(false)
-                .generateTypes(context);
-
+        List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
         assertFalse(generateTypes.isEmpty());
     }
 
@@ -39,7 +37,7 @@ public class BindingGeneratorImplTest {
     public void choiceNodeGenerationTest() {
         SchemaContext context = YangParserTestUtils.parseYangResource("/binding-generator-impl-test/choice-test.yang");
 
-        List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
+        List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
 
         GeneratedType choiceTestData = null;
         GeneratedType myRootContainer = null;
@@ -133,7 +131,7 @@ public class BindingGeneratorImplTest {
         SchemaContext context = YangParserTestUtils.parseYangResource(
             "/binding-generator-impl-test/notification-test.yang");
 
-        List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
+        List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
 
         GeneratedType foo = null;
         for (Type type : generateTypes) {
