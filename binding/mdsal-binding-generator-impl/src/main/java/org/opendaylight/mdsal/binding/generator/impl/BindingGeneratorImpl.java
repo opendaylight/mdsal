@@ -2143,9 +2143,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
         if (verboseCommentGenerator != null) {
             final Module module = findParentModule(schemaContext, schemaNode);
-            final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
-
-            verboseCommentGenerator.appendYangSnippet(sb, module, schemaNode, namespace[namespace.length - 1]);
+            verboseCommentGenerator.appendYangSnippet(sb, module, schemaNode,
+                Iterables.getLast(BSDOT_SPLITTER.split(fullyQualifiedName)));
         }
 
         return replaceAllIllegalChars(sb);
