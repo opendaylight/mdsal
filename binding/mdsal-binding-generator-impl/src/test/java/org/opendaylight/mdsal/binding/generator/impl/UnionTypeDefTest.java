@@ -29,7 +29,7 @@ public class UnionTypeDefTest {
             "/union-test-models/abstract-topology.yang", "/ietf/ietf-inet-types.yang");
 
         assertNotNull("context is null", context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertNotNull("genTypes is null", genTypes);
@@ -43,7 +43,7 @@ public class UnionTypeDefTest {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
             "/leafref_typedef_union/bug8449.yang");
         assertNotNull(schemaContext);
-        final List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(schemaContext);
+        final List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(schemaContext);
         assertNotNull(generateTypes);
         for (final Type type : generateTypes) {
             if (type.getName().equals("Cont")) {

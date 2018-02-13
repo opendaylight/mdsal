@@ -30,7 +30,7 @@ public class ExtendedTypedefTest {
             "/typedef-of-typedef/typedef_of_typedef.yang", "/ietf/ietf-inet-types.yang");
         assertNotNull("Schema Context is null", context);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         GeneratedTransferObject simpleTypedef4 = null;
