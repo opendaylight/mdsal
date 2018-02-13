@@ -30,7 +30,7 @@ public class GeneratedTypesTest {
             "/abstract-topology.yang", "/ietf/ietf-inet-types.yang");
         assertNotNull(context);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertNotNull(genTypes);
@@ -42,7 +42,7 @@ public class GeneratedTypesTest {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-container-demo.yang");
         assertNotNull(context);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertNotNull(genTypes);
@@ -126,7 +126,7 @@ public class GeneratedTypesTest {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-leaf-list-demo.yang");
         assertNotNull(context);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertNotNull(genTypes);
@@ -209,7 +209,7 @@ public class GeneratedTypesTest {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/simple-list-demo.yang");
         assertNotNull(context);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertNotNull(genTypes);
@@ -331,7 +331,7 @@ public class GeneratedTypesTest {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/list-composite-key.yang");
         assertNotNull(context);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertNotNull(genTypes);
@@ -382,7 +382,7 @@ public class GeneratedTypesTest {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/demo-topology.yang");
         assertNotNull(context);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertNotNull(genTypes);

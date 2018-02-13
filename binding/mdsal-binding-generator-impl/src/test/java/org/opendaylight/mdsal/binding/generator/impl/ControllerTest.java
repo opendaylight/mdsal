@@ -26,7 +26,7 @@ public class ControllerTest {
             "/ietf/ietf-inet-types.yang");
         assertNotNull("Schema Context is null", context);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
 
         assertNotNull(genTypes);
