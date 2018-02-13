@@ -28,6 +28,7 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findD
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
+import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -113,6 +114,69 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BindingGeneratorImpl implements BindingGenerator {
+    @Beta
+    public abstract static class VerboseCommentGenerator {
+
+        final void appendYangSnippet(final StringBuilder sb, final Set<? extends SchemaNode> schemaNodes) {
+            if (!schemaNodes.isEmpty()) {
+                sb.append("<pre>\n");
+                for (SchemaNode schemaNode : schemaNodes) {
+                    sb.append(encodeAngleBrackets(generateYangSnippet(schemaNode)));
+                }
+                sb.append("</pre>\n");
+            }
+        }
+
+        final void appendModuleDescription(final StringBuilder sb, final Module module) {
+            sb.append("<p>")
+            .append("This class represents the following YANG schema fragment defined in module <b>")
+            .append(module.getName())
+            .append("</b>\n")
+            .append("<pre>\n")
+            .append(encodeAngleBrackets(generateYangSnippet(module)))
+            .append("</pre>");
+        }
+
+        final void appendYangSnippet(final StringBuilder sb, final Module module, final SchemaNode schemaNode,
+                final String className) {
+
+            sb.append("<p>\n")
+            .append("This class represents the following YANG schema fragment defined in module <b>")
+            .append(module.getName())
+            .append("</b>\n")
+            .append("<pre>\n")
+            .append(encodeAngleBrackets(generateYangSnippet(schemaNode)))
+            .append("</pre>\n")
+            .append("The schema path to identify an instance is\n")
+            .append("<i>")
+            .append(YangTextTemplate.formatSchemaPath(module.getName(), schemaNode.getPath().getPathFromRoot()))
+            .append("</i>\n");
+
+            if (hasBuilderClass(schemaNode)) {
+                final String builderClassName = className + "Builder";
+
+                sb.append("\n<p>To create instances of this class use {@link ").append(builderClassName).append("}.\n")
+                .append("@see ").append(builderClassName).append(NEW_LINE);
+                if (schemaNode instanceof ListSchemaNode) {
+                    final List<QName> keyDef = ((ListSchemaNode)schemaNode).getKeyDefinition();
+                    if (keyDef != null && !keyDef.isEmpty()) {
+                        sb.append("@see ").append(className).append("Key");
+                    }
+                    sb.append(NEW_LINE);
+                }
+            }
+        }
+
+        protected abstract String generateYangSnippet(SchemaNode schemaNode);
+
+        protected abstract String generateYangSnippet(Module module);
+
+        private static boolean hasBuilderClass(final SchemaNode schemaNode) {
+            return schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode
+                    || schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition;
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(BindingGeneratorImpl.class);
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final Splitter BSDOT_SPLITTER = Splitter.on("\\.");
@@ -154,10 +218,10 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private final Map<Module, ModuleContext> genCtx = new HashMap<>();
 
     /**
-     * When set to true, generated classes will include javadoc comments which
-     * are useful for users.
+     * When set to non-null, generated classes will include javadoc comments which are useful for users, generated
+     * using specified generator.
      */
-    private final boolean verboseClassComments;
+    private final VerboseCommentGenerator verboseCommentGenerator;
 
     /**
      * Outer key represents the package name. Outer value represents map of all
@@ -179,12 +243,19 @@ public class BindingGeneratorImpl implements BindingGenerator {
     private SchemaContext schemaContext;
 
     /**
+     * Create a new binding generator, which does not generate verbose class comments.
+     */
+    public BindingGeneratorImpl() {
+        verboseCommentGenerator = null;
+    }
+
+    /**
      * Create a new binding generator.
      *
-     * @param verboseClassComments generate verbose comments
+     * @param verboseCommentGenerator generate verbose comments using this generator
      */
-    public BindingGeneratorImpl(final boolean verboseClassComments) {
-        this.verboseClassComments = verboseClassComments;
+    public BindingGeneratorImpl(final VerboseCommentGenerator verboseCommentGenerator) {
+        this.verboseCommentGenerator = checkNotNull(verboseCommentGenerator);
     }
 
     /**
@@ -2115,12 +2186,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
         sb.append(NEW_LINE);
 
-        if (verboseClassComments) {
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(schemaNodes)));
-            sb.append("</pre>");
-            sb.append(NEW_LINE);
+        if (verboseCommentGenerator != null) {
+            verboseCommentGenerator.appendYangSnippet(sb, schemaNodes);
         }
 
         return replaceAllIllegalChars(sb);
@@ -2136,62 +2203,14 @@ public class BindingGeneratorImpl implements BindingGenerator {
             sb.append(NEW_LINE);
         }
 
-        if (verboseClassComments) {
+        if (verboseCommentGenerator != null) {
             final Module module = findParentModule(schemaContext, schemaNode);
-            final StringBuilder linkToBuilderClass = new StringBuilder();
             final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
-            final String className = namespace[namespace.length - 1];
 
-            if (hasBuilderClass(schemaNode)) {
-                linkToBuilderClass.append(className);
-                linkToBuilderClass.append("Builder");
-            }
-
-            sb.append("<p>");
-            sb.append("This class represents the following YANG schema fragment defined in module <b>");
-            sb.append(module.getName());
-            sb.append("</b>");
-            sb.append(NEW_LINE);
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(schemaNode)));
-            sb.append("</pre>");
-            sb.append(NEW_LINE);
-            sb.append("The schema path to identify an instance is");
-            sb.append(NEW_LINE);
-            sb.append("<i>");
-            sb.append(YangTextTemplate.formatSchemaPath(module.getName(), schemaNode.getPath().getPathFromRoot()));
-            sb.append("</i>");
-            sb.append(NEW_LINE);
-
-            if (hasBuilderClass(schemaNode)) {
-                sb.append(NEW_LINE);
-                sb.append("<p>To create instances of this class use " + "{@link " + linkToBuilderClass + "}.");
-                sb.append(NEW_LINE);
-                sb.append("@see ");
-                sb.append(linkToBuilderClass);
-                sb.append(NEW_LINE);
-                if (schemaNode instanceof ListSchemaNode) {
-                    final List<QName> keyDef = ((ListSchemaNode)schemaNode).getKeyDefinition();
-                    if (keyDef != null && !keyDef.isEmpty()) {
-                        sb.append("@see ");
-                        sb.append(className);
-                        sb.append("Key");
-                    }
-                    sb.append(NEW_LINE);
-                }
-            }
+            verboseCommentGenerator.appendYangSnippet(sb, module, schemaNode, namespace[namespace.length - 1]);
         }
 
         return replaceAllIllegalChars(sb);
-    }
-
-    private static boolean hasBuilderClass(final SchemaNode schemaNode) {
-        if (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode ||
-                schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition) {
-            return true;
-        }
-        return false;
     }
 
     private String createDescription(final Module module) {
@@ -2204,16 +2223,8 @@ public class BindingGeneratorImpl implements BindingGenerator {
             sb.append(NEW_LINE);
         }
 
-        if (verboseClassComments) {
-            sb.append("<p>");
-            sb.append("This class represents the following YANG schema fragment defined in module <b>");
-            sb.append(module.getName());
-            sb.append("</b>");
-            sb.append(NEW_LINE);
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(YangTemplate.generateYangSnipet(module)));
-            sb.append("</pre>");
+        if (verboseCommentGenerator != null) {
+            verboseCommentGenerator.appendModuleDescription(sb, module);
         }
 
         return replaceAllIllegalChars(sb);

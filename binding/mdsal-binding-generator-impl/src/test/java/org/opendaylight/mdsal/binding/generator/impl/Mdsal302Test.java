@@ -22,7 +22,7 @@ public class Mdsal302Test {
     public void bug4145Test() {
         SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal-302/mdsal-302.yang");
 
-        List<Type> generateTypes = new BindingGeneratorImpl(false).generateTypes(context);
+        List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
         assertNotNull(generateTypes);
         assertEquals(15, generateTypes.size());
     }

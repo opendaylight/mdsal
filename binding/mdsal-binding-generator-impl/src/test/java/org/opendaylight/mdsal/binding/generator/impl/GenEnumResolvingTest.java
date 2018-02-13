@@ -29,7 +29,7 @@ public class GenEnumResolvingTest {
             "/enum-test-models/ietf-interfaces@2012-11-15.yang", "/ietf/iana-if-type.yang");
         assertTrue(context != null);
 
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
         assertTrue(genTypes != null);
 
@@ -89,7 +89,7 @@ public class GenEnumResolvingTest {
     public void testTypedefEnumResolving() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/ietf/iana-if-type.yang");
         assertTrue(context != null);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
         assertTrue(genTypes != null);
         assertEquals(1, genTypes.size());
@@ -107,7 +107,7 @@ public class GenEnumResolvingTest {
             "/enum-test-models/abstract-topology@2013-02-08.yang", "/enum-test-models/ietf-interfaces@2012-11-15.yang",
             "/ietf/iana-if-type.yang");
         assertNotNull(context);
-        final BindingGenerator bindingGen = new BindingGeneratorImpl(true);
+        final BindingGenerator bindingGen = new BindingGeneratorImpl();
         final List<Type> genTypes = bindingGen.generateTypes(context);
         assertNotNull(genTypes);
         assertTrue(!genTypes.isEmpty());
