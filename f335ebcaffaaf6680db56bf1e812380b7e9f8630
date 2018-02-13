@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59a7b472_24980f61",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/generator/spi/generator/AbstractStreamWriterGenerator.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-02-13T11:57:17Z",
+      "side": 1,
+      "message": "just return here, move source declaration to just above the if/else block.",
+      "range": {
+        "startLine": 179,
+        "startChar": 0,
+        "endLine": 180,
+        "endChar": 26
+      },
+      "revId": "f335ebcaffaaf6680db56bf1e812380b7e9f8630",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
