@@ -162,7 +162,7 @@ module ted {
   grouping ted-link-attributes {
     description
       "TED Attributes associated with the link.";
-    reference "RFC 3630, RFC 3784: IS-IS / OSPF Traffic Engineering (TE)";
+    reference "RFC 3630, RFC 3784, RFC 7471, RFC 8570: IS-IS / OSPF Traffic Engineering (TE)";
 
     leaf color {
       description
@@ -210,6 +210,67 @@ module ted {
       description
         "Shared Risk Link Group Attributes";
       uses srlg-attributes;
+    }
+    // TE Metric Extendions as per RFC 7471 (OSPF) & 8570 (IS-IS)
+    leaf link-delay {
+      description
+        "Unidirectional Link Delay. Unit in micro second";
+      type uint32 {
+        range "0..16777215";
+      }
+    }
+    container link-min-max-delay {
+      description
+        "Min / Max Unidirectional Link Delay. Unit in micro second";
+      leaf min-delay {
+        description
+          "Minimum Unidirectional Link Delay";
+        type uint32 {
+          range "0..16777215";
+        }
+      }
+      leaf max-delay {
+        description
+          "Maximum Unidirectional Link Delay";
+        type uint32 {
+          range "0..16777215";
+        }
+      }
+    }
+    leaf delay-variation {
+      description
+        "Unidirectional Delay Variation. Unit in micro second";
+      type uint32 {
+        range "0..16777215";
+      }
+    }
+    leaf link-loss {
+      description
+        "Unidirectional Link Loss. Unit in packet loss percentage";
+      type uint32 {
+        range "0..16777215";
+      }
+    }
+    leaf residual-bandwidth {
+      description
+        "Unidirectional Residual Bandwidth. Units in bytes per second";
+      type decimal64 {
+        fraction-digits 2;
+      }
+    }
+    leaf available-bandwidth {
+      description
+        "Unidirectional Available Bandwidth. Units in bytes per second";
+      type decimal64 {
+        fraction-digits 2;
+      }
+    }
+    leaf utilized-bandwidth {
+      description
+        "Unidirectional Utilized Bandwidth. Units in bytes per second";
+      type decimal64 {
+        fraction-digits 2;
+      }
     }
   }
 
