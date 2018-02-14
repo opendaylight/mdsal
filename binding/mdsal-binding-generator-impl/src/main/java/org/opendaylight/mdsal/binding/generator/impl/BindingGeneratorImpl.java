@@ -313,8 +313,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         annotateDeprecatedIfNecessary(node.getStatus(), genType);
 
         genType.setModuleName(module.getName());
-        genType.setYangSourceDefinition(YangSourceDefinition.of(module, node));
-
+        YangSourceDefinition.of(module, node).ifPresent(genType::setYangSourceDefinition);
         TypeComments.description(node).ifPresent(genType::addComment);
         node.getDescription().ifPresent(genType::setDescription);
         node.getReference().ifPresent(genType::setReference);
@@ -449,7 +448,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         addImplementedInterfaceFromUses(module, moduleDataTypeBuilder);
         moduleDataTypeBuilder.addImplementsType(DATA_ROOT);
 
-        moduleDataTypeBuilder.setYangSourceDefinition(YangSourceDefinition.of(module));
+        YangSourceDefinition.of(module).ifPresent(moduleDataTypeBuilder::setYangSourceDefinition);
         TypeComments.description(module).ifPresent(moduleDataTypeBuilder::addComment);
         module.getDescription().ifPresent(moduleDataTypeBuilder::setDescription);
         module.getReference().ifPresent(moduleDataTypeBuilder::setReference);
@@ -488,7 +487,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         interfaceBuilder.addComment(TypeComments.javadoc(
             "Interface for implementing the following YANG RPCs defined in module <b>" + module.getName() + "</b>")
             .get());
-        interfaceBuilder.setYangSourceDefinition(YangSourceDefinition.of(module, rpcDefinitions));
+        YangSourceDefinition.of(module, rpcDefinitions).ifPresent(interfaceBuilder::setYangSourceDefinition);
 
         for (final RpcDefinition rpc : rpcDefinitions) {
             if (rpc != null) {
@@ -594,7 +593,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
             }
         }
 
-        listenerInterface.setYangSourceDefinition(YangSourceDefinition.of(module, notifications));
+        YangSourceDefinition.of(module, notifications).ifPresent(listenerInterface::setYangSourceDefinition);
         listenerInterface.addComment(TypeComments.javadoc(
             "Interface for receiving the following YANG notifications defined in module <b>" + module.getName()
             + "</b>").get());
@@ -669,7 +668,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
         newType.setAbstract(true);
 
-        newType.setYangSourceDefinition(YangSourceDefinition.of(module, identity));
+        YangSourceDefinition.of(module, identity).ifPresent(newType::setYangSourceDefinition);
         TypeComments.description(identity).ifPresent(newType::addComment);
         identity.getDescription().ifPresent(newType::setDescription);
         identity.getReference().ifPresent(newType::setReference);
@@ -788,7 +787,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final GeneratedTypeBuilderImpl moduleBuilder = new GeneratedTypeBuilderImpl(packageName, moduleName);
 
         moduleBuilder.setModuleName(moduleName);
-        moduleBuilder.setYangSourceDefinition(YangSourceDefinition.of(module));
+        YangSourceDefinition.of(module).ifPresent(moduleBuilder::setYangSourceDefinition);
         TypeComments.description(module).ifPresent(moduleBuilder::addComment);
         module.getDescription().ifPresent(moduleBuilder::setDescription);
         module.getReference().ifPresent(moduleBuilder::setReference);
@@ -1665,7 +1664,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final GeneratedTOBuilderImpl returnType = new GeneratedTOBuilderImpl(genTOBuilder.getPackageName(),
                 genTOBuilder.getName());
 
-        returnType.setYangSourceDefinition(YangSourceDefinition.of(parentModule, typeDef));
+        YangSourceDefinition.of(parentModule, typeDef).ifPresent(returnType::setYangSourceDefinition);
         TypeComments.description(typeDef).ifPresent(returnType::addComment);
         typeDef.getDescription().ifPresent(returnType::setDescription);
         typeDef.getReference().ifPresent(returnType::setReference);
@@ -1820,7 +1819,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
 
 
-        newType.setYangSourceDefinition(YangSourceDefinition.of(module, schemaNode));
+        YangSourceDefinition.of(module, schemaNode).ifPresent(newType::setYangSourceDefinition);
         TypeComments.description(schemaNode).ifPresent(newType::addComment);
         schemaNode.getDescription().ifPresent(newType::setDescription);
         schemaNode.getReference().ifPresent(newType::setReference);
