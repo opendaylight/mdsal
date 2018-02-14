@@ -20,11 +20,11 @@ public interface GeneratedProperty extends TypeMember {
     String getValue();
 
     /**
-     * Returns <code>true</code> if the property si declared as read-only. <br>
+     * Returns <code>true</code> if the property is declared as read-only. <br>
      * If the property has flag <code>isReadOnly == true</code> the property
      * SHOULD be generated as getter only.
      *
-     * @return <code>true</code> if the property si declared as read-only.
+     * @return <code>true</code> if the property is declared as read-only.
      */
     boolean isReadOnly();
 }

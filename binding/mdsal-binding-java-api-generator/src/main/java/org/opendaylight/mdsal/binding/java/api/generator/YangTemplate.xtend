@@ -11,7 +11,6 @@ import java.util.Collection
 import java.util.List
 import java.util.Map
 import java.util.Set
-import org.opendaylight.mdsal.binding.generator.spi.YangTextSnippetProvider
 import org.opendaylight.mdsal.binding.model.util.FormattingUtils
 import org.opendaylight.yangtools.yang.common.Revision
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode
@@ -41,7 +40,7 @@ import org.opendaylight.yangtools.yang.model.api.UsesNode
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPair
 
-final class YangTemplate implements YangTextSnippetProvider {
+final class YangTemplate {
 
     private static val String SKIP_PROPERTY_NAME = "mdsal.skip.verbose"
 
@@ -49,13 +48,7 @@ final class YangTemplate implements YangTextSnippetProvider {
 
     private static val SKIPPED_EMPTY = '''(Empty due to «SKIP_PROPERTY_NAME» property = true)'''
 
-    private static val INSTANCE = new YangTemplate();
-
-    def static YangTemplate getInstance() {
-        return INSTANCE;
-    }
-
-    override String generateYangSnippet(Module module) {
+    def static String generateYangSnippet(Module module) {
         if (SKIP)
             return SKIPPED_EMPTY
         '''
@@ -118,7 +111,7 @@ final class YangTemplate implements YangTextSnippetProvider {
         '''
     }
 
-    override String generateYangSnippet(SchemaNode schemaNode) {
+    def static String generateYangSnippet(SchemaNode schemaNode) {
         if (schemaNode === null)
             return ''
         if (SKIP)
