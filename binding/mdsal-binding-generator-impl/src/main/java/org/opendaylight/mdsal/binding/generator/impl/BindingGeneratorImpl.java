@@ -28,10 +28,8 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findD
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
@@ -43,10 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
-import org.opendaylight.mdsal.binding.generator.spi.YangTextSnippetProvider;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
@@ -54,6 +50,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
@@ -63,8 +60,8 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
-import org.opendaylight.mdsal.binding.model.util.FormattingUtils;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
+import org.opendaylight.mdsal.binding.model.util.TypeComments;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTOBuilderImpl;
@@ -117,8 +114,6 @@ import org.slf4j.LoggerFactory;
 public class BindingGeneratorImpl implements BindingGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(BindingGeneratorImpl.class);
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
-    private static final Splitter BSDOT_SPLITTER = Splitter.on("\\.");
-    private static final char NEW_LINE = '\n';
 
     /**
      * Comparator based on augment target path.
@@ -151,15 +146,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
      */
     private static final String YANG_EXT_NAMESPACE = "urn:opendaylight:yang:extension:yang-ext";
 
-    private static final Pattern UNICODE_CHAR_PATTERN = Pattern.compile("\\\\+u");
-
     private final Map<Module, ModuleContext> genCtx = new HashMap<>();
-
-    /**
-     * When set to non-null, generated classes will include javadoc comments which are useful for users, generated
-     * using specified generator.
-     */
-    private final VerboseCommentGenerator verboseCommentGenerator;
 
     /**
      * Outer key represents the package name. Outer value represents map of all
@@ -179,22 +166,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * when creating augmentation builder
      */
     private SchemaContext schemaContext;
-
-    /**
-     * Create a new binding generator, which does not generate verbose class comments.
-     */
-    public BindingGeneratorImpl() {
-        verboseCommentGenerator = null;
-    }
-
-    /**
-     * Create a new binding generator.
-     *
-     * @param snippetProvider generate verbose comments using this generator
-     */
-    public BindingGeneratorImpl(final YangTextSnippetProvider snippetProvider) {
-        this.verboseCommentGenerator = new VerboseCommentGenerator(snippetProvider);
-    }
 
     /**
      * Resolves generated types from <code>context</code> schema nodes of all
@@ -339,11 +310,14 @@ public class BindingGeneratorImpl implements BindingGenerator {
         }
         final String packageName = packageNameForGeneratedType(basePackageName, node.getPath());
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, node, childOf, module);
-        genType.addComment(node.getDescription().orElse(null));
         annotateDeprecatedIfNecessary(node.getStatus(), genType);
-        genType.setDescription(createDescription(node, genType.getFullyQualifiedName()));
+
         genType.setModuleName(module.getName());
-        genType.setReference(node.getReference().orElse(null));
+        genType.setYangSourceDefinition(YangSourceDefinition.of(module, node));
+
+        TypeComments.description(node).ifPresent(genType::addComment);
+        node.getDescription().ifPresent(genType::setDescription);
+        node.getReference().ifPresent(genType::setReference);
         genType.setSchemaPath(node.getPath().getPathFromRoot());
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
@@ -474,14 +448,16 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final GeneratedTypeBuilder moduleDataTypeBuilder = moduleTypeBuilder(module, "Data");
         addImplementedInterfaceFromUses(module, moduleDataTypeBuilder);
         moduleDataTypeBuilder.addImplementsType(DATA_ROOT);
-        moduleDataTypeBuilder.addComment(module.getDescription().orElse(null));
-        moduleDataTypeBuilder.setDescription(createDescription(module));
-        moduleDataTypeBuilder.setReference(module.getReference().orElse(null));
+
+        moduleDataTypeBuilder.setYangSourceDefinition(YangSourceDefinition.of(module));
+        TypeComments.description(module).ifPresent(moduleDataTypeBuilder::addComment);
+        module.getDescription().ifPresent(moduleDataTypeBuilder::setDescription);
+        module.getReference().ifPresent(moduleDataTypeBuilder::setReference);
         return moduleDataTypeBuilder;
     }
 
     /**
-     * Converts all <b>rpcs</b> inputs and outputs substatements of the module
+     * Converts all <b>RPCs</b> input and output substatements of the module
      * to the list of <code>Type</code> objects. In addition are to containers
      * and lists which belong to input or output also part of returning list.
      *
@@ -508,7 +484,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
         final GeneratedTypeBuilder interfaceBuilder = moduleTypeBuilder(module, "Service");
         interfaceBuilder.addImplementsType(Types.typeForClass(RpcService.class));
-        interfaceBuilder.setDescription(createDescription(rpcDefinitions, module.getName()));
+
+        interfaceBuilder.addComment(TypeComments.javadoc(
+            "Interface for implementing the following YANG RPCs defined in module <b>" + module.getName() + "</b>")
+            .get());
+        interfaceBuilder.setYangSourceDefinition(YangSourceDefinition.of(module, rpcDefinitions));
 
         for (final RpcDefinition rpc : rpcDefinitions) {
             if (rpc != null) {
@@ -594,8 +574,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
         listenerInterface.addImplementsType(BindingTypes.NOTIFICATION_LISTENER);
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
 
-
-
         for (final NotificationDefinition notification : notifications) {
             if (notification != null) {
                 processUsesAugments(notification, module);
@@ -615,7 +593,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
                 .setComment(encodeAngleBrackets(notification.getDescription().orElse(null))).setReturnType(Types.VOID);
             }
         }
-        listenerInterface.setDescription(createDescription(notifications, module.getName()));
+
+        listenerInterface.setYangSourceDefinition(YangSourceDefinition.of(module, notifications));
+        listenerInterface.addComment(TypeComments.javadoc(
+            "Interface for receiving the following YANG notifications defined in module <b>" + module.getName()
+            + "</b>").get());
 
         genCtx.get(module).addTopLevelNodeType(listenerInterface);
     }
@@ -686,9 +668,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
             newType.setExtendsType(gto);
         }
         newType.setAbstract(true);
-        newType.addComment(identity.getDescription().orElse(null));
-        newType.setDescription(createDescription(identity, newType.getFullyQualifiedName()));
-        newType.setReference(identity.getReference().orElse(null));
+
+        newType.setYangSourceDefinition(YangSourceDefinition.of(module, identity));
+        TypeComments.description(identity).ifPresent(newType::addComment);
+        identity.getDescription().ifPresent(newType::setDescription);
+        identity.getReference().ifPresent(newType::setReference);
         newType.setModuleName(module.getName());
         newType.setSchemaPath(identity.getPath().getPathFromRoot());
 
@@ -796,15 +780,18 @@ public class BindingGeneratorImpl implements BindingGenerator {
      * @throws IllegalArgumentException
      *             if <code>module</code> is null
      */
-    private GeneratedTypeBuilder moduleTypeBuilder(final Module module, final String postfix) {
+    private static GeneratedTypeBuilder moduleTypeBuilder(final Module module, final String postfix) {
         checkArgument(module != null, "Module reference cannot be NULL.");
         final String packageName = BindingMapping.getRootPackageName(module.getQNameModule());
         final String moduleName = BindingMapping.getClassName(module.getName()) + postfix;
 
         final GeneratedTypeBuilderImpl moduleBuilder = new GeneratedTypeBuilderImpl(packageName, moduleName);
-        moduleBuilder.setDescription(createDescription(module));
-        moduleBuilder.setReference(module.getReference().orElse(null));
+
         moduleBuilder.setModuleName(moduleName);
+        moduleBuilder.setYangSourceDefinition(YangSourceDefinition.of(module));
+        TypeComments.description(module).ifPresent(moduleBuilder::addComment);
+        module.getDescription().ifPresent(moduleBuilder::setDescription);
+        module.getReference().ifPresent(moduleBuilder::setReference);
 
         return moduleBuilder;
     }
@@ -1677,10 +1664,11 @@ public class BindingGeneratorImpl implements BindingGenerator {
             final GeneratedTypeBuilder typeBuilder, final Module parentModule) {
         final GeneratedTOBuilderImpl returnType = new GeneratedTOBuilderImpl(genTOBuilder.getPackageName(),
                 genTOBuilder.getName());
-        final String typedefDescription = encodeAngleBrackets(typeDef.getDescription().orElse(null));
 
-        returnType.setDescription(typedefDescription);
-        returnType.setReference(typeDef.getReference().orElse(null));
+        returnType.setYangSourceDefinition(YangSourceDefinition.of(parentModule, typeDef));
+        TypeComments.description(typeDef).ifPresent(returnType::addComment);
+        typeDef.getDescription().ifPresent(returnType::setDescription);
+        typeDef.getReference().ifPresent(returnType::setReference);
         returnType.setSchemaPath(typeDef.getPath().getPathFromRoot());
         returnType.setModuleName(parentModule.getName());
 
@@ -1830,9 +1818,12 @@ public class BindingGeneratorImpl implements BindingGenerator {
         final GeneratedTypeBuilderImpl newType = new GeneratedTypeBuilderImpl(packageName, genTypeName);
         final Module module = findParentModule(schemaContext, schemaNode);
         qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
-        newType.addComment(schemaNode.getDescription().orElse(null));
-        newType.setDescription(createDescription(schemaNode, newType.getFullyQualifiedName()));
-        newType.setReference(schemaNode.getReference().orElse(null));
+
+
+        newType.setYangSourceDefinition(YangSourceDefinition.of(module, schemaNode));
+        TypeComments.description(schemaNode).ifPresent(newType::addComment);
+        schemaNode.getDescription().ifPresent(newType::setDescription);
+        schemaNode.getReference().ifPresent(newType::setReference);
         newType.setSchemaPath(schemaNode.getPath().getPathFromRoot());
         newType.setModuleName(module.getName());
 
@@ -2106,68 +2097,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
         return builder;
     }
 
-    private static boolean isNullOrEmpty(final Collection<?> list) {
-        return list == null || list.isEmpty();
-    }
-
-    private String createDescription(final Set<? extends SchemaNode> schemaNodes, final String moduleName) {
-        final StringBuilder sb = new StringBuilder();
-
-        if (!isNullOrEmpty(schemaNodes)) {
-            final SchemaNode node = schemaNodes.iterator().next();
-
-            if (node instanceof RpcDefinition) {
-                sb.append("Interface for implementing the following YANG RPCs defined in module <b>" + moduleName + "</b>");
-            } else if (node instanceof NotificationDefinition) {
-                sb.append("Interface for receiving the following YANG notifications defined in module <b>" + moduleName + "</b>");
-            }
-        }
-        sb.append(NEW_LINE);
-
-        if (verboseCommentGenerator != null) {
-            verboseCommentGenerator.appendYangSnippet(sb, schemaNodes);
-        }
-
-        return replaceAllIllegalChars(sb);
-    }
-
-    private String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName) {
-        final StringBuilder sb = new StringBuilder();
-        final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription().orElse(null));
-        final String formattedDescription = FormattingUtils.formatToParagraph(nodeDescription, 0);
-
-        if (!Strings.isNullOrEmpty(formattedDescription)) {
-            sb.append(formattedDescription);
-            sb.append(NEW_LINE);
-        }
-
-        if (verboseCommentGenerator != null) {
-            final Module module = findParentModule(schemaContext, schemaNode);
-            final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
-
-            verboseCommentGenerator.appendYangSnippet(sb, module, schemaNode, namespace[namespace.length - 1]);
-        }
-
-        return replaceAllIllegalChars(sb);
-    }
-
-    private String createDescription(final Module module) {
-        final StringBuilder sb = new StringBuilder();
-        final String moduleDescription = encodeAngleBrackets(module.getDescription().orElse(null));
-        final String formattedDescription = FormattingUtils.formatToParagraph(moduleDescription, 0);
-
-        if (!Strings.isNullOrEmpty(formattedDescription)) {
-            sb.append(formattedDescription);
-            sb.append(NEW_LINE);
-        }
-
-        if (verboseCommentGenerator != null) {
-            verboseCommentGenerator.appendModuleDescription(sb, module);
-        }
-
-        return replaceAllIllegalChars(sb);
-    }
-
     private GeneratedTypeBuilder findChildNodeByPath(final SchemaPath path) {
         for (final ModuleContext ctx : genCtx.values()) {
             final GeneratedTypeBuilder result = ctx.getChildNode(path);
@@ -2200,12 +2129,6 @@ public class BindingGeneratorImpl implements BindingGenerator {
 
     public Map<Module, ModuleContext> getModuleContexts() {
         return genCtx;
-    }
-
-    @VisibleForTesting
-    static String replaceAllIllegalChars(final StringBuilder stringBuilder){
-        final String ret = UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
-        return ret.isEmpty() ? "" : ret;
     }
 
     private static void annotateDeprecatedIfNecessary(final Status status, final GeneratedTypeBuilder builder) {

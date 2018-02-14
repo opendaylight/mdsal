@@ -21,6 +21,8 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.util.AbstractBaseType;
@@ -319,7 +321,7 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         }
 
         @Override
-        public String getComment() {
+        public TypeComment getComment() {
             return null;
         }
 
@@ -376,6 +378,12 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         @Override
         public String getModuleName() {
             return this.moduleName;
+        }
+
+        @Override
+        public Optional<YangSourceDefinition> getYangSourceDefinition() {
+            // TODO Auto-generated method stub
+            return Optional.empty();
         }
     }
 }

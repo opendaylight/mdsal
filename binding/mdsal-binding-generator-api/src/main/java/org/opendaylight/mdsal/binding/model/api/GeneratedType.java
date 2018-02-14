@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.model.api;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Every Java interface has to be specified with:
@@ -49,7 +50,7 @@ public interface GeneratedType extends Type, DocumentedType {
      *
      * @return comment string associated with Generated Type.
      */
-    String getComment();
+    TypeComment getComment();
 
     /**
      * Returns List of annotation definitions associated with generated type.
@@ -113,4 +114,10 @@ public interface GeneratedType extends Type, DocumentedType {
      */
     List<GeneratedProperty> getProperties();
 
+    /**
+     * Returns the YANG definition of this type, if available.
+     *
+     * @return YANG source definition, or empty when unavailable.
+     */
+    Optional<YangSourceDefinition> getYangSourceDefinition();
 }
