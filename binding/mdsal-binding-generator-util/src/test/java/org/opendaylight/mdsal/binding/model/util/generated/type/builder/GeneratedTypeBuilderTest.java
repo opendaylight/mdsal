@@ -27,6 +27,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.model.util.TypeComments;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -291,7 +292,7 @@ public class GeneratedTypeBuilderTest {
         generatedTypeBuilder.setModuleName("myModuleName");
         generatedTypeBuilder.setReference("myReference");
         generatedTypeBuilder.setSchemaPath(SchemaPath.create(true, QName.create("test", "/path")).getPathFromRoot());
-        assertNotNull(generatedTypeBuilder.addComment("My comment.."));
+        assertNotNull(generatedTypeBuilder.addComment(TypeComments.javadoc("My comment..").get()));
 
         assertEquals(
                 "GeneratedTransferObject [packageName=my.package, name=MyName, comment=My comment.., annotations=[], implements=[], enclosedTypes=[], constants=[], enumerations=[], properties=, methods=[]]",
@@ -303,6 +304,6 @@ public class GeneratedTypeBuilderTest {
         assertEquals("myModuleName", instance.getModuleName());
         assertEquals("myReference", instance.getReference());
         assertEquals(SchemaPath.create(true, QName.create("test", "/path")).getPathFromRoot(), instance.getSchemaPath());
-        assertEquals("My comment..", instance.getComment());
+        assertEquals("My comment..", instance.getComment().getJavadoc());
     }
 }

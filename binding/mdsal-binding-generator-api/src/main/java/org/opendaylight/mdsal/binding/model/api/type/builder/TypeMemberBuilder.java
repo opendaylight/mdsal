@@ -56,7 +56,7 @@ public interface TypeMemberBuilder<T extends TypeMemberBuilder<T>> {
 
     /**
      * Adds String definition of comment into Method Signature definition. <br>
-     * The comment String MUST NOT contain anny comment specific chars (i.e.
+     * The comment String MUST NOT contain any comment specific chars (i.e.
      * "/**" or "//") just plain String text description.
      *
      * @param comment
