@@ -45,7 +45,7 @@ final class CodegenTypeGenerator extends AbstractTypeGenerator {
     @Override
     void addCodegenInformation(final GeneratedTypeBuilderBase<?> genType, final Module module,
             final SchemaNode node) {
-        genType.setYangSourceDefinition(YangSourceDefinition.of(module, node));
+        YangSourceDefinition.of(module, node).ifPresent(genType::setYangSourceDefinition);
         TypeComments.description(node).ifPresent(genType::addComment);
         node.getDescription().ifPresent(genType::setDescription);
         node.getReference().ifPresent(genType::setReference);
@@ -53,7 +53,7 @@ final class CodegenTypeGenerator extends AbstractTypeGenerator {
 
     @Override
     void addCodegenInformation(final GeneratedTypeBuilderBase<?> genType, final Module module) {
-        genType.setYangSourceDefinition(YangSourceDefinition.of(module));
+        YangSourceDefinition.of(module).ifPresent(genType::setYangSourceDefinition);
         TypeComments.description(module).ifPresent(genType::addComment);
         module.getDescription().ifPresent(genType::setDescription);
         module.getReference().ifPresent(genType::setReference);
@@ -64,7 +64,7 @@ final class CodegenTypeGenerator extends AbstractTypeGenerator {
             final String description, final Set<?  extends SchemaNode> nodes) {
         interfaceBuilder.addComment(TypeComments.javadoc("Interface for implementing the following YANG " + description
             + " defined in module <b>" + module.getName() + "</b>").get());
-        interfaceBuilder.setYangSourceDefinition(YangSourceDefinition.of(module, nodes));
+        YangSourceDefinition.of(module, nodes).ifPresent(interfaceBuilder::setYangSourceDefinition);
     }
 
     @Override
