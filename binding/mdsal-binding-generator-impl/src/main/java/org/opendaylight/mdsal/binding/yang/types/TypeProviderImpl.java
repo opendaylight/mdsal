@@ -950,7 +950,7 @@ public final class TypeProviderImpl implements TypeProvider {
             unionGenTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typeName);
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
             unionGenTOBuilder.setDescription(typedefDescription);
-            unionGenTOBuilder.setReference(typedef.getReference().orElse(null));
+            typedef.getReference().ifPresent(unionGenTOBuilder::setReference);
             unionGenTOBuilder.setSchemaPath(typedef.getPath().getPathFromRoot());
             unionGenTOBuilder.setModuleName(module.getName());
         } else {
@@ -1169,7 +1169,7 @@ public final class TypeProviderImpl implements TypeProvider {
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
 
             newType.setDescription(typedefDescription);
-            newType.setReference(typedef.getReference().orElse(null));
+            typedef.getReference().ifPresent(newType::setReference);
             newType.setSchemaPath(typedef.getPath().getPathFromRoot());
             newType.setModuleName(moduleName);
 
@@ -1212,7 +1212,7 @@ public final class TypeProviderImpl implements TypeProvider {
             final String typedefDescription = encodeAngleBrackets(typeDef.getDescription().orElse(null));
 
             genTOBuilder.setDescription(typedefDescription);
-            genTOBuilder.setReference(typeDef.getReference().orElse(null));
+            typeDef.getReference().ifPresent(genTOBuilder::setReference);
             genTOBuilder.setSchemaPath(typeDef.getPath().getPathFromRoot());
             genTOBuilder.setModuleName(moduleName);
             genTOBuilder.setBaseType(typeDef);
@@ -1334,7 +1334,7 @@ public final class TypeProviderImpl implements TypeProvider {
         final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
 
         genTOBuilder.setDescription(typedefDescription);
-        genTOBuilder.setReference(typedef.getReference().orElse(null));
+        typedef.getReference().ifPresent(genTOBuilder::setReference);
         genTOBuilder.setSchemaPath(typedef.getPath().getPathFromRoot());
         genTOBuilder.setModuleName(moduleName);
         genTOBuilder.setTypedef(true);

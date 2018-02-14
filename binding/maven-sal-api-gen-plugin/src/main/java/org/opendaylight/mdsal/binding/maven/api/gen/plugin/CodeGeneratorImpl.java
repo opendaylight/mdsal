@@ -25,11 +25,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import org.apache.maven.project.MavenProject;
-import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
 import org.opendaylight.mdsal.binding.java.api.generator.YangModuleInfoTemplate;
-import org.opendaylight.mdsal.binding.java.api.generator.YangTemplate;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
@@ -60,8 +58,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
 
         outputBaseDir = outputDir == null ? getDefaultOutputBaseDir() : outputDir;
 
-        final BindingGenerator bindingGenerator = new BindingGeneratorImpl(YangTemplate.getInstance());
-        final List<Type> types = bindingGenerator.generateTypes(context, yangModules);
+        final List<Type> types = new BindingGeneratorImpl().generateTypes(context, yangModules);
         final GeneratorJavaFile generator = new GeneratorJavaFile(buildContext, types);
 
         File persistentSourcesDir = null;

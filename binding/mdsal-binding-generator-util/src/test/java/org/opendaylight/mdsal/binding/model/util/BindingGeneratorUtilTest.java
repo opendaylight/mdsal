@@ -367,4 +367,12 @@ public class BindingGeneratorUtilTest {
         assertFalse(restrictions.getLengthConstraint().isPresent());
         assertTrue(restrictions.getPatternConstraints().isEmpty());
     }
+
+    @Test
+    public void unicodeCharReplaceTest() {
+        String inputString = "abcu\\uuuuu\\uuua\\u\\\\uabc\\\\uuuu\\\\\\uuuu\\\\\\\\uuuu///uu/u/u/u/u/u/u";
+
+        assertEquals("abcu\\\\uuuuu\\\\uuua\\\\u\\\\uabc\\\\uuuu\\\\uuuu\\\\uuuu///uu/u/u/u/u/u/u",
+            BindingGeneratorUtil.replaceAllIllegalChars(inputString));
+    }
 }
