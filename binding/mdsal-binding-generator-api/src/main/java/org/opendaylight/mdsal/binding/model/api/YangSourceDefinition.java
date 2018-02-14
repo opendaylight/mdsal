@@ -14,10 +14,16 @@ import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.meta.DeclaredStatement;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleStatement;
 
 /**
  * DTO capturing the YANG source definition which lead to a {@link GeneratedType} being emitted.
@@ -30,51 +36,86 @@ public abstract class YangSourceDefinition {
     public static final class Multiple extends YangSourceDefinition {
         private final List<? extends SchemaNode> nodes;
 
-        Multiple(final Module module, final Collection<? extends SchemaNode> nodes) {
+        Multiple(final ModuleEffectiveStatement module, final Collection<? extends SchemaNode> nodes) {
             super(module);
             this.nodes = ImmutableList.copyOf(nodes);
         }
 
         /**
-         * Return the defining SchemaNodes.
+         * Return the defining SchemaNodes. Each node is guaranteed to implement {@link EffectiveStatement} and have
+         * a corresponding declared statement.
          *
          * @return defining SchemaNodes, guaranteed to be non-empty
          */
         public List<? extends SchemaNode> getNodes() {
-            return nodes;
+            return nodes.stream().filter(node -> {
+                return node instanceof EffectiveStatement && ((EffectiveStatement<?, ?>) node).getDeclared() != null;
+            }).collect(Collectors.toList());
         }
     }
 
     public static final class Single extends YangSourceDefinition {
         private final DocumentedNode node;
 
-        Single(final Module module, final DocumentedNode node) {
+        Single(final ModuleEffectiveStatement module, final DocumentedNode node) {
             super(module);
             this.node = requireNonNull(node);
         }
 
+        /**
+         * Return the defining DocumentedNode. The node is guaranteed to implement {@link EffectiveStatement} and have
+         * a corresponding declared statement.
+         *
+         * @return defining SchemaNodes, guaranteed to be non-empty
+         */
         public DocumentedNode getNode() {
             return node;
         }
     }
 
-    private final Module module;
+    private final ModuleEffectiveStatement module;
 
-    private YangSourceDefinition(final Module module) {
+    private YangSourceDefinition(final ModuleEffectiveStatement module) {
         this.module = requireNonNull(module);
     }
 
-    public static YangSourceDefinition of(final Module module) {
-        return new Single(module, module);
+    public static Optional<YangSourceDefinition> of(final Module module) {
+        if (module instanceof ModuleEffectiveStatement) {
+            final ModuleEffectiveStatement effective = (ModuleEffectiveStatement) module;
+            final ModuleStatement declared = effective.getDeclared();
+            if (declared != null) {
+                return Optional.of(new Single(effective, module));
+            }
+        }
+        return Optional.empty();
     }
 
-    public static YangSourceDefinition of(final Module module, final SchemaNode node) {
-        return new Single(module, node);
+    public static Optional<YangSourceDefinition> of(final Module module, final SchemaNode node) {
+        if (module instanceof ModuleEffectiveStatement) {
+            final ModuleEffectiveStatement effective = (ModuleEffectiveStatement) module;
+            if (node instanceof EffectiveStatement) {
+                final DeclaredStatement<?> declared = ((EffectiveStatement<?, ?>) node).getDeclared();
+                if (declared != null) {
+                    return Optional.of(new Single(effective, node));
+                }
+            }
+        }
+        return Optional.empty();
     }
 
-    public static YangSourceDefinition of(final Module module, final Collection<? extends SchemaNode> nodes) {
+    public static Optional<YangSourceDefinition> of(final Module module, final Collection<? extends SchemaNode> nodes) {
         checkArgument(!nodes.isEmpty());
-        return new Multiple(module, nodes);
+
+        if (module instanceof ModuleEffectiveStatement) {
+            final ModuleEffectiveStatement effective = (ModuleEffectiveStatement) module;
+            final boolean anyDeclared = nodes.stream().anyMatch(node -> {
+                return node instanceof EffectiveStatement && ((EffectiveStatement<?, ?>) node).getDeclared() != null;
+            });
+            if (anyDeclared) {
+                return Optional.of(new Multiple(effective, nodes));
+            }
+        }
+        return Optional.empty();
     }
 
     /**
@@ -82,7 +123,7 @@ public abstract class YangSourceDefinition {
      *
      * @return Defining YANG module.
      */
-    public final Module getModule() {
+    public final ModuleEffectiveStatement getModule() {
         return module;
     }
 }
