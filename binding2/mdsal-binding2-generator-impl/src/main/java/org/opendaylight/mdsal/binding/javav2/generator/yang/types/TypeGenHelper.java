@@ -196,8 +196,7 @@ final class TypeGenHelper {
             genTOBuilder.addAnnotation("", "Deprecated");
         }
         if (javaType instanceof ConcreteType && "String".equals(javaType.getName()) && typedef.getBaseType() != null) {
-            final List<String> regExps = resolveRegExpressionsFromTypedef(typedef);
-            addStringRegExAsConstant(genTOBuilder, regExps);
+            addStringRegExAsConstant(genTOBuilder, resolveRegExpressionsFromTypedef(typedef));
         }
         addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
         genTOBuilder.setTypedef(true);
@@ -292,7 +291,7 @@ final class TypeGenHelper {
         }
         if (!regularExpressions.isEmpty()) {
             genTOBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), TypeConstants.PATTERN_CONSTANT_NAME,
-                    regularExpressions);
+                ImmutableList.copyOf(regularExpressions));
         }
     }
 
