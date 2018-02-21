@@ -5,15 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder;
 
-import com.google.common.annotations.Beta;
 import java.util.Objects;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 
-@Beta
 final class ConstantImpl implements Constant {
 
     private final Type definingType;
@@ -21,7 +18,7 @@ final class ConstantImpl implements Constant {
     private final String name;
     private final Object value;
 
-    public ConstantImpl(final Type definingType, final Type type, final String name, final Object value) {
+    ConstantImpl(final Type definingType, final Type type, final String name, final Object value) {
         this.definingType = definingType;
         this.type = type;
         this.name = name;
@@ -50,13 +47,7 @@ final class ConstantImpl implements Constant {
 
     @Override
     public String toFormattedString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(type);
-        builder.append(" ");
-        builder.append(name);
-        builder.append(" ");
-        builder.append(value);
-        return builder.toString();
+        return type + " " + name + " " + value;
     }
 
     @Override

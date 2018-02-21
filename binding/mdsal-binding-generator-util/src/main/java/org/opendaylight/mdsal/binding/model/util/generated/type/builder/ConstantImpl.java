@@ -18,7 +18,7 @@ final class ConstantImpl implements Constant {
     private final String name;
     private final Object value;
 
-    public ConstantImpl(final Type definingType, final Type type, final String name, final Object value) {
+    ConstantImpl(final Type definingType, final Type type, final String name, final Object value) {
         this.definingType = definingType;
         this.type = type;
         this.name = name;
@@ -47,34 +47,18 @@ final class ConstantImpl implements Constant {
 
     @Override
     public String toFormattedString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append(this.type);
-        builder.append(" ");
-        builder.append(this.name);
-        builder.append(" ");
-        builder.append(this.value);
-        return builder.toString();
+        return type + " " + name + " " + value;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + Objects.hashCode(this.name);
-        result = (prime * result) + Objects.hashCode(this.type);
+        result = prime * result + Objects.hashCode(this.name);
+        result = prime * result + Objects.hashCode(this.type);
         return result;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
