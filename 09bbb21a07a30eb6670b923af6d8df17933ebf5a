@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "549879c1_b417d692",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/gen/impl/DataNodeContainerSerializerSource.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-02-21T12:16:43Z",
+      "side": 1,
+      "message": "Done. I am not sure that if we should just use build-in type not the derived type as well as not generate binding class for typedef of boolean or empty?",
+      "parentUuid": "dbe7c618_c41f769e",
+      "range": {
+        "startLine": 120,
+        "startChar": 12,
+        "endLine": 120,
+        "endChar": 24
+      },
+      "revId": "09bbb21a07a30eb6670b923af6d8df17933ebf5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9def9fa1_68240dbf",
         "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/impl/BindingCodecContext.java",
         "patchSetId": 18
