@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c1cdb1d2_1c4a32f7",
+        "filename": "binding2/mdsal-binding2-dom-codec/src/main/java/org/opendaylight/mdsal/binding/javav2/dom/codec/impl/context/base/AnyxmlNodeCodecContext.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-02-22T09:29:56Z",
+      "side": 1,
+      "message": "copy\u0026paste header?",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 35
+      },
+      "revId": "f4567def27025af194c2c90951b3883f2a74ebd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
