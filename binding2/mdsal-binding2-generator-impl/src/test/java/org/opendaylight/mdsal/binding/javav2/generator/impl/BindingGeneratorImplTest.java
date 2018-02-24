@@ -272,28 +272,6 @@ public class BindingGeneratorImplTest {
     }
 
     @Test
-    public void generateTypesDescriptionsTest() {
-        final BindingGenerator bg = new BindingGeneratorImpl(true);
-        final SchemaContext context = YangParserTestUtils.parseYangResourceDirectory("/base/with_import/");
-        assertNotNull(context);
-
-        final List<Type> generateTypes = bg.generateTypes(context, context.getModules());
-        assertNotNull(generateTypes);
-        assertTrue(!generateTypes.isEmpty());
-
-        for (final Type type : generateTypes) {
-            if (type.getName().equals("TestData")) {
-                final String description = ((GeneratedType) type).getDescription().get();
-                description
-                        .contains("    import test-import { prefix \"imported-test\"; revision-date 2017-04-21; }\n\n");
-                description.contains("    revision 2017-02-06;\n\n");
-                description.contains("    typedef my-type {\n        type int8;\n    }");
-                description.contains("    container *my-cont {\n    }\n");
-            }
-        }
-    }
-
-    @Test
     public void generateTypesIdentityTest() throws Exception {
         final BindingGenerator bg = new BindingGeneratorImpl(true);
         final SchemaContext context = YangParserTestUtils.parseYangResourceDirectory("/identity/");
