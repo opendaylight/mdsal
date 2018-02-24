@@ -10,35 +10,27 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.encodeAngleBrackets;
-import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.replacePackageTopNamespace;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.BOOLEAN;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForModule;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNode;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.txt.yangTemplateForNodes;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.util.YangTextTemplate;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
-import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
+import org.opendaylight.mdsal.binding.javav2.generator.util.TypeComments;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
-import org.opendaylight.mdsal.binding.javav2.generator.util.YangSnippetCleaner;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
@@ -46,7 +38,6 @@ import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTyp
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
-import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -55,7 +46,6 @@ import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
-import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -65,7 +55,6 @@ import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
-import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 
 /**
  * Auxiliary util class for {@link GenHelperUtil} class
@@ -97,13 +86,6 @@ final class AuxiliaryGenUtils {
         }
     }
 
-    public static boolean hasBuilderClass(final SchemaNode schemaNode, final BindingNamespaceType namespaceType) {
-        return (namespaceType.equals(BindingNamespaceType.Data)
-                && (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode
-                || schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition
-                || schemaNode instanceof CaseSchemaNode));
-    }
-
     static Constant qNameConstant(final GeneratedTypeBuilderBase<?> toBuilder, final String constantName,
                                   final QName name) {
         return toBuilder.addConstant(Types.typeForClass(QName.class), constantName, name);
@@ -133,7 +115,7 @@ final class AuxiliaryGenUtils {
      *         <code>interfaceBuilder</code>
      */
     static MethodSignatureBuilder constructGetter(final GeneratedTypeBuilder interfaceBuilder,
-                                                  final String schemaNodeName, final String comment, final Type returnType, final Status status) {
+            final String schemaNodeName, final String comment, final Type returnType, final Status status) {
 
         final MethodSignatureBuilder getMethod = interfaceBuilder
                 .addMethod(getterMethodName(schemaNodeName, returnType));
@@ -163,130 +145,15 @@ final class AuxiliaryGenUtils {
         } else {
             method.append("get");
         }
-        return method.append(JavaIdentifierNormalizer.normalizeSpecificIdentifier(localName, JavaIdentifier.CLASS)).toString();
+        return method.append(JavaIdentifierNormalizer.normalizeSpecificIdentifier(localName, JavaIdentifier.CLASS))
+            .toString();
     }
 
-    static String createDescription(final SchemaNode schemaNode, final String fullyQualifiedName,
-                                    final SchemaContext schemaContext, final boolean verboseClassComments,
-                                    final BindingNamespaceType namespaceType) {
-        final StringBuilder sb = new StringBuilder();
-        final String nodeDescription = encodeAngleBrackets(schemaNode.getDescription().orElse(null));
-        final String formattedDescription = YangTextTemplate.formatToParagraph(nodeDescription, 0);
-
-        if (!Strings.isNullOrEmpty(formattedDescription)) {
-            sb.append(formattedDescription);
-            sb.append(NEW_LINE);
-        }
-
-        final Module module = SchemaContextUtil.findParentModule(schemaContext, schemaNode);
-        if (verboseClassComments) {
-            sb.append("<p>");
-            sb.append("This class represents the following YANG schema fragment defined in module <b>");
-            sb.append(module.getName());
-            sb.append("</b>");
-            sb.append(NEW_LINE);
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            String formedYang = YangSnippetCleaner.clean(yangTemplateForNode.render(schemaNode, module).body());
-            sb.append(encodeAngleBrackets(formedYang));
-            sb.append("</pre>");
-            sb.append(NEW_LINE);
-            sb.append("The schema path to identify an instance is");
-            sb.append(NEW_LINE);
-            sb.append("<i>");
-            sb.append(YangTextTemplate.formatSchemaPath(module.getName(), schemaNode.getPath().getPathFromRoot()));
-            sb.append("</i>");
-            sb.append(NEW_LINE);
-
-            if (hasBuilderClass(schemaNode, namespaceType) && !(schemaNode instanceof OperationDefinition)) {
-                final StringBuilder linkToBuilderClass = new StringBuilder();
-                final String basePackageName = BindingMapping.getRootPackageName(module);
-
-                linkToBuilderClass
-                        .append(replacePackageTopNamespace(basePackageName, fullyQualifiedName,
-                                namespaceType, BindingNamespaceType.Builder))
-                        .append("Builder");
-                sb.append(NEW_LINE);
-                sb.append("<p>To create instances of this class use " + "{@link " + linkToBuilderClass + "}.");
-                sb.append(NEW_LINE);
-                sb.append("@see ");
-                sb.append(linkToBuilderClass);
-                sb.append(NEW_LINE);
-                if (schemaNode instanceof ListSchemaNode) {
-                    final StringBuilder linkToKeyClass = new StringBuilder();
-
-                    final String[] namespace = Iterables.toArray(BSDOT_SPLITTER.split(fullyQualifiedName), String.class);
-                    final String className = namespace[namespace.length - 1];
-
-                    linkToKeyClass.append(BindingGeneratorUtil.packageNameForSubGeneratedType(basePackageName, schemaNode,
-                            BindingNamespaceType.Key))
-                            .append('.')
-                            .append(className)
-                            .append("Key");
-
-                    final List<QName> keyDef = ((ListSchemaNode)schemaNode).getKeyDefinition();
-                    if (keyDef != null && !keyDef.isEmpty()) {
-                        sb.append("@see ");
-                        sb.append(linkToKeyClass);
-                    }
-                    sb.append(NEW_LINE);
-                }
-            }
-        }
-
-        return replaceAllIllegalChars(sb);
-    }
-
-    static String createDescription(final Module module, final boolean verboseClassComments) {
-        final StringBuilder sb = new StringBuilder();
-        final String moduleDescription = encodeAngleBrackets(module.getDescription().orElse(null));
-        final String formattedDescription = YangTextTemplate.formatToParagraph(moduleDescription, 0);
-
-        if (!Strings.isNullOrEmpty(formattedDescription)) {
-            sb.append(formattedDescription);
-            sb.append(NEW_LINE);
-        }
-
-        if (verboseClassComments) {
-            sb.append("<p>");
-            sb.append("This class represents the following YANG schema fragment defined in module <b>");
-            sb.append(module.getName());
-            sb.append("</b>");
-            sb.append(NEW_LINE);
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            String formedYang = YangSnippetCleaner.clean(yangTemplateForModule.render(module).body());
-            sb.append(encodeAngleBrackets(formedYang));
-            sb.append("</pre>");
-        }
-
-        return replaceAllIllegalChars(sb);
-    }
-
-    static String createDescription(final Set<? extends SchemaNode> schemaNodes, final Module module, final
-            boolean verboseClassComments) {
-        final StringBuilder sb = new StringBuilder();
-
-        if (!isNullOrEmpty(schemaNodes)) {
-            final SchemaNode node = schemaNodes.iterator().next();
-
-            if (node instanceof RpcDefinition) {
-                sb.append("Interface for implementing the following YANG RPCs defined in module <b>" + module.getName() + "</b>");
-            } else if (node instanceof NotificationDefinition) {
-                sb.append("Interface for receiving the following YANG notifications defined in module <b>" + module.getName() + "</b>");
-            }
-        }
-        sb.append(NEW_LINE);
-
-        if (verboseClassComments) {
-            sb.append("<pre>");
-            sb.append(NEW_LINE);
-            sb.append(encodeAngleBrackets(yangTemplateForNodes.render(schemaNodes, module).body()));
-            sb.append("</pre>");
-            sb.append(NEW_LINE);
-        }
-
-        return replaceAllIllegalChars(sb);
+    public static boolean hasBuilderClass(final SchemaNode schemaNode, final BindingNamespaceType namespaceType) {
+        return (namespaceType.equals(BindingNamespaceType.Data)
+            && (schemaNode instanceof ContainerSchemaNode || schemaNode instanceof ListSchemaNode
+            || schemaNode instanceof RpcDefinition || schemaNode instanceof NotificationDefinition
+            || schemaNode instanceof CaseSchemaNode));
     }
 
     @VisibleForTesting
@@ -412,12 +279,16 @@ final class AuxiliaryGenUtils {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     static Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final TypeDefinition<?> typeDef,
-            final GeneratedTypeBuilder typeBuilder, final Module parentModule, final TypeProvider typeProvider) {
+            final GeneratedTypeBuilder typeBuilder, final Module parentModule, final TypeProvider typeProvider,
+            final boolean verboseClassComments) {
         final GeneratedTOBuilderImpl returnType = (GeneratedTOBuilderImpl) genTOBuilder;
-        final String typedefDescription = encodeAngleBrackets(typeDef.getDescription().orElse(null));
 
-        returnType.setDescription(typedefDescription);
-        returnType.setReference(typeDef.getReference().orElse(null));
+        if (verboseClassComments) {
+            returnType.setYangSourceDefinition(YangSourceDefinition.of(parentModule, typeDef));
+            TypeComments.description(typeDef).ifPresent(returnType::addComment);
+            typeDef.getDescription().ifPresent(returnType::setDescription);
+            typeDef.getReference().ifPresent(returnType::setReference);
+        }
         returnType.setSchemaPath((List) typeDef.getPath().getPathFromRoot());
         returnType.setModuleName(parentModule.getName());
 

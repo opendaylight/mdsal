@@ -313,7 +313,7 @@ public final class TypeProviderImpl implements TypeProvider {
             final String typedefDescription = encodeAngleBrackets(typeDef.getDescription().orElse(null));
 
             genTOBuilder.setDescription(typedefDescription);
-            genTOBuilder.setReference(typeDef.getReference().orElse(null));
+            typeDef.getReference().ifPresent(genTOBuilder::setReference);
             genTOBuilder.setSchemaPath((List) typeDef.getPath().getPathFromRoot());
             genTOBuilder.setModuleName(moduleName);
             genTOBuilder.setBaseType(typeDef);
@@ -374,7 +374,7 @@ public final class TypeProviderImpl implements TypeProvider {
                 context);
         final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
         unionGenTOBuilder.setDescription(typedefDescription);
-        unionGenTOBuilder.setReference(typedef.getReference().orElse(null));
+        typedef.getReference().ifPresent(unionGenTOBuilder::setReference);
         unionGenTOBuilder.setSchemaPath((List) typedef.getPath().getPathFromRoot());
         unionGenTOBuilder.setModuleName(module.getName());
 

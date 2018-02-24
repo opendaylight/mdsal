@@ -50,7 +50,7 @@
         @yangTemplateWriteExtension(node.asInstanceOf[ExtensionDefinition])
     }
     @if(node.isInstanceOf[FeatureDefinition]) {
-        @yangTemplateWriteFeature(node.asInstanceOf[FeatureDefinition]) 
+        @yangTemplateWriteFeature(node.asInstanceOf[FeatureDefinition])
     }
     @if(node.isInstanceOf[GroupingDefinition]) {
         @yangTemplateWriteGroupingDef(node.asInstanceOf[GroupingDefinition], module)
