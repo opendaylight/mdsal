@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
@@ -315,10 +316,13 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
             builder.append(getPackageName());
             builder.append(", name=");
             builder.append(getName());
-            builder.append(", comment=");
             builder.append(", annotations=");
             builder.append(getAnnotations());
-            builder.append(getComment());
+            final TypeComment comment = getComment();
+            if (comment != null) {
+                builder.append(", comment=");
+                builder.append(comment.getJavadoc());
+            }
             builder.append(", extends=");
             builder.append(getSuperType());
             builder.append(", implements=");

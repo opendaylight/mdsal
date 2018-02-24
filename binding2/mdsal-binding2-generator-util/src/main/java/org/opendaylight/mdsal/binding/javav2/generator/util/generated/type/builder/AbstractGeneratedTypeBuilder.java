@@ -13,11 +13,14 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.AbstractBaseType;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
@@ -39,9 +42,10 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     private final List<GeneratedTypeBuilder> enclosedTypes = ImmutableList.of();
     private List<GeneratedTOBuilder> enclosedTransferObjects = ImmutableList.of();
     private List<GeneratedPropertyBuilder> properties = ImmutableList.of();
-    private String comment = "";
+    private TypeComment comment;
     private boolean isAbstract;
     private Type parentTypeForBuilder;
+    private YangSourceDefinition yangSourceDefinition;
 
     protected AbstractGeneratedTypeBuilder(final String packageName, final String name, ModuleContext context) {
         super(packageName, name, context);
@@ -57,8 +61,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
         super(packageName, name, isPkNameNormalized, isTypeNormalized, context);
     }
 
-    protected String getComment() {
-        return comment;
+    protected TypeComment getComment() {
+        return this.comment;
     }
 
     protected List<AnnotationTypeBuilder> getAnnotations() {
@@ -117,8 +121,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     @Override
-    public T addComment(final String comment) {
-        this.comment = comment;
+    public T addComment(final TypeComment comment) {
+        this.comment = Preconditions.checkNotNull(comment);
         return thisInstance();
     }
 
@@ -226,6 +230,17 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
             }
         }
         return false;
+    }
+
+    @Override
+    public Optional<YangSourceDefinition> getYangSourceDefinition() {
+        return Optional.ofNullable(yangSourceDefinition);
+    }
+
+
+    @Override
+    public void setYangSourceDefinition(final YangSourceDefinition definition) {
+        yangSourceDefinition = Preconditions.checkNotNull(definition);
     }
 
     @Override

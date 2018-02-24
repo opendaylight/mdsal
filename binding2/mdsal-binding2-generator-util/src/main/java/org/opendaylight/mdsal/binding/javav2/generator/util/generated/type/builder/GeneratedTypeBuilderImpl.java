@@ -16,6 +16,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
+import org.opendaylight.mdsal.binding.javav2.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -78,8 +79,11 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         builder.append(getPackageName());
         builder.append(", name=");
         builder.append(getName());
-        builder.append(", comment=");
-        builder.append(getComment());
+        final TypeComment comment = getComment();
+        if (comment != null) {
+            builder.append(", comment=");
+            builder.append(comment.getJavadoc());
+        }
         builder.append(", annotations=");
         builder.append(getAnnotations());
         builder.append(", implements=");
@@ -177,6 +181,11 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         @Override
         public String getPackageNameForBuilder() {
             return this.builderPackageName;
+        }
+
+        @Override
+        public String getBasePackageName() {
+            return this.basePackageName;
         }
     }
 }

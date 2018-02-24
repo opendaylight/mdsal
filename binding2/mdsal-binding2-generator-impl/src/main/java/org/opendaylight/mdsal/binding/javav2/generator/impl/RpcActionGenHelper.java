@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.binding.javav2.generator.impl;
 import static com.google.common.base.Preconditions.checkState;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.annotateDeprecatedIfNecessary;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.checkModuleAndModuleName;
-import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.createDescription;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addImplementedInterfaceFromUses;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.addRawInterfaceDefinition;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
@@ -43,8 +42,10 @@ import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
+import org.opendaylight.mdsal.binding.javav2.generator.util.TypeComments;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
@@ -233,8 +234,13 @@ final class RpcActionGenHelper {
 
         final String basePackageName = interfaceBuilder.getPackageName();
 
-        interfaceBuilder.setDescription(createDescription(operation, interfaceBuilder.getFullyQualifiedName(),
-                schemaContext, verboseClassComments, namespaceType));
+        if (verboseClassComments) {
+            interfaceBuilder.addComment(TypeComments.javadoc(
+                "Interface for implementing the following YANG Operation defined in module <b>" + module.getName() + "</b>")
+                .get());
+            interfaceBuilder.setYangSourceDefinition(YangSourceDefinition.of(module, operation));
+        }
+
         final String operationComment = encodeAngleBrackets(operation.getDescription().orElse(null));
         final MethodSignatureBuilder operationMethod = interfaceBuilder.addMethod("invoke");
 

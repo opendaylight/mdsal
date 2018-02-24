@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.generator.util.AbstractBaseType;
 import org.opendaylight.mdsal.binding.javav2.model.api.AnnotationType;
@@ -22,6 +23,8 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
@@ -34,7 +37,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
 
     private final Type parent;
     private final Type parentTypeForBuilder;
-    private final String comment;
+    private final TypeComment comment;
     private final List<AnnotationType> annotations;
     private final List<Type> implementsTypes;
     private final List<Enumeration> enumerations;
@@ -43,6 +46,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     private final List<GeneratedType> enclosedTypes;
     private final List<GeneratedProperty> properties;
     private final boolean isAbstract;
+    private final YangSourceDefinition definition;
 
     public AbstractGeneratedType(final AbstractGeneratedTypeBuilder<?> builder) {
         super(builder.getPackageName(), builder.getName(), true, null);
@@ -58,9 +62,10 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
                 builder.getEnclosedTransferObjects());
         this.properties = toUnmodifiableProperties(builder.getProperties());
         this.isAbstract = builder.isAbstract();
+        this.definition = builder.getYangSourceDefinition().orElse(null);
     }
 
-    public AbstractGeneratedType(final Type parent, final String packageName, final String name, final String comment,
+    public AbstractGeneratedType(final Type parent, final String packageName, final String name, final TypeComment comment,
                                  final List<AnnotationTypeBuilder> annotationBuilders, final boolean isAbstract,
                                  final List<Type> implementsTypes, final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
                                  final List<GeneratedTOBuilder> enclosedGenTOBuilders, final List<EnumBuilder> enumBuilders,
@@ -79,6 +84,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         this.enclosedTypes = toUnmodifiableEnclosedTypes(enclosedGenTypeBuilders, enclosedGenTOBuilders);
         this.properties = toUnmodifiableProperties(propertyBuilders);
         this.isAbstract = isAbstract;
+        this.definition = null;
     }
 
     protected static final <T> List<T> makeUnmodifiable(final List<T> list) {
@@ -137,7 +143,7 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     }
 
     @Override
-    public String getComment() {
+    public final TypeComment getComment() {
         return this.comment;
     }
 
@@ -182,6 +188,11 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     }
 
     @Override
+    public final Optional<YangSourceDefinition> getYangSourceDefinition() {
+        return Optional.ofNullable(definition);
+    }
+
+    @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append("GeneratedType [packageName=");
@@ -194,8 +205,11 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         } else {
             builder.append(", parent=null");
         }
-        builder.append(", comment=");
-        builder.append(this.comment);
+        final TypeComment comment = getComment();
+        if (comment != null) {
+            builder.append(", comment=");
+            builder.append(comment.getJavadoc());
+        }
         builder.append(", annotations=");
         builder.append(this.annotations);
         builder.append(", enclosedTypes=");

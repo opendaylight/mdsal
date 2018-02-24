@@ -21,4 +21,12 @@ public interface GeneratedTypeForBuilder {
      */
     String getPackageNameForBuilder();
 
+    /**
+     * Returns base package name that builder class belongs to.
+     *
+     * @return base package name that  builder class belongs to
+     */
+    String getBasePackageName();
+
+
 }

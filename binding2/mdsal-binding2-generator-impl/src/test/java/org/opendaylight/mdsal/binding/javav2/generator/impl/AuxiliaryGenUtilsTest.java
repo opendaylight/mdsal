@@ -150,74 +150,6 @@ public class AuxiliaryGenUtilsTest {
     }
 
     @Test
-    public void createDescriptionWithSchemaNodeTest()  {
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/generator/test-list.yang");
-        final ListSchemaNode containerSchemaNode =
-                (ListSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
-        final String fullyQualifiedName =
-                "org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.data.MyList";
-
-        final String result = AuxiliaryGenUtils.createDescription(containerSchemaNode, fullyQualifiedName,
-            schemaContext, true, BindingNamespaceType.Data);
-        assertNotNull(result);
-        assertTrue(result.contains("list my-list"));
-        assertTrue(result.contains("leaf key"));
-        assertTrue(result.contains("leaf key1"));
-        assertTrue(result.contains("leaf key2"));
-        assertTrue(result.contains("leaf foo"));
-        assertTrue(result.contains("@see org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.dto.MyListBuilder"));
-        assertTrue(result.contains("@see org.opendaylight.mdsal.gen.javav2.urn.test.simple.test.list.rev170314.key.my_list.MyListKey"));
-    }
-
-    @Test
-    public void createDescriptionWithSchemaNodeWithDescriptionTest() {
-        final SchemaContext schemaContext =
-                YangParserTestUtils.parseYangResource("/base/test-leaf-with-description.yang");
-        final LeafSchemaNode containerSchemaNode =
-                (LeafSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
-        final String fullyQualifiedName = "test.base.cont.with.leaf.MyList";
-
-        final String result = AuxiliaryGenUtils.createDescription(containerSchemaNode, fullyQualifiedName,
-            schemaContext, true, BindingNamespaceType.Data);
-        assertNotNull(result);
-        assertTrue(result.contains("I am leaf."));
-    }
-
-    @Test
-    public void createDescriptionTest() {
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/base/test-module.yang");
-        final String result = AuxiliaryGenUtils.createDescription(schemaContext.getModules().iterator().next(), true);
-        assertNotNull(result);
-        assertTrue(result.contains("Base test module description"));
-        assertTrue(result.contains("test-module"));
-    }
-
-    @Test
-    public void createDescriptionWithSchemaNodesTest() {
-        final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/base/test-rpc-and-notification.yang");
-        final Module module = schemaContext.getModules().iterator().next();
-        Set<SchemaNode> schemaNodes = new HashSet<>();
-        schemaNodes.add(module.getRpcs().iterator().next());
-
-        String result = AuxiliaryGenUtils.createDescription(schemaNodes, module, true);
-        assertNotNull(result);
-        assertTrue(result.contains(
-                "Interface for implementing the following YANG RPCs defined in module <b>test-rpc-and-notification-module</b>"));
-        assertTrue(result.contains("rpc my-rpc"));
-        assertTrue(!result.contains("notification my-notification"));
-
-        schemaNodes = new HashSet<>();
-        schemaNodes.add(module.getNotifications().iterator().next());
-
-        result = AuxiliaryGenUtils.createDescription(schemaNodes, module, true);
-        assertNotNull(result);
-        assertTrue(result.contains(
-                "Interface for receiving the following YANG notifications defined in module <b>test-rpc-and-notification-module</b>"));
-        assertTrue(!result.contains("rpc my-rpc"));
-        assertTrue(result.contains("notification my-notification"));
-    }
-
-    @Test
     public void isNullOrEmptyIsNullTest() {
         assertTrue(AuxiliaryGenUtils.isNullOrEmpty(null));
     }
@@ -358,7 +290,7 @@ public class AuxiliaryGenUtilsTest {
         final TypeDefinition<? extends TypeDefinition<?>> typeDef = leafSchemaNode.getType();
 
         final Type result = AuxiliaryGenUtils.createReturnTypeForUnion(addTOToBuilder("/base/test-union.yang"), typeDef,
-            typeBuilder, schemaContext.getModules().iterator().next(), typeProvider);
+            typeBuilder, schemaContext.getModules().iterator().next(), typeProvider, false);
         assertNotNull(result);
     }
 

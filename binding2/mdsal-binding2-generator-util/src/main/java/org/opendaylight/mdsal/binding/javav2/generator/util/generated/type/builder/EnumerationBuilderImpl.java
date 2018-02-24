@@ -27,6 +27,8 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
@@ -300,7 +302,7 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         }
 
         @Override
-        public String getComment() {
+        public TypeComment getComment() {
             //noop
             return null;
         }
@@ -343,6 +345,12 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
         @Override
         public Type getParentTypeForBuilder() {
             return null;
+        }
+
+        @Override
+        public Optional<YangSourceDefinition> getYangSourceDefinition() {
+            // TODO Auto-generated method stub
+            return Optional.empty();
         }
     }
 }

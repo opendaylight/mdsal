@@ -14,23 +14,39 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
+import org.opendaylight.mdsal.binding.javav2.generator.util.YangSnippetCleaner;
+import org.opendaylight.mdsal.binding.javav2.java.api.yang.txt.yangTemplateForModule;
+import org.opendaylight.mdsal.binding.javav2.java.api.yang.txt.yangTemplateForNode;
+import org.opendaylight.mdsal.binding.javav2.java.api.yang.txt.yangTemplateForNodes;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.javav2.model.api.TypeMember;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition.Multiple;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition.Single;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.concepts.Builder;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
+import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 public final class TextTemplateUtil {
 
@@ -45,6 +61,7 @@ public final class TextTemplateUtil {
     private static final CharMatcher GT_MATCHER = CharMatcher.is('>');
     private static final CharMatcher LT_MATCHER = CharMatcher.is('<');
     private static final Splitter NL_SPLITTER = Splitter.on(NL_MATCHER);
+    private static final Splitter BSDOT_SPLITTER = Splitter.on(".");
 
     private static final Pattern TAIL_COMMENT_PATTERN = Pattern.compile("*/", Pattern.LITERAL);
     private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile(" +");
@@ -113,14 +130,107 @@ public final class TextTemplateUtil {
      */
     public static String formatDataForJavaDoc(final GeneratedType type, final String additionalComment) {
         final StringBuilder javaDoc = new StringBuilder();
-        if (type.getDescription().isPresent()) {
-            javaDoc.append(type.getDescription())
-                    .append(NEW_LINE)
-                    .append(NEW_LINE)
-                    .append(NEW_LINE);
-        }
-        javaDoc.append(additionalComment);
+        javaDoc.append(formatDataForJavaDoc(type)).append(additionalComment);
         return javaDoc.toString();
+    }
+
+    private static void appendSnippet(final StringBuilder sb, final GeneratedType type) {
+        Optional<YangSourceDefinition> optDef = type.getYangSourceDefinition();
+        if (optDef.isPresent()) {
+            YangSourceDefinition def = optDef.get();
+            sb.append(NEW_LINE);
+
+            if (def instanceof Single) {
+                DocumentedNode node = ((Single) def).getNode();
+                sb.append("<p>\n")
+                    .append("This class represents the following YANG schema fragment defined in module <b>")
+                    .append(def.getModule().getName()).append("</b>\n")
+                    .append("<pre>\n")
+                    .append(encodeAngleBrackets(encodeJavadocSymbols(
+                        YangSnippetCleaner.clean(generateYangSnippet(node, def.getModule())))))
+                    .append("</pre>");
+
+                if (node instanceof SchemaNode) {
+                    sb.append("The schema path to identify an instance is\n")
+                        .append("<i>")
+                        .append(formatSchemaPath(def.getModule().getName(), ((SchemaNode) node).getPath().getPathFromRoot()))
+                        .append("</i>\n");
+
+                    if (hasBuilderClass(type)) {
+                        final String builderName = new StringBuilder()
+                            .append(((GeneratedTypeForBuilder) type).getPackageNameForBuilder())
+                            .append(".").append(type.getName()).append("Builder").toString();
+
+                        sb.append("\n<p>To create instances of this class use {@link ").append(builderName)
+                            .append("}.\n")
+                            .append("@see ").append(builderName).append('\n');
+                        if (node instanceof ListSchemaNode) {
+                            final StringBuilder linkToKeyClass = new StringBuilder();
+
+                            final String[] namespace = Iterables.toArray(
+                                BSDOT_SPLITTER.split(type.getFullyQualifiedName()), String.class);
+                            final String className = namespace[namespace.length - 1];
+
+                            linkToKeyClass.append(BindingGeneratorUtil.packageNameForSubGeneratedType(
+                                ((GeneratedTypeForBuilder) type).getBasePackageName(), (SchemaNode) node,
+                                BindingNamespaceType.Key)).append('.').append(className).append("Key");
+
+                            List<QName> keyDef = ((ListSchemaNode) node).getKeyDefinition();
+                            if (keyDef != null && !keyDef.isEmpty()) {
+                                sb.append("@see ").append(linkToKeyClass);
+                            }
+                            sb.append('\n');
+                        }
+                    }
+                }
+            } else if (def instanceof Multiple) {
+                sb.append("<pre>\n");
+                sb.append(encodeAngleBrackets(encodeJavadocSymbols(
+                    YangSnippetCleaner.clean(generateYangSnippet(((Multiple) def).getNodes(), def.getModule())))));
+                sb.append("</pre>\n");
+            }
+        }
+    }
+
+      /**
+     * Generate a YANG snippet for specified SchemaNode.
+     *
+     * @param node node for which to generate a snippet
+     * @return YANG snippet
+     */
+    private static String generateYangSnippet(final DocumentedNode node, final Module module) {
+        if (node instanceof Module) {
+            return yangTemplateForModule.render((Module) node).body();
+        } else if (node instanceof SchemaNode) {
+            return yangTemplateForNode.render((SchemaNode) node, module).body();
+        }
+
+        throw new IllegalArgumentException("Not supported.");
+    }
+
+    private static String generateYangSnippet(final Collection<? extends SchemaNode> nodes, final Module module) {
+        return yangTemplateForNodes.render(nodes, module).body();
+    }
+
+    public static boolean hasBuilderClass(final GeneratedType type) {
+        return type instanceof GeneratedTypeForBuilder;
+    }
+
+    public static String formatSchemaPath(final String moduleName, final Iterable<QName> schemaPath) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(moduleName);
+
+        QName currentElement = Iterables.getFirst(schemaPath, null);
+        for (final QName pathElement : schemaPath) {
+            sb.append('/');
+            if (!currentElement.getNamespace().equals(pathElement.getNamespace())) {
+                currentElement = pathElement;
+                sb.append(pathElement);
+            } else {
+                sb.append(pathElement.getLocalName());
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -139,7 +249,18 @@ public final class TextTemplateUtil {
      * @return formatted type description
      */
     public static String formatDataForJavaDoc(final GeneratedType type) {
-        return type.getDescription().map(TextTemplateUtil::encodeJavadocSymbols).orElse("");
+        final StringBuilder javaDoc = new StringBuilder();
+        final TypeComment comment = type.getComment();
+        if (comment != null) {
+            javaDoc.append(comment.getJavadoc())
+                .append(NEW_LINE)
+                .append(NEW_LINE)
+                .append(NEW_LINE);
+        }
+
+        appendSnippet(javaDoc, type);
+
+        return javaDoc.toString();
     }
 
     /**

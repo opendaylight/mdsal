@@ -135,7 +135,7 @@ final class TypeGenHelper {
         final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
 
         genTOBuilder.setDescription(typedefDescription);
-        genTOBuilder.setReference(typedef.getReference().orElse(null));
+        typedef.getReference().ifPresent(genTOBuilder::setReference);
         genTOBuilder.setSchemaPath((List) typedef.getPath().getPathFromRoot());
         genTOBuilder.setModuleName(moduleName);
         genTOBuilder.setTypedef(true);
@@ -483,7 +483,7 @@ final class TypeGenHelper {
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
 
             newType.setDescription(typedefDescription);
-            newType.setReference(typedef.getReference().orElse(null));
+            typedef.getReference().ifPresent(newType::setReference);
             newType.setSchemaPath((List) typedef.getPath().getPathFromRoot());
             newType.setModuleName(moduleName);
 
