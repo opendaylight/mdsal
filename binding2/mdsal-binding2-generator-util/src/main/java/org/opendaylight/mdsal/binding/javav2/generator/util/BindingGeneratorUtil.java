@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
@@ -62,6 +63,7 @@ public final class BindingGeneratorUtil {
 
     private static final CharMatcher GT_MATCHER = CharMatcher.is('>');
     private static final CharMatcher LT_MATCHER = CharMatcher.is('<');
+    private static final Pattern UNICODE_CHAR_PATTERN = Pattern.compile("\\\\+u");
 
     private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
     private static final Comparator<TypeMemberBuilder<?>> SUID_MEMBER_COMPARATOR =
@@ -510,6 +512,11 @@ public final class BindingGeneratorUtil {
         }
 
         return def.getRangeConstraint();
+    }
+
+    public static String replaceAllIllegalChars(final CharSequence stringBuilder){
+        final String ret = UNICODE_CHAR_PATTERN.matcher(stringBuilder).replaceAll("\\\\\\\\u");
+        return ret.isEmpty() ? "" : ret;
     }
 
 }

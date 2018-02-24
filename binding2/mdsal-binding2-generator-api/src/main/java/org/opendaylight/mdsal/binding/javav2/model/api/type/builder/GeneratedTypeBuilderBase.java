@@ -10,9 +10,13 @@ package org.opendaylight.mdsal.binding.javav2.model.api.type.builder;
 
 import com.google.common.annotations.Beta;
 import java.util.List;
+import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.common.QName;
 
 @Beta
@@ -62,7 +66,7 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      * @param comment
      *            Comment String.
      */
-    T addComment(String comment);
+    T addComment(TypeComment comment);
 
     /**
      * The method creates new AnnotationTypeBuilder containing specified package
@@ -171,6 +175,13 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
     List<GeneratedPropertyBuilder> getProperties();
 
     /**
+     * Returns the YANG definition of this type, if available.
+     *
+     * @return YANG source definition, or empty when unavailable.
+     */
+    Optional<YangSourceDefinition> getYangSourceDefinition();
+
+    /**
      * Add new Generated Property definition for Generated Transfer Object
      * Builder and returns Generated Property Builder for specifying Property. <br>
      * Name of Property cannot be <code>null</code>, if it is <code>null</code>
@@ -230,4 +241,10 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      */
     void setReference(String reference);
 
+    /**
+     * Set the YANG source definition.
+     *
+     * @param definition YANG source definition, must not be null
+     */
+    void setYangSourceDefinition(@NonNull YangSourceDefinition definition);
 }

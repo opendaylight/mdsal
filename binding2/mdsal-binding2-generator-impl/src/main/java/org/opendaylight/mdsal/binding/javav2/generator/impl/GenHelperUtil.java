@@ -12,7 +12,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.addTOToTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.annotateDeprecatedIfNecessary;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.constructGetter;
-import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.createDescription;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.createReturnTypeForUnion;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.getAugmentIdentifier;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.isInnerType;
@@ -25,7 +24,6 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGenera
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIABLE;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIER;
-import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.INSTANTIABLE;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.wildcardTypeFor;
@@ -48,6 +46,7 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
+import org.opendaylight.mdsal.binding.javav2.generator.util.TypeComments;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
@@ -59,6 +58,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
@@ -127,9 +127,14 @@ final class GenHelperUtil {
                 genCtx.get(module));
         addImplementedInterfaceFromUses(module, moduleDataTypeBuilder, genCtx);
         moduleDataTypeBuilder.addImplementsType(BindingTypes.TREE_ROOT);
-        moduleDataTypeBuilder.addComment(module.getDescription().orElse(null));
-        moduleDataTypeBuilder.setDescription(createDescription(module, verboseClassComments));
-        moduleDataTypeBuilder.setReference(module.getReference().orElse(null));
+
+        if (verboseClassComments) {
+            moduleDataTypeBuilder.setYangSourceDefinition(YangSourceDefinition.of(module));
+            TypeComments.description(module).ifPresent(moduleDataTypeBuilder::addComment);
+            module.getDescription().ifPresent(moduleDataTypeBuilder::setDescription);
+            module.getReference().ifPresent(moduleDataTypeBuilder::setReference);
+        }
+
         return moduleDataTypeBuilder;
     }
 
@@ -156,8 +161,12 @@ final class GenHelperUtil {
         final String moduleName = new StringBuilder(module.getName()).append('_').append(postfix).toString();
 
         final GeneratedTypeBuilderImpl moduleBuilder = new GeneratedTypeBuilderImpl(packageName, moduleName, context);
-        moduleBuilder.setDescription(createDescription(module, verboseClassComments));
-        moduleBuilder.setReference(module.getReference().orElse(null));
+        if (verboseClassComments) {
+            moduleBuilder.setYangSourceDefinition(YangSourceDefinition.of(module));
+            TypeComments.description(module).ifPresent(moduleBuilder::addComment);
+            module.getDescription().ifPresent(moduleBuilder::setDescription);
+            module.getReference().ifPresent(moduleBuilder::setReference);
+        }
         moduleBuilder.setModuleName(moduleName);
         return moduleBuilder;
     }
@@ -637,10 +646,12 @@ final class GenHelperUtil {
         final GeneratedTypeBuilderImpl newType = new GeneratedTypeBuilderImpl(packageName, schemaNodeName, context);
         final Module module = SchemaContextUtil.findParentModule(schemaContext, schemaNode);
         qNameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
-        newType.addComment(schemaNode.getDescription().orElse(null));
-        newType.setDescription(createDescription(schemaNode, newType.getFullyQualifiedName(), schemaContext,
-                verboseClassComments, namespaceType));
-        newType.setReference(schemaNode.getReference().orElse(null));
+        if (verboseClassComments) {
+            newType.setYangSourceDefinition(YangSourceDefinition.of(module, schemaNode));
+            TypeComments.description(schemaNode).ifPresent(newType::addComment);
+            schemaNode.getDescription().ifPresent(newType::setDescription);
+            schemaNode.getReference().ifPresent(newType::setReference);
+        }
         newType.setSchemaPath((List<QName>) schemaNode.getPath().getPathFromRoot());
         newType.setModuleName(module.getName());
         newType.setBasePackageName(BindingMapping.getRootPackageName(module));
@@ -672,10 +683,10 @@ final class GenHelperUtil {
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
             } else if (node instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(schemaContext, typeBuilder, (LeafListSchemaNode) node, module,
-                            typeProvider, genCtx);
+                            typeProvider, genCtx, verboseClassComments);
             } else if (node instanceof LeafSchemaNode) {
                 resolveLeafSchemaNodeAsMethod("", schemaContext, typeBuilder, genCtx, (LeafSchemaNode) node, module,
-                        typeProvider);
+                        typeProvider, verboseClassComments);
             } else if (node instanceof ListSchemaNode) {
                 listToGenType(module, basePackageName, typeBuilder, childOf, (ListSchemaNode) node, schemaContext,
                         verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
@@ -850,7 +861,7 @@ final class GenHelperUtil {
      */
     private static Type resolveLeafSchemaNodeAsMethod(final String nodeName, final SchemaContext schemaContext,
             final GeneratedTypeBuilder typeBuilder, final Map<Module, ModuleContext> genCtx, final LeafSchemaNode leaf,
-            final Module module, final TypeProvider typeProvider) {
+            final Module module, final TypeProvider typeProvider, final boolean verboseClassComments) {
         if (leaf == null || typeBuilder == null) {
             return null;
         }
@@ -897,7 +908,8 @@ final class GenHelperUtil {
                         typeProvider, schemaContext, genCtx.get(module), genCtx);
                 if (genTOBuilder != null) {
                     //TODO: https://bugs.opendaylight.org/show_bug.cgi?id=2289
-                    returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule, typeProvider);
+                    returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule,
+                        typeProvider, verboseClassComments);
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule,
@@ -961,7 +973,7 @@ final class GenHelperUtil {
      */
     private static boolean resolveLeafListSchemaNode(final SchemaContext schemaContext, final GeneratedTypeBuilder
             typeBuilder, final LeafListSchemaNode node, final Module module, final TypeProvider typeProvider,
-            final Map<Module, ModuleContext> genCtx) {
+            final Map<Module, ModuleContext> genCtx, final boolean verboseClassComments) {
         if (node == null || typeBuilder == null) {
             return false;
         }
@@ -985,7 +997,8 @@ final class GenHelperUtil {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule,
                         typeProvider, schemaContext, genCtx.get(module), genCtx);
                 if (genTOBuilder != null) {
-                    returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule, typeProvider);
+                    returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule,
+                        typeProvider, verboseClassComments);
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule,
@@ -1163,7 +1176,7 @@ final class GenHelperUtil {
             final QName leafQName = leaf.getQName();
 
             final Type type = resolveLeafSchemaNodeAsMethod(nodeName, schemaContext, typeBuilder, genCtx, leaf, module,
-                    typeProvider);
+                    typeProvider, verboseClassComments);
             if (listKeys.contains(leafQName)) {
                 if (type == null) {
                     resolveLeafSchemaNodeAsProperty(nodeName, schemaContext, typeProvider, genCtx, genTOBuilder, leaf, true,
@@ -1175,7 +1188,7 @@ final class GenHelperUtil {
         } else {
             if (schemaNode instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(schemaContext, typeBuilder, (LeafListSchemaNode) schemaNode, module,
-                        typeProvider, genCtx);
+                        typeProvider, genCtx, verboseClassComments);
             } else if (schemaNode instanceof ContainerSchemaNode) {
                 containerToGenType(module, basePackageName, typeBuilder, typeBuilder, (ContainerSchemaNode) schemaNode,
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
@@ -1190,11 +1203,11 @@ final class GenHelperUtil {
     }
 
     private static void addSchemaNodeToListTypeBuilders(final String nodeName, final String basePackageName,
-                                                    final DataSchemaNode schemaNode, final GeneratedTypeBuilder typeBuilder,
-                                                    final GeneratedTypeBuilder genTypeBuilder, final List<QName> listKeys, final Module module,
-                                                    final TypeProvider typeProvider, final SchemaContext schemaContext, final Map<Module, ModuleContext> genCtx,
-                                                    final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments,
-                                                    final BindingNamespaceType namespaceType) {
+            final DataSchemaNode schemaNode, final GeneratedTypeBuilder typeBuilder,
+            final GeneratedTypeBuilder genTypeBuilder, final List<QName> listKeys, final Module module,
+            final TypeProvider typeProvider, final SchemaContext schemaContext, final Map<Module, ModuleContext> genCtx,
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments,
+            final BindingNamespaceType namespaceType) {
         checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
         checkArgument(typeBuilder != null, "Generated Type Builder cannot be NULL.");
 
@@ -1202,15 +1215,15 @@ final class GenHelperUtil {
             final LeafSchemaNode leaf = (LeafSchemaNode) schemaNode;
             final QName leafQName = leaf.getQName();
             final Type type = resolveLeafSchemaNodeAsMethod(nodeName, schemaContext, typeBuilder, genCtx, leaf, module,
-                    typeProvider);
+                    typeProvider, verboseClassComments);
             if (listKeys.contains(leafQName)) {
                 resolveLeafSchemaNodeAsMethod(nodeName, schemaContext, genTypeBuilder, genCtx, leaf, module,
-                        typeProvider);
+                        typeProvider, verboseClassComments);
             }
         } else {
             if (schemaNode instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(schemaContext, typeBuilder, (LeafListSchemaNode) schemaNode, module,
-                        typeProvider, genCtx);
+                        typeProvider, genCtx, verboseClassComments);
             } else if (schemaNode instanceof ContainerSchemaNode) {
                 containerToGenType(module, basePackageName, typeBuilder, typeBuilder, (ContainerSchemaNode) schemaNode,
                         schemaContext, verboseClassComments, genCtx, genTypeBuilders, typeProvider, namespaceType);
@@ -1265,12 +1278,14 @@ final class GenHelperUtil {
 
         final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(basePackageName, node, childOf, module,
                 genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
-        genType.addComment(node.getDescription().orElse(null));
         annotateDeprecatedIfNecessary(node.getStatus(), genType);
-        genType.setDescription(createDescription(node, genType.getFullyQualifiedName(), schemaContext,
-                verboseClassComments, namespaceType));
         genType.setModuleName(module.getName());
-        genType.setReference(node.getReference().orElse(null));
+        if (verboseClassComments) {
+            genType.setYangSourceDefinition(YangSourceDefinition.of(module, node));
+            TypeComments.description(node).ifPresent(genType::addComment);
+            node.getDescription().ifPresent(genType::setDescription);
+            node.getReference().ifPresent(genType::setReference);
+        }
         genType.setSchemaPath((List) node.getPath().getPathFromRoot());
         genType.setParentTypeForBuilder(childOf);
         if (node instanceof DataNodeContainer) {
@@ -1415,11 +1430,13 @@ final class GenHelperUtil {
             }
 
             newType.setAbstract(true);
-            newType.addComment(identity.getDescription().orElse(null));
-            newType.setDescription(createDescription(identity, newType.getFullyQualifiedName(), schemaContext,
-                    verboseClassComments, BindingNamespaceType.Identity));
-            newType.setReference(identity.getReference().orElse(null));
-            newType.setModuleName(module.getName());
+
+            if (verboseClassComments) {
+                newType.setYangSourceDefinition(YangSourceDefinition.of(module));
+                TypeComments.description(module).ifPresent(newType::addComment);
+                module.getDescription().ifPresent(newType::setDescription);
+                module.getReference().ifPresent(newType::setReference);
+            }
             newType.setSchemaPath((List) identity.getPath().getPathFromRoot());
 
             qNameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, identity.getQName());

@@ -75,7 +75,7 @@ public class GeneratorJavaFileTest {
         }
 
         for (final File file2 : generateToFile) {
-            file2.delete();
+          //  file2.delete();
         }
     }
 }

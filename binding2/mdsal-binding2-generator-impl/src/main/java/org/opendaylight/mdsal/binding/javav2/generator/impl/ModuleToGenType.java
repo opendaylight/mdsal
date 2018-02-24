@@ -9,7 +9,6 @@
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.opendaylight.mdsal.binding.javav2.generator.impl.AuxiliaryGenUtils.createDescription;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.groupingsToGenTypes;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.moduleTypeBuilder;
 import static org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil.processUsesImplements;
@@ -25,8 +24,10 @@ import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
+import org.opendaylight.mdsal.binding.javav2.generator.util.TypeComments;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
@@ -210,11 +211,17 @@ final class ModuleToGenType {
             }
         }
 
-        if (tiedNotifications != null) {
-            listenerInterface.setDescription(createDescription(ImmutableSet.<NotificationDefinition>builder()
-                .addAll(notifications).addAll(tiedNotifications).build(), module, verboseClassComments));
-        } else {
-            listenerInterface.setDescription(createDescription(notifications, module, verboseClassComments));
+        if (verboseClassComments) {
+            if (tiedNotifications != null) {
+                listenerInterface.setYangSourceDefinition(YangSourceDefinition.of(module,
+                    ImmutableSet.<NotificationDefinition>builder().addAll(notifications).addAll(tiedNotifications)
+                        .build()));
+            } else {
+                listenerInterface.setYangSourceDefinition(YangSourceDefinition.of(module, notifications));
+            }
+            listenerInterface.addComment(TypeComments.javadoc(
+                "Interface for receiving the following YANG notifications defined in module <b>" + module.getName()
+                    + "</b>").get());
         }
 
         genCtx.get(module).addTopLevelNodeType(listenerInterface);
