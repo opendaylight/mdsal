@@ -89,11 +89,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.typesafe.play</groupId>
-            <artifactId>twirl-api_2.12</artifactId>
-            <version>1.3.13</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -113,58 +108,6 @@
                     </instructions>
                 </configuration>
             </plugin>
-
-            <!-- Twirl -> compile Twirl files to Scala without Play framework dependencies needed -->
-            <plugin>
-                <groupId>com.jakewharton.twirl</groupId>
-                <artifactId>twirl-maven-plugin</artifactId>
-                <version>1.1.0</version>
-                <executions>
-                    <execution>
-                        <id>twirl-to-scala-first</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Scala -> compile Scala files generated from Twirl -->
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>scala-compile-second</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
-
-
-  <!--
-      Maven Site Configuration
-
-      The following configuration is necessary for maven-site-plugin to
-      correctly identify the correct deployment path for OpenDaylight Maven
-      sites.
-  -->
-  <url>${odl.site.url}/${project.groupId}/${stream}/${project.artifactId}/</url>
-
-  <distributionManagement>
-    <site>
-      <id>opendaylight-site</id>
-      <url>${nexus.site.url}/${project.artifactId}/</url>
-    </site>
-  </distributionManagement>
-
 </project>
