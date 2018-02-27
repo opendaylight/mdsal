@@ -72,8 +72,8 @@ public class BindingReflectionsTest {
     }
 
     @SuppressWarnings({ "rawtypes", "unused" })
-    private static final class TestImplementation extends BaseIdentity
-            implements Augmentation<TestImplementation>, Rpc {
+    private static final class TestImplementation
+            implements Augmentation<TestImplementation>, Rpc, BaseIdentity {
 
         public static final QName QNAME = QName.create("", "test");
 

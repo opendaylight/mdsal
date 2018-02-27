@@ -283,23 +283,35 @@ public class BindingGeneratorImplTest {
         for (final Type type : generateTypes) {
             if (type.getFullyQualifiedName()
                     .equals("org.opendaylight.mdsal.gen.javav2.identity3.module.rev170708.ident.Iden1")) {
-                final GeneratedTransferObject genTO = (GeneratedTransferObject)type;
+                final GeneratedType genType = (GeneratedType)type;
                 assertEquals("org.opendaylight.mdsal.gen.javav2.identity3.module.rev170708.ident.Iden2",
-                        genTO.getSuperType().getFullyQualifiedName());
+                    genType.getImplements().stream().findFirst().get().getFullyQualifiedName());
 
             }
             if (type.getFullyQualifiedName()
                     .equals("org.opendaylight.mdsal.gen.javav2.identity3.module.rev170708.ident.Iden2")) {
-                final GeneratedTransferObject genTO = (GeneratedTransferObject)type;
+                final GeneratedType genType = (GeneratedType)type;
                 assertEquals("org.opendaylight.mdsal.gen.javav2.identity.import_.rev170602.ident.Iden1",
-                        genTO.getSuperType().getFullyQualifiedName());
+                    genType.getImplements().stream().findFirst().get().getFullyQualifiedName());
 
             }
             if (type.getFullyQualifiedName()
                     .equals("org.opendaylight.mdsal.gen.javav2.identity3.module.rev170708.ident.Iden3")) {
-                final GeneratedTransferObject genTO = (GeneratedTransferObject)type;
+                final GeneratedType genType = (GeneratedType)type;
                 assertEquals("org.opendaylight.mdsal.gen.javav2.identity3.module.rev170708.ident.Iden1",
-                        genTO.getSuperType().getFullyQualifiedName());
+                    genType.getImplements().stream().findFirst().get().getFullyQualifiedName());
+
+            }
+            if (type.getFullyQualifiedName()
+                .equals("org.opendaylight.mdsal.gen.javav2.identity4.module.rev180227.ident.Iden3")) {
+                final GeneratedType genType = (GeneratedType)type;
+                genType.getImplements().stream().forEach(impl -> {
+                    final String fqn = impl.getFullyQualifiedName();
+                    assertTrue(fqn.equals(
+                            "org.opendaylight.mdsal.gen.javav2.identity4.module.rev180227.ident.Iden1")
+                        || fqn.equals(
+                            "org.opendaylight.mdsal.gen.javav2.identity4.module.rev180227.ident.Iden2"));
+                });
 
             }
         }

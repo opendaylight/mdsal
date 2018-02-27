@@ -35,6 +35,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -212,9 +213,9 @@ final class GenHelperUtil {
         return null;
      }
 
-    static GeneratedTOBuilder findIdentityByQname(final QName qname, final Map<Module, ModuleContext> genCtx) {
+    static GeneratedTypeBuilder findIdentityByQname(final QName qname, final Map<Module, ModuleContext> genCtx) {
         for (final ModuleContext ctx : genCtx.values()) {
-            final GeneratedTOBuilder result = ctx.getIdentities().get(qname);
+            final GeneratedTypeBuilder result = ctx.getIdentities().get(qname);
             if (result != null) {
                 return result;
             }
@@ -1356,13 +1357,13 @@ final class GenHelperUtil {
         return genCtx;
     }
 
-    private static GeneratedTOBuilder resolveIdentitySchemaNode(final String basePackageName, final SchemaContext schemaContext,
+    private static GeneratedTypeBuilder resolveIdentitySchemaNode(final String basePackageName, final SchemaContext schemaContext,
             final IdentitySchemaNode identity, final Module module, final boolean verboseClassComments,
             final Map<Module, ModuleContext> genCtx) {
         Preconditions.checkNotNull(identity,"Identity can not be null!");
 
         //check first if identity has been resolved as base identity of some other one
-        GeneratedTOBuilder newType = findIdentityByQname(identity.getQName(), genCtx);
+        GeneratedTypeBuilder newType = findIdentityByQname(identity.getQName(), genCtx);
         if (newType == null) {
             final Module parentModule = SchemaContextUtil.findParentModule(schemaContext, identity);
             Preconditions.checkState(module.equals(parentModule),
@@ -1371,24 +1372,23 @@ final class GenHelperUtil {
 
             final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, identity.getPath(),
                     BindingNamespaceType.Identity);
-            newType = new GeneratedTOBuilderImpl(packageName, identity.getQName().getLocalName(), true, false,
+            newType = new GeneratedTypeBuilderImpl(packageName, identity.getQName().getLocalName(), true, false,
                     genCtx.get(module));
 
             final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
             if (baseIdentities.size() == 0) {
                 //no base - abstract
-                final GeneratedTOBuilderImpl gto = new GeneratedTOBuilderImpl(BaseIdentity.class.getPackage().getName(),
+                final GeneratedTypeBuilderImpl genType = new GeneratedTypeBuilderImpl(BaseIdentity.class.getPackage().getName(),
                         BaseIdentity.class.getSimpleName(), genCtx.get(module));
-                newType.setExtendsType(gto.toInstance());
+                newType.addImplementsType(genType.toInstance());
             } else {
-                //one base - inheritance
-                final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
-                GeneratedTOBuilder baseType = resolveIdentitySchemaNode(basePackageName, schemaContext,
-                    baseIdentity, module, verboseClassComments, genCtx);
-                newType.setExtendsType(baseType.toInstance());
+                //multiple bases - inheritance
+                for (IdentitySchemaNode baseIdentity : baseIdentities) {
+                    GeneratedTypeBuilder baseType = resolveIdentitySchemaNode(basePackageName, schemaContext,
+                        baseIdentity, module, verboseClassComments, genCtx);
+                    newType.addImplementsType(baseType.toInstance());
+                }
             }
-
-            newType.setAbstract(true);
 
             if (verboseClassComments) {
                 newType.setYangSourceDefinition(YangSourceDefinition.of(module));

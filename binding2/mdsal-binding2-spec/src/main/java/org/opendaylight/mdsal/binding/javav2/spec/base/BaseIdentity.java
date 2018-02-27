@@ -9,8 +9,8 @@
 package org.opendaylight.mdsal.binding.javav2.spec.base;
 
 /**
- * Base Identity abstract class
+ * Base Identity interface
  *
  */
-public abstract class BaseIdentity {
+public interface BaseIdentity {
 }

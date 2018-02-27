@@ -49,7 +49,7 @@ public final class ModuleContext {
     private final BiMap<String, GeneratedTypeBuilder> dataTypes = HashBiMap.create();
     private final Map<SchemaPath, GeneratedTypeBuilder> groupings = new HashMap<>();
     private final Map<SchemaPath, GeneratedTypeBuilder> cases = new HashMap<>();
-    private final Map<QName,GeneratedTOBuilder> identities = new HashMap<>();
+    private final Map<QName,GeneratedTypeBuilder> identities = new HashMap<>();
     private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<>();
     private final List<GeneratedTypeBuilder> augmentations = new ArrayList<>();
     private final Multimap<Type,AugmentationSchemaNode> typeToAugmentations = HashMultimap.create();
@@ -75,7 +75,7 @@ public final class ModuleContext {
         result.addAll(this.dataTypes.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.groupings.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.cases.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
-        result.addAll(this.identities.values().stream().map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
+        result.addAll(this.identities.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.topLevelNodes.stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.augmentations.stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
         result.addAll(this.keyTypes.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
@@ -129,7 +129,7 @@ public final class ModuleContext {
         this.cases.put(p, b);
     }
 
-    public void addIdentityType(final QName name,final GeneratedTOBuilder b) {
+    public void addIdentityType(final QName name,final GeneratedTypeBuilder b) {
         this.identities.put(name,b);
     }
 
@@ -157,7 +157,7 @@ public final class ModuleContext {
         return Collections.unmodifiableMap(this.cases);
     }
 
-    public Map<QName,GeneratedTOBuilder> getIdentities() {
+    public Map<QName,GeneratedTypeBuilder> getIdentities() {
         return Collections.unmodifiableMap(this.identities);
     }
 
