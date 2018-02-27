@@ -88,7 +88,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
             Set<File> moduleInfoProviders = generateYangModuleInfo(outputBaseDir, module, context,
                 moduleResourcePathResolver, currentProvidersBuilder);
             ImmutableSet<String> currentProviders = currentProvidersBuilder.build();
-            LOG.info("Adding ModuleInfo providers {}", currentProviders);
+            LOG.debug("Adding ModuleInfo providers {}", currentProviders);
             bindingProviders.addAll(currentProviders);
             result.addAll(moduleInfoProviders);
         }
