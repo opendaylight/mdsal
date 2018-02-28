@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
@@ -80,5 +81,21 @@ public final class CodeHelpers {
         for (int i = 0; i < patterns.length; ++i) {
             enforcePatternConstraints(value, patterns[i], regexes[i]);
         }
+    }
+
+    public static void throwInvalidLength(final String expected, final Object actual) {
+        throw new IllegalArgumentException("Invalid length: " + actual + ", expected: " + expected + ".");
+    }
+
+    public static void throwInvalidLength(final String expected, final byte[] actual) {
+        throwInvalidLength(expected, Arrays.toString(actual));
+    }
+
+    public static void throwInvalidRange(final String expected, final Object actual) {
+        throw new IllegalArgumentException("Invalid range: " + actual + ", expected: " + expected + ".");
+    }
+
+    public static void throwInvalidRange(final Object[] expected, final Object actual) {
+        throwInvalidRange(Arrays.toString(expected), actual);
     }
 }
