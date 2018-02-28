@@ -78,8 +78,8 @@ final class LengthGenerator {
                 sb.append("    }\n");
             }
 
-            sb.append("    throw new IllegalArgumentException(String.format(\"Invalid length: %s, expected: ")
-              .append(createLengthString(constraint)).append(".\", java.util.Arrays.toString(value)));\n");
+            sb.append("    throw new IllegalArgumentException(String.format(\"Invalid length: %s, expected: %s.\", "
+                    + "java.util.Arrays.toString(value), \"").append(createLengthString(constraint)).append("\"));\n");
         }
 
         sb.append("}\n");
@@ -102,8 +102,8 @@ final class LengthGenerator {
                 sb.append("    }\n");
             }
 
-            sb.append("    throw new IllegalArgumentException(String.format(\"Invalid length: %s, expected: ")
-              .append(createLengthString(constraint)).append(".\", value));\n");
+            sb.append("    throw new IllegalArgumentException(String.format(\"Invalid length: %s, expected: %s.\", "
+                    + "value, \"").append(createLengthString(constraint)).append("\"));\n");
         }
 
         sb.append("}\n");
