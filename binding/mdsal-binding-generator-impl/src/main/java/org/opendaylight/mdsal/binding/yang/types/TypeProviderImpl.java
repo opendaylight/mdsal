@@ -78,6 +78,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.InstanceIdentifierTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -1044,7 +1045,8 @@ public final class TypeProviderImpl implements TypeProvider {
      *            parent Schema Node for Extended Subtype
      *
      */
-    private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder, final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode) {
+    private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
+            final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode) {
         final String unionTypeName = unionSubtype.getQName().getLocalName();
         final Type genTO = findGenTO(unionTypeName, unionSubtype);
         if (genTO != null) {
@@ -1258,12 +1260,57 @@ public final class TypeProviderImpl implements TypeProvider {
 
         final List<String> regExps = new ArrayList<>(patternConstraints.size());
         for (final PatternConstraint patternConstraint : patternConstraints) {
-            final String regEx = patternConstraint.getJavaPatternString();
+            String regEx = patternConstraint.getJavaPatternString();
+
+            // The pattern can be inverted
+            final Optional<ModifierKind> optModifier = patternConstraint.getModifier();
+            if (optModifier.isPresent()) {
+                regEx = applyModifier(optModifier.get(), regEx);
+            }
+
             final String modifiedRegEx = StringEscapeUtils.escapeJava(regEx);
             regExps.add(modifiedRegEx);
         }
 
         return regExps;
+    }
+
+    private static String applyModifier(final ModifierKind modifier, final String pattern) {
+        Preconditions.checkArgument(pattern.charAt(0) == '^' && pattern.charAt(pattern.length() - 1) == '$',
+                "Pattern '%s' does not have expected format", pattern);
+        if (modifier != ModifierKind.INVERT_MATCH) {
+            LOG.warn("Ignoring unhandled modifier {}", modifier);
+            return pattern;
+        }
+
+        /*
+         * Converting the expression into a negation is tricky. For example, when we have:
+         *
+         *   pattern "a|b" { modifier invert-match; }
+         *
+         * this gets escaped into either "^a|b$" or "^(?:a|b)$". Either format can occur, as the non-capturing group
+         * strictly needed only in some cases. From that we want to arrive at:
+         *   "^(?!(?:a|b)$).*$".
+         *
+         *           ^^^         original expression
+         *        ^^^^^^^^       tail of a grouped expression (without head anchor)
+         *    ^^^^        ^^^^   inversion of match
+         *
+         * Inversion works by explicitly anchoring at the start of the string and then:
+         * - specifying a negative lookahead until the end of string
+         * - matching any string
+         * - anchoring at the end of the string
+         */
+        final boolean hasGroup = pattern.startsWith("^(?:") && pattern.endsWith(")$");
+        final int len = pattern.length();
+        final StringBuilder sb = new StringBuilder(len + (hasGroup ? 7 : 11)).append("^(?!");
+
+        if (hasGroup) {
+            sb.append(pattern, 1, len);
+        } else {
+            sb.append("(?:").append(pattern, 1, len - 1).append(")$");
+        }
+        return sb.append(").*$").toString();
     }
 
     /**
