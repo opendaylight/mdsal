@@ -14,10 +14,15 @@ package org.opendaylight.mdsal.binding.model.util;
 public final class TypeConstants {
 
     /**
-     * Name of the class constant which hold list of the regular expression
-     * strings.
+     * Name of the class constant which holds the list of the regular expression strings compatible with
+     * {@link java.util.regex.Pattern}.
      */
     public static final String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
+
+    /**
+     * Name of the class constant which holds the list of the XSD regular expression strings.
+     */
+    public static final String REGEX_CONSTANT_NAME = "REGEX_CONSTANTS";
 
     /**
      * Creation of new instance is prohibited.
