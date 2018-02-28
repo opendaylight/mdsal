@@ -78,6 +78,7 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.InstanceIdentifierTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -1044,7 +1045,8 @@ public final class TypeProviderImpl implements TypeProvider {
      *            parent Schema Node for Extended Subtype
      *
      */
-    private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder, final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode) {
+    private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
+            final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode) {
         final String unionTypeName = unionSubtype.getQName().getLocalName();
         final Type genTO = findGenTO(unionTypeName, unionSubtype);
         if (genTO != null) {
@@ -1258,12 +1260,29 @@ public final class TypeProviderImpl implements TypeProvider {
 
         final List<String> regExps = new ArrayList<>(patternConstraints.size());
         for (final PatternConstraint patternConstraint : patternConstraints) {
-            final String regEx = patternConstraint.getJavaPatternString();
+            String regEx = patternConstraint.getJavaPatternString();
+
+            // The pattern can be inverted
+            final Optional<ModifierKind> optModifier = patternConstraint.getModifier();
+            if (optModifier.isPresent()) {
+                regEx = applyModifier(optModifier.get(), regEx);
+            }
+
             final String modifiedRegEx = StringEscapeUtils.escapeJava(regEx);
             regExps.add(modifiedRegEx);
         }
 
         return regExps;
+    }
+
+    private static String applyModifier(final ModifierKind modifier, final String pattern) {
+        switch (modifier) {
+            case INVERT_MATCH:
+                return BindingMapping.negatePatternString(pattern);
+            default:
+                LOG.warn("Ignoring unhandled modifier {}", modifier);
+                return pattern;
+        }
     }
 
     /**
