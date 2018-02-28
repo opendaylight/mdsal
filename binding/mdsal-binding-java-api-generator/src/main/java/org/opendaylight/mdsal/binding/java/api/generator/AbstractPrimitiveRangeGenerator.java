@@ -107,8 +107,8 @@ abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
                 sb.append("    }\n");
             }
 
-            sb.append("    throw new IllegalArgumentException(String.format(\"Invalid range: %s, expected: ")
-              .append(createRangeString(constraints)).append(".\", value));\n");
+            sb.append("    throw new IllegalArgumentException(String.format(\"Invalid range: %s, expected: %s.\", "
+                + "value, \"").append(createRangeString(constraints)).append("\"));\n");
         }
 
         sb.append("}\n");
