@@ -58,15 +58,19 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Auxiliary util class for {@link TypeProviderImpl} class
  */
 @Beta
 final class TypeGenHelper {
+    private static final Logger LOG = LoggerFactory.getLogger(TypeGenHelper.class);
 
     private TypeGenHelper() {
         throw new UnsupportedOperationException("Util class");
@@ -227,12 +231,29 @@ final class TypeGenHelper {
 
         final List<String> regExps = new ArrayList<>(patternConstraints.size());
         for (final PatternConstraint patternConstraint : patternConstraints) {
-            final String regEx = patternConstraint.getJavaPatternString();
+            String regEx = patternConstraint.getJavaPatternString();
+
+            // The pattern can be inverted
+            final Optional<ModifierKind> optModifier = patternConstraint.getModifier();
+            if (optModifier.isPresent()) {
+                regEx = applyModifier(optModifier.get(), regEx);
+            }
+
             final String modifiedRegEx = StringEscapeUtils.escapeJava(regEx);
             regExps.add(modifiedRegEx);
         }
 
         return regExps;
+    }
+
+    private static String applyModifier(final ModifierKind modifier, final String pattern) {
+        switch (modifier) {
+            case INVERT_MATCH:
+                return BindingMapping.negatePatternString(pattern);
+            default:
+                LOG.warn("Ignoring unhandled modifier {}", modifier);
+                return pattern;
+        }
     }
 
     /**
