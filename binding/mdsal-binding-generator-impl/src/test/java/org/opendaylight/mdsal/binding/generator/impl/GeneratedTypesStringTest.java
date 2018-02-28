@@ -11,6 +11,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.model.api.Constant;
@@ -78,14 +80,14 @@ public class GeneratedTypesStringTest {
                             break;
                         }
 
-                        if (con.getValue() instanceof List) {
+                        if (con.getValue() instanceof Map) {
                             constantRegExListValueOK = true;
                         } else {
                             break;
                         }
 
-                        for (Object obj : (List<?>) con.getValue()) {
-                            if (!(obj instanceof String)) {
+                        for (Entry<?, ?> e : ((Map<?, ?>) con.getValue()).entrySet()) {
+                            if (!(e.getKey() instanceof String) || !(e.getKey() instanceof String)) {
                                 noStringInReqExListFound = true;
                                 break;
                             }
