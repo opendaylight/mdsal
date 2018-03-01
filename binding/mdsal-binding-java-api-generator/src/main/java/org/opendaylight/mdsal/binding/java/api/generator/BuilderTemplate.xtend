@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator
 
+import com.google.common.base.MoreObjects
+import com.google.common.base.MoreObjects.ToStringHelper
 import com.google.common.collect.ImmutableSortedSet
 import java.util.ArrayList
 import java.util.Arrays
@@ -31,9 +33,9 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.Generate
 import org.opendaylight.yangtools.concepts.Builder
 import org.opendaylight.yangtools.yang.binding.Augmentable
 import org.opendaylight.yangtools.yang.binding.AugmentationHolder
+import org.opendaylight.yangtools.yang.binding.CodeHelpers
 import org.opendaylight.yangtools.yang.binding.DataObject
 import org.opendaylight.yangtools.yang.binding.Identifiable
-import org.opendaylight.yangtools.yang.binding.CodeHelpers
 
 /**
  * Template for generating JAVA builder classes.
@@ -709,36 +711,21 @@ class BuilderTemplate extends BaseTemplate {
         «IF !(properties === null)»
             @Override
             public «String.importedName» toString() {
-                «String.importedName» name = "«type.name» [";
-                «StringBuilder.importedName» builder = new «StringBuilder.importedName» (name);
-                «FOR property : properties SEPARATOR "\n    builder.append(\", \");\n}" AFTER "    }\n"»
-                    if («property.fieldName» != null) {
-                        builder.append("«property.fieldName»=");
-                        «IF property.returnType.name.contains("[")»
-                            builder.append(«Arrays.importedName».toString(«property.fieldName»));
+                «MoreObjects.importedName».ToStringHelper helper = «MoreObjects.importedName».toStringHelper(«type.name».class).omitNullValues();
+                «FOR property : properties»
+                    helper.add("«property.fieldName»", «
+                        IF property.returnType.name.contains("[")»«
+                            Arrays.importedName».toString(«property.fieldName»));
                         «ELSE»
-                            builder.append(«property.fieldName»);
+                            «property.fieldName»);
                         «ENDIF»
                 «ENDFOR»
                 «IF augmentField !== null»
-                    «IF !properties.empty»
-                «««Append comma separator only if it's not there already from previous operation»»»
-final int builderLength = builder.length();
-                    final int builderAdditionalLength = builder.substring(name.length(), builderLength).length();
-                    if (builderAdditionalLength > 2 && !builder.substring(builderLength - 2, builderLength).equals(", ")) {
-                        builder.append(", ");
+                    if (!«augmentField.name».isEmpty()) {
+                        helper.add("«augmentField.name»", «augmentField.name».values());
                     }
-                    «ENDIF»
-                    builder.append("«augmentField.name»=");
-                    builder.append(«augmentField.name».values());«"\n"»
-                    return builder.append(']').toString();
-                «ELSE»
-                    «IF properties.empty»
-                    return builder.append(']').toString();
-                    «ELSE»
-            return builder.append(']').toString();
-                    «ENDIF»
                 «ENDIF»
+                return helper.toString();
             }
         «ENDIF»
     '''
