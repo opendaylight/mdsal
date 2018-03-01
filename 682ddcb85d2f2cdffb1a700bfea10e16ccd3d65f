@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3877ed1b_b71399c8",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/impl/AugmentToGenType.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-01T13:12:42Z",
+      "side": 1,
+      "message": "For clarity, I suggest to swap the node/caseNode var names, ie             name the DataSchemaNode var \"node\" or, better yet, \"childNode\" since we don\u0027t know yet if it is a CaseSchemaNode (and it may not be).",
+      "revId": "682ddcb85d2f2cdffb1a700bfea10e16ccd3d65f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
