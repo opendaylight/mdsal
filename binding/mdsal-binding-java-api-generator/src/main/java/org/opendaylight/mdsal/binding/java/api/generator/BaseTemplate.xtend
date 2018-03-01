@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.java.api.generator
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.encodeAngleBrackets
 
 import com.google.common.base.CharMatcher
+import com.google.common.base.MoreObjects
 import com.google.common.base.Splitter
 import com.google.common.collect.Iterables
 import java.util.Arrays
@@ -40,22 +41,21 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition
 import org.opendaylight.yangtools.yang.model.api.SchemaNode
 
 abstract class BaseTemplate {
+    protected val Map<String, String> importMap = new HashMap<String, String>()
     protected val GeneratedType type;
-    protected val Map<String, String> importMap;
 
     private static final char NEW_LINE = '\n'
-    private static final CharMatcher NL_MATCHER = CharMatcher.is(NEW_LINE)
-    private static final CharMatcher TAB_MATCHER = CharMatcher.is('\t')
-    private static final Pattern SPACES_PATTERN = Pattern.compile(" +")
-    private static final Splitter NL_SPLITTER = Splitter.on(NL_MATCHER)
-    private static final Pattern TAIL_COMMENT_PATTERN = Pattern.compile("*/", Pattern.LITERAL);
+    private static val NL_MATCHER = CharMatcher.is(NEW_LINE)
+    private static val TAB_MATCHER = CharMatcher.is('\t')
+    private static val SPACES_PATTERN = Pattern.compile(" +")
+    private static val NL_SPLITTER = Splitter.on(NL_MATCHER)
+    private static val TAIL_COMMENT_PATTERN = Pattern.compile("*/", Pattern.LITERAL);
 
     new(GeneratedType _type) {
         if (_type === null) {
             throw new IllegalArgumentException("Generated type reference cannot be NULL!")
         }
         this.type = _type;
-        this.importMap = new HashMap<String,String>()
     }
 
     def packageDefinition() '''package «type.packageName»;'''
@@ -431,25 +431,16 @@ abstract class BaseTemplate {
         «IF !properties.empty»
             @Override
             public «String.importedName» toString() {
-                «StringBuilder.importedName» builder = new «StringBuilder.importedName»(«type.importedName».class.getSimpleName()).append(" [");
-                boolean first = true;
-
+                return «MoreObjects.importedName».toStringHelper(«type.importedName».class).omitNullValues()«»
                 «FOR property : properties»
-                    if («property.fieldName» != null) {
-                        if (first) {
-                            first = false;
-                        } else {
-                            builder.append(", ");
-                        }
-                        builder.append("«property.fieldName»=");
-                        «IF property.returnType.name.contains("[")»
-                            builder.append(«Arrays.importedName».toString(«property.fieldName»));
-                        «ELSE»
-                            builder.append(«property.fieldName»);
-                        «ENDIF»
-                    }
+                    .add("«property.fieldName»", «
+                    IF property.returnType.name.contains("[")»«
+                        Arrays.importedName».toString(«property.fieldName»))
+                    «ELSE»«
+                        property.fieldName»)
+                    «ENDIF»
                 «ENDFOR»
-                return builder.append(']').toString();
+                .toString();
             }
         «ENDIF»
     '''
