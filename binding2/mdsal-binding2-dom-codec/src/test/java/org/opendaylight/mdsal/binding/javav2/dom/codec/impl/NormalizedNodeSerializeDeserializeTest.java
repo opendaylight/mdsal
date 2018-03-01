@@ -24,7 +24,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.data.TreeLeafOnlyUsesAugment;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.dto.TreeLeafOnlyUsesAugmentBuilder;
-import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.grp.LeafFromGroupingGrouping;
+import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.augment.rev140709.grp.LeafFromGrouping;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.data.Top;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.data.top.TopLevelList;
 import org.opendaylight.mdsal.gen.javav2.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.dto.TopBuilder;
@@ -44,8 +44,8 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
     private static final QName TOP_LEVEL_LIST_NAME_QNAME = QName.create(TopLevelList.QNAME, "name");
     private static final QName AUGMENTED_STRING_QNAME = QName.create(TopLevelList.QNAME, "augmented-string");
     private static final QName AUGMENTED_INT_QNAME = QName.create(TopLevelList.QNAME, "augmented-int");
-    private static final QName SIMPLE_VALUE_QNAME = QName.create(LeafFromGroupingGrouping.QNAME, "simple-value");
-    private static final QName SIMPLE_TYPE_QNAME = QName.create(LeafFromGroupingGrouping.QNAME, "simple-type");
+    private static final QName SIMPLE_VALUE_QNAME = QName.create(LeafFromGrouping.QNAME, "simple-value");
+    private static final QName SIMPLE_TYPE_QNAME = QName.create(LeafFromGrouping.QNAME, "simple-type");
 
     @Before
     public void setup() {
@@ -72,17 +72,17 @@ public class NormalizedNodeSerializeDeserializeTest extends AbstractBindingRunti
 
     private static AugmentationIdentifier getTopLevelListAugId() {
         Set<QName> qnames = new HashSet<>();
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "simple-value"));
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "simple-type"));
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "second-simple-value"));
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "list-via-uses"));
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "container-with-uses"));
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "leaf-from-grouping"));
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "identity"));
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "schema-unaware-union"));
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "simple-type-ref"));
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "identity-ref"));
-        qnames.add(QName.create(LeafFromGroupingGrouping.QNAME, "schema-unaware-union-ref"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "simple-value"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "simple-type"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "second-simple-value"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "list-via-uses"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "container-with-uses"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "leaf-from-grouping"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "identity"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "schema-unaware-union"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "simple-type-ref"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "identity-ref"));
+        qnames.add(QName.create(LeafFromGrouping.QNAME, "schema-unaware-union-ref"));
 
         return new AugmentationIdentifier(qnames);
     }
