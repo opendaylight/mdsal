@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -56,6 +57,18 @@ public final class CodeHelpers {
         requireNonNull(name);
         checkArgument(value != null, "%s must not be null", name);
         return value;
+    }
+
+    public static void appendValue(final ToStringHelper helper, final String name, final Object value) {
+        if (value != null) {
+            helper.add(name, value);
+        }
+    }
+
+    public static void appendValue(final ToStringHelper helper, final String name, final byte[] value) {
+        if (value != null) {
+            helper.add(name, Arrays.toString(value));
+        }
     }
 
     public static Pattern[] compilePatterns(final List<String> patterns) {
