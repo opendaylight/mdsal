@@ -530,14 +530,7 @@ final class GenHelperUtil {
             final SchemaContext schemaContext, final boolean verboseClassComments, final Map<String, Map<String,
             GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider, final BindingNamespaceType namespaceType) {
 
-        String suffix = "";
-        if (schemaNode instanceof GroupingDefinition) {
-            suffix = "grouping";
-        } else if (namespaceType.equals(BindingNamespaceType.Grouping)) {
-            suffix = "data";
-        }
-
-        GeneratedTypeBuilder it = addRawInterfaceDefinition(basePackageName, schemaNode, schemaContext, "", suffix,
+        GeneratedTypeBuilder it = addRawInterfaceDefinition(basePackageName, schemaNode, schemaContext, "", "",
                 verboseClassComments, genTypeBuilders, namespaceType, genCtx.get(module));
         if (namespaceType.equals(BindingNamespaceType.Data)) {
             if (parent == null) {
