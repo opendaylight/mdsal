@@ -38,6 +38,7 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition
 import org.opendaylight.yangtools.yang.model.api.SchemaNode
+import com.google.common.base.MoreObjects
 
 abstract class BaseTemplate {
     protected val GeneratedType type;
@@ -431,25 +432,16 @@ abstract class BaseTemplate {
         «IF !properties.empty»
             @Override
             public «String.importedName» toString() {
-                «StringBuilder.importedName» builder = new «StringBuilder.importedName»(«type.importedName».class.getSimpleName()).append(" [");
-                boolean first = true;
-
+                return «MoreObjects.importedName».toStringHelper(«type.importedName».class).omitNullValues()
                 «FOR property : properties»
-                    if («property.fieldName» != null) {
-                        if (first) {
-                            first = false;
-                        } else {
-                            builder.append(", ");
-                        }
-                        builder.append("«property.fieldName»=");
+                    .add("«property.fieldName»",
                         «IF property.returnType.name.contains("[")»
-                            builder.append(«Arrays.importedName».toString(«property.fieldName»));
+                            «Arrays.importedName».toString(«property.fieldName»))
                         «ELSE»
-                            builder.append(«property.fieldName»);
+                            «property.fieldName»)
                         «ENDIF»
-                    }
                 «ENDFOR»
-                return builder.append(']').toString();
+                        .toString();
             }
         «ENDIF»
     '''
