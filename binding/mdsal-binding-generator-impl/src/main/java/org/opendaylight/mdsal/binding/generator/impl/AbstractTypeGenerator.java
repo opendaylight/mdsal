@@ -12,7 +12,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.computeDefaultSUID;
-import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.encodeAngleBrackets;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.packageNameForAugmentedGeneratedType;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_OBJECT;
@@ -63,8 +62,8 @@ import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTypeBuilderImpl;
+import org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
-import org.opendaylight.mdsal.binding.yang.types.TypeProviderImpl;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -157,7 +156,7 @@ abstract class AbstractTypeGenerator {
     /**
      * Provide methods for converting YANG types to JAVA types.
      */
-    private final TypeProviderImpl typeProvider;
+    private final AbstractTypeProvider typeProvider;
 
     /**
      * Holds reference to schema context to resolve data of augmented element
@@ -165,7 +164,7 @@ abstract class AbstractTypeGenerator {
      */
     private final SchemaContext schemaContext;
 
-    AbstractTypeGenerator(final SchemaContext context, final TypeProviderImpl typeProvider) {
+    AbstractTypeGenerator(final SchemaContext context, final AbstractTypeProvider typeProvider) {
         this.schemaContext = requireNonNull(context);
         this.typeProvider = requireNonNull(typeProvider);
 
@@ -186,7 +185,7 @@ abstract class AbstractTypeGenerator {
         return checkNotNull(genCtx.get(module), "Module context not found for module %s", module);
     }
 
-    final TypeProviderImpl typeProvider() {
+    final AbstractTypeProvider typeProvider() {
         return typeProvider;
     }
 
@@ -683,8 +682,7 @@ abstract class AbstractTypeGenerator {
         if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
             final String enumerationName = BindingMapping.getClassName(enumName);
             final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
-            final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription().orElse(null));
-            enumBuilder.setDescription(enumTypedefDescription);
+            typeProvider.addEnumDescription(enumBuilder, enumTypeDef);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
             ModuleContext ctx = genCtx.get(module);
             ctx.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
@@ -1584,7 +1582,7 @@ abstract class AbstractTypeGenerator {
 
         genTOBuilder.setTypedef(true);
         genTOBuilder.setIsUnion(true);
-        TypeProviderImpl.addUnitsToGenTO(genTOBuilder, typeDef.getUnits().orElse(null));
+        AbstractTypeProvider.addUnitsToGenTO(genTOBuilder, typeDef.getUnits().orElse(null));
 
 
 

@@ -14,7 +14,8 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.yang.types.TypeProviderImpl;
+import org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider;
+import org.opendaylight.mdsal.binding.yang.types.CodegenTypeProvider;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
@@ -27,7 +28,7 @@ import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 public class TypeProviderIntegrationTest {
     private final String PKG = "org.opendaylight.yang.gen.v1.urn.opendaylight.test.rev131008.";
     private static SchemaContext context;
-    private TypeProviderImpl provider;
+    private AbstractTypeProvider provider;
     private Module m;
 
     @BeforeClass
@@ -39,7 +40,7 @@ public class TypeProviderIntegrationTest {
 
     @Before
     public void init() {
-        provider = new TypeProviderImpl(context);
+        provider = new CodegenTypeProvider(context);
         m = context.findModule("test", Revision.of("2013-10-08")).get();
     }
 
