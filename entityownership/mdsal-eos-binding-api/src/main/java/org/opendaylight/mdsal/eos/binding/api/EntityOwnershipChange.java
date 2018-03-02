@@ -29,4 +29,11 @@ public class EntityOwnershipChange extends GenericEntityOwnershipChange<Instance
             final boolean inJeopardy) {
         super(entity, state, inJeopardy);
     }
+
+    // This method is overridden to avoid a Findbugs violation for "Unchecked/unconfirmed cast" from GenericEntity to
+    // Entity in client code.
+    @Override
+    public Entity getEntity() {
+        return super.getEntity();
+    }
 }
