@@ -48,7 +48,7 @@ public class TypeProviderImplTest {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
             "/leafref/leafref-relative-invalid.yang");
         final Module moduleRelative = schemaContext.findModules(URI.create("urn:xml:ns:yang:lrr")).iterator().next();
-        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
+        final AbstractTypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
         final QName listNode = QName.create(moduleRelative.getQNameModule(), "neighbor");
         final QName leafNode = QName.create(moduleRelative.getQNameModule(), "neighbor-id");
@@ -56,8 +56,7 @@ public class TypeProviderImplTest {
                 .getDataChildByName(leafNode);
         LeafSchemaNode leaf = (LeafSchemaNode) leafref;
         TypeDefinition<?> leafType = leaf.getType();
-        Type leafrefResolvedType = typeProvider.javaTypeForSchemaDefinitionType(leafType, leaf);
-        assertNotNull(leafrefResolvedType);
+        typeProvider.javaTypeForSchemaDefinitionType(leafType, leaf);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -65,7 +64,7 @@ public class TypeProviderImplTest {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(
             "/leafref/leafref-absolute-invalid.yang");
         final Module moduleRelative = schemaContext.findModules(URI.create("urn:xml:ns:yang:lra")).iterator().next();
-        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
+        final AbstractTypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
         final QName listNode = QName.create(moduleRelative.getQNameModule(), "neighbor");
         final QName leafNode = QName.create(moduleRelative.getQNameModule(), "neighbor-id");
@@ -81,7 +80,7 @@ public class TypeProviderImplTest {
     public void testLeafRefRelativeAndAbsoluteValidReference() {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/leafref/leafref-valid.yang");
         final Module moduleValid = schemaContext.findModules(URI.create("urn:xml:ns:yang:lrv")).iterator().next();
-        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
+        final AbstractTypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
         final QName listNode = QName.create(moduleValid.getQNameModule(), "neighbor");
         final QName leaf1Node = QName.create(moduleValid.getQNameModule(), "neighbor-id");
@@ -105,7 +104,7 @@ public class TypeProviderImplTest {
     public void testMethodsOfTypeProviderImpl() {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/base-yang-types.yang");
 
-        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
+        final AbstractTypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
         final SchemaPath refTypePath = SchemaPath.create(true, QName.create("", "cont1"), QName.create("", "list1"));
         final GeneratedTypeBuilderImpl refType = new GeneratedTypeBuilderImpl("org.opendaylight.yangtools.test",
