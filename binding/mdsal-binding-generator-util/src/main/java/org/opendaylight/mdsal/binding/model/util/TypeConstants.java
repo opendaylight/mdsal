@@ -14,8 +14,8 @@ package org.opendaylight.mdsal.binding.model.util;
 public final class TypeConstants {
 
     /**
-     * Name of the class constant which hold list of the regular expression
-     * strings.
+     * Name of the class constant which holds the map of regular expressions that need to be enforced on the string
+     * value. The map is keyed by Pattern-compatible string and values are XSD-compatible strings.
      */
     public static final String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
 
