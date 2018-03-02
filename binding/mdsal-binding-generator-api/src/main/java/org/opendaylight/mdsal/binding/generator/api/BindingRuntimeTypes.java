@@ -1,0 +1,66 @@
+/*
+ * Copyright (c) 2018 Pantheon Technologies, s.r.o.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.opendaylight.mdsal.binding.generator.api;
+
+import com.google.common.annotations.Beta;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+
+/**
+ * The result of BindingGenerator run. Contains mapping between Types and SchemaNodes.
+ */
+@Beta
+public final class BindingRuntimeTypes {
+    private final Map<Type, AugmentationSchemaNode> typeToAugmentation;
+    private final BiMap<Type, WithStatus> typeToSchema;
+    private final Multimap<Type, Type> choiceToCases;
+    private final Map<QName, Type> identities;
+
+    public BindingRuntimeTypes(final Map<Type, AugmentationSchemaNode> typeToAugmentation,
+            final BiMap<Type, WithStatus> typeToDefiningSchema, final Multimap<Type, Type> choiceToCases,
+            final Map<QName, Type> identities) {
+        this.typeToAugmentation = ImmutableMap.copyOf(typeToAugmentation);
+        this.typeToSchema = ImmutableBiMap.copyOf(typeToDefiningSchema);
+        this.choiceToCases = ImmutableMultimap.copyOf(choiceToCases);
+        this.identities = ImmutableMap.copyOf(identities);
+    }
+
+    public Optional<AugmentationSchemaNode> findAugmentation(final Type type) {
+        return Optional.ofNullable(typeToAugmentation.get(type));
+    }
+
+    public Optional<Type> findIdentity(final QName qname) {
+        return Optional.ofNullable(identities.get(qname));
+    }
+
+    public Optional<WithStatus> findSchema(final Type type) {
+        return Optional.ofNullable(typeToSchema.get(type));
+    }
+
+    public Optional<Type> findType(final WithStatus schema) {
+        return Optional.ofNullable(typeToSchema.inverse().get(schema));
+    }
+
+    public Multimap<Type, Type> getChoiceToCases() {
+        return choiceToCases;
+    }
+
+    public Collection<Type> findCases(final Type choiceType) {
+        return choiceToCases.get(choiceType);
+    }
+}
