@@ -17,36 +17,30 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
  * Transform Schema Context to Generated types.
  */
 public interface BindingGenerator {
-
     /**
-     * Generate Types from whole Schema Context. <br>
-     * The method will return List of All Generated Types that could be
+     * Generate Types from whole Schema Context. The method will return List of All Generated Types that could be
      * Generated from Schema Context.
      *
-     *
-     * @param context
-     *            Schema Context
+     * @param context Schema Context
      * @return List of Generated Types
      *
      * @see SchemaContext
      */
-    List<Type> generateTypes(final SchemaContext context);
+    default List<Type> generateTypes(final SchemaContext context) {
+        return generateTypes(context, context.getModules());
+    }
 
     /**
-     * Generate Types from Schema Context restricted by sub set of specified
-     * Modules. The Schema Context MUST contain all of the sub modules otherwise
-     * the there is no guarantee that result List of Generated Types will
-     * contain correct Generated Types.
+     * Generate Types from Schema Context restricted by sub set of specified Modules. The Schema Context MUST contain
+     * all of the sub modules otherwise the there is no guarantee that result List of Generated Types will contain
+     * correct Generated Types.
      *
-     * @param context
-     *            Schema Context
-     * @param modules
-     *            Sub Set of Modules
+     * @param context Schema Context
+     * @param modules Sub Set of Modules
      * @return List of Generated Types restricted by sub set of Modules
      *
      * @see Module
      * @see SchemaContext
-     *
      */
-    List<Type> generateTypes(final SchemaContext context, final Set<Module> modules);
+    List<Type> generateTypes(SchemaContext context, Set<Module> modules);
 }
