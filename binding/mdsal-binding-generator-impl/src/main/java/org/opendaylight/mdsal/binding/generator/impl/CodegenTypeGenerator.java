@@ -15,14 +15,14 @@ import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.util.TypeComments;
-import org.opendaylight.mdsal.binding.yang.types.TypeProviderImpl;
+import org.opendaylight.mdsal.binding.yang.types.CodegenTypeProvider;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 final class CodegenTypeGenerator extends AbstractTypeGenerator {
     CodegenTypeGenerator(final SchemaContext context) {
-        super(context, new TypeProviderImpl(context));
+        super(context, new CodegenTypeProvider(context));
     }
 
     List<Type> toTypes(final Set<Module> modules) {

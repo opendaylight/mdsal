@@ -18,7 +18,7 @@ import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
-import org.opendaylight.mdsal.binding.yang.types.TypeProviderImpl;
+import org.opendaylight.mdsal.binding.yang.types.RuntimeTypeProvider;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
@@ -28,8 +28,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 final class RuntimeTypeGenerator extends AbstractTypeGenerator {
     RuntimeTypeGenerator(final SchemaContext context) {
-        // TODO: instantiate a different subclass of TypeProviderImpl
-        super(context, new TypeProviderImpl(context));
+        super(context, new RuntimeTypeProvider(context));
     }
 
     BindingRuntimeTypes toTypeMapping() {
