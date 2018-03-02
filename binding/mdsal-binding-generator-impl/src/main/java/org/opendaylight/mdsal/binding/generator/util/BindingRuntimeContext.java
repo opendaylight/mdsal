@@ -7,17 +7,18 @@
  */
 package org.opendaylight.mdsal.binding.generator.util;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.BiMap;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.Iterables;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,10 +27,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.impl.BindingSchemaContextUtils;
-import org.opendaylight.mdsal.binding.generator.impl.ModuleContext;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
@@ -47,7 +48,7 @@ import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
-import org.opendaylight.yangtools.yang.model.api.Module;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -56,6 +57,7 @@ import org.opendaylight.yangtools.yang.model.util.EffectiveAugmentationSchema;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  *
  * Runtime Context for Java YANG Binding classes
@@ -76,22 +78,19 @@ import org.slf4j.LoggerFactory;
 public class BindingRuntimeContext implements Immutable {
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeContext.class);
     private static final char DOT = '.';
+
+    private final BindingRuntimeTypes runtimeTypes;
     private final ClassLoadingStrategy strategy;
     private final SchemaContext schemaContext;
-
-    private final Map<Type, AugmentationSchemaNode> augmentationToSchema = new HashMap<>();
-    private final BiMap<Type, Object> typeToDefiningSchema = HashBiMap.create();
-    private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
-    private final Map<QName, Type> identities = new HashMap<>();
 
     private final LoadingCache<QName, Class<?>> identityClasses = CacheBuilder.newBuilder().weakValues().build(
         new CacheLoader<QName, Class<?>>() {
             @Override
             public Class<?> load(final QName key) {
-                final Type identityType = identities.get(key);
-                Preconditions.checkArgument(identityType != null, "Supplied QName %s is not a valid identity", key);
+                final java.util.Optional<Type> identityType = runtimeTypes.findIdentity(key);
+                checkArgument(identityType.isPresent(), "Supplied QName %s is not a valid identity", key);
                 try {
-                    return strategy.loadClass(identityType);
+                    return strategy.loadClass(identityType.get());
                 } catch (final ClassNotFoundException e) {
                     throw new IllegalArgumentException("Required class " + identityType + "was not found.", e);
                 }
@@ -101,19 +100,7 @@ public class BindingRuntimeContext implements Immutable {
     private BindingRuntimeContext(final ClassLoadingStrategy strategy, final SchemaContext schema) {
         this.strategy = strategy;
         this.schemaContext = schema;
-
-        final BindingGeneratorImpl generator = new BindingGeneratorImpl(true);
-        generator.generateTypes(schema);
-        final Map<Module, ModuleContext> modules = generator.getModuleContexts();
-
-        for (final ModuleContext ctx : modules.values()) {
-            augmentationToSchema.putAll(ctx.getTypeToAugmentation());
-            typeToDefiningSchema.putAll(ctx.getTypeToSchema());
-
-            ctx.getTypedefs();
-            choiceToCases.putAll(ctx.getChoiceToCases());
-            identities.putAll(ctx.getIdentities());
-        }
+        runtimeTypes = new BindingGeneratorImpl().generateTypeMapping(schema);
     }
 
     /**
@@ -168,9 +155,9 @@ public class BindingRuntimeContext implements Immutable {
      * @throws IllegalArgumentException If supplied class is not an augmentation
      */
     public @Nullable AugmentationSchemaNode getAugmentationDefinition(final Class<?> augClass) {
-        Preconditions.checkArgument(Augmentation.class.isAssignableFrom(augClass),
+        checkArgument(Augmentation.class.isAssignableFrom(augClass),
             "Class %s does not represent augmentation", augClass);
-        return augmentationToSchema.get(referencedType(augClass));
+        return runtimeTypes.findAugmentation(referencedType(augClass)).orElse(null);
     }
 
     /**
@@ -188,14 +175,15 @@ public class BindingRuntimeContext implements Immutable {
      * @return Schema node, from which class was generated.
      */
     public DataSchemaNode getSchemaDefinition(final Class<?> cls) {
-        Preconditions.checkArgument(!Augmentation.class.isAssignableFrom(cls),"Supplied class must not be augmentation (%s is)", cls);
-        return (DataSchemaNode) typeToDefiningSchema.get(referencedType(cls));
+        checkArgument(!Augmentation.class.isAssignableFrom(cls), "Supplied class must not be augmentation (%s is)",
+            cls);
+        return (DataSchemaNode) runtimeTypes.findSchema(referencedType(cls)).orElse(null);
     }
 
     public Entry<AugmentationIdentifier, AugmentationSchemaNode> getResolvedAugmentationSchema(
             final DataNodeContainer target, final Class<? extends Augmentation<?>> aug) {
         final AugmentationSchemaNode origSchema = getAugmentationDefinition(aug);
-        Preconditions.checkArgument(origSchema != null, "Augmentation %s is not known in current schema context",aug);
+        checkArgument(origSchema != null, "Augmentation %s is not known in current schema context", aug);
         /*
          * FIXME: Validate augmentation schema lookup
          *
@@ -241,9 +229,9 @@ public class BindingRuntimeContext implements Immutable {
      *         the given context.
      * @throws IllegalArgumentException If supplied class does not represent case.
      */
-    public Optional<CaseSchemaNode> getCaseSchemaDefinition(final ChoiceSchemaNode schema, final Class<?> childClass) throws IllegalArgumentException {
+    public Optional<CaseSchemaNode> getCaseSchemaDefinition(final ChoiceSchemaNode schema, final Class<?> childClass) {
         final DataSchemaNode origSchema = getSchemaDefinition(childClass);
-        Preconditions.checkArgument(origSchema instanceof CaseSchemaNode, "Supplied schema %s is not case.", origSchema);
+        checkArgument(origSchema instanceof CaseSchemaNode, "Supplied schema %s is not case.", origSchema);
 
         /* FIXME: Make sure that if there are multiple augmentations of same
          * named case, with same structure we treat it as equals
@@ -276,37 +264,38 @@ public class BindingRuntimeContext implements Immutable {
      *     {@link DataSchemaNode}, {@link AugmentationSchemaNode} or {@link TypeDefinition}
      *     which was used to generate supplied class.
      */
-    public Entry<GeneratedType, Object> getTypeWithSchema(final Class<?> type) {
+    public Entry<GeneratedType, WithStatus> getTypeWithSchema(final Class<?> type) {
         return getTypeWithSchema(referencedType(type));
     }
 
-    public Entry<GeneratedType, Object> getTypeWithSchema(final String type) {
+    public Entry<GeneratedType, WithStatus> getTypeWithSchema(final String type) {
         return getTypeWithSchema(referencedType(type));
     }
 
-    private Entry<GeneratedType, Object> getTypeWithSchema(final Type referencedType) {
-        final Object schema = typeToDefiningSchema.get(referencedType);
-        Preconditions.checkNotNull(schema, "Failed to find schema for type %s", referencedType);
-
-        final Type definedType = typeToDefiningSchema.inverse().get(schema);
-        Preconditions.checkNotNull(definedType, "Failed to find defined type for %s schema %s", referencedType, schema);
+    private Entry<GeneratedType, WithStatus> getTypeWithSchema(final Type referencedType) {
+        final WithStatus schema = runtimeTypes.findSchema(referencedType).orElseThrow(
+            () -> new NullPointerException("Failed to find schema for type " + referencedType));
+        final Type definedType = runtimeTypes.findType(schema).orElseThrow(
+            () -> new NullPointerException("Failed to find defined type for " + referencedType + " schema " + schema));
 
         if (definedType instanceof GeneratedTypeBuilder) {
             return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).toInstance(), schema);
         }
-        Preconditions.checkArgument(definedType instanceof GeneratedType,"Type {} is not GeneratedType", referencedType);
-        return new SimpleEntry<>((GeneratedType) definedType,schema);
+        checkArgument(definedType instanceof GeneratedType, "Type %s is not a GeneratedType", referencedType);
+        return new SimpleEntry<>((GeneratedType) definedType, schema);
     }
 
     public ImmutableMap<Type, Entry<Type, Type>> getChoiceCaseChildren(final DataNodeContainer schema) {
-        final Map<Type,Entry<Type,Type>> childToCase = new HashMap<>();
-        for (final ChoiceSchemaNode choice :  FluentIterable.from(schema.getChildNodes()).filter(ChoiceSchemaNode.class)) {
-            final ChoiceSchemaNode originalChoice = getOriginalSchema(choice);
-            final Type choiceType = referencedType(typeToDefiningSchema.inverse().get(originalChoice));
-            final Collection<Type> cases = choiceToCases.get(choiceType);
+        final Map<Type, Entry<Type, Type>> childToCase = new HashMap<>();
 
-            for (Type caze : cases) {
-                final Entry<Type,Type> caseIdentifier = new SimpleEntry<>(choiceType,caze);
+        for (final ChoiceSchemaNode choice :  Iterables.filter(schema.getChildNodes(), ChoiceSchemaNode.class)) {
+            final ChoiceSchemaNode originalChoice = getOriginalSchema(choice);
+            final java.util.Optional<Type> optType = runtimeTypes.findType(originalChoice);
+            checkState(optType.isPresent(), "Failed to find generated type for choice %s", originalChoice);
+            final Type choiceType = optType.get();
+
+            for (Type caze : runtimeTypes.findCases(referencedType(choiceType))) {
+                final Entry<Type,Type> caseIdentifier = new SimpleEntry<>(choiceType, caze);
                 final HashSet<Type> caseChildren = new HashSet<>();
                 if (caze instanceof GeneratedTypeBuilder) {
                     caze = ((GeneratedTypeBuilder) caze).toInstance();
@@ -327,7 +316,7 @@ public class BindingRuntimeContext implements Immutable {
      * @return mapped enum constants from yang with their corresponding values in generated binding classes
      */
     public BiMap<String, String> getEnumMapping(final Class<?> enumClass) {
-        final Entry<GeneratedType, Object> typeWithSchema = getTypeWithSchema(enumClass);
+        final Entry<GeneratedType, WithStatus> typeWithSchema = getTypeWithSchema(enumClass);
         return getEnumMapping(typeWithSchema);
     }
 
@@ -335,11 +324,11 @@ public class BindingRuntimeContext implements Immutable {
      * See {@link #getEnumMapping(Class)}}
      */
     public BiMap<String, String> getEnumMapping(final String enumClass) {
-        final Entry<GeneratedType, Object> typeWithSchema = getTypeWithSchema(enumClass);
+        final Entry<GeneratedType, WithStatus> typeWithSchema = getTypeWithSchema(enumClass);
         return getEnumMapping(typeWithSchema);
     }
 
-    private static BiMap<String, String> getEnumMapping(final Entry<GeneratedType, Object> typeWithSchema) {
+    private static BiMap<String, String> getEnumMapping(final Entry<GeneratedType, WithStatus> typeWithSchema) {
         final TypeDefinition<?> typeDef = (TypeDefinition<?>) typeWithSchema.getValue();
 
         Preconditions.checkArgument(typeDef instanceof EnumTypeDefinition);
@@ -356,7 +345,7 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     public Set<Class<?>> getCases(final Class<?> choice) {
-        final Collection<Type> cazes = choiceToCases.get(referencedType(choice));
+        final Collection<Type> cazes = runtimeTypes.findCases(referencedType(choice));
         final Set<Class<?>> ret = new HashSet<>(cazes.size());
         for(final Type caze : cazes) {
             try {
@@ -371,16 +360,19 @@ public class BindingRuntimeContext implements Immutable {
 
     public Class<?> getClassForSchema(final SchemaNode childSchema) {
         final SchemaNode origSchema = getOriginalSchema(childSchema);
-        final Type clazzType = typeToDefiningSchema.inverse().get(origSchema);
+        final java.util.Optional<Type> clazzType = runtimeTypes.findType(origSchema);
+        checkArgument(clazzType.isPresent(), "Failed to find binding type for %s (original %s)",
+            childSchema, origSchema);
+
         try {
-            return strategy.loadClass(clazzType);
+            return strategy.loadClass(clazzType.get());
         } catch (final ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public ImmutableMap<AugmentationIdentifier,Type> getAvailableAugmentationTypes(final DataNodeContainer container) {
-        final Map<AugmentationIdentifier,Type> identifierToType = new HashMap<>();
+    public ImmutableMap<AugmentationIdentifier, Type> getAvailableAugmentationTypes(final DataNodeContainer container) {
+        final Map<AugmentationIdentifier, Type> identifierToType = new HashMap<>();
         if (container instanceof AugmentationTarget) {
             final Set<AugmentationSchemaNode> augments = ((AugmentationTarget) container).getAvailableAugmentations();
             for (final AugmentationSchemaNode augment : augments) {
@@ -391,9 +383,9 @@ public class BindingRuntimeContext implements Immutable {
                 }
 
                 if (!augment.getChildNodes().isEmpty()) {
-                    final Type augType = typeToDefiningSchema.inverse().get(augOrig);
-                    if (augType != null) {
-                        identifierToType.put(getAugmentationIdentifier(augment),augType);
+                    final java.util.Optional<Type> augType = runtimeTypes.findType(augOrig);
+                    if (augType.isPresent()) {
+                        identifierToType.put(getAugmentationIdentifier(augment), augType.get());
                     }
                 }
             }
