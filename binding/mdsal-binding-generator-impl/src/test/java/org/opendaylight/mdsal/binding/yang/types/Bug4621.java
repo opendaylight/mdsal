@@ -13,6 +13,7 @@ import java.net.URI;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
@@ -31,7 +32,7 @@ public class Bug4621 {
     public void bug4621test() {
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/bug-4621/foo.yang");
         final Module moduleValid = schemaContext.findModules(URI.create("foo")).iterator().next();
-        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
+        final TypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
         expectedEx.expect(IllegalArgumentException.class);
 
