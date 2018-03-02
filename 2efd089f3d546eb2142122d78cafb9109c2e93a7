@@ -22,6 +22,30 @@
       "revId": "2efd089f3d546eb2142122d78cafb9109c2e93a7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "55b57e15_373b1eba",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/yang/types/TypeProviderImpl.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 1276,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-03-02T11:41:28Z",
+      "side": 1,
+      "message": "Ah, yes, nice catch.",
+      "parentUuid": "12fa7dff_46d7732a",
+      "range": {
+        "startLine": 1276,
+        "startChar": 24,
+        "endLine": 1276,
+        "endChar": 34
+      },
+      "revId": "2efd089f3d546eb2142122d78cafb9109c2e93a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
