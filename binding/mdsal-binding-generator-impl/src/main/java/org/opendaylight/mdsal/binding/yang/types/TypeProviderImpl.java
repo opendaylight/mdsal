@@ -108,13 +108,13 @@ public final class TypeProviderImpl implements TypeProvider {
     /**
      * Map<moduleName, Map<moduleDate, Map<typeName, type>>>
      */
-    private final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap;
+    private final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap = new HashMap<>();
 
     /**
      * The map which maps schema paths to JAVA <code>Type</code>.
      */
-    private final Map<SchemaPath, Type> referencedTypes;
-    private final Map<Module, Set<Type>> additionalTypes;
+    private final Map<SchemaPath, Type> referencedTypes = new HashMap<>();
+    private final Map<Module, Set<Type>> additionalTypes = new HashMap<>();
 
     /**
      * Creates new instance of class <code>TypeProviderImpl</code>.
@@ -128,9 +128,6 @@ public final class TypeProviderImpl implements TypeProvider {
         Preconditions.checkArgument(schemaContext != null, "Schema Context cannot be null!");
 
         this.schemaContext = schemaContext;
-        this.genTypeDefsContextMap = new HashMap<>();
-        this.referencedTypes = new HashMap<>();
-        this.additionalTypes = new HashMap<>();
         resolveTypeDefsFromContext();
     }
 

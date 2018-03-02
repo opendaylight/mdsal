@@ -34,15 +34,12 @@ public interface TypeProvider {
      * @param type Type Definition to resolve from
      * @return Resolved Type
      */
-    Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode);
+    Type javaTypeForSchemaDefinitionType(TypeDefinition<?> type, SchemaNode parentNode);
 
-    Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode, final Restrictions restrictions);
+    Type javaTypeForSchemaDefinitionType(TypeDefinition<?> type, SchemaNode parentNode, Restrictions restrictions);
 
     /**
      * Returns string containing code for creation of new type instance.
-     *
-     * @param node
-     * @return
      */
     String getTypeDefaultConstruction(LeafSchemaNode node);
 
