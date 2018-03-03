@@ -264,7 +264,7 @@ public class GeneratedTypeBuilderTest {
 
         GeneratedTOBuilder enclosingTransferObject = generatedTypeBuilder.addEnclosingTransferObject("myTOName");
         GeneratedTOBuilder enclosingTransferObject2 = generatedTypeBuilder.addEnclosingTransferObject("myTOName2");
-        assertEquals(generatedTypeBuilder, generatedTypeBuilder.addEnclosingTransferObject(new GeneratedTOBuilderImpl(
+        assertEquals(generatedTypeBuilder, generatedTypeBuilder.addEnclosingTransferObject(new CodegenGeneratedTOBuilder(
                 generatedTypeBuilder.getFullyQualifiedName(), "myTOName3")));
 
         assertNotNull(enclosingTransferObject);
@@ -277,9 +277,9 @@ public class GeneratedTypeBuilderTest {
 
         assertTrue(enclosedTypes.contains(enclosingTransferObject.toInstance()));
         assertTrue(enclosedTypes.contains(enclosingTransferObject2.toInstance()));
-        assertTrue(enclosedTypes.contains(new GeneratedTOBuilderImpl(generatedTypeBuilder.getFullyQualifiedName(),
+        assertTrue(enclosedTypes.contains(new CodegenGeneratedTOBuilder(generatedTypeBuilder.getFullyQualifiedName(),
                 "myTOName3").toInstance()));
-        assertFalse(enclosedTypes.contains(new GeneratedTOBuilderImpl(generatedTypeBuilder.getFullyQualifiedName(),
+        assertFalse(enclosedTypes.contains(new CodegenGeneratedTOBuilder(generatedTypeBuilder.getFullyQualifiedName(),
                 "myTOName4").toInstance()));
 
     }

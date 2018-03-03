@@ -11,7 +11,9 @@ import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeGeneratedTOBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
@@ -39,5 +41,10 @@ public final class RuntimeTypeProvider extends AbstractTypeProvider {
     @Override
     Map<String, String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
         return ImmutableMap.of();
+    }
+
+    @Override
+    public GeneratedTOBuilder newGeneratedTOBuilder(final String packageName, final String name) {
+        return new RuntimeGeneratedTOBuilder(packageName, name);
     }
 }
