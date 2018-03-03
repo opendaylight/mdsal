@@ -7,30 +7,20 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
-import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
-import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
-import org.opendaylight.mdsal.binding.model.api.Restrictions;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
+import java.util.Optional;
+import org.opendaylight.mdsal.binding.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.common.QName;
 
-public final class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
-
-    public RuntimeGeneratedTOBuilder(final String packageName, final String name) {
+public final class RuntimeEnumerationBuilder extends AbstractEnumerationBuilder {
+    public RuntimeEnumerationBuilder(final String packageName, final String name) {
         super(packageName, name);
     }
 
     @Override
-    public void setRestrictions(final Restrictions restrictions) {
-        // No-op
-    }
-
-    @Override
-    public void setSUID(final GeneratedPropertyBuilder suid) {
-        // No-op
-    }
-
-    @Override
-    public void setDescription(final String description) {
+    public void setReference(final String reference) {
         // No-op
     }
 
@@ -45,32 +35,43 @@ public final class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
     }
 
     @Override
-    public void setReference(final String reference) {
+    public void setDescription(final String description) {
         // No-op
     }
 
     @Override
-    public GeneratedTransferObject toInstance() {
-        return new GTO(this);
+    public Enumeration toInstance(final Type definingType) {
+        return new EnumerationImpl(this, definingType);
     }
 
     @Override
-    AbstractEnumerationBuilder newEnumerationBuilder(final String packageName, final String name) {
-        return new RuntimeEnumerationBuilder(packageName, name);
+    EnumPair createEnumPair(final String name, final int value, final String description) {
+        return new EnumPair(name, value);
     }
 
-    private static final class GTO extends AbstractGeneratedTransferObject {
-        GTO(final RuntimeGeneratedTOBuilder builder) {
-            super(builder);
+    private static final class EnumPair extends AbstractPair {
+        EnumPair(final String name, final int value) {
+            super(name, value);
         }
 
         @Override
-        public Restrictions getRestrictions() {
+        public Optional<String> getDescription() {
             throw new UnsupportedOperationException("Not available at runtime");
         }
 
         @Override
-        public GeneratedProperty getSUID() {
+        public Optional<String> getReference() {
+            throw new UnsupportedOperationException("Not available at runtime");
+        }
+    }
+
+    private static final class EnumerationImpl extends AbstractEnumeration {
+        EnumerationImpl(final RuntimeEnumerationBuilder builder, final Type definingType) {
+            super(builder, definingType);
+        }
+
+        @Override
+        public TypeComment getComment() {
             throw new UnsupportedOperationException("Not available at runtime");
         }
 
@@ -91,6 +92,11 @@ public final class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
 
         @Override
         public String getModuleName() {
+            throw new UnsupportedOperationException("Not available at runtime");
+        }
+
+        @Override
+        public Optional<YangSourceDefinition> getYangSourceDefinition() {
             throw new UnsupportedOperationException("Not available at runtime");
         }
     }
