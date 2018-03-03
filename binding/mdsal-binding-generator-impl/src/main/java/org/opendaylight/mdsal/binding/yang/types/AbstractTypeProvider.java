@@ -15,7 +15,6 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.BaseEncoding;
 import java.io.Serializable;
@@ -78,8 +77,6 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.IdentityrefTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.InstanceIdentifierTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.LeafrefTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
-import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.StringTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
@@ -709,6 +706,19 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     abstract void addCodegenInformation(GeneratedTypeBuilderBase<?> genTOBuilder, TypeDefinition<?> typeDef);
 
     /**
+     * Converts the pattern constraints from <code>typedef</code> to the list of
+     * the strings which represents these constraints.
+     *
+     * @param typedef
+     *            extended type in which are the pattern constraints sought
+     * @return list of strings which represents the constraint patterns
+     * @throws IllegalArgumentException
+     *             if <code>typedef</code> equals null
+     *
+     */
+    abstract Map<String, String> resolveRegExpressionsFromTypedef(TypeDefinition<?> typedef);
+
+    /**
      * Converts <code>dataNode</code> to JAVA <code>Type</code>.
      *
      * @param dataNode
@@ -1232,50 +1242,6 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             return genTOBuilder;
         }
         return null;
-    }
-
-    /**
-     * Converts the pattern constraints from <code>typedef</code> to the list of
-     * the strings which represents these constraints.
-     *
-     * @param typedef
-     *            extended type in which are the pattern constraints sought
-     * @return list of strings which represents the constraint patterns
-     * @throws IllegalArgumentException
-     *             if <code>typedef</code> equals null
-     *
-     */
-    private static Map<String, String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
-        if (!(typedef instanceof StringTypeDefinition)) {
-            return ImmutableMap.of();
-        }
-
-        // TODO: run diff against base ?
-        final List<PatternConstraint> patternConstraints = ((StringTypeDefinition) typedef).getPatternConstraints();
-        final Map<String, String> regExps = Maps.newHashMapWithExpectedSize(patternConstraints.size());
-        for (PatternConstraint patternConstraint : patternConstraints) {
-            String regEx = patternConstraint.getJavaPatternString();
-
-            // The pattern can be inverted
-            final Optional<ModifierKind> optModifier = patternConstraint.getModifier();
-            if (optModifier.isPresent()) {
-                regEx = applyModifier(optModifier.get(), regEx);
-            }
-
-            regExps.put(regEx, patternConstraint.getRegularExpressionString());
-        }
-
-        return regExps;
-    }
-
-    private static String applyModifier(final ModifierKind modifier, final String pattern) {
-        switch (modifier) {
-            case INVERT_MATCH:
-                return BindingMapping.negatePatternString(pattern);
-            default:
-                LOG.warn("Ignoring unhandled modifier {}", modifier);
-                return pattern;
-        }
     }
 
     /**
