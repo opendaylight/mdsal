@@ -59,8 +59,8 @@ import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.Types;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
-import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
@@ -579,11 +579,11 @@ abstract class AbstractTypeGenerator {
         }
         final String packageName = packageNameForGeneratedType(basePackageName, identity.getPath());
         final String genTypeName = BindingMapping.getClassName(identity.getQName());
-        final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(packageName, genTypeName);
+        final GeneratedTOBuilder newType = typeProvider.newGeneratedTOBuilder(packageName, genTypeName);
         final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
         if (baseIdentities.isEmpty()) {
-            final GeneratedTOBuilderImpl gto = new GeneratedTOBuilderImpl(BaseIdentity.class.getPackage().getName(),
-                    BaseIdentity.class.getSimpleName());
+            final GeneratedTOBuilder gto = typeProvider.newGeneratedTOBuilder(
+                BaseIdentity.class.getPackage().getName(), BaseIdentity.class.getSimpleName());
             newType.setExtendsType(gto.toInstance());
         } else {
             final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
@@ -591,7 +591,7 @@ abstract class AbstractTypeGenerator {
             final String returnTypePkgName = BindingMapping.getRootPackageName(baseIdentityParentModule
                     .getQNameModule());
             final String returnTypeName = BindingMapping.getClassName(baseIdentity.getQName());
-            final GeneratedTransferObject gto = new GeneratedTOBuilderImpl(returnTypePkgName, returnTypeName)
+            final GeneratedTransferObject gto = new CodegenGeneratedTOBuilder(returnTypePkgName, returnTypeName)
             .toInstance();
             newType.setExtendsType(gto);
         }
@@ -1573,7 +1573,7 @@ abstract class AbstractTypeGenerator {
 
     private Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final TypeDefinition<?> typeDef,
             final GeneratedTypeBuilder typeBuilder, final Module parentModule) {
-        final GeneratedTOBuilderImpl returnType = new GeneratedTOBuilderImpl(genTOBuilder.getPackageName(),
+        final GeneratedTOBuilder returnType = typeProvider.newGeneratedTOBuilder(genTOBuilder.getPackageName(),
                 genTOBuilder.getName());
 
         addCodegenInformation(returnType, parentModule, typeDef);
@@ -1605,7 +1605,8 @@ abstract class AbstractTypeGenerator {
         return returnType.toInstance();
     }
 
-    private static GeneratedTOBuilder createUnionBuilder(final GeneratedTOBuilder genTOBuilder, final GeneratedTypeBuilder typeBuilder) {
+    private GeneratedTOBuilder createUnionBuilder(final GeneratedTOBuilder genTOBuilder,
+            final GeneratedTypeBuilder typeBuilder) {
         final String outerCls = Types.getOuterClassName(genTOBuilder);
         final StringBuilder name;
         if (outerCls != null) {
@@ -1615,7 +1616,8 @@ abstract class AbstractTypeGenerator {
         }
         name.append(genTOBuilder.getName());
         name.append("Builder");
-        final GeneratedTOBuilderImpl unionBuilder = new GeneratedTOBuilderImpl(typeBuilder.getPackageName(),name.toString());
+        final GeneratedTOBuilder unionBuilder = typeProvider.newGeneratedTOBuilder(typeBuilder.getPackageName(),
+            name.toString());
         unionBuilder.setIsUnionBuilder(true);
         return unionBuilder;
     }
@@ -1896,12 +1898,12 @@ abstract class AbstractTypeGenerator {
      *         <code>list</code> or null if <code>list</code> is null or list of
      *         key definitions is null or empty.
      */
-    private static GeneratedTOBuilder resolveListKeyTOBuilder(final String packageName, final ListSchemaNode list) {
+    private GeneratedTOBuilder resolveListKeyTOBuilder(final String packageName, final ListSchemaNode list) {
         GeneratedTOBuilder genTOBuilder = null;
         if (list.getKeyDefinition() != null && !list.getKeyDefinition().isEmpty()) {
             final String listName = list.getQName().getLocalName() + "Key";
             final String genTOName = BindingMapping.getClassName(listName);
-            genTOBuilder = new GeneratedTOBuilderImpl(packageName, genTOName);
+            genTOBuilder = typeProvider.newGeneratedTOBuilder(packageName, genTOName);
         }
         return genTOBuilder;
     }
