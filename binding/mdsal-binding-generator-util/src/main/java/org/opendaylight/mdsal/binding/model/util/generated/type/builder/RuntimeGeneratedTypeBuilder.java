@@ -11,6 +11,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public final class RuntimeGeneratedTypeBuilder extends AbstractGeneratedTypeBuilder<GeneratedTypeBuilder> implements
         GeneratedTypeBuilder {
@@ -36,7 +37,7 @@ public final class RuntimeGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
-    public void setSchemaPath(final Iterable<QName> schemaPath) {
+    public void setSchemaPath(final SchemaPath schemaPath) {
         // No-op
     }
 
