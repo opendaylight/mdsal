@@ -12,7 +12,7 @@ import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 
-public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder<GeneratedTypeBuilder> implements
+public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuilder<GeneratedTypeBuilder> implements
         GeneratedTypeBuilder {
 
     private String description;
@@ -20,7 +20,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
     private String moduleName;
     private Iterable<QName> schemaPath;
 
-    public GeneratedTypeBuilderImpl(final String packageName, final String name) {
+    public CodegenGeneratedTypeBuilder(final String packageName, final String name) {
         super(packageName, name);
         setAbstract(true);
     }
@@ -81,7 +81,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
     }
 
     @Override
-    protected GeneratedTypeBuilderImpl thisInstance() {
+    protected CodegenGeneratedTypeBuilder thisInstance() {
         return this;
     }
 
@@ -92,7 +92,7 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         private final String moduleName;
         private final Iterable<QName> schemaPath;
 
-        public GeneratedTypeImpl(final GeneratedTypeBuilderImpl builder) {
+        public GeneratedTypeImpl(final CodegenGeneratedTypeBuilder builder) {
             super(builder);
 
             this.description = builder.description;

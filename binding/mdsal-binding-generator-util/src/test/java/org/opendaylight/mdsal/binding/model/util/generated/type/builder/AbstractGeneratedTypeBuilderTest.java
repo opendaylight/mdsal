@@ -16,14 +16,14 @@ public class AbstractGeneratedTypeBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addPropertyIllegalArgumentTest() {
-        GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("my.package", "MyName");
+        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         generatedTypeBuilder.addProperty(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addPropertyIllegalArgumentTest2() {
-        GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("my.package", "MyName");
+        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         generatedTypeBuilder.addProperty("myName");
         generatedTypeBuilder.addProperty("myName");
@@ -31,7 +31,7 @@ public class AbstractGeneratedTypeBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addEnclosingTransferObjectArgumentTest() {
-        GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("my.package", "MyName");
+        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         generatedTypeBuilder.addEnclosingTransferObject(new CodegenGeneratedTOBuilder("my.package", "myName"));
         generatedTypeBuilder.addEnclosingTransferObject(new CodegenGeneratedTOBuilder("my.package", "myName"));
@@ -39,7 +39,7 @@ public class AbstractGeneratedTypeBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addEnclosingTransferObjectArgumentTest2() {
-        GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("my.package", "MyName");
+        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         generatedTypeBuilder.addEnclosingTransferObject("myName");
         generatedTypeBuilder.addEnclosingTransferObject("myName");
@@ -47,7 +47,7 @@ public class AbstractGeneratedTypeBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addImplementsTypeIllegalArgumentTest() {
-        GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("my.package", "MyName");
+        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         generatedTypeBuilder.addImplementsType(Types.typeForClass(Serializable.class));
         generatedTypeBuilder.addImplementsType(Types.typeForClass(Serializable.class));
@@ -55,7 +55,7 @@ public class AbstractGeneratedTypeBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addConstantIllegalArgumentTest() {
-        GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("my.package", "MyName");
+        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         generatedTypeBuilder.addConstant(Types.STRING, "myName", "Value");
         generatedTypeBuilder.addConstant(Types.BOOLEAN, "myName", true);
@@ -63,7 +63,7 @@ public class AbstractGeneratedTypeBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addAnnotationIllegalArgumentTest() {
-        GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("my.package", "MyName");
+        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         generatedTypeBuilder.addAnnotation("my.package", "myName");
         generatedTypeBuilder.addAnnotation("my.package", "myName");
@@ -71,7 +71,7 @@ public class AbstractGeneratedTypeBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addEnumerationIllegalArgumentTest() {
-        GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("my.package", "MyName");
+        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         generatedTypeBuilder.addEnumeration("myName");
         generatedTypeBuilder.addEnumeration("myName");
