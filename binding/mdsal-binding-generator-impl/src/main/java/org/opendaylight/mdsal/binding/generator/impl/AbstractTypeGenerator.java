@@ -258,7 +258,7 @@ abstract class AbstractTypeGenerator {
 
         genType.setModuleName(module.getName());
         addCodegenInformation(genType, module, node);
-        genType.setSchemaPath(node.getPath().getPathFromRoot());
+        genType.setSchemaPath(node.getPath());
         if (node instanceof DataNodeContainer) {
             genCtx.get(module).addChildNodeType(node, genType);
             groupingsToGenTypes(module, ((DataNodeContainer) node).getGroupings());
@@ -598,7 +598,7 @@ abstract class AbstractTypeGenerator {
 
         addCodegenInformation(newType, module, identity);
         newType.setModuleName(module.getName());
-        newType.setSchemaPath(identity.getPath().getPathFromRoot());
+        newType.setSchemaPath(identity.getPath());
 
         final QName qname = identity.getQName();
         qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, qname);
@@ -1577,7 +1577,7 @@ abstract class AbstractTypeGenerator {
                 genTOBuilder.getName());
 
         addCodegenInformation(returnType, parentModule, typeDef);
-        returnType.setSchemaPath(typeDef.getPath().getPathFromRoot());
+        returnType.setSchemaPath(typeDef.getPath());
         returnType.setModuleName(parentModule.getName());
 
         genTOBuilder.setTypedef(true);
@@ -1730,7 +1730,7 @@ abstract class AbstractTypeGenerator {
         qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
 
         addCodegenInformation(newType, module, schemaNode);
-        newType.setSchemaPath(schemaNode.getPath().getPathFromRoot());
+        newType.setSchemaPath(schemaNode.getPath());
         newType.setModuleName(module.getName());
 
         if (!genTypeBuilders.containsKey(packageName)) {

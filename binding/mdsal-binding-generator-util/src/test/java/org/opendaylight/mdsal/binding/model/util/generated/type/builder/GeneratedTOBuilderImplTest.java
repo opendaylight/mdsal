@@ -138,7 +138,7 @@ public class GeneratedTOBuilderImplTest {
         genTOBuilder.setDescription("test description");
         genTOBuilder.setModuleName("test-module");
         genTOBuilder.setReference("http://tools.ietf.org/html/rfc6020");
-        genTOBuilder.setSchemaPath(SchemaPath.ROOT.getPathFromRoot());
+        genTOBuilder.setSchemaPath(SchemaPath.ROOT);
 
         final GeneratedTransferObject genTO = genTOBuilder.toInstance();
 

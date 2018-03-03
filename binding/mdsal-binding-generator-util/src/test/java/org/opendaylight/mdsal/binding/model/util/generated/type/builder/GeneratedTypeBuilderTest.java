@@ -291,7 +291,7 @@ public class GeneratedTypeBuilderTest {
         generatedTypeBuilder.setDescription("My description ...");
         generatedTypeBuilder.setModuleName("myModuleName");
         generatedTypeBuilder.setReference("myReference");
-        generatedTypeBuilder.setSchemaPath(SchemaPath.create(true, QName.create("test", "/path")).getPathFromRoot());
+        generatedTypeBuilder.setSchemaPath(SchemaPath.create(true, QName.create("test", "/path")));
         assertNotNull(generatedTypeBuilder.addComment(TypeComments.javadoc("My comment..").get()));
 
         assertEquals(
