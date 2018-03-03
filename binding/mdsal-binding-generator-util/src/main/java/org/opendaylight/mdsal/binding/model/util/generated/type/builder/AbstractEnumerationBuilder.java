@@ -24,7 +24,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.util.AbstractBaseType;
 import org.opendaylight.yangtools.util.LazyCollections;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
-import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPair;
@@ -59,7 +59,7 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
 
     public abstract void setModuleName(String moduleName);
 
-    public abstract void setSchemaPath(Iterable<QName> schemaPath);
+    public abstract void setSchemaPath(SchemaPath schemaPath);
 
     abstract AbstractPair createEnumPair(String name, int value, String description);
 
