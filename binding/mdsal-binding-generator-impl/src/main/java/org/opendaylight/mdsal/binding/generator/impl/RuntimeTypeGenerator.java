@@ -12,10 +12,14 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
@@ -39,15 +43,48 @@ final class RuntimeTypeGenerator extends AbstractTypeGenerator {
         final Multimap<Type, Type> choiceToCases = HashMultimap.create();
         final Map<QName, Type> identities = new HashMap<>();
 
+        /*
+         * Fun parts are here. ModuleContext maps have Builders in them, we want plan types. We may encounter each
+         * builder multiple times, hence we keep a builder->instance cache.
+         */
+        final Map<Type, Type> builderToType = new IdentityHashMap<>();
         for (final ModuleContext ctx : moduleContexts()) {
-            augmentationToSchema.putAll(ctx.getTypeToAugmentation());
-            typeToDefiningSchema.putAll(ctx.getTypeToSchema());
-
-            choiceToCases.putAll(ctx.getChoiceToCases());
-            identities.putAll(ctx.getIdentities());
+            for (Entry<Type, AugmentationSchemaNode> e : ctx.getTypeToAugmentation().entrySet()) {
+                augmentationToSchema.put(builtType(builderToType, e.getKey()), e.getValue());
+            }
+            for (Entry<Type, WithStatus> e : ctx.getTypeToSchema().entrySet()) {
+                typeToDefiningSchema.put(builtType(builderToType, e.getKey()), e.getValue());
+            }
+            for (Entry<Type, Type> e : ctx.getChoiceToCases().entries()) {
+                choiceToCases.put(builtType(builderToType, e.getKey()), builtType(builderToType, e.getValue()));
+            }
+            for (Entry<QName, GeneratedTOBuilder> e : ctx.getIdentities().entrySet()) {
+                identities.put(e.getKey(), builtType(builderToType, e.getValue()));
+            }
         }
 
         return new BindingRuntimeTypes(augmentationToSchema, typeToDefiningSchema, choiceToCases, identities);
+    }
+
+    private static Type builtType(final Map<Type, Type> knownTypes, final Type type) {
+        final Type existing = knownTypes.get(type);
+        if (existing != null) {
+            return existing;
+        }
+
+        final Type built;
+        if (type instanceof AnnotationTypeBuilder) {
+            built = ((AnnotationTypeBuilder) type).toInstance();
+        } else if (type instanceof GeneratedTOBuilder) {
+            built = ((GeneratedTOBuilder) type).toInstance();
+        } else if (type instanceof GeneratedTypeBuilder) {
+            built = ((GeneratedTypeBuilder) type).toInstance();
+        } else {
+            built = type;
+        }
+
+        knownTypes.put(type, built);
+        return built;
     }
 
     @Override
