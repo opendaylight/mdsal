@@ -7,12 +7,15 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.model.util.Types;
 
 public class GeneratedPropertyImplTest {
 
@@ -28,7 +31,7 @@ public class GeneratedPropertyImplTest {
         generatedPropertyBuilderImpl.setReturnType(Types.BOOLEAN);
 
         GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance(new CodegenGeneratedTypeBuilder("my.package",
-                "myTypeName").toInstance());
+                "myTypeName").build());
 
         assertNotNull(instance);
 
