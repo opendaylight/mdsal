@@ -15,13 +15,14 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 
 public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder {
     private String description;
     private String reference;
     private String moduleName;
-    private Iterable<QName> schemaPath;
+    private SchemaPath schemaPath;
 
     public CodegenEnumerationBuilder(final String packageName, final String name) {
         super(packageName, name);
@@ -38,7 +39,7 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
     }
 
     @Override
-    public void setSchemaPath(final Iterable<QName> schemaPath) {
+    public void setSchemaPath(final SchemaPath schemaPath) {
         this.schemaPath = schemaPath;
     }
 
@@ -93,7 +94,7 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
         private final String description;
         private final String reference;
         private final String moduleName;
-        private final Iterable<QName> schemaPath;
+        private final SchemaPath schemaPath;
 
         EnumerationImpl(final CodegenEnumerationBuilder builder, final Type definingType) {
             super(builder, definingType);
@@ -120,7 +121,7 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
 
         @Override
         public Iterable<QName> getSchemaPath() {
-            return this.schemaPath;
+            return this.schemaPath.getPathFromRoot();
         }
 
         @Override

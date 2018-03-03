@@ -13,6 +13,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 
 public final class RuntimeEnumerationBuilder extends AbstractEnumerationBuilder {
@@ -31,7 +32,7 @@ public final class RuntimeEnumerationBuilder extends AbstractEnumerationBuilder 
     }
 
     @Override
-    public void setSchemaPath(final Iterable<QName> schemaPath) {
+    public void setSchemaPath(final SchemaPath schemaPath) {
         // No-op
     }
 

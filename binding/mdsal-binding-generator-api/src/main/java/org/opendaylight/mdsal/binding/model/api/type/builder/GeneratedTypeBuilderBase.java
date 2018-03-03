@@ -14,7 +14,7 @@ import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
-import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>> extends Type {
 
@@ -210,13 +210,11 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
     void setModuleName(String moduleName);
 
     /**
-     * Set a list of QNames which represent schema path in schema tree from
-     * actual concrete type to the root.
+     * Schema path in schema tree from actual concrete type to the root.
      *
-     * @param schemaPath
-     *            a list of QNames which represent schema path in schema tree
+     * @param schemaPath schema path in schema tree
      */
-    void setSchemaPath(Iterable<QName> schemaPath);
+    void setSchemaPath(SchemaPath schemaPath);
 
     /**
      * Set a string that is used to specify a textual cross-reference to an
