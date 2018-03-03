@@ -38,7 +38,7 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
     }
 
     @Override
-    public GeneratedTransferObject toInstance() {
+    public GeneratedTransferObject build() {
         return new GTO(this);
     }
 

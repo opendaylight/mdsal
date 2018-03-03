@@ -32,7 +32,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
 
     @Override
     public AnnotationTypeBuilder addAnnotation(final String packageName, final String name) {
-        if ((packageName != null) && (name != null)) {
+        if (packageName != null && name != null) {
             final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
             if (!this.annotationBuilders.contains(builder)) {
                 this.annotationBuilders = LazyCollections.lazyAdd(this.annotationBuilders, builder);
@@ -53,7 +53,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
 
     @Override
     public boolean addParameter(final String paramName, final String value) {
-        if ((paramName != null) && (value != null)) {
+        if (paramName != null && value != null) {
             final ParameterImpl param = new ParameterImpl(paramName, value);
             return addParameter(param);
         }
@@ -62,7 +62,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
 
     @Override
     public boolean addParameters(final String paramName, final List<String> values) {
-        if ((paramName != null) && (values != null)) {
+        if (paramName != null && values != null) {
             final ParameterImpl param = new ParameterImpl(paramName, values);
             return addParameter(param);
         }
@@ -70,7 +70,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
     }
 
     @Override
-    public AnnotationType toInstance() {
+    public AnnotationType build() {
         return new AnnotationTypeImpl(this.packageName, this.name, this.annotationBuilders, this.parameters);
     }
 
@@ -78,8 +78,8 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + Objects.hashCode(this.name);
-        result = (prime * result) + Objects.hashCode(this.packageName);
+        result = prime * result + Objects.hashCode(this.name);
+        result = prime * result + Objects.hashCode(this.packageName);
         return result;
     }
 
@@ -129,7 +129,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
 
             final List<AnnotationType> a = new ArrayList<>();
             for (final AnnotationTypeBuilder builder : annotationBuilders) {
-                a.add(builder.toInstance());
+                a.add(builder.build());
             }
             this.annotations = ImmutableList.copyOf(a);
 
@@ -194,8 +194,8 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = (prime * result) + Objects.hashCode(this.name);
-            result = (prime * result) + Objects.hashCode(this.packageName);
+            result = prime * result + Objects.hashCode(this.name);
+            result = prime * result + Objects.hashCode(this.packageName);
             return result;
         }
 
@@ -267,7 +267,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = (prime * result) + Objects.hashCode(this.name);
+            result = prime * result + Objects.hashCode(this.name);
             return result;
         }
 

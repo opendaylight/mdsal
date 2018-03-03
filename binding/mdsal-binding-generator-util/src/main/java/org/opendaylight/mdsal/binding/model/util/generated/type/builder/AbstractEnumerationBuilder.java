@@ -169,7 +169,7 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
 
             final ArrayList<AnnotationType> a = new ArrayList<>();
             for (final AnnotationTypeBuilder b : builder.annotationBuilders) {
-                a.add(b.toInstance());
+                a.add(b.build());
             }
             this.annotations = ImmutableList.copyOf(a);
         }

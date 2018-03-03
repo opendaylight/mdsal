@@ -256,7 +256,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             gpb.setFinal(gp.isFinal());
             gpb.setStatic(gp.isStatic());
         }
-        return gtob.toInstance();
+        return gtob.build();
     }
 
     private boolean isLeafRefSelfReference(final LeafrefTypeDefinition leafref, final SchemaNode parentNode) {
@@ -822,7 +822,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                     genTOBuilder.setIsUnion(true);
                     addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
                     makeSerializable(genTOBuilder);
-                    returnType = genTOBuilder.toInstance();
+                    returnType = genTOBuilder.build();
                     // union builder
                     final GeneratedTOBuilder unionBuilder = newGeneratedTOBuilder(genTOBuilder.getPackageName(),
                             genTOBuilder.getName() + "Builder");
@@ -834,10 +834,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                     method.setStatic(true);
                     Set<Type> types = additionalTypes.get(module);
                     if (types == null) {
-                        types = Sets.<Type> newHashSet(unionBuilder.toInstance());
+                        types = Sets.<Type> newHashSet(unionBuilder.build());
                         additionalTypes.put(module, types);
                     } else {
-                        types.add(unionBuilder.toInstance());
+                        types.add(unionBuilder.build());
                     }
                 } else if (innerTypeDefinition instanceof EnumTypeDefinition) {
                     // enums are automatically Serializable
@@ -851,7 +851,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                     genTOBuilder.setTypedef(true);
                     addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
                     makeSerializable(genTOBuilder);
-                    returnType = genTOBuilder.toInstance();
+                    returnType = genTOBuilder.build();
                 } else {
                     final Type javaType = javaTypeForSchemaDefinitionType(innerTypeDefinition, typedef);
                     returnType = wrapJavaTypeIntoTO(basePackageName, typedef, javaType, module.getName());
@@ -906,7 +906,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
         genTOBuilder.setTypedef(true);
         makeSerializable(genTOBuilder);
-        return genTOBuilder.toInstance();
+        return genTOBuilder.build();
     }
 
     /**
@@ -1140,7 +1140,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             if (parentModule != null && parentModule.getName() != null) {
                 final Map<Optional<Revision>, Map<String, Type>> modulesByDate = genTypeDefsContextMap.get(parentModule.getName());
                 final Map<String, Type> genTOsMap = modulesByDate.get(parentModule.getRevision());
-                genTOsMap.put(newTypeDef.getQName().getLocalName(), genTOBuilder.toInstance());
+                genTOsMap.put(newTypeDef.getQName().getLocalName(), genTOBuilder.build());
             }
         }
     }
@@ -1338,7 +1338,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
         makeSerializable(genTOBuilder);
 
-        return genTOBuilder.toInstance();
+        return genTOBuilder.build();
     }
 
     /**
