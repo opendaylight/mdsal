@@ -214,7 +214,7 @@ public class GeneratedTypeBuilderTest {
 
         assertTrue(enumerations.contains(enumBuilder.toInstance(instance)));
         assertTrue(enumerations.contains(enumBuilder2.toInstance(instance)));
-        assertFalse(enumerations.contains(new EnumerationBuilderImpl("my.package", "myEnumName3").toInstance(instance)));
+        assertFalse(enumerations.contains(new CodegenEnumerationBuilder("my.package", "myEnumName3").toInstance(instance)));
 
     }
 
