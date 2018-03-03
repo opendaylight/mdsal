@@ -18,12 +18,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.yang.types.RuntimeTypeProvider;
+import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
@@ -67,24 +67,17 @@ final class RuntimeTypeGenerator extends AbstractTypeGenerator {
     }
 
     private static Type builtType(final Map<Type, Type> knownTypes, final Type type) {
-        final Type existing = knownTypes.get(type);
-        if (existing != null) {
-            return existing;
-        }
+        if (type instanceof Builder) {
+            final Type existing = knownTypes.get(type);
+            if (existing != null) {
+                return existing;
+            }
 
-        final Type built;
-        if (type instanceof AnnotationTypeBuilder) {
-            built = ((AnnotationTypeBuilder) type).toInstance();
-        } else if (type instanceof GeneratedTOBuilder) {
-            built = ((GeneratedTOBuilder) type).toInstance();
-        } else if (type instanceof GeneratedTypeBuilder) {
-            built = ((GeneratedTypeBuilder) type).toInstance();
-        } else {
-            built = type;
+            final Type built = (Type) ((Builder<?>)type).build();
+            knownTypes.put(type, built);
+            return built;
         }
-
-        knownTypes.put(type, built);
-        return built;
+        return type;
     }
 
     @Override

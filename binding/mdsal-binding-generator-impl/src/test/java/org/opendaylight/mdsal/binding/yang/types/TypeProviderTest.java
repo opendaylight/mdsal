@@ -475,7 +475,7 @@ public class TypeProviderTest {
 
         assertNotNull(unionTypeBuilder);
 
-        GeneratedTransferObject unionType = unionTypeBuilder.toInstance();
+        GeneratedTransferObject unionType = unionTypeBuilder.build();
         assertEquals("ComplexUnionType", unionType.getName());
 
         unionTypeBuilder = provider.provideGeneratedTOBuilderForUnionTypeDef("test.package.name",
@@ -483,7 +483,7 @@ public class TypeProviderTest {
 
         assertNotNull(unionTypeBuilder);
 
-        unionType = unionTypeBuilder.toInstance();
+        unionType = unionTypeBuilder.build();
         assertEquals("Union", unionType.getName());
 
         unionTypeBuilder = provider.provideGeneratedTOBuilderForUnionTypeDef("test.package.name",
@@ -491,7 +491,7 @@ public class TypeProviderTest {
 
         assertNotNull(unionTypeBuilder);
 
-        unionType = unionTypeBuilder.toInstance();
+        unionType = unionTypeBuilder.build();
         assertEquals("Union", unionType.getName());
     }
 
@@ -511,7 +511,7 @@ public class TypeProviderTest {
 
         assertNotNull(unionTypeBuilder);
 
-        final GeneratedTransferObject unionType = unionTypeBuilder.toInstance();
+        final GeneratedTransferObject unionType = unionTypeBuilder.build();
         assertEquals("ComplexStringIntUnionType", unionType.getName());
     }
 
@@ -711,15 +711,15 @@ public class TypeProviderTest {
         final GeneratedTOBuilder builder = new CodegenGeneratedTOBuilder("test.package", "TestBuilder");
 
         CodegenTypeProvider.addUnitsToGenTO(builder, null);
-        GeneratedTransferObject genTO = builder.toInstance();
+        GeneratedTransferObject genTO = builder.build();
         assertTrue(genTO.getConstantDefinitions().isEmpty());
 
         CodegenTypeProvider.addUnitsToGenTO(builder, "");
-        genTO = builder.toInstance();
+        genTO = builder.build();
         assertTrue(genTO.getConstantDefinitions().isEmpty());
 
         CodegenTypeProvider.addUnitsToGenTO(builder, "125");
-        genTO = builder.toInstance();
+        genTO = builder.build();
         assertTrue(!genTO.getConstantDefinitions().isEmpty());
         assertEquals(1, genTO.getConstantDefinitions().size());
         assertEquals("_UNITS", genTO.getConstantDefinitions().get(0).getName());

@@ -114,7 +114,7 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
         final List<AnnotationType> annotations = new ArrayList<>();
         for (final AnnotationTypeBuilder annotBuilder : getAnnotationBuilders()) {
             if (annotBuilder != null) {
-                annotations.add(annotBuilder.toInstance());
+                annotations.add(annotBuilder.build());
             }
         }
 
@@ -125,8 +125,8 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + Objects.hashCode(getName());
-        result = (prime * result) + Objects.hashCode(getReturnType());
+        result = prime * result + Objects.hashCode(getName());
+        result = prime * result + Objects.hashCode(getReturnType());
         return result;
     }
 
