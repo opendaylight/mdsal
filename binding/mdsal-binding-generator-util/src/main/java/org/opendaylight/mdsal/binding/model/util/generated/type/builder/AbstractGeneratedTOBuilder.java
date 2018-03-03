@@ -13,39 +13,33 @@ import java.util.List;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
-import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
-public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<GeneratedTOBuilder> implements GeneratedTOBuilder {
+abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<GeneratedTOBuilder>
+        implements GeneratedTOBuilder {
 
-    private GeneratedTransferObject extendsType;
+    // FIXME are these three referenced anywhere at runtime?
     private List<GeneratedPropertyBuilder> equalsProperties = Collections.emptyList();
     private List<GeneratedPropertyBuilder> hashProperties = Collections.emptyList();
     private List<GeneratedPropertyBuilder> toStringProperties = Collections.emptyList();
+    private GeneratedTransferObject extendsType;
     private boolean isTypedef = false;
     private boolean isUnionType = false;
     private boolean isUnionTypeBuilder = false;
     private TypeDefinition<?> baseType = null;
-    private Restrictions restrictions;
-    private GeneratedPropertyBuilder SUID;
-    private String reference;
-    private String description;
-    private String moduleName;
-    private Iterable<QName> schemaPath;
 
-    public GeneratedTOBuilderImpl(final String packageName, final String name) {
+    AbstractGeneratedTOBuilder(final String packageName, final String name) {
         super(packageName, name);
         setAbstract(false);
     }
 
     @Override
-    public GeneratedTOBuilder setExtendsType(final GeneratedTransferObject genTransObj) {
+    public final GeneratedTOBuilder setExtendsType(final GeneratedTransferObject genTransObj) {
         Preconditions.checkArgument(genTransObj != null, "Generated Transfer Object cannot be null!");
         this.extendsType = genTransObj;
         return this;
@@ -66,52 +60,37 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
      * @return <code>new</code> instance of Method Signature Builder.
      */
     @Override
-    public MethodSignatureBuilder addMethod(final String name) {
+    public final MethodSignatureBuilder addMethod(final String name) {
         final MethodSignatureBuilder builder = super.addMethod(name);
         builder.setAbstract(false);
         return builder;
     }
 
     @Override
-    public GeneratedTOBuilder addEqualsIdentity(final GeneratedPropertyBuilder property) {
+    public final GeneratedTOBuilder addEqualsIdentity(final GeneratedPropertyBuilder property) {
         this.equalsProperties = LazyCollections.lazyAdd(this.equalsProperties, property);
         return this;
     }
 
     @Override
-    public GeneratedTOBuilder addHashIdentity(final GeneratedPropertyBuilder property) {
+    public final GeneratedTOBuilder addHashIdentity(final GeneratedPropertyBuilder property) {
         this.hashProperties = LazyCollections.lazyAdd(this.hashProperties, property);
         return this;
     }
 
     @Override
-    public GeneratedTOBuilder addToStringProperty(final GeneratedPropertyBuilder property) {
+    public final GeneratedTOBuilder addToStringProperty(final GeneratedPropertyBuilder property) {
         this.toStringProperties = LazyCollections.lazyAdd(this.toStringProperties, property);
         return this;
     }
 
     @Override
-    protected GeneratedTOBuilder thisInstance() {
+    protected final GeneratedTOBuilder thisInstance() {
         return this;
     }
 
     @Override
-    public void setRestrictions(final Restrictions restrictions) {
-        this.restrictions = restrictions;
-    }
-
-    @Override
-    public void setSUID(final GeneratedPropertyBuilder suid) {
-        this.SUID = suid;
-    }
-
-    @Override
-    public GeneratedTransferObject toInstance() {
-        return new GeneratedTransferObjectImpl(this);
-    }
-
-    @Override
-    public String toString() {
+    public final String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append("GeneratedTransferObject [packageName=");
         builder.append(getPackageName());
@@ -138,46 +117,26 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
     }
 
     @Override
-    public void setTypedef(final boolean isTypedef) {
+    public final void setTypedef(final boolean isTypedef) {
         this.isTypedef = isTypedef;
     }
 
     @Override
-    public void setBaseType(final TypeDefinition<?> typeDef) {
+    public final void setBaseType(final TypeDefinition<?> typeDef) {
         this.baseType = typeDef;
     }
 
     @Override
-    public void setIsUnion(final boolean isUnion) {
+    public final void setIsUnion(final boolean isUnion) {
         this.isUnionType = isUnion;
     }
 
     @Override
-    public void setIsUnionBuilder(final boolean isUnionTypeBuilder) {
+    public final void setIsUnionBuilder(final boolean isUnionTypeBuilder) {
         this.isUnionTypeBuilder = isUnionTypeBuilder;
     }
 
-    @Override
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
-    @Override
-    public void setModuleName(final String moduleName) {
-        this.moduleName = moduleName;
-    }
-
-    @Override
-    public void setSchemaPath(final Iterable<QName> schemaPath) {
-        this.schemaPath = schemaPath;
-    }
-
-    @Override
-    public void setReference(final String reference) {
-        this.reference = reference;
-    }
-
-    private static final class GeneratedTransferObjectImpl extends AbstractGeneratedType implements
+    static abstract class AbstractGeneratedTransferObject extends AbstractGeneratedType implements
     GeneratedTransferObject {
 
         private final List<GeneratedProperty> equalsProperties;
@@ -188,14 +147,8 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
         private final TypeDefinition<?> baseType;
         private final boolean isUnionType;
         private final boolean isUnionTypeBuilder;
-        private final Restrictions restrictions;
-        private final GeneratedProperty SUID;
-        private final String reference;
-        private final String description;
-        private final String moduleName;
-        private final Iterable<QName> schemaPath;
 
-        public GeneratedTransferObjectImpl(final GeneratedTOBuilderImpl builder) {
+        AbstractGeneratedTransferObject(final AbstractGeneratedTOBuilder builder) {
             super(builder);
             this.extendsType = builder.extendsType;
 
@@ -209,71 +162,50 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
             this.baseType = builder.baseType;
             this.isUnionType = builder.isUnionType;
             this.isUnionTypeBuilder = builder.isUnionTypeBuilder;
-            this.restrictions = builder.restrictions;
-            this.reference = builder.reference;
-            this.description = builder.description;
-            this.moduleName = builder.moduleName;
-            this.schemaPath = builder.schemaPath;
-
-            if (builder.SUID == null) {
-                this.SUID = null;
-            } else {
-                this.SUID = builder.SUID.toInstance(GeneratedTransferObjectImpl.this);
-            }
         }
 
         @Override
-        public boolean isTypedef() {
+        public final boolean isTypedef() {
             return this.isTypedef;
         }
 
         @Override
-        public TypeDefinition<?> getBaseType() {
+        public final TypeDefinition<?> getBaseType() {
             return this.baseType;
         }
 
         @Override
-        public boolean isUnionType() {
+        public final boolean isUnionType() {
             return this.isUnionType;
         }
 
         @Override
-        public boolean isUnionTypeBuilder() {
+        public final boolean isUnionTypeBuilder() {
             return this.isUnionTypeBuilder;
         }
 
         @Override
-        public GeneratedTransferObject getSuperType() {
+        public final GeneratedTransferObject getSuperType() {
             return this.extendsType;
         }
 
         @Override
-        public List<GeneratedProperty> getEqualsIdentifiers() {
+        public final List<GeneratedProperty> getEqualsIdentifiers() {
             return this.equalsProperties;
         }
 
         @Override
-        public List<GeneratedProperty> getHashCodeIdentifiers() {
+        public final List<GeneratedProperty> getHashCodeIdentifiers() {
             return this.hashCodeProperties;
         }
 
         @Override
-        public List<GeneratedProperty> getToStringIdentifiers() {
+        public final List<GeneratedProperty> getToStringIdentifiers() {
             return this.stringProperties;
         }
 
         @Override
-        public Restrictions getRestrictions() {
-            return this.restrictions;
-        }
-
-        @Override
-        public GeneratedProperty getSUID() {
-            return this.SUID;
-        }
-
-        @Override
-        public String toString() {
+        public final String toString() {
             if (this.isTypedef) {
                 return serializeTypedef(this);
             }
@@ -310,46 +242,24 @@ public final class GeneratedTOBuilderImpl extends AbstractGeneratedTypeBuilder<G
             return builder.toString();
         }
 
-        public String serializeTypedef(final Type type) {
-            if (type instanceof ParameterizedType) {
-                final ParameterizedType parameterizedType = (ParameterizedType) type;
-                final StringBuilder sb = new StringBuilder();
-                sb.append(parameterizedType.getRawType().getFullyQualifiedName());
-                sb.append('<');
-                boolean first = true;
-                for (final Type parameter : parameterizedType.getActualTypeArguments()) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        sb.append(',');
-                    }
-                    sb.append(serializeTypedef(parameter));
-                }
-                sb.append('>');
-                return sb.toString();
-            } else {
+        public final String serializeTypedef(final Type type) {
+            if (!(type instanceof ParameterizedType)) {
                 return type.getFullyQualifiedName();
             }
-        }
 
-        @Override
-        public String getDescription() {
-            return this.description;
-        }
-
-        @Override
-        public String getReference() {
-            return this.reference;
-        }
-
-        @Override
-        public Iterable<QName> getSchemaPath() {
-            return this.schemaPath;
-        }
-
-        @Override
-        public String getModuleName() {
-            return this.moduleName;
+            final ParameterizedType parameterizedType = (ParameterizedType) type;
+            final StringBuilder sb = new StringBuilder();
+            sb.append(parameterizedType.getRawType().getFullyQualifiedName()).append('<');
+            boolean first = true;
+            for (final Type parameter : parameterizedType.getActualTypeArguments()) {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.append(',');
+                }
+                sb.append(serializeTypedef(parameter));
+            }
+            return sb.append('>').toString();
         }
     }
 }

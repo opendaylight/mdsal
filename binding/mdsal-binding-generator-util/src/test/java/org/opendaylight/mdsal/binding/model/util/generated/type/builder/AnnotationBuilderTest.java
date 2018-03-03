@@ -129,7 +129,7 @@ public class AnnotationBuilderTest {
 
     @Test
     public void generatedPropertyAnnotationTest() {
-        final GeneratedTOBuilder genTOBuilder = new GeneratedTOBuilderImpl("org.opendaylight.controller",
+        final GeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.controller",
                 "AnnotInterface");
 
         final GeneratedPropertyBuilder propertyBuilder = genTOBuilder.addProperty("simpleProperty");
@@ -191,7 +191,7 @@ public class AnnotationBuilderTest {
 
     @Test
     public void generatedTransfeObjectAnnotationTest() {
-        final GeneratedTOBuilder genTypeBuilder = new GeneratedTOBuilderImpl("org.opendaylight.controller",
+        final GeneratedTOBuilder genTypeBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.controller",
                 "AnnotClassCache");
 
         genTypeBuilder.addAnnotation("javax.management", "MBean");

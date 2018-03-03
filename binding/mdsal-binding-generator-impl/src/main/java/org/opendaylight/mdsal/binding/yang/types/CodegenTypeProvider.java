@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -95,5 +97,10 @@ public class CodegenTypeProvider extends AbstractTypeProvider {
                 LOG.warn("Ignoring unhandled modifier {}", modifier);
                 return pattern;
         }
+    }
+
+    @Override
+    public GeneratedTOBuilder newGeneratedTOBuilder(final String packageName, final String name) {
+        return new CodegenGeneratedTOBuilder(packageName, name);
     }
 }
