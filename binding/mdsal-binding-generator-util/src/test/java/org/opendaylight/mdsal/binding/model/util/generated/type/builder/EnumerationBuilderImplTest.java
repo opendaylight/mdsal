@@ -46,7 +46,7 @@ public class EnumerationBuilderImplTest {
         enumerationBuilder.setDescription(DESCRIPTION);
         enumerationBuilder.setModuleName(moduleName);
         enumerationBuilder.setReference(reference);
-        enumerationBuilder.setSchemaPath(Collections.singletonList(qName));
+        enumerationBuilder.setSchemaPath(SchemaPath.create(true, qName));
         enumerationBuilder.addValue(valueName, value, valueDescription);
         enumerationBuilder.addAnnotation(packageName, "TestAnnotation");
         enumerationBuilderSame = new CodegenEnumerationBuilder(packageName, name);
