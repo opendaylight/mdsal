@@ -17,8 +17,12 @@ import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.AbstractEnumerationBuilder;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenEnumerationBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -102,5 +106,15 @@ public class CodegenTypeProvider extends AbstractTypeProvider {
     @Override
     public GeneratedTOBuilder newGeneratedTOBuilder(final String packageName, final String name) {
         return new CodegenGeneratedTOBuilder(packageName, name);
+    }
+
+    @Override
+    public GeneratedTypeBuilder newGeneratedTypeBuilder(final String packageName, final String name) {
+        return new CodegenGeneratedTypeBuilder(packageName, name);
+    }
+
+    @Override
+    public AbstractEnumerationBuilder newEnumerationBuilder(final String packageName, final String name) {
+        return new CodegenEnumerationBuilder(packageName, name);
     }
 }

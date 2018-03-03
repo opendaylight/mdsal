@@ -87,6 +87,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
 
     protected abstract T thisInstance();
 
+    abstract AbstractEnumerationBuilder newEnumerationBuilder(String packageName, String name);
+
     @Override
     public GeneratedTOBuilder addEnclosingTransferObject(final String name) {
         Preconditions.checkArgument(name != null, "Name for Enclosing Generated Transfer Object cannot be null!");
@@ -166,7 +168,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     @Override
     public EnumBuilder addEnumeration(final String name) {
         Preconditions.checkArgument(name != null, "Name of enumeration cannot be null!");
-        final EnumBuilder builder = new EnumerationBuilderImpl(getFullyQualifiedName(), name);
+        // FIXME:
+        final EnumBuilder builder = new CodegenEnumerationBuilder(getFullyQualifiedName(), name);
 
         Preconditions.checkArgument(!this.enumDefinitions.contains(builder),
             "This generated type already contains equal enumeration.");
