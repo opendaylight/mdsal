@@ -34,7 +34,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
-import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTOBuilderImpl;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -708,7 +708,7 @@ public class TypeProviderTest {
 
     @Test
     public void addUnitsToGenTOTest() {
-        final GeneratedTOBuilder builder = new GeneratedTOBuilderImpl("test.package", "TestBuilder");
+        final GeneratedTOBuilder builder = new CodegenGeneratedTOBuilder("test.package", "TestBuilder");
 
         CodegenTypeProvider.addUnitsToGenTO(builder, null);
         GeneratedTransferObject genTO = builder.toInstance();
