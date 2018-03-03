@@ -653,7 +653,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         addEnumDescription(enumBuilder, enumTypeDef);
         enumTypeDef.getReference().ifPresent(enumBuilder::setReference);
         enumBuilder.setModuleName(module.getName());
-        enumBuilder.setSchemaPath(enumTypeDef.getPath().getPathFromRoot());
+        enumBuilder.setSchemaPath(enumTypeDef.getPath());
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
         return enumBuilder.toInstance(null);
     }
@@ -970,7 +970,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         if (typeDefName != null && !typeDefName.isEmpty()) {
             final String typeName = BindingMapping.getClassName(typeDefName);
             unionGenTOBuilder = newGeneratedTOBuilder(basePackageName, typeName);
-            unionGenTOBuilder.setSchemaPath(typedef.getPath().getPathFromRoot());
+            unionGenTOBuilder.setSchemaPath(typedef.getPath());
             unionGenTOBuilder.setModuleName(module.getName());
             addCodegenInformation(unionGenTOBuilder, typedef);
         } else {
@@ -1189,7 +1189,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         if (packageName != null && typeDefTOName != null) {
             final String genTOName = BindingMapping.getClassName(typeDefTOName);
             final GeneratedTOBuilder newType = newGeneratedTOBuilder(packageName, genTOName);
-            newType.setSchemaPath(typedef.getPath().getPathFromRoot());
+            newType.setSchemaPath(typedef.getPath());
             newType.setModuleName(moduleName);
             addCodegenInformation(newType, typedef);
             return newType;
@@ -1228,7 +1228,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
             final String typeName = BindingMapping.getClassName(typeDefName);
             final GeneratedTOBuilder genTOBuilder = newGeneratedTOBuilder(basePackageName, typeName);
-            genTOBuilder.setSchemaPath(typeDef.getPath().getPathFromRoot());
+            genTOBuilder.setSchemaPath(typeDef.getPath());
             genTOBuilder.setModuleName(moduleName);
             genTOBuilder.setBaseType(typeDef);
             addCodegenInformation(genTOBuilder, typeDef);
@@ -1306,7 +1306,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final String classTypedefName = BindingMapping.getClassName(typedefName);
         final String innerTypeDef = innerExtendedType.getQName().getLocalName();
         final GeneratedTOBuilder genTOBuilder = newGeneratedTOBuilder(basePackageName, classTypedefName);
-        genTOBuilder.setSchemaPath(typedef.getPath().getPathFromRoot());
+        genTOBuilder.setSchemaPath(typedef.getPath());
         genTOBuilder.setModuleName(moduleName);
         genTOBuilder.setTypedef(true);
         addCodegenInformation(genTOBuilder, typedef);
