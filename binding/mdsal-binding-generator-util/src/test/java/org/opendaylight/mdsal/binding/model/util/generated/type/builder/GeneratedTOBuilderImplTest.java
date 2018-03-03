@@ -34,9 +34,9 @@ public class GeneratedTOBuilderImplTest {
     public void testSetExtendsType() {
         final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
         final CodegenGeneratedTOBuilder extendedTypeBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "ExtendedType");
-        final GeneratedTransferObject extendedType = extendedTypeBuilder.toInstance();
+        final GeneratedTransferObject extendedType = extendedTypeBuilder.build();
         genTOBuilder.setExtendsType(extendedType);
-        final GeneratedTransferObject genTO = genTOBuilder.toInstance();
+        final GeneratedTransferObject genTO = genTOBuilder.build();
 
         assertEquals("ExtendedType", genTO.getSuperType().getName());
     }
@@ -55,7 +55,7 @@ public class GeneratedTOBuilderImplTest {
         final GeneratedPropertyBuilderImpl propertyBuilder = new GeneratedPropertyBuilderImpl("testProperty");
         genTOBuilder.addEqualsIdentity(propertyBuilder);
 
-        final GeneratedTransferObject genTO = genTOBuilder.toInstance();
+        final GeneratedTransferObject genTO = genTOBuilder.build();
         assertEquals(1, genTO.getEqualsIdentifiers().size());
         assertEquals("testProperty", genTO.getEqualsIdentifiers().get(0).getName());
     }
@@ -66,7 +66,7 @@ public class GeneratedTOBuilderImplTest {
         final GeneratedPropertyBuilderImpl propertyBuilder = new GeneratedPropertyBuilderImpl("testProperty");
         genTOBuilder.addHashIdentity(propertyBuilder);
 
-        final GeneratedTransferObject genTO = genTOBuilder.toInstance();
+        final GeneratedTransferObject genTO = genTOBuilder.build();
         assertEquals(1, genTO.getHashCodeIdentifiers().size());
         assertEquals("testProperty", genTO.getHashCodeIdentifiers().get(0).getName());
     }
@@ -77,7 +77,7 @@ public class GeneratedTOBuilderImplTest {
         final GeneratedPropertyBuilderImpl propertyBuilder = new GeneratedPropertyBuilderImpl("testProperty");
         genTOBuilder.addToStringProperty(propertyBuilder);
 
-        final GeneratedTransferObject genTO = genTOBuilder.toInstance();
+        final GeneratedTransferObject genTO = genTOBuilder.build();
         assertEquals(1, genTO.getToStringIdentifiers().size());
         assertEquals("testProperty", genTO.getToStringIdentifiers().get(0).getName());
     }
@@ -108,7 +108,7 @@ public class GeneratedTOBuilderImplTest {
             }
         };
         genTOBuilder.setRestrictions(restrictions);
-        final GeneratedTransferObject genTO = genTOBuilder.toInstance();
+        final GeneratedTransferObject genTO = genTOBuilder.build();
 
         assertNotNull(genTO.getRestrictions());
     }
@@ -119,7 +119,7 @@ public class GeneratedTOBuilderImplTest {
         final GeneratedPropertyBuilderImpl propertyBuilder = new GeneratedPropertyBuilderImpl("testProperty");
         genTOBuilder.setSUID(propertyBuilder);
 
-        final GeneratedTransferObject genTO = genTOBuilder.toInstance();
+        final GeneratedTransferObject genTO = genTOBuilder.build();
         assertEquals("testProperty", genTO.getSUID().getName());
     }
 
@@ -140,7 +140,7 @@ public class GeneratedTOBuilderImplTest {
         genTOBuilder.setReference("http://tools.ietf.org/html/rfc6020");
         genTOBuilder.setSchemaPath(SchemaPath.ROOT);
 
-        final GeneratedTransferObject genTO = genTOBuilder.toInstance();
+        final GeneratedTransferObject genTO = genTOBuilder.build();
 
         assertTrue(genTO.isTypedef());
         assertTrue(genTO.isUnionType());
@@ -154,7 +154,7 @@ public class GeneratedTOBuilderImplTest {
     @Test
     public void testMethodsOfGeneratedTransferObjectImpl() {
         final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
-        final GeneratedTransferObject genTO = genTOBuilder.toInstance();
+        final GeneratedTransferObject genTO = genTOBuilder.build();
 
         assertNotNull(genTO.toString());
     }
