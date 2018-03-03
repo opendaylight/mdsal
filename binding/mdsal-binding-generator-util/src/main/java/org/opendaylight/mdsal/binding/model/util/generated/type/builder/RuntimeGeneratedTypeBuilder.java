@@ -22,7 +22,7 @@ public final class RuntimeGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
-    public GeneratedType toInstance() {
+    public GeneratedType build() {
         return new GeneratedTypeImpl(this);
     }
 

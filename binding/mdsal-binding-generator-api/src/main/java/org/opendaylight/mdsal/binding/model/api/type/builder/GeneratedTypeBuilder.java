@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.model.api.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.yangtools.concepts.Builder;
 
 /**
  * Generated Type Builder interface is helper interface for building and
@@ -15,13 +16,14 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
  *
  * @see GeneratedType
  */
-public interface GeneratedTypeBuilder extends GeneratedTypeBuilderBase<GeneratedTypeBuilder> {
+public interface GeneratedTypeBuilder extends GeneratedTypeBuilderBase<GeneratedTypeBuilder>, Builder<GeneratedType> {
 
     /**
      * Returns the <code>new</code> <i>immutable</i> instance of Generated Type.
      *
      * @return the <code>new</code> <i>immutable</i> instance of Generated Type.
      */
-    GeneratedType toInstance();
+    @Override
+    GeneratedType build();
 
 }
