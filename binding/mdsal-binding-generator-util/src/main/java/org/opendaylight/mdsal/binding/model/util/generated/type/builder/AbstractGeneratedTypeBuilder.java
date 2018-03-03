@@ -90,7 +90,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     @Override
     public GeneratedTOBuilder addEnclosingTransferObject(final String name) {
         Preconditions.checkArgument(name != null, "Name for Enclosing Generated Transfer Object cannot be null!");
-        final GeneratedTOBuilder builder = new GeneratedTOBuilderImpl(getFullyQualifiedName(), name);
+        final GeneratedTOBuilder builder = new CodegenGeneratedTOBuilder(getFullyQualifiedName(), name);
 
         Preconditions.checkArgument(!this.enclosedTransferObjects.contains(builder),
             "This generated type already contains equal enclosing transfer object.");

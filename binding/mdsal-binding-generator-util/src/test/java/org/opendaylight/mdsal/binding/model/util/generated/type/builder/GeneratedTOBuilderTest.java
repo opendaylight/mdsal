@@ -20,7 +20,7 @@ public class GeneratedTOBuilderTest {
 
     @Test
     public void testBuilder() {
-        final GeneratedTOBuilder genTypeBuilder = new GeneratedTOBuilderImpl(
+        final GeneratedTOBuilder genTypeBuilder = new CodegenGeneratedTOBuilder(
                 "org.opendaylight.controller", "AnnotClassCache");
 
         genTypeBuilder.setSUID(genTypeBuilder.addProperty("SUID"));
@@ -43,7 +43,7 @@ public class GeneratedTOBuilderTest {
 
     @Test
     public void testToString() {
-        final GeneratedTOBuilder genTypeBuilder = new GeneratedTOBuilderImpl(
+        final GeneratedTOBuilder genTypeBuilder = new CodegenGeneratedTOBuilder(
                 "org.opendaylight.controller", "AnnotClassCache");
         String toString = genTypeBuilder.toString();
         assertTrue(toString.contains("GeneratedTransferObject"));
@@ -51,7 +51,7 @@ public class GeneratedTOBuilderTest {
 
     @Test
     public void testTransferBuilderToString() {
-        final GeneratedTOBuilder genTypeBuilder1 = new GeneratedTOBuilderImpl(
+        final GeneratedTOBuilder genTypeBuilder1 = new CodegenGeneratedTOBuilder(
                 "org.opendaylight.controller", "AnnotClassCache");
 
         genTypeBuilder1.setTypedef(true);
@@ -59,7 +59,7 @@ public class GeneratedTOBuilderTest {
         String toString = genTO.toString();
         assertFalse(toString.contains("GeneratedTransferObject"));
 
-        final GeneratedTOBuilder genTypeBuilder2 = new GeneratedTOBuilderImpl(
+        final GeneratedTOBuilder genTypeBuilder2 = new CodegenGeneratedTOBuilder(
                 "org.opendaylight.controller", "AnnotClassCache");
 
         genTypeBuilder2.setTypedef(false);
