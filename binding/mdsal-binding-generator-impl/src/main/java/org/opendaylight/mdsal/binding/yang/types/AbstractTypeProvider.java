@@ -44,12 +44,13 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
+import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.TypeConstants;
 import org.opendaylight.mdsal.binding.model.util.Types;
-import org.opendaylight.mdsal.binding.model.util.generated.type.builder.EnumerationBuilderImpl;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.AbstractEnumerationBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -648,7 +649,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final Module module = findParentModule(schemaContext, parentNode);
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
 
-        final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(basePackageName, enumerationName);
+        final AbstractEnumerationBuilder enumBuilder = newEnumerationBuilder(basePackageName, enumerationName);
         addEnumDescription(enumBuilder, enumTypeDef);
         enumTypeDef.getReference().ifPresent(enumBuilder::setReference);
         enumBuilder.setModuleName(module.getName());
@@ -701,7 +702,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     public abstract void addEnumDescription(EnumBuilder enumBuilder, EnumTypeDefinition enumTypeDef);
 
+    public abstract AbstractEnumerationBuilder newEnumerationBuilder(String packageName, String name);
+
     public abstract GeneratedTOBuilder newGeneratedTOBuilder(String packageName, String name);
+
+    public abstract GeneratedTypeBuilder newGeneratedTypeBuilder(String packageName, String name);
 
     abstract void addCodegenInformation(GeneratedTypeBuilderBase<?> genTOBuilder, TypeDefinition<?> typeDef);
 
@@ -1723,5 +1728,4 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     public String getParamNameFromType(final TypeDefinition<?> type) {
         return BindingMapping.getPropertyName(type.getQName().getLocalName());
     }
-
 }
