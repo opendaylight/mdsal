@@ -279,7 +279,7 @@ public class BindingRuntimeContext implements Immutable {
             () -> new NullPointerException("Failed to find defined type for " + referencedType + " schema " + schema));
 
         if (definedType instanceof GeneratedTypeBuilder) {
-            return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).toInstance(), schema);
+            return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).build(), schema);
         }
         checkArgument(definedType instanceof GeneratedType, "Type %s is not a GeneratedType", referencedType);
         return new SimpleEntry<>((GeneratedType) definedType, schema);
@@ -298,7 +298,7 @@ public class BindingRuntimeContext implements Immutable {
                 final Entry<Type,Type> caseIdentifier = new SimpleEntry<>(choiceType, caze);
                 final HashSet<Type> caseChildren = new HashSet<>();
                 if (caze instanceof GeneratedTypeBuilder) {
-                    caze = ((GeneratedTypeBuilder) caze).toInstance();
+                    caze = ((GeneratedTypeBuilder) caze).build();
                 }
                 collectAllContainerTypes((GeneratedType) caze, caseChildren);
                 for (final Type caseChild : caseChildren) {
