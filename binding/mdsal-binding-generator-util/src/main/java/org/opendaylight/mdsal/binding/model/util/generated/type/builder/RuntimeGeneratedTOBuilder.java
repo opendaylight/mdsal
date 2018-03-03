@@ -54,6 +54,11 @@ public final class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
         return new GTO(this);
     }
 
+    @Override
+    AbstractEnumerationBuilder newEnumerationBuilder(final String packageName, final String name) {
+        return new RuntimeEnumerationBuilder(packageName, name);
+    }
+
     private static final class GTO extends AbstractGeneratedTransferObject {
         GTO(final RuntimeGeneratedTOBuilder builder) {
             super(builder);

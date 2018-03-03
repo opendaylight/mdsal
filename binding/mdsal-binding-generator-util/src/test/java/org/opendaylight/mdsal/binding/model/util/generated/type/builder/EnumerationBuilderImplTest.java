@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.type.BaseTypes;
 import org.opendaylight.yangtools.yang.model.util.type.EnumPairBuilder;
@@ -35,23 +36,23 @@ public class EnumerationBuilderImplTest {
     private final String valueDescription = "Value used for test";
     private final int value = 12;
     private Enumeration enumeration;
-    private EnumerationBuilderImpl enumerationBuilder;
-    private EnumerationBuilderImpl enumerationBuilderSame;
-    private EnumerationBuilderImpl enumerationBuilderOtherName;
-    private EnumerationBuilderImpl enumerationBuilderOtherPackage;
+    private CodegenEnumerationBuilder enumerationBuilder;
+    private CodegenEnumerationBuilder enumerationBuilderSame;
+    private CodegenEnumerationBuilder enumerationBuilderOtherName;
+    private CodegenEnumerationBuilder enumerationBuilderOtherPackage;
 
     @Before
     public void setup() {
-        enumerationBuilder = new EnumerationBuilderImpl(packageName, name);
+        enumerationBuilder = new CodegenEnumerationBuilder(packageName, name);
         enumerationBuilder.setDescription(DESCRIPTION);
         enumerationBuilder.setModuleName(moduleName);
         enumerationBuilder.setReference(reference);
         enumerationBuilder.setSchemaPath(Collections.singletonList(qName));
-        enumerationBuilder.addValue(valueName, value, valueDescription);
+        enumerationBuilder.addValue(valueName, value, Status.CURRENT, valueDescription, null);
         enumerationBuilder.addAnnotation(packageName, "TestAnnotation");
-        enumerationBuilderSame = new EnumerationBuilderImpl(packageName, name);
-        enumerationBuilderOtherName = new EnumerationBuilderImpl(packageName, "SomeOtherName");
-        enumerationBuilderOtherPackage = new EnumerationBuilderImpl("org.opendaylight.other", name);
+        enumerationBuilderSame = new CodegenEnumerationBuilder(packageName, name);
+        enumerationBuilderOtherName = new CodegenEnumerationBuilder(packageName, "SomeOtherName");
+        enumerationBuilderOtherPackage = new CodegenEnumerationBuilder("org.opendaylight.other", name);
         enumeration = enumerationBuilder.toInstance(enumerationBuilder);
     }
 
@@ -107,13 +108,13 @@ public class EnumerationBuilderImplTest {
         final Enumeration enumerationOtherName = enumerationBuilderOtherName.toInstance(enumerationBuilderOtherName);
         assertNotEquals(enumeration, enumerationOtherName);
 
-        enumerationBuilderSame.addValue(valueName, value, valueDescription);
+        enumerationBuilderSame.addValue(valueName, value, Status.CURRENT, valueDescription, null);
         final Enumeration enumerationSame = enumerationBuilderSame.toInstance(enumerationBuilderSame);
         assertEquals(enumeration, enumerationSame);
 
-        final EnumerationBuilderImpl enumerationBuilderSame1 = new EnumerationBuilderImpl(packageName, name);
+        final CodegenEnumerationBuilder enumerationBuilderSame1 = new CodegenEnumerationBuilder(packageName, name);
         final Enumeration enumerationSame1 = enumerationBuilderSame1.toInstance(enumerationBuilderSame1);
-        enumerationBuilderSame1.addValue(valueName, 14, valueDescription);
+        enumerationBuilderSame1.addValue(valueName, 14, Status.CURRENT, valueDescription, null);
         // Enums are equal thanks to same package name and local name
         assertEquals(enumeration, enumerationSame1);
     }
