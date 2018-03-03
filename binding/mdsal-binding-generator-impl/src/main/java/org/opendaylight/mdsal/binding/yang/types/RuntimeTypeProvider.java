@@ -8,6 +8,8 @@
 package org.opendaylight.mdsal.binding.yang.types;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -32,5 +34,10 @@ public final class RuntimeTypeProvider extends AbstractTypeProvider {
     @Override
     void addCodegenInformation(final GeneratedTypeBuilderBase<?> genTOBuilder, final TypeDefinition<?> typeDef) {
         // No-op
+    }
+
+    @Override
+    Map<String, String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
+        return ImmutableMap.of();
     }
 }
