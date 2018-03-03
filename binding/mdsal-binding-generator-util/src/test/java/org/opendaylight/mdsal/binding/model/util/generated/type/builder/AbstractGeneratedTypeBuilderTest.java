@@ -33,8 +33,8 @@ public class AbstractGeneratedTypeBuilderTest {
     public void addEnclosingTransferObjectArgumentTest() {
         GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("my.package", "MyName");
 
-        generatedTypeBuilder.addEnclosingTransferObject(new GeneratedTOBuilderImpl("my.package", "myName"));
-        generatedTypeBuilder.addEnclosingTransferObject(new GeneratedTOBuilderImpl("my.package", "myName"));
+        generatedTypeBuilder.addEnclosingTransferObject(new CodegenGeneratedTOBuilder("my.package", "myName"));
+        generatedTypeBuilder.addEnclosingTransferObject(new CodegenGeneratedTOBuilder("my.package", "myName"));
     }
 
     @Test(expected = IllegalArgumentException.class)
