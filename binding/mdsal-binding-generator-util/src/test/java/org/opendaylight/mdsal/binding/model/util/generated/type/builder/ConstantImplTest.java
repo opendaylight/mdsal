@@ -18,9 +18,9 @@ public class ConstantImplTest {
 
     @Test
     public void testMethodsOfConstantImpl() {
-        final GeneratedTypeBuilderImpl definingType = new GeneratedTypeBuilderImpl("org.opendaylight.yangtools.test",
+        final CodegenGeneratedTypeBuilder definingType = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test",
                 "DefiningType");
-        final GeneratedTypeBuilderImpl type = new GeneratedTypeBuilderImpl("org.opendaylight.yangtools.test.v1",
+        final CodegenGeneratedTypeBuilder type = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test.v1",
                 "BaseType");
         final ConstantImpl constImpl = new ConstantImpl(definingType, type, "IpAddress", "127.0.0.1");
         final ConstantImpl constImpl2 = new ConstantImpl(definingType, type, "IpAddress", "127.0.0.1");
