@@ -31,7 +31,7 @@ public class AnnotationBuilderTest {
 
     @Test
     public void generatedTypeAnnotationTest() {
-        final GeneratedTypeBuilder genTypeBuilder = new GeneratedTypeBuilderImpl("org.opendaylight.controller",
+        final GeneratedTypeBuilder genTypeBuilder = new CodegenGeneratedTypeBuilder("org.opendaylight.controller",
                 "AnnotInterface");
 
         genTypeBuilder.addAnnotation("javax.management", "MXBean");
@@ -67,7 +67,7 @@ public class AnnotationBuilderTest {
 
     @Test
     public void methodSignatureAnnotationTest() {
-        final GeneratedTypeBuilder genTypeBuilder = new GeneratedTypeBuilderImpl("org.opendaylight.controller",
+        final GeneratedTypeBuilder genTypeBuilder = new CodegenGeneratedTypeBuilder("org.opendaylight.controller",
                 "TransferObject");
 
         final MethodSignatureBuilder methodBuilder = genTypeBuilder.addMethod("simpleMethod");

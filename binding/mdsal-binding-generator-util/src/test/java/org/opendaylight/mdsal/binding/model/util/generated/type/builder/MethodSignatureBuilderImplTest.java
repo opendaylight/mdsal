@@ -34,7 +34,7 @@ public class MethodSignatureBuilderImplTest {
     @Test
     public void testAddParameterMethod() {
         final MethodSignatureBuilderImpl signatureBuilderImpl = new MethodSignatureBuilderImpl("testMethod");
-        final GeneratedTypeBuilderImpl ipAddressType = new GeneratedTypeBuilderImpl("org.opendaylight.yangtools.test", "IpAddress");
+        final CodegenGeneratedTypeBuilder ipAddressType = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test", "IpAddress");
         signatureBuilderImpl.addParameter(ipAddressType, "ipAddress");
         final MethodSignature methodSignature = signatureBuilderImpl.toInstance(null);
         assertEquals("ipAddress", methodSignature.getParameters().get(0).getName());
@@ -48,7 +48,7 @@ public class MethodSignatureBuilderImplTest {
         final MethodSignatureBuilderImpl signatureBuilderImpl4 = new MethodSignatureBuilderImpl(null);
         final MethodSignatureBuilderImpl signatureBuilderImpl5 = signatureBuilderImpl;
         final MethodSignatureBuilderImpl signatureBuilderImpl6 = new MethodSignatureBuilderImpl("testMethod");
-        final GeneratedTypeBuilderImpl returnType = new GeneratedTypeBuilderImpl("org.opendaylight.yangtools.test", "Address");
+        final CodegenGeneratedTypeBuilder returnType = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test", "Address");
         signatureBuilderImpl6.setReturnType(returnType);
 
         assertEquals(signatureBuilderImpl.hashCode(), signatureBuilderImpl2.hashCode());

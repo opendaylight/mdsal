@@ -61,7 +61,7 @@ import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
-import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedTypeBuilderImpl;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -710,7 +710,7 @@ abstract class AbstractTypeGenerator {
         final String packageName = BindingMapping.getRootPackageName(module.getQNameModule());
         final String moduleName = BindingMapping.getClassName(module.getName()) + postfix;
 
-        final GeneratedTypeBuilderImpl moduleBuilder = new GeneratedTypeBuilderImpl(packageName, moduleName);
+        final CodegenGeneratedTypeBuilder moduleBuilder = new CodegenGeneratedTypeBuilder(packageName, moduleName);
 
         moduleBuilder.setModuleName(moduleName);
         addCodegenInformation(moduleBuilder, module);
@@ -911,7 +911,7 @@ abstract class AbstractTypeGenerator {
             augTypeName = augGenTypeName(augmentBuilders, targetTypeRef.getName());
         }
 
-        final GeneratedTypeBuilder augTypeBuilder = new GeneratedTypeBuilderImpl(augmentPackageName, augTypeName);
+        final GeneratedTypeBuilder augTypeBuilder = new CodegenGeneratedTypeBuilder(augmentPackageName, augTypeName);
 
         augTypeBuilder.addImplementsType(DATA_OBJECT);
         augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
@@ -1725,7 +1725,7 @@ abstract class AbstractTypeGenerator {
         }
 
         // FIXME: Validation of name conflict
-        final GeneratedTypeBuilderImpl newType = new GeneratedTypeBuilderImpl(packageName, genTypeName);
+        final CodegenGeneratedTypeBuilder newType = new CodegenGeneratedTypeBuilder(packageName, genTypeName);
         final Module module = findParentModule(schemaContext, schemaNode);
         qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
 
