@@ -27,7 +27,7 @@ public class GeneratedPropertyImplTest {
         generatedPropertyBuilderImpl.setAccessModifier(AccessModifier.PUBLIC);
         generatedPropertyBuilderImpl.setReturnType(Types.BOOLEAN);
 
-        GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance(new GeneratedTypeBuilderImpl("my.package",
+        GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance(new CodegenGeneratedTypeBuilder("my.package",
                 "myTypeName").toInstance());
 
         assertNotNull(instance);
