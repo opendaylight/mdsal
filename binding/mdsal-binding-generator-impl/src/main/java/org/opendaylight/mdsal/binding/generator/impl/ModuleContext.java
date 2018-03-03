@@ -53,11 +53,11 @@ public final class ModuleContext {
         List<Type> result = new ArrayList<>();
 
         if (moduleNode != null) {
-            result.add(moduleNode.toInstance());
+            result.add(moduleNode.build());
         }
 
         for (GeneratedTOBuilder b : genTOs) {
-            result.add(b.toInstance());
+            result.add(b.build());
         }
         for (Type b : typedefs.values()) {
             if (b != null) {
@@ -65,22 +65,22 @@ public final class ModuleContext {
             }
         }
         for (GeneratedTypeBuilder b : childNodes.values()) {
-            result.add(b.toInstance());
+            result.add(b.build());
         }
         for (GeneratedTypeBuilder b : groupings.values()) {
-            result.add(b.toInstance());
+            result.add(b.build());
         }
         for (GeneratedTypeBuilder b : cases.values()) {
-            result.add(b.toInstance());
+            result.add(b.build());
         }
         for (GeneratedTOBuilder b : identities.values()) {
-            result.add(b.toInstance());
+            result.add(b.build());
         }
         for (GeneratedTypeBuilder b : topLevelNodes) {
-            result.add(b.toInstance());
+            result.add(b.build());
         }
         for (GeneratedTypeBuilder b : augmentations) {
-            result.add(b.toInstance());
+            result.add(b.build());
         }
         return result;
     }
