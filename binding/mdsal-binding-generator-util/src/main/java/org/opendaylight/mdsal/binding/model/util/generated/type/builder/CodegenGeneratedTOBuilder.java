@@ -12,6 +12,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
 
@@ -20,7 +21,7 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
     private String reference;
     private String description;
     private String moduleName;
-    private Iterable<QName> schemaPath;
+    private SchemaPath schemaPath;
 
     public CodegenGeneratedTOBuilder(final String packageName, final String name) {
         super(packageName, name);
@@ -52,7 +53,7 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
     }
 
     @Override
-    public void setSchemaPath(final Iterable<QName> schemaPath) {
+    public void setSchemaPath(final SchemaPath schemaPath) {
         this.schemaPath = schemaPath;
     }
 
@@ -72,7 +73,7 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
         private final String reference;
         private final String description;
         private final String moduleName;
-        private final Iterable<QName> schemaPath;
+        private final SchemaPath schemaPath;
 
         public GTO(final CodegenGeneratedTOBuilder builder) {
             super(builder);
@@ -111,7 +112,7 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
 
         @Override
         public Iterable<QName> getSchemaPath() {
-            return this.schemaPath;
+            return this.schemaPath.getPathFromRoot();
         }
 
         @Override
