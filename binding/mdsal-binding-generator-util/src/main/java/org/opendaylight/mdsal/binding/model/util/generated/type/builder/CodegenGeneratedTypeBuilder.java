@@ -26,11 +26,6 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
-    public GeneratedType toInstance() {
-        return new GeneratedTypeImpl(this);
-    }
-
-    @Override
     public void setDescription(final String description) {
         this.description = description;
     }
@@ -78,6 +73,16 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
         builder.append(getMethodDefinitions());
         builder.append("]");
         return builder.toString();
+    }
+
+    @Override
+    public GeneratedType toInstance() {
+        return new GeneratedTypeImpl(this);
+    }
+
+    @Override
+    AbstractEnumerationBuilder newEnumerationBuilder(final String packageName, final String name) {
+        return new CodegenEnumerationBuilder(packageName, name);
     }
 
     @Override

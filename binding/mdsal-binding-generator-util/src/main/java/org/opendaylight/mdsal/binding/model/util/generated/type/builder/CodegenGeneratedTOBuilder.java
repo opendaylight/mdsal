@@ -61,6 +61,11 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
         this.reference = reference;
     }
 
+    @Override
+    AbstractEnumerationBuilder newEnumerationBuilder(final String packageName, final String name) {
+        return new CodegenEnumerationBuilder(packageName, name);
+    }
+
     private static final class GTO extends AbstractGeneratedTransferObject {
         private final Restrictions restrictions;
         private final GeneratedProperty SUID;
