@@ -26,7 +26,7 @@ public class GeneratedTOBuilderTest {
         genTypeBuilder.setSUID(genTypeBuilder.addProperty("SUID"));
         genTypeBuilder.addMethod("addCount");
 
-        GeneratedTransferObject genTO = genTypeBuilder.toInstance();
+        GeneratedTransferObject genTO = genTypeBuilder.build();
         genTypeBuilder.setExtendsType(genTO);
 
         GeneratedPropertyBuilder property = genTypeBuilder
@@ -55,7 +55,7 @@ public class GeneratedTOBuilderTest {
                 "org.opendaylight.controller", "AnnotClassCache");
 
         genTypeBuilder1.setTypedef(true);
-        GeneratedTransferObject genTO = genTypeBuilder1.toInstance();
+        GeneratedTransferObject genTO = genTypeBuilder1.build();
         String toString = genTO.toString();
         assertFalse(toString.contains("GeneratedTransferObject"));
 
@@ -63,7 +63,7 @@ public class GeneratedTOBuilderTest {
                 "org.opendaylight.controller", "AnnotClassCache");
 
         genTypeBuilder2.setTypedef(false);
-        genTO = genTypeBuilder2.toInstance();
+        genTO = genTypeBuilder2.build();
         toString = genTO.toString();
 
         assertTrue(toString.contains("GeneratedTransferObject"));

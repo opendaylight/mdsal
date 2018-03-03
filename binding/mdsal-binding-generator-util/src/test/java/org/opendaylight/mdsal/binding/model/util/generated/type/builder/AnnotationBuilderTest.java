@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType.Parameter;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
@@ -26,6 +25,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBu
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
+import org.opendaylight.mdsal.binding.model.util.Types;
 
 public class AnnotationBuilderTest {
 
@@ -38,7 +38,7 @@ public class AnnotationBuilderTest {
         final AnnotationTypeBuilder annotDesc = genTypeBuilder.addAnnotation("javax.management", "Description");
         annotDesc.addParameter("description", "some sort of interface");
 
-        final GeneratedType genType = genTypeBuilder.toInstance();
+        final GeneratedType genType = genTypeBuilder.build();
 
         assertNotNull(genType);
         assertNotNull(genType.getAnnotations());
@@ -83,13 +83,13 @@ public class AnnotationBuilderTest {
         final AnnotationTypeBuilder annotManProp = methodBuilder.addAnnotation(
                 "org.springframework.jmx.export.annotation", "ManagedOperation");
 
-        final List<String> typeValues = new ArrayList<String>();
+        final List<String> typeValues = new ArrayList<>();
         typeValues.add("\"val1\"");
         typeValues.add("\"val2\"");
         typeValues.add("\"val3\"");
         annotManProp.addParameters("types", typeValues);
 
-        final GeneratedType genType = genTypeBuilder.toInstance();
+        final GeneratedType genType = genTypeBuilder.build();
 
         assertNotNull(genType);
         assertNotNull(genType.getAnnotations());
@@ -145,13 +145,13 @@ public class AnnotationBuilderTest {
         final AnnotationTypeBuilder annotManProp = propertyBuilder.addAnnotation(
                 "org.springframework.jmx.export.annotation", "ManagedOperation");
 
-        final List<String> typeValues = new ArrayList<String>();
+        final List<String> typeValues = new ArrayList<>();
         typeValues.add("\"val1\"");
         typeValues.add("\"val2\"");
         typeValues.add("\"val3\"");
         annotManProp.addParameters("types", typeValues);
 
-        final GeneratedTransferObject genTransObj = genTOBuilder.toInstance();
+        final GeneratedTransferObject genTransObj = genTOBuilder.build();
 
         assertNotNull(genTransObj);
         assertNotNull(genTransObj.getAnnotations());
@@ -197,12 +197,12 @@ public class AnnotationBuilderTest {
         genTypeBuilder.addAnnotation("javax.management", "MBean");
         final AnnotationTypeBuilder annotNotify = genTypeBuilder.addAnnotation("javax.management", "NotificationInfo");
 
-        final List<String> notifyList = new ArrayList<String>();
+        final List<String> notifyList = new ArrayList<>();
         notifyList.add("\"my.notif.type\"");
         annotNotify.addParameters("types", notifyList);
         annotNotify.addParameter("description", "@Description(\"my notification\")");
 
-        GeneratedTransferObject genTO = genTypeBuilder.toInstance();
+        GeneratedTransferObject genTO = genTypeBuilder.build();
 
         assertNotNull(genTO);
         assertNotNull(genTO.getAnnotations());
@@ -248,7 +248,7 @@ public class AnnotationBuilderTest {
         assertNotNull(annotationTypeBuilder.addAnnotation("my.package2", "MyName2"));
         assertNull(annotationTypeBuilder.addAnnotation("my.package2", "MyName2"));
 
-        AnnotationType annotationTypeInstance = annotationTypeBuilder.toInstance();
+        AnnotationType annotationTypeInstance = annotationTypeBuilder.build();
 
         assertEquals(2, annotationTypeInstance.getAnnotations().size());
 
@@ -273,10 +273,10 @@ public class AnnotationBuilderTest {
         assertFalse(annotationTypeBuilder.equals(annotationTypeBuilder2));
         assertFalse(annotationTypeBuilder.equals(annotationTypeBuilder3));
 
-        AnnotationType instance = annotationTypeBuilder.toInstance();
-        AnnotationType instance2 = annotationTypeBuilder2.toInstance();
-        AnnotationType instance3 = annotationTypeBuilder3.toInstance();
-        AnnotationType instance4 = annotationTypeBuilder4.toInstance();
+        AnnotationType instance = annotationTypeBuilder.build();
+        AnnotationType instance2 = annotationTypeBuilder2.build();
+        AnnotationType instance3 = annotationTypeBuilder3.build();
+        AnnotationType instance4 = annotationTypeBuilder4.build();
 
         assertFalse(instance.equals(null));
         assertFalse(instance.equals(new Object()));
@@ -290,8 +290,8 @@ public class AnnotationBuilderTest {
         annotationTypeBuilder.addParameter("myName2", "myValue2");
         annotationTypeBuilder2.addParameter("myName", "myValue3");
 
-        instance = annotationTypeBuilder.toInstance();
-        instance2 = annotationTypeBuilder2.toInstance();
+        instance = annotationTypeBuilder.build();
+        instance2 = annotationTypeBuilder2.build();
 
         Parameter parameter = instance.getParameter("myName");
         Parameter parameter2 = instance.getParameter("myName2");
@@ -317,10 +317,10 @@ public class AnnotationBuilderTest {
         assertTrue(annotationTypeBuilder.hashCode() == annotationTypeBuilder4.hashCode());
         assertTrue(annotationTypeBuilder.hashCode() == annotationTypeBuilder.hashCode());
 
-        AnnotationType instance = annotationTypeBuilder.toInstance();
-        AnnotationType instance2 = annotationTypeBuilder2.toInstance();
-        AnnotationType instance3 = annotationTypeBuilder3.toInstance();
-        AnnotationType instance4 = annotationTypeBuilder4.toInstance();
+        AnnotationType instance = annotationTypeBuilder.build();
+        AnnotationType instance2 = annotationTypeBuilder2.build();
+        AnnotationType instance3 = annotationTypeBuilder3.build();
+        AnnotationType instance4 = annotationTypeBuilder4.build();
 
         assertFalse(instance.hashCode() == instance2.hashCode());
         assertFalse(instance.hashCode() == instance3.hashCode());
@@ -332,8 +332,8 @@ public class AnnotationBuilderTest {
         annotationTypeBuilder.addParameter("myName2", "myValue2");
         annotationTypeBuilder2.addParameter("myName", "myValue3");
 
-        instance = annotationTypeBuilder.toInstance();
-        instance2 = annotationTypeBuilder2.toInstance();
+        instance = annotationTypeBuilder.build();
+        instance2 = annotationTypeBuilder2.build();
 
         Parameter parameter = instance.getParameter("myName");
         Parameter parameter2 = instance.getParameter("myName2");
@@ -359,11 +359,11 @@ public class AnnotationBuilderTest {
         assertFalse(annotationTypeBuilder.addParameter("myName", "myValue"));
         assertFalse(annotationTypeBuilder.addParameters("myName", new ArrayList<String>()));
 
-        ArrayList<String> values = new ArrayList<String>();
+        ArrayList<String> values = new ArrayList<>();
         values.add("myValue");
         assertTrue(annotationTypeBuilder.addParameters("myName2", values));
 
-        AnnotationType annotationTypeInstance = annotationTypeBuilder.toInstance();
+        AnnotationType annotationTypeInstance = annotationTypeBuilder.build();
         assertTrue(annotationTypeInstance.containsParameters());
         assertEquals(2, annotationTypeInstance.getParameters().size());
         assertEquals(2, annotationTypeInstance.getParameterNames().size());
@@ -397,7 +397,7 @@ public class AnnotationBuilderTest {
                 "AnnotationTypeBuilder [packageName=my.package, name=MyAnnotationName, annotationBuilders=[AnnotationTypeBuilder [packageName=my.package, name=MySubAnnotationName, annotationBuilders=[], parameters=[]]], parameters=[ParameterImpl [name=MyParameter, value=myValue, values=[]]]]",
                 annotationTypeBuilder.toString());
 
-        AnnotationType annotationTypeInstance = annotationTypeBuilder.toInstance();
+        AnnotationType annotationTypeInstance = annotationTypeBuilder.build();
 
         assertEquals("my.package.MyAnnotationName", annotationTypeInstance.getFullyQualifiedName());
         assertEquals(
@@ -410,7 +410,7 @@ public class AnnotationBuilderTest {
         final AnnotationTypeBuilderImpl annotBuilderImpl = new AnnotationTypeBuilderImpl("org.opedaylight.yangtools.test", "AnnotationTest");
         annotBuilderImpl.addAnnotation("org.opedaylight.yangtools.test.v1", "AnnotationTest2");
         annotBuilderImpl.addAnnotation(null, "AnnotationTest2");
-        assertFalse(annotBuilderImpl.toInstance().getAnnotations().isEmpty());
+        assertFalse(annotBuilderImpl.build().getAnnotations().isEmpty());
     }
 
     @Test
@@ -418,7 +418,7 @@ public class AnnotationBuilderTest {
         final AnnotationTypeBuilderImpl annotBuilderImpl = new AnnotationTypeBuilderImpl("org.opedaylight.yangtools.test", "AnnotationTest");
         annotBuilderImpl.addParameter("testParam", "test value");
         annotBuilderImpl.addParameter(null, "test value");
-        final AnnotationType annotType = annotBuilderImpl.toInstance();
+        final AnnotationType annotType = annotBuilderImpl.build();
         assertEquals(1, annotType.getParameters().size());
     }
 
@@ -432,12 +432,12 @@ public class AnnotationBuilderTest {
         values.add("test3");
         annotBuilderImpl.addParameters("testParam", values);
 
-        AnnotationType annotType = annotBuilderImpl.toInstance();
+        AnnotationType annotType = annotBuilderImpl.build();
         assertEquals(1, annotType.getParameters().size());
 
         annotBuilderImpl.addParameters("testParam", null);
 
-        annotType = annotBuilderImpl.toInstance();
+        annotType = annotBuilderImpl.build();
         assertEquals(1, annotType.getParameters().size());
     }
 
@@ -470,10 +470,10 @@ public class AnnotationBuilderTest {
     public void testMethodsForAnnotationTypeImpl() {
         final AnnotationTypeBuilderImpl annotBuilderImpl = new AnnotationTypeBuilderImpl("org.opedaylight.yangtools.test", "AnnotationTest");
         annotBuilderImpl.addParameter("testParam", "test value");
-        final AnnotationType annotationType = annotBuilderImpl.toInstance();
+        final AnnotationType annotationType = annotBuilderImpl.build();
 
         final AnnotationTypeBuilderImpl annotBuilderImpl2 = new AnnotationTypeBuilderImpl("org.opedaylight.yangtools.test", "AnnotationTest");
-        final AnnotationType annotationType2 = annotBuilderImpl2.toInstance();
+        final AnnotationType annotationType2 = annotBuilderImpl2.build();
 
         assertTrue(annotationType.containsParameters());
         assertTrue(annotationType.getAnnotations().isEmpty());
@@ -498,7 +498,7 @@ public class AnnotationBuilderTest {
         annotBuilderImpl.addParameter("", "test value");
         annotBuilderImpl.addParameter(null, "test value");
         annotBuilderImpl.addParameter("", null);
-        final AnnotationType annotationType = annotBuilderImpl.toInstance();
+        final AnnotationType annotationType = annotBuilderImpl.build();
 
         final Parameter testParam = annotationType.getParameter("testParam");
         assertEquals("testParam", testParam.getName());
