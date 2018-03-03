@@ -94,23 +94,24 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         final ArrayList<GeneratedType> enclosedTypesList = new ArrayList<>(enclosedGenTypeBuilders.size() + enclosedGenTOBuilders.size());
         for (final GeneratedTypeBuilder builder : enclosedGenTypeBuilders) {
             if (builder != null) {
-                enclosedTypesList.add(builder.toInstance());
+                enclosedTypesList.add(builder.build());
             }
         }
 
         for (final GeneratedTOBuilder builder : enclosedGenTOBuilders) {
             if (builder != null) {
-                enclosedTypesList.add(builder.toInstance());
+                enclosedTypesList.add(builder.build());
             }
         }
 
         return makeUnmodifiable(enclosedTypesList);
     }
 
-    protected static final List<AnnotationType> toUnmodifiableAnnotations(final List<AnnotationTypeBuilder> annotationBuilders) {
+    protected static final List<AnnotationType> toUnmodifiableAnnotations(
+            final List<AnnotationTypeBuilder> annotationBuilders) {
         final List<AnnotationType> annotationList = new ArrayList<>(annotationBuilders.size());
         for (final AnnotationTypeBuilder builder : annotationBuilders) {
-            annotationList.add(builder.toInstance());
+            annotationList.add(builder.build());
         }
         return makeUnmodifiable(annotationList);
     }

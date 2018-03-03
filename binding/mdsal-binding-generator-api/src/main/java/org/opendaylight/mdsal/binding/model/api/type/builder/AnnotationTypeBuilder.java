@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.model.api.type.builder;
 import java.util.List;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.concepts.Builder;
 
 /**
  * Annotation Type Builder Interface serves for creation and instantiation of
@@ -20,7 +21,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
  *
  * @see AnnotationType
  */
-public interface AnnotationTypeBuilder extends Type {
+public interface AnnotationTypeBuilder extends Type, Builder<AnnotationType> {
 
     /**
      * The method creates new AnnotationTypeBuilder containing specified package
@@ -84,5 +85,6 @@ public interface AnnotationTypeBuilder extends Type {
      *
      * @return <code>new</code> <i>immutable</i> instance of Annotation Type.
      */
-    AnnotationType toInstance();
+    @Override
+    AnnotationType build();
 }

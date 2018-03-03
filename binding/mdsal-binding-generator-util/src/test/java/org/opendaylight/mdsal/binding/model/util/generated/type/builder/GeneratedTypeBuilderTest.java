@@ -83,7 +83,7 @@ public class GeneratedTypeBuilderTest {
 
         assertEquals("Type (java.lang.String) myConstant myConstantValue", constant.toFormattedString());
 
-        GeneratedType instance = generatedTypeBuilder.toInstance();
+        GeneratedType instance = generatedTypeBuilder.build();
         List<Constant> constantDefinitions = instance.getConstantDefinitions();
         assertNotNull(constantDefinitions);
         assertEquals(2, constantDefinitions.size());
@@ -147,7 +147,7 @@ public class GeneratedTypeBuilderTest {
         assertTrue(generatedTypeBuilder.containsProperty("myProperty2"));
         assertFalse(generatedTypeBuilder.containsProperty("myProperty3"));
 
-        GeneratedType instance = generatedTypeBuilder.toInstance();
+        GeneratedType instance = generatedTypeBuilder.build();
         List<GeneratedProperty> properties = instance.getProperties();
 
         assertEquals(2, properties.size());
@@ -161,13 +161,13 @@ public class GeneratedTypeBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addMethodIllegalArgumentTest() {
-        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
+        GeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
         generatedTypeBuilder.addMethod(null);
     }
 
     @Test
     public void addMethodTest() {
-        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
+        GeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         MethodSignatureBuilder methodBuilder = generatedTypeBuilder.addMethod("myMethodName");
         MethodSignatureBuilder methodBuilder2 = generatedTypeBuilder.addMethod("myMethodName2");
@@ -179,7 +179,7 @@ public class GeneratedTypeBuilderTest {
         assertTrue(generatedTypeBuilder.containsMethod("myMethodName2"));
         assertFalse(generatedTypeBuilder.containsMethod("myMethodName3"));
 
-        GeneratedType instance = generatedTypeBuilder.toInstance();
+        GeneratedType instance = generatedTypeBuilder.build();
         List<MethodSignature> methodDefinitions = instance.getMethodDefinitions();
 
         assertEquals(2, methodDefinitions.size());
@@ -199,7 +199,7 @@ public class GeneratedTypeBuilderTest {
 
     @Test
     public void addEnumerationTest() {
-        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
+        GeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         EnumBuilder enumBuilder = generatedTypeBuilder.addEnumeration("myEnumName");
         EnumBuilder enumBuilder2 = generatedTypeBuilder.addEnumeration("myEnumName2");
@@ -207,7 +207,7 @@ public class GeneratedTypeBuilderTest {
         assertNotNull(enumBuilder);
         assertNotNull(enumBuilder2);
 
-        GeneratedType instance = generatedTypeBuilder.toInstance();
+        GeneratedType instance = generatedTypeBuilder.build();
         List<Enumeration> enumerations = instance.getEnumerations();
 
         assertEquals(2, enumerations.size());
@@ -220,7 +220,7 @@ public class GeneratedTypeBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void addImplementsTypeIllegalArgumentTest() {
-        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
+        GeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         generatedTypeBuilder.addImplementsType(null);
     }
@@ -233,7 +233,7 @@ public class GeneratedTypeBuilderTest {
                 generatedTypeBuilder.addImplementsType(Types.typeForClass(Serializable.class)));
         assertEquals(generatedTypeBuilder, generatedTypeBuilder.addImplementsType(Types.typeForClass(Runnable.class)));
 
-        GeneratedType instance = generatedTypeBuilder.toInstance();
+        GeneratedType instance = generatedTypeBuilder.build();
         List<Type> implementTypes = instance.getImplements();
 
         assertEquals(2, implementTypes.size());
@@ -260,7 +260,7 @@ public class GeneratedTypeBuilderTest {
 
     @Test
     public void addEnclosingTransferObjectTest() {
-        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
+        GeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         GeneratedTOBuilder enclosingTransferObject = generatedTypeBuilder.addEnclosingTransferObject("myTOName");
         GeneratedTOBuilder enclosingTransferObject2 = generatedTypeBuilder.addEnclosingTransferObject("myTOName2");
@@ -270,23 +270,23 @@ public class GeneratedTypeBuilderTest {
         assertNotNull(enclosingTransferObject);
         assertNotNull(enclosingTransferObject2);
 
-        GeneratedType instance = generatedTypeBuilder.toInstance();
+        GeneratedType instance = generatedTypeBuilder.build();
         List<GeneratedType> enclosedTypes = instance.getEnclosedTypes();
 
         assertEquals(3, enclosedTypes.size());
 
-        assertTrue(enclosedTypes.contains(enclosingTransferObject.toInstance()));
-        assertTrue(enclosedTypes.contains(enclosingTransferObject2.toInstance()));
+        assertTrue(enclosedTypes.contains(enclosingTransferObject.build()));
+        assertTrue(enclosedTypes.contains(enclosingTransferObject2.build()));
         assertTrue(enclosedTypes.contains(new CodegenGeneratedTOBuilder(generatedTypeBuilder.getFullyQualifiedName(),
-                "myTOName3").toInstance()));
+                "myTOName3").build()));
         assertFalse(enclosedTypes.contains(new CodegenGeneratedTOBuilder(generatedTypeBuilder.getFullyQualifiedName(),
-                "myTOName4").toInstance()));
+                "myTOName4").build()));
 
     }
 
     @Test
     public void generatedTypeTest() {
-        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
+        GeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
 
         generatedTypeBuilder.setDescription("My description ...");
         generatedTypeBuilder.setModuleName("myModuleName");
@@ -298,7 +298,7 @@ public class GeneratedTypeBuilderTest {
                 "GeneratedTransferObject [packageName=my.package, name=MyName, comment=My comment.., annotations=[], implements=[], enclosedTypes=[], constants=[], enumerations=[], properties=, methods=[]]",
                 generatedTypeBuilder.toString());
 
-        GeneratedType instance = generatedTypeBuilder.toInstance();
+        GeneratedType instance = generatedTypeBuilder.build();
 
         assertEquals("My description ...", instance.getDescription());
         assertEquals("myModuleName", instance.getModuleName());
