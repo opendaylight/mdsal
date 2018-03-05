@@ -175,6 +175,16 @@ class YangModuleInfoTemplate {
         public «Set.importedName»<«YangModuleInfo.importedName»> getImportedModules() {
             return importedModules;
         }
+        
+        @Override
+        public int hashCode() {
+        	return «className».class.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+        	return obj != null && «className».class.equals(obj.getClass());
+        }
 
         @Override
         public «String.importedName» toString() {
