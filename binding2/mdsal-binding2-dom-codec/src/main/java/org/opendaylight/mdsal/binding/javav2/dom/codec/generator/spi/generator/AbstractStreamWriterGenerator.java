@@ -29,9 +29,7 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.impl.TreeNodeSe
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source.AbstractTreeNodeSerializerSource;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.AugmentableDispatchSerializer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
-import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
-import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.runtime.javassist.JavassistUtils;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
@@ -45,6 +43,7 @@ import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
 import org.slf4j.Logger;
@@ -174,27 +173,27 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
 
         if (Augmentation.class.isAssignableFrom(type)) {
             final Entry<Type, Collection<AugmentationSchemaNode>> entry = context.getAugmentationDefinition(type);
-            return generateAugmentSerializer(((GeneratedTypeBuilder) entry.getKey()).toInstance(), entry.getValue());
+            return generateAugmentSerializer(entry.getKey(), entry.getValue());
         }
 
-        final Entry<GeneratedType, Object> typeWithSchema = context.getTypeWithSchema(type);
-        final GeneratedType generatedType = typeWithSchema.getKey();
-        final Object schema = typeWithSchema.getValue();
+        final Entry<Type, WithStatus> typeWithSchema = context.getTypeWithSchema(type);
+        final Type refType = typeWithSchema.getKey();
+        final WithStatus schema = typeWithSchema.getValue();
 
         final AbstractTreeNodeSerializerSource source;
         if (schema instanceof ContainerSchemaNode) {
-            source = generateContainerSerializer(generatedType, (ContainerSchemaNode) schema);
+            source = generateContainerSerializer(refType, (ContainerSchemaNode) schema);
         } else if (schema instanceof ListSchemaNode) {
             final ListSchemaNode casted = (ListSchemaNode) schema;
             if (casted.getKeyDefinition().isEmpty()) {
-                source = generateUnkeyedListEntrySerializer(generatedType, casted);
+                source = generateUnkeyedListEntrySerializer(refType, casted);
             } else {
-                source = generateMapEntrySerializer(generatedType, casted);
+                source = generateMapEntrySerializer(refType, casted);
             }
         } else if (schema instanceof CaseSchemaNode) {
-            source = generateCaseSerializer(generatedType, (CaseSchemaNode) schema);
+            source = generateCaseSerializer(refType, (CaseSchemaNode) schema);
         } else if (schema instanceof NotificationDefinition) {
-            source = generateNotificationSerializer(generatedType, (NotificationDefinition) schema);
+            source = generateNotificationSerializer(refType, (NotificationDefinition) schema);
         } else {
             throw new UnsupportedOperationException("Schema type " + schema.getClass() + " is not supported");
         }
@@ -257,7 +256,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * @param node - schema of container
      * @return source for container node writer
      */
-    protected abstract AbstractTreeNodeSerializerSource generateContainerSerializer(GeneratedType type,
+    protected abstract AbstractTreeNodeSerializerSource generateContainerSerializer(Type type,
             ContainerSchemaNode node);
 
     /**
@@ -273,7 +272,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * @param node - schema of case
      * @return source for case node writer
      */
-    protected abstract AbstractTreeNodeSerializerSource generateCaseSerializer(GeneratedType type, CaseSchemaNode node);
+    protected abstract AbstractTreeNodeSerializerSource generateCaseSerializer(Type type, CaseSchemaNode node);
 
     /**
      * Generates serializer source for supplied list node, which will read
@@ -288,7 +287,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * @param node - schema of list
      * @return source for list node writer
      */
-    protected abstract AbstractTreeNodeSerializerSource generateMapEntrySerializer(GeneratedType type,
+    protected abstract AbstractTreeNodeSerializerSource generateMapEntrySerializer(Type type,
             ListSchemaNode node);
 
     /**
@@ -304,7 +303,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * @param node - schema of list
      * @return source for list node writer
      */
-    protected abstract AbstractTreeNodeSerializerSource generateUnkeyedListEntrySerializer(GeneratedType type,
+    protected abstract AbstractTreeNodeSerializerSource generateUnkeyedListEntrySerializer(Type type,
             ListSchemaNode node);
 
     /**
@@ -320,7 +319,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * @param schemas - schemas of augmentation
      * @return source for augmentation node writer
      */
-    protected abstract AbstractTreeNodeSerializerSource generateAugmentSerializer(GeneratedType type,
+    protected abstract AbstractTreeNodeSerializerSource generateAugmentSerializer(Type type,
         Collection<AugmentationSchemaNode> schemas);
 
     /**
@@ -336,7 +335,7 @@ public abstract class AbstractStreamWriterGenerator extends AbstractGenerator im
      * @param node - schema of notification
      * @return source for notification node writer
      */
-    protected abstract AbstractTreeNodeSerializerSource generateNotificationSerializer(GeneratedType type,
+    protected abstract AbstractTreeNodeSerializerSource generateNotificationSerializer(Type type,
             NotificationDefinition node);
 
 }
