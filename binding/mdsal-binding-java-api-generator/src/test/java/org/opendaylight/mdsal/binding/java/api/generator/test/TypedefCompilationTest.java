@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -314,18 +315,18 @@ public class TypedefCompilationTest extends BaseCompilationTest {
         assertFalse(unionExt4Class.isInterface());
         CompilationTestUtils.assertContainsField(unionExt4Class, "_unionExt3", unionExt3Class);
         CompilationTestUtils.assertContainsField(unionExt4Class, "_int32Ext2", int32Ext2Class);
-        CompilationTestUtils.assertContainsField(unionExt4Class, "_empty", Boolean.class);
+        CompilationTestUtils.assertContainsField(unionExt4Class, "_empty", Empty.class);
         CompilationTestUtils.assertContainsField(unionExt4Class, "_myDecimalType", myDecimalTypeClass);
         CompilationTestUtils.assertContainsFieldWithValue(unionExt4Class, "serialVersionUID", Long.TYPE, 4299836385615211130L,
                 new Class<?>[] { Boolean.class }, false);
         // assertEquals(6, unionExt4Class.getDeclaredFields().length);
         CompilationTestUtils.assertContainsMethod(unionExt4Class, unionExt3Class, "getUnionExt3");
         CompilationTestUtils.assertContainsMethod(unionExt4Class, int32Ext2Class, "getInt32Ext2");
-        CompilationTestUtils.assertContainsMethod(unionExt4Class, Boolean.class, "isEmpty");
+        CompilationTestUtils.assertContainsMethod(unionExt4Class, Empty.class, "getEmpty");
         CompilationTestUtils.assertContainsMethod(unionExt4Class, myDecimalTypeClass, "getMyDecimalType");
         CompilationTestUtils.assertContainsConstructor(unionExt4Class, unionExt3Class);
         CompilationTestUtils.assertContainsConstructor(unionExt4Class, int32Ext2Class);
-        CompilationTestUtils.assertContainsConstructor(unionExt4Class, Boolean.class);
+        CompilationTestUtils.assertContainsConstructor(unionExt4Class, Empty.class);
         CompilationTestUtils.assertContainsConstructor(unionExt4Class, myDecimalTypeClass);
         CompilationTestUtils.assertContainsConstructor(unionExt4Class, unionExt4Class);
         assertEquals(6, unionExt4Class.getDeclaredConstructors().length);

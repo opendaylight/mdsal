@@ -326,7 +326,11 @@ class ClassTemplate extends BaseTemplate {
     def protected defaultInstance() '''
         «IF genTO.typedef && !allProperties.empty && !genTO.unionType»
             «val prop = allProperties.get(0)»
-            «IF !("org.opendaylight.yangtools.yang.binding.InstanceIdentifier".equals(prop.returnType.fullyQualifiedName))»
+            «IF ("org.opendaylight.yangtools.yang.common.Empty".equals(prop.returnType.fullyQualifiedName))»
+                public static «genTO.name» getDefaultInstance() {
+                    return new «genTO.name»(Empty.getInstance());
+                }
+            «ELSEIF !("org.opendaylight.yangtools.yang.binding.InstanceIdentifier".equals(prop.returnType.fullyQualifiedName))»
             public static «genTO.name» getDefaultInstance(String defaultValue) {
                 «IF "byte[]".equals(prop.returnType.name)»
                     «BaseEncoding.importedName» baseEncoding = «BaseEncoding.importedName».base64();
@@ -350,6 +354,7 @@ class ClassTemplate extends BaseTemplate {
                 «ENDIF»
             }
             «ENDIF»
+
         «ENDIF»
     '''
 

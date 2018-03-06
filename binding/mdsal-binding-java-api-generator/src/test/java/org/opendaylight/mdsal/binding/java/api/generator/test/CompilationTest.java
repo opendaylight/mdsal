@@ -37,6 +37,7 @@ import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -402,7 +403,7 @@ public class CompilationTest extends BaseCompilationTest {
         CompilationTestUtils.assertContainsMethod(nodesClass, pkg + ".Nodes$IdBits", "getIdBits", loader);
         CompilationTestUtils.assertContainsMethod(nodesClass, Boolean.class, "isIdBoolean");
         CompilationTestUtils.assertContainsMethod(nodesClass, BigDecimal.class, "getIdDecimal64");
-        CompilationTestUtils.assertContainsMethod(nodesClass, Boolean.class, "isIdEmpty");
+        CompilationTestUtils.assertContainsMethod(nodesClass, Empty.class, "getIdEmpty");
         CompilationTestUtils.assertContainsMethod(nodesClass, pkg + ".Nodes$IdEnumeration", "getIdEnumeration", loader);
         testReturnTypeIdentityref(nodesClass, "getIdIdentityref", pkg + ".Alg");
         testReturnTypeInstanceIdentitifer(loader, nodesClass, "getIdInstanceIdentifier");

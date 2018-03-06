@@ -18,6 +18,7 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -38,7 +39,7 @@ public final class BaseYangTypes {
     /**
      * <code>Type</code> representation of <code>empty</code> YANG type
      */
-    public static final Type EMPTY_TYPE = Types.typeForClass(Boolean.class);
+    public static final Type EMPTY_TYPE = Types.typeForClass(Empty.class);
 
     public static final Type ENUM_TYPE = Types.typeForClass(Enum.class);
 

@@ -133,6 +133,9 @@ class UnionTemplate extends ClassTemplate {
                             «ELSEIF "org.opendaylight.yangtools.yang.binding.InstanceIdentifier".equals(propRet.fullyQualifiedName)»
                                 ««« type instance-identifier
                                 «field.fieldName» = «property.fieldName».toString().toCharArray();
+                            «ELSEIF "org.opendaylight.yangtools.yang.common.Empty".equals(propRet.fullyQualifiedName)»
+                                ««« type empty
+                                «field.fieldName» = «property.fieldName».toString().toCharArray();
                             «ELSEIF "byte[]".equals(propRet.name)»
                                 ««« type binary
                                 «field.fieldName» = new «String.importedName»(«property.fieldName»).toCharArray();

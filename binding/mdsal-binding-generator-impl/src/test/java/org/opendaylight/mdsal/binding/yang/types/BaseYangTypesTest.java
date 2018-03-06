@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.BinaryTypeDefinition;
@@ -185,7 +186,7 @@ public class BaseYangTypesTest {
 
         javaType = typeProvider.javaTypeForSchemaDefinitionType(empty, empty);
         assertNotNull(javaType);
-        assertEquals(Boolean.class.getCanonicalName(), javaType.getFullyQualifiedName());
+        assertEquals(Empty.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
         javaType = typeProvider.javaTypeForSchemaDefinitionType(bool, bool);
         assertNotNull(javaType);
@@ -263,7 +264,7 @@ public class BaseYangTypesTest {
         javaType = typeProvider.javaTypeForSchemaDefinitionType(empty, empty,
             BindingGeneratorUtil.getRestrictions(empty));
         assertNotNull(javaType);
-        assertEquals(Boolean.class.getCanonicalName(), javaType.getFullyQualifiedName());
+        assertEquals(Empty.class.getCanonicalName(), javaType.getFullyQualifiedName());
 
         javaType = typeProvider.javaTypeForSchemaDefinitionType(bool, bool,
             BindingGeneratorUtil.getRestrictions(bool));

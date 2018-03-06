@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.test;
 
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
@@ -31,6 +32,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.top.level.list.ChoiceInList;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -60,7 +62,7 @@ public class EmptyLeafTest extends AbstractBindingRuntimeTest {
     public void testCaseWithEmptyLeafType() {
         final TopLevelList withEmptyCase = new TopLevelListBuilder()
             .setKey(TOP_FOO_KEY)
-            .setChoiceInList(new EmptyLeafBuilder().setEmptyType(true).build())
+            .setChoiceInList(new EmptyLeafBuilder().setEmptyType(Empty.getInstance()).build())
             .build();
         final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> dom = registry.toNormalizedNode(BA_TOP_LEVEL_LIST,
             withEmptyCase);
@@ -68,7 +70,7 @@ public class EmptyLeafTest extends AbstractBindingRuntimeTest {
             dom.getValue());
         final ChoiceInList list = ((TopLevelList) readed.getValue()).getChoiceInList();
         assertTrue(list instanceof EmptyLeaf);
-        assertTrue(((EmptyLeaf) list).isEmptyType());
+        assertNotNull(((EmptyLeaf) list).getEmptyType());
     }
 
     private static RpcComplexUsesAugment createComplexData() {
