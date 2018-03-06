@@ -12,7 +12,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,7 +42,7 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.NodeCod
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.value.ValueTypeCodec;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
-import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
@@ -381,7 +380,8 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
                 if (schema instanceof LeafSchemaNode) {
                     valueType = method.getReturnType();
                 } else if (schema instanceof LeafListSchemaNode) {
-                    final Type genericType = ClassLoaderUtils.getFirstGenericParameter(method.getGenericReturnType());
+                    final java.lang.reflect.Type genericType =
+                        ClassLoaderUtils.getFirstGenericParameter(method.getGenericReturnType());
 
                     if (genericType instanceof Class<?>) {
                         valueType = (Class<?>) genericType;
@@ -470,7 +470,7 @@ public final class BindingCodecContext implements CodecContextFactory, BindingTr
                 throw new IllegalStateException("Unable to load codec for " + valueType, e);
             }
         } else if (typeDef instanceof LeafrefTypeDefinition) {
-            final Entry<GeneratedType, Object> typeWithSchema = context.getTypeWithSchema(valueType);
+            final Entry<Type, Object> typeWithSchema = context.getTypeWithSchema(valueType);
             final Object schema = typeWithSchema.getValue();
             Preconditions.checkState(schema instanceof TypeDefinition<?>);
             return getCodec(valueType, (TypeDefinition<?>) schema);
