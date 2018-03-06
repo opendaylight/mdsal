@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source;
 import com.google.common.annotations.Beta;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator.AbstractStreamWriterGenerator;
-import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImplementation;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 
@@ -21,7 +21,7 @@ public abstract class AbstractAugmentableDataNodeContainerEmitterSource
     private static final String AUGMENTABLE_SERIALIZER = "AUGMENTABLE_SERIALIZER";
 
     public AbstractAugmentableDataNodeContainerEmitterSource(final AbstractStreamWriterGenerator generator,
-            final GeneratedType type, final DataNodeContainer node) {
+            final Type type, final DataNodeContainer node) {
         super(generator, type, node);
         /*
          * Eventhough intuition says the serializer could reference the

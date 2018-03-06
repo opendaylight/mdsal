@@ -7,25 +7,26 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source;
 
+import static org.opendaylight.mdsal.binding.javav2.runtime.context.BindingRuntimeContext.referencedType;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator.AbstractGenerator;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.ChoiceDispatchSerializer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
-import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
-import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingSerializer;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingStreamEventWriter;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerImplementation;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.TreeNodeSerializerRegistry;
+import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AnyXmlSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -52,9 +53,9 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
 
     //Note: the field takes no effects by augmentation.
     private final DataNodeContainer schemaNode;
-    private final GeneratedType dtoType;
+    private final Type dtoType;
 
-    public AbstractDataNodeContainerSerializerSource(final AbstractGenerator generator, final GeneratedType type,
+    public AbstractDataNodeContainerSerializerSource(final AbstractGenerator generator, final Type type,
             final DataNodeContainer node) {
         super(generator);
         this.dtoType = Preconditions.checkNotNull(type);
@@ -102,22 +103,6 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
     protected void emitAfterBody(final StringBuilder builder) {
     }
 
-    private static Map<String, Type> collectAllProperties(final GeneratedType type, final Map<String, Type> hashMap) {
-        for (final MethodSignature definition : type.getMethodDefinitions()) {
-            hashMap.put(definition.getName(), definition.getReturnType());
-        }
-
-       /**
-        * According to binding v2 spec., uses nodes are processed as-if they are direct children
-        * of parent node, so we can't get properties from implements any more. Uses nodes are processed by invoking
-        * {@link org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil#resolveDataSchemaNodes()} in which
-        * {@link org.opendaylight.mdsal.binding.javav2.generator.impl.GenHelperUtil#resolveDataSchemaNodesCheck()}
-        * allows them to be resolved.
-        */
-
-        return hashMap;
-    }
-
     private static String getGetterName(final DataSchemaNode node) {
         final TypeDefinition<?> type;
         if (node instanceof TypedDataSchemaNode) {
@@ -156,7 +141,14 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
     }
 
     private void emitBody(final StringBuilder builder) {
-        final Map<String, Type> getterToType = collectAllProperties(dtoType, new HashMap<String, Type>());
+        final Class<?> typeClazz;
+        try {
+            typeClazz = ClassLoaderUtils.loadClass(
+                AbstractDataNodeContainerSerializerSource.class.getClassLoader(), dtoType.getFullyQualifiedName());
+        } catch (final ClassNotFoundException exception) {
+            throw new IllegalArgumentException("Can not find class" + dtoType, exception);
+        }
+
         for (final DataSchemaNode schemaChild : getChildNodes()) {
             /**
              * As before, it only emitted data nodes which were not added by uses or augment, now
@@ -166,8 +158,19 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
              */
             if (emitCheck(schemaChild)) {
                 final String getter = getGetterName(schemaChild);
-                final Type childType = getterToType.get(getter);
-                if (childType == null) {
+                final Type returnType;
+                final Type childType;
+                try {
+                    final Method  getterMethod = typeClazz.getMethod(getter);
+                    //Use 'getName' string to take nested classes into consideration.
+                    returnType = referencedType(getterMethod.getReturnType().getName());
+                    if (List.class.isAssignableFrom(getterMethod.getReturnType())) {
+                        childType = referencedType((Class<? extends Instantiable<?>>) ClassLoaderUtils
+                            .getFirstGenericParameter(getterMethod.getGenericReturnType()));
+                    } else {
+                        childType = returnType;
+                    }
+                } catch (NoSuchMethodException exp) {
                     // FIXME AnyXml nodes are ignored, since their type cannot be found in generated bindnig
                     // Bug-706 https://bugs.opendaylight.org/show_bug.cgi?id=706
                     if (schemaChild instanceof AnyXmlSchemaNode) {
@@ -177,17 +180,18 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
                     }
 
                     throw new IllegalStateException(
-                        String.format("Unable to find type for child node %s. Expected child nodes: %s",
-                            schemaChild.getPath(), getterToType));
+                        String.format("Unable to find getter method %s for child node %s",
+                            getter, schemaChild.getPath()), exp);
                 }
-                emitChild(builder, getter, childType, schemaChild);
+
+                emitChild(builder, getter, returnType, childType, schemaChild);
             }
         }
     }
 
-    private void emitChild(final StringBuilder builder, final String getterName, final Type childType,
-            final DataSchemaNode schemaChild) {
-        builder.append(statement(assign(childType, getterName, cast(childType, invoke(INPUT, getterName)))));
+    private void emitChild(final StringBuilder builder, final String getterName,final Type returnType,
+            final Type childType, final DataSchemaNode schemaChild) {
+        builder.append(statement(assign(returnType, getterName, cast(returnType, invoke(INPUT, getterName)))));
 
         builder.append("if (").append(getterName).append(" != null) {\n");
         emitChildInner(builder, getterName, childType, schemaChild);
@@ -209,13 +213,11 @@ public abstract class AbstractDataNodeContainerSerializerSource extends Abstract
                 startEvent = startLeafSet(child.getQName().getLocalName(),invoke(getterName, "size"));
             }
             builder.append(statement(startEvent));
-            final Type valueType = ((ParameterizedType) childType).getActualTypeArguments()[0];
-            builder.append(forEach(getterName, valueType, statement(leafSetEntryNode(CURRENT))));
+            builder.append(forEach(getterName, childType, statement(leafSetEntryNode(CURRENT))));
             builder.append(statement(endNode()));
         } else if (child instanceof ListSchemaNode) {
-            final Type valueType = ((ParameterizedType) childType).getActualTypeArguments()[0];
             final ListSchemaNode casted = (ListSchemaNode) child;
-            emitList(builder, getterName, valueType, casted);
+            emitList(builder, getterName, childType, casted);
         } else if (child instanceof ContainerSchemaNode) {
             builder.append(tryToUseCacheElse(getterName,statement(staticInvokeEmitter(childType, getterName))));
         } else if (child instanceof ChoiceSchemaNode) {
