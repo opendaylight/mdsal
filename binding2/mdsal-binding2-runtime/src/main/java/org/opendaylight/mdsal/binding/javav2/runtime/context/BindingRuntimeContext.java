@@ -92,7 +92,6 @@ public class BindingRuntimeContext implements Immutable {
     private final SchemaContext schemaContext;
     private final Multimap<Type, AugmentationSchemaNode> augmentationToSchemas = HashMultimap.create();
     private final BiMap<SchemaPath,Type> targetToAugmentation = HashBiMap.create();
-
     private final BiMap<Type, Object> typeToDefiningSchema = HashBiMap.create();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final Map<QName, Type> identities = new HashMap<>();
@@ -119,13 +118,21 @@ public class BindingRuntimeContext implements Immutable {
         final Map<Module, ModuleContext> modules = generator.getModuleContexts(this.schemaContext);
 
         for (final ModuleContext ctx : modules.values()) {
-            this.augmentationToSchemas.putAll(ctx.getTypeToAugmentations());
-            this.targetToAugmentation.putAll(ctx.getTargetToAugmentation());
-            this.typeToDefiningSchema.putAll(ctx.getTypeToSchema());
+            ctx.getTypeToAugmentations().entries().forEach(
+                entry ->  this.augmentationToSchemas.put(referencedType(entry.getKey()), entry.getValue()));
 
-            ctx.getTypedefs();
-            this.choiceToCases.putAll(ctx.getChoiceToCases());
-            this.identities.putAll(ctx.getIdentities());
+            ctx.getTargetToAugmentation().entrySet().forEach(
+                entry ->  this.targetToAugmentation.put(entry.getKey(), referencedType(entry.getValue())));
+
+            ctx.getTypeToSchema().entrySet().forEach(
+                entry ->  this.typeToDefiningSchema.put(referencedType(entry.getKey()), entry.getValue()));
+
+            ctx.getChoiceToCases().entries().forEach(
+                entry -> this.choiceToCases.put(referencedType(entry.getKey()),
+                    referencedType(entry.getValue())));
+
+            ctx.getIdentities().entrySet().forEach(
+                entry -> this.identities.put(entry.getKey(), referencedType(entry.getValue())));
         }
     }
 
@@ -303,11 +310,11 @@ public class BindingRuntimeContext implements Immutable {
         return found;
     }
 
-    private static Type referencedType(final Class<?> type) {
+    public static Type referencedType(final Class<?> type) {
         return new ReferencedTypeImpl(type.getPackage().getName(), type.getSimpleName(), true, null);
     }
 
-    static Type referencedType(final String type) {
+    public static Type referencedType(final String type) {
         final int packageClassSeparator = type.lastIndexOf(DOT);
         return new ReferencedTypeImpl(type.substring(0, packageClassSeparator),
             type.substring(packageClassSeparator + 1), true, null);
@@ -324,26 +331,23 @@ public class BindingRuntimeContext implements Immutable {
      *     {@link DataSchemaNode}, {@link AugmentationSchemaNode} or {@link TypeDefinition}
      *     which was used to generate supplied class.
      */
-    public Entry<GeneratedType, Object> getTypeWithSchema(final Class<?> type) {
+    public Entry<Type, Object> getTypeWithSchema(final Class<?> type) {
         return getTypeWithSchema(referencedType(type));
     }
 
-    public Entry<GeneratedType, Object> getTypeWithSchema(final String type) {
+    public Entry<Type, Object> getTypeWithSchema(final String type) {
         return getTypeWithSchema(referencedType(type));
     }
 
-    private Entry<GeneratedType, Object> getTypeWithSchema(final Type referencedType) {
+    private Entry<Type, Object> getTypeWithSchema(final Type referencedType) {
         final Object schema = this.typeToDefiningSchema.get(referencedType);
         Preconditions.checkNotNull(schema, "Failed to find schema for type %s", referencedType);
 
         final Type definedType = this.typeToDefiningSchema.inverse().get(schema);
         Preconditions.checkNotNull(definedType, "Failed to find defined type for %s schema %s", referencedType, schema);
 
-        if (definedType instanceof GeneratedTypeBuilder) {
-            return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).toInstance(), schema);
-        }
-        Preconditions.checkArgument(definedType instanceof GeneratedType,"Type {} is not GeneratedType", referencedType);
-        return new SimpleEntry<>((GeneratedType) definedType,schema);
+        Preconditions.checkArgument(definedType instanceof ReferencedTypeImpl,"Type {} is not ReferencedTypeImpl", referencedType);
+        return new SimpleEntry<>(definedType,schema);
     }
 
     public ImmutableMap<Type, Entry<Type, Type>> getChoiceCaseChildren(final DataNodeContainer schema) {
@@ -375,7 +379,7 @@ public class BindingRuntimeContext implements Immutable {
      * @return mapped enum constants from yang with their corresponding values in generated binding classes
      */
     public BiMap<String, String> getEnumMapping(final Class<?> enumClass) {
-        final Entry<GeneratedType, Object> typeWithSchema = getTypeWithSchema(enumClass);
+        final Entry<Type, Object> typeWithSchema = getTypeWithSchema(enumClass);
         return getEnumMapping(typeWithSchema);
     }
 
@@ -383,11 +387,11 @@ public class BindingRuntimeContext implements Immutable {
      * See {@link #getEnumMapping(Class)}}
      */
     public BiMap<String, String> getEnumMapping(final String enumClass) {
-        final Entry<GeneratedType, Object> typeWithSchema = getTypeWithSchema(enumClass);
+        final Entry<Type, Object> typeWithSchema = getTypeWithSchema(enumClass);
         return getEnumMapping(typeWithSchema);
     }
 
-    private static BiMap<String, String> getEnumMapping(final Entry<GeneratedType, Object> typeWithSchema) {
+    private static BiMap<String, String> getEnumMapping(final Entry<Type, Object> typeWithSchema) {
         final TypeDefinition<?> typeDef = (TypeDefinition<?>) typeWithSchema.getValue();
 
         Preconditions.checkArgument(typeDef instanceof EnumTypeDefinition);

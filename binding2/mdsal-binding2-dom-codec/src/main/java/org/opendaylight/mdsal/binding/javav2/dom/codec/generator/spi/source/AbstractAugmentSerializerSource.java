@@ -12,7 +12,7 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.generator.AbstractGenerator;
-import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public abstract class AbstractAugmentSerializerSource extends AbstractDataNodeCo
     private static final Logger LOG = LoggerFactory.getLogger(AbstractAugmentSerializerSource.class);
     private final Collection<AugmentationSchemaNode> augmentationSchemas;
 
-    public AbstractAugmentSerializerSource(final AbstractGenerator generator, final GeneratedType type,
+    public AbstractAugmentSerializerSource(final AbstractGenerator generator, final Type type,
                                            final Collection<AugmentationSchemaNode> augmentationSchemas) {
         // Note: passing first augmentation schema node just to avoid exceptions from super class.
         super(generator, type, augmentationSchemas.stream().findFirst().get());

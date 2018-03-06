@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.generator.util;
 
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 
 /**
  *
@@ -43,6 +44,16 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
      */
     public ReferencedTypeImpl(String packageName, String name, boolean isNormalized, ModuleContext context) {
         super(packageName, name, isNormalized, context);
+    }
+
+    /**
+     * Creates instance of this class with Generated type
+     *
+     * @param type
+     *            Generated type
+     */
+    public ReferencedTypeImpl(final Type type) {
+        super(type.getPackageName(), type.getName());
     }
 
     @Override
