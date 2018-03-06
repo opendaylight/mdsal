@@ -76,6 +76,13 @@ public abstract class AbstractBaseType implements Type {
         }
     }
 
+    protected AbstractBaseType(final String pkName, final String name) {
+        Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
+        Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
+        this.packageName = pkName;
+        this.name = name;
+    }
+
     protected AbstractBaseType(final String pkName, final String name, final boolean isPkNameNormalized,
             final boolean isTypeNormalized, ModuleContext context ) {
         Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");

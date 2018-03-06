@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source.Abst
 import org.opendaylight.mdsal.binding.javav2.dom.codec.generator.spi.source.AbstractTreeNodeSerializerSource;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.AugmentableDispatchSerializer;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.serializer.ChoiceDispatchSerializer;
-import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.runtime.javassist.JavassistUtils;
 import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
@@ -63,7 +63,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected AbstractTreeNodeSerializerSource generateContainerSerializer(final GeneratedType type,
+    protected AbstractTreeNodeSerializerSource generateContainerSerializer(final Type type,
             final ContainerSchemaNode node) {
 
         return new AbstractAugmentableDataNodeContainerEmitterSource(this, type, node) {
@@ -75,7 +75,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected AbstractTreeNodeSerializerSource generateNotificationSerializer(final GeneratedType type,
+    protected AbstractTreeNodeSerializerSource generateNotificationSerializer(final Type type,
             final NotificationDefinition node) {
 
         return new AbstractAugmentableDataNodeContainerEmitterSource(this, type, node) {
@@ -87,7 +87,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected AbstractTreeNodeSerializerSource generateCaseSerializer(final GeneratedType type,
+    protected AbstractTreeNodeSerializerSource generateCaseSerializer(final Type type,
             final CaseSchemaNode node) {
         return new AbstractAugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
@@ -98,7 +98,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected AbstractTreeNodeSerializerSource generateUnkeyedListEntrySerializer(final GeneratedType type,
+    protected AbstractTreeNodeSerializerSource generateUnkeyedListEntrySerializer(final Type type,
             final ListSchemaNode node) {
         return new AbstractAugmentableDataNodeContainerEmitterSource(this, type, node) {
 
@@ -110,7 +110,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected AbstractTreeNodeSerializerSource generateAugmentSerializer(final GeneratedType type,
+    protected AbstractTreeNodeSerializerSource generateAugmentSerializer(final Type type,
             final Collection<AugmentationSchemaNode> augmentationSchemas) {
         return new AbstractAugmentSerializerSource(this, type, augmentationSchemas) {
 
@@ -122,7 +122,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected AbstractTreeNodeSerializerSource generateMapEntrySerializer(final GeneratedType type,
+    protected AbstractTreeNodeSerializerSource generateMapEntrySerializer(final Type type,
             final ListSchemaNode node) {
         return new AbstractAugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
