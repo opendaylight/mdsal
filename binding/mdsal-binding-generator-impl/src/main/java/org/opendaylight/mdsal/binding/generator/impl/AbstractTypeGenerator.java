@@ -578,23 +578,23 @@ abstract class AbstractTypeGenerator {
         }
         final String packageName = packageNameForGeneratedType(basePackageName, identity.getPath());
         final String genTypeName = BindingMapping.getClassName(identity.getQName());
-        final GeneratedTOBuilder newType = typeProvider.newGeneratedTOBuilder(packageName, genTypeName);
+        final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(packageName, genTypeName);
         final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
         if (baseIdentities.isEmpty()) {
             final GeneratedTOBuilder gto = typeProvider.newGeneratedTOBuilder(
                 BaseIdentity.class.getPackage().getName(), BaseIdentity.class.getSimpleName());
-            newType.setExtendsType(gto.build());
+            newType.addImplementsType(gto.build());
         } else {
-            final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
-            final Module baseIdentityParentModule = SchemaContextUtil.findParentModule(context, baseIdentity);
-            final String returnTypePkgName = BindingMapping.getRootPackageName(baseIdentityParentModule
+            for (IdentitySchemaNode baseIdentity : baseIdentities) {
+                final Module baseIdentityParentModule = SchemaContextUtil.findParentModule(context, baseIdentity);
+                final String returnTypePkgName = BindingMapping.getRootPackageName(baseIdentityParentModule
                     .getQNameModule());
-            final String returnTypeName = BindingMapping.getClassName(baseIdentity.getQName());
-            final GeneratedTransferObject gto = new CodegenGeneratedTOBuilder(returnTypePkgName, returnTypeName)
-                    .build();
-            newType.setExtendsType(gto);
+                final String returnTypeName = BindingMapping.getClassName(baseIdentity.getQName());
+                final GeneratedTransferObject gto = new CodegenGeneratedTOBuilder(returnTypePkgName, returnTypeName)
+                        .build();
+                newType.addImplementsType(gto);
+            }
         }
-        newType.setAbstract(true);
 
         addCodegenInformation(newType, module, identity);
         newType.setModuleName(module.getName());
