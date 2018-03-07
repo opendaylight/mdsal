@@ -18,7 +18,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
@@ -58,7 +57,7 @@ final class RuntimeTypeGenerator extends AbstractTypeGenerator {
             for (Entry<Type, Type> e : ctx.getChoiceToCases().entries()) {
                 choiceToCases.put(builtType(builderToType, e.getKey()), builtType(builderToType, e.getValue()));
             }
-            for (Entry<QName, GeneratedTOBuilder> e : ctx.getIdentities().entrySet()) {
+            for (Entry<QName, GeneratedTypeBuilder> e : ctx.getIdentities().entrySet()) {
                 identities.put(e.getKey(), builtType(builderToType, e.getValue()));
             }
         }
