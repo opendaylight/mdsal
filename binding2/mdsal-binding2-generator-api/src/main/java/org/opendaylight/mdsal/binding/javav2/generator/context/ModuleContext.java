@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
@@ -70,15 +70,15 @@ public final class ModuleContext {
             result.add(this.moduleNode.toInstance());
         }
 
-        result.addAll(this.genTOs.values().stream().map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
-        result.addAll(this.typedefs.values().stream().filter(b -> b != null).collect(Collectors.toList()));
-        result.addAll(this.dataTypes.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
-        result.addAll(this.groupings.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
-        result.addAll(this.cases.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
-        result.addAll(this.identities.values().stream().map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
-        result.addAll(this.topLevelNodes.stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
-        result.addAll(this.augmentations.stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
-        result.addAll(this.keyTypes.values().stream().map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
+        this.genTOs.values().stream().map(GeneratedTOBuilder::toInstance).forEach(result::add);
+        this.typedefs.values().stream().filter(Objects::nonNull).forEach(result::add);
+        this.dataTypes.values().stream().map(GeneratedTypeBuilder::toInstance).forEach(result::add);
+        this.groupings.values().stream().map(GeneratedTypeBuilder::toInstance).forEach(result::add);
+        this.cases.values().stream().map(GeneratedTypeBuilder::toInstance).forEach(result::add);
+        this.identities.values().stream().map(GeneratedTOBuilder::toInstance).forEach(result::add);
+        this.topLevelNodes.stream().map(GeneratedTypeBuilder::toInstance).forEach(result::add);
+        this.augmentations.stream().map(GeneratedTypeBuilder::toInstance).forEach(result::add);
+        this.keyTypes.values().stream().map(GeneratedTypeBuilder::toInstance).forEach(result::add);
         return ImmutableList.copyOf(result);
     }
 
