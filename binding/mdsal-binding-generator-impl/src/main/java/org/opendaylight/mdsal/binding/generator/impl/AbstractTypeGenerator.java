@@ -569,21 +569,21 @@ abstract class AbstractTypeGenerator {
         if (identity == null) {
             return;
         }
-        final GeneratedTOBuilder newType = typeProvider.newGeneratedTOBuilder(JavaTypeName.create(
+        final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
             packageNameForGeneratedType(context.modulePackageName(), identity.getPath()),
             BindingMapping.getClassName(identity.getQName())));
         final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
         if (baseIdentities.isEmpty()) {
             final GeneratedTOBuilder gto = typeProvider.newGeneratedTOBuilder(JavaTypeName.create(BaseIdentity.class));
-            newType.setExtendsType(gto.build());
+            newType.addImplementsType(gto.build());
         } else {
-            final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
-            final QName qname = baseIdentity.getQName();
-            final GeneratedTransferObject gto = typeProvider.newGeneratedTOBuilder(JavaTypeName.create(
-                BindingMapping.getRootPackageName(qname.getModule()), BindingMapping.getClassName(qname))).build();
-            newType.setExtendsType(gto);
+            for (IdentitySchemaNode baseIdentity : baseIdentities) {
+                final QName qname = baseIdentity.getQName();
+                final GeneratedTransferObject gto = typeProvider.newGeneratedTOBuilder(JavaTypeName.create(
+                    BindingMapping.getRootPackageName(qname.getModule()), BindingMapping.getClassName(qname))).build();
+                newType.addImplementsType(gto);
+            }
         }
-        newType.setAbstract(true);
 
         final Module module = context.module();
         addCodegenInformation(newType, module, identity);
