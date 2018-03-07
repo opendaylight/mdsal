@@ -566,22 +566,22 @@ abstract class AbstractTypeGenerator {
         }
         final String packageName = packageNameForGeneratedType(context.modulePackageName(), identity.getPath());
         final String genTypeName = BindingMapping.getClassName(identity.getQName());
-        final GeneratedTOBuilder newType = typeProvider.newGeneratedTOBuilder(packageName, genTypeName);
+        final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(packageName, genTypeName);
         final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
         if (baseIdentities.isEmpty()) {
             final GeneratedTOBuilder gto = typeProvider.newGeneratedTOBuilder(
                 BaseIdentity.class.getPackage().getName(), BaseIdentity.class.getSimpleName());
-            newType.setExtendsType(gto.build());
+            newType.addImplementsType(gto.build());
         } else {
-            final IdentitySchemaNode baseIdentity = baseIdentities.iterator().next();
-            final QName qname = baseIdentity.getQName();
-            final String returnTypePkgName = BindingMapping.getRootPackageName(qname.getModule());
-            final String returnTypeName = BindingMapping.getClassName(baseIdentity.getQName());
-            final GeneratedTransferObject gto = new CodegenGeneratedTOBuilder(returnTypePkgName, returnTypeName)
-                    .build();
-            newType.setExtendsType(gto);
+            for (IdentitySchemaNode baseIdentity : baseIdentities) {
+                final QName qname = baseIdentity.getQName();
+                final String returnTypePkgName = BindingMapping.getRootPackageName(qname.getModule());
+                final String returnTypeName = BindingMapping.getClassName(baseIdentity.getQName());
+                final GeneratedTransferObject gto = new CodegenGeneratedTOBuilder(returnTypePkgName, returnTypeName)
+                        .build();
+                newType.addImplementsType(gto);
+            }
         }
-        newType.setAbstract(true);
 
         final Module module = context.module();
         addCodegenInformation(newType, module, identity);
