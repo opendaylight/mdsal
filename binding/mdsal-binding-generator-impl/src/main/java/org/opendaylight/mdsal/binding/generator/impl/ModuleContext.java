@@ -44,8 +44,8 @@ public final class ModuleContext {
     private final Map<SchemaPath, GeneratedTypeBuilder> groupings = new HashMap<>();
     private final BiMap<Type, CaseSchemaNode> caseTypeToSchema = HashBiMap.create();
     private final Map<SchemaPath, GeneratedTypeBuilder> cases = new HashMap<>();
+    private final Map<QName, GeneratedTypeBuilder> identities = new HashMap<>();
     private final List<GeneratedTypeBuilder> augmentations = new ArrayList<>();
-    private final Map<QName, GeneratedTOBuilder> identities = new HashMap<>();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
     private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<>();
     private final Map<Type, WithStatus> typeToSchema = new HashMap<>();
@@ -97,7 +97,7 @@ public final class ModuleContext {
         for (GeneratedTypeBuilder b : cases.values()) {
             result.add(b.build());
         }
-        for (GeneratedTOBuilder b : identities.values()) {
+        for (GeneratedTypeBuilder b : identities.values()) {
             result.add(b.build());
         }
         for (GeneratedTypeBuilder b : topLevelNodes) {
@@ -154,8 +154,8 @@ public final class ModuleContext {
         cases.put(p, b);
     }
 
-    public void addIdentityType(final QName name,final GeneratedTOBuilder b) {
-        identities.put(name,b);
+    public void addIdentityType(final QName name,final GeneratedTypeBuilder b) {
+        identities.put(name, b);
     }
 
     public void addTopLevelNodeType(final GeneratedTypeBuilder b) {
@@ -182,7 +182,7 @@ public final class ModuleContext {
         return Collections.unmodifiableMap(cases);
     }
 
-    public Map<QName,GeneratedTOBuilder> getIdentities() {
+    public Map<QName, GeneratedTypeBuilder> getIdentities() {
         return Collections.unmodifiableMap(identities);
     }
 
@@ -214,7 +214,6 @@ public final class ModuleContext {
     }
 
     /**
-     *
      * Returns mapping of type to its schema.
      *
      * Valid values are only instances of {@link DataSchemaNode} or {@link AugmentationSchemaNode}
