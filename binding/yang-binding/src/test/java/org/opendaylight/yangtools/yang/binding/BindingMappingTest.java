@@ -73,7 +73,7 @@ public class BindingMappingTest {
         assertEqualMapping(of("AZ", "_09"), of("a-z", "0-9"));
 
         // Invalid identifier (conflicts with a Java 9 keyword)
-        assertEqualMapping(of("_"), of("_"));
+        assertEqualMapping(of("$_"), of("_"));
 
         // Invalid characters, fall back to bijection
         assertEqualMapping(of("$$2A$"), of("*"));
