@@ -52,15 +52,15 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
     }
 
     @Override
-    EnumPair createEnumPair(final String name, final int value, final String description) {
-        return new EnumPair(name, value, description);
+    EnumPair createEnumPair(final String name, final String mappedName, final int value, final String description) {
+        return new EnumPair(name, mappedName, value, description);
     }
 
     private static final class EnumPair extends AbstractPair {
         private final String description;
 
-        EnumPair(final String name, final int value, final String description) {
-            super(name, value);
+        EnumPair(final String name, final String mappedName, final int value, final String description) {
+            super(name, mappedName, value);
             this.description = description;
         }
 
