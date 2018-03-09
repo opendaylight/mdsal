@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class EnumerationBuilderImplTest {
         enumerationBuilder.setModuleName(moduleName);
         enumerationBuilder.setReference(reference);
         enumerationBuilder.setSchemaPath(Collections.singletonList(qName));
-        enumerationBuilder.addValue(valueName, value, valueDescription);
+        enumerationBuilder.addValue(valueName, valueName, value, valueDescription);
         enumerationBuilder.addAnnotation(packageName, "TestAnnotation");
         enumerationBuilderSame = new EnumerationBuilderImpl(packageName, name);
         enumerationBuilderOtherName = new EnumerationBuilderImpl(packageName, "SomeOtherName");
@@ -106,13 +107,13 @@ public class EnumerationBuilderImplTest {
         Enumeration enumerationOtherName = enumerationBuilderOtherName.toInstance(enumerationBuilderOtherName);
         assertNotEquals(enumeration, enumerationOtherName);
 
-        enumerationBuilderSame.addValue(valueName, value, valueDescription);
+        enumerationBuilderSame.addValue(valueName, valueName, value, valueDescription);
         Enumeration enumerationSame = enumerationBuilderSame.toInstance(enumerationBuilderSame);
         assertEquals(enumeration, enumerationSame);
 
         EnumerationBuilderImpl enumerationBuilderSame1 = new EnumerationBuilderImpl(packageName, name);
         Enumeration enumerationSame1 = enumerationBuilderSame1.toInstance(enumerationBuilderSame1);
-        enumerationBuilderSame1.addValue(valueName, 14, valueDescription);
+        enumerationBuilderSame1.addValue(valueName, valueName, 14, valueDescription);
         // Enums are equal thanks to same package name and local name
         assertEquals(enumeration, enumerationSame1);
     }
