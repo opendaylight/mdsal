@@ -7,6 +7,7 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+import static com.google.common.collect.ImmutableList.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -16,6 +17,9 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.Test;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -56,5 +60,41 @@ public class BindingMappingTest {
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }
+    }
+
+    @Test
+    public void mapEnumAssignedNamesTest() {
+        // Okay identifier
+        assertEqualMapping(of("__"), of("__"));
+        assertEqualMapping(of("True"), of("true"));
+        assertEqualMapping(of("ĽaľahoPapľuhu"), of("ľaľaho papľuhu"));
+
+        // Mostly okay, but numbers need to be prefixed
+        assertEqualMapping(of("AZ", "_09"), of("a-z", "0-9"));
+
+        // Invalid identifier (conflicts with a Java 9 keyword)
+        assertEqualMapping(of("_"), of("_"));
+
+        // Invalid characters, fall back to bijection
+        assertEqualMapping(of("$$2a$"), of("*"));
+        assertEqualMapping(of("$$2e$"), of("."));
+        assertEqualMapping(of("$$2f$"), of("/"));
+        assertEqualMapping(of("$$3f$"), of("?"));
+        assertEqualMapping(of("$a$2a$a"), of("a*a"));
+
+        // Conflict, fallback to bijection
+        assertEqualMapping(of("aZ", "$a$2d$z"), of("aZ", "a-z"));
+        assertEqualMapping(of("$a2$2e$5", "a25"), of("a2.5", "a25"));
+        assertEqualMapping(of("$ľaľaho$20$papľuhu", "$ľaľaho$20$$20$papľuhu"), of("ľaľaho papľuhu", "ľaľaho  papľuhu"));
+    }
+
+    private static void assertEqualMapping(final List<String> mapped, final List<String> yang) {
+        assertEquals(mapped.size(), yang.size());
+        final Map<String, String> expected = new HashMap<>();
+        for (int i = 0; i < mapped.size(); ++i) {
+            expected.put(yang.get(i), mapped.get(i));
+        }
+
+        assertEquals(expected, BindingMapping.mapEnumAssignedNames(yang));
     }
 }

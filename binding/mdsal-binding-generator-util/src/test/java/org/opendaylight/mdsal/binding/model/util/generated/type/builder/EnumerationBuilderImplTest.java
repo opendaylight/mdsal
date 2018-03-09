@@ -47,7 +47,7 @@ public class EnumerationBuilderImplTest {
         enumerationBuilder.setModuleName(moduleName);
         enumerationBuilder.setReference(reference);
         enumerationBuilder.setSchemaPath(SchemaPath.create(true, qName));
-        enumerationBuilder.addValue(valueName, value, valueDescription);
+        enumerationBuilder.addValue(valueName, valueName, value, valueDescription);
         enumerationBuilder.addAnnotation(packageName, "TestAnnotation");
         enumerationBuilderSame = new CodegenEnumerationBuilder(packageName, name);
         enumerationBuilderOtherName = new CodegenEnumerationBuilder(packageName, "SomeOtherName");
@@ -107,13 +107,13 @@ public class EnumerationBuilderImplTest {
         final Enumeration enumerationOtherName = enumerationBuilderOtherName.toInstance(enumerationBuilderOtherName);
         assertNotEquals(enumeration, enumerationOtherName);
 
-        enumerationBuilderSame.addValue(valueName, value, valueDescription);
+        enumerationBuilderSame.addValue(valueName, valueName, value, valueDescription);
         final Enumeration enumerationSame = enumerationBuilderSame.toInstance(enumerationBuilderSame);
         assertEquals(enumeration, enumerationSame);
 
         final CodegenEnumerationBuilder enumerationBuilderSame1 = new CodegenEnumerationBuilder(packageName, name);
         final Enumeration enumerationSame1 = enumerationBuilderSame1.toInstance(enumerationBuilderSame1);
-        enumerationBuilderSame1.addValue(valueName, 14, valueDescription);
+        enumerationBuilderSame1.addValue(valueName, valueName, 14, valueDescription);
         // Enums are equal thanks to same package name and local name
         assertEquals(enumeration, enumerationSame1);
     }
