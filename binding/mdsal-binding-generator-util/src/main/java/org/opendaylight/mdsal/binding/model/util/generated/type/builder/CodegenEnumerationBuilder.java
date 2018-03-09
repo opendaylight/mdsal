@@ -55,9 +55,9 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
     }
 
     @Override
-    EnumPair createEnumPair(final String name, final int value, final Status status, final String description,
-            final String reference) {
-        return new EnumPair(name, value, status, description, reference);
+    EnumPair createEnumPair(final String name, final String mappedName, final int value, final Status status,
+            final String description, final String reference) {
+        return new EnumPair(name, mappedName, value, status, description, reference);
     }
 
     private static final class EnumPair extends AbstractPair {
@@ -65,9 +65,9 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
         private final String reference;
         private final Status status;
 
-        EnumPair(final String name, final int value, final Status status, final String description,
+        EnumPair(final String name, final String mappedName, final int value, final Status status, final String description,
             final String reference) {
-            super(name, value);
+            super(name, mappedName, value);
             this.status = requireNonNull(status);
             this.description = description;
             this.reference = reference;

@@ -47,14 +47,14 @@ public final class RuntimeEnumerationBuilder extends AbstractEnumerationBuilder 
     }
 
     @Override
-    EnumPair createEnumPair(final String name, final int value, final Status status, final String description,
-            final String reference) {
-        return new EnumPair(name, value);
+    EnumPair createEnumPair(final String name, final String mappedName, final int value, final Status status,
+            final String description, final String reference) {
+        return new EnumPair(name, mappedName, value);
     }
 
     private static final class EnumPair extends AbstractPair {
-        EnumPair(final String name, final int value) {
-            super(name, value);
+        EnumPair(final String name, final String mappedName, final int value) {
+            super(name, mappedName, value);
         }
 
         @Override
