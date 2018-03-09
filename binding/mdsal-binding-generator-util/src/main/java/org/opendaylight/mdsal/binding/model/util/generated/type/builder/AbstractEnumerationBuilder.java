@@ -7,11 +7,16 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -50,9 +55,9 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
         return null;
     }
 
-    @Override
-    public final void addValue(final String name, final int value, final String description) {
-        values = LazyCollections.lazyAdd(values, createEnumPair(name, value, description));
+    @VisibleForTesting
+    final void addValue(final String name, final String mappedName, final int value, final String description) {
+        values = LazyCollections.lazyAdd(values, createEnumPair(name, mappedName, value, description));
     }
 
     public abstract void setReference(String reference);
@@ -61,7 +66,7 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
 
     public abstract void setSchemaPath(SchemaPath schemaPath);
 
-    abstract AbstractPair createEnumPair(String name, int value, String description);
+    abstract AbstractPair createEnumPair(String name, String mappedName, int value, String description);
 
     /*
      * (non-Javadoc)
@@ -84,12 +89,12 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
     @Override
     public final void updateEnumPairsFromEnumTypeDef(final EnumTypeDefinition enumTypeDef) {
         final List<EnumPair> enums = enumTypeDef.getValues();
-        if (enums != null) {
-            for (EnumPair enumPair : enums) {
-                if (enumPair != null) {
-                    addValue(enumPair.getName(), enumPair.getValue(), enumPair.getDescription().orElse(null));
-                }
-            }
+        final Map<String, String> valueIds = BindingMapping.mapEnumAssignedNames(enums.stream().map(EnumPair::getName)
+            .collect(Collectors.toList()));
+
+        for (EnumPair enumPair : enums) {
+            addValue(enumPair.getName(), valueIds.get(enumPair.getName()), enumPair.getValue(),
+                enumPair.getDescription().orElse(null));
         }
     }
 
@@ -98,9 +103,9 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
         private final String mappedName;
         private final int value;
 
-        AbstractPair(final String name, final int value) {
-            this.name = name;
-            this.mappedName = BindingMapping.getClassName(name);
+        AbstractPair(final String name, final String mappedName, final int value) {
+            this.name = requireNonNull(name);
+            this.mappedName = requireNonNull(mappedName);
             this.value = value;
         }
 
