@@ -36,13 +36,6 @@ public interface EnumBuilder extends Type {
 
     /**
      *
-     * @param name
-     * @param value
-     */
-    void addValue(final String name, final int value, final String description);
-
-    /**
-     *
      * @param definingType
      * @return
      */

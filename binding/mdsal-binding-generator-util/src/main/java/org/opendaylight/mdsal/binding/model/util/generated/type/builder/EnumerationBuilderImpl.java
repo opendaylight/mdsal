@@ -7,12 +7,17 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
@@ -80,17 +85,17 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         return null;
     }
 
-    @Override
-    public void addValue(final String name, final int value, final String description) {
-        final EnumPairImpl p = new EnumPairImpl(name, value, description);
+    @VisibleForTesting
+    void addValue(final String name, final String mappedName, final int value, final String description) {
+        final EnumPairImpl p = new EnumPairImpl(name, mappedName, value, description);
         this.values = LazyCollections.lazyAdd(this.values, p);
         this.unmodifiableValues = Collections.unmodifiableList(this.values);
     }
 
     @Override
     public Enumeration toInstance(final Type definingType) {
-        return new EnumerationImpl(definingType, this.annotationBuilders, this.packageName, this.name, this.unmodifiableValues,
-                this.description, this.reference, this.moduleName, this.schemaPath);
+        return new EnumerationImpl(definingType, this.annotationBuilders, this.packageName, this.name,
+            this.unmodifiableValues, this.description, this.reference, this.moduleName, this.schemaPath);
     }
 
     /*
@@ -114,14 +119,13 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
     @Override
     public void updateEnumPairsFromEnumTypeDef(final EnumTypeDefinition enumTypeDef) {
         final List<EnumPair> enums = enumTypeDef.getValues();
-        if (enums != null) {
-            for (final EnumPair enumPair : enums) {
-                if (enumPair != null) {
-                    this.addValue(enumPair.getName(), enumPair.getValue(), enumPair.getDescription().orElse(null));
-                }
-            }
-        }
+        final Map<String, String> valueIds = BindingMapping.mapEnumAssignedNames(enums.stream().map(EnumPair::getName)
+            .collect(Collectors.toList()));
 
+        for (EnumPair enumPair : enums) {
+            addValue(enumPair.getName(), valueIds.get(enumPair.getName()), enumPair.getValue(),
+                enumPair.getDescription().orElse(null));
+        }
     }
 
     private static final class EnumPairImpl implements Enumeration.Pair {
@@ -131,9 +135,9 @@ public final class EnumerationBuilderImpl extends AbstractBaseType implements En
         private final int value;
         private final String description;
 
-        public EnumPairImpl(final String name, final int value, final String description) {
-            this.name = name;
-            this.mappedName = BindingMapping.getClassName(name);
+        public EnumPairImpl(final String name, final String mappedName, final int value, final String description) {
+            this.name = requireNonNull(name);
+            this.mappedName = requireNonNull(mappedName);
             this.value = value;
             this.description = description;
         }
