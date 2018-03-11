@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.generator.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.packageNameForAugmentedGeneratedType;
@@ -21,7 +22,6 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATIO
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.augmentable;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.FUTURE;
-import static org.opendaylight.mdsal.binding.model.util.Types.VOID;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
@@ -98,8 +98,6 @@ import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
-import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
@@ -426,40 +424,19 @@ abstract class AbstractTypeGenerator {
                 final String rpcName = BindingMapping.getClassName(rpc.getQName());
                 final String rpcMethodName = BindingMapping.getPropertyName(rpcName);
                 final MethodSignatureBuilder method = interfaceBuilder.addMethod(rpcMethodName);
-                final ContainerSchemaNode input = rpc.getInput();
-                final ContainerSchemaNode output = rpc.getOutput();
 
                 // Do not refer to annotation class, as it may not be available at runtime
                 method.addAnnotation("javax.annotation", "CheckReturnValue");
-
-                //in case of implicit RPC input (StatementSource.CONTEXT),
-                // stay compatible (no input argument generated)
-                if (input != null && isExplicitStatement(input)) {
-                    final Type inTypeInstance = createRpcContainer(context, rpcName, rpc, input);
-                    method.addParameter(inTypeInstance, "input");
-                }
-
-                final Type outTypeInstance;
-                //in case of implicit RPC output (StatementSource.CONTEXT),
-                //stay compatible (Future<RpcResult<Void>> return type generated)
-                if (output != null && isExplicitStatement(output)) {
-                    outTypeInstance = createRpcContainer(context, rpcName, rpc, output);
-                } else {
-                    outTypeInstance = VOID;
-                }
-
-                final Type rpcRes = Types.parameterizedTypeFor(Types.typeForClass(RpcResult.class), outTypeInstance);
                 addComment(method, rpc);
-                method.setReturnType(Types.parameterizedTypeFor(FUTURE, rpcRes));
+                method.addParameter(
+                    createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput())), "input");
+                method.setReturnType(Types.parameterizedTypeFor(FUTURE,
+                    Types.parameterizedTypeFor(Types.typeForClass(RpcResult.class),
+                    createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getOutput())))));
             }
         }
 
         context.addTopLevelNodeType(interfaceBuilder);
-    }
-
-    private static boolean isExplicitStatement(final ContainerSchemaNode node) {
-        return node instanceof EffectiveStatement
-                && ((EffectiveStatement<?, ?>) node).getDeclared().getStatementSource() == StatementSource.DECLARATION;
     }
 
     private Type createRpcContainer(final ModuleContext context, final String rpcName, final RpcDefinition rpc,
