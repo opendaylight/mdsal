@@ -11,8 +11,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
 import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
@@ -44,7 +44,7 @@ public class BindingDOMRpcProviderServiceAdapterTest {
     private class TestImpl implements OpendaylightTestRpcServiceService {
 
         @Override
-        public Future<RpcResult<RockTheHouseOutput>> rockTheHouse(final RockTheHouseInput input) {
+        public ListenableFuture<RpcResult<RockTheHouseOutput>> rockTheHouse(final RockTheHouseInput input) {
             return null;
         }
     }
