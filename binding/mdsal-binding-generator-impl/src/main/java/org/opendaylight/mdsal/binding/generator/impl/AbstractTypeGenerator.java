@@ -68,6 +68,7 @@ import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
@@ -98,7 +99,6 @@ import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
 import org.opendaylight.yangtools.yang.model.util.DataNodeIterator;
 import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
-import org.opendaylight.yangtools.yang.model.util.SchemaContextUtil;
 import org.opendaylight.yangtools.yang.model.util.SchemaNodeUtils;
 import org.opendaylight.yangtools.yang.model.util.type.CompatUtils;
 import org.slf4j.Logger;
@@ -139,7 +139,7 @@ abstract class AbstractTypeGenerator {
      */
     private static final String YANG_EXT_NAMESPACE = "urn:opendaylight:yang:extension:yang-ext";
 
-    private final Map<Module, ModuleContext> genCtx = new HashMap<>();
+    private final Map<QNameModule, ModuleContext> genCtx = new HashMap<>();
 
     /**
      * Outer key represents the package name. Outer value represents map of all
@@ -165,19 +165,19 @@ abstract class AbstractTypeGenerator {
         this.typeProvider = requireNonNull(typeProvider);
 
         final List<Module> contextModules = ModuleDependencySort.sort(schemaContext.getModules());
+        final List<ModuleContext> contexts = new ArrayList<>(contextModules.size());
         for (final Module contextModule : contextModules) {
-            moduleToGenTypes(contextModule, schemaContext);
+            contexts.add(moduleToGenTypes(contextModule));
         }
-        for (final Module contextModule : contextModules) {
-            allAugmentsToGenTypes(contextModule);
-        }
+
+        contexts.forEach(this::allAugmentsToGenTypes);
     }
 
     final Collection<ModuleContext> moduleContexts() {
         return genCtx.values();
     }
 
-    final ModuleContext moduleContext(final Module module) {
+    final ModuleContext moduleContext(final QNameModule module) {
         return requireNonNull(genCtx.get(module), () -> "Module context not found for module" + module);
     }
 
@@ -194,20 +194,21 @@ abstract class AbstractTypeGenerator {
 
     abstract void addComment(TypeMemberBuilder<?> genType, DocumentedNode node);
 
-    private void moduleToGenTypes(final Module m, final SchemaContext context) {
-        genCtx.put(m, new ModuleContext());
-        allTypeDefinitionsToGenTypes(m);
-        groupingsToGenTypes(m, m.getGroupings());
-        rpcMethodsToGenType(m);
-        allIdentitiesToGenTypes(m, context);
-        notificationsToGenType(m);
+    private ModuleContext moduleToGenTypes(final Module module) {
+        final ModuleContext context = new ModuleContext(module);
+        genCtx.put(module.getQNameModule(), context);
+        allTypeDefinitionsToGenTypes(context);
+        groupingsToGenTypes(context, module.getGroupings());
+        rpcMethodsToGenType(context);
+        allIdentitiesToGenTypes(context);
+        notificationsToGenType(context);
 
-        if (!m.getChildNodes().isEmpty()) {
-            final GeneratedTypeBuilder moduleType = moduleToDataType(m);
-            genCtx.get(m).addModuleNode(moduleType);
-            final String basePackageName = BindingMapping.getRootPackageName(m.getQNameModule());
-            resolveDataSchemaNodes(m, basePackageName, moduleType, moduleType, m.getChildNodes());
+        if (!module.getChildNodes().isEmpty()) {
+            final GeneratedTypeBuilder moduleType = moduleToDataType(context);
+            context.addModuleNode(moduleType);
+            resolveDataSchemaNodes(context, moduleType, moduleType, module.getChildNodes());
         }
+        return context;
     }
 
     /**
@@ -224,8 +225,8 @@ abstract class AbstractTypeGenerator {
      * @throws IllegalStateException
      *             if set of type definitions from module is null
      */
-    private void allTypeDefinitionsToGenTypes(final Module module) {
-        checkArgument(module != null, "Module reference cannot be NULL.");
+    private void allTypeDefinitionsToGenTypes(final ModuleContext context) {
+        final Module module = context.module();
         checkArgument(module.getName() != null, "Module name cannot be NULL.");
         final DataNodeIterator it = new DataNodeIterator(module);
         final List<TypeDefinition<?>> typeDefinitions = it.allTypedefs();
@@ -233,54 +234,53 @@ abstract class AbstractTypeGenerator {
 
         for (final TypeDefinition<?> typedef : typeDefinitions) {
             if (typedef != null) {
-                final Type type = typeProvider.generatedTypeForExtendedDefinitionType(typedef,
-                        typedef);
+                final Type type = typeProvider.generatedTypeForExtendedDefinitionType(typedef,  typedef);
                 if (type != null) {
-                    final ModuleContext ctx = genCtx.get(module);
-                    ctx.addTypedefType(typedef.getPath(), type);
-                    ctx.addTypeToSchema(type,typedef);
+                    context.addTypedefType(typedef.getPath(), type);
+                    context.addTypeToSchema(type,typedef);
                 }
             }
         }
     }
 
-    private GeneratedTypeBuilder processDataSchemaNode(final Module module, final String basePackageName,
-            final GeneratedTypeBuilder childOf, final DataSchemaNode node) {
+    private GeneratedTypeBuilder processDataSchemaNode(final ModuleContext context, final GeneratedTypeBuilder childOf,
+            final DataSchemaNode node) {
         if (node.isAugmenting() || node.isAddedByUses()) {
             return null;
         }
-        final String packageName = packageNameForGeneratedType(basePackageName, node.getPath());
-        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, node, childOf, module);
+        final String packageName = packageNameForGeneratedType(context.modulePackageName(), node.getPath());
+        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, node, childOf, context);
         annotateDeprecatedIfNecessary(node.getStatus(), genType);
 
+        final Module module = context.module();
         genType.setModuleName(module.getName());
         addCodegenInformation(genType, module, node);
         genType.setSchemaPath(node.getPath());
         if (node instanceof DataNodeContainer) {
-            genCtx.get(module).addChildNodeType(node, genType);
-            groupingsToGenTypes(module, ((DataNodeContainer) node).getGroupings());
-            processUsesAugments((DataNodeContainer) node, module);
+            context.addChildNodeType(node, genType);
+            groupingsToGenTypes(context, ((DataNodeContainer) node).getGroupings());
+            processUsesAugments((DataNodeContainer) node, context);
         }
         return genType;
     }
 
-    private void containerToGenType(final Module module, final String basePackageName,
-            final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf, final ContainerSchemaNode node) {
-        final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node);
+    private void containerToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
+            final GeneratedTypeBuilder childOf, final ContainerSchemaNode node) {
+        final GeneratedTypeBuilder genType = processDataSchemaNode(context, childOf, node);
         if (genType != null) {
             constructGetter(parent, genType, node);
-            resolveDataSchemaNodes(module, basePackageName, genType, genType, node.getChildNodes());
+            resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
         }
     }
 
-    private void listToGenType(final Module module, final String basePackageName, final GeneratedTypeBuilder parent,
-            final GeneratedTypeBuilder childOf, final ListSchemaNode node) {
-        final GeneratedTypeBuilder genType = processDataSchemaNode(module, basePackageName, childOf, node);
+    private void listToGenType(final ModuleContext context,
+            final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf, final ListSchemaNode node) {
+        final GeneratedTypeBuilder genType = processDataSchemaNode(context, childOf, node);
         if (genType != null) {
             constructGetter(parent, Types.listTypeFor(genType), node);
 
             final List<String> listKeys = listKeys(node);
-            final String packageName = packageNameForGeneratedType(basePackageName, node.getPath());
+            final String packageName = packageNameForGeneratedType(context.modulePackageName(), node.getPath());
             final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node);
             if (genTOBuilder != null) {
                 final Type identifierMarker = Types.parameterizedTypeFor(IDENTIFIER, genType);
@@ -291,7 +291,7 @@ abstract class AbstractTypeGenerator {
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
                 if (!schemaNode.isAugmenting()) {
-                    addSchemaNodeToListBuilders(basePackageName, schemaNode, genType, genTOBuilder, listKeys, module);
+                    addSchemaNodeToListBuilders(context, schemaNode, genType, genTOBuilder, listKeys);
                 }
             }
 
@@ -302,16 +302,15 @@ abstract class AbstractTypeGenerator {
                 genTOBuilder.setSUID(prop);
             }
 
-            typeBuildersToGenTypes(module, genType, genTOBuilder);
+            typeBuildersToGenTypes(context, genType, genTOBuilder);
         }
     }
 
-    private void processUsesAugments(final DataNodeContainer node, final Module module) {
-        final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
+    private void processUsesAugments(final DataNodeContainer node, final ModuleContext context) {
         for (final UsesNode usesNode : node.getUses()) {
             for (final AugmentationSchemaNode augment : usesNode.getAugmentations()) {
-                usesAugmentationToGenTypes(basePackageName, augment, module, usesNode, node);
-                processUsesAugments(augment, module);
+                usesAugmentationToGenTypes(context, augment, usesNode, node);
+                processUsesAugments(augment, context);
             }
         }
     }
@@ -331,14 +330,14 @@ abstract class AbstractTypeGenerator {
      * @throws IllegalStateException
      *             if set of augmentations from module is null
      */
-    private void allAugmentsToGenTypes(final Module module) {
+    private void allAugmentsToGenTypes(final ModuleContext context) {
+        final Module module = context.module();
         checkArgument(module != null, "Module reference cannot be NULL.");
         checkArgument(module.getName() != null, "Module name cannot be NULL.");
         checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
 
-        final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
         for (final AugmentationSchemaNode augment : resolveAugmentations(module)) {
-            augmentationToGenTypes(basePackageName, augment, module);
+            augmentationToGenTypes(context, augment);
         }
     }
 
@@ -377,10 +376,9 @@ abstract class AbstractTypeGenerator {
      * @throws IllegalArgumentException
      *             if module is null
      */
-    private GeneratedTypeBuilder moduleToDataType(final Module module) {
-        checkArgument(module != null, "Module reference cannot be NULL.");
-
-        final GeneratedTypeBuilder moduleDataTypeBuilder = moduleTypeBuilder(module, "Data");
+    private GeneratedTypeBuilder moduleToDataType(final ModuleContext context) {
+        final GeneratedTypeBuilder moduleDataTypeBuilder = moduleTypeBuilder(context, "Data");
+        final Module module = context.module();
         addImplementedInterfaceFromUses(module, moduleDataTypeBuilder);
         moduleDataTypeBuilder.addImplementsType(DATA_ROOT);
 
@@ -404,8 +402,8 @@ abstract class AbstractTypeGenerator {
      * @throws IllegalStateException
      *             if set of rpcs from module is null
      */
-    private void rpcMethodsToGenType(final Module module) {
-        checkArgument(module != null, "Module reference cannot be NULL.");
+    private void rpcMethodsToGenType(final ModuleContext context) {
+        final Module module = context.module();
         checkArgument(module.getName() != null, "Module name cannot be NULL.");
         final Set<RpcDefinition> rpcDefinitions = module.getRpcs();
         checkState(rpcDefinitions != null, "Set of rpcs from module " + module.getName() + " cannot be NULL.");
@@ -413,8 +411,7 @@ abstract class AbstractTypeGenerator {
             return;
         }
 
-        final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
-        final GeneratedTypeBuilder interfaceBuilder = moduleTypeBuilder(module, "Service");
+        final GeneratedTypeBuilder interfaceBuilder = moduleTypeBuilder(context, "Service");
         interfaceBuilder.addImplementsType(Types.typeForClass(RpcService.class));
 
         addCodegenInformation(interfaceBuilder, module, "RPCs", rpcDefinitions);
@@ -429,26 +426,26 @@ abstract class AbstractTypeGenerator {
                 method.addAnnotation("javax.annotation", "CheckReturnValue");
                 addComment(method, rpc);
                 method.addParameter(
-                    createRpcContainer(module, basePackageName, rpcName, rpc, verifyNotNull(rpc.getInput())), "input");
+                    createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput())), "input");
                 method.setReturnType(Types.parameterizedTypeFor(FUTURE,
                     Types.parameterizedTypeFor(Types.typeForClass(RpcResult.class),
-                    createRpcContainer(module, basePackageName, rpcName, rpc, verifyNotNull(rpc.getOutput())))));
+                    createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getOutput())))));
             }
         }
 
-        genCtx.get(module).addTopLevelNodeType(interfaceBuilder);
+        context.addTopLevelNodeType(interfaceBuilder);
     }
 
-    private Type createRpcContainer(final Module module, final String basePackageName, final String rpcName,
-            final RpcDefinition rpc, final ContainerSchemaNode schema) {
-        processUsesAugments(schema, module);
-        final GeneratedTypeBuilder outType = addRawInterfaceDefinition(basePackageName, schema, rpcName);
+    private Type createRpcContainer(final ModuleContext context, final String rpcName, final RpcDefinition rpc,
+            final ContainerSchemaNode schema) {
+        processUsesAugments(schema, context);
+        final GeneratedTypeBuilder outType = addRawInterfaceDefinition(context.modulePackageName(), schema, rpcName);
         addImplementedInterfaceFromUses(schema, outType);
         outType.addImplementsType(DATA_OBJECT);
         outType.addImplementsType(augmentable(outType));
         annotateDeprecatedIfNecessary(rpc.getStatus(), outType);
-        resolveDataSchemaNodes(module, basePackageName, outType, outType, schema.getChildNodes());
-        genCtx.get(module).addChildNodeType(schema, outType);
+        resolveDataSchemaNodes(context, outType, outType, schema.getChildNodes());
+        context.addChildNodeType(schema, outType);
         return outType.build();
     }
 
@@ -468,31 +465,30 @@ abstract class AbstractTypeGenerator {
      * @throws IllegalStateException
      *             if set of notifications from module is null
      */
-    private void notificationsToGenType(final Module module) {
-        checkArgument(module != null, "Module reference cannot be NULL.");
+    private void notificationsToGenType(final ModuleContext context) {
+        final Module module = context.module();
         checkArgument(module.getName() != null, "Module name cannot be NULL.");
         final Set<NotificationDefinition> notifications = module.getNotifications();
         if (notifications.isEmpty()) {
             return;
         }
 
-        final GeneratedTypeBuilder listenerInterface = moduleTypeBuilder(module, "Listener");
+        final GeneratedTypeBuilder listenerInterface = moduleTypeBuilder(context, "Listener");
         listenerInterface.addImplementsType(BindingTypes.NOTIFICATION_LISTENER);
-        final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
 
         for (final NotificationDefinition notification : notifications) {
             if (notification != null) {
-                processUsesAugments(notification, module);
+                processUsesAugments(notification, context);
 
-                final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition(basePackageName,
-                        notification, null, module);
+                final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition(
+                    context.modulePackageName(), notification, null, context);
                 annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
                 notificationInterface.addImplementsType(NOTIFICATION);
-                genCtx.get(module).addChildNodeType(notification, notificationInterface);
+                context.addChildNodeType(notification, notificationInterface);
 
                 // Notification object
-                resolveDataSchemaNodes(module, basePackageName, notificationInterface, notificationInterface,
-                        notification.getChildNodes());
+                resolveDataSchemaNodes(context, notificationInterface, notificationInterface,
+                    notification.getChildNodes());
 
                 addComment(listenerInterface.addMethod("on" + notificationInterface.getName())
                     .setAccessModifier(AccessModifier.PUBLIC).addParameter(notificationInterface, "notification")
@@ -501,7 +497,7 @@ abstract class AbstractTypeGenerator {
         }
 
         addCodegenInformation(listenerInterface, module, "notifications", notifications);
-        genCtx.get(module).addTopLevelNodeType(listenerInterface);
+        context.addTopLevelNodeType(listenerInterface);
     }
 
     /**
@@ -511,18 +507,17 @@ abstract class AbstractTypeGenerator {
      * @param module
      *            module from which is obtained set of all identity objects to
      *            iterate over them
-     * @param context
+     * @param schemaContext
      *            schema context only used as input parameter for method
      *            {@link BindingGeneratorImpl#identityToGenType}
      *
      */
-    private void allIdentitiesToGenTypes(final Module module, final SchemaContext context) {
-        final Set<IdentitySchemaNode> schemaIdentities = module.getIdentities();
-        final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
+    private void allIdentitiesToGenTypes(final ModuleContext context) {
+        final Set<IdentitySchemaNode> schemaIdentities = context.module().getIdentities();
 
         if (schemaIdentities != null && !schemaIdentities.isEmpty()) {
             for (final IdentitySchemaNode identity : schemaIdentities) {
-                identityToGenType(module, basePackageName, identity, context);
+                identityToGenType(context, identity);
             }
         }
     }
@@ -541,17 +536,12 @@ abstract class AbstractTypeGenerator {
      *            string contains the module package name
      * @param identity
      *            IdentitySchemaNode which contains data about identity
-     * @param context
-     *            SchemaContext which is used to get package and name
-     *            information about base of identity
-     *
      */
-    private void identityToGenType(final Module module, final String basePackageName,
-            final IdentitySchemaNode identity, final SchemaContext context) {
+    private void identityToGenType(final ModuleContext context,final IdentitySchemaNode identity) {
         if (identity == null) {
             return;
         }
-        final String packageName = packageNameForGeneratedType(basePackageName, identity.getPath());
+        final String packageName = packageNameForGeneratedType(context.modulePackageName(), identity.getPath());
         final String genTypeName = BindingMapping.getClassName(identity.getQName());
         final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(packageName, genTypeName);
         final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
@@ -561,24 +551,23 @@ abstract class AbstractTypeGenerator {
             newType.addImplementsType(gto.build());
         } else {
             for (IdentitySchemaNode baseIdentity : baseIdentities) {
-                final Module baseIdentityParentModule = SchemaContextUtil.findParentModule(context, baseIdentity);
-                final String returnTypePkgName = BindingMapping.getRootPackageName(baseIdentityParentModule
-                    .getQNameModule());
-                final String returnTypeName = BindingMapping.getClassName(baseIdentity.getQName());
+                final QName qname = baseIdentity.getQName();
+                final String returnTypePkgName = BindingMapping.getRootPackageName(qname.getModule());
+                final String returnTypeName = BindingMapping.getClassName(qname);
                 final GeneratedTransferObject gto = new CodegenGeneratedTOBuilder(returnTypePkgName, returnTypeName)
                         .build();
                 newType.addImplementsType(gto);
             }
         }
 
+        final Module module = context.module();
         addCodegenInformation(newType, module, identity);
         newType.setModuleName(module.getName());
         newType.setSchemaPath(identity.getPath());
 
-        final QName qname = identity.getQName();
-        qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, qname);
+        qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, identity.getQName());
 
-        genCtx.get(module).addIdentityType(identity.getQName(), newType);
+        context.addIdentityType(identity.getQName(), newType);
     }
 
 
@@ -600,36 +589,18 @@ abstract class AbstractTypeGenerator {
      *            collection of groupings from which types will be generated
      *
      */
-    private void groupingsToGenTypes(final Module module, final Collection<GroupingDefinition> groupings) {
-        final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
-        final List<GroupingDefinition> groupingsSortedByDependencies = new GroupingDefinitionDependencySort()
-        .sort(groupings);
-        for (final GroupingDefinition grouping : groupingsSortedByDependencies) {
-            groupingToGenType(basePackageName, grouping, module);
+    private void groupingsToGenTypes(final ModuleContext context, final Collection<GroupingDefinition> groupings) {
+        for (final GroupingDefinition grouping : new GroupingDefinitionDependencySort().sort(groupings)) {
+            // Converts individual grouping to GeneratedType. Firstly generated type builder is created and every child
+            // node of grouping is resolved to the method.
+            final String packageName = packageNameForGeneratedType(context.modulePackageName(), grouping.getPath());
+            final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, grouping, context);
+            annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
+            context.addGroupingType(grouping.getPath(), genType);
+            resolveDataSchemaNodes(context, genType, genType, grouping.getChildNodes());
+            groupingsToGenTypes(context, grouping.getGroupings());
+            processUsesAugments(grouping, context);
         }
-    }
-
-    /**
-     * Converts individual grouping to GeneratedType. Firstly generated type
-     * builder is created and every child node of grouping is resolved to the
-     * method.
-     *
-     * @param basePackageName
-     *            string contains the module package name
-     * @param grouping
-     *            GroupingDefinition which contains data about grouping
-     * @param module
-     *            current module
-     */
-    private void groupingToGenType(final String basePackageName, final GroupingDefinition grouping,
-            final Module module) {
-        final String packageName = packageNameForGeneratedType(basePackageName, grouping.getPath());
-        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, grouping, module);
-        annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
-        genCtx.get(module).addGroupingType(grouping.getPath(), genType);
-        resolveDataSchemaNodes(module, basePackageName, genType, genType, grouping.getChildNodes());
-        groupingsToGenTypes(module, grouping.getGroupings());
-        processUsesAugments(grouping, module);
     }
 
     /**
@@ -652,14 +623,13 @@ abstract class AbstractTypeGenerator {
      *         <code>enumTypeDef</code>
      */
     private EnumBuilder resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
-            final GeneratedTypeBuilder typeBuilder, final Module module) {
+            final GeneratedTypeBuilder typeBuilder, final ModuleContext context) {
         if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
             final String enumerationName = BindingMapping.getClassName(enumName);
             final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
             typeProvider.addEnumDescription(enumBuilder, enumTypeDef);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
-            ModuleContext ctx = genCtx.get(module);
-            ctx.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
+            context.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
             return enumBuilder;
         }
         return null;
@@ -679,12 +649,11 @@ abstract class AbstractTypeGenerator {
      * @throws IllegalArgumentException
      *             if <code>module</code> is null
      */
-    private GeneratedTypeBuilder moduleTypeBuilder(final Module module, final String postfix) {
-        checkArgument(module != null, "Module reference cannot be NULL.");
-        final String packageName = BindingMapping.getRootPackageName(module.getQNameModule());
+    private GeneratedTypeBuilder moduleTypeBuilder(final ModuleContext context, final String postfix) {
+        final Module module = context.module();
         final String moduleName = BindingMapping.getClassName(module.getName()) + postfix;
-
-        final GeneratedTypeBuilder moduleBuilder = typeProvider.newGeneratedTypeBuilder(packageName, moduleName);
+        final GeneratedTypeBuilder moduleBuilder = typeProvider.newGeneratedTypeBuilder(context.modulePackageName(),
+            moduleName);
 
         moduleBuilder.setModuleName(moduleName);
         addCodegenInformation(moduleBuilder, module);
@@ -714,14 +683,12 @@ abstract class AbstractTypeGenerator {
      * @throws IllegalStateException
      *             if augment target path is null
      */
-    private void augmentationToGenTypes(final String augmentPackageName, final AugmentationSchemaNode augSchema,
-            final Module module) {
-        checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
+    private void augmentationToGenTypes(final ModuleContext context, final AugmentationSchemaNode augSchema) {
         checkArgument(augSchema != null, "Augmentation Schema cannot be NULL.");
         checkState(augSchema.getTargetPath() != null,
                 "Augmentation Schema does not contain Target Path (Target Path is NULL).");
 
-        processUsesAugments(augSchema, module);
+        processUsesAugments(augSchema, context);
         final SchemaPath targetPath = augSchema.getTargetPath();
         SchemaNode targetSchemaNode = null;
 
@@ -732,7 +699,7 @@ abstract class AbstractTypeGenerator {
             }
             if (targetSchemaNode == null) {
                 throw new IllegalStateException("Failed to find target node from grouping in augmentation " + augSchema
-                        + " in module " + module.getName());
+                        + " in module " + context.module().getName());
             }
         }
         if (targetSchemaNode == null) {
@@ -750,22 +717,21 @@ abstract class AbstractTypeGenerator {
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
             final Type targetType = new ReferencedTypeImpl(targetTypeBuilder.getPackageName(),
                     targetTypeBuilder.getName());
-            addRawAugmentGenTypeDefinition(module, augmentPackageName, augmentPackageName, targetType, augSchema);
+            addRawAugmentGenTypeDefinition(context, context.modulePackageName(), targetType, augSchema);
 
         } else {
-            generateTypesFromAugmentedChoiceCases(module, augmentPackageName, targetTypeBuilder.build(),
+            generateTypesFromAugmentedChoiceCases(context, targetTypeBuilder.build(),
                     (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes(), null);
         }
     }
 
-    private void usesAugmentationToGenTypes(final String augmentPackageName, final AugmentationSchemaNode augSchema,
-            final Module module, final UsesNode usesNode, final DataNodeContainer usesNodeParent) {
-        checkArgument(augmentPackageName != null, "Package Name cannot be NULL.");
+    private void usesAugmentationToGenTypes(final ModuleContext context, final AugmentationSchemaNode augSchema,
+            final UsesNode usesNode, final DataNodeContainer usesNodeParent) {
         checkArgument(augSchema != null, "Augmentation Schema cannot be NULL.");
         checkState(augSchema.getTargetPath() != null,
                 "Augmentation Schema does not contain Target Path (Target Path is NULL).");
 
-        processUsesAugments(augSchema, module);
+        processUsesAugments(augSchema, context);
         final SchemaPath targetPath = augSchema.getTargetPath();
         final SchemaNode targetSchemaNode = findOriginalTargetFromGrouping(targetPath, usesNode);
         if (targetSchemaNode == null) {
@@ -781,16 +747,17 @@ abstract class AbstractTypeGenerator {
         }
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            String packageName = augmentPackageName;
+            final String packageName;
             if (usesNodeParent instanceof SchemaNode) {
-                packageName = packageNameForAugmentedGeneratedType(augmentPackageName,
+                packageName = packageNameForAugmentedGeneratedType(context.modulePackageName(),
                     ((SchemaNode) usesNodeParent).getPath());
+            } else {
+                packageName = context.modulePackageName();
             }
-            addRawAugmentGenTypeDefinition(module, packageName, augmentPackageName, targetTypeBuilder.build(),
-                    augSchema);
+            addRawAugmentGenTypeDefinition(context, packageName, targetTypeBuilder.build(), augSchema);
         } else {
-            generateTypesFromAugmentedChoiceCases(module, augmentPackageName, targetTypeBuilder.build(),
-                    (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes(), usesNodeParent);
+            generateTypesFromAugmentedChoiceCases(context, targetTypeBuilder.build(),
+                (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes(), usesNodeParent);
         }
     }
 
@@ -854,7 +821,7 @@ abstract class AbstractTypeGenerator {
      * The name of the type builder is equal to the name of augmented node with
      * serial number as suffix.
      *
-     * @param module
+     * @param context
      *            current module
      * @param augmentPackageName
      *            string with contains the package name to which the augment
@@ -869,8 +836,9 @@ abstract class AbstractTypeGenerator {
      *            and uses of augment
      * @return generated type builder for augment
      */
-    private GeneratedTypeBuilder addRawAugmentGenTypeDefinition(final Module module, final String augmentPackageName,
-            final String basePackageName, final Type targetTypeRef, final AugmentationSchemaNode augSchema) {
+    private GeneratedTypeBuilder addRawAugmentGenTypeDefinition(final ModuleContext context,
+            final String augmentPackageName, final Type targetTypeRef,
+            final AugmentationSchemaNode augSchema) {
         Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.get(augmentPackageName);
         if (augmentBuilders == null) {
             augmentBuilders = new HashMap<>();
@@ -893,14 +861,14 @@ abstract class AbstractTypeGenerator {
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
         addImplementedInterfaceFromUses(augSchema, augTypeBuilder);
 
-        augSchemaNodeToMethods(module, basePackageName, augTypeBuilder, augTypeBuilder, augSchema.getChildNodes());
+        augSchemaNodeToMethods(context,augTypeBuilder, augTypeBuilder, augSchema.getChildNodes());
         augmentBuilders.put(augTypeName, augTypeBuilder);
 
         if (!augSchema.getChildNodes().isEmpty()) {
-            genCtx.get(module).addTypeToAugmentation(augTypeBuilder, augSchema);
+            context.addTypeToAugmentation(augTypeBuilder, augSchema);
 
         }
-        genCtx.get(module).addAugmentType(augTypeBuilder);
+        context.addAugmentType(augTypeBuilder);
         return augTypeBuilder;
     }
 
@@ -951,8 +919,6 @@ abstract class AbstractTypeGenerator {
      *
      * @param module
      *            current module
-     * @param basePackageName
-     *            string contains the module package name
      * @param parent
      *            generated type builder which represents any node. The subnodes
      *            of this node are added to the <code>typeBuilder</code> as
@@ -967,12 +933,12 @@ abstract class AbstractTypeGenerator {
      *         parameter. The getter methods (representing child nodes) could be
      *         added to it.
      */
-    private GeneratedTypeBuilder resolveDataSchemaNodes(final Module module, final String basePackageName,
-            final GeneratedTypeBuilder parent, final GeneratedTypeBuilder childOf, final Iterable<DataSchemaNode> schemaNodes) {
+    private GeneratedTypeBuilder resolveDataSchemaNodes(final ModuleContext context, final GeneratedTypeBuilder parent,
+            final GeneratedTypeBuilder childOf, final Iterable<DataSchemaNode> schemaNodes) {
         if (schemaNodes != null && parent != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting() && !schemaNode.isAddedByUses()) {
-                    addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, parent, childOf, module);
+                    addSchemaNodeToBuilderAsMethod(context, schemaNode, parent, childOf);
                 }
             }
         }
@@ -985,8 +951,6 @@ abstract class AbstractTypeGenerator {
      *
      * @param module
      *            current module
-     * @param basePackageName
-     *            string contains the module package name
      * @param typeBuilder
      *            generated type builder which represents any node. The subnodes
      *            of this node are added to the <code>typeBuilder</code> as
@@ -1001,13 +965,13 @@ abstract class AbstractTypeGenerator {
      *         parameter <code>typeBuilder</code>. The getter method could be
      *         added to it.
      */
-    private GeneratedTypeBuilder augSchemaNodeToMethods(final Module module, final String basePackageName,
+    private GeneratedTypeBuilder augSchemaNodeToMethods(final ModuleContext context,
             final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf,
             final Iterable<DataSchemaNode> schemaNodes) {
         if (schemaNodes != null && typeBuilder != null) {
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting()) {
-                    addSchemaNodeToBuilderAsMethod(basePackageName, schemaNode, typeBuilder, childOf, module);
+                    addSchemaNodeToBuilderAsMethod(context, schemaNode, typeBuilder, childOf);
                 }
             }
         }
@@ -1018,8 +982,6 @@ abstract class AbstractTypeGenerator {
      * Adds to <code>typeBuilder</code> a method which is derived from
      * <code>schemaNode</code>.
      *
-     * @param basePackageName
-     *            string with the module package name
      * @param node
      *            data schema node which is added to <code>typeBuilder</code> as
      *            a method
@@ -1031,19 +993,19 @@ abstract class AbstractTypeGenerator {
      * @param module
      *            current module
      */
-    private void addSchemaNodeToBuilderAsMethod(final String basePackageName, final DataSchemaNode node,
-            final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf, final Module module) {
+    private void addSchemaNodeToBuilderAsMethod(final ModuleContext context, final DataSchemaNode node,
+            final GeneratedTypeBuilder typeBuilder, final GeneratedTypeBuilder childOf) {
         if (node != null && typeBuilder != null) {
             if (node instanceof LeafSchemaNode) {
-                resolveLeafSchemaNodeAsMethod(typeBuilder, (LeafSchemaNode) node, module);
+                resolveLeafSchemaNodeAsMethod(typeBuilder, (LeafSchemaNode) node, context);
             } else if (node instanceof LeafListSchemaNode) {
-                resolveLeafListSchemaNode(typeBuilder, (LeafListSchemaNode) node,module);
+                resolveLeafListSchemaNode(typeBuilder, (LeafListSchemaNode) node, context);
             } else if (node instanceof ContainerSchemaNode) {
-                containerToGenType(module, basePackageName, typeBuilder, childOf, (ContainerSchemaNode) node);
+                containerToGenType(context, typeBuilder, childOf, (ContainerSchemaNode) node);
             } else if (node instanceof ListSchemaNode) {
-                listToGenType(module, basePackageName, typeBuilder, childOf, (ListSchemaNode) node);
+                listToGenType(context, typeBuilder, childOf, (ListSchemaNode) node);
             } else if (node instanceof ChoiceSchemaNode) {
-                choiceToGeneratedType(module, basePackageName, typeBuilder, (ChoiceSchemaNode) node);
+                choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) node);
             } else {
                 // TODO: anyxml not yet supported
                 LOG.debug("Unable to add schema node {} as method in {}: unsupported type of node.", node.getClass(),
@@ -1060,7 +1022,7 @@ abstract class AbstractTypeGenerator {
      * concatenation of the module package (<code>basePackageName</code>) and
      * names of all parents node.
      *
-     * @param module
+     * @param context
      *            current module
      * @param basePackageName
      *            string with the module package name
@@ -1075,63 +1037,55 @@ abstract class AbstractTypeGenerator {
      *             <li>if <code>choiceNode</code> is null</li>
      *             </ul>
      */
-    private void choiceToGeneratedType(final Module module, final String basePackageName,
-            final GeneratedTypeBuilder parent, final ChoiceSchemaNode choiceNode) {
-        checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
+    private void choiceToGeneratedType(final ModuleContext context, final GeneratedTypeBuilder parent,
+            final ChoiceSchemaNode choiceNode) {
         checkArgument(choiceNode != null, "Choice Schema Node cannot be NULL.");
 
         if (!choiceNode.isAddedByUses()) {
-            final String packageName = packageNameForGeneratedType(basePackageName, choiceNode.getPath());
+            final String packageName = packageNameForGeneratedType(context.modulePackageName(), choiceNode.getPath());
             final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(packageName, choiceNode);
             constructGetter(parent, choiceTypeBuilder, choiceNode);
             choiceTypeBuilder.addImplementsType(typeForClass(DataContainer.class));
             annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
-            genCtx.get(module).addChildNodeType(choiceNode, choiceTypeBuilder);
-            generateTypesFromChoiceCases(module, basePackageName, choiceTypeBuilder.build(), choiceNode);
+            context.addChildNodeType(choiceNode, choiceTypeBuilder);
+            generateTypesFromChoiceCases(context, choiceTypeBuilder.build(), choiceNode);
         }
     }
 
     /**
-     * Converts <code>caseNodes</code> set to list of corresponding generated
-     * types.
+     * Converts <code>caseNodes</code> set to list of corresponding generated types.
      *
-     * For every <i>case</i> which isn't added through augment or <i>uses</i> is
-     * created generated type builder. The package names for the builder is
-     * created as concatenation of the module package (
-     * <code>basePackageName</code>) and names of all parents nodes of the
-     * concrete <i>case</i>. There is also relation "<i>implements type</i>"
-     * between every case builder and <i>choice</i> type
+     * For every <i>case</i> which isn't added through augment or <i>uses</i> is created generated type builder.
+     * The package names for the builder is created as concatenation of the module package and names of all parents
+     * nodes of the concrete <i>case</i>. There is also relation "<i>implements type</i>" between every case builder
+     * and <i>choice</i> type
      *
-     * @param module
-     *            current module
-     * @param basePackageName
-     *            string with the module package name
+     * @param context
+     *            current module context
      * @param refChoiceType
      *            type which represents superior <i>case</i>
      * @param choiceNode
      *            choice case node which is mapped to generated type
      * @throws IllegalArgumentException
      *             <ul>
-     *             <li>if <code>basePackageName</code> equals null</li>
      *             <li>if <code>refChoiceType</code> equals null</li>
      *             <li>if <code>caseNodes</code> equals null</li>
      *             </ul>
      */
-    private void generateTypesFromChoiceCases(final Module module, final String basePackageName,
-            final Type refChoiceType, final ChoiceSchemaNode choiceNode) {
-        checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
+    private void generateTypesFromChoiceCases(final ModuleContext context, final Type refChoiceType,
+            final ChoiceSchemaNode choiceNode) {
         checkArgument(refChoiceType != null, "Referenced Choice Type cannot be NULL.");
         checkArgument(choiceNode != null, "ChoiceNode cannot be NULL.");
 
         for (final CaseSchemaNode caseNode : choiceNode.getCases().values()) {
             if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
-                final String packageName = packageNameForGeneratedType(basePackageName, caseNode.getPath());
+                final String packageName = packageNameForGeneratedType(context.modulePackageName(), caseNode.getPath());
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode,
-                    module);
+                    context);
                 caseTypeBuilder.addImplementsType(refChoiceType);
                 annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
-                genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
-                genCtx.get(module).addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
+                context.addCaseType(caseNode.getPath(), caseTypeBuilder);
+                context.addChoiceToCaseMapping(refChoiceType, caseTypeBuilder, caseNode);
                 final Iterable<DataSchemaNode> caseChildNodes = caseNode.getChildNodes();
                 if (caseChildNodes != null) {
                     final SchemaPath choiceNodeParentPath = choiceNode.getPath().getParent();
@@ -1152,7 +1106,7 @@ abstract class AbstractTypeGenerator {
                                 if (targetSchemaNode == null) {
                                     throw new IllegalStateException(
                                             "Failed to find target node from grouping for augmentation " + augSchema
-                                                    + " in module " + module.getName());
+                                                    + " in module " + context.module().getName());
                                 }
                             }
                             parent = targetSchemaNode;
@@ -1163,14 +1117,13 @@ abstract class AbstractTypeGenerator {
                         if (childOfType == null) {
                             childOfType = findGroupingByPath(parent.getPath());
                         }
-                        resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType, caseChildNodes);
+                        resolveDataSchemaNodes(context, caseTypeBuilder, childOfType, caseChildNodes);
                     } else {
-                        resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, moduleToDataType(module),
-                                caseChildNodes);
+                        resolveDataSchemaNodes(context, caseTypeBuilder, moduleToDataType(context), caseChildNodes);
                     }
                }
             }
-            processUsesAugments(caseNode, module);
+            processUsesAugments(caseNode, context);
         }
     }
 
@@ -1199,17 +1152,17 @@ abstract class AbstractTypeGenerator {
      *             <li>if <code>augmentedNodes</code> is null</li>
      *             </ul>
      */
-    private void generateTypesFromAugmentedChoiceCases(final Module module, final String basePackageName,
+    private void generateTypesFromAugmentedChoiceCases(final ModuleContext context,
             final Type targetType, final ChoiceSchemaNode targetNode, final Iterable<DataSchemaNode> augmentedNodes,
             final DataNodeContainer usesNodeParent) {
-        checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         checkArgument(targetType != null, "Referenced Choice Type cannot be NULL.");
         checkArgument(augmentedNodes != null, "Set of Choice Case Nodes cannot be NULL.");
 
         for (final DataSchemaNode caseNode : augmentedNodes) {
             if (caseNode != null) {
-                final String packageName = packageNameForGeneratedType(basePackageName, caseNode.getPath());
-                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode, module);
+                final String packageName = packageNameForGeneratedType(context.modulePackageName(), caseNode.getPath());
+                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode,
+                    context);
                 caseTypeBuilder.addImplementsType(targetType);
 
                 SchemaNode parent;
@@ -1218,7 +1171,7 @@ abstract class AbstractTypeGenerator {
 
                 GeneratedTypeBuilder childOfType = null;
                 if (parent instanceof Module) {
-                    childOfType = genCtx.get(parent).getModuleNode();
+                    childOfType = moduleContext(((Module) parent).getQNameModule()).getModuleNode();
                 } else if (parent instanceof CaseSchemaNode) {
                     childOfType = findCaseByPath(parent.getPath());
                 } else if (parent instanceof DataSchemaNode || parent instanceof NotificationDefinition) {
@@ -1238,8 +1191,8 @@ abstract class AbstractTypeGenerator {
                 } else if (findNamedCase(targetNode, caseLocalName) == null) {
                     final String targetNodeLocalName = targetNode.getQName().getLocalName();
                     for (DataSchemaNode dataSchemaNode : usesNodeParent.getChildNodes()) {
-                        if (dataSchemaNode instanceof ChoiceSchemaNode && targetNodeLocalName.equals(dataSchemaNode.getQName
-                                ().getLocalName())) {
+                        if (dataSchemaNode instanceof ChoiceSchemaNode
+                                && targetNodeLocalName.equals(dataSchemaNode.getQName().getLocalName())) {
                             node = findNamedCase((ChoiceSchemaNode) dataSchemaNode, caseLocalName);
                             break;
                         }
@@ -1249,10 +1202,10 @@ abstract class AbstractTypeGenerator {
                 }
                 final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
                 if (childNodes != null) {
-                    resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder, childOfType, childNodes);
+                    resolveDataSchemaNodes(context, caseTypeBuilder, childOfType, childNodes);
                 }
-                genCtx.get(module).addCaseType(caseNode.getPath(), caseTypeBuilder);
-                genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
+                context.addCaseType(caseNode.getPath(), caseTypeBuilder);
+                context.addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
             }
         }
     }
@@ -1295,7 +1248,8 @@ abstract class AbstractTypeGenerator {
      *         <li>true - in other cases</li>
      *         </ul>
      */
-    private Type resolveLeafSchemaNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf, final Module module) {
+    private Type resolveLeafSchemaNodeAsMethod(final GeneratedTypeBuilder typeBuilder, final LeafSchemaNode leaf,
+            final ModuleContext context) {
         if (leaf == null || typeBuilder == null || leaf.isAddedByUses()) {
             return null;
         }
@@ -1309,7 +1263,7 @@ abstract class AbstractTypeGenerator {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
                 final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, leaf.getQName(),
-                    typeBuilder, module);
+                    typeBuilder, context);
                 if (enumBuilder != null) {
                     returnType = enumBuilder.toInstance(typeBuilder);
                 }
@@ -1319,7 +1273,7 @@ abstract class AbstractTypeGenerator {
                 if (genTOBuilder != null) {
                     returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
                     // Store the inner type within the union so that we can find the reference for it
-                    genCtx.get(module).addInnerTypedefType(typeDef.getPath(), returnType);
+                    context.addInnerTypedefType(typeDef.getPath(), returnType);
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
                 GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
@@ -1420,15 +1374,13 @@ abstract class AbstractTypeGenerator {
     }
 
     private boolean resolveLeafSchemaNodeAsProperty(final GeneratedTOBuilder toBuilder, final LeafSchemaNode leaf,
-            final boolean isReadOnly, final Module module) {
+            final boolean isReadOnly) {
         if (leaf != null && toBuilder != null) {
             Type returnType;
             final TypeDefinition<?> typeDef = CompatUtils.compatLeafType(leaf);
             if (typeDef instanceof UnionTypeDefinition) {
                 // GeneratedType for this type definition should have be already created
-                final QName qname = typeDef.getQName();
-                final Module unionModule = schemaContext.findModule(qname.getModule()).orElse(null);
-                final ModuleContext mc = genCtx.get(unionModule);
+                final ModuleContext mc = moduleContext(typeDef.getQName().getModule());
                 returnType = mc.getTypedefs().get(typeDef.getPath());
                 if (returnType == null) {
                     // This may still be an inner type, try to find it
@@ -1438,8 +1390,7 @@ abstract class AbstractTypeGenerator {
                 // Annonymous enumeration (already generated, since it is inherited via uses).
                 LeafSchemaNode originalLeaf = (LeafSchemaNode) SchemaNodeUtils.getRootOriginalIfPossible(leaf);
                 QName qname = originalLeaf.getQName();
-                final Module enumModule =  schemaContext.findModule(qname.getModule()).orElse(null);
-                returnType = genCtx.get(enumModule).getInnerType(originalLeaf.getType().getPath());
+                returnType = moduleContext(qname.getModule()).getInnerType(originalLeaf.getType().getPath());
             } else {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, leaf);
             }
@@ -1505,7 +1456,7 @@ abstract class AbstractTypeGenerator {
      *         </ul>
      */
     private boolean resolveLeafListSchemaNode(final GeneratedTypeBuilder typeBuilder, final LeafListSchemaNode node,
-            final Module module) {
+            final ModuleContext context) {
         if (node == null || typeBuilder == null || node.isAddedByUses()) {
             return false;
         }
@@ -1521,7 +1472,7 @@ abstract class AbstractTypeGenerator {
                 returnType = typeProvider.javaTypeForSchemaDefinitionType(typeDef, node);
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
                 final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, nodeName,
-                    typeBuilder, module);
+                    typeBuilder, context);
                 returnType = new ReferencedTypeImpl(enumBuilder.getPackageName(), enumBuilder.getName());
                 typeProvider.putReferencedType(node.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
@@ -1598,8 +1549,8 @@ abstract class AbstractTypeGenerator {
     }
 
     private GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
-            final Module module) {
-        return addDefaultInterfaceDefinition(packageName, schemaNode, null, module);
+            final ModuleContext context) {
+        return addDefaultInterfaceDefinition(packageName, schemaNode, null, context);
     }
 
     /**
@@ -1626,7 +1577,7 @@ abstract class AbstractTypeGenerator {
      * @return generated type builder <code>schemaNode</code>
      */
     private GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
-            final Type parent, final Module module) {
+            final Type parent, final ModuleContext context) {
         final GeneratedTypeBuilder it = addRawInterfaceDefinition(packageName, schemaNode, "");
         if (parent == null) {
             it.addImplementsType(DATA_OBJECT);
@@ -1638,7 +1589,7 @@ abstract class AbstractTypeGenerator {
         }
 
         if (schemaNode instanceof DataNodeContainer) {
-            groupingsToGenTypes(module, ((DataNodeContainer) schemaNode).getGroupings());
+            groupingsToGenTypes(context, ((DataNodeContainer) schemaNode).getGroupings());
             addImplementedInterfaceFromUses((DataNodeContainer) schemaNode, it);
         }
 
@@ -1794,37 +1745,37 @@ abstract class AbstractTypeGenerator {
      *             <li>if <code>typeBuilder</code> equals null</li>
      *             </ul>
      */
-    private void addSchemaNodeToListBuilders(final String basePackageName, final DataSchemaNode schemaNode,
-            final GeneratedTypeBuilder typeBuilder, final GeneratedTOBuilder genTOBuilder, final List<String> listKeys,
-            final Module module) {
+    private void addSchemaNodeToListBuilders(final ModuleContext context, final DataSchemaNode schemaNode,
+            final GeneratedTypeBuilder typeBuilder, final GeneratedTOBuilder genTOBuilder,
+            final List<String> listKeys) {
         checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
         checkArgument(typeBuilder != null, "Generated Type Builder cannot be NULL.");
 
         if (schemaNode instanceof LeafSchemaNode) {
             final LeafSchemaNode leaf = (LeafSchemaNode) schemaNode;
             final String leafName = leaf.getQName().getLocalName();
-            Type type = resolveLeafSchemaNodeAsMethod(typeBuilder, leaf, module);
+            Type type = resolveLeafSchemaNodeAsMethod(typeBuilder, leaf, context);
             if (listKeys.contains(leafName)) {
                 if (type == null) {
-                    resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, true, module);
+                    resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, true);
                 } else {
                     resolveLeafSchemaNodeAsProperty(genTOBuilder, leaf, type, true);
                 }
             }
         } else if (!schemaNode.isAddedByUses()) {
             if (schemaNode instanceof LeafListSchemaNode) {
-                resolveLeafListSchemaNode(typeBuilder, (LeafListSchemaNode) schemaNode, module);
+                resolveLeafListSchemaNode(typeBuilder, (LeafListSchemaNode) schemaNode, context);
             } else if (schemaNode instanceof ContainerSchemaNode) {
-                containerToGenType(module, basePackageName, typeBuilder, typeBuilder, (ContainerSchemaNode) schemaNode);
+                containerToGenType(context, typeBuilder, typeBuilder, (ContainerSchemaNode) schemaNode);
             } else if (schemaNode instanceof ChoiceSchemaNode) {
-                choiceToGeneratedType(module, basePackageName, typeBuilder, (ChoiceSchemaNode) schemaNode);
+                choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) schemaNode);
             } else if (schemaNode instanceof ListSchemaNode) {
-                listToGenType(module, basePackageName, typeBuilder, typeBuilder, (ListSchemaNode) schemaNode);
+                listToGenType(context, typeBuilder, typeBuilder, (ListSchemaNode) schemaNode);
             }
         }
     }
 
-    private void typeBuildersToGenTypes(final Module module, final GeneratedTypeBuilder typeBuilder,
+    private static void typeBuildersToGenTypes(final ModuleContext context, final GeneratedTypeBuilder typeBuilder,
             final GeneratedTOBuilder genTOBuilder) {
         checkArgument(typeBuilder != null, "Generated Type Builder cannot be NULL.");
 
@@ -1835,7 +1786,7 @@ abstract class AbstractTypeGenerator {
             final MethodSignatureBuilder getMethod = typeBuilder.addMethod(getterMethodName("key", genTO));
             getMethod.setReturnType(genTO);
             getMethod.setComment("Returns Primary Key of Yang List Type");
-            genCtx.get(module).addGeneratedTOBuilder(genTOBuilder);
+            context.addGeneratedTOBuilder(genTOBuilder);
         }
     }
 
