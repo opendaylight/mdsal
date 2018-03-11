@@ -33,7 +33,7 @@ final class CodegenTypeGenerator extends AbstractTypeGenerator {
     List<Type> toTypes(final Set<Module> modules) {
         final List<Type> filteredGenTypes = new ArrayList<>();
         for (final Module m : modules) {
-            filteredGenTypes.addAll(moduleContext(m).getGeneratedTypes());
+            filteredGenTypes.addAll(moduleContext(m.getQNameModule()).getGeneratedTypes());
             final Set<Type> additionalTypes = typeProvider().getAdditionalTypes().get(m);
             if (additionalTypes != null) {
                 filteredGenTypes.addAll(additionalTypes);
