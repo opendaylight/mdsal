@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.binding.generator.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.packageNameForAugmentedGeneratedType;
@@ -22,7 +22,6 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATIO
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.augmentable;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.FUTURE;
-import static org.opendaylight.mdsal.binding.model.util.Types.VOID;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
@@ -94,8 +93,6 @@ import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
-import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.UnionTypeDefinition;
@@ -181,7 +178,7 @@ abstract class AbstractTypeGenerator {
     }
 
     final ModuleContext moduleContext(final Module module) {
-        return checkNotNull(genCtx.get(module), "Module context not found for module %s", module);
+        return requireNonNull(genCtx.get(module), () -> "Module context not found for module" + module);
     }
 
     final AbstractTypeProvider typeProvider() {
@@ -427,54 +424,32 @@ abstract class AbstractTypeGenerator {
                 final String rpcName = BindingMapping.getClassName(rpc.getQName());
                 final String rpcMethodName = BindingMapping.getPropertyName(rpcName);
                 final MethodSignatureBuilder method = interfaceBuilder.addMethod(rpcMethodName);
-                final ContainerSchemaNode input = rpc.getInput();
-                final ContainerSchemaNode output = rpc.getOutput();
 
                 // Do not refer to annotation class, as it may not be available at runtime
                 method.addAnnotation("javax.annotation", "CheckReturnValue");
-
-                //in case of implicit RPC input (StatementSource.CONTEXT),
-                // stay compatible (no input argument generated)
-                if (input != null && isExplicitStatement(input)) {
-                    processUsesAugments(input, module);
-                    final GeneratedTypeBuilder inType = addRawInterfaceDefinition(basePackageName, input, rpcName);
-                    addImplementedInterfaceFromUses(input, inType);
-                    inType.addImplementsType(DATA_OBJECT);
-                    inType.addImplementsType(augmentable(inType));
-                    annotateDeprecatedIfNecessary(rpc.getStatus(), inType);
-                    resolveDataSchemaNodes(module, basePackageName, inType, inType, input.getChildNodes());
-                    genCtx.get(module).addChildNodeType(input, inType);
-                    final GeneratedType inTypeInstance = inType.build();
-                    method.addParameter(inTypeInstance, "input");
-                }
-
-                Type outTypeInstance = VOID;
-                //in case of implicit RPC output (StatementSource.CONTEXT),
-                //stay compatible (Future<RpcResult<Void>> return type generated)
-                if (output != null && isExplicitStatement(output)) {
-                    processUsesAugments(output, module);
-                    final GeneratedTypeBuilder outType = addRawInterfaceDefinition(basePackageName, output, rpcName);
-                    addImplementedInterfaceFromUses(output, outType);
-                    outType.addImplementsType(DATA_OBJECT);
-                    outType.addImplementsType(augmentable(outType));
-                    annotateDeprecatedIfNecessary(rpc.getStatus(), outType);
-                    resolveDataSchemaNodes(module, basePackageName, outType, outType, output.getChildNodes());
-                    genCtx.get(module).addChildNodeType(output, outType);
-                    outTypeInstance = outType.build();
-                }
-
-                final Type rpcRes = Types.parameterizedTypeFor(Types.typeForClass(RpcResult.class), outTypeInstance);
                 addComment(method, rpc);
-                method.setReturnType(Types.parameterizedTypeFor(FUTURE, rpcRes));
+                method.addParameter(
+                    createRpcContainer(module, basePackageName, rpcName, rpc, verifyNotNull(rpc.getInput())), "input");
+                method.setReturnType(Types.parameterizedTypeFor(FUTURE,
+                    Types.parameterizedTypeFor(Types.typeForClass(RpcResult.class),
+                    createRpcContainer(module, basePackageName, rpcName, rpc, verifyNotNull(rpc.getOutput())))));
             }
         }
 
         genCtx.get(module).addTopLevelNodeType(interfaceBuilder);
     }
 
-    private static boolean isExplicitStatement(final ContainerSchemaNode node) {
-        return node instanceof EffectiveStatement
-                && ((EffectiveStatement<?, ?>) node).getDeclared().getStatementSource() == StatementSource.DECLARATION;
+    private Type createRpcContainer(final Module module, final String basePackageName, final String rpcName,
+            final RpcDefinition rpc, final ContainerSchemaNode schema) {
+        processUsesAugments(schema, module);
+        final GeneratedTypeBuilder outType = addRawInterfaceDefinition(basePackageName, schema, rpcName);
+        addImplementedInterfaceFromUses(schema, outType);
+        outType.addImplementsType(DATA_OBJECT);
+        outType.addImplementsType(augmentable(outType));
+        annotateDeprecatedIfNecessary(rpc.getStatus(), outType);
+        resolveDataSchemaNodes(module, basePackageName, outType, outType, schema.getChildNodes());
+        genCtx.get(module).addChildNodeType(schema, outType);
+        return outType.build();
     }
 
     /**
