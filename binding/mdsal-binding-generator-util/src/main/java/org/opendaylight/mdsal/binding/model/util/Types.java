@@ -15,12 +15,12 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Future;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.BaseTypeWithRestrictions;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
@@ -51,7 +51,7 @@ public final class Types {
     private static final Type MAP_TYPE = typeForClass(Map.class);
 
     public static final ConcreteType BOOLEAN = typeForClass(Boolean.class);
-    public static final ConcreteType FUTURE = typeForClass(Future.class);
+    public static final ConcreteType FUTURE = typeForClass(ListenableFuture.class);
     public static final ConcreteType STRING = typeForClass(String.class);
     public static final ConcreteType VOID = typeForClass(Void.class);
     public static final ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
