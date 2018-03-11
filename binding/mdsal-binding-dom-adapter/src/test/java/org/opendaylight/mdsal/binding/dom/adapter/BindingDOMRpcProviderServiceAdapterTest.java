@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.OpendaylightTestRpcServiceService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.bi.ba.rpcservice.rev140701.RockTheHouseOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 public class BindingDOMRpcProviderServiceAdapterTest {
@@ -43,7 +44,7 @@ public class BindingDOMRpcProviderServiceAdapterTest {
     private class TestImpl implements OpendaylightTestRpcServiceService {
 
         @Override
-        public Future<RpcResult<Void>> rockTheHouse(RockTheHouseInput input) {
+        public Future<RpcResult<RockTheHouseOutput>> rockTheHouse(final RockTheHouseInput input) {
             return null;
         }
     }
