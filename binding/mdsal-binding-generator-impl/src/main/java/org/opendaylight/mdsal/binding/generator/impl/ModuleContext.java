@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
@@ -20,34 +22,56 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
+@NotThreadSafe
 public final class ModuleContext {
-    private GeneratedTypeBuilder moduleNode;
-    private final List<GeneratedTOBuilder> genTOs = new ArrayList<>();
-    private final Map<SchemaPath, Type> typedefs = new HashMap<>();
+    private final BiMap<Type, AugmentationSchemaNode> typeToAugmentation = HashBiMap.create();
     private final Map<SchemaPath, GeneratedTypeBuilder> childNodes = new HashMap<>();
     private final Map<SchemaPath, GeneratedTypeBuilder> groupings = new HashMap<>();
+    private final BiMap<Type, CaseSchemaNode> caseTypeToSchema = HashBiMap.create();
     private final Map<SchemaPath, GeneratedTypeBuilder> cases = new HashMap<>();
     private final Map<QName, GeneratedTypeBuilder> identities = new HashMap<>();
-    private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<>();
     private final List<GeneratedTypeBuilder> augmentations = new ArrayList<>();
-    private final BiMap<Type, AugmentationSchemaNode> typeToAugmentation = HashBiMap.create();
-    private final Map<Type, WithStatus> typeToSchema = new HashMap<>();
     private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
-    private final BiMap<Type, CaseSchemaNode> caseTypeToSchema = HashBiMap.create();
-
+    private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<>();
+    private final Map<Type, WithStatus> typeToSchema = new HashMap<>();
+    private final List<GeneratedTOBuilder> genTOs = new ArrayList<>();
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
+    private final Map<SchemaPath, Type> typedefs = new HashMap<>();
+    private final Module module;
+
+    private GeneratedTypeBuilder moduleNode;
+    private String modulePackageName;
+
+    ModuleContext(final Module module) {
+        this.module = requireNonNull(module);
+    }
+
+    Module module() {
+        return module;
+    }
+
+    String modulePackageName() {
+        String ret = modulePackageName;
+        if (ret == null) {
+            modulePackageName = ret = BindingMapping.getRootPackageName(module.getQNameModule());
+        }
+        return ret;
+    }
 
     List<Type> getGeneratedTypes() {
         List<Type> result = new ArrayList<>();
