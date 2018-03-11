@@ -10,10 +10,10 @@ package org.opendaylight.yangtools.yang.binding.util;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -44,7 +44,7 @@ abstract class AbstractMappedRpcInvoker<T> extends RpcServiceInvoker {
     protected abstract T qnameToKey(QName qname);
 
     @Override
-    public final Future<RpcResult<?>> invokeRpc(@Nonnull final RpcService impl, @Nonnull final QName rpcName,
+    public final ListenableFuture<RpcResult<?>> invokeRpc(@Nonnull final RpcService impl, @Nonnull final QName rpcName,
             @Nullable final DataObject input) {
         Preconditions.checkNotNull(impl, "Implementation must be supplied");
 
