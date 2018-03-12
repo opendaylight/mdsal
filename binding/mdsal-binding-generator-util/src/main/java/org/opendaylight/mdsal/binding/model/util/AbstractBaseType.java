@@ -7,71 +7,38 @@
  */
 package org.opendaylight.mdsal.binding.model.util;
 
-import java.util.Objects;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 
 /**
  * It is used only as ancestor for other <code>Type</code>s
  */
 public class AbstractBaseType implements Type {
-
-    /**
-     * Name of the package to which this <code>Type</code> belongs.
-     */
-    private final String packageName;
-
     /**
      * Name of this <code>Type</code>.
      */
-    private final String name;
+    private final JavaTypeName identifier;
 
     @Override
-    public String getPackageName() {
-        return this.packageName;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public String getFullyQualifiedName() {
-        if (this.packageName.isEmpty()) {
-            return this.name;
-        } else {
-            return this.packageName + "." + this.name;
-        }
+    public final JavaTypeName getIdentifier() {
+        return this.identifier;
     }
 
     /**
-     * Constructs the instance of this class with the concrete package name type
-     * name.
+     * Constructs the instance of this class with a JavaTypeName.
      *
-     * @param pkName
-     *            string with the package name to which this <code>Type</code>
-     *            belongs
-     * @param name
-     *            string with the name for this <code>Type</code>
+     * @param identifier for this <code>Type</code>
      */
-    protected AbstractBaseType(final String pkName, final String name) {
-        if (pkName == null) {
-            throw new IllegalArgumentException("Package Name for Generated Type cannot be null!");
+    protected AbstractBaseType(final JavaTypeName identifier) {
+        if (identifier == null) {
+            throw new IllegalArgumentException("Identifier for Generated Type cannot be null!");
         }
-        if (name == null) {
-            throw new IllegalArgumentException("Name of Generated Type cannot be null!");
-        }
-        this.packageName = pkName;
-        this.name = name;
+        this.identifier = identifier;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = (prime * result) + Objects.hashCode(this.name);
-        result = (prime * result) + Objects.hashCode(this.packageName);
-        return result;
+        return identifier.hashCode();
     }
 
     @Override
@@ -86,14 +53,11 @@ public class AbstractBaseType implements Type {
             return false;
         }
         final Type other = (Type) obj;
-        return Objects.equals(this.name, other.getName()) && Objects.equals(this.packageName, other.getPackageName());
+        return identifier.equals(other.getIdentifier());
     }
 
     @Override
     public String toString() {
-        if (this.packageName.isEmpty()) {
-            return "Type (" + this.name + ")";
-        }
-        return "Type (" + this.packageName + "." + this.name + ")";
+        return "Type (" + getFullyQualifiedName() + ")";
     }
 }
