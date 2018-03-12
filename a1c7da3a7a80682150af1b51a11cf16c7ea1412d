@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1e2e416d_53016e1c",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/BuilderTemplate.xtend",
+        "patchSetId": 15
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-03-12T15:12:08Z",
+      "side": 1,
+      "message": "yang.model.api should not be leaking here, construct the map in type generator, or better yet TypeProvider",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 66
+      },
+      "revId": "a1c7da3a7a80682150af1b51a11cf16c7ea1412d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
