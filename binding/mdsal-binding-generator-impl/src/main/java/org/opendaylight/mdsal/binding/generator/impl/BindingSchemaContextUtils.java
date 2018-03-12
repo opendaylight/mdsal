@@ -74,7 +74,7 @@ public final class BindingSchemaContextUtils {
             if(ChildOf.class.isAssignableFrom(currentArg.getType()) && BindingReflections.isAugmentationChild(currentArg.getType())) {
                 currentQName = BindingReflections.findQName(currentArg.getType());
             } else {
-                currentQName = QName.create(currentQName, BindingReflections.findQName(currentArg.getType()).getLocalName());
+                currentQName = BindingReflections.findQName(currentArg.getType()).withModule(currentQName.getModule());
             }
             Optional<DataNodeContainer> potential = findDataNodeContainer(currentContainer.get(), currentQName);
             if (potential.isPresent()) {
