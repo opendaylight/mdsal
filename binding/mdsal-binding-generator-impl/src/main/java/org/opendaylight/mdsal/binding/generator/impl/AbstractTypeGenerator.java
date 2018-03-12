@@ -28,6 +28,7 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findN
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import java.util.ArrayDeque;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
@@ -145,6 +147,17 @@ abstract class AbstractTypeGenerator {
      * Constant with the concrete name of namespace.
      */
     private static final String YANG_EXT_NAMESPACE = "urn:opendaylight:yang:extension:yang-ext";
+
+    /**
+     * Constant with the package used for nullable annotations. Declaring it here ensures we're capable of importing it.
+     */
+    private static final String NULLABLE_PACKAGE = Nullable.class.getPackage().getName();
+
+    /**
+     * Constant with the simple name used for nullable annotations. Declaring it here ensures we're capable of importing
+     * it.
+     */
+    private static final String NULLABLE_SIMPLE_NAME = Nullable.class.getSimpleName();
 
     private final Map<QNameModule, ModuleContext> genCtx = new HashMap<>();
 
@@ -1769,6 +1782,10 @@ abstract class AbstractTypeGenerator {
 
         if (node.getStatus() == Status.DEPRECATED) {
             getMethod.addAnnotation("java.lang", "Deprecated");
+        }
+        if (!Strings.isNullOrEmpty(returnType.getPackageName())) {
+            // The return type has a package, so it's not a primitive type
+            getMethod.addAnnotation(NULLABLE_PACKAGE, NULLABLE_SIMPLE_NAME);
         }
         addComment(getMethod, node);
 
