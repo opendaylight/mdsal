@@ -15,6 +15,7 @@ import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
@@ -104,17 +105,17 @@ public class CodegenTypeProvider extends AbstractTypeProvider {
     }
 
     @Override
-    public GeneratedTOBuilder newGeneratedTOBuilder(final String packageName, final String name) {
-        return new CodegenGeneratedTOBuilder(packageName, name);
+    public GeneratedTOBuilder newGeneratedTOBuilder(final JavaTypeName identifier) {
+        return new CodegenGeneratedTOBuilder(identifier);
     }
 
     @Override
-    public GeneratedTypeBuilder newGeneratedTypeBuilder(final String packageName, final String name) {
-        return new CodegenGeneratedTypeBuilder(packageName, name);
+    public GeneratedTypeBuilder newGeneratedTypeBuilder(final JavaTypeName identifier) {
+        return new CodegenGeneratedTypeBuilder(identifier);
     }
 
     @Override
-    public AbstractEnumerationBuilder newEnumerationBuilder(final String packageName, final String name) {
-        return new CodegenEnumerationBuilder(packageName, name);
+    public AbstractEnumerationBuilder newEnumerationBuilder(final JavaTypeName identifier) {
+        return new CodegenEnumerationBuilder(identifier);
     }
 }

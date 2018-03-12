@@ -10,14 +10,14 @@ package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public final class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder {
-
-    public RuntimeGeneratedTOBuilder(final String packageName, final String name) {
-        super(packageName, name);
+    public RuntimeGeneratedTOBuilder(final JavaTypeName identifier) {
+        super(identifier);
     }
 
     @Override
@@ -56,8 +56,8 @@ public final class RuntimeGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
     }
 
     @Override
-    AbstractEnumerationBuilder newEnumerationBuilder(final String packageName, final String name) {
-        return new RuntimeEnumerationBuilder(packageName, name);
+    AbstractEnumerationBuilder newEnumerationBuilder(final JavaTypeName identifier) {
+        return new RuntimeEnumerationBuilder(identifier);
     }
 
     private static final class GTO extends AbstractGeneratedTransferObject {
