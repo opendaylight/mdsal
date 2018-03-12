@@ -918,7 +918,7 @@ public class BindingGeneratorImpl implements BindingGenerator {
         SchemaNode result = targetGrouping;
         for (final QName node : targetPath.getPathFromRoot()) {
             if (result instanceof DataNodeContainer) {
-                final QName resultNode = QName.create(result.getQName().getModule(), node.getLocalName());
+                final QName resultNode = node.withModule(result.getQName().getModule());
                 result = ((DataNodeContainer) result).getDataChildByName(resultNode);
             } else if (result instanceof ChoiceSchemaNode) {
                 result = ((ChoiceSchemaNode) result).getCaseNodeByName(node.getLocalName());
