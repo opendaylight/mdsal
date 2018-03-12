@@ -31,6 +31,7 @@ import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -41,7 +42,6 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 class RpcServiceAdapter implements InvocationHandler {
-
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
     private final Class<? extends RpcService> type;
     private final BindingToNormalizedNodeCodec codec;
@@ -158,7 +158,8 @@ class RpcServiceAdapter implements InvocationHandler {
                 final NormalizedNode<?, ?> domData = input.getResult();
                 final DataObject bindingResult;
                 if (domData != null) {
-                    final SchemaPath rpcOutput = rpc.createChild(QName.create(rpc.getLastComponent(), "output"));
+                    final SchemaPath rpcOutput = rpc.createChild(YangConstants.operationOutputQName(
+                        rpc.getLastComponent().getModule()));
                     bindingResult = resultCodec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
                 } else {
                     bindingResult = null;

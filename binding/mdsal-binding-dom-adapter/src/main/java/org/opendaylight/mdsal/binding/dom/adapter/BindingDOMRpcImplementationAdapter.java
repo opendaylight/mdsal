@@ -30,6 +30,7 @@ import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.util.RpcServiceInvoker;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -63,7 +64,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
 
         this.codec = Preconditions.checkNotNull(codec);
         this.delegate = Preconditions.checkNotNull(delegate);
-        inputQname = QName.create(BindingReflections.getQNameModule(type), "input").intern();
+        inputQname = YangConstants.operationInputQName(BindingReflections.getQNameModule(type)).intern();
     }
 
     @Nonnull
