@@ -16,17 +16,32 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
+import com.google.common.escape.CharEscaper;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.RegEx;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
 
 public final class BindingMapping {
+    private static final class DotDashEscaper extends CharEscaper {
+        @Override
+        protected char[] escape(final char c) {
+            switch (c) {
+                case '-':
+                    return DASH_REPLACEMENT;
+                case '.':
+                    return DOT_REPLACEMENT;
+                default:
+                    return null;
+            }
+        }
+    }
 
     public static final String VERSION = "0.6";
 
@@ -54,6 +69,14 @@ public final class BindingMapping {
     private static final Pattern COLON_SLASH_SLASH = Pattern.compile("://", Pattern.LITERAL);
     private static final String QUOTED_DOT = Matcher.quoteReplacement(".");
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
+
+    @RegEx
+    private static final String YANG_IDENTIFIER_PATTERN_STR = "[a-zA-Z_][a-zA-Z0-9_.\\-]*";
+    private static final Pattern YANG_IDENTIFIER_PATTERN = Pattern.compile(YANG_IDENTIFIER_PATTERN_STR);
+    private static final char[] DASH_REPLACEMENT = { '$', '_' };
+    private static final char[] DOT_REPLACEMENT = { '$', '$' };
+
+    private static final DotDashEscaper DOT_OR_DASH_ESCAPER = new DotDashEscaper();
 
     public static final String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
     public static final String MODULE_INFO_QNAMEOF_METHOD_NAME = "qnameOf";
@@ -367,6 +390,26 @@ public final class BindingMapping {
         }
 
         return javaToYang.inverse();
+    }
+
+    /**
+     * Create a Java Identifier (according to JLS9, section 3.8) from a YANG identifier (according to RFC7950,
+     * section 6.2). Given that target set has much greater cardinality that the source set, this method guarantees
+     * that the mapping is an injection from RFC7950 identifiers to JLS9 identifiers.
+     *
+     * @param str YANG identifier string
+     * @return Java identifier string
+     * @throws NullPointerException if yangIdentifier is null
+     * @throws IllegalArgumentException if yangIdentifier does not conform to YANG rules
+     */
+    public static String yangIdentifierToJava(final String str) {
+        checkArgument(YANG_IDENTIFIER_PATTERN.matcher(str).matches(),
+            "String '%s' is not a valid YANG identifier", str);
+
+        // The algorithm is very simple: in case of a conflict with Java reserved words, resolve it by prepending
+        // a single '$' character. Otherwise escape any dots or dashes with their escape sequences. Since the identifier
+        // cannot start with a dot or dash, this leaves no possibility of a conflict.
+        return JAVA_RESERVED_WORDS.contains(str) ? '$' + str : DOT_OR_DASH_ESCAPER.escape(str);
     }
 
     // See https://docs.oracle.com/javase/specs/jls/se9/html/jls-3.html#jls-3.8
