@@ -41,6 +41,7 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 class RpcServiceAdapter implements InvocationHandler {
+    private static final QName DUMMY_OUTPUT = QName.create("dummy", "output");
 
     private final ImmutableMap<Method, RpcInvocationStrategy> rpcNames;
     private final Class<? extends RpcService> type;
@@ -158,7 +159,8 @@ class RpcServiceAdapter implements InvocationHandler {
                 final NormalizedNode<?, ?> domData = input.getResult();
                 final DataObject bindingResult;
                 if (domData != null) {
-                    final SchemaPath rpcOutput = rpc.createChild(QName.create(rpc.getLastComponent(), "output"));
+                    final SchemaPath rpcOutput = rpc.createChild(DUMMY_OUTPUT.withModule(
+                        rpc.getLastComponent().getModule()));
                     bindingResult = resultCodec.fromNormalizedNodeRpcData(rpcOutput, (ContainerNode) domData);
                 } else {
                     bindingResult = null;

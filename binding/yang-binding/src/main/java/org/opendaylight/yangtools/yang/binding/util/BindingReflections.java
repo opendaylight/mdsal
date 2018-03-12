@@ -60,6 +60,8 @@ public final class BindingReflections {
             "(org.opendaylight.yang.gen.v1.[a-z0-9_\\.]*\\.rev[0-9][0-9][0-1][0-9][0-3][0-9])";
     private static final Pattern ROOT_PACKAGE_PATTERN = Pattern.compile(ROOT_PACKAGE_PATTERN_STRING);
     private static final Logger LOG = LoggerFactory.getLogger(BindingReflections.class);
+    private static final QName DUMMY_INPUT = QName.create("dummy", "input");
+    private static final QName DUMMY_OUTPUT = QName.create("dummy", "output");
 
     private static final LoadingCache<Class<?>, Optional<QName>> CLASS_TO_QNAME = CacheBuilder.newBuilder()
             .weakKeys()
@@ -516,10 +518,10 @@ public final class BindingReflections {
             } else if (isRpcType(key)) {
                 final String className = key.getSimpleName();
                 if (className.endsWith(BindingMapping.RPC_OUTPUT_SUFFIX)) {
-                    return QName.create(module, "output").intern();
-                } else {
-                    return QName.create(module, "input").intern();
+                    return DUMMY_OUTPUT.withModule(module.getModule()).intern();
                 }
+
+                return DUMMY_INPUT.withModule(module.getModule()).intern();
             }
 
             /*
@@ -527,7 +529,6 @@ public final class BindingReflections {
              */
             return module;
         }
-
     }
 
     /**
