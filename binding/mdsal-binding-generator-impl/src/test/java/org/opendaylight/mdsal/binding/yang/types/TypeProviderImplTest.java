@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.NoSuchElementException;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -107,8 +108,8 @@ public class TypeProviderImplTest {
         final AbstractTypeProvider typeProvider = new RuntimeTypeProvider(schemaContext);
 
         final SchemaPath refTypePath = SchemaPath.create(true, QName.create("", "cont1"), QName.create("", "list1"));
-        final CodegenGeneratedTypeBuilder refType = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test",
-            "TestType");
+        final CodegenGeneratedTypeBuilder refType = new CodegenGeneratedTypeBuilder(
+            JavaTypeName.create("org.opendaylight.yangtools.test", "TestType"));
         typeProvider.putReferencedType(refTypePath, refType);
         final StringTypeDefinition stringType = BaseTypes.stringType();
 
