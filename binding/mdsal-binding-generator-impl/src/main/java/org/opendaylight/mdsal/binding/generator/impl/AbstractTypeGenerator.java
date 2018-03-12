@@ -1751,6 +1751,10 @@ abstract class AbstractTypeGenerator {
         if (node.getStatus() == Status.DEPRECATED) {
             getMethod.addAnnotation("java.lang", "Deprecated");
         }
+        if (!returnType.getPackageName().isEmpty()) {
+            // The return type has a package, so it's not a primitive type
+            getMethod.addAnnotation("javax.annotation", "Nullable");
+        }
         addComment(getMethod, node);
 
         return getMethod;
