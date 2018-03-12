@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.yang.types;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
@@ -48,17 +49,17 @@ public final class RuntimeTypeProvider extends AbstractTypeProvider {
     }
 
     @Override
-    public GeneratedTOBuilder newGeneratedTOBuilder(final String packageName, final String name) {
-        return new RuntimeGeneratedTOBuilder(packageName, name);
+    public GeneratedTOBuilder newGeneratedTOBuilder(final JavaTypeName identifier) {
+        return new RuntimeGeneratedTOBuilder(identifier);
     }
 
     @Override
-    public GeneratedTypeBuilder newGeneratedTypeBuilder(final String packageName, final String name) {
-        return new RuntimeGeneratedTypeBuilder(packageName, name);
+    public GeneratedTypeBuilder newGeneratedTypeBuilder(final JavaTypeName identifier) {
+        return new RuntimeGeneratedTypeBuilder(identifier);
     }
 
     @Override
-    public AbstractEnumerationBuilder newEnumerationBuilder(final String packageName, final String name) {
-        return new RuntimeEnumerationBuilder(packageName, name);
+    public AbstractEnumerationBuilder newEnumerationBuilder(final JavaTypeName identifier) {
+        return new RuntimeEnumerationBuilder(identifier);
     }
 }

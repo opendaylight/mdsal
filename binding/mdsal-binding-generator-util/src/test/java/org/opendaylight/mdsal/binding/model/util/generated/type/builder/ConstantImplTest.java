@@ -13,15 +13,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 
 public class ConstantImplTest {
 
     @Test
     public void testMethodsOfConstantImpl() {
-        final CodegenGeneratedTypeBuilder definingType = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test",
-                "DefiningType");
-        final CodegenGeneratedTypeBuilder type = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test.v1",
-                "BaseType");
+        final CodegenGeneratedTypeBuilder definingType = new CodegenGeneratedTypeBuilder(
+            JavaTypeName.create("org.opendaylight.yangtools.test", "DefiningType"));
+        final CodegenGeneratedTypeBuilder type = new CodegenGeneratedTypeBuilder(
+            JavaTypeName.create("org.opendaylight.yangtools.test.v1", "BaseType"));
         final ConstantImpl constImpl = new ConstantImpl(definingType, type, "IpAddress", "127.0.0.1");
         final ConstantImpl constImpl2 = new ConstantImpl(definingType, type, "IpAddress", "127.0.0.1");
         final ConstantImpl constImpl3 = new ConstantImpl(definingType, type, "IpAddress", "127.0.0.0");
