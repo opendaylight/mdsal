@@ -29,6 +29,7 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findN
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
@@ -1789,6 +1790,10 @@ abstract class AbstractTypeGenerator {
 
         if (node.getStatus() == Status.DEPRECATED) {
             getMethod.addAnnotation("", "Deprecated");
+        }
+        if (!Strings.isNullOrEmpty(returnType.getPackageName())) {
+            // The return type has a package, so it's not a primitive type
+            getMethod.addAnnotation("javax.annotation", "Nullable");
         }
         addComment(getMethod, node);
 

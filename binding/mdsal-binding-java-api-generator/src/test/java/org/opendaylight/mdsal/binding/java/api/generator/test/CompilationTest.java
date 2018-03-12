@@ -478,9 +478,12 @@ public class CompilationTest extends BaseCompilationTest {
         try {
             final Method getId = nodesClass.getMethod("getId");
             final Annotation[] annotations = getId.getAnnotations();
-            assertEquals(1, annotations.length);
-            final Annotation routingContext = annotations[0];
-            assertEquals(RoutingContext.class, routingContext.annotationType());
+            assertEquals(2, annotations.length);
+            List<Class<? extends Annotation>> annotationTypes = new ArrayList<>();
+            for (Annotation annotation : annotations) {
+                annotationTypes.add(annotation.annotationType());
+            }
+            assertTrue(annotationTypes.contains(RoutingContext.class));
         } catch (final NoSuchMethodException e) {
             throw new AssertionError("Method getId() not found");
         }
