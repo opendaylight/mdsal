@@ -14,6 +14,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
@@ -33,8 +34,8 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
     private boolean isUnionTypeBuilder = false;
     private TypeDefinition<?> baseType = null;
 
-    AbstractGeneratedTOBuilder(final String packageName, final String name) {
-        super(packageName, name);
+    AbstractGeneratedTOBuilder(final JavaTypeName identifier) {
+        super(identifier);
         setAbstract(false);
     }
 

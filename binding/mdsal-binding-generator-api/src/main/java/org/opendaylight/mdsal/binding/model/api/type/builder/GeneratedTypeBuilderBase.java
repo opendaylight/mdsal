@@ -13,6 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -77,7 +78,24 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      *            Name of Annotation Type
      * @return <code>new</code> instance of Annotation Type Builder.
      */
-    AnnotationTypeBuilder addAnnotation(String packageName, String name);
+    AnnotationTypeBuilder addAnnotation(JavaTypeName identifier);
+
+    /**
+     * The method creates new AnnotationTypeBuilder containing specified package
+     * name an annotation name. <br>
+     * Neither the package name or annotation name can contain <code>null</code>
+     * references. In case that any of parameters contains <code>null</code> the
+     * method SHOULD thrown {@link IllegalArgumentException}
+     *
+     * @param packageName
+     *            Package Name of Annotation Type
+     * @param name
+     *            Name of Annotation Type
+     * @return <code>new</code> instance of Annotation Type Builder.
+     */
+    default AnnotationTypeBuilder addAnnotation(final String packageName, final String simpleName) {
+        return addAnnotation(JavaTypeName.create(packageName, simpleName));
+    }
 
     boolean isAbstract();
 

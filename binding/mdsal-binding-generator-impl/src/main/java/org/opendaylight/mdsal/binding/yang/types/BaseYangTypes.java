@@ -15,6 +15,7 @@ import java.util.Map;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -98,7 +99,7 @@ public final class BaseYangTypes {
     /**
      * <code>Type</code> representation of <code>binary</code> YANG type
      */
-    public static final Type BINARY_TYPE = Types.primitiveType("byte[]", null);
+    public static final Type BINARY_TYPE = Types.typeForClass(byte[].class);
 
     public static final Type INSTANCE_IDENTIFIER = Types.parameterizedTypeFor(Types
             .typeForClass(InstanceIdentifier.class));
@@ -172,7 +173,7 @@ public final class BaseYangTypes {
             String typeName = type.getQName().getLocalName();
             switch (typeName) {
             case "binary":
-                return restrictions == null ? Types.BYTE_ARRAY : Types.primitiveType("byte[]", restrictions);
+                return restrictions == null ? Types.BYTE_ARRAY : Types.typeForClass(byte[].class, restrictions);
             case "decimal64":
                 return Types.typeForClass(BigDecimal.class, restrictions);
             case "enumeration":
@@ -222,18 +223,26 @@ public final class BaseYangTypes {
         return Types.getDefaultRestrictions(min, max);
     }
 
+    // FIXME: why do we even have this class?
     public static final class UnionType implements Type {
         @Override
         public String getPackageName() {
             return null;
         }
+
         @Override
         public String getName() {
             return "Union";
         }
+
         @Override
         public String getFullyQualifiedName() {
             return "Union";
+        }
+
+        @Override
+        public JavaTypeName getIdentifier() {
+            return null;
         }
     }
 }

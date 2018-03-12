@@ -13,6 +13,7 @@ import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -24,8 +25,8 @@ public final class CodegenEnumerationBuilder extends AbstractEnumerationBuilder 
     private String moduleName;
     private SchemaPath schemaPath;
 
-    public CodegenEnumerationBuilder(final String packageName, final String name) {
-        super(packageName, name);
+    public CodegenEnumerationBuilder(final JavaTypeName identifier) {
+        super(identifier);
     }
 
     @Override

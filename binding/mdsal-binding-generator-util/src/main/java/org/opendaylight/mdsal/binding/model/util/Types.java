@@ -29,6 +29,7 @@ import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.WildcardType;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -41,7 +42,7 @@ public final class Types {
             new CacheLoader<Class<?>, ConcreteType>() {
                 @Override
                 public ConcreteType load(final Class<?> key) {
-                    return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
+                    return new ConcreteTypeImpl(JavaTypeName.create(key), null);
                 }
     };
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
@@ -55,8 +56,8 @@ public final class Types {
     public static final ConcreteType FUTURE = typeForClass(ListenableFuture.class);
     public static final ConcreteType STRING = typeForClass(String.class);
     public static final ConcreteType VOID = typeForClass(Void.class);
-    public static final ConcreteType BYTE_ARRAY = primitiveType("byte[]", null);
-    public static final ConcreteType CHAR_ARRAY = primitiveType("char[]", null);
+    public static final ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
+    public static final ConcreteType CHAR_ARRAY = typeForClass(char[].class);
     private static final Splitter DOT_SPLITTER = Splitter.on('.');
 
     /**
@@ -78,24 +79,6 @@ public final class Types {
     }
 
     /**
-     * Creates the instance of type
-     * {@link org.opendaylight.mdsal.binding.model.api.ConcreteType
-     * ConcreteType} which represents primitive JAVA type for which package
-     * doesn't exist.
-     *
-     * @param primitiveType
-     *            string containing programmatic construction based on
-     *            primitive type (e.g byte[])
-     * @param restrictions
-     *            restrictions object
-     * @return <code>ConcreteType</code> instance which represents programmatic
-     *         construction with primitive JAVA type
-     */
-    public static ConcreteType primitiveType(final String primitiveType, final Restrictions restrictions) {
-        return new ConcreteTypeImpl("", primitiveType, restrictions);
-    }
-
-    /**
      * Returns an instance of {@link ConcreteType} describing the class
      *
      * @param cls
@@ -110,10 +93,12 @@ public final class Types {
         if (restrictions == null) {
             return typeForClass(cls);
         }
+
+        final JavaTypeName identifier = JavaTypeName.create(cls);
         if (restrictions instanceof DefaultRestrictions) {
-            return new ConcreteTypeImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+            return new ConcreteTypeImpl(identifier, restrictions);
         }
-        return new BaseTypeWithRestrictionsImpl(cls.getPackage().getName(), cls.getSimpleName(), restrictions);
+        return new BaseTypeWithRestrictionsImpl(identifier, restrictions);
     }
 
     /**
@@ -182,8 +167,8 @@ public final class Types {
      * @return <code>WildcardType</code> representation of
      *         <code>packageName</code> and <code>typeName</code>
      */
-    public static WildcardType wildcardTypeFor(final String packageName, final String typeName) {
-        return new WildcardTypeImpl(packageName, typeName);
+    public static WildcardType wildcardTypeFor(final JavaTypeName identifier) {
+        return new WildcardTypeImpl(identifier);
     }
 
     /**
@@ -249,8 +234,8 @@ public final class Types {
          * @param name
          *            string with the name of the type
          */
-        private ConcreteTypeImpl(final String pkName, final String name, final Restrictions restrictions) {
-            super(pkName, name);
+        ConcreteTypeImpl(final JavaTypeName identifier, final Restrictions restrictions) {
+            super(identifier);
             this.restrictions = restrictions;
         }
 
@@ -275,8 +260,8 @@ public final class Types {
          * @param name
          *            string with the name of the type
          */
-        private BaseTypeWithRestrictionsImpl(final String pkName, final String name, final Restrictions restrictions) {
-            super(pkName, name);
+        BaseTypeWithRestrictionsImpl(final JavaTypeName identifier, final Restrictions restrictions) {
+            super(identifier);
             this.restrictions = Preconditions.checkNotNull(restrictions);
         }
 
@@ -321,11 +306,10 @@ public final class Types {
          *            array of actual parameters
          */
         public ParametrizedTypeImpl(final Type rawType, final Type[] actTypes) {
-            super(rawType.getPackageName(), rawType.getName());
+            super(rawType.getIdentifier());
             this.rawType = rawType;
             this.actualTypes = actTypes.clone();
         }
-
     }
 
     /**
@@ -340,8 +324,8 @@ public final class Types {
          * @param typeName
          *            string with the name of type
          */
-        public WildcardTypeImpl(final String packageName, final String typeName) {
-            super(packageName, typeName);
+        WildcardTypeImpl(final JavaTypeName identifier) {
+            super(identifier);
         }
     }
 
