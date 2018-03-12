@@ -9,6 +9,7 @@ package org.opendaylight.yangtools.yang.binding.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -45,6 +46,7 @@ import org.opendaylight.yangtools.yang.binding.YangModelBindingProvider;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.common.YangConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -554,10 +556,10 @@ public class BindingReflections {
                 } else if (isRpcType(key)) {
                     final String className = key.getSimpleName();
                     if (className.endsWith(BindingMapping.RPC_OUTPUT_SUFFIX)) {
-                        return QName.create(module, "output").intern();
-                    } else {
-                        return QName.create(module, "input").intern();
+                        return YangConstants.operationOutputQName(module.getModule()).intern();
                     }
+
+                    return YangConstants.operationInputQName(module.getModule()).intern();
                 }
                 /*
                  * Fallback for Binding types which do not have QNAME field
@@ -567,7 +569,6 @@ public class BindingReflections {
                 throw new IllegalArgumentException("Supplied class " + key + "is not derived from YANG.");
             }
         }
-
     }
 
     /**

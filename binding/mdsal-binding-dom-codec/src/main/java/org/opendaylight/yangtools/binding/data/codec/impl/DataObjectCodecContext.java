@@ -234,7 +234,7 @@ abstract class DataObjectCodecContext<D extends DataObject,T extends DataNodeCon
             }
         } else {
             // We are looking for instantiation via uses in other module
-            final QName instantiedName = QName.create(namespace(), origDef.getQName().getLocalName());
+            final QName instantiedName = origDef.getQName().withModule(namespace());
             final DataSchemaNode potential = getSchema().getDataChildByName(instantiedName);
             // We check if it is really instantiated from same
             // definition as class was derived
