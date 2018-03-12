@@ -46,7 +46,7 @@ public abstract class TypeName implements Identifier, Immutable {
         }
 
         @Override
-        public TypeName createImmediatelyNested(final String simpleName) {
+        public TypeName create(final String simpleName) {
             throw new UnsupportedOperationException("Primitive type " + simpleName() + " cannot enclose type "
                     + simpleName);
         }
@@ -67,7 +67,7 @@ public abstract class TypeName implements Identifier, Immutable {
         }
 
         @Override
-        public final TypeName createImmediatelyNested(final String simpleName) {
+        public final TypeName create(final String simpleName) {
             checkValidName(requireNonNull(simpleName));
             return new Nested(this, simpleName);
         }
@@ -167,7 +167,7 @@ public abstract class TypeName implements Identifier, Immutable {
     public static TypeName create(final Class<?> clazz) {
         final Class<?> enclosing = clazz.getEnclosingClass();
         if (enclosing != null) {
-            return create(enclosing).createImmediatelyNested(clazz.getSimpleName());
+            return create(enclosing).create(clazz.getSimpleName());
         }
         final Package pkg = clazz.getPackage();
         return pkg == null ? new Primitive(clazz.getSimpleName()) : new TopLevel(pkg.getName(), clazz.getSimpleName());
@@ -182,7 +182,7 @@ public abstract class TypeName implements Identifier, Immutable {
      * @throws NullPointerException if any of the arguments is null
      * @throws IllegalArgumentException if any of the arguments is empty
      */
-    public static TypeName createTopLevel(final String packageName, final String simpleName) {
+    public static TypeName create(final String packageName, final String simpleName) {
         return new TopLevel(packageName, simpleName);
     }
 
@@ -195,7 +195,7 @@ public abstract class TypeName implements Identifier, Immutable {
      * @throws IllegalArgumentException if the simpleName hides any of the enclosing types or if it is empty
      * @throws UnsupportedOperationException if this type name does not support nested type
      */
-    public abstract TypeName createImmediatelyNested(String simpleName);
+    public abstract TypeName create(String simpleName);
 
     /**
      * Return the simple name of the class.

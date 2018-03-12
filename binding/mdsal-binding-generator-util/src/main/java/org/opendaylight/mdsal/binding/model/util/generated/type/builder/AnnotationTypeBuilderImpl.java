@@ -7,33 +7,32 @@
  */
 package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.util.AbstractBaseType;
 import org.opendaylight.yangtools.util.LazyCollections;
 
 final class AnnotationTypeBuilderImpl extends AbstractBaseType implements AnnotationTypeBuilder {
 
-    private final String packageName;
-    private final String name;
     private List<AnnotationTypeBuilder> annotationBuilders = Collections.emptyList();
     private List<AnnotationType.Parameter> parameters = Collections.emptyList();
 
-    public AnnotationTypeBuilderImpl(final String packageName, final String name) {
-        super(packageName, name);
-        this.packageName = packageName;
-        this.name = name;
+    AnnotationTypeBuilderImpl(final TypeName identifier) {
+        super(identifier);
     }
 
     @Override
     public AnnotationTypeBuilder addAnnotation(final String packageName, final String name) {
         if (packageName != null && name != null) {
-            final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
+            final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(getIdentifier());
             if (!this.annotationBuilders.contains(builder)) {
                 this.annotationBuilders = LazyCollections.lazyAdd(this.annotationBuilders, builder);
                 return builder;
@@ -43,12 +42,11 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
     }
 
     private boolean addParameter(final ParameterImpl param) {
-        if (!this.parameters.contains(param)) {
-            this.parameters = LazyCollections.lazyAdd(this.parameters, param);
-            return true;
-        } else {
+        if (parameters.contains(param)) {
             return false;
         }
+        parameters = LazyCollections.lazyAdd(parameters, param);
+        return true;
     }
 
     @Override
@@ -71,16 +69,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
 
     @Override
     public AnnotationType build() {
-        return new AnnotationTypeImpl(this.packageName, this.name, this.annotationBuilders, this.parameters);
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Objects.hashCode(this.name);
-        result = prime * result + Objects.hashCode(this.packageName);
-        return result;
+        return new AnnotationTypeImpl(getIdentifier(), this.annotationBuilders, this.parameters);
     }
 
     @Override
@@ -88,23 +77,19 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final AnnotationTypeBuilderImpl other = (AnnotationTypeBuilderImpl) obj;
-        return Objects.equals(this.name, other.name) && Objects.equals(this.packageName, other.packageName);
+        return getIdentifier().equals(((AnnotationTypeBuilderImpl) obj).getIdentifier());
     }
 
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append("AnnotationTypeBuilder [packageName=");
-        builder.append(this.packageName);
+        builder.append(getPackageName());
         builder.append(", name=");
-        builder.append(this.name);
+        builder.append(getName());
         builder.append(", annotationBuilders=");
         builder.append(this.annotationBuilders);
         builder.append(", parameters=");
@@ -114,18 +99,14 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
     }
 
     private static final class AnnotationTypeImpl implements AnnotationType {
-
-        private final String packageName;
-        private final String name;
+        private final TypeName identifier;
         private final List<AnnotationType> annotations;
         private final List<AnnotationType.Parameter> parameters;
         private final List<String> paramNames;
 
-        public AnnotationTypeImpl(final String packageName, final String name,
-                final List<AnnotationTypeBuilder> annotationBuilders,
+        AnnotationTypeImpl(final TypeName identifier, final List<AnnotationTypeBuilder> annotationBuilders,
                 final List<AnnotationType.Parameter> parameters) {
-            this.packageName = packageName;
-            this.name = name;
+            this.identifier = requireNonNull(identifier);
 
             final List<AnnotationType> a = new ArrayList<>();
             for (final AnnotationTypeBuilder builder : annotationBuilders) {
@@ -144,18 +125,8 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
         }
 
         @Override
-        public String getPackageName() {
-            return this.packageName;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        public String getFullyQualifiedName() {
-            return this.packageName + "." + this.name;
+        public TypeName getIdentifier() {
+            return identifier;
         }
 
         @Override
@@ -192,11 +163,7 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + Objects.hashCode(this.name);
-            result = prime * result + Objects.hashCode(this.packageName);
-            return result;
+            return identifier.hashCode();
         }
 
         @Override
@@ -204,23 +171,20 @@ final class AnnotationTypeBuilderImpl extends AbstractBaseType implements Annota
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             final AnnotationTypeImpl other = (AnnotationTypeImpl) obj;
-            return Objects.equals(this.name, other.name) && Objects.equals(this.packageName, other.packageName);
+            return identifier.equals(other.identifier);
         }
 
         @Override
         public String toString() {
             final StringBuilder builder = new StringBuilder();
             builder.append("AnnotationType [packageName=");
-            builder.append(this.packageName);
+            builder.append(getPackageName());
             builder.append(", name=");
-            builder.append(this.name);
+            builder.append(getName());
             builder.append(", annotations=");
             builder.append(this.annotations);
             builder.append(", parameters=");

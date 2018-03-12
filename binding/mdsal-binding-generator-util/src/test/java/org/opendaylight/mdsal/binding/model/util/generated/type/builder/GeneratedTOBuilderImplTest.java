@@ -16,6 +16,7 @@ import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
@@ -26,14 +27,17 @@ public class GeneratedTOBuilderImplTest {
 
     @Test
     public void testCreateNewInstance() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
         assertNotNull(genTOBuilder);
     }
 
     @Test
     public void testSetExtendsType() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
-        final CodegenGeneratedTOBuilder extendedTypeBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "ExtendedType");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
+        final CodegenGeneratedTOBuilder extendedTypeBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "ExtendedType"));
         final GeneratedTransferObject extendedType = extendedTypeBuilder.build();
         genTOBuilder.setExtendsType(extendedType);
         final GeneratedTransferObject genTO = genTOBuilder.build();
@@ -43,7 +47,8 @@ public class GeneratedTOBuilderImplTest {
 
     @Test
     public void testAddMethod() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
         final MethodSignatureBuilder methodSignatureBuilder = genTOBuilder.addMethod("testMethod");
         assertEquals(methodSignatureBuilder, genTOBuilder.getMethodDefinitions().get(0));
         assertEquals("testMethod", genTOBuilder.getMethodDefinitions().get(0).getName());
@@ -51,7 +56,8 @@ public class GeneratedTOBuilderImplTest {
 
     @Test
     public void testAddEqualsIdentity() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
         final GeneratedPropertyBuilderImpl propertyBuilder = new GeneratedPropertyBuilderImpl("testProperty");
         genTOBuilder.addEqualsIdentity(propertyBuilder);
 
@@ -62,7 +68,8 @@ public class GeneratedTOBuilderImplTest {
 
     @Test
     public void testAddHashIdentity() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
         final GeneratedPropertyBuilderImpl propertyBuilder = new GeneratedPropertyBuilderImpl("testProperty");
         genTOBuilder.addHashIdentity(propertyBuilder);
 
@@ -73,7 +80,8 @@ public class GeneratedTOBuilderImplTest {
 
     @Test
     public void testAddToStringProperty() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
         final GeneratedPropertyBuilderImpl propertyBuilder = new GeneratedPropertyBuilderImpl("testProperty");
         genTOBuilder.addToStringProperty(propertyBuilder);
 
@@ -84,7 +92,8 @@ public class GeneratedTOBuilderImplTest {
 
     @Test
     public void testSetRestrictions() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
         final Restrictions restrictions = new Restrictions() {
 
             @Override
@@ -115,7 +124,8 @@ public class GeneratedTOBuilderImplTest {
 
     @Test
     public void testSetSUID() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
         final GeneratedPropertyBuilderImpl propertyBuilder = new GeneratedPropertyBuilderImpl("testProperty");
         genTOBuilder.setSUID(propertyBuilder);
 
@@ -125,13 +135,15 @@ public class GeneratedTOBuilderImplTest {
 
     @Test
     public void testToStringMethod() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
         assertNotNull(genTOBuilder.toString());
     }
 
     @Test
     public void testSetterMethods() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
         genTOBuilder.setTypedef(true);
         genTOBuilder.setIsUnion(true);
         genTOBuilder.setIsUnionBuilder(true);
@@ -153,7 +165,8 @@ public class GeneratedTOBuilderImplTest {
 
     @Test
     public void testMethodsOfGeneratedTransferObjectImpl() {
-        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder("org.opendaylight.yangtools.test", "Test");
+        final CodegenGeneratedTOBuilder genTOBuilder = new CodegenGeneratedTOBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "Test"));
         final GeneratedTransferObject genTO = genTOBuilder.build();
 
         assertNotNull(genTO.toString());

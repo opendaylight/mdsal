@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
@@ -42,8 +43,8 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     private final boolean isAbstract;
     private final YangSourceDefinition definition;
 
-    public AbstractGeneratedType(final AbstractGeneratedTypeBuilder<?> builder) {
-        super(builder.getPackageName(), builder.getName());
+    AbstractGeneratedType(final AbstractGeneratedTypeBuilder<?> builder) {
+        super(builder.getIdentifier());
         this.parent = builder.getParent();
         this.comment = builder.getComment();
         this.annotations = toUnmodifiableAnnotations(builder.getAnnotations());
@@ -58,13 +59,13 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
         this.definition = builder.getYangSourceDefinition().orElse(null);
     }
 
-    public AbstractGeneratedType(final Type parent, final String packageName, final String name,
-            final TypeComment comment, final List<AnnotationTypeBuilder> annotationBuilders, final boolean isAbstract,
+    AbstractGeneratedType(final Type parent, final TypeName identifier, final TypeComment comment,
+            final List<AnnotationTypeBuilder> annotationBuilders, final boolean isAbstract,
             final List<Type> implementsTypes, final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
             final List<GeneratedTOBuilder> enclosedGenTOBuilders, final List<EnumBuilder> enumBuilders,
             final List<Constant> constants, final List<MethodSignatureBuilder> methodBuilders,
             final List<GeneratedPropertyBuilder> propertyBuilders) {
-        super(packageName, name);
+        super(identifier);
         this.parent = parent;
         this.comment = comment;
         this.annotations = toUnmodifiableAnnotations(annotationBuilders);

@@ -16,6 +16,7 @@ import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
@@ -42,8 +43,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     private boolean isAbstract;
     private YangSourceDefinition yangSourceDefinition;
 
-    protected AbstractGeneratedTypeBuilder(final String packageName, final String name) {
-        super(packageName, name);
+    protected AbstractGeneratedTypeBuilder(final TypeName identifier) {
+        super(identifier);
     }
 
     protected TypeComment getComment() {
@@ -87,12 +88,12 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
 
     protected abstract T thisInstance();
 
-    abstract AbstractEnumerationBuilder newEnumerationBuilder(String packageName, String name);
+    abstract AbstractEnumerationBuilder newEnumerationBuilder(TypeName identifier);
 
     @Override
     public GeneratedTOBuilder addEnclosingTransferObject(final String name) {
         Preconditions.checkArgument(name != null, "Name for Enclosing Generated Transfer Object cannot be null!");
-        final GeneratedTOBuilder builder = new CodegenGeneratedTOBuilder(getFullyQualifiedName(), name);
+        final GeneratedTOBuilder builder = new CodegenGeneratedTOBuilder(getIdentifier().create(name));
 
         Preconditions.checkArgument(!this.enclosedTransferObjects.contains(builder),
             "This generated type already contains equal enclosing transfer object.");
@@ -116,11 +117,8 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     @Override
-    public AnnotationTypeBuilder addAnnotation(final String packageName, final String name) {
-        Preconditions.checkArgument(packageName != null, "Package Name for Annotation Type cannot be null!");
-        Preconditions.checkArgument(name != null, "Name of Annotation Type cannot be null!");
-
-        final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
+    public AnnotationTypeBuilder addAnnotation(final TypeName identifier) {
+        final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(identifier);
 
         Preconditions.checkArgument(!this.annotationBuilders.contains(builder),
             "This generated type already contains equal annotation.");
@@ -168,7 +166,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     @Override
     public EnumBuilder addEnumeration(final String name) {
         Preconditions.checkArgument(name != null, "Name of enumeration cannot be null!");
-        final EnumBuilder builder = newEnumerationBuilder(getFullyQualifiedName(), name);
+        final EnumBuilder builder = newEnumerationBuilder(getIdentifier().create(name));
 
         Preconditions.checkArgument(!this.enumDefinitions.contains(builder),
             "This generated type already contains equal enumeration.");

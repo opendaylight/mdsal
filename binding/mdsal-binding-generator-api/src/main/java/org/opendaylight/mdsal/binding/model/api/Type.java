@@ -7,26 +7,32 @@
  */
 package org.opendaylight.mdsal.binding.model.api;
 
+import org.opendaylight.yangtools.concepts.Identifiable;
+
 /**
  * The Type interface defines the base type for all types defined in java. Each
  * Type defined in java MUST contain name and package name, except of primitive
  * types like int, byte etc. In case of mapping of primitive type the package
  * name MUST be left as empty string.
  */
-public interface Type {
+public interface Type extends Identifiable<TypeName> {
     /**
      * Returns name of the package that interface belongs to.
      *
      * @return name of the package that interface belongs to
      */
-    String getPackageName();
+    default String getPackageName() {
+        return getIdentifier().packageName();
+    }
 
     /**
      * Returns name of the interface.
      *
      * @return name of the interface.
      */
-    String getName();
+    default String getName() {
+        return getIdentifier().simpleName();
+    }
 
     /**
      * Returns fully qualified name of Type. <br>
@@ -40,5 +46,7 @@ public interface Type {
      *
      * @return fully qualified name of Type.
      */
-    String getFullyQualifiedName();
+    default String getFullyQualifiedName() {
+        return getIdentifier().toString();
+    }
 }

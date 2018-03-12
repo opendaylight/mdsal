@@ -31,6 +31,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
@@ -339,7 +340,7 @@ public class TypeProviderTest {
         final TypeDefinition<?> enumLeafTypedef = enumLeafNode.getType();
         Type enumType = provider.javaTypeForSchemaDefinitionType(enumLeafTypedef, enumLeafNode);
 
-        Type refType = new ReferencedTypeImpl(enumType.getPackageName(), enumType.getName());
+        Type refType = new ReferencedTypeImpl(enumType.getIdentifier());
         provider.putReferencedType(enumLeafNode.getPath(), refType);
 
         final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(this.testTypeProviderModule,
@@ -347,7 +348,7 @@ public class TypeProviderTest {
         final TypeDefinition<?> enumLeafListTypedef = enumListNode.getType();
         enumType = provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode);
 
-        refType = new ReferencedTypeImpl(enumType.getPackageName(), enumType.getPackageName());
+        refType = new ReferencedTypeImpl(enumType.getIdentifier());
         provider.putReferencedType(enumListNode.getPath(), refType);
     }
 
@@ -708,7 +709,8 @@ public class TypeProviderTest {
 
     @Test
     public void addUnitsToGenTOTest() {
-        final GeneratedTOBuilder builder = new CodegenGeneratedTOBuilder("test.package", "TestBuilder");
+        final GeneratedTOBuilder builder = new CodegenGeneratedTOBuilder(
+            TypeName.create("test.package", "TestBuilder"));
 
         CodegenTypeProvider.addUnitsToGenTO(builder, null);
         GeneratedTransferObject genTO = builder.build();
