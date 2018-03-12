@@ -403,8 +403,8 @@ public class UsesTest {
 
         assertNotNull("Generated type for RPC test input wasn't generated", rpcTestInput);
         assertEquals("RpcTestInput interface - incorrect number of occurences", 1, rpcTestInputCounter);
-        assertEquals("RpcTestInput isn't in correct package",
-                "org.opendaylight.yang.gen.v1.urn.grouping.uses.rpc.rev130718", rpcTestInput.getPackageName());
+        assertEquals("RpcTestInput isn't in correct package", "org.opendaylight.yang.gen.v1.urn.grouping.uses.rpc.rev130718",
+                rpcTestInput.getPackageName());
 
         assertNotNull("Generated type for RPC test output wasn't generated", rpcTestOutput);
         assertEquals("RpcTestOutput interface - incorrect number of occurences", 1, rpcTestOutputCounter);

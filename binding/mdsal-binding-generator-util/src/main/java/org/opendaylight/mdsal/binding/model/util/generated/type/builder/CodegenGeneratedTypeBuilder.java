@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -21,8 +22,8 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     private String moduleName;
     private SchemaPath schemaPath;
 
-    public CodegenGeneratedTypeBuilder(final String packageName, final String name) {
-        super(packageName, name);
+    public CodegenGeneratedTypeBuilder(final JavaTypeName identifier) {
+        super(identifier);
         setAbstract(true);
     }
 
@@ -82,8 +83,8 @@ public final class CodegenGeneratedTypeBuilder extends AbstractGeneratedTypeBuil
     }
 
     @Override
-    AbstractEnumerationBuilder newEnumerationBuilder(final String packageName, final String name) {
-        return new CodegenEnumerationBuilder(packageName, name);
+    AbstractEnumerationBuilder newEnumerationBuilder(final JavaTypeName identifier) {
+        return new CodegenEnumerationBuilder(identifier);
     }
 
     @Override
