@@ -39,6 +39,7 @@ import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
@@ -241,7 +242,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     private GeneratedTransferObject shadedTOWithRestrictions(final GeneratedTransferObject gto, final Restrictions r) {
-        final GeneratedTOBuilder gtob = newGeneratedTOBuilder(gto.getPackageName(), gto.getName());
+        final GeneratedTOBuilder gtob = newGeneratedTOBuilder(gto.getIdentifier());
         final GeneratedTransferObject parent = gto.getSuperType();
         if (parent != null) {
             gtob.setExtendsType(parent);
@@ -392,13 +393,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         Preconditions.checkArgument(identity != null, "Target identity '" + baseIdQName + "' do not exists");
 
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
-        final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
-            identity.getPath());
-        final String genTypeName = BindingMapping.getClassName(identity.getQName());
-
-        final Type baseType = Types.typeForClass(Class.class);
-        final Type paramType = Types.wildcardTypeFor(packageName, genTypeName);
-        return Types.parameterizedTypeFor(baseType, paramType);
+        final JavaTypeName identifier = JavaTypeName.create(BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
+            identity.getPath()), BindingMapping.getClassName(identity.getQName()));
+        final Type paramType = Types.wildcardTypeFor(identifier);
+        return Types.parameterizedTypeFor(Types.typeForClass(Class.class), paramType);
     }
 
     /**
@@ -644,12 +642,9 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         Preconditions.checkArgument(enumTypeDef.getQName().getLocalName() != null,
                 "Local Name in EnumTypeDefinition QName cannot be NULL!");
 
-        final String enumerationName = BindingMapping.getClassName(enumName);
-
         final Module module = findParentModule(schemaContext, parentNode);
-        final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
-
-        final AbstractEnumerationBuilder enumBuilder = newEnumerationBuilder(basePackageName, enumerationName);
+        final AbstractEnumerationBuilder enumBuilder = newEnumerationBuilder(JavaTypeName.create(
+            BindingMapping.getRootPackageName(module.getQNameModule()), BindingMapping.getClassName(enumName)));
         addEnumDescription(enumBuilder, enumTypeDef);
         enumTypeDef.getReference().ifPresent(enumBuilder::setReference);
         enumBuilder.setModuleName(module.getName());
@@ -702,11 +697,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
     public abstract void addEnumDescription(EnumBuilder enumBuilder, EnumTypeDefinition enumTypeDef);
 
-    public abstract AbstractEnumerationBuilder newEnumerationBuilder(String packageName, String name);
+    public abstract AbstractEnumerationBuilder newEnumerationBuilder(JavaTypeName identifier);
 
-    public abstract GeneratedTOBuilder newGeneratedTOBuilder(String packageName, String name);
+    public abstract GeneratedTOBuilder newGeneratedTOBuilder(JavaTypeName identifier);
 
-    public abstract GeneratedTypeBuilder newGeneratedTypeBuilder(String packageName, String name);
+    public abstract GeneratedTypeBuilder newGeneratedTypeBuilder(JavaTypeName identifier);
 
     abstract void addCodegenInformation(GeneratedTypeBuilderBase<?> genTOBuilder, TypeDefinition<?> typeDef);
 
@@ -765,10 +760,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final List<Module> modulesSortedByDependency = ModuleDependencySort.sort(modules);
 
         for (Module module : modulesSortedByDependency) {
-            Map<Optional<Revision>, Map<String, Type>> dateTypeMap = genTypeDefsContextMap.get(module.getName());
-            if (dateTypeMap == null) {
-                dateTypeMap = new HashMap<>();
-            }
+            Map<Optional<Revision>, Map<String, Type>> dateTypeMap = genTypeDefsContextMap.computeIfAbsent(
+                module.getName(), key -> new HashMap<>());
             dateTypeMap.put(module.getRevision(), Collections.<String, Type>emptyMap());
             genTypeDefsContextMap.put(module.getName(), dateTypeMap);
         }
@@ -803,73 +796,76 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     private Type typedefToGeneratedType(final String basePackageName, final Module module,
             final TypeDefinition<?> typedef) {
-        final String moduleName = module.getName();
-        final Optional<Revision> moduleRevision = module.getRevision();
-        if (basePackageName != null && moduleName != null && typedef != null && typedef.getQName() != null) {
-            final String typedefName = typedef.getQName().getLocalName();
-            final TypeDefinition<?> innerTypeDefinition = typedef.getBaseType();
-            // See generatedTypeForExtendedDefinitionType() above for rationale behind this special case.
-            if (!(innerTypeDefinition instanceof LeafrefTypeDefinition)
-                    && !(innerTypeDefinition instanceof IdentityrefTypeDefinition)) {
-                Type returnType = null;
-                if (innerTypeDefinition.getBaseType() != null) {
-                    returnType = provideGeneratedTOFromExtendedType(typedef, innerTypeDefinition, basePackageName,
-                        module.getName());
-                } else if (innerTypeDefinition instanceof UnionTypeDefinition) {
-                    final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForUnionTypeDef(basePackageName,
-                            (UnionTypeDefinition) innerTypeDefinition, typedefName, typedef);
-                    genTOBuilder.setTypedef(true);
-                    genTOBuilder.setIsUnion(true);
-                    addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
-                    makeSerializable(genTOBuilder);
-                    returnType = genTOBuilder.build();
-                    // union builder
-                    final GeneratedTOBuilder unionBuilder = newGeneratedTOBuilder(genTOBuilder.getPackageName(),
-                            genTOBuilder.getName() + "Builder");
-                    unionBuilder.setIsUnionBuilder(true);
-                    final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
-                    method.setReturnType(returnType);
-                    method.addParameter(Types.STRING, "defaultValue");
-                    method.setAccessModifier(AccessModifier.PUBLIC);
-                    method.setStatic(true);
-                    Set<Type> types = additionalTypes.get(module);
-                    if (types == null) {
-                        types = Sets.<Type> newHashSet(unionBuilder.build());
-                        additionalTypes.put(module, types);
-                    } else {
-                        types.add(unionBuilder.build());
-                    }
-                } else if (innerTypeDefinition instanceof EnumTypeDefinition) {
-                    // enums are automatically Serializable
-                    final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) innerTypeDefinition;
-                    // TODO units for typedef enum
-                    returnType = provideTypeForEnum(enumTypeDef, typedefName, typedef);
-                } else if (innerTypeDefinition instanceof BitsTypeDefinition) {
-                    final BitsTypeDefinition bitsTypeDefinition = (BitsTypeDefinition) innerTypeDefinition;
-                    final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForBitsTypeDefinition(
-                            basePackageName, bitsTypeDefinition, typedefName, module.getName());
-                    genTOBuilder.setTypedef(true);
-                    addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
-                    makeSerializable(genTOBuilder);
-                    returnType = genTOBuilder.build();
-                } else {
-                    final Type javaType = javaTypeForSchemaDefinitionType(innerTypeDefinition, typedef);
-                    returnType = wrapJavaTypeIntoTO(basePackageName, typedef, javaType, module.getName());
-                }
-                if (returnType != null) {
-                    final Map<Optional<Revision>, Map<String, Type>> modulesByDate =
-                            genTypeDefsContextMap.get(moduleName);
-                    Map<String, Type> typeMap = modulesByDate.get(moduleRevision);
-                    if (typeMap != null) {
-                        if (typeMap.isEmpty()) {
-                            typeMap = new HashMap<>(4);
-                            modulesByDate.put(moduleRevision, typeMap);
-                        }
-                        typeMap.put(typedefName, returnType);
-                    }
-                    return returnType;
-                }
+        final TypeDefinition<?> innerTypedef = typedef.getBaseType();
+
+        // See generatedTypeForExtendedDefinitionType() above for rationale behind this special case.
+        if (innerTypedef instanceof LeafrefTypeDefinition || innerTypedef instanceof IdentityrefTypeDefinition) {
+            return null;
+        }
+
+        final String typedefName = typedef.getQName().getLocalName();
+
+        final Type returnType;
+        if (innerTypedef.getBaseType() != null) {
+            returnType = provideGeneratedTOFromExtendedType(typedef, innerTypedef, basePackageName,
+                module.getName());
+        } else if (innerTypedef instanceof UnionTypeDefinition) {
+            final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForUnionTypeDef(
+                JavaTypeName.create(basePackageName, BindingMapping.getClassName(typedef.getQName())),
+                (UnionTypeDefinition) innerTypedef, typedef);
+            genTOBuilder.setTypedef(true);
+            genTOBuilder.setIsUnion(true);
+            addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
+            makeSerializable(genTOBuilder);
+            returnType = genTOBuilder.build();
+
+            // Define a corresponding union builder. Typedefs are always anchored at a Java package root,
+            // so we are placing the builder alongside the union.
+            final GeneratedTOBuilder unionBuilder = newGeneratedTOBuilder(
+                JavaTypeName.create(genTOBuilder.getPackageName(), genTOBuilder.getName() + "Builder"));
+            unionBuilder.setIsUnionBuilder(true);
+            final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
+            method.setReturnType(returnType);
+            method.addParameter(Types.STRING, "defaultValue");
+            method.setAccessModifier(AccessModifier.PUBLIC);
+            method.setStatic(true);
+            Set<Type> types = additionalTypes.get(module);
+            if (types == null) {
+                types = Sets.<Type> newHashSet(unionBuilder.build());
+                additionalTypes.put(module, types);
+            } else {
+                types.add(unionBuilder.build());
             }
+        } else if (innerTypedef instanceof EnumTypeDefinition) {
+            // enums are automatically Serializable
+            final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) innerTypedef;
+            // TODO units for typedef enum
+            returnType = provideTypeForEnum(enumTypeDef, typedefName, typedef);
+        } else if (innerTypedef instanceof BitsTypeDefinition) {
+            final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForBitsTypeDefinition(
+                JavaTypeName.create(basePackageName, BindingMapping.getClassName(typedef.getQName())),
+                (BitsTypeDefinition) innerTypedef, module.getName());
+            genTOBuilder.setTypedef(true);
+            addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
+            makeSerializable(genTOBuilder);
+            returnType = genTOBuilder.build();
+        } else {
+            final Type javaType = javaTypeForSchemaDefinitionType(innerTypedef, typedef);
+            returnType = wrapJavaTypeIntoTO(basePackageName, typedef, javaType, module.getName());
+        }
+        if (returnType != null) {
+            final Map<Optional<Revision>, Map<String, Type>> modulesByDate =
+                    genTypeDefsContextMap.get(module.getName());
+            final Optional<Revision> moduleRevision = module.getRevision();
+            Map<String, Type> typeMap = modulesByDate.get(moduleRevision);
+            if (typeMap != null) {
+                if (typeMap.isEmpty()) {
+                    typeMap = new HashMap<>(4);
+                    modulesByDate.put(moduleRevision, typeMap);
+                }
+                typeMap.put(typedefName, returnType);
+            }
+            return returnType;
         }
         return null;
     }
@@ -898,7 +894,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         genTOBuilder.addHashIdentity(genPropBuilder);
         genTOBuilder.addToStringProperty(genPropBuilder);
         if (typedef.getStatus() == Status.DEPRECATED) {
-            genTOBuilder.addAnnotation("", "Deprecated");
+            genTOBuilder.addAnnotation("java.lang", "Deprecated");
         }
         if (javaType instanceof ConcreteType && "String".equals(javaType.getName()) && typedef.getBaseType() != null) {
             addStringRegExAsConstant(genTOBuilder, resolveRegExpressionsFromTypedef(typedef));
@@ -918,15 +914,13 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      * @param typedef
      *            type definition which should be of type
      *            <code>UnionTypeDefinition</code>
-     * @param typeDefName
-     *            string with name for generated TO
      * @return generated TO builder with the list of enclosed generated TO
      *         builders
      */
-    public GeneratedTOBuilder provideGeneratedTOBuilderForUnionTypeDef(final String basePackageName,
-            final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
-        final List<GeneratedTOBuilder> builders = provideGeneratedTOBuildersForUnionTypeDef(basePackageName,
-                typedef, typeDefName, parentNode);
+    public GeneratedTOBuilder provideGeneratedTOBuilderForUnionTypeDef(final JavaTypeName typeName,
+            final UnionTypeDefinition typedef, final TypeDefinition<?> parentNode) {
+        final List<GeneratedTOBuilder> builders = provideGeneratedTOBuildersForUnionTypeDef(typeName, typedef,
+            parentNode);
         Preconditions.checkState(!builders.isEmpty(), "No GeneratedTOBuilder objects generated from union %s", typedef);
 
         final GeneratedTOBuilder resultTOBuilder = builders.remove(0);
@@ -956,9 +950,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *             <li>if Qname of <code>typedef</code> is null</li>
      *             </ul>
      */
-    public List<GeneratedTOBuilder> provideGeneratedTOBuildersForUnionTypeDef(final String basePackageName,
-            final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode) {
-        Preconditions.checkNotNull(basePackageName, "Base Package Name cannot be NULL!");
+    public List<GeneratedTOBuilder> provideGeneratedTOBuildersForUnionTypeDef(final JavaTypeName typeName,
+            final UnionTypeDefinition typedef, final SchemaNode parentNode) {
         Preconditions.checkNotNull(typedef, "Type Definition cannot be NULL!");
         Preconditions.checkNotNull(typedef.getQName(), "Type definition QName cannot be NULL!");
 
@@ -966,16 +959,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final List<TypeDefinition<?>> unionTypes = typedef.getTypes();
         final Module module = findParentModule(schemaContext, parentNode);
 
-        final GeneratedTOBuilder unionGenTOBuilder;
-        if (typeDefName != null && !typeDefName.isEmpty()) {
-            final String typeName = BindingMapping.getClassName(typeDefName);
-            unionGenTOBuilder = newGeneratedTOBuilder(basePackageName, typeName);
-            unionGenTOBuilder.setSchemaPath(typedef.getPath());
-            unionGenTOBuilder.setModuleName(module.getName());
-            addCodegenInformation(unionGenTOBuilder, typedef);
-        } else {
-            unionGenTOBuilder = typedefToTransferObject(basePackageName, typedef, module.getName());
-        }
+        final GeneratedTOBuilder unionGenTOBuilder = newGeneratedTOBuilder(typeName);
+        unionGenTOBuilder.setSchemaPath(typedef.getPath());
+        unionGenTOBuilder.setModuleName(module.getName());
+        addCodegenInformation(unionGenTOBuilder, typedef);
 
         generatedTOBuilders.add(unionGenTOBuilder);
         unionGenTOBuilder.setIsUnion(true);
@@ -992,7 +979,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, expressions, parentNode);
             } else if (unionType instanceof UnionTypeDefinition) {
                 generatedTOBuilders.addAll(resolveUnionSubtypeAsUnion(unionGenTOBuilder,
-                    (UnionTypeDefinition) unionType, basePackageName, parentNode));
+                    (UnionTypeDefinition) unionType, parentNode));
             } else if (unionType instanceof EnumTypeDefinition) {
                 final Enumeration enumeration = addInnerEnumerationToTypeBuilder((EnumTypeDefinition) unionType,
                         unionTypeName, unionGenTOBuilder);
@@ -1033,13 +1020,15 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *         <code>provideGeneratedTOBuildersForUnionTypeDef</code> method.
      */
     private List<GeneratedTOBuilder> resolveUnionSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
-            final UnionTypeDefinition unionSubtype, final String basePackageName, final SchemaNode parentNode) {
-        final String newTOBuilderName = provideAvailableNameForGenTOBuilder(parentUnionGenTOBuilder.getName());
+            final UnionTypeDefinition unionSubtype, final SchemaNode parentNode) {
+        final JavaTypeName newTOBuilderName = parentUnionGenTOBuilder.getIdentifier().createSibling(
+            provideAvailableNameForGenTOBuilder(parentUnionGenTOBuilder.getName()));
         final List<GeneratedTOBuilder> subUnionGenTOBUilders = provideGeneratedTOBuildersForUnionTypeDef(
-                basePackageName, unionSubtype, newTOBuilderName, parentNode);
+            newTOBuilderName, unionSubtype, parentNode);
 
         final GeneratedPropertyBuilder propertyBuilder;
-        propertyBuilder = parentUnionGenTOBuilder.addProperty(BindingMapping.getPropertyName(newTOBuilderName));
+        propertyBuilder = parentUnionGenTOBuilder.addProperty(BindingMapping.getPropertyName(
+            newTOBuilderName.simpleName()));
         propertyBuilder.setReturnType(subUnionGenTOBUilders.get(0));
         parentUnionGenTOBuilder.addEqualsIdentity(propertyBuilder);
         parentUnionGenTOBuilder.addToStringProperty(propertyBuilder);
@@ -1182,19 +1171,13 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     private GeneratedTOBuilder typedefToTransferObject(final String basePackageName,
             final TypeDefinition<?> typedef, final String moduleName) {
-
-        final String packageName = BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typedef.getPath());
-        final String typeDefTOName = typedef.getQName().getLocalName();
-
-        if (packageName != null && typeDefTOName != null) {
-            final String genTOName = BindingMapping.getClassName(typeDefTOName);
-            final GeneratedTOBuilder newType = newGeneratedTOBuilder(packageName, genTOName);
-            newType.setSchemaPath(typedef.getPath());
-            newType.setModuleName(moduleName);
-            addCodegenInformation(newType, typedef);
-            return newType;
-        }
-        return null;
+        final GeneratedTOBuilder newType = newGeneratedTOBuilder(JavaTypeName.create(
+            BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typedef.getPath()),
+            BindingMapping.getClassName(typedef.getQName().getLocalName())));
+        newType.setSchemaPath(typedef.getPath());
+        newType.setModuleName(moduleName);
+        addCodegenInformation(newType, typedef);
+        return newType;
     }
 
     /**
@@ -1217,38 +1200,28 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *             <li>if <code>basePackageName</code> equals null</li>
      *             </ul>
      */
-    public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final String basePackageName,
-            final TypeDefinition<?> typeDef, final String typeDefName, final String moduleName) {
+    public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final JavaTypeName typeName,
+            final BitsTypeDefinition typeDef, final String moduleName) {
+        final GeneratedTOBuilder genTOBuilder = newGeneratedTOBuilder(typeName);
+        genTOBuilder.setSchemaPath(typeDef.getPath());
+        genTOBuilder.setModuleName(moduleName);
+        genTOBuilder.setBaseType(typeDef);
+        addCodegenInformation(genTOBuilder, typeDef);
 
-        Preconditions.checkArgument(typeDef != null, "typeDef cannot be NULL!");
-        Preconditions.checkArgument(basePackageName != null, "Base Package Name cannot be NULL!");
+        final List<Bit> bitList = typeDef.getBits();
+        GeneratedPropertyBuilder genPropertyBuilder;
+        for (Bit bit : bitList) {
+            final String name = bit.getName();
+            genPropertyBuilder = genTOBuilder.addProperty(BindingMapping.getPropertyName(name));
+            genPropertyBuilder.setReadOnly(true);
+            genPropertyBuilder.setReturnType(BaseYangTypes.BOOLEAN_TYPE);
 
-        if (typeDef instanceof BitsTypeDefinition) {
-            final BitsTypeDefinition bitsTypeDefinition = (BitsTypeDefinition) typeDef;
-
-            final String typeName = BindingMapping.getClassName(typeDefName);
-            final GeneratedTOBuilder genTOBuilder = newGeneratedTOBuilder(basePackageName, typeName);
-            genTOBuilder.setSchemaPath(typeDef.getPath());
-            genTOBuilder.setModuleName(moduleName);
-            genTOBuilder.setBaseType(typeDef);
-            addCodegenInformation(genTOBuilder, typeDef);
-
-            final List<Bit> bitList = bitsTypeDefinition.getBits();
-            GeneratedPropertyBuilder genPropertyBuilder;
-            for (Bit bit : bitList) {
-                final String name = bit.getName();
-                genPropertyBuilder = genTOBuilder.addProperty(BindingMapping.getPropertyName(name));
-                genPropertyBuilder.setReadOnly(true);
-                genPropertyBuilder.setReturnType(BaseYangTypes.BOOLEAN_TYPE);
-
-                genTOBuilder.addEqualsIdentity(genPropertyBuilder);
-                genTOBuilder.addHashIdentity(genPropertyBuilder);
-                genTOBuilder.addToStringProperty(genPropertyBuilder);
-            }
-
-            return genTOBuilder;
+            genTOBuilder.addEqualsIdentity(genPropertyBuilder);
+            genTOBuilder.addHashIdentity(genPropertyBuilder);
+            genTOBuilder.addToStringProperty(genPropertyBuilder);
         }
-        return null;
+
+        return genTOBuilder;
     }
 
     /**
@@ -1302,10 +1275,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         Preconditions.checkArgument(innerExtendedType != null, "Extended type cannot be NULL!");
         Preconditions.checkArgument(basePackageName != null, "String with base package name cannot be NULL!");
 
-        final String typedefName = typedef.getQName().getLocalName();
-        final String classTypedefName = BindingMapping.getClassName(typedefName);
-        final String innerTypeDef = innerExtendedType.getQName().getLocalName();
-        final GeneratedTOBuilder genTOBuilder = newGeneratedTOBuilder(basePackageName, classTypedefName);
+        final GeneratedTOBuilder genTOBuilder = newGeneratedTOBuilder(JavaTypeName.create(basePackageName,
+            BindingMapping.getClassName(typedef.getQName())));
         genTOBuilder.setSchemaPath(typedef.getPath());
         genTOBuilder.setModuleName(moduleName);
         genTOBuilder.setTypedef(true);
@@ -1314,7 +1285,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final Restrictions r = BindingGeneratorUtil.getRestrictions(typedef);
         genTOBuilder.setRestrictions(r);
         if (typedef.getStatus() == Status.DEPRECATED) {
-            genTOBuilder.addAnnotation("", "Deprecated");
+            genTOBuilder.addAnnotation("java.lang", "Deprecated");
         }
 
         if (baseTypeDefForExtendedType(innerExtendedType) instanceof UnionTypeDefinition) {
@@ -1330,6 +1301,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         }
 
         if (typeMap != null) {
+            final String innerTypeDef = innerExtendedType.getQName().getLocalName();
             final Type type = typeMap.get(innerTypeDef);
             if (type instanceof GeneratedTransferObject) {
                 genTOBuilder.setExtendsType((GeneratedTransferObject) type);
@@ -1434,8 +1406,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      * integer suffix is incremented by one. If <code>name</code> contains no
      * number suffix then number 1 is added.
      *
-     * @param name
-     *            string with name of augmented node
+     * @param name string with name of augmented node
      * @return string with the number suffix incremented by one (or 1 is added)
      */
     private static String provideAvailableNameForGenTOBuilder(final String name) {

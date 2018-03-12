@@ -28,6 +28,7 @@ import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -35,6 +36,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
+import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
@@ -339,7 +341,7 @@ public class TypeProviderTest {
         final TypeDefinition<?> enumLeafTypedef = enumLeafNode.getType();
         Type enumType = provider.javaTypeForSchemaDefinitionType(enumLeafTypedef, enumLeafNode);
 
-        Type refType = new ReferencedTypeImpl(enumType.getPackageName(), enumType.getName());
+        Type refType = new ReferencedTypeImpl(enumType.getIdentifier());
         provider.putReferencedType(enumLeafNode.getPath(), refType);
 
         final LeafListSchemaNode enumListNode = provideLeafListNodeFromTopLevelContainer(this.testTypeProviderModule,
@@ -347,7 +349,7 @@ public class TypeProviderTest {
         final TypeDefinition<?> enumLeafListTypedef = enumListNode.getType();
         enumType = provider.javaTypeForSchemaDefinitionType(enumLeafListTypedef, enumListNode);
 
-        refType = new ReferencedTypeImpl(enumType.getPackageName(), enumType.getPackageName());
+        refType = new ReferencedTypeImpl(enumType.getIdentifier());
         provider.putReferencedType(enumListNode.getPath(), refType);
     }
 
@@ -470,29 +472,14 @@ public class TypeProviderTest {
 
         assertNotNull(unionTypeDef);
         assertTrue(unionTypeDef.getBaseType() instanceof UnionTypeDefinition);
-        GeneratedTOBuilder unionTypeBuilder = provider.provideGeneratedTOBuilderForUnionTypeDef("test.package.name",
-            (UnionTypeDefinition)unionTypeDef.getBaseType(), "ComplexUnionType", unionTypeDef);
+        GeneratedTOBuilder unionTypeBuilder = provider.provideGeneratedTOBuilderForUnionTypeDef(
+            JavaTypeName.create("test.package.name", BindingMapping.getClassName(unionTypeDef.getQName())),
+            (UnionTypeDefinition)unionTypeDef.getBaseType(), unionTypeDef);
 
         assertNotNull(unionTypeBuilder);
 
         GeneratedTransferObject unionType = unionTypeBuilder.build();
-        assertEquals("ComplexUnionType", unionType.getName());
-
-        unionTypeBuilder = provider.provideGeneratedTOBuilderForUnionTypeDef("test.package.name",
-            (UnionTypeDefinition)unionTypeDef.getBaseType(), "", unionTypeDef);
-
-        assertNotNull(unionTypeBuilder);
-
-        unionType = unionTypeBuilder.build();
-        assertEquals("Union", unionType.getName());
-
-        unionTypeBuilder = provider.provideGeneratedTOBuilderForUnionTypeDef("test.package.name",
-            (UnionTypeDefinition)unionTypeDef.getBaseType(), null, unionTypeDef);
-
-        assertNotNull(unionTypeBuilder);
-
-        unionType = unionTypeBuilder.build();
-        assertEquals("Union", unionType.getName());
+        assertEquals("ComplexUnion", unionType.getName());
     }
 
     @Test
@@ -506,13 +493,13 @@ public class TypeProviderTest {
         assertNotNull(unionTypeDef);
         assertTrue(unionTypeDef.getBaseType() instanceof UnionTypeDefinition);
         final GeneratedTOBuilder unionTypeBuilder = provider.provideGeneratedTOBuilderForUnionTypeDef(
-            "test.package.name",(UnionTypeDefinition)unionTypeDef.getBaseType(), "ComplexStringIntUnionType",
-            unionTypeDef);
+            JavaTypeName.create("test.package.name", BindingMapping.getClassName(unionTypeDef.getQName())),
+            (UnionTypeDefinition)unionTypeDef.getBaseType(), unionTypeDef);
 
         assertNotNull(unionTypeBuilder);
 
         final GeneratedTransferObject unionType = unionTypeBuilder.build();
-        assertEquals("ComplexStringIntUnionType", unionType.getName());
+        assertEquals("ComplexStringIntUnion", unionType.getName());
     }
 
     @Test
@@ -649,43 +636,26 @@ public class TypeProviderTest {
 
         final Module baseYangTypes = resolveModule("test-type-provider");
 
-        final TypeDefinition<?> aesIdentityrefType = resolveTypeDefinitionFromModule(baseYangTypes, "aes-identityref-type");
+        final TypeDefinition<?> aesIdentityrefType = resolveTypeDefinitionFromModule(baseYangTypes,
+            "aes-identityref-type");
 
         assertNotNull(aesIdentityrefType);
         final Type extType = provider.generatedTypeForExtendedDefinitionType(aesIdentityrefType, aesIdentityrefType);
         assertEquals(null, extType);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void provideGeneratedTOBuilderForBitsTypeDefinitionWithNullTypedefTest() {
         final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-        provider.provideGeneratedTOBuilderForBitsTypeDefinition("", null, "", "");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void provideGeneratedTOBuilderForBitsTypeDefinitionWithBasePackageNullTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo", "yang-int8-type");
-        final TypeDefinition<?> leafType = leaf.getType();
-        provider.provideGeneratedTOBuilderForBitsTypeDefinition(null, leafType, "", "");
-    }
-
-    @Test
-    public void provideGeneratedTOBuilderForBitsTypeDefinitionWithNonBitsTypedefTest() {
-        final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo", "yang-int8-type");
-        final TypeDefinition<?> leafType = leaf.getType();
-        final Type type = provider.provideGeneratedTOBuilderForBitsTypeDefinition("", leafType, "", "");
-
-        assertEquals(null, type);
+        provider.provideGeneratedTOBuilderForBitsTypeDefinition(JavaTypeName.create("foo", "foo"), null, "foo");
     }
 
     @Test
     public void getConstructorPropertyNameTest() {
         final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
 
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo", "yang-int8-type");
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
+            "yang-int8-type");
         final TypeDefinition<?> leafType = leaf.getType();
 
         final String ctorPropertyName = provider.getConstructorPropertyName(leafType);
@@ -699,7 +669,8 @@ public class TypeProviderTest {
     public void getParamNameFromTypeTest() {
         final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
 
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo", "yang-int8-type");
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
+            "yang-int8-type");
         final TypeDefinition<?> leafType = leaf.getType();
 
         final String paramName = provider.getParamNameFromType(leafType);
@@ -708,7 +679,8 @@ public class TypeProviderTest {
 
     @Test
     public void addUnitsToGenTOTest() {
-        final GeneratedTOBuilder builder = new CodegenGeneratedTOBuilder("test.package", "TestBuilder");
+        final GeneratedTOBuilder builder = new CodegenGeneratedTOBuilder(
+            JavaTypeName.create("test.package", "TestBuilder"));
 
         CodegenTypeProvider.addUnitsToGenTO(builder, null);
         GeneratedTransferObject genTO = builder.build();

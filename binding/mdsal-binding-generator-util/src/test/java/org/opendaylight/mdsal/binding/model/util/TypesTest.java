@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.WildcardType;
 
 public class TypesTest {
@@ -27,37 +28,33 @@ public class TypesTest {
 
     @Test
     public void testPrimitiveType() {
-        final Type primitiveType = Types.primitiveType("newType", null);
-        assertEquals("newType", primitiveType.getName());
-        assertNotNull(primitiveType);
+        final Type primitiveType = Types.typeForClass(String[].class);
+        assertEquals("String[]", primitiveType.getName());
     }
 
     @Test
     public void testMapTypeFor() {
         final ParameterizedType mapType = Types.mapTypeFor(null, null);
         assertEquals("Map", mapType.getName());
-        assertNotNull(mapType);
     }
 
     @Test
     public void testSetTypeFor() {
         final ParameterizedType setType = Types.setTypeFor(null);
         assertEquals("Set", setType.getName());
-        assertNotNull(setType);
     }
 
     @Test
     public void testListTypeFor() {
         final ParameterizedType listType = Types.listTypeFor(null);
         assertEquals("List", listType.getName());
-        assertNotNull(listType);
     }
 
     @Test
     public void testWildcardTypeFor() {
-        final WildcardType wildcardType = Types.wildcardTypeFor("org.opendaylight.yangtools.test", "WildcardTypeTest");
+        final WildcardType wildcardType = Types.wildcardTypeFor(JavaTypeName.create("org.opendaylight.yangtools.test",
+            "WildcardTypeTest"));
         assertEquals("WildcardTypeTest", wildcardType.getName());
-        assertNotNull(wildcardType);
     }
 
     @Test

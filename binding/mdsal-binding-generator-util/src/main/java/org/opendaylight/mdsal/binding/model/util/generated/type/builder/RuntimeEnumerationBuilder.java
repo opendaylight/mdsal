@@ -11,14 +11,15 @@ import java.util.Optional;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.TypeComment;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
 
 public final class RuntimeEnumerationBuilder extends AbstractEnumerationBuilder {
-    public RuntimeEnumerationBuilder(final String packageName, final String name) {
-        super(packageName, name);
+    public RuntimeEnumerationBuilder(final JavaTypeName identifier) {
+        super(identifier);
     }
 
     @Override

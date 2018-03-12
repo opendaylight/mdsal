@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.model.util;
 
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+
 /**
  *
  * Wraps combination of <code>packageName</code> and <code>name</code> to the
@@ -17,13 +19,10 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
     /**
      * Creates instance of this class with concrete package name and type name
      *
-     * @param packageName
-     *            string with the package name
-     * @param name
-     *            string with the name for referenced type
+     * @param identifier JavaTypeName of the referenced type
      */
-    public ReferencedTypeImpl(final String packageName, final String name) {
-        super(packageName, name);
+    public ReferencedTypeImpl(final JavaTypeName identifier) {
+        super(identifier);
     }
 
     @Override

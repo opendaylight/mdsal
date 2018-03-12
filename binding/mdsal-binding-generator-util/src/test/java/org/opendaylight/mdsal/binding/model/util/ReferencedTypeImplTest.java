@@ -11,18 +11,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 
 public class ReferencedTypeImplTest {
 
     @Test
     public void testCreateNewReferencedType() {
-        ReferencedTypeImpl refType = new ReferencedTypeImpl("org.opendaylight.yangtools.test", "RefTypeTest");
+        ReferencedTypeImpl refType = new ReferencedTypeImpl(
+            JavaTypeName.create("org.opendaylight.yangtools.test", "RefTypeTest"));
         assertEquals("RefTypeTest", refType.getName());
     }
 
     @Test
     public void testToStringMethod() {
-        ReferencedTypeImpl refType = new ReferencedTypeImpl("org.opendaylight.yangtools.test", "RefTypeTest");
+        ReferencedTypeImpl refType = new ReferencedTypeImpl(
+            JavaTypeName.create("org.opendaylight.yangtools.test", "RefTypeTest"));
         assertTrue(refType.toString().contains("RefTypeTest"));
     }
 }

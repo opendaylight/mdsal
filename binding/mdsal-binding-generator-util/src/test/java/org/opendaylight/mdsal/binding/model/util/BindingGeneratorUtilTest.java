@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
@@ -122,16 +123,19 @@ public class BindingGeneratorUtilTest {
         assertNotNull(restriction);
 
         // test method computeDefaultSUID
-        GeneratedTypeBuilder genTypeBuilder = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test", "TestType");
+        GeneratedTypeBuilder genTypeBuilder = new CodegenGeneratedTypeBuilder(
+            JavaTypeName.create("org.opendaylight.yangtools.test", "TestType"));
         genTypeBuilder.addMethod("testMethod");
         genTypeBuilder.addAnnotation("org.opendaylight.yangtools.test.annotation", "AnnotationTest");
         genTypeBuilder.addEnclosingTransferObject("testObject");
         genTypeBuilder.addProperty("newProp");
-        GeneratedTypeBuilder genType = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test", "Type2");
+        GeneratedTypeBuilder genType = new CodegenGeneratedTypeBuilder(
+            JavaTypeName.create("org.opendaylight.yangtools.test", "Type2"));
         genTypeBuilder.addImplementsType(genType);
         long computedSUID = BindingGeneratorUtil.computeDefaultSUID(genTypeBuilder);
 
-        GeneratedTypeBuilder genTypeBuilder2 = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test2", "TestType2");
+        GeneratedTypeBuilder genTypeBuilder2 = new CodegenGeneratedTypeBuilder(
+            JavaTypeName.create("org.opendaylight.yangtools.test2", "TestType2"));
         long computedSUID2 = BindingGeneratorUtil.computeDefaultSUID(genTypeBuilder2);
         assertNotEquals(computedSUID, computedSUID2);
 
@@ -286,7 +290,8 @@ public class BindingGeneratorUtilTest {
 
     @Test
     public void computeDefaultSUIDTest() {
-        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder("my.package", "MyName");
+        CodegenGeneratedTypeBuilder generatedTypeBuilder = new CodegenGeneratedTypeBuilder(
+            JavaTypeName.create("my.package", "MyName"));
 
         MethodSignatureBuilder method = generatedTypeBuilder.addMethod("myMethodName");
         method.setAccessModifier(AccessModifier.PUBLIC);

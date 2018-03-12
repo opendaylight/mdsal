@@ -17,6 +17,7 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.Status;
@@ -43,23 +44,31 @@ public class EnumerationBuilderImplTest {
 
     @Before
     public void setup() {
-        enumerationBuilder = new CodegenEnumerationBuilder(packageName, name);
+        enumerationBuilder = new CodegenEnumerationBuilder(JavaTypeName.create(packageName, name));
         enumerationBuilder.setDescription(DESCRIPTION);
         enumerationBuilder.setModuleName(moduleName);
         enumerationBuilder.setReference(reference);
         enumerationBuilder.setSchemaPath(SchemaPath.create(true, qName));
         enumerationBuilder.addValue(valueName, valueName, value, Status.CURRENT, valueDescription, null);
         enumerationBuilder.addAnnotation(packageName, "TestAnnotation");
-        enumerationBuilderSame = new CodegenEnumerationBuilder(packageName, name);
-        enumerationBuilderOtherName = new CodegenEnumerationBuilder(packageName, "SomeOtherName");
-        enumerationBuilderOtherPackage = new CodegenEnumerationBuilder("org.opendaylight.other", name);
+        enumerationBuilderSame = new CodegenEnumerationBuilder(JavaTypeName.create(packageName, name));
+        enumerationBuilderOtherName = new CodegenEnumerationBuilder(JavaTypeName.create(packageName, "SomeOtherName"));
+        enumerationBuilderOtherPackage = new CodegenEnumerationBuilder(JavaTypeName.create("org.opendaylight.other", name));
         enumeration = enumerationBuilder.toInstance(enumerationBuilder);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testAddNullAnnotation() {
-        assertNull(enumerationBuilder.addAnnotation(null, null));
+        assertNull(enumerationBuilder.addAnnotation(null));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testAddNullAnnotationPackage() {
         assertNull(enumerationBuilder.addAnnotation(null, "test"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testAddNullAnnotationName() {
         assertNull(enumerationBuilder.addAnnotation(packageName, null));
     }
 
@@ -112,7 +121,8 @@ public class EnumerationBuilderImplTest {
         final Enumeration enumerationSame = enumerationBuilderSame.toInstance(enumerationBuilderSame);
         assertEquals(enumeration, enumerationSame);
 
-        final CodegenEnumerationBuilder enumerationBuilderSame1 = new CodegenEnumerationBuilder(packageName, name);
+        final CodegenEnumerationBuilder enumerationBuilderSame1 = new CodegenEnumerationBuilder(
+            JavaTypeName.create(packageName, name));
         final Enumeration enumerationSame1 = enumerationBuilderSame1.toInstance(enumerationBuilderSame1);
         enumerationBuilderSame1.addValue(valueName, valueName, 14, Status.CURRENT, valueDescription, null);
         // Enums are equal thanks to same package name and local name
@@ -125,8 +135,8 @@ public class EnumerationBuilderImplTest {
                 "public enum " + name + " {\n" +
                 "\t TestValue " + "(12 );\n" +
                 "}";
-        final String s = "Enumeration [packageName="+packageName+", definingType="+packageName+"."+name+", name="+name+
-                ", values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]";
+        final String s = "Enumeration [packageName=" + packageName + ", definingType=" + packageName + "." + name
+                + ", name=" + name + ", values=[EnumPair [name=TestValue, mappedName=TestValue, value=12]]]";
 
         assertEquals(s, enumeration.toString());
         assertEquals(formattedString, enumeration.toFormattedString());

@@ -30,9 +30,11 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +45,7 @@ import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -248,8 +251,7 @@ abstract class AbstractTypeGenerator {
         if (node.isAugmenting() || node.isAddedByUses()) {
             return null;
         }
-        final String packageName = packageNameForGeneratedType(context.modulePackageName(), node.getPath());
-        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, node, childOf, context);
+        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(context, node, childOf);
         annotateDeprecatedIfNecessary(node.getStatus(), genType);
 
         final Module module = context.module();
@@ -280,8 +282,7 @@ abstract class AbstractTypeGenerator {
             constructGetter(parent, Types.listTypeFor(genType), node);
 
             final List<String> listKeys = listKeys(node);
-            final String packageName = packageNameForGeneratedType(context.modulePackageName(), node.getPath());
-            final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(packageName, node);
+            final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(context, node);
             if (genTOBuilder != null) {
                 final Type identifierMarker = Types.parameterizedTypeFor(IDENTIFIER, genType);
                 final Type identifiableMarker = Types.parameterizedTypeFor(IDENTIFIABLE, genTOBuilder);
@@ -439,7 +440,9 @@ abstract class AbstractTypeGenerator {
     private Type createRpcContainer(final ModuleContext context, final String rpcName, final RpcDefinition rpc,
             final ContainerSchemaNode schema) {
         processUsesAugments(schema, context);
-        final GeneratedTypeBuilder outType = addRawInterfaceDefinition(context.modulePackageName(), schema, rpcName);
+        final GeneratedTypeBuilder outType = addRawInterfaceDefinition(
+            JavaTypeName.create(context.modulePackageName(), rpcName + BindingMapping.getClassName(schema.getQName())),
+            schema);
         addImplementedInterfaceFromUses(schema, outType);
         outType.addImplementsType(DATA_OBJECT);
         outType.addImplementsType(augmentable(outType));
@@ -541,20 +544,19 @@ abstract class AbstractTypeGenerator {
         if (identity == null) {
             return;
         }
-        final String packageName = packageNameForGeneratedType(context.modulePackageName(), identity.getPath());
-        final String genTypeName = BindingMapping.getClassName(identity.getQName());
-        final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(packageName, genTypeName);
+        final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
+            packageNameForGeneratedType(context.modulePackageName(), identity.getPath()),
+            BindingMapping.getClassName(identity.getQName())));
         final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
         if (baseIdentities.isEmpty()) {
-            final GeneratedTOBuilder gto = typeProvider.newGeneratedTOBuilder(
-                BaseIdentity.class.getPackage().getName(), BaseIdentity.class.getSimpleName());
+            final GeneratedTOBuilder gto = typeProvider.newGeneratedTOBuilder(JavaTypeName.create(BaseIdentity.class));
             newType.addImplementsType(gto.build());
         } else {
             for (IdentitySchemaNode baseIdentity : baseIdentities) {
                 final QName qname = baseIdentity.getQName();
-                final String returnTypePkgName = BindingMapping.getRootPackageName(qname.getModule());
-                final String returnTypeName = BindingMapping.getClassName(qname);
-                final GeneratedTransferObject gto = new CodegenGeneratedTOBuilder(returnTypePkgName, returnTypeName)
+                final GeneratedTransferObject gto = new CodegenGeneratedTOBuilder(
+                    JavaTypeName.create(BindingMapping.getRootPackageName(qname.getModule()),
+                        BindingMapping.getClassName(qname)))
                         .build();
                 newType.addImplementsType(gto);
             }
@@ -593,8 +595,7 @@ abstract class AbstractTypeGenerator {
         for (final GroupingDefinition grouping : new GroupingDefinitionDependencySort().sort(groupings)) {
             // Converts individual grouping to GeneratedType. Firstly generated type builder is created and every child
             // node of grouping is resolved to the method.
-            final String packageName = packageNameForGeneratedType(context.modulePackageName(), grouping.getPath());
-            final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(packageName, grouping, context);
+            final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(context, grouping);
             annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
             context.addGroupingType(grouping.getPath(), genType);
             resolveDataSchemaNodes(context, genType, genType, grouping.getChildNodes());
@@ -652,8 +653,8 @@ abstract class AbstractTypeGenerator {
     private GeneratedTypeBuilder moduleTypeBuilder(final ModuleContext context, final String postfix) {
         final Module module = context.module();
         final String moduleName = BindingMapping.getClassName(module.getName()) + postfix;
-        final GeneratedTypeBuilder moduleBuilder = typeProvider.newGeneratedTypeBuilder(context.modulePackageName(),
-            moduleName);
+        final GeneratedTypeBuilder moduleBuilder = typeProvider.newGeneratedTypeBuilder(
+            JavaTypeName.create(context.modulePackageName(), moduleName));
 
         moduleBuilder.setModuleName(moduleName);
         addCodegenInformation(moduleBuilder, module);
@@ -715,9 +716,8 @@ abstract class AbstractTypeGenerator {
         }
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            final Type targetType = new ReferencedTypeImpl(targetTypeBuilder.getPackageName(),
-                    targetTypeBuilder.getName());
-            addRawAugmentGenTypeDefinition(context, context.modulePackageName(), targetType, augSchema);
+            final Type targetType = new ReferencedTypeImpl(targetTypeBuilder.getIdentifier());
+            addRawAugmentGenTypeDefinition(context, targetType, augSchema);
 
         } else {
             generateTypesFromAugmentedChoiceCases(context, targetTypeBuilder.build(),
@@ -747,14 +747,14 @@ abstract class AbstractTypeGenerator {
         }
 
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            final String packageName;
             if (usesNodeParent instanceof SchemaNode) {
-                packageName = packageNameForAugmentedGeneratedType(context.modulePackageName(),
-                    ((SchemaNode) usesNodeParent).getPath());
+                addRawAugmentGenTypeDefinition(context,
+                    packageNameForAugmentedGeneratedType(context.modulePackageName(),
+                        ((SchemaNode) usesNodeParent).getPath()),
+                    targetTypeBuilder.build(), augSchema);
             } else {
-                packageName = context.modulePackageName();
+                addRawAugmentGenTypeDefinition(context, targetTypeBuilder.build(), augSchema);
             }
-            addRawAugmentGenTypeDefinition(context, packageName, targetTypeBuilder.build(), augSchema);
         } else {
             generateTypesFromAugmentedChoiceCases(context, targetTypeBuilder.build(),
                 (ChoiceSchemaNode) targetSchemaNode, augSchema.getChildNodes(), usesNodeParent);
@@ -853,8 +853,8 @@ abstract class AbstractTypeGenerator {
             augTypeName = augGenTypeName(augmentBuilders, targetTypeRef.getName());
         }
 
-        final GeneratedTypeBuilder augTypeBuilder = typeProvider.newGeneratedTypeBuilder(augmentPackageName,
-            augTypeName);
+        final GeneratedTypeBuilder augTypeBuilder = typeProvider.newGeneratedTypeBuilder(
+            JavaTypeName.create(augmentPackageName, augTypeName));
 
         augTypeBuilder.addImplementsType(DATA_OBJECT);
         augTypeBuilder.addImplementsType(Types.augmentationTypeFor(targetTypeRef));
@@ -870,6 +870,11 @@ abstract class AbstractTypeGenerator {
         }
         context.addAugmentType(augTypeBuilder);
         return augTypeBuilder;
+    }
+
+    private GeneratedTypeBuilder addRawAugmentGenTypeDefinition(final ModuleContext context, final Type targetTypeRef,
+            final AugmentationSchemaNode augSchema) {
+        return addRawAugmentGenTypeDefinition(context, context.modulePackageName(), targetTypeRef, augSchema);
     }
 
     /**
@@ -1042,8 +1047,9 @@ abstract class AbstractTypeGenerator {
         checkArgument(choiceNode != null, "Choice Schema Node cannot be NULL.");
 
         if (!choiceNode.isAddedByUses()) {
-            final String packageName = packageNameForGeneratedType(context.modulePackageName(), choiceNode.getPath());
-            final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(packageName, choiceNode);
+            final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(
+                JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), choiceNode.getPath()),
+                BindingMapping.getClassName(choiceNode.getQName())), choiceNode);
             constructGetter(parent, choiceTypeBuilder, choiceNode);
             choiceTypeBuilder.addImplementsType(typeForClass(DataContainer.class));
             annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
@@ -1079,9 +1085,7 @@ abstract class AbstractTypeGenerator {
 
         for (final CaseSchemaNode caseNode : choiceNode.getCases().values()) {
             if (caseNode != null && !caseNode.isAddedByUses() && !caseNode.isAugmenting()) {
-                final String packageName = packageNameForGeneratedType(context.modulePackageName(), caseNode.getPath());
-                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode,
-                    context);
+                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(context, caseNode);
                 caseTypeBuilder.addImplementsType(refChoiceType);
                 annotateDeprecatedIfNecessary(caseNode.getStatus(), caseTypeBuilder);
                 context.addCaseType(caseNode.getPath(), caseTypeBuilder);
@@ -1160,9 +1164,7 @@ abstract class AbstractTypeGenerator {
 
         for (final DataSchemaNode caseNode : augmentedNodes) {
             if (caseNode != null) {
-                final String packageName = packageNameForGeneratedType(context.modulePackageName(), caseNode.getPath());
-                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode,
-                    context);
+                final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(context, caseNode);
                 caseTypeBuilder.addImplementsType(targetType);
 
                 SchemaNode parent;
@@ -1269,14 +1271,16 @@ abstract class AbstractTypeGenerator {
                 }
                 typeProvider.putReferencedType(leaf.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
-                GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
+                GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((UnionTypeDefinition) typeDef, typeBuilder, leaf,
+                    parentModule);
                 if (genTOBuilder != null) {
                     returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
                     // Store the inner type within the union so that we can find the reference for it
                     context.addInnerTypedefType(typeDef.getPath(), returnType);
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
-                GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule);
+                GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((BitsTypeDefinition) typeDef, typeBuilder, leaf,
+                    parentModule);
                 if (genTOBuilder != null) {
                     returnType = genTOBuilder.build();
                 }
@@ -1345,9 +1349,7 @@ abstract class AbstractTypeGenerator {
                             + nodeParam);
                 }
 
-                final Class<RoutingContext> clazz = RoutingContext.class;
-                final AnnotationTypeBuilder rc = getter.addAnnotation(clazz.getPackage().getName(),
-                        clazz.getSimpleName());
+                final AnnotationTypeBuilder rc = getter.addAnnotation(JavaTypeName.create(RoutingContext.class));
                 final String packageName = packageNameForGeneratedType(basePackageName, identity.getPath());
                 final String genTypeName = BindingMapping.getClassName(identity.getQName().getLocalName());
                 rc.addParameter("value", packageName + "." + genTypeName + ".class");
@@ -1473,15 +1475,17 @@ abstract class AbstractTypeGenerator {
                 final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) typeDef;
                 final EnumBuilder enumBuilder = resolveInnerEnumFromTypeDefinition(enumTypeDef, nodeName,
                     typeBuilder, context);
-                returnType = new ReferencedTypeImpl(enumBuilder.getPackageName(), enumBuilder.getName());
+                returnType = new ReferencedTypeImpl(enumBuilder.getIdentifier());
                 typeProvider.putReferencedType(node.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
-                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule);
+                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((UnionTypeDefinition)typeDef, typeBuilder,
+                    node, parentModule);
                 if (genTOBuilder != null) {
                     returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
-                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule);
+                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((BitsTypeDefinition)typeDef, typeBuilder,
+                    node, parentModule);
                 returnType = genTOBuilder.build();
             } else {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
@@ -1499,8 +1503,7 @@ abstract class AbstractTypeGenerator {
 
     private Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final TypeDefinition<?> typeDef,
             final GeneratedTypeBuilder typeBuilder, final Module parentModule) {
-        final GeneratedTOBuilder returnType = typeProvider.newGeneratedTOBuilder(genTOBuilder.getPackageName(),
-                genTOBuilder.getName());
+        final GeneratedTOBuilder returnType = typeProvider.newGeneratedTOBuilder(genTOBuilder.getIdentifier());
 
         addCodegenInformation(returnType, parentModule, typeDef);
         returnType.setSchemaPath(typeDef.getPath());
@@ -1533,25 +1536,42 @@ abstract class AbstractTypeGenerator {
 
     private GeneratedTOBuilder createUnionBuilder(final GeneratedTOBuilder genTOBuilder,
             final GeneratedTypeBuilder typeBuilder) {
-        final String outerCls = Types.getOuterClassName(genTOBuilder);
-        final StringBuilder name;
-        if (outerCls != null) {
-            name = new StringBuilder(outerCls);
-        } else {
-            name = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
+
+        // Append enclosing path hierarchy without dots
+        // FIXME: TypeName could be giving us this as a utility method
+        Optional<JavaTypeName> outerClass = genTOBuilder.getIdentifier().immediatelyEnclosingClass();
+        if (outerClass.isPresent()) {
+            final Deque<String> enclosingPath = new ArrayDeque<>();
+            do {
+                final JavaTypeName outerName = outerClass.get();
+                enclosingPath.push(outerName.simpleName());
+                outerClass = outerName.immediatelyEnclosingClass();
+            } while (outerClass.isPresent());
+
+            while (!enclosingPath.isEmpty()) {
+                sb.append(enclosingPath.pop());
+            }
         }
-        name.append(genTOBuilder.getName());
-        name.append("Builder");
-        final GeneratedTOBuilder unionBuilder = typeProvider.newGeneratedTOBuilder(typeBuilder.getPackageName(),
-            name.toString());
+
+        sb.append(genTOBuilder.getName()).append("Builder");
+        final GeneratedTOBuilder unionBuilder = typeProvider.newGeneratedTOBuilder(
+            JavaTypeName.create(typeBuilder.getPackageName(), sb.toString()));
         unionBuilder.setIsUnionBuilder(true);
         return unionBuilder;
     }
 
-    private GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
-            final ModuleContext context) {
-        return addDefaultInterfaceDefinition(packageName, schemaNode, null, context);
+    private GeneratedTypeBuilder addDefaultInterfaceDefinition(final ModuleContext context,
+            final SchemaNode schemaNode) {
+        return addDefaultInterfaceDefinition(context, schemaNode, null);
     }
+
+    private GeneratedTypeBuilder addDefaultInterfaceDefinition(final ModuleContext context,
+            final SchemaNode schemaNode, final GeneratedTypeBuilder childOf) {
+        final String packageName = packageNameForGeneratedType(context.modulePackageName(), schemaNode.getPath());
+        return addDefaultInterfaceDefinition(packageName, schemaNode, childOf, context);
+    }
+
 
     /**
      * Instantiates generated type builder with <code>packageName</code> and
@@ -1578,7 +1598,8 @@ abstract class AbstractTypeGenerator {
      */
     private GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
             final Type parent, final ModuleContext context) {
-        final GeneratedTypeBuilder it = addRawInterfaceDefinition(packageName, schemaNode, "");
+        final GeneratedTypeBuilder it = addRawInterfaceDefinition(
+            JavaTypeName.create(packageName, BindingMapping.getClassName(schemaNode.getQName())), schemaNode);
         if (parent == null) {
             it.addImplementsType(DATA_OBJECT);
         } else {
@@ -1606,8 +1627,11 @@ abstract class AbstractTypeGenerator {
      *            schema node which provide data about the schema node name
      * @return generated type builder for <code>schemaNode</code>
      */
-    private GeneratedTypeBuilder addRawInterfaceDefinition(final String packageName, final SchemaNode schemaNode) {
-        return addRawInterfaceDefinition(packageName, schemaNode, "");
+    private GeneratedTypeBuilder addRawInterfaceDefinition(final ModuleContext context, final SchemaNode schemaNode,
+            final String prefix) {
+        return addRawInterfaceDefinition(
+            JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), schemaNode.getPath()),
+                prefix + BindingMapping.getClassName(schemaNode.getQName())), schemaNode);
     }
 
     /**
@@ -1635,23 +1659,14 @@ abstract class AbstractTypeGenerator {
      *             </ul>
      *
      */
-    private GeneratedTypeBuilder addRawInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
-            final String prefix) {
+    private GeneratedTypeBuilder addRawInterfaceDefinition(final JavaTypeName identifier, final SchemaNode schemaNode) {
         checkArgument(schemaNode != null, "Data Schema Node cannot be NULL.");
-        checkArgument(packageName != null, "Package Name for Generated Type cannot be NULL.");
         checkArgument(schemaNode.getQName() != null, "QName for Data Schema Node cannot be NULL.");
         final String schemaNodeName = schemaNode.getQName().getLocalName();
         checkArgument(schemaNodeName != null, "Local Name of QName for Data Schema Node cannot be NULL.");
 
-        String genTypeName;
-        if (prefix == null) {
-            genTypeName = BindingMapping.getClassName(schemaNodeName);
-        } else {
-            genTypeName = prefix + BindingMapping.getClassName(schemaNodeName);
-        }
-
         // FIXME: Validation of name conflict
-        final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(packageName, genTypeName);
+        final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(identifier);
         final Module module = findParentModule(schemaContext, schemaNode);
         qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
 
@@ -1659,14 +1674,16 @@ abstract class AbstractTypeGenerator {
         newType.setSchemaPath(schemaNode.getPath());
         newType.setModuleName(module.getName());
 
+        final String packageName = identifier.packageName();
+        final String simpleName = identifier.simpleName();
         if (!genTypeBuilders.containsKey(packageName)) {
             final Map<String, GeneratedTypeBuilder> builders = new HashMap<>();
-            builders.put(genTypeName, newType);
+            builders.put(simpleName, newType);
             genTypeBuilders.put(packageName, builders);
         } else {
             final Map<String, GeneratedTypeBuilder> builders = genTypeBuilders.get(packageName);
-            if (!builders.containsKey(genTypeName)) {
-                builders.put(genTypeName, newType);
+            if (!builders.containsKey(simpleName)) {
+                builders.put(simpleName, newType);
             }
         }
         return newType;
@@ -1714,7 +1731,7 @@ abstract class AbstractTypeGenerator {
         getMethod.setReturnType(returnType);
 
         if (node.getStatus() == Status.DEPRECATED) {
-            getMethod.addAnnotation("", "Deprecated");
+            getMethod.addAnnotation("java.lang", "Deprecated");
         }
         addComment(getMethod, node);
 
@@ -1824,19 +1841,57 @@ abstract class AbstractTypeGenerator {
      *         <code>list</code> or null if <code>list</code> is null or list of
      *         key definitions is null or empty.
      */
-    private GeneratedTOBuilder resolveListKeyTOBuilder(final String packageName, final ListSchemaNode list) {
-        GeneratedTOBuilder genTOBuilder = null;
+    private GeneratedTOBuilder resolveListKeyTOBuilder(final ModuleContext context, final ListSchemaNode list) {
         if (list.getKeyDefinition() != null && !list.getKeyDefinition().isEmpty()) {
-            final String listName = list.getQName().getLocalName() + "Key";
-            final String genTOName = BindingMapping.getClassName(listName);
-            genTOBuilder = typeProvider.newGeneratedTOBuilder(packageName, genTOName);
+            return typeProvider.newGeneratedTOBuilder(JavaTypeName.create(
+                packageNameForGeneratedType(context.modulePackageName(), list.getPath()),
+                BindingMapping.getClassName(list.getQName().getLocalName() + "Key")));
         }
-        return genTOBuilder;
+        return null;
     }
 
     /**
-     * Builds generated TO builders for <code>typeDef</code> of type
-     * {@link UnionTypeDefinition} or {@link BitsTypeDefinition} which are
+     * Builds a GeneratedTOBuilder for a UnionType {@link UnionTypeDefinition}.
+     *
+     * If more then one generated TO builder is created for enclosing then all
+     * of the generated TO builders are added to <code>typeBuilder</code> as
+     * enclosing transfer objects.
+     *
+     * @param typeDef
+     *            type definition which can be of type <code>UnionType</code> or
+     *            <code>BitsTypeDefinition</code>
+     * @param typeBuilder
+     *            generated type builder to which is added generated TO created
+     *            from <code>typeDef</code>
+     * @param leaf
+     *            string with name for generated TO builder
+     * @param parentModule
+     *            parent module
+     * @return generated TO builder for <code>typeDef</code>
+     */
+    private GeneratedTOBuilder addTOToTypeBuilder(final UnionTypeDefinition typeDef,
+            final GeneratedTypeBuilder typeBuilder, final DataSchemaNode leaf, final Module parentModule) {
+        final List<GeneratedTOBuilder> types = typeProvider.provideGeneratedTOBuildersForUnionTypeDef(
+            typeBuilder.getIdentifier().createEnclosed(BindingMapping.getClassName(leaf.getQName())),
+            typeDef, leaf);
+
+        checkState(!types.isEmpty(), "No GeneratedTOBuilder objects generated from union %s", typeDef);
+        final List<GeneratedTOBuilder> genTOBuilders = new ArrayList<>(types);
+        final GeneratedTOBuilder resultTOBuilder = types.remove(0);
+        for (final GeneratedTOBuilder genTOBuilder : types) {
+            resultTOBuilder.addEnclosingTransferObject(genTOBuilder);
+        }
+
+        final GeneratedPropertyBuilder genPropBuilder = resultTOBuilder.addProperty("value");
+        genPropBuilder.setReturnType(Types.CHAR_ARRAY);
+        resultTOBuilder.addEqualsIdentity(genPropBuilder);
+        resultTOBuilder.addHashIdentity(genPropBuilder);
+        resultTOBuilder.addToStringProperty(genPropBuilder);
+        return processEnclosedTOBuilderes(typeBuilder, genTOBuilders);
+    }
+
+    /**
+     * Builds generated TO builders for <code>typeDef</code> of type {@link BitsTypeDefinition} which are
      * also added to <code>typeBuilder</code> as enclosing transfer object.
      *
      * If more then one generated TO builder is created for enclosing then all
@@ -1855,44 +1910,22 @@ abstract class AbstractTypeGenerator {
      *            parent module
      * @return generated TO builder for <code>typeDef</code>
      */
-    private GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef,
+    private GeneratedTOBuilder addTOToTypeBuilder(final BitsTypeDefinition typeDef,
             final GeneratedTypeBuilder typeBuilder, final DataSchemaNode leaf, final Module parentModule) {
-        final String classNameFromLeaf = BindingMapping.getClassName(leaf.getQName());
-        final List<GeneratedTOBuilder> genTOBuilders = new ArrayList<>();
-        final String packageName = typeBuilder.getFullyQualifiedName();
-        if (typeDef instanceof UnionTypeDefinition) {
-            final List<GeneratedTOBuilder> types = typeProvider
-                    .provideGeneratedTOBuildersForUnionTypeDef(packageName, (UnionTypeDefinition) typeDef,
-                            classNameFromLeaf, leaf);
-            genTOBuilders.addAll(types);
+        final GeneratedTOBuilder genTOBuilder = typeProvider.provideGeneratedTOBuilderForBitsTypeDefinition(
+            typeBuilder.getIdentifier().createEnclosed(BindingMapping.getClassName(leaf.getQName())),
+            typeDef, parentModule.getName());
+        typeBuilder.addEnclosingTransferObject(genTOBuilder);
+        return genTOBuilder;
 
-            GeneratedTOBuilder resultTOBuilder;
-            if (types.isEmpty()) {
-                throw new IllegalStateException("No GeneratedTOBuilder objects generated from union " + typeDef);
-            }
-            resultTOBuilder = types.remove(0);
-            for (final GeneratedTOBuilder genTOBuilder : types) {
-                resultTOBuilder.addEnclosingTransferObject(genTOBuilder);
-            }
+    }
 
-            final GeneratedPropertyBuilder genPropBuilder = resultTOBuilder.addProperty("value");
-            genPropBuilder.setReturnType(Types.CHAR_ARRAY);
-            resultTOBuilder.addEqualsIdentity(genPropBuilder);
-            resultTOBuilder.addHashIdentity(genPropBuilder);
-            resultTOBuilder.addToStringProperty(genPropBuilder);
-
-        } else if (typeDef instanceof BitsTypeDefinition) {
-            genTOBuilders.add(typeProvider.provideGeneratedTOBuilderForBitsTypeDefinition(
-                    packageName, typeDef, classNameFromLeaf, parentModule.getName()));
+    private static GeneratedTOBuilder processEnclosedTOBuilderes(final GeneratedTypeBuilder typeBuilder,
+            final List<GeneratedTOBuilder> genTOBuilders) {
+        for (final GeneratedTOBuilder genTOBuilder : genTOBuilders) {
+            typeBuilder.addEnclosingTransferObject(genTOBuilder);
         }
-        if (!genTOBuilders.isEmpty()) {
-            for (final GeneratedTOBuilder genTOBuilder : genTOBuilders) {
-                typeBuilder.addEnclosingTransferObject(genTOBuilder);
-            }
-            return genTOBuilders.get(0);
-        }
-        return null;
-
+        return genTOBuilders.get(0);
     }
 
     /**
@@ -1957,7 +1990,7 @@ abstract class AbstractTypeGenerator {
 
     private static void annotateDeprecatedIfNecessary(final Status status, final GeneratedTypeBuilder builder) {
         if (status == Status.DEPRECATED) {
-            builder.addAnnotation("", "Deprecated");
+            builder.addAnnotation("java.lang", "Deprecated");
         }
     }
 }

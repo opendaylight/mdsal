@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 
@@ -21,7 +22,7 @@ public class GeneratedTOBuilderTest {
     @Test
     public void testBuilder() {
         final GeneratedTOBuilder genTypeBuilder = new CodegenGeneratedTOBuilder(
-                "org.opendaylight.controller", "AnnotClassCache");
+            JavaTypeName.create("org.opendaylight.controller", "AnnotClassCache"));
 
         genTypeBuilder.setSUID(genTypeBuilder.addProperty("SUID"));
         genTypeBuilder.addMethod("addCount");
@@ -44,7 +45,7 @@ public class GeneratedTOBuilderTest {
     @Test
     public void testToString() {
         final GeneratedTOBuilder genTypeBuilder = new CodegenGeneratedTOBuilder(
-                "org.opendaylight.controller", "AnnotClassCache");
+            JavaTypeName.create("org.opendaylight.controller", "AnnotClassCache"));
         String toString = genTypeBuilder.toString();
         assertTrue(toString.contains("GeneratedTransferObject"));
     }
@@ -52,7 +53,7 @@ public class GeneratedTOBuilderTest {
     @Test
     public void testTransferBuilderToString() {
         final GeneratedTOBuilder genTypeBuilder1 = new CodegenGeneratedTOBuilder(
-                "org.opendaylight.controller", "AnnotClassCache");
+            JavaTypeName.create("org.opendaylight.controller", "AnnotClassCache"));
 
         genTypeBuilder1.setTypedef(true);
         GeneratedTransferObject genTO = genTypeBuilder1.build();
@@ -60,7 +61,7 @@ public class GeneratedTOBuilderTest {
         assertFalse(toString.contains("GeneratedTransferObject"));
 
         final GeneratedTOBuilder genTypeBuilder2 = new CodegenGeneratedTOBuilder(
-                "org.opendaylight.controller", "AnnotClassCache");
+            JavaTypeName.create("org.opendaylight.controller", "AnnotClassCache"));
 
         genTypeBuilder2.setTypedef(false);
         genTO = genTypeBuilder2.build();

@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.binding.model.api.TypeComment;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>> extends Type {
+public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>> extends Type, AnnotableTypeBuilder {
 
     /**
      * Adds new Enclosing Transfer Object into definition of Generated Type and
@@ -63,21 +63,6 @@ public interface GeneratedTypeBuilderBase<T extends GeneratedTypeBuilderBase<T>>
      *            Comment String.
      */
     T addComment(TypeComment comment);
-
-    /**
-     * The method creates new AnnotationTypeBuilder containing specified package
-     * name an annotation name. <br>
-     * Neither the package name or annotation name can contain <code>null</code>
-     * references. In case that any of parameters contains <code>null</code> the
-     * method SHOULD thrown {@link IllegalArgumentException}
-     *
-     * @param packageName
-     *            Package Name of Annotation Type
-     * @param name
-     *            Name of Annotation Type
-     * @return <code>new</code> instance of Annotation Type Builder.
-     */
-    AnnotationTypeBuilder addAnnotation(String packageName, String name);
 
     boolean isAbstract();
 
