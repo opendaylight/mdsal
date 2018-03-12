@@ -1760,6 +1760,9 @@ abstract class AbstractTypeGenerator {
         if (node.getStatus() == Status.DEPRECATED) {
             getMethod.addAnnotation("java.lang", "Deprecated");
         }
+        if (returnType.getPackageName() != null && !"".equals(returnType.getPackageName())) {
+            getMethod.addAnnotation("javax.annotation", "Nullable");
+        }
         addComment(getMethod, node);
 
         return getMethod;
