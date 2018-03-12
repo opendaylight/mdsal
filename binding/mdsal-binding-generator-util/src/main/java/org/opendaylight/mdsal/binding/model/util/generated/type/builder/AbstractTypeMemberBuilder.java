@@ -16,6 +16,7 @@ import java.util.Objects;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.AnnotationType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.yangtools.util.LazyCollections;
@@ -34,11 +35,8 @@ abstract class AbstractTypeMemberBuilder<T extends TypeMemberBuilder<T>> impleme
     }
 
     @Override
-    public AnnotationTypeBuilder addAnnotation(final String packageName, final String name) {
-        Preconditions.checkArgument(packageName != null, "Annotation Type cannot have package name null!");
-        Preconditions.checkArgument(name != null, "Annotation Type cannot have name as null!");
-
-        final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
+    public AnnotationTypeBuilder addAnnotation(final TypeName identifier) {
+        final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(identifier);
         this.annotationBuilders = LazyCollections.lazyAdd(this.annotationBuilders, builder);
         return builder;
     }

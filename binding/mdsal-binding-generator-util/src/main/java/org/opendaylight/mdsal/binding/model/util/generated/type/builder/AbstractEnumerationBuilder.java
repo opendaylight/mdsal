@@ -24,6 +24,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.util.AbstractBaseType;
@@ -39,18 +40,16 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
     private List<Enumeration.Pair> values = ImmutableList.of();
     private List<AnnotationTypeBuilder> annotationBuilders = ImmutableList.of();
 
-    AbstractEnumerationBuilder(final String packageName, final String name) {
-        super(packageName, name);
+    AbstractEnumerationBuilder(final TypeName identifier) {
+        super(identifier);
     }
 
     @Override
-    public final AnnotationTypeBuilder addAnnotation(final String packageName, final String name) {
-        if (packageName != null && name != null) {
-            final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(packageName, name);
-            if (!annotationBuilders.contains(builder)) {
-                annotationBuilders = LazyCollections.lazyAdd(annotationBuilders, builder);
-                return builder;
-            }
+    public final AnnotationTypeBuilder addAnnotation(final TypeName identifier) {
+        final AnnotationTypeBuilder builder = new AnnotationTypeBuilderImpl(identifier);
+        if (!annotationBuilders.contains(builder)) {
+            annotationBuilders = LazyCollections.lazyAdd(annotationBuilders, builder);
+            return builder;
         }
         return null;
     }
@@ -168,8 +167,8 @@ public abstract class AbstractEnumerationBuilder extends AbstractBaseType implem
         private final List<Pair> values;
         private final List<AnnotationType> annotations;
 
-        public AbstractEnumeration(final AbstractEnumerationBuilder builder, final Type definingType) {
-            super(builder.getPackageName(), builder.getName());
+        AbstractEnumeration(final AbstractEnumerationBuilder builder, final Type definingType) {
+            super(builder.getIdentifier());
             this.definingType = definingType;
             this.values = ImmutableList.copyOf(builder.values);
 

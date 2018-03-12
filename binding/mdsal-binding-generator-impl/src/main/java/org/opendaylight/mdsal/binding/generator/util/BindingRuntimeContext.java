@@ -35,6 +35,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.yangtools.concepts.Immutable;
@@ -245,12 +246,7 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     private static Type referencedType(final Class<?> type) {
-        return new ReferencedTypeImpl(type.getPackage().getName(), type.getSimpleName());
-    }
-
-    static Type referencedType(final String type) {
-        final int packageClassSeparator = type.lastIndexOf(DOT);
-        return new ReferencedTypeImpl(type.substring(0, packageClassSeparator), type.substring(packageClassSeparator + 1));
+        return new ReferencedTypeImpl(TypeName.create(type));
     }
 
     /**
@@ -265,10 +261,6 @@ public class BindingRuntimeContext implements Immutable {
      *     which was used to generate supplied class.
      */
     public Entry<GeneratedType, WithStatus> getTypeWithSchema(final Class<?> type) {
-        return getTypeWithSchema(referencedType(type));
-    }
-
-    public Entry<GeneratedType, WithStatus> getTypeWithSchema(final String type) {
         return getTypeWithSchema(referencedType(type));
     }
 
@@ -316,14 +308,6 @@ public class BindingRuntimeContext implements Immutable {
      * @return mapped enum constants from yang with their corresponding values in generated binding classes
      */
     public BiMap<String, String> getEnumMapping(final Class<?> enumClass) {
-        final Entry<GeneratedType, WithStatus> typeWithSchema = getTypeWithSchema(enumClass);
-        return getEnumMapping(typeWithSchema);
-    }
-
-    /**
-     * See {@link #getEnumMapping(Class)}}
-     */
-    public BiMap<String, String> getEnumMapping(final String enumClass) {
         final Entry<GeneratedType, WithStatus> typeWithSchema = getTypeWithSchema(enumClass);
         return getEnumMapping(typeWithSchema);
     }
@@ -406,7 +390,7 @@ public class BindingRuntimeContext implements Immutable {
         if (type instanceof ReferencedTypeImpl) {
             return type;
         }
-        return new ReferencedTypeImpl(type.getPackageName(), type.getName());
+        return new ReferencedTypeImpl(type.getIdentifier());
     }
 
     private static Set<Type> collectAllContainerTypes(final GeneratedType type, final Set<Type> collection) {

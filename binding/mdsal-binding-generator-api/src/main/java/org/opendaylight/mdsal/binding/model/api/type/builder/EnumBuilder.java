@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.model.api.type.builder;
 
 import org.opendaylight.mdsal.binding.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 
 /**
@@ -32,7 +33,24 @@ public interface EnumBuilder extends Type {
      *            Name of Annotation Type
      * @return <code>new</code> instance of Annotation Type Builder.
      */
-    AnnotationTypeBuilder addAnnotation(final String packageName, final String name);
+    AnnotationTypeBuilder addAnnotation(final TypeName identifier);
+
+    /**
+     * The method creates new AnnotationTypeBuilder containing specified package
+     * name an annotation name. <br>
+     * Neither the package name or annotation name can contain <code>null</code>
+     * references. In case that any of parameters contains <code>null</code> the
+     * method SHOULD thrown {@link IllegalArgumentException}
+     *
+     * @param packageName
+     *            Package Name of Annotation Type
+     * @param name
+     *            Name of Annotation Type
+     * @return <code>new</code> instance of Annotation Type Builder.
+     */
+    default AnnotationTypeBuilder addAnnotation(final String packageName, final String simpleName) {
+        return addAnnotation(TypeName.create(packageName, simpleName));
+    }
 
     /**
      *

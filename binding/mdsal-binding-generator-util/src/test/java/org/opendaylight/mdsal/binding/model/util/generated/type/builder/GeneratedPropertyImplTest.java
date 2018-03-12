@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.mdsal.binding.model.util.Types;
 
 public class GeneratedPropertyImplTest {
@@ -30,8 +31,8 @@ public class GeneratedPropertyImplTest {
         generatedPropertyBuilderImpl.setAccessModifier(AccessModifier.PUBLIC);
         generatedPropertyBuilderImpl.setReturnType(Types.BOOLEAN);
 
-        GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance(new CodegenGeneratedTypeBuilder("my.package",
-                "myTypeName").build());
+        GeneratedProperty instance = generatedPropertyBuilderImpl.toInstance(new CodegenGeneratedTypeBuilder(
+            TypeName.create("my.package", "myTypeName")).build());
 
         assertNotNull(instance);
 
@@ -43,10 +44,9 @@ public class GeneratedPropertyImplTest {
         assertEquals(AccessModifier.PUBLIC, instance.getAccessModifier());
         assertEquals(Types.BOOLEAN, instance.getReturnType());
 
-        assertEquals(
-                "GeneratedPropertyImpl [name=myPropertyName, annotations=[], comment=myComment, parent=my.package.myTypeName, returnType=Type (java.lang.Boolean), isFinal=true, isReadOnly=false, modifier=PUBLIC]",
-                instance.toString());
-
+        assertEquals("GeneratedPropertyImpl [name=myPropertyName, annotations=[], comment=myComment, "
+                + "parent=my.package.myTypeName, returnType=Type (java.lang.Boolean), isFinal=true, isReadOnly=false, "
+                + "modifier=PUBLIC]", instance.toString());
     }
 
     @Test

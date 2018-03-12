@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.model.util;
 
+import org.opendaylight.mdsal.binding.model.api.TypeName;
+
 /**
  *
  * Wraps combination of <code>packageName</code> and <code>name</code> to the
@@ -22,8 +24,8 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
      * @param name
      *            string with the name for referenced type
      */
-    public ReferencedTypeImpl(final String packageName, final String name) {
-        super(packageName, name);
+    public ReferencedTypeImpl(final TypeName identifier) {
+        super(identifier);
     }
 
     @Override

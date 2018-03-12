@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.model.util.generated.type.builder;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -23,8 +24,8 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
     private String moduleName;
     private SchemaPath schemaPath;
 
-    public CodegenGeneratedTOBuilder(final String packageName, final String name) {
-        super(packageName, name);
+    public CodegenGeneratedTOBuilder(final TypeName identifier) {
+        super(identifier);
     }
 
     @Override
@@ -63,8 +64,8 @@ public final class CodegenGeneratedTOBuilder extends AbstractGeneratedTOBuilder 
     }
 
     @Override
-    AbstractEnumerationBuilder newEnumerationBuilder(final String packageName, final String name) {
-        return new CodegenEnumerationBuilder(packageName, name);
+    AbstractEnumerationBuilder newEnumerationBuilder(final TypeName identifier) {
+        return new CodegenEnumerationBuilder(identifier);
     }
 
     private static final class GTO extends AbstractGeneratedTransferObject {

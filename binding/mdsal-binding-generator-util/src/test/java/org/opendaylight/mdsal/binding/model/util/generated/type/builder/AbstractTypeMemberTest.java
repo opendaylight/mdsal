@@ -14,14 +14,17 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.model.api.TypeName;
 
 public class AbstractTypeMemberTest {
 
     @Test
     public void testMethodsForAbstractTypeMemberBuilder() {
         final MethodSignatureBuilderImpl methodSignatureBuilderImpl = new MethodSignatureBuilderImpl("TestProperty");
-        final CodegenGeneratedTypeBuilder typeBuilderImpl = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test", "TestType");
-        final CodegenGeneratedTypeBuilder typeBuilderImpl2 = new CodegenGeneratedTypeBuilder("org.opendaylight.yangtools.test", "TestType2");
+        final CodegenGeneratedTypeBuilder typeBuilderImpl = new CodegenGeneratedTypeBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "TestType"));
+        final CodegenGeneratedTypeBuilder typeBuilderImpl2 = new CodegenGeneratedTypeBuilder(
+            TypeName.create("org.opendaylight.yangtools.test", "TestType2"));
         methodSignatureBuilderImpl.setComment("test comment");
         methodSignatureBuilderImpl.setFinal(true);
         methodSignatureBuilderImpl.setStatic(true);
