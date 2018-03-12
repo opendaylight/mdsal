@@ -36,6 +36,29 @@
     },
     {
       "key": {
+        "uuid": "538cf28d_43d69d73",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/AbstractGeneratedTypeBuilder.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-03-12T02:56:52Z",
+      "side": 1,
+      "message": "here could we call newEnumerationBuilder?",
+      "range": {
+        "startLine": 172,
+        "startChar": 40,
+        "endLine": 172,
+        "endChar": 65
+      },
+      "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0a054ef2_62dc25b8",
         "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/CodegenEnumerationBuilder.java",
         "patchSetId": 11
