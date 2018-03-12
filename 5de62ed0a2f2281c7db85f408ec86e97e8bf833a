@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6d7b6cb8_cabe3244",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/AbstractEnumerationBuilder.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-12T02:53:11Z",
+      "side": 1,
+      "message": "Can you remove the TODO?",
+      "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "14a913a8_ee262684",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/AbstractGeneratedTypeBuilder.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-12T02:53:11Z",
+      "side": 1,
+      "message": "What needs to be fixed?",
+      "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a054ef2_62dc25b8",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/CodegenEnumerationBuilder.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-12T02:53:11Z",
+      "side": 1,
+      "message": "Remove TODO?",
+      "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d26f3bfa_6eb108f1",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/CodegenEnumerationBuilder.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-12T02:53:11Z",
+      "side": 1,
+      "message": "Remove TODO?",
+      "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
