@@ -75,6 +75,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>mdsal-binding-generator-impl</artifactId>
         </dependency>
+        <!-- The above needs the following annotations with compile scope -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>mdsal-binding-generator-util</artifactId>
