@@ -40,6 +40,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
             = CacheBuilder.newBuilder().weakKeys().build();
     // Default implementations are 0, we need to perform some translation, hence we have a slightly higher cost
     private static final int COST = 1;
+    private static final QName DUMMY_INPUT = QName.create("dummy", "input");
 
     private final BindingNormalizedNodeCodecRegistry codec;
     private final RpcServiceInvoker invoker;
@@ -63,7 +64,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
 
         this.codec = Preconditions.checkNotNull(codec);
         this.delegate = Preconditions.checkNotNull(delegate);
-        inputQname = QName.create(BindingReflections.getQNameModule(type), "input").intern();
+        inputQname = DUMMY_INPUT.withModule(BindingReflections.getQNameModule(type)).intern();
     }
 
     @Nonnull
