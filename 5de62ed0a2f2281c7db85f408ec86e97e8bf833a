@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f818efba_3639f2ac",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/AbstractEnumerationBuilder.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-03-12T10:15:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6d7b6cb8_cabe3244",
+      "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "14a913a8_ee262684",
         "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/AbstractGeneratedTypeBuilder.java",
         "patchSetId": 11
@@ -30,6 +48,24 @@
       "writtenOn": "2018-03-12T02:53:11Z",
       "side": 1,
       "message": "What needs to be fixed?",
+      "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "63dbef5e_4038e5a4",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/AbstractGeneratedTypeBuilder.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-03-12T10:15:36Z",
+      "side": 1,
+      "message": "Jie\u0027s comment :)",
+      "parentUuid": "14a913a8_ee262684",
       "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -59,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "c47c5eee_8bcd4c89",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/AbstractGeneratedTypeBuilder.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-03-12T10:15:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "538cf28d_43d69d73",
+      "range": {
+        "startLine": 172,
+        "startChar": 40,
+        "endLine": 172,
+        "endChar": 65
+      },
+      "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0a054ef2_62dc25b8",
         "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/CodegenEnumerationBuilder.java",
         "patchSetId": 11
@@ -76,6 +136,24 @@
     },
     {
       "key": {
+        "uuid": "4615e369_73b8bdc6",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/CodegenEnumerationBuilder.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-03-12T10:15:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0a054ef2_62dc25b8",
+      "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d26f3bfa_6eb108f1",
         "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/CodegenEnumerationBuilder.java",
         "patchSetId": 11
@@ -87,6 +165,24 @@
       "writtenOn": "2018-03-12T02:53:11Z",
       "side": 1,
       "message": "Remove TODO?",
+      "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "98a5962e_820f0bf7",
+        "filename": "binding/mdsal-binding-generator-util/src/main/java/org/opendaylight/mdsal/binding/model/util/generated/type/builder/CodegenEnumerationBuilder.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-03-12T10:15:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d26f3bfa_6eb108f1",
       "revId": "5de62ed0a2f2281c7db85f408ec86e97e8bf833a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
