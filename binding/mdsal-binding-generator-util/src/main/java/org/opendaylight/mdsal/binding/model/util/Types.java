@@ -41,7 +41,12 @@ public final class Types {
             new CacheLoader<Class<?>, ConcreteType>() {
                 @Override
                 public ConcreteType load(final Class<?> key) {
-                    return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
+                    //Nested class
+                    if (key.getEnclosingClass() != null) {
+                        return new ConcreteTypeImpl(key.getEnclosingClass().getName(), key.getSimpleName(), null);
+                    } else {
+                        return new ConcreteTypeImpl(key.getPackage().getName(), key.getSimpleName(), null);
+                    }
                 }
     };
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
