@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "0dec3505_33171c3c",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1793,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-03-13T19:19:22Z",
+      "side": 1,
+      "message": "Strings.isNullOrEmpty(returnType.getPackageName())",
+      "range": {
+        "startLine": 1793,
+        "startChar": 13,
+        "endLine": 1793,
+        "endChar": 90
+      },
+      "revId": "e540b7cf6f2dcdf88c8dc6ba85d6b331752d3f0c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "473a5946_97167b67",
         "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
         "patchSetId": 1
