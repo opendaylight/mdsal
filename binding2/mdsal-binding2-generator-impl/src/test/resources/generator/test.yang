@@ -6,6 +6,6 @@ module test {
     organization "test.org";
     revision "2017-02-06";
 
-    container *my-cont {
+    container _.my-cont {
     }
 }
