@@ -60,10 +60,10 @@ public class BitAndUnionTOEnclosingTest {
                 if (genType.getName().equals("Lf")) {
                     lfLeaf = (GeneratedTransferObject) genType;
                     lfLeafCounter++;
-                } else if (genType.getName().equals("Lf1")) {
+                } else if (genType.getName().equals("Lf$1")) {
                     lf1Leaf = (GeneratedTransferObject) genType;
                     lf1LeafCounter++;
-                } else if (genType.getName().equals("Lf2")) {
+                } else if (genType.getName().equals("Lf$2")) {
                     lf2Leaf = (GeneratedTransferObject) genType;
                     lf2LeafCounter++;
                 }
@@ -80,12 +80,12 @@ public class BitAndUnionTOEnclosingTest {
 
         assertEquals("Lf generated TO has incorrect number of properties", 3, lfLeaf.getProperties().size());
         containsAttributes(lfLeaf, true, true, true, new NameTypePattern("string", "String"));
-        containsAttributes(lfLeaf, true, false, true, new NameTypePattern("lf1", "Lf1"));
+        containsAttributes(lfLeaf, true, false, true, new NameTypePattern("lf$1", "Lf$1"));
 
         // nested types in leaf, contains Lf1?
-        assertNotNull("Lf1 TO wasn't found.", lf1Leaf);
-        assertEquals("Lf1 TO has incorrect number of occurences.", 1, lf1LeafCounter);
-        assertEquals("Lf1 has incorrect package name.",
+        assertNotNull("Lf$1 TO wasn't found.", lf1Leaf);
+        assertEquals("Lf$1 TO has incorrect number of occurences.", 1, lf1LeafCounter);
+        assertEquals("Lf$1 has incorrect package name.",
                 "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626.ParentContainer",
                 lf1Leaf.getIdentifier().immediatelyEnclosingClass().get().toString());
 
@@ -93,12 +93,12 @@ public class BitAndUnionTOEnclosingTest {
         containsAttributes(lf1Leaf, true, true, true, new NameTypePattern("uint32", "Long"));
         containsAttributes(lf1Leaf, true, true, true, new NameTypePattern("int8", "Byte"));
         containsAttributes(lf1Leaf, true, true, true, new NameTypePattern("string", "String"));
-        containsAttributes(lf1Leaf, true, false, true, new NameTypePattern("lf2", "Lf2"));
+        containsAttributes(lf1Leaf, true, false, true, new NameTypePattern("lf$2", "Lf$2"));
 
         // nested types in leaf, contains Lf2?
-        assertNotNull("Lf2 TO wasn't found.", lf2Leaf);
-        assertEquals("Lf2 TO has incorrect number of occurences.", 1, lf2LeafCounter);
-        assertEquals("Lf2 has incorrect package name.",
+        assertNotNull("Lf$2 TO wasn't found.", lf2Leaf);
+        assertEquals("Lf$2 TO has incorrect number of occurences.", 1, lf2LeafCounter);
+        assertEquals("Lf$2 has incorrect package name.",
                 "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626.ParentContainer",
                 lf2Leaf.getIdentifier().immediatelyEnclosingClass().get().toString());
 
@@ -134,7 +134,7 @@ public class BitAndUnionTOEnclosingTest {
         assertEquals("TypeUnion generated TO has incorrect number of properties", 3, typeUnionTypedef.getProperties()
                 .size());
         containsAttributes(typeUnionTypedef, true, true, true, new NameTypePattern("string", "String"));
-        containsAttributes(typeUnionTypedef, true, false, true, new NameTypePattern("typeUnion1", "TypeUnion1"));
+        containsAttributes(typeUnionTypedef, true, false, true, new NameTypePattern("typeUnion$1", "TypeUnion$1"));
 
         List<GeneratedType> nestedUnions = typeUnionTypedef.getEnclosedTypes();
         assertEquals("Incorrect number of nested unions", 2, nestedUnions.size());
@@ -145,20 +145,20 @@ public class BitAndUnionTOEnclosingTest {
         int typeUnion2Counter = 0;
         for (GeneratedType genType : nestedUnions) {
             if (genType instanceof GeneratedTransferObject) {
-                if (genType.getName().equals("TypeUnion1")) {
+                if (genType.getName().equals("TypeUnion$1")) {
                     typeUnion1 = (GeneratedTransferObject) genType;
                     typeUnion1Counter++;
-                } else if (genType.getName().equals("TypeUnion2")) {
+                } else if (genType.getName().equals("TypeUnion$2")) {
                     typeUnion2 = (GeneratedTransferObject) genType;
                     typeUnion2Counter++;
                 }
             }
         }
 
-        assertNotNull("TypeUnion1 TO wasn't found.", typeUnion1);
-        assertEquals("TypeUnion1 TO has incorrect number of occurences.", 1, typeUnion1Counter);
+        assertNotNull("TypeUnion$1 TO wasn't found.", typeUnion1);
+        assertEquals("TypeUnion$1 TO has incorrect number of occurences.", 1, typeUnion1Counter);
 
-        assertEquals("TypeUnion1 has incorrect package name.",
+        assertEquals("TypeUnion$1 has incorrect package name.",
                 "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626", typeUnion1.getPackageName());
 
         assertEquals("TypeUnion1 generated TO has incorrect number of properties", 4, typeUnion1.getProperties().size());
@@ -166,12 +166,12 @@ public class BitAndUnionTOEnclosingTest {
         containsAttributes(typeUnion1, true, true, true, new NameTypePattern("uint32", "Long"));
         containsAttributes(typeUnion1, true, true, true, new NameTypePattern("int8", "Byte"));
         containsAttributes(typeUnion1, true, true, true, new NameTypePattern("string", "String"));
-        containsAttributes(typeUnion1, true, false, true, new NameTypePattern("typeUnion2", "TypeUnion2"));
+        containsAttributes(typeUnion1, true, false, true, new NameTypePattern("typeUnion$2", "TypeUnion$2"));
 
-        assertNotNull("TypeUnion2 TO wasn't found.", typeUnion2);
-        assertEquals("TypeUnion2 TO has incorrect number of occurences.", 1, typeUnion2Counter);
+        assertNotNull("TypeUnion$2 TO wasn't found.", typeUnion2);
+        assertEquals("TypeUnion$2 TO has incorrect number of occurences.", 1, typeUnion2Counter);
 
-        assertEquals("TypeUnion2 has incorrect package name.",
+        assertEquals("TypeUnion$2 has incorrect package name.",
                 "org.opendaylight.yang.gen.v1.urn.bit.union.in.leaf.rev130626", typeUnion2.getPackageName());
 
         assertEquals("TypeUnion2 generated TO has incorrect number of properties", 2, typeUnion2.getProperties().size());
