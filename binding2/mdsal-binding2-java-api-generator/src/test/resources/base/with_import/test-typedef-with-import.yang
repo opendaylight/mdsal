@@ -12,6 +12,6 @@ module test {
         type int8;
     }
 
-    container *my-cont {
+    container _.my-cont {
     }
 }
