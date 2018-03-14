@@ -238,7 +238,7 @@ final class RpcActionGenHelper {
             interfaceBuilder.addComment(TypeComments.javadoc(
                 "Interface for implementing the following YANG Operation defined in module <b>" + module.getName() + "</b>")
                 .get());
-            interfaceBuilder.setYangSourceDefinition(YangSourceDefinition.of(module, operation));
+            YangSourceDefinition.of(module, operation).ifPresent(interfaceBuilder::setYangSourceDefinition);
         }
 
         final String operationComment = encodeAngleBrackets(operation.getDescription().orElse(null));
