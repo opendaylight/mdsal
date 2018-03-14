@@ -926,14 +926,14 @@ public class TypeProviderTest {
         result = provider.getTypeDefaultConstruction(leaf);
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.type.provider.model.rev140912.TestTypeProviderData.RootBitsLeaf(false, true, false)",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.type.provider.model.rev140912.TestTypeProviderData.RootBitsLeaf(true, false, false)",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("yang-bits");
-        result = provider.getTypeDefaultConstruction(leaf, "10-Mb-only");
+        result = provider.getTypeDefaultConstruction(leaf, "only-10-Mb");
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangBits(true, false, false)",
+        assertEquals("new org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914.YangBits(false, false, true)",
             result);
 
         leaf = provideLeafForGetDefaultConstructionTestCase("bar-id");
