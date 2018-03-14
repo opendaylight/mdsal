@@ -91,7 +91,6 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractTypeProvider implements TypeProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTypeProvider.class);
     private static final Pattern GROUPS_PATTERN = Pattern.compile("\\[(.*?)\\]");
-    private static final Pattern NUMBERS_PATTERN = Pattern.compile("[0-9]+\\z");
 
     // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
     // the case, as unions are emitted to their correct schema path.
@@ -1409,21 +1408,22 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Returns string which contains the same value as <code>name</code> but
-     * integer suffix is incremented by one. If <code>name</code> contains no
-     * number suffix then number 1 is added.
+     * Returns string which contains the same value as <code>name</code> but integer suffix is incremented by one. If
+     * <code>name</code> contains no number suffix, a new suffix initialized at 1 is added. A suffix is actually
+     * composed of a '$' marker, which is safe, as no YANG identifier can contain '$', and a unsigned decimal integer.
      *
      * @param name string with name of augmented node
      * @return string with the number suffix incremented by one (or 1 is added)
      */
     private static String provideAvailableNameForGenTOBuilder(final String name) {
-        final Matcher mtch = NUMBERS_PATTERN.matcher(name);
-        if (mtch.find()) {
-            final int newSuffix = Integer.parseInt(name.substring(mtch.start())) + 1;
-            return name.substring(0, mtch.start()) + newSuffix;
+        final int dollar = name.indexOf('$');
+        if (dollar == -1) {
+            return name + "$1";
         }
 
-        return name + 1;
+        final int newSuffix = Integer.parseUnsignedInt(name.substring(dollar + 1)) + 1;
+        Preconditions.checkState(newSuffix > 0, "Suffix counter overflow");
+        return name.substring(0, dollar + 1) + newSuffix;
     }
 
     public static void addUnitsToGenTO(final GeneratedTOBuilder to, final String units) {
