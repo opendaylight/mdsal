@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.generator.spi.TypeProvider;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
@@ -93,7 +92,6 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractTypeProvider implements TypeProvider {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTypeProvider.class);
     private static final Pattern GROUPS_PATTERN = Pattern.compile("\\[(.*?)\\]");
-    private static final Pattern NUMBERS_PATTERN = Pattern.compile("[0-9]+\\z");
 
     // Backwards compatibility: Union types used to be instantiated in YANG namespace, which is no longer
     // the case, as unions are emitted to their correct schema path.
@@ -801,8 +799,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *            string with the name of the module for to which the
      *            <code>typedef</code> belongs
      * @param typedef
-     *            type definition of the node for which should be creted JAVA
-     *            <code>Type</code> (usually generated TO)
+     *            type definition of the node for which should be created JAVA <code>Type</code> (usually generated TO)
      * @return JAVA <code>Type</code> representation of <code>typedef</code> or
      *         <code>null</code> value if <code>basePackageName</code> or
      *         <code>modulName</code> or <code>typedef</code> or Q name of
@@ -810,23 +807,23 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     private Type typedefToGeneratedType(final String basePackageName, final Module module,
             final TypeDefinition<?> typedef) {
-        final TypeDefinition<?> innerTypedef = typedef.getBaseType();
+        final TypeDefinition<?> baseTypedef = typedef.getBaseType();
 
         // See generatedTypeForExtendedDefinitionType() above for rationale behind this special case.
-        if (innerTypedef instanceof LeafrefTypeDefinition || innerTypedef instanceof IdentityrefTypeDefinition) {
+        if (baseTypedef instanceof LeafrefTypeDefinition || baseTypedef instanceof IdentityrefTypeDefinition) {
             return null;
         }
 
         final String typedefName = typedef.getQName().getLocalName();
 
         final Type returnType;
-        if (innerTypedef.getBaseType() != null) {
-            returnType = provideGeneratedTOFromExtendedType(typedef, innerTypedef, basePackageName,
+        if (baseTypedef.getBaseType() != null) {
+            returnType = provideGeneratedTOFromExtendedType(typedef, baseTypedef, basePackageName,
                 module.getName());
-        } else if (innerTypedef instanceof UnionTypeDefinition) {
+        } else if (baseTypedef instanceof UnionTypeDefinition) {
             final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForUnionTypeDef(
                 JavaTypeName.create(basePackageName, BindingMapping.getClassName(typedef.getQName())),
-                (UnionTypeDefinition) innerTypedef, typedef);
+                (UnionTypeDefinition) baseTypedef, typedef);
             genTOBuilder.setTypedef(true);
             genTOBuilder.setIsUnion(true);
             addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
@@ -850,21 +847,21 @@ public abstract class AbstractTypeProvider implements TypeProvider {
             } else {
                 types.add(unionBuilder.build());
             }
-        } else if (innerTypedef instanceof EnumTypeDefinition) {
+        } else if (baseTypedef instanceof EnumTypeDefinition) {
             // enums are automatically Serializable
-            final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) innerTypedef;
+            final EnumTypeDefinition enumTypeDef = (EnumTypeDefinition) baseTypedef;
             // TODO units for typedef enum
             returnType = provideTypeForEnum(enumTypeDef, typedefName, typedef);
-        } else if (innerTypedef instanceof BitsTypeDefinition) {
+        } else if (baseTypedef instanceof BitsTypeDefinition) {
             final GeneratedTOBuilder genTOBuilder = provideGeneratedTOBuilderForBitsTypeDefinition(
                 JavaTypeName.create(basePackageName, BindingMapping.getClassName(typedef.getQName())),
-                (BitsTypeDefinition) innerTypedef, module.getName());
+                (BitsTypeDefinition) baseTypedef, module.getName());
             genTOBuilder.setTypedef(true);
             addUnitsToGenTO(genTOBuilder, typedef.getUnits().orElse(null));
             makeSerializable(genTOBuilder);
             returnType = genTOBuilder.build();
         } else {
-            final Type javaType = javaTypeForSchemaDefinitionType(innerTypedef, typedef);
+            final Type javaType = javaTypeForSchemaDefinitionType(baseTypedef, typedef);
             returnType = wrapJavaTypeIntoTO(basePackageName, typedef, javaType, module.getName());
         }
         if (returnType != null) {
@@ -1004,16 +1001,12 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Wraps code which handle case when union subtype is also of the type
-     * <code>UnionType</code>.
+     * Wraps code which handles the case when union subtype is also of the type <code>UnionType</code>.
      *
-     * In this case the new generated TO is created for union subtype (recursive
-     * call of method
-     * {@link #provideGeneratedTOBuildersForUnionTypeDef(String, UnionTypeDefinition,
-     * String, SchemaNode)}
-     * provideGeneratedTOBuilderForUnionTypeDef} and in parent TO builder
-     * <code>parentUnionGenTOBuilder</code> is created property which type is
-     * equal to new generated TO.
+     * In this case the new generated TO is created for union subtype (recursive call of method
+     * {@link #provideGeneratedTOBuildersForUnionTypeDef(String, UnionTypeDefinition, String, SchemaNode)}
+     * provideGeneratedTOBuilderForUnionTypeDef} and in parent TO builder <code>parentUnionGenTOBuilder</code> is
+     * created property which type is equal to new generated TO.
      *
      * @param parentUnionGenTOBuilder
      *            generated TO builder to which is the property with the child
@@ -1408,21 +1401,22 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     }
 
     /**
-     * Returns string which contains the same value as <code>name</code> but
-     * integer suffix is incremented by one. If <code>name</code> contains no
-     * number suffix then number 1 is added.
+     * Returns string which contains the same value as <code>name</code> but integer suffix is incremented by one. If
+     * <code>name</code> contains no number suffix, a new suffix initialized at 1 is added. A suffix is actually
+     * composed of a '$' marker, which is safe, as no YANG identifier can contain '$', and a unsigned decimal integer.
      *
      * @param name string with name of augmented node
      * @return string with the number suffix incremented by one (or 1 is added)
      */
     private static String provideAvailableNameForGenTOBuilder(final String name) {
-        final Matcher mtch = NUMBERS_PATTERN.matcher(name);
-        if (mtch.find()) {
-            final int newSuffix = Integer.parseInt(name.substring(mtch.start())) + 1;
-            return name.substring(0, mtch.start()) + newSuffix;
+        final int dollar = name.indexOf('$');
+        if (dollar == -1) {
+            return name + "$1";
         }
 
-        return name + 1;
+        final int newSuffix = Integer.parseUnsignedInt(name.substring(dollar + 1)) + 1;
+        Preconditions.checkState(newSuffix > 0, "Suffix counter overflow");
+        return name.substring(0, dollar + 1) + newSuffix;
     }
 
     public static void addUnitsToGenTO(final GeneratedTOBuilder to, final String units) {
