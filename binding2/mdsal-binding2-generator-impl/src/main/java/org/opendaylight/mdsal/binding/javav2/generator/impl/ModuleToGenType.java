@@ -213,11 +213,11 @@ final class ModuleToGenType {
 
         if (verboseClassComments) {
             if (tiedNotifications != null) {
-                listenerInterface.setYangSourceDefinition(YangSourceDefinition.of(module,
+                YangSourceDefinition.of(module,
                     ImmutableSet.<NotificationDefinition>builder().addAll(notifications).addAll(tiedNotifications)
-                        .build()));
+                        .build()).ifPresent(listenerInterface::setYangSourceDefinition);
             } else {
-                listenerInterface.setYangSourceDefinition(YangSourceDefinition.of(module, notifications));
+                YangSourceDefinition.of(module, notifications).ifPresent(listenerInterface::setYangSourceDefinition);
             }
             listenerInterface.addComment(TypeComments.javadoc(
                 "Interface for receiving the following YANG notifications defined in module <b>" + module.getName()

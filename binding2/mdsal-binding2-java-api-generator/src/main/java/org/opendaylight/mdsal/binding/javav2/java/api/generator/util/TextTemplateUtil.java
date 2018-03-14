@@ -14,7 +14,6 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
@@ -22,10 +21,6 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
-import org.opendaylight.mdsal.binding.javav2.generator.util.YangSnippetCleaner;
-import org.opendaylight.mdsal.binding.javav2.java.api.yang.txt.yangTemplateForModule;
-import org.opendaylight.mdsal.binding.javav2.java.api.yang.txt.yangTemplateForNode;
-import org.opendaylight.mdsal.binding.javav2.java.api.yang.txt.yangTemplateForNodes;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
@@ -47,11 +42,15 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.YangStmtMapping;
+import org.opendaylight.yangtools.yang.model.api.meta.DeclaredStatement;
+import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
+import org.opendaylight.yangtools.yang.model.api.stmt.ModuleEffectiveStatement;
+import org.opendaylight.yangtools.yang.model.export.DeclaredStatementFormatter;
 
 public final class TextTemplateUtil {
 
     public static final String DOT = ".";
-    public static final String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
 
     private static final char NEW_LINE = '\n';
     private static final String UNDERSCORE = "_";
@@ -65,6 +64,13 @@ public final class TextTemplateUtil {
 
     private static final Pattern TAIL_COMMENT_PATTERN = Pattern.compile("*/", Pattern.LITERAL);
     private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile(" +");
+
+    private static DeclaredStatementFormatter YANG_FORMATTER = DeclaredStatementFormatter.builder()
+        .addIgnoredStatement(YangStmtMapping.CONTACT)
+        .addIgnoredStatement(YangStmtMapping.DESCRIPTION)
+        .addIgnoredStatement(YangStmtMapping.REFERENCE)
+        .addIgnoredStatement(YangStmtMapping.ORGANIZATION)
+        .build();
 
     private TextTemplateUtil() {
         throw new UnsupportedOperationException("Util class");
@@ -144,16 +150,15 @@ public final class TextTemplateUtil {
                 DocumentedNode node = ((Single) def).getNode();
                 sb.append("<p>\n")
                     .append("This class represents the following YANG schema fragment defined in module <b>")
-                    .append(def.getModule().getName()).append("</b>\n")
-                    .append("<pre>\n")
-                    .append(encodeAngleBrackets(encodeJavadocSymbols(
-                        YangSnippetCleaner.clean(generateYangSnippet(node, def.getModule())))))
-                    .append("</pre>");
+                    .append(def.getModule().argument()).append("</b>\n")
+                    .append("<pre>\n");
+                appendYangSnippet(sb, def.getModule(), ((EffectiveStatement<?, ?>) node).getDeclared());
+                sb.append("</pre>");
 
                 if (node instanceof SchemaNode) {
                     sb.append("The schema path to identify an instance is\n")
                         .append("<i>")
-                        .append(formatSchemaPath(def.getModule().getName(), ((SchemaNode) node).getPath().getPathFromRoot()))
+                        .append(formatSchemaPath(def.getModule().argument(), ((SchemaNode) node).getPath().getPathFromRoot()))
                         .append("</i>\n");
 
                     if (hasBuilderClass(type)) {
@@ -185,31 +190,19 @@ public final class TextTemplateUtil {
                 }
             } else if (def instanceof Multiple) {
                 sb.append("<pre>\n");
-                sb.append(encodeAngleBrackets(encodeJavadocSymbols(
-                    YangSnippetCleaner.clean(generateYangSnippet(((Multiple) def).getNodes(), def.getModule())))));
+                for (SchemaNode node : ((Multiple) def).getNodes()) {
+                    appendYangSnippet(sb, def.getModule(), ((EffectiveStatement<?, ?>) node).getDeclared());
+                }
                 sb.append("</pre>\n");
             }
         }
     }
 
-      /**
-     * Generate a YANG snippet for specified SchemaNode.
-     *
-     * @param node node for which to generate a snippet
-     * @return YANG snippet
-     */
-    private static String generateYangSnippet(final DocumentedNode node, final Module module) {
-        if (node instanceof Module) {
-            return yangTemplateForModule.render((Module) node).body();
-        } else if (node instanceof SchemaNode) {
-            return yangTemplateForNode.render((SchemaNode) node, module).body();
+    private static void appendYangSnippet(StringBuilder sb, ModuleEffectiveStatement module,
+            DeclaredStatement<?> stmt) {
+        for (String str : YANG_FORMATTER.toYangTextSnippet(module, stmt)) {
+            sb.append(encodeAngleBrackets(encodeJavadocSymbols(str)));
         }
-
-        throw new IllegalArgumentException("Not supported.");
-    }
-
-    private static String generateYangSnippet(final Collection<? extends SchemaNode> nodes, final Module module) {
-        return yangTemplateForNodes.render(nodes, module).body();
     }
 
     public static boolean hasBuilderClass(final GeneratedType type) {

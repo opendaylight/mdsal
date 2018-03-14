@@ -27,15 +27,12 @@ import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.
 import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.parameterizedTypeFor;
 import static org.opendaylight.mdsal.binding.javav2.generator.util.Types.wildcardTypeFor;
-import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +48,6 @@ import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.TypeComments;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
-import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTOBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.TypeProviderImpl;
@@ -131,7 +127,7 @@ final class GenHelperUtil {
         moduleDataTypeBuilder.addImplementsType(BindingTypes.TREE_ROOT);
 
         if (verboseClassComments) {
-            moduleDataTypeBuilder.setYangSourceDefinition(YangSourceDefinition.of(module));
+            YangSourceDefinition.of(module).ifPresent(moduleDataTypeBuilder::setYangSourceDefinition);
             TypeComments.description(module).ifPresent(moduleDataTypeBuilder::addComment);
             module.getDescription().ifPresent(moduleDataTypeBuilder::setDescription);
             module.getReference().ifPresent(moduleDataTypeBuilder::setReference);
@@ -164,7 +160,7 @@ final class GenHelperUtil {
 
         final GeneratedTypeBuilderImpl moduleBuilder = new GeneratedTypeBuilderImpl(packageName, moduleName, context);
         if (verboseClassComments) {
-            moduleBuilder.setYangSourceDefinition(YangSourceDefinition.of(module));
+            YangSourceDefinition.of(module).ifPresent(moduleBuilder::setYangSourceDefinition);
             TypeComments.description(module).ifPresent(moduleBuilder::addComment);
             module.getDescription().ifPresent(moduleBuilder::setDescription);
             module.getReference().ifPresent(moduleBuilder::setReference);
@@ -636,7 +632,7 @@ final class GenHelperUtil {
         final Module module = SchemaContextUtil.findParentModule(schemaContext, schemaNode);
         qNameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
         if (verboseClassComments) {
-            newType.setYangSourceDefinition(YangSourceDefinition.of(module, schemaNode));
+            YangSourceDefinition.of(module, schemaNode).ifPresent(newType::setYangSourceDefinition);
             TypeComments.description(schemaNode).ifPresent(newType::addComment);
             schemaNode.getDescription().ifPresent(newType::setDescription);
             schemaNode.getReference().ifPresent(newType::setReference);
@@ -1241,7 +1237,7 @@ final class GenHelperUtil {
         annotateDeprecatedIfNecessary(node.getStatus(), genType);
         genType.setModuleName(module.getName());
         if (verboseClassComments) {
-            genType.setYangSourceDefinition(YangSourceDefinition.of(module, node));
+            YangSourceDefinition.of(module, node).ifPresent(genType::setYangSourceDefinition);
             TypeComments.description(node).ifPresent(genType::addComment);
             node.getDescription().ifPresent(genType::setDescription);
             node.getReference().ifPresent(genType::setReference);
@@ -1391,7 +1387,7 @@ final class GenHelperUtil {
             }
 
             if (verboseClassComments) {
-                newType.setYangSourceDefinition(YangSourceDefinition.of(module));
+                YangSourceDefinition.of(module).ifPresent(newType::setYangSourceDefinition);
                 TypeComments.description(module).ifPresent(newType::addComment);
                 module.getDescription().ifPresent(newType::setDescription);
                 module.getReference().ifPresent(newType::setReference);

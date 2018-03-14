@@ -284,7 +284,7 @@ final class AuxiliaryGenUtils {
         final GeneratedTOBuilderImpl returnType = (GeneratedTOBuilderImpl) genTOBuilder;
 
         if (verboseClassComments) {
-            returnType.setYangSourceDefinition(YangSourceDefinition.of(parentModule, typeDef));
+            YangSourceDefinition.of(parentModule, typeDef).ifPresent(returnType::setYangSourceDefinition);
             TypeComments.description(typeDef).ifPresent(returnType::addComment);
             typeDef.getDescription().ifPresent(returnType::setDescription);
             typeDef.getReference().ifPresent(returnType::setReference);
