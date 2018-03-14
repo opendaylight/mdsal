@@ -1883,6 +1883,7 @@ abstract class AbstractTypeGenerator {
         final List<GeneratedTOBuilder> genTOBuilders = new ArrayList<>();
         final String packageName = typeBuilder.getFullyQualifiedName();
         if (typeDef instanceof UnionTypeDefinition) {
+            // FIXME: okay to fuse packageName and classNameFromLeaf
             final List<GeneratedTOBuilder> types = typeProvider
                     .provideGeneratedTOBuildersForUnionTypeDef(packageName, (UnionTypeDefinition) typeDef,
                             classNameFromLeaf, leaf);
