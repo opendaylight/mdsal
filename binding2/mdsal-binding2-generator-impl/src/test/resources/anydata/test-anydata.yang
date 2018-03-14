@@ -6,7 +6,7 @@ module test-anydata {
     organization "test.org";
     revision "2017-06-08";
 
-    container *my-cont {
+    container .my-cont {
       container my-inner-cont {
         leaf my-leaf {
           type string;
