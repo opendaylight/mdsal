@@ -10,8 +10,6 @@ package org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers;
 
 import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.fieldName;
 import static org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.setterMethod;
-import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MEMBER_PATTERN_LIST;
-import static org.opendaylight.mdsal.binding.javav2.util.BindingMapping.PATTERN_CONSTANT_NAME;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
@@ -29,14 +27,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.AbstractRangeGenerator;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.LengthGenerator;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplate;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplateConstructors;
-import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplateInitBlock;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplateRestrictions;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.classTemplateUnionConstr;
+import org.opendaylight.mdsal.binding.javav2.java.api.generator.txt.constantsTemplate;
 import org.opendaylight.mdsal.binding.javav2.model.api.Constant;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty;
@@ -44,6 +41,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.yangtools.yang.common.QName;
 
 public class ClassRenderer extends BaseRenderer {
     protected final GeneratedTransferObject genTO;
@@ -146,6 +144,7 @@ public class ClassRenderer extends BaseRenderer {
         importedNames.put("lists", importedName(Lists.class));
         importedNames.put("illegalArgumentException", importedName(IllegalArgumentException.class));
         importedNames.put("boolean", importedName(Boolean.class));
+        importedNames.put("qname", importedName(QName.class));
 
         final List<String> implementsListBuilder = new LinkedList<>();
         if (!getType().getImplements().isEmpty()) {
@@ -173,39 +172,7 @@ public class ClassRenderer extends BaseRenderer {
         }
         final String enumerations = String.join("\n", enumList);
 
-        final StringBuilder sb1 = new StringBuilder();
-        final String initBlock = classTemplateInitBlock.render(importedName(Pattern.class)).body();
-        if (!consts.isEmpty()) {
-            for (Constant constant : consts) {
-                if (PATTERN_CONSTANT_NAME.equals(constant.getName())) {
-                    if (constant.getValue() instanceof List<?>) {
-                        sb1.append("private static final ")
-                            .append(importedName(Pattern.class))
-                            .append("[] ")
-                            .append(MEMBER_PATTERN_LIST)
-                            .append(";\npublic static final ")
-                            .append(importedName(List.class))
-                            .append("<String> ")
-                            .append(PATTERN_CONSTANT_NAME)
-                            .append(" = ")
-                            .append(importedName(ImmutableList.class))
-                            .append(".of(");
-                        final List<String> constantList = new LinkedList<>();
-                        for (Object item : (List) constant.getValue()) {
-                            if (item instanceof String) {
-                                constantList.add("\"" + item + "\"");
-                            }
-                        }
-                        sb1.append(String.join(", ", constantList));
-                        sb1.append(");")
-                                .append(initBlock);
-                    }
-                } else {
-                    sb1.append(emitConstant(constant));
-                }
-            }
-        }
-        final String constants = sb1.toString();
+        final String constants = constantsTemplate.render(getType(), importedNames, this::importedName).body();
 
         if (genTO.getSuperType() != null) {
             importedNames.put("superType", importedName(genTO.getSuperType()));
