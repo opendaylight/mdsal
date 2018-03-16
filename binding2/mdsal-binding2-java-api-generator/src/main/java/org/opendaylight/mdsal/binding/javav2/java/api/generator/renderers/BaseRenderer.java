@@ -246,6 +246,7 @@ public abstract class BaseRenderer {
         return null;
     }
 
+    //FIXME: this should be deprecated in favor of contantsTemplate
     /**
      * @param constant constant to emit
      * @return string with constant wrapped in code
