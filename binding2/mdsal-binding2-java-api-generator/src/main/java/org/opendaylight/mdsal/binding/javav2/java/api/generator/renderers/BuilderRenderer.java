@@ -48,6 +48,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.CodeHelpers;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.AugmentationHolder;
@@ -287,6 +288,8 @@ public class BuilderRenderer extends BaseRenderer {
         importedNames.put("instantiable", importedName(Instantiable.class));
         importedNames.put("item", importedName(Item.class));
         importedNames.put("identifiableItem", importedName(IdentifiableItem.class));
+        importedNames.put("codeHelpers", importedName(CodeHelpers.class));
+
         if (getType().getParentType() != null) {
             importedNames.put("parent", importedName(getType().getParentType()));
             parentTypeForBuilderName = getType().getParentType().getFullyQualifiedName();

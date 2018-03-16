@@ -212,12 +212,9 @@ public final class TypeProviderImpl implements TypeProvider {
             final String basePackageName = packageNameWithNamespacePrefix(getRootPackageName(module),
                     BindingNamespaceType.Typedef);
             final List<TypeDefinition<?>> typeDefinitions = getAllTypedefs(module);
-            final List<TypeDefinition<?>> listTypeDefinitions = sortTypeDefinitionAccordingDepth(typeDefinitions);
-            if (listTypeDefinitions != null) {
-                for (final TypeDefinition<?> typedef : listTypeDefinitions) {
-                    typedefToGeneratedType(basePackageName, module, typedef, genTypeDefsContextMap,
-                            additionalTypes, schemaContext, context);
-                }
+            for (final TypeDefinition<?> typedef : sortTypeDefinitionAccordingDepth(typeDefinitions)) {
+                typedefToGeneratedType(basePackageName, module, typedef, genTypeDefsContextMap,
+                    additionalTypes, schemaContext, context);
             }
         });
     }
@@ -237,7 +234,8 @@ public final class TypeProviderImpl implements TypeProvider {
      *             <li>if name of <code>typeDefinition</code></li>
      *             </ul>
      */
-    public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode) {
+    public Type generatedTypeForExtendedDefinitionType(final TypeDefinition<?> typeDefinition,
+            final SchemaNode parentNode) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         Preconditions.checkArgument(typeDefinition.getQName().getLocalName() != null,
                 "Type Definitions Local Name cannot be NULL!");
@@ -247,7 +245,8 @@ public final class TypeProviderImpl implements TypeProvider {
             final Module module = findParentModule(this.schemaContext, parentNode);
 
             if (module != null) {
-                final Map<Optional<Revision>, Map<String, Type>> modulesByDate = this.genTypeDefsContextMap.get(module.getName());
+                final Map<Optional<Revision>, Map<String, Type>> modulesByDate =
+                    this.genTypeDefsContextMap.get(module.getName());
                 final Map<String, Type> genTOs = modulesByDate.get(module.getRevision());
                 if (genTOs != null) {
                     return genTOs.get(typeDefinition.getQName().getLocalName());
@@ -300,7 +299,8 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public GeneratedTOBuilder provideGeneratedTOBuilderForBitsTypeDefinition(final String basePackageName,
-            final TypeDefinition<?> typeDef, final String typeDefName, final String moduleName, final ModuleContext context) {
+            final TypeDefinition<?> typeDef, final String typeDefName, final String moduleName,
+            final ModuleContext context) {
 
         Preconditions.checkArgument(typeDef != null, "typeDef cannot be NULL!");
         Preconditions.checkArgument(basePackageName != null, "Base Package Name cannot be NULL!");
@@ -322,8 +322,8 @@ public final class TypeProviderImpl implements TypeProvider {
             GeneratedPropertyBuilder genPropertyBuilder;
             for (final Bit bit : bitList) {
                 final String name = bit.getName();
-                genPropertyBuilder =
-                        genTOBuilder.addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(name, JavaIdentifier.METHOD));
+                genPropertyBuilder = genTOBuilder.addProperty(
+                    JavaIdentifierNormalizer.normalizeSpecificIdentifier(name, JavaIdentifier.METHOD));
                 genPropertyBuilder.setReadOnly(true);
                 genPropertyBuilder.setReturnType(BaseYangTypes.BOOLEAN_TYPE);
 
@@ -360,7 +360,9 @@ public final class TypeProviderImpl implements TypeProvider {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public List<GeneratedTOBuilder> provideGeneratedTOBuildersForUnionTypeDef(final String basePackageName,
             final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap, final ModuleContext context) {
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final ModuleContext context) {
         Preconditions.checkNotNull(basePackageName, "Base Package Name cannot be NULL!");
         Preconditions.checkNotNull(typedef, "Type Definition cannot be NULL!");
         Preconditions.checkNotNull(typedef.getQName(), "Type definition QName cannot be NULL!");
@@ -380,11 +382,11 @@ public final class TypeProviderImpl implements TypeProvider {
 
         generatedTOBuilders.add(unionGenTOBuilder);
         unionGenTOBuilder.setIsUnion(true);
-        final List<String> regularExpressions = new ArrayList<>();
+        final Map<String, String> expressions = new HashMap<>();
         for (final TypeDefinition<?> unionType : unionTypes) {
             final String unionTypeName = unionType.getQName().getLocalName();
             if (unionType.getBaseType() != null) {
-                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, regularExpressions,
+                resolveExtendedSubtypeAsUnion(unionGenTOBuilder, unionType, expressions,
                         parentNode, schemaContext, genTypeDefsContextMap);
             } else if (unionType instanceof UnionTypeDefinition) {
                 generatedTOBuilders.add(resolveUnionSubtypeAsUnion(unionGenTOBuilder, (UnionTypeDefinition) unionType,
@@ -400,8 +402,8 @@ public final class TypeProviderImpl implements TypeProvider {
                 updateUnionTypeAsProperty(unionGenTOBuilder, javaType, unionTypeName);
             }
         }
-        if (!regularExpressions.isEmpty()) {
-            addStringRegExAsConstant(unionGenTOBuilder, regularExpressions);
+        if (!expressions.isEmpty()) {
+            addStringRegExAsConstant(unionGenTOBuilder, expressions);
         }
 
         //storeGenTO(typedef, unionGenTOBuilder, parentNode);
@@ -424,7 +426,8 @@ public final class TypeProviderImpl implements TypeProvider {
 
     private Type javaTypeForSchemaDefType(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode,
             final Restrictions r, final SchemaContext schemaContext,
-            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap, final ModuleContext context) {
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final ModuleContext context) {
         Preconditions.checkArgument(typeDefinition != null, "Type Definition cannot be NULL!");
         final String typedefName = typeDefinition.getQName().getLocalName();
         Preconditions.checkArgument(typedefName != null, "Type Definitions Local Name cannot be NULL!");
@@ -494,7 +497,8 @@ public final class TypeProviderImpl implements TypeProvider {
     private Type typedefToGeneratedType(final String basePackageName, final Module module,
             final TypeDefinition<?> typedef,
             final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
-            final Map<Module, Set<Type>> additionalTypes, final SchemaContext schemaContext, final ModuleContext context) {
+            final Map<Module, Set<Type>> additionalTypes, final SchemaContext schemaContext,
+            final ModuleContext context) {
         final String moduleName = module.getName();
         final Optional<Revision> moduleRevision = module.getRevision();
         if (basePackageName != null && moduleName != null && typedef != null) {
@@ -594,7 +598,8 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return JAVA <code>Type</code> instance for <code>typeDefinition</code>
      */
     private Type javaTypeForLeafrefOrIdentityRef(final TypeDefinition<?> typeDefinition, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
             final ModuleContext context) {
         if (typeDefinition instanceof LeafrefTypeDefinition) {
             final LeafrefTypeDefinition leafref = (LeafrefTypeDefinition) typeDefinition;
@@ -627,9 +632,9 @@ public final class TypeProviderImpl implements TypeProvider {
      *
      */
     public Type provideTypeForLeafref(final LeafrefTypeDefinition leafrefType, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
             final ModuleContext context) {
-
         Type returnType = null;
         Preconditions.checkArgument(leafrefType != null, "Leafref Type Definition reference cannot be NULL!");
 
@@ -734,7 +739,8 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return JAVA <code>Type</code> representation of <code>dataNode</code>
      */
     private Type resolveTypeFromDataSchemaNode(final SchemaNode dataNode, final SchemaContext schemaContext,
-            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap, final ModuleContext context) {
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final ModuleContext context) {
         Type returnType = null;
         if (dataNode != null) {
             if (dataNode instanceof LeafSchemaNode) {
@@ -766,7 +772,8 @@ public final class TypeProviderImpl implements TypeProvider {
      * @return JAVA <code>Type</code> of the identity which is refrenced through
      *         <code>idref</code>
      */
-    private static Type provideTypeForIdentityref(final IdentityrefTypeDefinition idref, final SchemaContext schemaContext) {
+    private static Type provideTypeForIdentityref(final IdentityrefTypeDefinition idref,
+            final SchemaContext schemaContext) {
         //TODO: incompatibility with Binding spec v2, get first or only one
         final QName baseIdQName = idref.getIdentities().iterator().next().getQName();
         final Module module = schemaContext.findModule(baseIdQName.getModule()).orElse(null);
@@ -823,7 +830,8 @@ public final class TypeProviderImpl implements TypeProvider {
      *            string with name of property which should be added to
      *            <code>unionGentransObject</code>
      */
-    private static void updateUnionTypeAsProperty(final GeneratedTOBuilder unionGenTransObject, final Type type, final String propertyName) {
+    private static void updateUnionTypeAsProperty(final GeneratedTOBuilder unionGenTransObject, final Type type,
+            final String propertyName) {
         if (unionGenTransObject != null && type != null && !unionGenTransObject.containsProperty(propertyName)) {
             final GeneratedPropertyBuilder propBuilder = unionGenTransObject
                     .addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(propertyName, JavaIdentifier.METHOD));
@@ -859,17 +867,17 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     private GeneratedTOBuilder resolveUnionSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
             final UnionTypeDefinition unionSubtype, final String basePackageName, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
             final ModuleContext context) {
-
         final String newTOBuilderName = provideAvailableNameForGenTOBuilder(parentUnionGenTOBuilder.getName());
         final GeneratedTOBuilder subUnionGenTOBUilder = provideGeneratedTOBuilderForUnionTypeDef(
                 basePackageName, unionSubtype, newTOBuilderName, parentNode, schemaContext, genTypeDefsContextMap,
                 context);
 
         final GeneratedPropertyBuilder propertyBuilder;
-        propertyBuilder = parentUnionGenTOBuilder
-                .addProperty(JavaIdentifierNormalizer.normalizeSpecificIdentifier(newTOBuilderName, JavaIdentifier.METHOD));
+        propertyBuilder = parentUnionGenTOBuilder.addProperty(
+            JavaIdentifierNormalizer.normalizeSpecificIdentifier(newTOBuilderName, JavaIdentifier.METHOD));
         propertyBuilder.setReturnType(subUnionGenTOBUilder);
         parentUnionGenTOBuilder.addEqualsIdentity(propertyBuilder);
         parentUnionGenTOBuilder.addToStringProperty(propertyBuilder);
@@ -893,7 +901,8 @@ public final class TypeProviderImpl implements TypeProvider {
      */
     public GeneratedTOBuilder provideGeneratedTOBuilderForUnionTypeDef(final String basePackageName,
             final UnionTypeDefinition typedef, final String typeDefName, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
             final ModuleContext context) {
 
         final List<GeneratedTOBuilder> builders = provideGeneratedTOBuildersForUnionTypeDef(basePackageName,
@@ -963,48 +972,49 @@ public final class TypeProviderImpl implements TypeProvider {
      * @param unionSubtype
      *            type definition of the <code>ExtendedType</code> type which
      *            represents union subtype
-     * @param regularExpressions
-     *            list of strings with the regular expressions
+     * @param expressions
+     *            map of strings with the regular expressions
      * @param parentNode
      *            parent Schema Node for Extended Subtype
      *
      */
     private void resolveExtendedSubtypeAsUnion(final GeneratedTOBuilder parentUnionGenTOBuilder,
-            final TypeDefinition<?> unionSubtype, final List<String> regularExpressions, final SchemaNode parentNode,
-            final SchemaContext schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap) {
-
+            final TypeDefinition<?> unionSubtype, final Map<String, String> expressions, final SchemaNode parentNode,
+            final SchemaContext schemaContext,
+            final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap) {
         final String unionTypeName = unionSubtype.getQName().getLocalName();
         final Type genTO = findGenTO(unionTypeName, unionSubtype, schemaContext, genTypeDefsContextMap);
         if (genTO != null) {
             updateUnionTypeAsProperty(parentUnionGenTOBuilder, genTO, unionTypeName);
-        } else {
-            final TypeDefinition<?> baseType = baseTypeDefForExtendedType(unionSubtype);
-            if (unionTypeName.equals(baseType.getQName().getLocalName())) {
-                final Type javaType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(baseType,
-                        parentNode, null);
-                if (javaType != null) {
-                    updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, unionTypeName);
-                }
-            } else if (baseType instanceof LeafrefTypeDefinition) {
-                final Type javaType = javaTypeForSchemaDefinitionType(baseType,
-                        parentNode, null);
-                boolean typeExist = false;
-                for (final GeneratedPropertyBuilder generatedPropertyBuilder : parentUnionGenTOBuilder
-                        .getProperties()) {
-                    final Type origType = ((GeneratedPropertyBuilderImpl) generatedPropertyBuilder).getReturnType();
-                    if (origType != null && javaType != null && javaType == origType) {
-                        typeExist = true;
-                        break;
-                    }
-                }
-                if (!typeExist && javaType != null) {
-                    updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, new StringBuilder(javaType.getName())
-                            .append(parentUnionGenTOBuilder.getName()).append("Value").toString());
+            return;
+        }
+
+        final TypeDefinition<?> baseType = baseTypeDefForExtendedType(unionSubtype);
+        if (unionTypeName.equals(baseType.getQName().getLocalName())) {
+            final Type javaType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(baseType,
+                    parentNode, null);
+            if (javaType != null) {
+                updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, unionTypeName);
+            }
+        } else if (baseType instanceof LeafrefTypeDefinition) {
+            final Type javaType = javaTypeForSchemaDefinitionType(baseType,
+                    parentNode, null);
+            boolean typeExist = false;
+            for (final GeneratedPropertyBuilder generatedPropertyBuilder : parentUnionGenTOBuilder
+                    .getProperties()) {
+                final Type origType = ((GeneratedPropertyBuilderImpl) generatedPropertyBuilder).getReturnType();
+                if (origType != null && javaType != null && javaType == origType) {
+                    typeExist = true;
+                    break;
                 }
             }
-            if (baseType instanceof StringTypeDefinition) {
-                regularExpressions.addAll(resolveRegExpressionsFromTypedef(unionSubtype));
+            if (!typeExist && javaType != null) {
+                updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType,
+                    javaType.getName() + parentUnionGenTOBuilder.getName() + "Value");
             }
+        }
+        if (baseType instanceof StringTypeDefinition) {
+            expressions.putAll(resolveRegExpressionsFromTypedef(unionSubtype));
         }
     }
 

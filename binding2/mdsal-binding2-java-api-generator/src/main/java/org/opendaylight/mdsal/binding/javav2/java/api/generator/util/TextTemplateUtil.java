@@ -51,7 +51,6 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 public final class TextTemplateUtil {
 
     public static final String DOT = ".";
-    public static final String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
 
     private static final char NEW_LINE = '\n';
     private static final String UNDERSCORE = "_";

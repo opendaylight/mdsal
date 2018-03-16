@@ -47,6 +47,7 @@ public final class BindingMapping {
     public static final String MODEL_BINDING_PROVIDER_CLASS_NAME = "$YangModelBindingProvider";
     public static final String PATTERN_CONSTANT_NAME = "PATTERN_CONSTANTS";
     public static final String MEMBER_PATTERN_LIST = "patterns";
+    public static final String MEMBER_REGEX_LIST = "regexes";
     public static final String RPC_INPUT_SUFFIX = "Input";
     public static final String RPC_OUTPUT_SUFFIX = "Output";
 

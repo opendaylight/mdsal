@@ -161,12 +161,8 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
                         }
                     }
                 }
-                if (!isValidArg) {
-                    throw new IllegalArgumentException(
-                      "expected one of: @{toListOfNames(getAllIfcs(genType.asInstanceOf[GeneratedType]))} \n" +
-                      "but was: " + arg
-                    );
-                }
+
+                @{importedNames.get("codeHelpers")}.validValue(isValidArg, arg, "@{toListOfNames(getAllIfcs(genType.asInstanceOf[GeneratedType]))}");
             }
         }
     }
@@ -253,7 +249,6 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     }
 }
 
-
 @generateSetters() = {
     @for(field <- properties) {
         @if(!field.getReturnType.isInstanceOf[GeneratedType] && getRestrictions(field.getReturnType) != null) {
@@ -326,10 +321,7 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
         @if(addOverride) {@@Override}
         public <E extends @{importedNames.get("augmentation")}<? super @{genType.getName}>> E get@{toFirstUpper(augmentField.getName)}
         (@{importedNames.get("class")}<E> augmentationType) {
-            if (augmentationType == null) {
-                throw new IllegalArgumentException("Augmentation Type reference cannot be NULL!");
-            }
-            return (E) @{augmentField.getName}.get(augmentationType);
+            return (E) @{augmentField.getName}.get(@{importedNames.get("codeHelpers")}.nonNullValue(augmentationType, "augmentationType"));
         }
     }
 }
