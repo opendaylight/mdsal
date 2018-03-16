@@ -10,7 +10,7 @@
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.fieldName
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedProperty
-@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.PATTERN_CONSTANT_NAME
+@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping
 
 @(genTo: GeneratedTransferObject, allProperties: List[GeneratedProperty], properties: List[GeneratedProperty],
 parentProperties: List[GeneratedProperty], importedNames: Map[String, String], argumentsDeclaration: String,
@@ -31,10 +31,8 @@ unionConstructor: String, genRestrictions: String)
         @if(genTo.isTypedef && !allProperties.isEmpty && allProperties.size == 1 && allProperties.get(0).getName.equals("value")) {
         @{importedNames.get("preconditions")}.checkNotNull(_value, "Supplied value may not be null");
             @for(currentConstant <- genTo.getConstantDefinitions) {
-                @if(PATTERN_CONSTANT_NAME.equals(currentConstant.getName) && currentConstant.getValue.isInstanceOf[List[_]]) {
-                    for (Pattern p : patterns) {
-                        @{importedNames.get("preconditions")}.checkArgument(p.matcher(_value).matches(), "Supplied value \"%s\" does not match required pattern \"%s\"", _value, p);
-                    }
+                @if(BindingMapping.PATTERN_CONSTANT_NAME.equals(currentConstant.getName)) {
+                    @{importedNames.get("CodeHelpers")}.checkPattern(_value, @{BindingMapping.MEMBER_PATTERN_LIST}, @{BindingMapping.MEMBER_REGEX_LIST});
                 }
             }
         }

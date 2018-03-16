@@ -14,7 +14,8 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,10 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import org.apache.commons.text.StringEscapeUtils;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
-import org.opendaylight.mdsal.binding.javav2.generator.util.TypeConstants;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.EnumerationBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedPropertyBuilderImpl;
@@ -214,23 +213,20 @@ final class TypeGenHelper {
      *
      * @param typedef
      *            extended type in which are the pattern constraints sought
-     * @return list of strings which represents the constraint patterns
+     * @return map of strings which represents the constraint patterns
      * @throws IllegalArgumentException
      *             if <code>typedef</code> equals null
      *
      */
-    static List<String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
-        Preconditions.checkArgument(typedef != null, "typedef can't be null");
-
-        final List<PatternConstraint> patternConstraints;
-        if (typedef instanceof StringTypeDefinition) {
-            patternConstraints = ((StringTypeDefinition) typedef).getPatternConstraints();
-        } else {
-            patternConstraints = ImmutableList.of();
+    static Map<String, String> resolveRegExpressionsFromTypedef(final TypeDefinition<?> typedef) {
+        if (!(typedef instanceof StringTypeDefinition)) {
+            return ImmutableMap.of();
         }
 
-        final List<String> regExps = new ArrayList<>(patternConstraints.size());
-        for (final PatternConstraint patternConstraint : patternConstraints) {
+        // TODO: run diff against base ?
+        final List<PatternConstraint> patternConstraints = ((StringTypeDefinition) typedef).getPatternConstraints();
+        final Map<String, String> regExps = Maps.newHashMapWithExpectedSize(patternConstraints.size());
+        for (PatternConstraint patternConstraint : patternConstraints) {
             String regEx = patternConstraint.getJavaPatternString();
 
             // The pattern can be inverted
@@ -239,8 +235,7 @@ final class TypeGenHelper {
                 regEx = applyModifier(optModifier.get(), regEx);
             }
 
-            final String modifiedRegEx = StringEscapeUtils.escapeJava(regEx);
-            regExps.add(modifiedRegEx);
+            regExps.put(regEx, patternConstraint.getRegularExpressionString());
         }
 
         return regExps;
@@ -275,7 +270,7 @@ final class TypeGenHelper {
         final List<TypeDefinition<?>> sortedTypeDefinition = new ArrayList<>();
 
         final Map<Integer, List<TypeDefinition<?>>> typeDefinitionsDepths = new TreeMap<>();
-        for (final TypeDefinition<?> unsortedTypeDefinition : unsortedTypeDefinitions) {
+        for (TypeDefinition<?> unsortedTypeDefinition : unsortedTypeDefinitions) {
             final int depth = getTypeDefinitionDepth(unsortedTypeDefinition);
             final List<TypeDefinition<?>> typeDefinitionsConcreteDepth = typeDefinitionsDepths.computeIfAbsent(depth, k -> new ArrayList<>());
             typeDefinitionsConcreteDepth.add(unsortedTypeDefinition);
@@ -295,24 +290,13 @@ final class TypeGenHelper {
      * @param genTOBuilder
      *            generated TO builder to which are
      *            <code>regular expressions</code> added
-     * @param regularExpressions
+     * @param expressions
      *            list of string which represent regular expressions
-     * @throws IllegalArgumentException
-     *             <ul>
-     *             <li>if <code>genTOBuilder</code> equals null</li>
-     *             <li>if <code>regularExpressions</code> equals null</li>
-     *             </ul>
      */
-    static void addStringRegExAsConstant(final GeneratedTOBuilder genTOBuilder, final List<String> regularExpressions) {
-        if (genTOBuilder == null) {
-            throw new IllegalArgumentException("Generated transfer object builder can't be null");
-        }
-        if (regularExpressions == null) {
-            throw new IllegalArgumentException("List of regular expressions can't be null");
-        }
-        if (!regularExpressions.isEmpty()) {
-            genTOBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), TypeConstants.PATTERN_CONSTANT_NAME,
-                ImmutableList.copyOf(regularExpressions));
+    static void addStringRegExAsConstant(final GeneratedTOBuilder genTOBuilder, final Map<String, String> expressions) {
+        if (!expressions.isEmpty()) {
+            genTOBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), BindingMapping.PATTERN_CONSTANT_NAME,
+                ImmutableMap.copyOf(expressions));
         }
     }
 
@@ -341,7 +325,7 @@ final class TypeGenHelper {
             final List<TypeDefinition<?>> childTypeDefinitions = ((UnionTypeDefinition) baseType).getTypes();
             int maxChildDepth = 0;
             int childDepth = 1;
-            for (final TypeDefinition<?> childTypeDefinition : childTypeDefinitions) {
+            for (TypeDefinition<?> childTypeDefinition : childTypeDefinitions) {
                 childDepth = childDepth + getTypeDefinitionDepth(childTypeDefinition);
                 if (childDepth > maxChildDepth) {
                     maxChildDepth = childDepth;
@@ -358,12 +342,12 @@ final class TypeGenHelper {
         fillRecursively(ret, module);
 
         final Set<NotificationDefinition> notifications = module.getNotifications();
-        for (final NotificationDefinition notificationDefinition : notifications) {
+        for (NotificationDefinition notificationDefinition : notifications) {
             fillRecursively(ret, notificationDefinition);
         }
 
         final Set<RpcDefinition> rpcs = module.getRpcs();
-        for (final RpcDefinition rpcDefinition : rpcs) {
+        for (RpcDefinition rpcDefinition : rpcs) {
             ret.addAll(rpcDefinition.getTypeDefinitions());
             final ContainerSchemaNode input = rpcDefinition.getInput();
             if (input != null) {
@@ -377,10 +361,10 @@ final class TypeGenHelper {
 
         final Collection<DataSchemaNode> potentials = module.getChildNodes();
 
-        for (final DataSchemaNode potential : potentials) {
+        for (DataSchemaNode potential : potentials) {
             if (potential instanceof ActionNodeContainer) {
                 final Set<ActionDefinition> actions = ((ActionNodeContainer) potential).getActions();
-                for (final ActionDefinition action: actions) {
+                for (ActionDefinition action: actions) {
                     final ContainerSchemaNode input = action.getInput();
                     if (input != null) {
                         fillRecursively(ret, input);
@@ -405,7 +389,7 @@ final class TypeGenHelper {
                 } else if (childNode instanceof ListSchemaNode) {
                     fillRecursively(list, (ListSchemaNode) childNode);
                 } else if (childNode instanceof ChoiceSchemaNode) {
-                    for (final CaseSchemaNode caseNode : ((ChoiceSchemaNode) childNode).getCases().values()) {
+                    for (CaseSchemaNode caseNode : ((ChoiceSchemaNode) childNode).getCases().values()) {
                         fillRecursively(list, caseNode);
                     }
                 }
@@ -416,7 +400,7 @@ final class TypeGenHelper {
 
         final Set<GroupingDefinition> groupings = container.getGroupings();
         if (groupings != null) {
-            for (final GroupingDefinition grouping : groupings) {
+            for (GroupingDefinition grouping : groupings) {
                 fillRecursively(list, grouping);
             }
         }
