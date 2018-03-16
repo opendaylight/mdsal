@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -48,11 +47,13 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.IdentifiableItem;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Instantiable;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Item;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.CodeHelpers;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentable;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.Augmentation;
 import org.opendaylight.mdsal.binding.javav2.spec.structural.AugmentationHolder;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.concepts.Identifiable;
+import org.opendaylight.yangtools.yang.common.QName;
 
 public class BuilderRenderer extends BaseRenderer {
 
@@ -287,6 +288,9 @@ public class BuilderRenderer extends BaseRenderer {
         importedNames.put("instantiable", importedName(Instantiable.class));
         importedNames.put("item", importedName(Item.class));
         importedNames.put("identifiableItem", importedName(IdentifiableItem.class));
+        importedNames.put("qname", importedName(QName.class));
+        importedNames.put("codeHelpers", importedName(CodeHelpers.class));
+
         if (getType().getParentType() != null) {
             importedNames.put("parent", importedName(getType().getParentType()));
             parentTypeForBuilderName = getType().getParentType().getFullyQualifiedName();
