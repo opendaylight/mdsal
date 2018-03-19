@@ -46,6 +46,12 @@ public abstract class JavaTypeName implements Identifier, Immutable {
         }
 
         @Override
+        public boolean canCreateEnclosed(final String simpleName) {
+            throw new UnsupportedOperationException("Primitive type " + simpleName() + " cannot enclose type "
+                    + simpleName);
+        }
+
+        @Override
         public JavaTypeName createEnclosed(final String simpleName) {
             throw new UnsupportedOperationException("Primitive type " + simpleName() + " cannot enclose type "
                     + simpleName);
@@ -72,6 +78,11 @@ public abstract class JavaTypeName implements Identifier, Immutable {
         }
 
         @Override
+        public boolean canCreateEnclosed(final String simpleName) {
+            return !simpleName.equals(simpleName());
+        }
+
+        @Override
         public final JavaTypeName createEnclosed(final String simpleName) {
             checkValidName(requireNonNull(simpleName));
             return new Nested(this, simpleName);
@@ -87,7 +98,7 @@ public abstract class JavaTypeName implements Identifier, Immutable {
         }
 
         void checkValidName(final String nestedName) {
-            checkArgument(!simpleName().equals(nestedName), "Nested class name %s conflicts with enclosing class %s",
+            checkArgument(canCreateEnclosed(nestedName), "Nested class name %s conflicts with enclosing class %s",
                 nestedName, this);
         }
 
@@ -157,9 +168,8 @@ public abstract class JavaTypeName implements Identifier, Immutable {
         }
 
         @Override
-        void checkValidName(final String nestedName) {
-            super.checkValidName(nestedName);
-            immediatelyEnclosingClass.checkValidName(nestedName);
+        public boolean canCreateEnclosed(final String simpleName) {
+            return super.canCreateEnclosed(simpleName) && immediatelyEnclosingClass.canCreateEnclosed(simpleName);
         }
     }
 
@@ -273,4 +283,6 @@ public abstract class JavaTypeName implements Identifier, Immutable {
      */
     @Override
     public abstract String toString();
+
+    public abstract boolean canCreateEnclosed(final String simpleName);
 }

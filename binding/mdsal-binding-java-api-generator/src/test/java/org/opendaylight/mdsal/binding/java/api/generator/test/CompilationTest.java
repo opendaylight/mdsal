@@ -623,6 +623,15 @@ public class CompilationTest extends BaseCompilationTest {
         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
     }
 
+    @Test
+    public void innerEnumerationNameCollisionTest() throws Exception {
+        final File sourcesOutputDir = CompilationTestUtils.generatorOutput("yt321");
+        final File compiledOutputDir = CompilationTestUtils.compilerOutput("yt321");
+        generateTestSources("/compilation/yt321", sourcesOutputDir);
+        CompilationTestUtils.testCompilation(sourcesOutputDir, compiledOutputDir);
+        CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
+    }
+
     private void generateTestSources(final String resourceDirPath, final File sourcesOutputDir)
             throws IOException, URISyntaxException {
         final List<File> sourceFiles = CompilationTestUtils.getSourceFiles(resourceDirPath);
