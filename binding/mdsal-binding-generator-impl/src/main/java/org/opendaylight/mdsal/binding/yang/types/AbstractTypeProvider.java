@@ -686,9 +686,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 "Local Name in EnumTypeDefinition QName cannot be NULL!");
         Preconditions.checkArgument(typeBuilder != null, "Generated Type Builder reference cannot be NULL!");
 
-        final String enumerationName = BindingMapping.getClassName(enumName);
-
-        final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
+        final EnumBuilder enumBuilder = typeBuilder.addEnumeration(BindingMapping.getClassName(enumName));
 
         addEnumDescription(enumBuilder, enumTypeDef);
         enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
