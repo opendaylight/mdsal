@@ -649,8 +649,7 @@ abstract class AbstractTypeGenerator {
     private EnumBuilder resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
             final GeneratedTypeBuilder typeBuilder, final ModuleContext context) {
         if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
-            final String enumerationName = BindingMapping.getClassName(enumName);
-            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumerationName);
+            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(BindingMapping.getClassName(enumName));
             typeProvider.addEnumDescription(enumBuilder, enumTypeDef);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
             context.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
