@@ -164,12 +164,20 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     @Override
-    public EnumBuilder addEnumeration(final String name) {
+    public EnumBuilder addEnumeration(String name) {
         Preconditions.checkArgument(name != null, "Name of enumeration cannot be null!");
-        final EnumBuilder builder = newEnumerationBuilder(getIdentifier().createEnclosed(name));
 
+        // This enumeration may be generated from a leaf, which may end up colliding with its enclosing type
+        // hierarchy. Check it and assign another name if that should be the case.
+        final boolean canCreate = getIdentifier().canCreateEnclosed(name);
+        if (!canCreate) {
+            // Append a single '$' -- it cannot come from the user, hence it marks our namespace.
+            name = name + '$';
+        }
+
+        final EnumBuilder builder = newEnumerationBuilder(getIdentifier().createEnclosed(name));
         Preconditions.checkArgument(!this.enumDefinitions.contains(builder),
-            "This generated type already contains equal enumeration.");
+            "Generated type %s already contains an enumeration for %s", this, builder);
         this.enumDefinitions = LazyCollections.lazyAdd(this.enumDefinitions, builder);
         return builder;
     }
