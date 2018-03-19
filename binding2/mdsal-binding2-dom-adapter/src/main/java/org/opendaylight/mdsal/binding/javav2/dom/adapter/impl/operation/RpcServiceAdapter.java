@@ -19,6 +19,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collection;
 import java.util.Map.Entry;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.extractor.ContextReferenceExtractor;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
@@ -33,6 +34,8 @@ import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.spi.RpcRoutingStrategy;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.RpcError;
+import org.opendaylight.yangtools.yang.common.RpcError.ErrorSeverity;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -170,10 +173,15 @@ class RpcServiceAdapter implements InvocationHandler {
                 } else {
                     bindingResult = null;
                 }
-                return RpcResult.class.cast(RpcResultBuilder.success(bindingResult).build());
+
+                // DOMRpcResult does not have a notion of success, hence we have to reverse-engineer it by looking
+                // at reported errors and checking whether they are just warnings.
+                final Collection<RpcError> errors = input.getErrors();
+                return RpcResult.class.cast(RpcResultBuilder.status(errors.stream()
+                    .noneMatch(error -> error.getSeverity() == ErrorSeverity.ERROR))
+                    .withResult(bindingResult).withRpcErrors(errors).build());
             }, MoreExecutors.directExecutor());
         }
-
     }
 
     private final class NonRoutedStrategy extends RpcInvocationStrategy {
