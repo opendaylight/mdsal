@@ -1303,10 +1303,10 @@ abstract class AbstractTypeGenerator {
                 }
                 typeProvider.putReferencedType(leaf.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
-                GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((UnionTypeDefinition) typeDef, typeBuilder, leaf,
-                    parentModule);
+                final UnionTypeDefinition unionDef = (UnionTypeDefinition)typeDef;
+                GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(unionDef, typeBuilder, leaf, parentModule);
                 if (genTOBuilder != null) {
-                    returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
+                    returnType = createReturnTypeForUnion(genTOBuilder, unionDef, typeBuilder, parentModule);
                     // Store the inner type within the union so that we can find the reference for it
                     context.addInnerTypedefType(typeDef.getPath(), returnType);
                 }
@@ -1512,10 +1512,11 @@ abstract class AbstractTypeGenerator {
                 returnType = new ReferencedTypeImpl(enumBuilder.getIdentifier());
                 typeProvider.putReferencedType(node.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
-                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((UnionTypeDefinition)typeDef, typeBuilder,
+                final UnionTypeDefinition unionDef = (UnionTypeDefinition)typeDef;
+                final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(unionDef, typeBuilder,
                     node, parentModule);
                 if (genTOBuilder != null) {
-                    returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule);
+                    returnType = createReturnTypeForUnion(genTOBuilder, unionDef, typeBuilder, parentModule);
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder((BitsTypeDefinition)typeDef, typeBuilder,
@@ -1537,23 +1538,20 @@ abstract class AbstractTypeGenerator {
         return true;
     }
 
-    private Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final TypeDefinition<?> typeDef,
+    private Type createReturnTypeForUnion(final GeneratedTOBuilder genTOBuilder, final UnionTypeDefinition typeDef,
             final GeneratedTypeBuilder typeBuilder, final Module parentModule) {
-        final GeneratedTOBuilder returnType = typeProvider.newGeneratedTOBuilder(genTOBuilder.getIdentifier());
-
-        addCodegenInformation(returnType, parentModule, typeDef);
-        returnType.setSchemaPath(typeDef.getPath());
-        returnType.setModuleName(parentModule.getName());
+        final GeneratedTOBuilder returnTypeBuilder = typeProvider.newGeneratedTOBuilder(genTOBuilder.getIdentifier());
+        returnTypeBuilder.setIsUnion(true);
+        addCodegenInformation(returnTypeBuilder, parentModule, typeDef);
+        returnTypeBuilder.setSchemaPath(typeDef.getPath());
+        returnTypeBuilder.setModuleName(parentModule.getName());
+        final GeneratedTransferObject returnType = returnTypeBuilder.build();
 
         genTOBuilder.setTypedef(true);
         genTOBuilder.setIsUnion(true);
         AbstractTypeProvider.addUnitsToGenTO(genTOBuilder, typeDef.getUnits().orElse(null));
 
-
-
         final GeneratedTOBuilder unionBuilder = createUnionBuilder(genTOBuilder, typeBuilder);
-
-
         final MethodSignatureBuilder method = unionBuilder.addMethod("getDefaultInstance");
         method.setReturnType(returnType);
         method.addParameter(Types.STRING, "defaultValue");
@@ -1567,7 +1565,7 @@ abstract class AbstractTypeGenerator {
         } else {
             types.add(unionBuilder.build());
         }
-        return returnType.build();
+        return returnType;
     }
 
     private GeneratedTOBuilder createUnionBuilder(final GeneratedTOBuilder genTOBuilder,
@@ -1919,11 +1917,6 @@ abstract class AbstractTypeGenerator {
             resultTOBuilder.addEnclosingTransferObject(genTOBuilder);
         }
 
-        final GeneratedPropertyBuilder genPropBuilder = resultTOBuilder.addProperty("value");
-        genPropBuilder.setReturnType(Types.CHAR_ARRAY);
-        resultTOBuilder.addEqualsIdentity(genPropBuilder);
-        resultTOBuilder.addHashIdentity(genPropBuilder);
-        resultTOBuilder.addToStringProperty(genPropBuilder);
         processEnclosedTOBuilderes(typeBuilder, genTOBuilders);
         return resultTOBuilder;
     }
