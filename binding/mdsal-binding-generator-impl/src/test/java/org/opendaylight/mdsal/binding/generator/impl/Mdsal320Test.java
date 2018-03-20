@@ -33,7 +33,7 @@ public class Mdsal320Test {
         assertEquals(4, generateTypes.size());
 
         final Type fooType = generateTypes.stream().filter(type -> type.getFullyQualifiedName()
-            .equals("org.opendaylight.yang.gen.v1.urn.odl.yt320.norev.Foo")).findFirst().get();
+            .equals("org.opendaylight.yang.gen.v1.urn.odl.mdsal320.norev.Foo")).findFirst().get();
         assertTrue(fooType instanceof GeneratedType);
         final GeneratedType foo = (GeneratedType) fooType;
 
