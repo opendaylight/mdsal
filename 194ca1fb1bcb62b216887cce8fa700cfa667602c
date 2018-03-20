@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89ba543d_bf0bf12d",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-03-20T02:02:24Z",
+      "side": 1,
+      "message": "Could this be replaced by passing \u0027genCtx\u0027 and then calling genCtx.get(qname.getModule()).modulePackageName?",
+      "range": {
+        "startLine": 583,
+        "startChar": 16,
+        "endLine": 583,
+        "endChar": 49
+      },
+      "revId": "194ca1fb1bcb62b216887cce8fa700cfa667602c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
