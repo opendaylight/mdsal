@@ -1259,7 +1259,7 @@ abstract class AbstractTypeGenerator {
             final List<PatternConstraint> patternConstraints) {
         if (!patternConstraints.isEmpty()) {
             final StringBuilder field = new StringBuilder().append(TypeConstants.PATTERN_CONSTANT_NAME).append("_")
-                .append(BindingMapping.getPropertyName(leafName).toUpperCase());
+                .append(BindingMapping.getPropertyName(leafName));
             typeBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), field.toString(),
                 typeProvider.resolveRegExpressions(patternConstraints));
         }
