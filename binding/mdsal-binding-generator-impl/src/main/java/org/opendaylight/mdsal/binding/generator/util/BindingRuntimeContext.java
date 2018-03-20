@@ -20,9 +20,12 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -32,10 +35,10 @@ import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.generator.impl.BindingSchemaContextUtils;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.yangtools.concepts.Immutable;
@@ -310,6 +313,62 @@ public class BindingRuntimeContext implements Immutable {
     public BiMap<String, String> getEnumMapping(final Class<?> enumClass) {
         final Entry<GeneratedType, WithStatus> typeWithSchema = getTypeWithSchema(enumClass);
         return getEnumMapping(typeWithSchema);
+    }
+
+    /**
+     * Map enum constants: yang - java
+     *
+     * @param enumClassName enum generated class name
+     * @return mapped enum constants from yang with their corresponding values in generated binding classes
+     */
+    public BiMap<String, String> getEnumMapping(final String enumClassName) {
+        return getEnumMapping(findTypeWithSchema(enumClassName));
+    }
+
+    private Entry<GeneratedType, WithStatus> findTypeWithSchema(final String className) {
+        // All we have is a straight FQCN, which we need to split into a hierarchical JavaTypeName. This involves
+        // some amount of guesswork -- we do that by peeling components at the dot and trying out, e.g. given
+        // "foo.bar.baz.Foo.Bar.Baz" we end up trying:
+        // "foo.bar.baz.Foo.Bar" + "Baz"
+        // "foo.bar.baz.Foo" + Bar" + "Baz"
+        // "foo.bar.baz" + Foo" + Bar" + "Baz"
+        //
+        // And see which one sticks. We cannot rely on capital letters, as they can be used in package names, too.
+        // Nested classes are not common, so we should be arriving at the result pretty quickly.
+        final List<String> components = new ArrayList<>();
+        String packageName = className;
+
+        for (int lastDot = packageName.lastIndexOf(DOT); lastDot != -1; lastDot = packageName.lastIndexOf(DOT)) {
+            components.add(packageName.substring(lastDot + 1));
+            packageName = packageName.substring(0, lastDot);
+
+            final Iterator<String> it = components.iterator();
+            JavaTypeName name = JavaTypeName.create(packageName, it.next());
+            while (it.hasNext()) {
+                name = name.createEnclosed(it.next());
+            }
+
+            final Type type = new ReferencedTypeImpl(name);
+            final java.util.Optional<WithStatus> optSchema = runtimeTypes.findSchema(type);
+            if (!optSchema.isPresent()) {
+                continue;
+            }
+
+            final WithStatus schema = optSchema.get();
+            final java.util.Optional<Type> optDefinedType =  runtimeTypes.findType(schema);
+            if (!optDefinedType.isPresent()) {
+                continue;
+            }
+
+            final Type definedType = optDefinedType.get();
+            if (definedType instanceof GeneratedTypeBuilder) {
+                return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).build(), schema);
+            }
+            checkArgument(definedType instanceof GeneratedType, "Type %s is not a GeneratedType", className);
+            return new SimpleEntry<>((GeneratedType) definedType, schema);
+        }
+
+        throw new IllegalArgumentException("Failed to find type for " + className);
     }
 
     private static BiMap<String, String> getEnumMapping(final Entry<GeneratedType, WithStatus> typeWithSchema) {
