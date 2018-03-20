@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "112d9e83_36326b07",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-03-20T07:13:22Z",
+      "side": 1,
+      "message": "Late to find this, are there two modules with the same namespace and revsion but different names ? this may cover another module.",
+      "range": {
+        "startLine": 147,
+        "startChar": 22,
+        "endLine": 147,
+        "endChar": 33
+      },
+      "revId": "09c0ee4e2a0f09a074dd2f4485802e0bb3825dee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
