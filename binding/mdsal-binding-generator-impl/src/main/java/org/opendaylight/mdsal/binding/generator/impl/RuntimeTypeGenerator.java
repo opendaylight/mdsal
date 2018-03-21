@@ -11,11 +11,11 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
@@ -91,7 +91,7 @@ final class RuntimeTypeGenerator extends AbstractTypeGenerator {
 
     @Override
     void addCodegenInformation(final GeneratedTypeBuilder interfaceBuilder, final Module module, final String string,
-            final Set<? extends SchemaNode> nodes) {
+            final Collection<? extends SchemaNode> nodes) {
         // No-op
     }
 
