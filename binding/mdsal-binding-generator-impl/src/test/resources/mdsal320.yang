@@ -1,6 +1,6 @@
-module mdsal320 {
-    namespace "urn:odl:mdsal320";
-    prefix mdsal320;
+module yt320 {
+    namespace "urn:odl:yt320";
+    prefix yt320;
 
     container foo {
         leaf bar {
