@@ -22,6 +22,30 @@
       "revId": "c6f1e89713a407cf2be61106f2f9b59e5ee4897d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b22b91f2_72f94ad6",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1763,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-03-21T14:41:09Z",
+      "side": 1,
+      "message": "That’s the idea, yes. I’ll document this...",
+      "parentUuid": "9ebfe9d9_0f3c3a2f",
+      "range": {
+        "startLine": 1763,
+        "startChar": 12,
+        "endLine": 1763,
+        "endChar": 93
+      },
+      "revId": "c6f1e89713a407cf2be61106f2f9b59e5ee4897d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
