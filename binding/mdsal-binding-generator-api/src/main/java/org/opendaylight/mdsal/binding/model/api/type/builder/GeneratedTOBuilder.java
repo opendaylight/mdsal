@@ -90,8 +90,6 @@ public interface GeneratedTOBuilder extends GeneratedTypeBuilderBase<GeneratedTO
      */
     void setBaseType(TypeDefinition<?> typeDef);
 
-    boolean isUnion();
-
     /**
      *
      * @param isUnion

@@ -37,7 +37,6 @@ public class Mdsal269Test {
         assertTrue(mplsLabelType instanceof GeneratedTransferObject);
         final GeneratedTransferObject gto = (GeneratedTransferObject) mplsLabelType;
         final Iterator<GeneratedProperty> it = gto.getEqualsIdentifiers().iterator();
-        final GeneratedProperty value = it.next();
         final GeneratedProperty special = it.next();
         final GeneratedProperty general = it.next();
         assertFalse(it.hasNext());
@@ -48,8 +47,5 @@ public class Mdsal269Test {
 
         assertEquals("mplsLabelSpecialPurpose", special.getName());
         assertEquals("Type (java.lang.Class)", special.getReturnType().toString());
-
-        assertEquals("value", value.getName());
-        assertEquals("Type (char[])", value.getReturnType().toString());
     }
 }
