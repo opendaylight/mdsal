@@ -21,11 +21,13 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATIO
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION_LISTENER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.ROUTING_CONTEXT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_SERVICE;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.action;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.augmentable;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.childOf;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifiable;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifier;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.instanceIdentifier;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.FUTURE;
@@ -76,6 +78,8 @@ import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySor
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
+import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -92,6 +96,7 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
+import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -278,6 +283,7 @@ abstract class AbstractTypeGenerator {
         if (genType != null) {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
+            actionsToGenType(context, genType, node.getActions());
         }
     }
 
@@ -294,6 +300,8 @@ abstract class AbstractTypeGenerator {
                 final Type identifiableMarker = identifiable(genTOBuilder);
                 genTOBuilder.addImplementsType(identifierMarker);
                 genType.addImplementsType(identifiableMarker);
+
+                actionsToGenType(context, genTOBuilder, node.getActions());
             }
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
@@ -391,6 +399,30 @@ abstract class AbstractTypeGenerator {
 
         addCodegenInformation(moduleDataTypeBuilder, module);
         return moduleDataTypeBuilder;
+    }
+
+    private <T extends DataSchemaNode & ActionNodeContainer> void actionsToGenType(final ModuleContext context,
+            final Type parent, final Collection<ActionDefinition> actions) {
+        for (final ActionDefinition action : actions) {
+            final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
+                packageNameForGeneratedType(context.modulePackageName(), action.getPath()),
+                BindingMapping.getClassName(action.getQName())));
+
+            // FIXME: regenerate input/output types
+            final Type input = verifyNotNull(action.getInput());
+            final Type output = verifyNotNull(action.getOutput());
+
+
+
+            builder.addImplementsType(action(instanceIdentifier(parent),
+                createOperationContainer(context, operName, action, ),
+                Types.parameterizedTypeFor(FUTURE, rpcResult(createOperationContainer(context, operName, action,
+                    verifyNotNull(action.getOutput()))))));
+
+            addCodegenInformation(builder, context.module(), "Actions", actions);
+
+            context.addChildNodeType(action, builder);
+        }
     }
 
     /**
