@@ -19,10 +19,9 @@ import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationTarget;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
@@ -128,20 +127,18 @@ public final class BindingSchemaContextUtils {
 
     private static Optional<DataNodeContainer> findFirstDataNodeContainerInRpc(final SchemaContext ctx,
             final Class<? extends DataObject> targetType) {
-        final YangModuleInfo moduleInfo;
+        final QNameModule targetModule;
         try {
-            moduleInfo = BindingReflections.getModuleInfo(targetType);
+            targetModule = BindingReflections.getModuleInfo(targetType).getName().getModule();
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     String.format("Failed to load module information for class %s", targetType), e);
         }
 
-        for(RpcDefinition rpc : ctx.getOperations()) {
-            String rpcNamespace = rpc.getQName().getNamespace().toString();
-            String rpcRevision = rpc.getQName().getRevision().map(Revision::toString).orElse(null);
-            if(moduleInfo.getNamespace().equals(rpcNamespace) && moduleInfo.getRevision().equals(rpcRevision)) {
-                Optional<DataNodeContainer> potential = findInputOutput(rpc,targetType.getSimpleName());
-                if(potential.isPresent()) {
+        for (RpcDefinition rpc : ctx.getOperations()) {
+            if (targetModule.equals(rpc.getQName().getModule())) {
+                final Optional<DataNodeContainer> potential = findInputOutput(rpc,targetType.getSimpleName());
+                if (potential.isPresent()) {
                     return potential;
                 }
             }
