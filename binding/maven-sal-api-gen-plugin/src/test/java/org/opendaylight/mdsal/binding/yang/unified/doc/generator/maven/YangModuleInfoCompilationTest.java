@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.tools.Diagnostic;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -112,7 +114,7 @@ public class YangModuleInfoCompilationTest {
         for (Object importedModule : (Set<?>) importedModules) {
             assertTrue(importedModule instanceof YangModuleInfo);
             YangModuleInfo ymi = (YangModuleInfo) importedModule;
-            String name = ymi.getName();
+            String name = ymi.getName().getLocalName();
 
             switch (name) {
                 case "import-module":
@@ -174,8 +176,11 @@ public class YangModuleInfoCompilationTest {
         List<File> filesList = getJavaFiles(sourcesOutputDir);
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(filesList);
         Iterable<String> options = Arrays.asList("-d", compiledOutputDir.getAbsolutePath());
-        boolean compiled = compiler.getTask(null, null, null, options, null, compilationUnits).call();
-        assertTrue(compiled);
+        List<Diagnostic<?>> diags = new ArrayList<>();
+        boolean compiled = compiler.getTask(null, null, diags::add, options, null, compilationUnits).call();
+        if (!compiled) {
+            fail("Compilation failed with " + diags);
+        }
     }
 
     private static List<File> getJavaFiles(final File directory) {
