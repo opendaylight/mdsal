@@ -7,13 +7,9 @@
  */
 package org.opendaylight.mdsal.binding.generator.impl;
 
-import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Optional;
-import com.google.common.io.ByteSource;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -24,7 +20,7 @@ import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
-import org.opendaylight.yangtools.yang.common.Revision;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextProvider;
 import org.opendaylight.yangtools.yang.model.repo.api.RevisionSourceIdentifier;
@@ -126,22 +122,12 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
 
     private static YangTextSchemaSource toYangTextSource(final SourceIdentifier identifier,
             final YangModuleInfo moduleInfo) {
-        return new YangTextSchemaSource(identifier) {
-
-            @Override
-            public InputStream openStream() throws IOException {
-                return moduleInfo.getModuleSourceStream();
-            }
-
-            @Override
-            protected ToStringHelper addToStringAttributes(final ToStringHelper toStringHelper) {
-                return toStringHelper;
-            }
-        };
+        return YangTextSchemaSource.delegateForByteSource(identifier, moduleInfo.getYangTextByteSource());
     }
 
     private static SourceIdentifier sourceIdentifierFrom(final YangModuleInfo moduleInfo) {
-        return RevisionSourceIdentifier.create(moduleInfo.getName(), Revision.ofNullable(moduleInfo.getRevision()));
+        final QName name = moduleInfo.getName();
+        return RevisionSourceIdentifier.create(name.getLocalName(), name.getRevision());
     }
 
     public void addModuleInfos(final Iterable<? extends YangModuleInfo> moduleInfos) {
@@ -170,12 +156,7 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
         }
 
         return Futures.immediateFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier,
-            new ByteSource() {
-            @Override
-            public InputStream openStream() throws IOException {
-                return yangModuleInfo.getModuleSourceStream();
-            }
-        }));
+            yangModuleInfo.getYangTextByteSource()));
     }
 
     private static class YangModuleInfoRegistration extends AbstractObjectRegistration<YangModuleInfo> {
