@@ -20,7 +20,10 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_ROOT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION_LISTENER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.ROUTING_CONTEXT;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_INPUT;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_OUTPUT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_SERVICE;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.action;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.augmentable;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.childOf;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
@@ -76,6 +79,8 @@ import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySor
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
+import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -272,13 +277,17 @@ abstract class AbstractTypeGenerator {
         return genType;
     }
 
-    private void containerToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
+    private GeneratedType containerToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
             final Type baseInterface, final ContainerSchemaNode node) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, node);
-        if (genType != null) {
-            constructGetter(parent, genType, node);
-            resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
+        if (genType == null) {
+            return null;
         }
+
+        constructGetter(parent, genType, node);
+        resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
+        actionsToGenType(context, genType, node.getActions());
+        return genType.build();
     }
 
     private void listToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
@@ -294,6 +303,8 @@ abstract class AbstractTypeGenerator {
                 final Type identifiableMarker = identifiable(genTOBuilder);
                 genTOBuilder.addImplementsType(identifierMarker);
                 genType.addImplementsType(identifiableMarker);
+
+                actionsToGenType(context, genTOBuilder, node.getActions());
             }
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
@@ -391,6 +402,30 @@ abstract class AbstractTypeGenerator {
 
         addCodegenInformation(moduleDataTypeBuilder, module);
         return moduleDataTypeBuilder;
+    }
+
+    private <T extends DataSchemaNode & ActionNodeContainer> void actionsToGenType(final ModuleContext context,
+            final Type parent, final Collection<ActionDefinition> actions) {
+        for (final ActionDefinition action : actions) {
+            final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
+                packageNameForGeneratedType(context.modulePackageName(), action.getPath()),
+                BindingMapping.getClassName(action.getQName())));
+
+            annotateDeprecatedIfNecessary(action.getStatus(), builder);
+            builder.addImplementsType(action(parent,
+                actionContainer(context, RPC_INPUT, action.getInput()),
+                actionContainer(context, RPC_OUTPUT, action.getOutput())));
+
+            addCodegenInformation(builder, context.module(), action);
+            context.addChildNodeType(action, builder);
+        }
+    }
+
+    private GeneratedType actionContainer(final ModuleContext context, final Type baseInterface,
+            final ContainerSchemaNode schema) {
+        final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, schema);
+        resolveDataSchemaNodes(context, genType, genType, schema.getChildNodes());
+        return genType.build();
     }
 
     /**
