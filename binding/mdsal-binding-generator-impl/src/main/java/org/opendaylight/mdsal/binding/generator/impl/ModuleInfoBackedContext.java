@@ -10,8 +10,8 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Optional;
 import com.google.common.io.ByteSource;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -158,18 +158,18 @@ public class ModuleInfoBackedContext extends GeneratedClassLoadingStrategy
     }
 
     @Override
-    public CheckedFuture<? extends YangTextSchemaSource, SchemaSourceException> getSource(
+    public ListenableFuture<? extends YangTextSchemaSource> getSource(
         final SourceIdentifier sourceIdentifier) {
         final YangModuleInfo yangModuleInfo = sourceIdentifierToModuleInfo.get(sourceIdentifier);
 
         if (yangModuleInfo == null) {
             LOG.debug("Unknown schema source requested: {}, available sources: {}", sourceIdentifier,
                 sourceIdentifierToModuleInfo.keySet());
-            return Futures.immediateFailedCheckedFuture(new SchemaSourceException(
+            return Futures.immediateFailedFuture(new SchemaSourceException(
                 "Unknown schema source: " + sourceIdentifier));
         }
 
-        return Futures.immediateCheckedFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier,
+        return Futures.immediateFuture(YangTextSchemaSource.delegateForByteSource(sourceIdentifier,
             new ByteSource() {
             @Override
             public InputStream openStream() throws IOException {
