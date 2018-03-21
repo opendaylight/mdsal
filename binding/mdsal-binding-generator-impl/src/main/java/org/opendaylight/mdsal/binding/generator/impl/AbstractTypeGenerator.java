@@ -19,6 +19,7 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_OBJECT
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_ROOT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.IDENTIFIABLE;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.IDENTIFIER;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.INSTANCE_IDENTIFIER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION_LISTENER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.ROUTING_CONTEXT;
@@ -28,6 +29,7 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.childOf;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.FUTURE;
+import static org.opendaylight.mdsal.binding.model.util.Types.VOID;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
@@ -75,6 +77,8 @@ import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
+import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -91,6 +95,8 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
+import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
+import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -198,7 +204,7 @@ abstract class AbstractTypeGenerator {
     abstract void addCodegenInformation(GeneratedTypeBuilderBase<?> genType, Module module, SchemaNode node);
 
     abstract void addCodegenInformation(GeneratedTypeBuilder interfaceBuilder, Module module, String description,
-            Set<? extends SchemaNode> nodes);
+            Collection<? extends SchemaNode> nodes);
 
     abstract void addComment(TypeMemberBuilder<?> genType, DocumentedNode node);
 
@@ -277,6 +283,8 @@ abstract class AbstractTypeGenerator {
         if (genType != null) {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
+            actionsToGenType(context, genType, node);
+            notifsToGenType(context, genType, node);
         }
     }
 
@@ -293,6 +301,9 @@ abstract class AbstractTypeGenerator {
                 final Type identifiableMarker = Types.parameterizedTypeFor(IDENTIFIABLE, genTOBuilder);
                 genTOBuilder.addImplementsType(identifierMarker);
                 genType.addImplementsType(identifiableMarker);
+
+                actionsToGenType(context, genType, node);
+                notifsToGenType(context, genType, node);
             }
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
@@ -392,6 +403,35 @@ abstract class AbstractTypeGenerator {
         return moduleDataTypeBuilder;
     }
 
+    private <T extends DataSchemaNode & ActionNodeContainer> void actionsToGenType(final ModuleContext context,
+            final GeneratedTypeBuilder parentBuilder, final T node) {
+        final Collection<ActionDefinition> actions = node.getActions();
+        if (actions.isEmpty()) {
+            return;
+        }
+
+        final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(
+            parentBuilder.getIdentifier().createSibling(parentBuilder.getName() + "Service"));
+        builder.addImplementsType(Types.typeForClass(RpcService.class));
+        for (final ActionDefinition action : actions) {
+            final String operName = BindingMapping.getClassName(action.getQName());
+            final MethodSignatureBuilder method = builder.addMethod(BindingMapping.getPropertyName(operName));
+
+            // Do not refer to annotation class, as it may not be available at runtime
+            method.addAnnotation("javax.annotation", "CheckReturnValue");
+            addComment(method, action);
+            method.addParameter(INSTANCE_IDENTIFIER, "path");
+            method.addParameter(
+                createOperationContainer(context, operName, action, verifyNotNull(action.getInput())), "input");
+            method.setReturnType(Types.parameterizedTypeFor(FUTURE,
+                Types.parameterizedTypeFor(Types.typeForClass(RpcResult.class),
+                    createOperationContainer(context, operName, action, verifyNotNull(action.getOutput())))));
+        }
+        addCodegenInformation(builder, context.module(), "Actions", actions);
+
+        context.addChildNodeType(node, builder);
+    }
+
     /**
      * Converts all <b>RPCs</b> input and output substatements of the module
      * to the list of <code>Type</code> objects. In addition are to containers
@@ -411,8 +451,7 @@ abstract class AbstractTypeGenerator {
     private void rpcMethodsToGenType(final ModuleContext context) {
         final Module module = context.module();
         checkArgument(module.getName() != null, "Module name cannot be NULL.");
-        final Set<RpcDefinition> rpcDefinitions = module.getRpcs();
-        checkState(rpcDefinitions != null, "Set of rpcs from module " + module.getName() + " cannot be NULL.");
+        final Collection<RpcDefinition> rpcDefinitions = module.getRpcs();
         if (rpcDefinitions.isEmpty()) {
             return;
         }
@@ -432,30 +471,51 @@ abstract class AbstractTypeGenerator {
                 method.addAnnotation("javax.annotation", "CheckReturnValue");
                 addComment(method, rpc);
                 method.addParameter(
-                    createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput())), "input");
+                    createOperationContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput())), "input");
                 method.setReturnType(Types.parameterizedTypeFor(FUTURE,
                     Types.parameterizedTypeFor(Types.typeForClass(RpcResult.class),
-                    createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getOutput())))));
+                    createOperationContainer(context, rpcName, rpc, verifyNotNull(rpc.getOutput())))));
             }
+
+            final Type rpcRes = Types.parameterizedTypeFor(Types.typeForClass(RpcResult.class), outTypeInstance);
+            addComment(method, rpc);
+            method.setReturnType(Types.parameterizedTypeFor(FUTURE, rpcRes));
         }
 
-        context.addTopLevelNodeType(interfaceBuilder);
+        addCodegenInformation(builder, module, "RPCs", rpcDefinitions);
+
+        context.addTopLevelNodeType(builder);
     }
 
-    private Type createRpcContainer(final ModuleContext context, final String rpcName, final RpcDefinition rpc,
-            final ContainerSchemaNode schema) {
+    private Type createOperationContainer(final ModuleContext context, final String operName,
+            final OperationDefinition oper, final ContainerSchemaNode schema) {
         processUsesAugments(schema, context);
         final GeneratedTypeBuilder outType = addRawInterfaceDefinition(
-            JavaTypeName.create(context.modulePackageName(), rpcName + BindingMapping.getClassName(schema.getQName())),
+            JavaTypeName.create(context.modulePackageName(), operName + BindingMapping.getClassName(schema.getQName())),
             schema);
         addImplementedInterfaceFromUses(schema, outType);
         outType.addImplementsType(DATA_OBJECT);
         outType.addImplementsType(augmentable(outType));
-        annotateDeprecatedIfNecessary(rpc.getStatus(), outType);
+        annotateDeprecatedIfNecessary(oper.getStatus(), outType);
         resolveDataSchemaNodes(context, outType, outType, schema.getChildNodes());
         context.addChildNodeType(schema, outType);
         return outType.build();
     }
+
+    private <T extends DataSchemaNode & NotificationNodeContainer> void notifsToGenType(final ModuleContext context,
+            final GeneratedTypeBuilder parentBuilder, final T node) {
+        final Collection<NotificationDefinition> notifs = node.getNotifications();
+        if (notifs.isEmpty()) {
+            return;
+        }
+
+        final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
+            packageNameForGeneratedType(context.modulePackageName(), node.getPath()),
+            BindingMapping.getClassName(node.getQName()) + "Listener"));
+
+
+    }
+
 
     /**
      * Converts all <b>notifications</b> of the module to the list of
