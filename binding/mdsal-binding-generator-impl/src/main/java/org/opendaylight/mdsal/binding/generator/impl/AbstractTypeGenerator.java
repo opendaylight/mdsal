@@ -20,7 +20,10 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_ROOT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION_LISTENER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.ROUTING_CONTEXT;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_INPUT;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_OUTPUT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_SERVICE;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.action;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.augmentable;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.childOf;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
@@ -77,6 +80,8 @@ import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySor
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
+import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
+import org.opendaylight.yangtools.yang.model.api.ActionNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -280,6 +285,7 @@ abstract class AbstractTypeGenerator {
         if (genType != null) {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
+            actionsToGenType(context, genType, node);
         }
     }
 
@@ -296,6 +302,8 @@ abstract class AbstractTypeGenerator {
                 final Type identifiableMarker = identifiable(genTOBuilder);
                 genTOBuilder.addImplementsType(identifierMarker);
                 genType.addImplementsType(identifiableMarker);
+
+                actionsToGenType(context, genTOBuilder, node);
             }
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
@@ -393,6 +401,52 @@ abstract class AbstractTypeGenerator {
 
         addCodegenInformation(moduleDataTypeBuilder, module);
         return moduleDataTypeBuilder;
+    }
+
+    private <T extends DataNodeContainer & ActionNodeContainer> void actionsToGenType(final ModuleContext context,
+            final Type parent, final T parentSchema) {
+        for (final ActionDefinition action : parentSchema.getActions()) {
+            final GeneratedType input;
+            final GeneratedType output;
+            if (action.isAddedByUses()) {
+                final ActionDefinition orig = findAction(parentSchema, action).get();
+                input = context.getChildNode(orig.getInput().getPath()).build();
+                output = context.getChildNode(orig.getOutput().getPath()).build();
+            } else {
+                input = actionContainer(context, RPC_INPUT, action.getInput());
+                output = actionContainer(context, RPC_OUTPUT, action.getOutput());
+            }
+
+            if (!(parentSchema instanceof GroupingDefinition)) {
+                // Parent is a non-grouping, hence we need to establish an Action instance, which can be completely
+                // identified by an InstanceIdentifier. We do not generate Actions for groupings as they are inexact,
+                // and do not capture an actual instantiation.
+                final QName qname = action.getQName();
+                final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
+                    packageNameForGeneratedType(context.modulePackageName(), action.getPath()),
+                    BindingMapping.getClassName(qname)));
+
+                annotateDeprecatedIfNecessary(action.getStatus(), builder);
+                builder.addImplementsType(action(parent, input, output));
+
+                addCodegenInformation(builder, context.module(), action);
+                context.addChildNodeType(action, builder);
+            }
+        }
+    }
+
+    private Optional<ActionDefinition> findAction(final DataNodeContainer parent, final ActionDefinition action) {
+        return parent.getUses().stream()
+                .flatMap(uses -> findUsedGrouping(uses).getActions().stream())
+                .filter(act -> action.getQName().equals(act.getQName()))
+                .findFirst();
+    }
+
+    private GeneratedType actionContainer(final ModuleContext context, final Type baseInterface,
+            final ContainerSchemaNode schema) {
+        final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, schema);
+        resolveDataSchemaNodes(context, genType, genType, schema.getChildNodes());
+        return genType.build();
     }
 
     /**
@@ -606,6 +660,7 @@ abstract class AbstractTypeGenerator {
             resolveDataSchemaNodes(context, genType, genType, grouping.getChildNodes());
             groupingsToGenTypes(context, grouping.getGroupings());
             processUsesAugments(grouping, context);
+            actionsToGenType(context, genType, grouping);
         }
     }
 
@@ -765,6 +820,16 @@ abstract class AbstractTypeGenerator {
         }
     }
 
+    private GroupingDefinition findUsedGrouping(final UsesNode uses) {
+        final SchemaNode targetGrouping = findNodeInSchemaContext(schemaContext, uses.getGroupingPath()
+            .getPathFromRoot());
+        if (targetGrouping instanceof GroupingDefinition) {
+            return (GroupingDefinition) targetGrouping;
+        }
+
+        throw new IllegalArgumentException("Failed to resolve used grouping for " + uses);
+    }
+
     /**
      * Convenient method to find node added by uses statement.
      *
@@ -775,13 +840,7 @@ abstract class AbstractTypeGenerator {
      * @return node from its original location in grouping
      */
     private DataSchemaNode findOriginalTargetFromGrouping(final SchemaPath targetPath, final UsesNode parentUsesNode) {
-        final SchemaNode targetGrouping = findNodeInSchemaContext(schemaContext, parentUsesNode.getGroupingPath()
-                .getPathFromRoot());
-        if (!(targetGrouping instanceof GroupingDefinition)) {
-            throw new IllegalArgumentException("Failed to generate code for augment in " + parentUsesNode);
-        }
-
-        SchemaNode result = targetGrouping;
+        SchemaNode result = findUsedGrouping(parentUsesNode);
         for (final QName node : targetPath.getPathFromRoot()) {
             if (result instanceof DataNodeContainer) {
                 final QName resultNode = node.withModule(result.getQName().getModule());
