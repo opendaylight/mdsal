@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.encodeAngleBrackets;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -61,7 +62,7 @@ final class CodegenTypeGenerator extends AbstractTypeGenerator {
 
     @Override
     void addCodegenInformation(final GeneratedTypeBuilder interfaceBuilder, final Module module,
-            final String description, final Set<?  extends SchemaNode> nodes) {
+            final String description, final Collection<? extends SchemaNode> nodes) {
         interfaceBuilder.addComment(TypeComments.javadoc("Interface for implementing the following YANG " + description
             + " defined in module <b>" + module.getName() + "</b>").get());
         YangSourceDefinition.of(module, nodes).ifPresent(interfaceBuilder::setYangSourceDefinition);
