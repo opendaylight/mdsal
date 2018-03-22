@@ -30,15 +30,15 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
     private String moduleName;
     private List<QName> schemaPath;
     private boolean isWithBuilder = false;
-    private String basePackageName = null;
+    private String normalizedRootPackageName = null;
 
-    public GeneratedTypeBuilderImpl(final String packageName, final String name, ModuleContext context) {
+    public GeneratedTypeBuilderImpl(final String packageName, final String name, final ModuleContext context) {
         super(packageName, name, context);
         setAbstract(true);
     }
 
     public GeneratedTypeBuilderImpl(final String packageName, final String name, final boolean isPkNameNormalized,
-            final boolean isTypeNormalized, ModuleContext context) {
+            final boolean isTypeNormalized, final ModuleContext context) {
         super(packageName, name, isPkNameNormalized, isTypeNormalized, context);
         setAbstract(true);
     }
@@ -115,11 +115,11 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
     }
 
     public String getBasePackageName() {
-        return basePackageName;
+        return normalizedRootPackageName;
     }
 
-    public void setBasePackageName(String basePackageName) {
-        this.basePackageName = basePackageName;
+    public void setNormalizedRootPackageName(final String normalizedRootPackageName) {
+        this.normalizedRootPackageName = normalizedRootPackageName;
     }
 
     private static class GeneratedTypeImpl extends AbstractGeneratedType {
@@ -162,19 +162,19 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
     private static final class GeneratedTypeWithBuilderImpl extends GeneratedTypeImpl
             implements GeneratedTypeForBuilder {
 
-        private final String basePackageName;
+        private final String rootPackageName;
         private final String builderPackageName;
 
         public GeneratedTypeWithBuilderImpl(GeneratedTypeBuilderImpl builder) {
             super(builder);
             Preconditions.checkState(builder.getBasePackageName() != null,
                     "Base package name can not be null for type with builder!");
-            this.basePackageName = builder.getBasePackageName();
+            this.rootPackageName = builder.getBasePackageName();
             this.builderPackageName = generatePackageNameForBuilder();
         }
 
         private String generatePackageNameForBuilder() {
-            return BindingGeneratorUtil.replacePackageTopNamespace(this.basePackageName, this.getPackageName(),
+            return BindingGeneratorUtil.replacePackageTopNamespace(this.rootPackageName, this.getPackageName(),
                     BindingNamespaceType.Data, BindingNamespaceType.Builder);
         }
 
@@ -184,8 +184,8 @@ public final class GeneratedTypeBuilderImpl extends AbstractGeneratedTypeBuilder
         }
 
         @Override
-        public String getBasePackageName() {
-            return this.basePackageName;
+        public String getRootPackageName() {
+            return this.rootPackageName;
         }
     }
 }

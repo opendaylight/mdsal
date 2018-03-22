@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Pantheon Technologies s.r.o. and others.  All rights reserved.
+ * Copyright (c) 2018 Cisco Systems, Inc. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -8,196 +8,103 @@
 package org.opendaylight.mdsal.binding.javav2.generator.context;
 
 import com.google.common.annotations.Beta;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.Streams;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
+import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
 /**
- * This class holds information about generated entities in context of YANG module
+ * This interface holds information about generated entities in context of YANG module
  */
 @Beta
-public final class ModuleContext {
-    private GeneratedTypeBuilder moduleNode;
-    private final Map<SchemaPath, GeneratedTOBuilder> genTOs = new HashMap<>();
-    private final Map<SchemaPath, Type> typedefs = new HashMap<>();
-    private final Map<SchemaPath, GeneratedTypeBuilder> childNodes = new HashMap<>();
-    private final BiMap<String, GeneratedTypeBuilder> dataTypes = HashBiMap.create();
-    private final Map<SchemaPath, GeneratedTypeBuilder> groupings = new HashMap<>();
-    private final Map<SchemaPath, GeneratedTypeBuilder> cases = new HashMap<>();
-    private final Map<QName,GeneratedTypeBuilder> identities = new HashMap<>();
-    private final Set<GeneratedTypeBuilder> topLevelNodes = new HashSet<>();
-    private final List<GeneratedTypeBuilder> augmentations = new ArrayList<>();
-    private final Multimap<Type,AugmentationSchemaNode> typeToAugmentations = HashMultimap.create();
-    private final BiMap<SchemaPath,Type> targetToAugmentation = HashBiMap.create();
-    private final Map<Type,Object> typeToSchema = new HashMap<>();
-    private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
-    private final BiMap<Type, CaseSchemaNode> caseTypeToSchema = HashBiMap.create();
-    private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
-    private final Map<SchemaPath, GeneratedTypeBuilder> keyTypes = new HashMap<>();
-    //map is getting manipulated based on unique YANG module namespace rule
-    private final ListMultimap<String, String> packagesMap = Multimaps.synchronizedListMultimap
-            (ArrayListMultimap.create());
+public interface ModuleContext {
 
-    public List<Type> getGeneratedTypes() {
-        final List<Type> result = new ArrayList<>();
+    Module module();
 
-        if (this.moduleNode != null) {
-            result.add(this.moduleNode.toInstance());
-        }
+    /**
+     * Return normalized root package name string of the module.
+     *
+     * @return root package name
+     */
+    String normalizedRootPackageName();
 
-        Streams.concat(
-            this.genTOs.values().stream().map(GeneratedTOBuilder::toInstance),
-            this.typedefs.values().stream().filter(Objects::nonNull),
-            this.dataTypes.values().stream().map(GeneratedTypeBuilder::toInstance),
-            this.groupings.values().stream().map(GeneratedTypeBuilder::toInstance),
-            this.cases.values().stream().map(GeneratedTypeBuilder::toInstance),
-            this.identities.values().stream().map(GeneratedTypeBuilder::toInstance),
-            this.topLevelNodes.stream().map(GeneratedTypeBuilder::toInstance),
-            this.augmentations.stream().map(GeneratedTypeBuilder::toInstance),
-            this.keyTypes.values().stream().map(GeneratedTypeBuilder::toInstance))
-        .forEach(result::add);
-        return ImmutableList.copyOf(result);
-    }
+    /**
+     * Return normalized namespace package name string of the module.
+     *
+     * @return namespace package name
+     */
+    String normalizedNSPackageName(final BindingNamespaceType namespaceType);
 
-    public Multimap<Type, Type> getChoiceToCases() {
-        return Multimaps.unmodifiableMultimap(this.choiceToCases);
-    }
+    List<Type> getGeneratedTypes();
 
-    public GeneratedTypeBuilder getModuleNode() {
-        return this.moduleNode;
-    }
+    Multimap<Type, Type> getChoiceToCases();
 
-    public GeneratedTypeBuilder getChildNode(final SchemaPath p) {
-        return this.childNodes.get(p);
-    }
+    GeneratedTypeBuilder getModuleNode();
 
-    public GeneratedTypeBuilder getGrouping(final SchemaPath p) {
-        return this.groupings.get(p);
-    }
+    GeneratedTypeBuilder getChildNode(final SchemaPath p);
 
-    public GeneratedTypeBuilder getCase(final SchemaPath p) {
-        return this.cases.get(p);
-    }
+    GeneratedTypeBuilder getGrouping(final SchemaPath p);
 
-    public void addModuleNode(final GeneratedTypeBuilder moduleNode) {
-        this.moduleNode = moduleNode;
-    }
+    GeneratedTypeBuilder getCase(final SchemaPath p);
 
-    public void addGeneratedTOBuilder(final SchemaPath schemaPath, final GeneratedTOBuilder b) {
-        this.genTOs.put(schemaPath, b);
-    }
+    void addModuleNode(final GeneratedTypeBuilder moduleNode);
 
-    public void addChildNodeType(final SchemaNode p, final GeneratedTypeBuilder b) {
-        this.childNodes.put(p.getPath(), b);
-        this.typeToSchema.put(b,p);
-        this.dataTypes.put(b.getFullyQualifiedName(), b);
-    }
+    void addGeneratedTOBuilder(final SchemaPath schemaPath, final GeneratedTOBuilder b);
 
-    public void addGroupingType(final GroupingDefinition p, final GeneratedTypeBuilder b) {
-        this.groupings.put(p.getPath(), b);
-        this.typeToSchema.put(b, p);
-    }
+    void addChildNodeType(final SchemaNode p, final GeneratedTypeBuilder b);
 
-    public void addTypedefType(final SchemaPath p, final Type t) {
-        this.typedefs.put(p, t);
-    }
+    void addGroupingType(final GroupingDefinition p, final GeneratedTypeBuilder b);
 
-    public void addCaseType(final SchemaPath p, final GeneratedTypeBuilder b) {
-        this.cases.put(p, b);
-    }
+    void addTypedefType(final SchemaPath p, final Type t);
 
-    public void addIdentityType(final QName name,final GeneratedTypeBuilder b) {
-        this.identities.put(name,b);
-    }
+    void addCaseType(final SchemaPath p, final GeneratedTypeBuilder b);
 
-    public void addTopLevelNodeType(final GeneratedTypeBuilder b) {
-        this.topLevelNodes.add(b);
-    }
+    void addIdentityType(final QName name,final GeneratedTypeBuilder b);
 
-    public void addAugmentType(final GeneratedTypeBuilder b) {
-        this.augmentations.add(b);
-    }
+    void addTopLevelNodeType(final GeneratedTypeBuilder b);
 
-    public Map<SchemaPath, Type> getTypedefs() {
-        return this.typedefs;
-    }
+    void addAugmentType(final GeneratedTypeBuilder b);
 
-    public Map<SchemaPath, GeneratedTypeBuilder> getChildNodes() {
-        return Collections.unmodifiableMap(this.childNodes);
-    }
+    Map<SchemaPath, Type> getTypedefs();
 
-    public Map<SchemaPath, GeneratedTypeBuilder> getGroupings() {
-        return Collections.unmodifiableMap(this.groupings);
-    }
+    Map<SchemaPath, GeneratedTypeBuilder> getChildNodes();
 
-    public Map<SchemaPath, GeneratedTypeBuilder> getCases() {
-        return Collections.unmodifiableMap(this.cases);
-    }
+    Map<SchemaPath, GeneratedTypeBuilder> getGroupings();
 
-    public Map<QName,GeneratedTypeBuilder> getIdentities() {
-        return Collections.unmodifiableMap(this.identities);
-    }
+    Map<SchemaPath, GeneratedTypeBuilder> getCases();
 
-    public Set<GeneratedTypeBuilder> getTopLevelNodes() {
-        return Collections.unmodifiableSet(this.topLevelNodes);
-    }
+    Map<QName,GeneratedTypeBuilder> getIdentities();
 
-    public List<GeneratedTypeBuilder> getAugmentations() {
-        return Collections.unmodifiableList(this.augmentations);
-    }
+    Set<GeneratedTypeBuilder> getTopLevelNodes();
 
-    public Multimap<Type, AugmentationSchemaNode> getTypeToAugmentations() {
-        return Multimaps.unmodifiableMultimap(this.typeToAugmentations);
-    }
+    List<GeneratedTypeBuilder> getAugmentations();
 
-    public BiMap<SchemaPath, Type> getTargetToAugmentation() {
-        return Maps.unmodifiableBiMap(this.targetToAugmentation);
-    }
+    Multimap<Type, AugmentationSchemaNode> getTypeToAugmentations();
 
-    public void addTypeToAugmentations(final GeneratedTypeBuilder builder,
-            final List<AugmentationSchemaNode> schemaList) {
-        schemaList.forEach(augmentNode -> this.typeToAugmentations.put(builder, augmentNode));
-    }
+    BiMap<SchemaPath, Type> getTargetToAugmentation();
 
-    public void addTargetToAugmentation(final GeneratedTypeBuilder builder, final SchemaPath augmentTarget) {
-        this.targetToAugmentation.put(augmentTarget, builder);
-    }
+    void addTypeToAugmentations(final GeneratedTypeBuilder builder, final List<AugmentationSchemaNode> schemaList);
 
-    public void addChoiceToCaseMapping(final Type choiceType, final Type caseType, final CaseSchemaNode schema) {
-        this.choiceToCases.put(choiceType, caseType);
-        this.caseTypeToSchema.put(caseType, schema);
-        this.typeToSchema.put(caseType, schema);
-    }
+    void addTargetToAugmentation(final GeneratedTypeBuilder builder, final SchemaPath augmentTarget);
 
-    public BiMap<Type, CaseSchemaNode> getCaseTypeToSchemas() {
-        return Maps.unmodifiableBiMap(this.caseTypeToSchema);
-    }
+    void addChoiceToCaseMapping(final Type choiceType, final Type caseType, final CaseSchemaNode schema);
+
+    BiMap<Type, CaseSchemaNode> getCaseTypeToSchemas();
 
     /**
      *
@@ -207,50 +114,28 @@ public final class ModuleContext {
      *
      * @return Mapping from type to corresponding schema
      */
-    public Map<Type, Object> getTypeToSchema() {
-        return Collections.unmodifiableMap(this.typeToSchema);
-    }
+    Map<Type, Object> getTypeToSchema();
 
-    public void addTypeToSchema(final Type type, final TypeDefinition<?> typedef) {
-        this.typeToSchema.put(type, typedef);
-    }
-
+    void addTypeToSchema(final Type type, final TypeDefinition<?> typedef);
     /**
      * Adds mapping between schema path and inner enum, inner union, inner bits.
      *
      * @param path
      * @param builder
      */
-    public void addInnerTypedefType(final SchemaPath path, final Type builder) {
-        this.innerTypes.put(path, builder);
-    }
+    void addInnerTypedefType(final SchemaPath path, final Type builder);
 
-    public Type getInnerType(final SchemaPath path) {
-        return this.innerTypes.get(path);
-    }
+    Type getInnerType(final SchemaPath path);
 
+    void addKeyType(final SchemaPath path, final GeneratedTypeBuilder genType);
 
-    public void addKeyType(final SchemaPath path, final GeneratedTypeBuilder genType) {
-        this.keyTypes.put(path, genType);
-    }
+    GeneratedTypeBuilder getKeyType(final SchemaPath path);
 
-    public GeneratedTypeBuilder getKeyType(final SchemaPath path) {
-        return this.keyTypes.get(path);
-    }
+    GeneratedTOBuilder getKeyGenTO(final SchemaPath path);
 
-    public GeneratedTOBuilder getKeyGenTO(final SchemaPath path) {
-        return this.genTOs.get(path);
-    }
+    ListMultimap<String, String> getPackagesMap();
 
-    public ListMultimap<String, String> getPackagesMap() {
-        return Multimaps.unmodifiableListMultimap(packagesMap);
-    }
+    void putToPackagesMap(final String packageName, final String actualClassName);
 
-    public void putToPackagesMap(final String packageName, final String actualClassName) {
-        this.packagesMap.put(packageName, actualClassName);
-    }
-
-    public void cleanPackagesMap() {
-        this.packagesMap.clear();
-    }
+    void cleanPackagesMap();
 }

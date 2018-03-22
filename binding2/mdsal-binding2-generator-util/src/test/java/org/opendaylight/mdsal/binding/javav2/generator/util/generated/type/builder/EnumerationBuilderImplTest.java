@@ -9,17 +9,32 @@ package org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.buil
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.Enumeration;
+import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.Status;
 
 public class EnumerationBuilderImplTest {
 
     @Test
     public void sameEnumTest() {
-        ModuleContext context = new ModuleContext();
+        final ListMultimap<String, String> packagesMap = LinkedListMultimap.create();
+        final ModuleContext context = spy(ModuleContext.class);
+        doReturn(packagesMap).when(context).getPackagesMap();
+        doAnswer(invocation -> packagesMap.put(invocation.getArgumentAt(0, String.class),
+            invocation.getArgumentAt(1, String.class)))
+            .when(context).putToPackagesMap(anyString(), anyString());
+
         EnumerationBuilderImpl enumerationBuilderImpl = new EnumerationBuilderImpl("package.same.test", "test", context);
         Enumeration enumeration = enumerationBuilderImpl.toInstance(enumerationBuilderImpl);
         String formattedString = enumeration.toFormattedString();
@@ -39,8 +54,15 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void enumTest() {
+        final ListMultimap<String, String> packagesMap = LinkedListMultimap.create();
+        final ModuleContext context = spy(ModuleContext.class);
+        doReturn(packagesMap).when(context).getPackagesMap();
+        doAnswer(invocation -> packagesMap.put(invocation.getArgumentAt(0, String.class),
+            invocation.getArgumentAt(1, String.class)))
+            .when(context).putToPackagesMap(anyString(), anyString());
+
         final EnumerationBuilderImpl enumerationBuilderImpl =
-                new EnumerationBuilderImpl("package.test", "test**", new ModuleContext());
+                new EnumerationBuilderImpl("package.test", "test**", context);
         enumerationBuilderImpl.addValue("value", 1, "des", "ref", Status.CURRENT);
         final Enumeration enumeration = enumerationBuilderImpl.toInstance(enumerationBuilderImpl);
         final String formattedString = enumeration.toFormattedString();
@@ -53,8 +75,15 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void enumUniqueTest() {
+        final ListMultimap<String, String> packagesMap = LinkedListMultimap.create();
+        final ModuleContext context = spy(ModuleContext.class);
+        doReturn(packagesMap).when(context).getPackagesMap();
+        doAnswer(invocation -> packagesMap.put(invocation.getArgumentAt(0, String.class),
+            invocation.getArgumentAt(1, String.class)))
+            .when(context).putToPackagesMap(anyString(), anyString());
+
         final EnumerationBuilderImpl enumerationBuilderImpl =
-                new EnumerationBuilderImpl("package.ex.ex.ex.test", "test", new ModuleContext());
+                new EnumerationBuilderImpl("package.ex.ex.ex.test", "test", context);
         enumerationBuilderImpl.addValue("foo", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("Foo", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("foo1", 1, "des", "ref", Status.CURRENT);
@@ -111,8 +140,15 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void asteriskInEnumTest() {
+        final ListMultimap<String, String> packagesMap = LinkedListMultimap.create();
+        final ModuleContext context = spy(ModuleContext.class);
+        doReturn(packagesMap).when(context).getPackagesMap();
+        doAnswer(invocation -> packagesMap.put(invocation.getArgumentAt(0, String.class),
+            invocation.getArgumentAt(1, String.class)))
+            .when(context).putToPackagesMap(anyString(), anyString());
+
         final EnumerationBuilderImpl enumerationBuilderImpl =
-                new EnumerationBuilderImpl("package.ex.test", "test**", new ModuleContext());
+                new EnumerationBuilderImpl("package.ex.test", "test**", context);
         enumerationBuilderImpl.addValue("val**ue", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("val*ue", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("*value*", 1, "des", "ref", Status.CURRENT);
@@ -131,8 +167,15 @@ public class EnumerationBuilderImplTest {
 
     @Test
     public void reverseSolidusInEnumTest() {
+        final ListMultimap<String, String> packagesMap = LinkedListMultimap.create();
+        final ModuleContext context = spy(ModuleContext.class);
+        doReturn(packagesMap).when(context).getPackagesMap();
+        doAnswer(invocation -> packagesMap.put(invocation.getArgumentAt(0, String.class),
+            invocation.getArgumentAt(1, String.class)))
+            .when(context).putToPackagesMap(anyString(), anyString());
+
         final EnumerationBuilderImpl enumerationBuilderImpl =
-                new EnumerationBuilderImpl("package.ex.ex.test", "test\\\\", new ModuleContext());
+                new EnumerationBuilderImpl("package.ex.ex.test", "test\\\\", context);
         enumerationBuilderImpl.addValue("val\\\\ue", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("val\\ue", 1, "des", "ref", Status.CURRENT);
         enumerationBuilderImpl.addValue("\\value\\", 1, "des", "ref", Status.CURRENT);
