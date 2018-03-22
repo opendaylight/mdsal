@@ -15,18 +15,9 @@ import com.google.common.annotations.Beta;
 @Beta
 public interface GeneratedTypeForBuilder {
     /**
-     * Returns name of the package that builder class belongs to.
+     * Returns normalized name of the package that builder class belongs to.
      *
-     * @return name of the package that  builder class belongs to
+     * @return normalized package name
      */
     String getPackageNameForBuilder();
-
-    /**
-     * Returns base package name that builder class belongs to.
-     *
-     * @return base package name that  builder class belongs to
-     */
-    String getBasePackageName();
-
-
 }

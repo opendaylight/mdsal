@@ -110,7 +110,7 @@ public final class UnionTypeCodec extends ReflectionBasedCodec {
 
         // prepare name of type form return type of referenced leaf
         final String typeName = BindingMapping.getClassName(BaseYangTypes.BASE_YANG_TYPES_PROVIDER
-            .javaTypeForSchemaDefinitionType(typeNode.getType(), typeNode, null).getName());
+            .javaTypeForSchemaDefinitionType(typeNode.getType(), typeNode, null, null).getName());
 
         // get method via reflection from generated code according to
         // get_TypeName_Value method

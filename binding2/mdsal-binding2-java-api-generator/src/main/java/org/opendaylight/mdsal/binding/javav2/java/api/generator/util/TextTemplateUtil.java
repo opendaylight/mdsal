@@ -8,6 +8,9 @@
 
 package org.opendaylight.mdsal.binding.javav2.java.api.generator.util;
 
+import static java.util.Objects.requireNonNull;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.BindingTypes.IDENTIFIABLE;
+
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -20,6 +23,8 @@ import java.util.StringTokenizer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
+import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.Types;
 import org.opendaylight.mdsal.binding.javav2.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType;
@@ -28,6 +33,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedTypeForBuilder;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
+import org.opendaylight.mdsal.binding.javav2.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.TypeComment;
@@ -37,6 +43,7 @@ import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition.Mult
 import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition.Single;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
 import org.opendaylight.yangtools.concepts.Builder;
+import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
@@ -170,21 +177,17 @@ public final class TextTemplateUtil {
                             .append("}.\n")
                             .append("@see ").append(builderName).append('\n');
                         if (node instanceof ListSchemaNode) {
-                            final StringBuilder linkToKeyClass = new StringBuilder();
-
-                            final String[] namespace = Iterables.toArray(
-                                BSDOT_SPLITTER.split(type.getFullyQualifiedName()), String.class);
-                            final String className = namespace[namespace.length - 1];
-
-                            linkToKeyClass.append(BindingGeneratorUtil.packageNameForSubGeneratedType(
-                                ((GeneratedTypeForBuilder) type).getBasePackageName(), (SchemaNode) node,
-                                BindingNamespaceType.Key)).append('.').append(className).append("Key");
-
                             List<QName> keyDef = ((ListSchemaNode) node).getKeyDefinition();
                             if (keyDef != null && !keyDef.isEmpty()) {
-                                sb.append("@see ").append(linkToKeyClass);
+                                //FIXME: The key FQCN should better be carried by generated type or not.
+                                final String linkToKeyClass = type.getImplements().stream()
+                                    .filter(IDENTIFIABLE::equals)
+                                    .map(impl ->
+                                        ((ParameterizedType) impl).getActualTypeArguments()[0].getFullyQualifiedName())
+                                    .findFirst().orElse(null);
+                                requireNonNull(linkToKeyClass, "Failed to find key FQCN.");
+                                sb.append("@see ").append(linkToKeyClass).append('\n');
                             }
-                            sb.append('\n');
                         }
                     }
                 }

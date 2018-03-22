@@ -54,6 +54,7 @@ import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.type.BooleanTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
+import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AuxiliaryGenUtilsTest {
@@ -71,8 +72,8 @@ public class AuxiliaryGenUtilsTest {
 
     @Test
     public void annotateDeprecatedIfNecessaryNonDepricatedTest() {
-        final GeneratedTypeBuilderImpl generatedTypeBuilder =
-                new GeneratedTypeBuilderImpl("test.deprecated", "Non_Deprecated", new ModuleContext());
+        final GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("test.deprecated",
+            "Non_Deprecated", new ModuleContextImpl(mock(Module.class)));
         final Status status = Status.CURRENT;
 
         AuxiliaryGenUtils.annotateDeprecatedIfNecessary(status, generatedTypeBuilder);
@@ -81,8 +82,8 @@ public class AuxiliaryGenUtilsTest {
 
     @Test
     public void annotateDeprecatedIfNecessaryDepricatedTest() {
-        final GeneratedTypeBuilderImpl generatedTypeBuilder =
-                new GeneratedTypeBuilderImpl("test.deprecated", "Deprecated", new ModuleContext());
+        final GeneratedTypeBuilderImpl generatedTypeBuilder = new GeneratedTypeBuilderImpl("test.deprecated",
+            "Deprecated", new ModuleContextImpl(mock(Module.class)));
         final Status status = Status.DEPRECATED;
 
         AuxiliaryGenUtils.annotateDeprecatedIfNecessary(status, generatedTypeBuilder);
@@ -118,7 +119,7 @@ public class AuxiliaryGenUtilsTest {
     @Test
     public void qNameConstantTest() {
         final GeneratedTypeBuilderBase<?> gtbb = new GeneratedTypeBuilderImpl("test", "qname_constants",
-            new ModuleContext());
+            new ModuleContextImpl(mock(Module.class)));
         final String constantName = "ConstantName";
         final QName constantQName = QName.create("urn:constant", "2017-04-06", constantName);
 
@@ -128,7 +129,8 @@ public class AuxiliaryGenUtilsTest {
 
     @Test
     public void constructGetterTest() {
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("test", "Getter_of", new ModuleContext());
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("test", "Getter_of",
+            new ModuleContextImpl(mock(Module.class)));
         final String schemaNodeName = "schema_node_getter";
         final String comment = null;
         final Type returnType = Types.STRING;
@@ -169,8 +171,10 @@ public class AuxiliaryGenUtilsTest {
     @Test
     public void augGenTypeNameTest() {
         final Map<String, GeneratedTypeBuilder> builders = new HashMap<>();
-        builders.put("genTypeName1", new GeneratedTypeBuilderImpl("pckg.a1", "gen_a_1", new ModuleContext()));
-        builders.put("genTypeName2", new GeneratedTypeBuilderImpl("pckg.a2", "gen_a_2", new ModuleContext()));
+        builders.put("genTypeName1", new GeneratedTypeBuilderImpl("pckg.a1", "gen_a_1",
+            new ModuleContextImpl(mock(Module.class))));
+        builders.put("genTypeName2", new GeneratedTypeBuilderImpl("pckg.a2", "gen_a_2",
+            new ModuleContextImpl(mock(Module.class))));
         final String genTypeName = "genTypeName";
         assertEquals("genTypeName3", AuxiliaryGenUtils.augGenTypeName(builders, genTypeName));
     }
@@ -200,14 +204,14 @@ public class AuxiliaryGenUtilsTest {
         final QName qname = null;
         final GeneratedTypeBuilder gtb = null;
         final Map<Module, ModuleContext> map = new HashMap<>();
-        final Module module = null;
 
         EnumBuilder result = AuxiliaryGenUtils.resolveInnerEnumFromTypeDefinition(enumTypeDefinition, qname, map, gtb,
-            module);
+            mock(ModuleContext.class));
         assertEquals(null, result);
 
         enumTypeDefinition = mock(EnumTypeDefinition.class);
-        result = AuxiliaryGenUtils.resolveInnerEnumFromTypeDefinition(enumTypeDefinition, qname, map, gtb, module);
+        result = AuxiliaryGenUtils.resolveInnerEnumFromTypeDefinition(enumTypeDefinition, qname, map, gtb,
+            mock(ModuleContext.class));
         assertEquals(null, result);
     }
 
@@ -222,14 +226,14 @@ public class AuxiliaryGenUtilsTest {
         when(enumTypeDefinition.getDescription()).thenReturn(Optional.empty());
         when(enumTypeDefinition.getReference()).thenReturn(Optional.empty());
         final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("urn.enum.test.pckg", "enum-test",
-            new ModuleContext());
+            new ModuleContextImpl(mock(Module.class)));
         final Map<Module, ModuleContext> map = new HashMap<>();
         final Module module = mock(Module.class);
-        final ModuleContext moduleContext = new ModuleContext();
+        final ModuleContext moduleContext = new ModuleContextImpl(mock(Module.class));
         map.put(module, moduleContext);
 
         final EnumBuilder result = AuxiliaryGenUtils.resolveInnerEnumFromTypeDefinition(enumTypeDefinition, qname, map,
-            gtb, module);
+            gtb, moduleContext);
         assertNotNull(result);
     }
 
@@ -237,20 +241,24 @@ public class AuxiliaryGenUtilsTest {
     public void addTOToTypeBuilderNullTest() {
         final BooleanTypeDefinition typeDef = mock(BooleanTypeDefinition.class);
         final GeneratedTypeBuilder typeBuilder =
-                new GeneratedTypeBuilderImpl("test.boolean.type.def", "boolean-type-def", new ModuleContext());
+                new GeneratedTypeBuilderImpl("test.boolean.type.def", "boolean-type-def",
+                    new ModuleContextImpl(mock(Module.class)));
         final DataSchemaNode leaf = mock(DataSchemaNode.class);
         final QName qnameLeaf = QName.create("urn:leaf:qname:test", "2017-12-04", "leaf-qname-test");
         when(leaf.getQName()).thenReturn(qnameLeaf);
+        final Module module = mock(Module.class);
+
         final Module parentModule = mock(Module.class);
         final SchemaContext schemaContext = mock(SchemaContext.class);
         final Set<Module> modules = new HashSet<>();
         when(schemaContext.getModules()).thenReturn(modules);
-        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
-        genCtx.put(parentModule, new ModuleContext());
+        final List<Module> contextModules = ModuleDependencySort.sort(schemaContext.getModules());
+        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext, contextModules, genCtx);
+        genCtx.put(parentModule, new ModuleContextImpl(parentModule));
 
         final GeneratedTOBuilder result = AuxiliaryGenUtils.addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule,
-            typeProvider, schemaContext, new ModuleContext(), genCtx);
+            typeProvider, schemaContext, new ModuleContextImpl(module), genCtx);
         assertEquals(null, result);
     }
 
@@ -266,25 +274,29 @@ public class AuxiliaryGenUtilsTest {
 
     private static GeneratedTOBuilder addTOToBuilder(final String yangPath) {
         final GeneratedTypeBuilder typeBuilder = new GeneratedTypeBuilderImpl("test.boolean.spc.def", "spec-type-def",
-            new ModuleContext());
+            new ModuleContextImpl(mock(Module.class)));
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource(yangPath);
-        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
+        final Map<Module, ModuleContext> genCtx = new HashMap<>();
+        final List<Module> contextModules = ModuleDependencySort.sort(schemaContext.getModules());
+        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext, contextModules, genCtx);
         final LeafSchemaNode leafSchemaNode =
                 (LeafSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
         final TypeDefinition<? extends TypeDefinition<?>> typeDef = leafSchemaNode.getType();
-        final Map<Module, ModuleContext> genCtx = new HashMap<>();
-        genCtx.put(schemaContext.getModules().iterator().next(), new ModuleContext());
+        final Module module = schemaContext.getModules().iterator().next();
 
         return AuxiliaryGenUtils.addTOToTypeBuilder(typeDef, typeBuilder, leafSchemaNode,
-            schemaContext.getModules().iterator().next(), typeProvider, schemaContext, new ModuleContext(), genCtx);
+            schemaContext.getModules().iterator().next(), typeProvider, schemaContext, genCtx.get(module), genCtx);
     }
 
     @Test
     public void createReturnTypeForUnionTest() {
+
         final GeneratedTypeBuilder typeBuilder = new GeneratedTypeBuilderImpl("test.boolean.spc.def",
-                "spec-type-def", new ModuleContext());
+                "spec-type-def", new ModuleContextImpl(mock(Module.class)));
         final SchemaContext schemaContext = YangParserTestUtils.parseYangResource("/base/test-union.yang");
-        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext);
+        final Map<Module, ModuleContext> genCtx = new HashMap<>();
+        final List<Module> contextModules = ModuleDependencySort.sort(schemaContext.getModules());
+        final TypeProviderImpl typeProvider = new TypeProviderImpl(schemaContext, contextModules, genCtx);
         final LeafSchemaNode leafSchemaNode =
                 (LeafSchemaNode) schemaContext.getModules().iterator().next().getChildNodes().iterator().next();
         final TypeDefinition<? extends TypeDefinition<?>> typeDef = leafSchemaNode.getType();
@@ -340,7 +352,7 @@ public class AuxiliaryGenUtilsTest {
         when(list.getQName()).thenReturn(qname);
 
         final GeneratedTOBuilder result = AuxiliaryGenUtils.resolveListKeyTOBuilder(pckgName, list,
-            new ModuleContext());
+            new ModuleContextImpl(mock(Module.class)));
         assertNotNull(result);
         assertEquals("LocalnameKey", result.getName());
     }
