@@ -15,11 +15,12 @@ import static org.mockito.Mockito.spy;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
+import org.opendaylight.mdsal.binding.javav2.generator.impl.ModuleContextImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
+import org.opendaylight.yangtools.yang.model.api.Module;
 
 public class BuilderRendererTest {
     private static final String TEST = "test";
@@ -126,7 +127,7 @@ public class BuilderRendererTest {
         doReturn(TEST).when(genType).getName();
         doReturn(TEST).when(genType).getPackageName();
         doReturn(new GeneratedTypeBuilderImpl(new StringBuilder(methodeName).append("test").toString(), methodeName,
-                new ModuleContext())
+                new ModuleContextImpl(mock(Module.class)))
                 .toInstance()).when(genType).getParentTypeForBuilder();
 
         final List<MethodSignature> listMethodSign = new ArrayList<>();
@@ -151,7 +152,7 @@ public class BuilderRendererTest {
         doReturn(TEST).when(genType).getName();
         doReturn(TEST).when(genType).getPackageName();
         doReturn(new GeneratedTypeBuilderImpl(new StringBuilder(methodeName).append("test").toString(), methodeName,
-                new ModuleContext())
+                new ModuleContextImpl(mock(Module.class)))
                 .toInstance()).when(genType).getParentTypeForBuilder();
 
         final List<MethodSignature> listMethodSign = new ArrayList<>();

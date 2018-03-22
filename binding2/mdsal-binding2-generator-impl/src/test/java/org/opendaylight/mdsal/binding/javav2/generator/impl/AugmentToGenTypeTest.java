@@ -45,6 +45,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.UsesNode;
+import org.opendaylight.yangtools.yang.model.util.ModuleDependencySort;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
 public class AugmentToGenTypeTest {
@@ -115,33 +116,35 @@ public class AugmentToGenTypeTest {
     @Test
     public void generateWithoutAugmentationsTest() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/generator/test.yang");
-        final TypeProvider typeProvider = new TypeProviderImpl(context);
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
+        final List<Module> contextModules = ModuleDependencySort.sort(context.getModules());
+        final TypeProvider typeProvider = new TypeProviderImpl(context, contextModules, genCtx);
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
-        final Map<Module, ModuleContext> invoke = AugmentToGenType.generate(context.getModules().iterator().next(),
-            context, typeProvider, genCtx, genTypeBuilders, false);
-        assertNotNull(invoke);
+        final Module module = context.getModules().iterator().next();
+        AugmentToGenType.generate(module, context, typeProvider, genCtx, genTypeBuilders, false);
+        assertTrue(genCtx.get(module).getAugmentations().isEmpty());
     }
 
     @Test
     public void generateWithAugmentationsTest() {
-        final SchemaContext context = YangParserTestUtils.parseYangResource("/generator/test-augment.yang");
-        final TypeProvider typeProvider = new TypeProviderImpl(context);
-        final Map<Module, ModuleContext> genCtx = mock(Map.class);
-        final Collection<ModuleContext> moduleContexts = new ArrayList<>();
-        final ModuleContext moduleContext = new ModuleContext();
-        moduleContexts.add(moduleContext);
-        final QName create = QName.create("urn:test:simple:test", "2017-02-06", "my-cont");
+        final SchemaContext context = YangParserTestUtils.parseYangResources(AugmentToGenTypeTest.class,
+            "/generator/test-cont.yang", "/generator/test-augment.yang");
+        final Map<Module, ModuleContext> genCtx = new HashMap<>();
+        final List<Module> contextModules = ModuleDependencySort.sort(context.getModules());
+        final TypeProvider typeProvider = new TypeProviderImpl(context, contextModules, genCtx);
+        final Module module = context.getModules().iterator().next();
+        final QName create = QName.create("urn:test:simple:test:cont", "2017-02-17", "my-cont");
         final SchemaNode schemaNode = mock(SchemaNode.class);
         when(schemaNode.getPath()).thenReturn(SchemaPath.create(true, create));
-        moduleContext.addChildNodeType(schemaNode, new GeneratedTypeBuilderImpl("test", "Test", moduleContext));
-        when(genCtx.values()).thenReturn(moduleContexts);
-        when(genCtx.get(context.getModules().iterator().next())).thenReturn(moduleContext);
+        final GeneratedTypeBuilder typeBuilder = new GeneratedTypeBuilderImpl("test", "Test",
+            genCtx.get(module));
+        typeBuilder.setBindingNamespaceType(BindingNamespaceType.Data);
+        genCtx.get(module).addChildNodeType(schemaNode, typeBuilder);
+
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
 
-        final Map<Module, ModuleContext> invoke = AugmentToGenType.generate(context.getModules().iterator().next(),
-            context, typeProvider, genCtx, genTypeBuilders, false);
-        assertNotNull(invoke);
+        AugmentToGenType.generate(module, context, typeProvider, genCtx, genTypeBuilders, false);
+        assertTrue(!genCtx.get(module).getAugmentations().isEmpty());
     }
 
     @Test
@@ -201,36 +204,16 @@ public class AugmentToGenTypeTest {
     }
 
     @Test
-    public void augmentationToGenTypesNullPckgNameTest() {
-        final String augmPackName = null;
-        final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = null;
-        final SchemaContext context = null;
-        final TypeProvider typeProvider = null;
-        final Map<Module, ModuleContext> genCtx = new HashMap<>();
-        final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
-        final Module m = null;
-
-        try {
-            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
-                genTypeBuilders, typeProvider);
-            fail();
-        } catch (final IllegalArgumentException e) {
-            assertEquals("Package Name cannot be NULL.", e.getMessage());
-        }
-    }
-
-    @Test
     public void augmentationToGenTypesNullAugSchemaTest() {
-        final String augmPackName = "pckg.name";
         final Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry = null;
         final SchemaContext context = null;
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
-        final Module m = null;
 
         try {
-            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
+            AugmentToGenType.augmentationToGenTypes(schemaPathAugmentListEntry,
+                new ModuleContextImpl(mock(Module.class)), context, false, genCtx,
                 genTypeBuilders, typeProvider);
             fail();
         } catch (final IllegalArgumentException e) {
@@ -253,11 +236,10 @@ public class AugmentToGenTypeTest {
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
-        final Module m = null;
 
         try {
-            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
-                genTypeBuilders, typeProvider);
+            AugmentToGenType.augmentationToGenTypes(schemaPathAugmentListEntry, new ModuleContextImpl(mock(Module.class)),
+                context, false, genCtx, genTypeBuilders, typeProvider);
             fail();
         } catch (final IllegalStateException e) {
             assertEquals("Augmentation List Entry does not contain Target Path (Target Path is NULL).", e.getMessage());
@@ -266,7 +248,6 @@ public class AugmentToGenTypeTest {
 
     @Test
     public void augmentationToGenTypesNullAugSchemaListTest() {
-        final String augmPackName = "pckg.name";
         final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
@@ -281,10 +262,10 @@ public class AugmentToGenTypeTest {
         final TypeProvider typeProvider = null;
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
-        final Module m = null;
 
         try {
-            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
+            AugmentToGenType.augmentationToGenTypes(schemaPathAugmentListEntry,
+                new ModuleContextImpl(mock(Module.class)), context, false, genCtx,
                 genTypeBuilders, typeProvider);
             fail();
         } catch (final IllegalStateException e) {
@@ -294,8 +275,6 @@ public class AugmentToGenTypeTest {
 
     @Test
     public void augmentationToGenTypesNullAugSchemaTargetNodeTest() {
-        final String augmPackName = "pckg.name";
-
         final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
@@ -325,8 +304,8 @@ public class AugmentToGenTypeTest {
         when(m.getRevision()).thenReturn(qnamePath.getRevision());
 
         try {
-            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
-                genTypeBuilders, typeProvider);
+            AugmentToGenType.augmentationToGenTypes(schemaPathAugmentListEntry, new ModuleContextImpl(m),
+                context, false, genCtx, genTypeBuilders, typeProvider);
             fail();
         } catch (final IllegalArgumentException e) {
             assertEquals("augment target not found: " + path, e.getMessage());
@@ -335,8 +314,6 @@ public class AugmentToGenTypeTest {
 
     @Test
     public void augmentationToGenTypesNullAugTargetGTBTest() {
-        final String augmPackName = "pckg.name";
-
         final AugmentationSchemaNode augmSchema = mock(AugmentationSchemaNode.class);
         final QName qnamePath = QName.create("test", "2017-04-04", "aug");
         final SchemaPath path = SchemaPath.create(true, qnamePath);
@@ -366,7 +343,8 @@ public class AugmentToGenTypeTest {
         when(m.getRevision()).thenReturn(qnamePath.getRevision());
 
         try {
-            AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, m, context, false, genCtx,
+            AugmentToGenType.augmentationToGenTypes(schemaPathAugmentListEntry, new ModuleContextImpl(m),
+                context, false, genCtx,
                 genTypeBuilders, typeProvider);
             fail();
         } catch (final NullPointerException e) {
@@ -402,7 +380,7 @@ public class AugmentToGenTypeTest {
 
         final Map<Module, ModuleContext> genCtx = mock(Map.class);
         final Collection<ModuleContext> moduleContexts = new ArrayList<>();
-        final ModuleContext mc = new ModuleContext();
+        final ModuleContext mc = new ModuleContextImpl(mock(Module.class));
         final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(augmPackName, "augm", mc);
         mc.addChildNodeType(targetSchNode, gtb);
         moduleContexts.add(mc);
@@ -415,8 +393,8 @@ public class AugmentToGenTypeTest {
         when(m.getNamespace()).thenReturn(qnamePath.getNamespace());
         when(m.getRevision()).thenReturn(qnamePath.getRevision());
 
-        final Map<Module, ModuleContext> result = AugmentToGenType.augmentationToGenTypes(augmPackName,
-            schemaPathAugmentListEntry, m, context, false, genCtx, genTypeBuilders, typeProvider);
+        final Map<Module, ModuleContext> result = AugmentToGenType.augmentationToGenTypes(
+            schemaPathAugmentListEntry, new ModuleContextImpl(m), context, false, genCtx, genTypeBuilders, typeProvider);
         assertNotNull(result);
     }
 
@@ -453,8 +431,9 @@ public class AugmentToGenTypeTest {
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
 
         final Collection<ModuleContext> moduleContexts = new ArrayList<>();
-        final ModuleContext mc = new ModuleContext();
+        final ModuleContext mc = new ModuleContextImpl(moduleAug);
         final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(augmPackName, "augm", mc);
+        gtb.setBindingNamespaceType(BindingNamespaceType.Data);
         mc.addChildNodeType(targetSchNode, gtb);
         moduleContexts.add(mc);
         genCtx.put(moduleAug, mc);
@@ -466,12 +445,12 @@ public class AugmentToGenTypeTest {
         when(moduleAug.getSemanticVersion()).thenReturn(Optional.empty());
 
         final Map<Module, ModuleContext> result =
-                AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, moduleAug, context,
+                AugmentToGenType.augmentationToGenTypes(schemaPathAugmentListEntry, mc, context,
                     false, genCtx, genTypeBuilders, typeProvider);
         assertNotNull(result);
         final ModuleContext moduleContext = result.get(moduleAug);
         assertTrue(moduleContext.getAugmentations().get(0).getName().contains("Augm"));
-        assertEquals("pckg.name.data", moduleContext.getAugmentations().get(0).getPackageName());
+        assertEquals("org.opendaylight.mdsal.gen.javav2.test.rev170404.data", moduleContext.getAugmentations().get(0).getPackageName());
         assertTrue(moduleContext.getChildNode(path).getName().contains("Augm"));
         assertEquals("pckg.name", moduleContext.getChildNode(path).getPackageName());
     }
@@ -601,31 +580,9 @@ public class AugmentToGenTypeTest {
     }
 
     @Test
-    public void generateTypesFromAugmentedChoiceCasesNullPckgNameTest() {
-        final SchemaContext schemaContext = null;
-        final Module module = null;
-        final String pckgName = null;
-        final GeneratedType targetType = null;
-        final ChoiceSchemaNode targetNode = null;
-        final List<AugmentationSchemaNode> schemaPathAugmentListEntry = null;
-        final Map<Module, ModuleContext> genCtx = new HashMap<>();
-        final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
-
-        try {
-            AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
-                targetNode, schemaPathAugmentListEntry, genCtx, false, genTypeBuilder, null,
-                BindingNamespaceType.Data);
-            fail();
-        } catch (final IllegalArgumentException e) {
-            assertEquals("Base Package Name cannot be NULL.", e.getMessage());
-        }
-    }
-
-    @Test
     public void generateTypesFromAugmentedChoiceCasesNullTargetType() {
         final SchemaContext schemaContext = null;
-        final Module module = null;
-        final String pckgName = "";
+        final ModuleContext moduleContext = null;
         final GeneratedType targetType = null;
         final ChoiceSchemaNode targetNode = null;
         final List<AugmentationSchemaNode> schemaPathAugmentListEntry = null;
@@ -633,7 +590,7 @@ public class AugmentToGenTypeTest {
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
         try {
-            AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
+            AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, moduleContext, targetType,
                 targetNode, schemaPathAugmentListEntry, genCtx, false, genTypeBuilder, null,
                 BindingNamespaceType.Data);
             fail();
@@ -645,8 +602,7 @@ public class AugmentToGenTypeTest {
     @Test
     public void generateTypesFromAugmentedChoiceCasesNullAugmentNodes() {
         final SchemaContext schemaContext = null;
-        final Module module = null;
-        final String pckgName = "";
+        final ModuleContext moduleContext = null;
         final GeneratedType targetType = mock(GeneratedType.class);
         final ChoiceSchemaNode targetNode = null;
         final List<AugmentationSchemaNode> schemaPathAugmentListEntry = null;
@@ -654,7 +610,7 @@ public class AugmentToGenTypeTest {
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
         try {
-            AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, module, pckgName, targetType,
+            AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext, moduleContext, targetType,
                 targetNode, schemaPathAugmentListEntry, genCtx, false, genTypeBuilder, null,
                 BindingNamespaceType.Data);
             fail();
@@ -666,8 +622,7 @@ public class AugmentToGenTypeTest {
     @Test
     public void generateTypesFromAugmentedChoiceCasesNullCaseNodeTest() {
         final SchemaContext schemaContext = null;
-        final Module module = null;
-        final String pckgName = "";
+        final ModuleContext moduleContext = null;
         final GeneratedType targetType = mock(GeneratedType.class);
         final ChoiceSchemaNode targetNode = null;
         final Set<DataSchemaNode> augmentNodes = new HashSet<>();
@@ -683,7 +638,7 @@ public class AugmentToGenTypeTest {
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilder = new HashMap<>();
 
         final Map<Module, ModuleContext> result = AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext,
-            module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, genCtx, false,
+            moduleContext, targetType, targetNode, schemaPathAugmentListEntry, genCtx, false,
             genTypeBuilder, null, BindingNamespaceType.Data);
         assertEquals(genCtx, result);
     }
@@ -724,7 +679,7 @@ public class AugmentToGenTypeTest {
         when(targetNode.getDescription()).thenReturn(Optional.empty());
         when(targetNode.getReference()).thenReturn(Optional.empty());
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
-        final ModuleContext moduleContext = new ModuleContext();
+        final ModuleContext moduleContext = new ModuleContextImpl(module);
         final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl(pckgName, "test-case-node-augment", moduleContext);
         when(targetType.getParentTypeForBuilder()).thenReturn(gtb);
         genCtx.put(module, moduleContext);
@@ -733,7 +688,7 @@ public class AugmentToGenTypeTest {
         when(schemaContext.findModule(qnamePath.getModule())).thenReturn(Optional.of(module));
 
         final Map<Module, ModuleContext> result = AugmentToGenType.generateTypesFromAugmentedChoiceCases(schemaContext,
-            module, pckgName, targetType, targetNode, schemaPathAugmentListEntry, genCtx, false,
+            moduleContext, targetType, targetNode, schemaPathAugmentListEntry, genCtx, false,
             genTypeBuilder, null, BindingNamespaceType.Data);
         assertNotNull(result);
         assertEquals(result.get(module), moduleContext);

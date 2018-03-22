@@ -9,10 +9,12 @@
 package org.opendaylight.mdsal.binding.javav2.generator.spi;
 
 import com.google.common.annotations.Beta;
+import java.util.Map;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
@@ -39,7 +41,8 @@ public interface TypeProvider {
      * @param parentNode parent node
      * @return Resolved Type
      */
-    Type javaTypeForSchemaDefinitionType(TypeDefinition<?> type, SchemaNode parentNode, ModuleContext context);
+    Type javaTypeForSchemaDefinitionType(TypeDefinition<?> type, SchemaNode parentNode,
+        ModuleContext context);
 
     /**
      *
@@ -49,7 +52,7 @@ public interface TypeProvider {
      * @return Resolved Type
      */
     Type javaTypeForSchemaDefinitionType(TypeDefinition<?> type, SchemaNode parentNode, Restrictions restrictions,
-            ModuleContext context);
+        ModuleContext context);
 
     /**
      * Returns string containing code for creation of new type instance.
