@@ -24,11 +24,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
-import org.opendaylight.mdsal.binding.javav2.generator.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
-import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
@@ -114,15 +112,13 @@ final class AugmentToGenType {
      * @throws IllegalStateException
      *             if set of augmentations from module is null
      */
-    static Map<Module, ModuleContext> generate(final Module module, final SchemaContext schemaContext,
+    static void generate(final Module module, final SchemaContext schemaContext,
             final TypeProvider typeProvider, final Map<Module, ModuleContext> genCtx,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final boolean verboseClassComments) {
 
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         Preconditions.checkArgument(module.getName() != null, "Module name cannot be NULL.");
         Preconditions.checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
-
-        final String basePackageName = BindingMapping.getRootPackageName(module);
         final List<AugmentationSchemaNode> augmentations = resolveAugmentations(module, schemaContext);
         Map<Module, ModuleContext> resultCtx = genCtx;
 
@@ -135,17 +131,15 @@ final class AugmentToGenType {
         sortedAugmentationsGrouped.sort(AUGMENTS_COMP);
 
         //process child nodes of grouped augment entries
-        for (Map.Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry : sortedAugmentationsGrouped) {
-            resultCtx = augmentationToGenTypes(basePackageName, schemaPathAugmentListEntry, module, schemaContext,
-                    verboseClassComments, resultCtx, genTypeBuilders, typeProvider);
+        for (Map.Entry<SchemaPath, List<AugmentationSchemaNode>>
+                schemaPathAugmentListEntry : sortedAugmentationsGrouped) {
+            resultCtx = augmentationToGenTypes(schemaPathAugmentListEntry,
+                genCtx.get(module), schemaContext, verboseClassComments, resultCtx, genTypeBuilders, typeProvider);
 
             for (AugmentationSchemaNode augSchema : schemaPathAugmentListEntry.getValue()) {
-                processUsesImplements(augSchema, module, schemaContext, genCtx, BindingNamespaceType.Data);
+                processUsesImplements(augSchema, genCtx.get(module), schemaContext, genCtx, BindingNamespaceType.Data);
             }
-
         }
-
-        return resultCtx;
     }
 
     /**
@@ -189,12 +183,9 @@ final class AugmentToGenType {
      * <code>augSchema</code> node or a generated types for cases are added if
      * augmented node is choice.
      *
-     * @param basePackageName
-     *            string with the name of the package to which the augmentation
-     *            belongs
      * @param schemaPathAugmentListEntry
      *            list of AugmentationSchema nodes grouped by target path
-     * @param module current module
+     * @param moduleContext current module context
      * @param schemaContext actual schema context
      * @param verboseClassComments verbosity switch
      * @param genCtx generated input context
@@ -207,12 +198,11 @@ final class AugmentToGenType {
      * @return generated context
      */
     @VisibleForTesting
-    static Map<Module, ModuleContext> augmentationToGenTypes(final String basePackageName,
-            final Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry, final Module module,
-            final SchemaContext schemaContext, final boolean verboseClassComments,
+    static Map<Module, ModuleContext> augmentationToGenTypes(
+            final Entry<SchemaPath, List<AugmentationSchemaNode>> schemaPathAugmentListEntry,
+            final ModuleContext moduleContext, final SchemaContext schemaContext, final boolean verboseClassComments,
             Map<Module, ModuleContext> genCtx, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
             final TypeProvider typeProvider) {
-        Preconditions.checkArgument(basePackageName != null, "Package Name cannot be NULL.");
         Preconditions.checkArgument(schemaPathAugmentListEntry != null, "Augmentation List Entry cannot be NULL.");
         final SchemaPath targetPath = schemaPathAugmentListEntry.getKey();
         Preconditions.checkState(targetPath != null,
@@ -236,16 +226,14 @@ final class AugmentToGenType {
             throw new NullPointerException("Target type not yet generated: " + targetSchemaNode);
         }
 
-        final String augmentPackageName =
-            BindingGeneratorUtil.packageNameWithNamespacePrefix(basePackageName, BindingNamespaceType.Data);
-
         if (!(targetSchemaNode instanceof ChoiceSchemaNode)) {
-            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(module, augmentPackageName,
+            genCtx = GenHelperUtil.addRawAugmentGenTypeDefinition(moduleContext,
+                moduleContext.normalizedNSPackageName(targetTypeBuilder.getBindingNamespaceType()),
                 targetTypeBuilder, targetSchemaNode, schemaPathAugmentListEntry.getValue(),
                 genTypeBuilders, genCtx, schemaContext, verboseClassComments, typeProvider,
                 targetTypeBuilder.getBindingNamespaceType());
         } else {
-            genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, module, basePackageName,
+            genCtx = generateTypesFromAugmentedChoiceCases(schemaContext, moduleContext,
                 targetTypeBuilder.toInstance(), (ChoiceSchemaNode) targetSchemaNode,
                 schemaPathAugmentListEntry.getValue(),genCtx, verboseClassComments, genTypeBuilders, typeProvider,
                 targetTypeBuilder.getBindingNamespaceType());
@@ -328,13 +316,8 @@ final class AugmentToGenType {
      * added to the choice through the augment.
      *
      * @param schemaContext
-     * @param module
-     *            current module
-     * @param basePackageName
-     *            string contains name of package to which augment belongs. If
-     *            an augmented choice is from an other package (pcg1) than an
-     *            augmenting choice (pcg2) then case's of the augmenting choice
-     *            will belong to pcg2.
+     * @param moduleContext
+     *            current module context
      * @param targetType
      *            Type which represents target choice
      * @param targetNode
@@ -351,14 +334,12 @@ final class AugmentToGenType {
      *             </ul>
      */
     @VisibleForTesting
-    static Map<Module, ModuleContext> generateTypesFromAugmentedChoiceCases(
-            final SchemaContext schemaContext, final Module module,
-            final String basePackageName, final GeneratedType targetType, final ChoiceSchemaNode targetNode,
+    static Map<Module, ModuleContext> generateTypesFromAugmentedChoiceCases(final SchemaContext schemaContext,
+            final ModuleContext moduleContext,final GeneratedType targetType, final ChoiceSchemaNode targetNode,
             final List<AugmentationSchemaNode> schemaPathAugmentListEntry,
             final Map<Module, ModuleContext> genCtx, final boolean verboseClassComments,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider,
             final BindingNamespaceType namespaceType) {
-        Preconditions.checkArgument(basePackageName != null, "Base Package Name cannot be NULL.");
         Preconditions.checkArgument(targetType != null, "Referenced Choice Type cannot be NULL.");
         Preconditions.checkArgument(schemaPathAugmentListEntry != null, "Set of Choice Case Nodes cannot be NULL.");
 
@@ -367,7 +348,7 @@ final class AugmentToGenType {
             for (final DataSchemaNode childNode : augmentationSchema.getChildNodes()) {
                 if (childNode != null) {
                     final GeneratedTypeBuilder caseTypeBuilder =
-                        GenHelperUtil.addDefaultInterfaceDefinition(basePackageName, childNode, null, module,
+                        GenHelperUtil.addDefaultInterfaceDefinition(childNode, null, moduleContext,
                             genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
                     caseTypeBuilder.addImplementsType(targetType);
                     caseTypeBuilder.setParentTypeForBuilder(targetType.getParentTypeForBuilder());
@@ -386,13 +367,13 @@ final class AugmentToGenType {
 
                     final Collection<DataSchemaNode> childNodes = caseNode.getChildNodes();
                     if (!childNodes.isEmpty()) {
-                        GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, caseTypeBuilder,
+                        GenHelperUtil.resolveDataSchemaNodes(moduleContext, caseTypeBuilder,
                                 (GeneratedTypeBuilder) targetType.getParentTypeForBuilder(),  childNodes, genCtx,
                             schemaContext, verboseClassComments, genTypeBuilders, typeProvider, namespaceType);
-                        processUsesImplements(caseNode, module, schemaContext, genCtx, namespaceType);
+                        processUsesImplements(caseNode, moduleContext, schemaContext, genCtx, namespaceType);
                     }
-                    genCtx.get(module).addCaseType(childNode.getPath(), caseTypeBuilder);
-                    genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, caseNode);
+                    moduleContext.addCaseType(childNode.getPath(), caseTypeBuilder);
+                    moduleContext.addChoiceToCaseMapping(targetType, caseTypeBuilder, caseNode);
                 }
             }
         }
