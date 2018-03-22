@@ -10,7 +10,19 @@ package org.opendaylight.mdsal.binding.javav2.generator.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.AdditionalAnswers.returnsSecondArg;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import org.junit.Test;
+import org.mockito.stubbing.Answer;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 
@@ -18,7 +30,13 @@ public class JavaIdentifierNormalizerTest {
 
     @Test
     public void specialPathsTest() {
-        ModuleContext context = new ModuleContext();
+        final ListMultimap<String, String> packagesMap = LinkedListMultimap.create();
+        final ModuleContext context = spy(ModuleContext.class);
+        doReturn(packagesMap).when(context).getPackagesMap();
+        doAnswer(invocation -> packagesMap.put(invocation.getArgumentAt(0, String.class),
+                invocation.getArgumentAt(1, String.class)))
+            .when(context).putToPackagesMap(anyString(), anyString());
+
         // QName - reserved & non reserved
         String normalizeIdentifier =
                 JavaIdentifierNormalizer.normalizeClassIdentifier("org.opendaylight.yangtools.yang.common",
@@ -85,7 +103,13 @@ public class JavaIdentifierNormalizerTest {
      */
     @Test
     public void sameClassNamesSamePackageTest() {
-        ModuleContext context = new ModuleContext();
+        final ListMultimap<String, String> packagesMap = LinkedListMultimap.create();
+        final ModuleContext context = spy(ModuleContext.class);
+        doReturn(packagesMap).when(context).getPackagesMap();
+        doAnswer(invocation -> packagesMap.put(invocation.getArgumentAt(0, String.class),
+            invocation.getArgumentAt(1, String.class)))
+            .when(context).putToPackagesMap(anyString(), anyString());
+
         String normalizeIdentifier1 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package",
                 "Foo", context);
         String normalizeIdentifier2 = JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.same.package",
@@ -109,7 +133,9 @@ public class JavaIdentifierNormalizerTest {
      */
     @Test
     public void sameClassNamesOtherPackageTest() {
-        ModuleContext context = new ModuleContext();
+        final ListMultimap<String, String> packagesMap = LinkedListMultimap.create();
+        final ModuleContext context = spy(ModuleContext.class);
+        doReturn(packagesMap).when(context).getPackagesMap();
         String normalizeIdentifier1 =
                 JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.other.package", "Foo", context);
         String normalizeIdentifier2 =
@@ -133,7 +159,13 @@ public class JavaIdentifierNormalizerTest {
      */
     @Test
     public void sameClassNamesSamePackageReservedWordsTest() {
-        ModuleContext context = new ModuleContext();
+        final ListMultimap<String, String> packagesMap = LinkedListMultimap.create();
+        final ModuleContext context = spy(ModuleContext.class);
+        doReturn(packagesMap).when(context).getPackagesMap();
+        doAnswer(invocation -> packagesMap.put(invocation.getArgumentAt(0, String.class),
+            invocation.getArgumentAt(1, String.class)))
+            .when(context).putToPackagesMap(anyString(), anyString());
+
         final String normalizeIdentifier1 =
                 JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.same.package", "int", context);
         final String normalizeIdentifier2 =
@@ -150,14 +182,16 @@ public class JavaIdentifierNormalizerTest {
      */
     @Test
     public void sameClassNamesOtherPackageReservedWordsTest() {
-        ModuleContext context = new ModuleContext();
+        final ListMultimap<String, String> packagesMap = LinkedListMultimap.create();
+        final ModuleContext moduleContext = mock(ModuleContext.class);
+        when(moduleContext.getPackagesMap()).thenReturn(packagesMap);
         final String normalizeIdentifier1 =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package", "int", context);
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package", "int", moduleContext);
         final String normalizeIdentifier2 =
-                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package.next", "InT", context);
+                JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package.next", "InT", moduleContext);
         final String normalizeIdentifier3 =
                 JavaIdentifierNormalizer.normalizeClassIdentifier("org.example.keywords.other.package.next.next",
-                        "inT", context);
+                        "inT", moduleContext);
         assertEquals(normalizeIdentifier1, "IntReservedKeyword");
         assertEquals(normalizeIdentifier2, "IntReservedKeyword");
         assertEquals(normalizeIdentifier3, "IntReservedKeyword");

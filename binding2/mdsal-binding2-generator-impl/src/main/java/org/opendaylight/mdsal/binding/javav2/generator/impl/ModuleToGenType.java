@@ -30,7 +30,6 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.javav2.spec.runtime.BindingNamespaceType;
-import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -47,41 +46,41 @@ final class ModuleToGenType {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    static Map<Module, ModuleContext> generate(final Module module, final Map<String, Map<String, GeneratedTypeBuilder>>
-            genTypeBuilders, final SchemaContext schemaContext, final TypeProvider typeProvider, Map<Module,
+    static void generate(final Module module, final Map<String, Map<String, GeneratedTypeBuilder>>
+            genTypeBuilders, final SchemaContext schemaContext, final TypeProvider typeProvider, final Map<Module,
             ModuleContext> genCtx, final boolean verboseClassComments) {
+        final ModuleContext moduleContext = genCtx.computeIfAbsent(module, ModuleContextImpl::new);
 
-        genCtx.put(module, new ModuleContext());
-        genCtx = allTypeDefinitionsToGenTypes(module, genCtx, typeProvider);
-        genCtx = groupingsToGenTypes(module, module.getGroupings(), genCtx, schemaContext, verboseClassComments,
-                genTypeBuilders, typeProvider);
-        genCtx = allIdentitiesToGenTypes(module, schemaContext, genCtx, verboseClassComments,  genTypeBuilders, typeProvider);
+        allTypeDefinitionsToGenTypes(moduleContext, typeProvider);
+        groupingsToGenTypes(moduleContext, module.getGroupings(), genCtx, schemaContext, verboseClassComments,
+            genTypeBuilders, typeProvider);
+        allIdentitiesToGenTypes(moduleContext, schemaContext, genCtx, verboseClassComments, genTypeBuilders,
+            typeProvider);
 
         if (!module.getChildNodes().isEmpty()) {
-            final GeneratedTypeBuilder moduleType = GenHelperUtil.moduleToDataType(module, genCtx, verboseClassComments);
-            genCtx.get(module).addModuleNode(moduleType);
-            final String basePackageName = BindingMapping.getRootPackageName(module);
-            GenHelperUtil.resolveDataSchemaNodes(module, basePackageName, moduleType, moduleType, module
+            final GeneratedTypeBuilder moduleType = GenHelperUtil.moduleToDataType(moduleContext, genCtx,
+                verboseClassComments);
+            moduleContext.addModuleNode(moduleType);
+            GenHelperUtil.resolveDataSchemaNodes(moduleContext, moduleType, moduleType, module
                     .getChildNodes(), genCtx, schemaContext, verboseClassComments, genTypeBuilders, typeProvider,
                     BindingNamespaceType.Data);
-            processUsesImplements(module, module, schemaContext, genCtx, BindingNamespaceType.Data);
+            processUsesImplements(module, moduleContext, schemaContext, genCtx, BindingNamespaceType.Data);
         }
 
-        genCtx = notificationsToGenType(module, genCtx, schemaContext, genTypeBuilders, verboseClassComments, typeProvider);
+        notificationsToGenType(moduleContext, genCtx, schemaContext, genTypeBuilders, verboseClassComments,
+            typeProvider);
 
         //after potential parent data schema nodes
-        genCtx = actionsAndRPCMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
+        actionsAndRPCMethodsToGenType(moduleContext, genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
-
-        return genCtx;
     }
 
     /**
      * Converts all extended type definitions of module to the list of
      * <code>Type</code> objects.
      *
-     * @param module
-     *            module from which is obtained set of type definitions
+     * @param moduleContext
+     *            Holds information about generated entities in context of YANG module.
      * @throws IllegalArgumentException
      *             <ul>
      *             <li>if module is null</li>
@@ -90,11 +89,10 @@ final class ModuleToGenType {
      * @throws IllegalStateException
      *             if set of type definitions from module is null
      */
-    private static Map<Module, ModuleContext> allTypeDefinitionsToGenTypes(final Module module, final Map<Module, ModuleContext> genCtx,
+    private static void allTypeDefinitionsToGenTypes(final ModuleContext moduleContext,
             final TypeProvider typeProvider) {
-        Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
-        Preconditions.checkArgument(module.getName() != null, "Module name cannot be NULL.");
-        final DataNodeIterator it = new DataNodeIterator(module);
+        Preconditions.checkArgument(moduleContext != null, "moduleContext cannot be NULL.");
+        final DataNodeIterator it = new DataNodeIterator(moduleContext.module());
         final List<TypeDefinition<?>> typeDefinitions = it.allTypedefs();
         Preconditions.checkState(typeDefinitions != null, "Type Definitions for module «module.name» cannot be NULL.");
 
@@ -102,55 +100,47 @@ final class ModuleToGenType {
             final Type type = ((TypeProviderImpl) typeProvider).generatedTypeForExtendedDefinitionType(typedef,
                     typedef);
             if (type != null) {
-                final ModuleContext ctx = genCtx.get(module);
-                ctx.addTypedefType(typedef.getPath(), type);
-                ctx.addTypeToSchema(type, typedef);
+                moduleContext.addTypedefType(typedef.getPath(), type);
+                moduleContext.addTypeToSchema(type, typedef);
             }
         });
-        return genCtx;
     }
 
-    private static Map<Module, ModuleContext> actionsAndRPCMethodsToGenType(final Module module, Map<Module,
+    private static void actionsAndRPCMethodsToGenType(final ModuleContext moduleContext, final Map<Module,
             ModuleContext> genCtx, final SchemaContext schemaContext, final boolean verboseClassComments,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
 
-        genCtx = RpcActionGenHelper.rpcMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
+        RpcActionGenHelper.rpcMethodsToGenType(moduleContext, genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
-        genCtx = RpcActionGenHelper.actionMethodsToGenType(module, genCtx, schemaContext, verboseClassComments,
+        RpcActionGenHelper.actionMethodsToGenType(moduleContext, genCtx, schemaContext, verboseClassComments,
                 genTypeBuilders, typeProvider);
-
-        return genCtx;
     }
 
     /**
      * Converts all <b>identities</b> of the module to the list of
      * <code>Type</code> objects.
      *
-     * @param module
-     *            module from which is obtained set of all identity objects to
-     *            iterate over them
+     * @param moduleContext
+     *            module context
      * @param schemaContext
      *            schema context only used as input parameter for method
-     *            {@link GenHelperUtil#identityToGenType(Module, String, IdentitySchemaNode, SchemaContext, Map, boolean)}
+     *            {@link GenHelperUtil#identityToGenType(ModuleContext, IdentitySchemaNode, SchemaContext, Map, boolean)}
      * @param genCtx generated context
      * @return returns generated context
      *
      */
-    private static Map<Module, ModuleContext> allIdentitiesToGenTypes(final Module module,
+    private static void allIdentitiesToGenTypes(final ModuleContext moduleContext,
             final SchemaContext schemaContext, Map<Module, ModuleContext> genCtx, boolean verboseClassComments,
             final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, final TypeProvider typeProvider) {
 
-        final Set<IdentitySchemaNode> schemaIdentities = module.getIdentities();
-        final String basePackageName = BindingMapping.getRootPackageName(module);
+        final Set<IdentitySchemaNode> schemaIdentities = moduleContext.module().getIdentities();
 
         if (schemaIdentities != null && !schemaIdentities.isEmpty()) {
             for (final IdentitySchemaNode identity : schemaIdentities) {
-                GenHelperUtil.identityToGenType(module, basePackageName, identity, schemaContext, genCtx,
+                GenHelperUtil.identityToGenType(moduleContext, identity, schemaContext, genCtx,
                     verboseClassComments);
             }
         }
-
-        return genCtx;
     }
 
     /**
@@ -158,7 +148,7 @@ final class ModuleToGenType {
      * <code>Type</code> objects. In addition are to this list added containers
      * and lists which are part of this notification.
      *
-     * @param module
+     * @param moduleContext
      *            module from which is obtained set of all notification objects
      *            to iterate over them
      * @throws IllegalArgumentException
@@ -169,31 +159,30 @@ final class ModuleToGenType {
      * @throws IllegalStateException
      *             if set of notifications from module is null
      */
-    private static Map<Module, ModuleContext> notificationsToGenType(final Module module, final Map<Module, ModuleContext> genCtx,
-            final SchemaContext schemaContext, final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
+    private static void notificationsToGenType(final ModuleContext moduleContext,
+            final Map<Module, ModuleContext> genCtx, final SchemaContext schemaContext,
+            final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders,
             final boolean verboseClassComments, final TypeProvider typeProvider) {
-        checkArgument(module != null, "Module reference cannot be NULL.");
-        checkArgument(module.getName() != null, "Module name cannot be NULL.");
-        final Set<NotificationDefinition> notifications = module.getNotifications();
+        checkArgument(moduleContext != null, "Module reference cannot be NULL.");
+        final Set<NotificationDefinition> notifications = moduleContext.module().getNotifications();
         if (notifications.isEmpty()) {
-            return genCtx;
+            return;
         }
 
-        final GeneratedTypeBuilder listenerInterface = moduleTypeBuilder(module, "Listener", verboseClassComments,
-                genCtx.get(module));
+        final GeneratedTypeBuilder listenerInterface = moduleTypeBuilder("Listener", verboseClassComments,
+            moduleContext);
         listenerInterface.addImplementsType(NOTIFICATION_LISTENER);
-        final String basePackageName = BindingMapping.getRootPackageName(module);
 
         for (final NotificationDefinition notification : notifications) {
             if (notification != null) {
-                resolveNotification(listenerInterface, null, basePackageName, notification, module, schemaContext,
+                resolveNotification(listenerInterface, null, notification, moduleContext, schemaContext,
                         verboseClassComments, genTypeBuilders, typeProvider, genCtx);
-                processUsesImplements(notification, module, schemaContext, genCtx, BindingNamespaceType.Data);
+                processUsesImplements(notification, moduleContext, schemaContext, genCtx, BindingNamespaceType.Data);
             }
         }
 
         //YANG 1.1 allows notifications be tied to containers and lists
-        final Collection<DataSchemaNode> potentials = module.getChildNodes();
+        final Collection<DataSchemaNode> potentials = moduleContext.module().getChildNodes();
         Set<NotificationDefinition> tiedNotifications = null;
 
         for (final DataSchemaNode potential : potentials) {
@@ -202,10 +191,11 @@ final class ModuleToGenType {
                         .getNotifications();
                 for (final NotificationDefinition tiedNotification: tiedNotifications) {
                     if (tiedNotification != null) {
-                        resolveNotification(listenerInterface, potential.getQName().getLocalName(), basePackageName,
-                                tiedNotification, module, schemaContext, verboseClassComments, genTypeBuilders,
-                                typeProvider, genCtx);
-                        processUsesImplements(tiedNotification, module, schemaContext, genCtx, BindingNamespaceType.Data);
+                        resolveNotification(listenerInterface, potential.getQName().getLocalName(),
+                            tiedNotification, moduleContext, schemaContext, verboseClassComments, genTypeBuilders,
+                            typeProvider, genCtx);
+                        processUsesImplements(tiedNotification, moduleContext, schemaContext, genCtx,
+                            BindingNamespaceType.Data);
                     }
                 }
             }
@@ -213,19 +203,17 @@ final class ModuleToGenType {
 
         if (verboseClassComments) {
             if (tiedNotifications != null) {
-                YangSourceDefinition.of(module,
+                YangSourceDefinition.of(moduleContext.module(),
                     ImmutableSet.<NotificationDefinition>builder().addAll(notifications).addAll(tiedNotifications)
                         .build()).ifPresent(listenerInterface::setYangSourceDefinition);
             } else {
-                YangSourceDefinition.of(module, notifications).ifPresent(listenerInterface::setYangSourceDefinition);
+                YangSourceDefinition.of(moduleContext.module(), notifications).ifPresent(listenerInterface::setYangSourceDefinition);
             }
             listenerInterface.addComment(TypeComments.javadoc(
-                "Interface for receiving the following YANG notifications defined in module <b>" + module.getName()
+                "Interface for receiving the following YANG notifications defined in module <b>" + moduleContext.module().getName()
                     + "</b>").get());
         }
 
-        genCtx.get(module).addTopLevelNodeType(listenerInterface);
-
-        return genCtx;
+        moduleContext.addTopLevelNodeType(listenerInterface);
     }
 }
