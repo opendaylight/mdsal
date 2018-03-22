@@ -836,8 +836,7 @@ final class GenHelperUtil {
         if (!patternConstraints.isEmpty()) {
             final StringBuilder field = new StringBuilder();
             field.append(BindingMapping.PATTERN_CONSTANT_NAME).append("_")
-                .append(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafName, JavaIdentifier.CLASS)
-                    .toUpperCase());
+                .append(JavaIdentifierNormalizer.normalizeSpecificIdentifier(leafName, JavaIdentifier.METHOD));
             typeBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), field.toString(),
                 resolveRegExpressions(patternConstraints));
         }

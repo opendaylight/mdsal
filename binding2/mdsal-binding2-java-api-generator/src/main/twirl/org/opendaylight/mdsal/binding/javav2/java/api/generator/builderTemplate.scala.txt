@@ -343,9 +343,8 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     @for(currentConstant <- genType.getConstantDefinitions) {
         @defining(fieldName(field)) { suffix =>
         @if(currentConstant.getName.startsWith(BindingMapping.PATTERN_CONSTANT_NAME)
-                && suffix.toUpperCase().equals(currentConstant.getName.substring(BindingMapping.PATTERN_CONSTANT_NAME.length))
-                && currentConstant.getValue.isInstanceOf[List[_]]) {
-            @{importedNames.get("codeHelpers")}.checkPattern(value, @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix}, @{BindingMapping.MEMBER_REGEX_LIST}@{suffix};
+                && suffix.equals(currentConstant.getName.substring(BindingMapping.PATTERN_CONSTANT_NAME.length))) {
+            @{importedNames.get("codeHelpers")}.checkPattern(value, @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix}, @{BindingMapping.MEMBER_REGEX_LIST}@{suffix});
         }
         }
     }

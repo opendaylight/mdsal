@@ -19,16 +19,17 @@
 @for(c <- genType.getConstantDefinitions) {
     @if(c.getName.startsWith(BindingMapping.PATTERN_CONSTANT_NAME)) {
     @if(!qnameOnly) {
-        @defining(c.getName.substring(BindingMapping.PATTERN_CONSTANT_NAME.length).toLowerCase) { suffix =>
+        @defining(c.getName.substring(BindingMapping.PATTERN_CONSTANT_NAME.length)) { suffix =>
         @defining(c.getValue.asInstanceOf[Map[String, String]]) { cValue =>
-        public static final @{importedNames.get("list")}<@{importedNames.get("string")}> @{c.getName} = @{importedNames.get("immutableList")}.of(
-            @{(cValue.keySet map {escapeJava}).mkString("\"", "\", \"", "\"")});
         @if(cValue.size == 1) {
-            private static final @{importedNames.get("pattern")} @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix} = @{importedNames.get("pattern")}.compile(@{c.getName}.get(0));
-            private static final String @{BindingMapping.MEMBER_REGEX_LIST}@{suffix} = "@{escapeJava(cValue.values.stream.findFirst.get)}";
+            private static final @{importedNames.get("pattern")} @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix} =
+                @{importedNames.get("pattern")}.compile("@{escapeJava(cValue.keySet.head)}");
+            private static final @{importedNames.get("string")} @{BindingMapping.MEMBER_REGEX_LIST}@{suffix} = "@{escapeJava(cValue.values.head)}";
         } else {
-            private static final @{importedNames.get("pattern")}[] @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix} = @{importedNames.get("codeHelpers")}.compilePatterns(@{c.getName});
-            private static final String[] @{BindingMapping.MEMBER_REGEX_LIST}@{suffix} = {
+            private static final @{importedNames.get("pattern")}[] @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix} =
+                @{importedNames.get("codeHelpers")}.compilePatterns(@{importedNames.get("immutableList")}.of(
+                    @{(cValue.keySet map {escapeJava}).mkString("\"", "\", \"", "\"")}));
+            private static final @{importedNames.get("string")}[] @{BindingMapping.MEMBER_REGEX_LIST}@{suffix} = {
                 @{(cValue.keySet map {escapeJava}).mkString("\"", "\", \"", "\"")}
             };
         }}}}
