@@ -47,7 +47,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     private Type parentTypeForBuilder;
     private YangSourceDefinition yangSourceDefinition;
 
-    protected AbstractGeneratedTypeBuilder(final String packageName, final String name, ModuleContext context) {
+    protected AbstractGeneratedTypeBuilder(final String packageName, final String name, final ModuleContext context) {
         super(packageName, name, context);
     }
 
@@ -57,7 +57,7 @@ abstract class AbstractGeneratedTypeBuilder<T extends GeneratedTypeBuilderBase<T
     }
 
     protected AbstractGeneratedTypeBuilder(final String packageName, final String name, final boolean isPkNameNormalized,
-            final boolean isTypeNormalized, ModuleContext context) {
+            final boolean isTypeNormalized, final ModuleContext context) {
         super(packageName, name, isPkNameNormalized, isTypeNormalized, context);
     }
 

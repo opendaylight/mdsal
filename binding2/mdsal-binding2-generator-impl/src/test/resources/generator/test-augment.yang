@@ -1,15 +1,19 @@
 module test-augment {
     yang-version 1;
-
-    namespace "urn:test:simple:test";
+    namespace "urn:test:simple:test:augment";
     prefix test;
     organization "test.org";
     revision "2017-02-06";
 
+    import test-cont {
+        prefix "cont";
+        revision-date "2017-02-17";
+    }
+
     container my-cont {
     }
 
-    augment "/my-cont" {
+    augment "/cont:my-cont" {
         leaf augment-leaf {
             type string;
         }
