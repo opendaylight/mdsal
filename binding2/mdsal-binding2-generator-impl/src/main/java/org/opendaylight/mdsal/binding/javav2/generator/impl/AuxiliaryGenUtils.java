@@ -212,20 +212,20 @@ final class AuxiliaryGenUtils {
      *            builder
      * @param typeBuilder
      *            GeneratedTypeBuilder to which will be enum builder assigned
-     * @param module
+     * @param moduleContext
      *            Module in which type should be generated
      * @return enumeration builder which contains data from
      *         <code>enumTypeDef</code>
      */
     static EnumBuilder resolveInnerEnumFromTypeDefinition(final EnumTypeDefinition enumTypeDef, final QName enumName,
-            final Map<Module, ModuleContext> genCtx, final GeneratedTypeBuilder typeBuilder, final Module module) {
+            final Map<Module, ModuleContext> genCtx, final GeneratedTypeBuilder typeBuilder,
+            final ModuleContext moduleContext) {
         if (enumTypeDef != null && typeBuilder != null && enumTypeDef.getQName().getLocalName() != null) {
-            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumName.getLocalName(), genCtx.get(module));
+            final EnumBuilder enumBuilder = typeBuilder.addEnumeration(enumName.getLocalName(), moduleContext);
             final String enumTypedefDescription = encodeAngleBrackets(enumTypeDef.getDescription().orElse(null));
             enumBuilder.setDescription(enumTypedefDescription);
             enumBuilder.updateEnumPairsFromEnumTypeDef(enumTypeDef);
-            final ModuleContext ctx = genCtx.get(module);
-            ctx.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
+            moduleContext.addInnerTypedefType(enumTypeDef.getPath(), enumBuilder);
             return enumBuilder;
         }
         return null;
@@ -255,18 +255,16 @@ final class AuxiliaryGenUtils {
      */
     static GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef, final GeneratedTypeBuilder
             typeBuilder, final DataSchemaNode leaf, final Module parentModule, final TypeProvider typeProvider,
-            final SchemaContext schemaContext, ModuleContext context, final Map<Module, ModuleContext> genCtx) {
+            final SchemaContext schemaContext, final ModuleContext context, final Map<Module, ModuleContext> genCtx) {
         final String classNameFromLeaf = leaf.getQName().getLocalName();
         GeneratedTOBuilder genTOBuilder = null;
-        final String packageName = typeBuilder.getFullyQualifiedName();
         if (typeDef instanceof UnionTypeDefinition) {
-            genTOBuilder = ((TypeProviderImpl) typeProvider)
-                    .provideGeneratedTOBuilderForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
-                            classNameFromLeaf, leaf, schemaContext,
-                            ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap(), context);
+            genTOBuilder = ((TypeProviderImpl) typeProvider).provideGeneratedTOBuilderForUnionTypeDef(
+                typeBuilder.getFullyQualifiedName(), ((UnionTypeDefinition) typeDef), classNameFromLeaf, leaf,
+                schemaContext, ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap(), genCtx, context);
         } else if (typeDef instanceof BitsTypeDefinition) {
             genTOBuilder = (((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
-                    packageName, typeDef, classNameFromLeaf, parentModule.getName(), context);
+                typeBuilder.getFullyQualifiedName(), typeDef, classNameFromLeaf, parentModule.getName(), context);
         }
         if (genTOBuilder != null) {
             typeBuilder.addEnclosingTransferObject(genTOBuilder);

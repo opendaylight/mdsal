@@ -157,8 +157,8 @@ public final class BindingGeneratorUtil {
      * Based on type of node, there is also possible suffix added in order
      * to prevent package name conflicts.
      *
-     * @param basePackageName
-     *            string with package name of the module, MUST be normalized,
+     * @param nsPackageName
+     *            string with package name of the module namespace, MUST be normalized,
      *            otherwise this method may return an invalid string.
      * @param schemaPath
      *            list of names of YANG nodes which are parents of some node +
@@ -166,24 +166,16 @@ public final class BindingGeneratorUtil {
      * @return string with valid JAVA package name
      * @throws NullPointerException if any of the arguments are null
      */
-    public static String packageNameForGeneratedType(final String basePackageName, final SchemaPath schemaPath, final
-        BindingNamespaceType namespaceType) {
+    public static String packageNameForGeneratedType(final String nsPackageName, final SchemaPath schemaPath) {
 
         final Iterable<QName> pathTowardsRoot = schemaPath.getPathTowardsRoot();
         final Iterable<QName> pathFromRoot = schemaPath.getPathFromRoot();
         final int size = Iterables.size(pathTowardsRoot) - 1;
         if (size <= 0) {
-            if (namespaceType != null) {
-                final StringBuilder sb = new StringBuilder();
-                sb.append(basePackageName)
-                  .append('.')
-                  .append(namespaceType.getPackagePrefix());
-                return JavaIdentifierNormalizer.normalizeFullPackageName(sb.toString());
-            }
-            return JavaIdentifierNormalizer.normalizeFullPackageName(basePackageName);
+            return nsPackageName;
         }
 
-        return generateNormalizedPackageName(basePackageName, pathFromRoot, size, namespaceType);
+        return generateNormalizedPackageName(nsPackageName, pathFromRoot, size);
     }
 
     /**
@@ -331,92 +323,27 @@ public final class BindingGeneratorUtil {
         };
     }
 
-    /**
-     * Creates package name from specified <code>basePackageName</code> (package
-     * name for module) and <code>schemaPath</code> which crosses an augmentation.
-     *
-     * Resulting package name is concatenation of <code>basePackageName</code>
-     * and all local names of YANG nodes which are parents of some node for
-     * which <code>schemaPath</code> is specified.
-     *
-     * Based on type of node, there is also possible suffix added in order
-     * to prevent package name conflicts.
-     *
-     * @param basePackageName
-     *            string with package name of the module, MUST be normalized,
-     *            otherwise this method may return an invalid string.
-     * @param schemaPath
-     *            list of names of YANG nodes which are parents of some node +
-     *            name of this node
-     * @return string with valid JAVA package name
-     * @throws NullPointerException if any of the arguments are null
-     */
-    public static String packageNameForAugmentedGeneratedType(final String basePackageName, final SchemaPath schemaPath) {
-        final Iterable<QName> pathTowardsRoot = schemaPath.getPathTowardsRoot();
-        final Iterable<QName> pathFromRoot = schemaPath.getPathFromRoot();
-        final int size = Iterables.size(pathTowardsRoot);
-        if (size == 0) {
-            return basePackageName;
-        }
-
-        return generateNormalizedPackageName(basePackageName, pathFromRoot, size, BindingNamespaceType.Data);
-    }
-
-    /**
-     * Creates package name from <code>parentAugmentPackageName</code> (package
-     * name for direct parent augmentation) and <code>augmentationSchema</code> .
-     *
-     * Resulting package name is concatenation of <code>parentAugmentPackageName</code>
-     * and the local name of <code>schemaPath</code>.
-     *
-     * Based on type of node, there is also possible suffix added in order
-     * to prevent package name conflicts.
-     *
-     * @param parentAugmentPackageName
-     *            string with package name of direct parent augmentation, MUST be normalized,
-     *            otherwise this method may return an invalid string.
-     * @param augmentationSchema
-     *            augmentation schema which is direct son of parent augmentation.
-     * @return string with valid JAVA package name
-     * @throws NullPointerException if any of the arguments are null
-     */
-    public static String packageNameForAugmentedGeneratedType(final String parentAugmentPackageName,
-                                                              final AugmentationSchemaNode augmentationSchema) {
-        final QName last = augmentationSchema.getTargetPath().getLastComponent();
-
-        return generateNormalizedPackageName(parentAugmentPackageName, last);
-    }
-
-    public static String packageNameForSubGeneratedType(final String basePackageName, final SchemaNode node,
-                                                        final BindingNamespaceType namespaceType) {
-        final String parent = packageNameForGeneratedType(basePackageName, node.getPath(), namespaceType);
-        final QName last = node.getPath().getLastComponent();
-
-        return generateNormalizedPackageName(parent, last);
-    }
-
-    public static String replacePackageTopNamespace(final String basePackageName,
+    public static String replacePackageTopNamespace(final String rootPackageName,
             final String toReplacePackageName,
             final BindingNamespaceType toReplaceNameSpace,
             final BindingNamespaceType replacedNameSpace) {
-        Preconditions.checkArgument(basePackageName != null);
-        String normalizeBasePackageName = JavaIdentifierNormalizer.normalizeFullPackageName(basePackageName);
+        Preconditions.checkArgument(rootPackageName != null);
 
-        if (!normalizeBasePackageName.equals(toReplacePackageName)) {
-            final String topPackageName = new StringBuilder(normalizeBasePackageName)
+        if (!rootPackageName.equals(toReplacePackageName)) {
+            final String topPackageName = new StringBuilder(rootPackageName)
                     .append('.').append(toReplaceNameSpace.getPackagePrefix()).toString();
 
             Preconditions.checkState(toReplacePackageName.equals(topPackageName)
                             || toReplacePackageName.contains(topPackageName),
                     "Package name to replace does not belong to the given namespace to replace!");
 
-            return new StringBuilder(normalizeBasePackageName)
+            return new StringBuilder(rootPackageName)
                     .append('.')
                     .append(replacedNameSpace.getPackagePrefix())
                     .append(toReplacePackageName.substring(topPackageName.length()))
                     .toString();
         } else {
-            return new StringBuilder(normalizeBasePackageName)
+            return new StringBuilder(rootPackageName)
                     .append('.').append(replacedNameSpace.getPackagePrefix()).toString();
         }
     }
@@ -432,12 +359,9 @@ public final class BindingGeneratorUtil {
         }
     };
 
-    private static String generateNormalizedPackageName(final String base, final Iterable<QName> path, final int
-            size, final BindingNamespaceType namespaceType) {
-        final StringBuilder builder = new StringBuilder(base);
-        if (namespaceType != null) {
-            builder.append('.').append(namespaceType.getPackagePrefix());
-        }
+    private static String generateNormalizedPackageName(final String nsPackageName, final Iterable<QName> path,
+            final int size) {
+        final StringBuilder builder = new StringBuilder(nsPackageName);
         final Iterator<QName> iterator = path.iterator();
         for (int i = 0; i < size; ++i) {
             builder.append('.');
@@ -445,17 +369,6 @@ public final class BindingGeneratorUtil {
             builder.append(nodeLocalName);
         }
         final String normalizedPackageName = JavaIdentifierNormalizer.normalizeFullPackageName(builder.toString());
-        // Prevent duplication of input
-        PACKAGE_INTERNER.intern(normalizedPackageName);
-        return normalizedPackageName;
-    }
-
-    private static String generateNormalizedPackageName(final String parent, final QName path) {
-        final StringBuilder sb = new StringBuilder(parent)
-                .append('.')
-                .append(path.getLocalName());
-
-        final String normalizedPackageName = JavaIdentifierNormalizer.normalizeFullPackageName(sb.toString());
         // Prevent duplication of input
         PACKAGE_INTERNER.intern(normalizedPackageName);
         return normalizedPackageName;
