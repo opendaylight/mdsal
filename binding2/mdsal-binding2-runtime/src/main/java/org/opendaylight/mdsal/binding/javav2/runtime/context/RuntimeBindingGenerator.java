@@ -121,8 +121,8 @@ public final class RuntimeBindingGenerator {
     }
 
     private void generateIdentType(final Module module, final IdentitySchemaNode ident) {
-        final String packageName = packageNameForGeneratedType(BindingMapping.getRootPackageName(module),
-            ident.getPath(), BindingNamespaceType.Identity);
+        final String packageName = packageNameForGeneratedType(
+            PackageNameLoader.normalizedNSPackageName(module, BindingNamespaceType.Identity), ident.getPath());
         this.identities.put(ident.getQName(), newType(packageName, ident.getQName().getLocalName()));
     }
 
@@ -148,7 +148,7 @@ public final class RuntimeBindingGenerator {
     }
 
     private void generateOperationType(final Module module, final OperationDefinition operation) {
-        final String packageName = BindingMapping.getRootPackageName(module);
+        final String packageName = PackageNameLoader.normalizedRootPackageName(module);
         final StringBuilder sb = new StringBuilder(module.getName()).append("_")
             .append(operation.getQName().getLocalName()).append('_');
         if (operation instanceof RpcDefinition) {
@@ -164,8 +164,9 @@ public final class RuntimeBindingGenerator {
     }
 
     private void generateOperationArgType(final Module module, final Type parent, final DataNodeContainer argNode) {
-        final String packageName = packageNameForGeneratedType(BindingMapping.getRootPackageName(module),
-            ((SchemaNode) argNode).getPath(), BindingNamespaceType.Data);
+        final String packageName = packageNameForGeneratedType(
+            PackageNameLoader.normalizedNSPackageName(module, BindingNamespaceType.Data),
+            ((SchemaNode) argNode).getPath());
 
         final String typeName = new StringBuilder(parent.getName()).append('_')
             .append(((SchemaNode) argNode).getQName().getLocalName()).toString();
@@ -179,8 +180,9 @@ public final class RuntimeBindingGenerator {
     }
 
     private void generateNotificationType(final Module module, final NotificationDefinition notification) {
-        final String packageName = packageNameForGeneratedType(BindingMapping.getRootPackageName(module),
-            notification.getPath(), BindingNamespaceType.Data);
+        final String packageName = packageNameForGeneratedType(
+            PackageNameLoader.normalizedNSPackageName(module, BindingNamespaceType.Data),
+            notification.getPath());
         final Type type = addTypeToSchema(packageName, notification);
         generateDataNodeTypes(module, type, notification);
     }
@@ -225,8 +227,7 @@ public final class RuntimeBindingGenerator {
                 .append('_').append(targetNode.getQName().getLocalName()).toString();
         }
 
-        final String packageName = packageNameWithNamespacePrefix(getRootPackageName(module),
-            BindingNamespaceType.Data);
+        final String packageName = PackageNameLoader.normalizedNSPackageName(module, BindingNamespaceType.Data);
 
         if (!(targetNode instanceof ChoiceSchemaNode)) {
             final Type type = newType(packageName, augIdentifier);
@@ -245,8 +246,8 @@ public final class RuntimeBindingGenerator {
     }
 
     private Type generateDataType(final Module module, final DataSchemaNode dataNode) {
-        final String packageName = packageNameForGeneratedType(BindingMapping.getRootPackageName(module),
-            dataNode.getPath(), BindingNamespaceType.Data);
+        final String packageName = packageNameForGeneratedType(
+            PackageNameLoader.normalizedNSPackageName(module, BindingNamespaceType.Data), dataNode.getPath());
         return addTypeToSchema(packageName, dataNode);
     }
 

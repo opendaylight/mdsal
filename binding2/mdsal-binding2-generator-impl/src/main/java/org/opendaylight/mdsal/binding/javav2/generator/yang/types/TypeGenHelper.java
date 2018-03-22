@@ -110,8 +110,6 @@ public final class TypeGenHelper {
      *            Type Definition
      * @param innerExtendedType
      *            extended type which is part of some other extended type
-     * @param basePackageName
-     *            string with the package name of the module
      * @param moduleName
      *            Module Name
      * @return generated TO which extends generated TO for
@@ -125,16 +123,16 @@ public final class TypeGenHelper {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static GeneratedTransferObject provideGeneratedTOFromExtendedType(final TypeDefinition<?> typedef, final
-            TypeDefinition<?> innerExtendedType, final String basePackageName, final String moduleName, final SchemaContext
+            TypeDefinition<?> innerExtendedType, final String moduleName, final SchemaContext
             schemaContext, final Map<String, Map<Optional<Revision>, Map<String, Type>>> genTypeDefsContextMap,
             final ModuleContext context) {
 
         Preconditions.checkArgument(innerExtendedType != null, "Extended type cannot be NULL!");
-        Preconditions.checkArgument(basePackageName != null, "String with base package name cannot be NULL!");
 
         final String typedefName = typedef.getQName().getLocalName();
         final String innerTypeDef = innerExtendedType.getQName().getLocalName();
-        final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(basePackageName, typedefName, context);
+        final GeneratedTOBuilderImpl genTOBuilder = new GeneratedTOBuilderImpl(
+            context.normalizedNSPackageName(BindingNamespaceType.Typedef), typedefName, context);
         final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
 
         genTOBuilder.setDescription(typedefDescription);
@@ -175,20 +173,18 @@ public final class TypeGenHelper {
     /**
      * Wraps base YANG type to generated TO.
      *
-     * @param basePackageName
-     *            string with name of package to which the module belongs
      * @param typedef
      *            type definition which is converted to the TO
      * @param javaType
      *            JAVA <code>Type</code> to which is <code>typedef</code> mapped
      * @return generated transfer object which represent<code>javaType</code>
      */
-    static GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
+    static GeneratedTransferObject wrapJavaTypeIntoTO(final TypeDefinition<?> typedef,
            final Type javaType, final String moduleName, final ModuleContext context) {
         Preconditions.checkNotNull(javaType, "javaType cannot be null");
         final String propertyName = "value";
 
-        final GeneratedTOBuilder genTOBuilder = typedefToTransferObject(basePackageName, typedef, moduleName, context);
+        final GeneratedTOBuilder genTOBuilder = typedefToTransferObject(typedef, moduleName, context);
         genTOBuilder.setRestrictions(BindingGeneratorUtil.getRestrictions(typedef));
         final GeneratedPropertyBuilder genPropBuilder = genTOBuilder.addProperty(propertyName);
         genPropBuilder.setReturnType(javaType);
@@ -461,15 +457,12 @@ public final class TypeGenHelper {
         Preconditions.checkArgument(enumTypeDef.getQName().getLocalName() != null,
                 "Local Name in EnumTypeDefinition QName cannot be NULL!");
         final Module module = findParentModule(schemaContext, parentNode);
-        final String basePackageName = BindingMapping.getRootPackageName(module);
         final String packageName;
 
         if (parentNode instanceof TypeDefinition) {
-            packageName = BindingGeneratorUtil.packageNameWithNamespacePrefix(
-                    BindingMapping.getRootPackageName(module),
-                    BindingNamespaceType.Typedef);
+            packageName = context.normalizedNSPackageName(BindingNamespaceType.Typedef);
         } else {
-            packageName = basePackageName;
+            packageName = context.normalizedRootPackageName();
         }
 
         final EnumerationBuilderImpl enumBuilder = new EnumerationBuilderImpl(packageName, enumName, context);
@@ -485,20 +478,19 @@ public final class TypeGenHelper {
     /**
      * Converts <code>typedef</code> to the generated TO builder.
      *
-     * @param basePackageName
-     *            string with name of package to which the module belongs
      * @param typedef
      *            type definition from which is the generated TO builder created
      * @return generated TO builder which contains data from
      *         <code>typedef</code> and <code>basePackageName</code>
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static GeneratedTOBuilderImpl typedefToTransferObject(final String basePackageName,
-            final TypeDefinition<?> typedef, final String moduleName, final ModuleContext context) {
+    private static GeneratedTOBuilderImpl typedefToTransferObject(final TypeDefinition<?> typedef,
+            final String moduleName, final ModuleContext context) {
         final String typeDefTOName = typedef.getQName().getLocalName();
 
-        if (basePackageName != null && typeDefTOName != null) {
-            final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(basePackageName, typeDefTOName, context);
+        if (typeDefTOName != null) {
+            final GeneratedTOBuilderImpl newType = new GeneratedTOBuilderImpl(
+                context.normalizedNSPackageName(BindingNamespaceType.Typedef), typeDefTOName, context);
             final String typedefDescription = encodeAngleBrackets(typedef.getDescription().orElse(null));
 
             newType.setDescription(typedefDescription);

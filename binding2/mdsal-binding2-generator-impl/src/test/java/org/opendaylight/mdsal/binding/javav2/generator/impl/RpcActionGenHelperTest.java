@@ -44,7 +44,7 @@ public class RpcActionGenHelperTest {
     // Bridge for method references
     @FunctionalInterface
     private static interface GeneratorMethod {
-        Map<Module, ModuleContext> generate(Module module, Map<Module, ModuleContext> genCtx,
+        void generate(ModuleContext moduleContext, Map<Module, ModuleContext> genCtx,
                 SchemaContext schemaContext, boolean verboseClassComments,
                 Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders, TypeProvider typeProvider);
     }
@@ -109,14 +109,16 @@ public class RpcActionGenHelperTest {
         when(module.getRevision()).thenReturn(rpcQName.getRevision());
         when(module.getNamespace()).thenReturn(rpcQName.getNamespace());
         when(module.getRpcs()).thenReturn(null);
+        final ModuleContext moduleContext = new ModuleContextImpl(module);
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
+        genCtx.put(module, moduleContext);
         final SchemaContext schemaContext = mock(SchemaContext.class);
         final boolean verboseClassComments = false;
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
         final TypeProvider typeProvider = mock(TypeProvider.class);
 
-        RpcActionGenHelper.rpcMethodsToGenType(module, genCtx, schemaContext, verboseClassComments, genTypeBuilders,
+        RpcActionGenHelper.rpcMethodsToGenType(moduleContext, genCtx, schemaContext, verboseClassComments, genTypeBuilders,
             typeProvider);
     }
 
@@ -130,16 +132,18 @@ public class RpcActionGenHelperTest {
         when(module.getNamespace()).thenReturn(rpcQName.getNamespace());
         final Set<RpcDefinition> rpcs = new HashSet<>();
         when(module.getRpcs()).thenReturn(rpcs);
+        final ModuleContext moduleContext = new ModuleContextImpl(module);
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
+        genCtx.put(module, moduleContext);
         final SchemaContext schemaContext = mock(SchemaContext.class);
         final boolean verboseClassComments = false;
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
         final TypeProvider typeProvider = mock(TypeProvider.class);
 
-        final Map<Module, ModuleContext> result = RpcActionGenHelper.rpcMethodsToGenType(module, genCtx, schemaContext,
+        RpcActionGenHelper.rpcMethodsToGenType(moduleContext, genCtx, schemaContext,
             verboseClassComments, genTypeBuilders, typeProvider);
-        assertNotNull(result);
+        assertTrue(moduleContext.getTopLevelNodes().isEmpty());
     }
 
     @Test
@@ -193,7 +197,7 @@ public class RpcActionGenHelperTest {
         when(rpcDefinition.getOutput()).thenReturn(output);
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
-        final ModuleContext moduleContext = new ModuleContext();
+        final ModuleContext moduleContext = new ModuleContextImpl(module);
         genCtx.put(module, moduleContext);
 
         final SchemaContext schemaContext = mock(SchemaContext.class);
@@ -203,9 +207,9 @@ public class RpcActionGenHelperTest {
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
         final TypeProvider typeProvider = mock(TypeProvider.class);
 
-        final Map<Module, ModuleContext> result = RpcActionGenHelper.rpcMethodsToGenType(module, genCtx, schemaContext,
+        RpcActionGenHelper.rpcMethodsToGenType(moduleContext, genCtx, schemaContext,
             verboseClassComments, genTypeBuilders, typeProvider);
-        assertNotNull(result);
+        assertTrue(!moduleContext.getTopLevelNodes().isEmpty());
     }
 
     private static <T extends ActionNodeContainer> void actionMethodsToGenType(final Class<T> clazz,
@@ -271,7 +275,7 @@ public class RpcActionGenHelperTest {
         when(module.getChildNodes()).thenReturn(childNodes);
 
         final Map<Module, ModuleContext> genCtx = new HashMap<>();
-        final ModuleContext moduleContext = new ModuleContext();
+        final ModuleContext moduleContext = new ModuleContextImpl(module);
         genCtx.put(module, moduleContext);
 
         final SchemaContext schemaContext = mock(SchemaContext.class);
@@ -302,8 +306,8 @@ public class RpcActionGenHelperTest {
             when(module.getRpcs()).thenReturn(rpcs);
         }
 
-        final Map<Module, ModuleContext> result = generate.generate(module, genCtx, schemaContext, verboseClassComments,
+        generate.generate(moduleContext, genCtx, schemaContext, verboseClassComments,
             genTypeBuilders, typeProvider);
-        assertNotNull(result);
+        assertTrue(!moduleContext.getTopLevelNodes().isEmpty());
     }
 }
