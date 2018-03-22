@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
@@ -117,25 +119,25 @@ public class BindingGeneratorImpl implements BindingGenerator {
         Preconditions.checkState(context.getModules() != null, "Schema Context does not contain defined modules.");
         Preconditions.checkArgument(modules != null, "Set of Modules cannot be NULL.");
 
-        this.typeProvider = new TypeProviderImpl(context);
         final List<Module> contextModules = ModuleDependencySort.sort(context.getModules());
+
+        this.typeProvider = new TypeProviderImpl(context, contextModules, this.genCtx);
         this.genTypeBuilders = new HashMap<>();
 
         for (final Module contextModule : contextModules) {
-            this.genCtx = ModuleToGenType.generate(contextModule, this.genTypeBuilders, context, this.typeProvider,
+            ModuleToGenType.generate(contextModule, this.genTypeBuilders, context, this.typeProvider,
                     this.genCtx, this.verboseClassComments);
             this.genCtx.get(contextModule).cleanPackagesMap();
         }
         for (final Module contextModule : contextModules) {
-            this.genCtx = AugmentToGenType.generate(contextModule, context, this.typeProvider, this.genCtx,
+            AugmentToGenType.generate(contextModule, context, this.typeProvider, this.genCtx,
                     this.genTypeBuilders, this.verboseClassComments);
             this.genCtx.get(contextModule).cleanPackagesMap();
         }
 
         final List<Type> filteredGenTypes = new ArrayList<>();
         for (final Module m : modules) {
-            final ModuleContext ctx = Preconditions.checkNotNull(this.genCtx.get(m),
-                    "Module context not found for module %s", m);
+            final ModuleContext ctx = requireNonNull(this.genCtx.get(m), () -> "Module context not found for module" + m);
             filteredGenTypes.addAll(ctx.getGeneratedTypes());
             final Set<Type> additionalTypes = ((TypeProviderImpl) this.typeProvider).getAdditionalTypes().get(m);
             if (additionalTypes != null) {

@@ -24,6 +24,7 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.Empty;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
+import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 
@@ -157,7 +158,7 @@ public final class BaseYangTypes {
          */
         @Override
         public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
-                final ModuleContext context) {
+                final Map<Module, ModuleContext> genCtx, final ModuleContext context) {
             if (type != null) {
                 return TYPE_MAP.get(type.getQName().getLocalName());
             }
@@ -167,7 +168,7 @@ public final class BaseYangTypes {
 
         @Override
         public Type javaTypeForSchemaDefinitionType(final TypeDefinition<?> type, final SchemaNode parentNode,
-                final Restrictions restrictions, final ModuleContext context) {
+                final Restrictions restrictions,final Map<Module, ModuleContext> genCtx, final ModuleContext context) {
 
             final String typeName = type.getQName().getLocalName();
             switch (typeName) {
@@ -198,7 +199,7 @@ public final class BaseYangTypes {
                 case "union" :
                     return UNION_TYPE;
                 default:
-                    return javaTypeForSchemaDefinitionType(type, parentNode, context);
+                    return javaTypeForSchemaDefinitionType(type, parentNode, genCtx, context);
             }
         }
 

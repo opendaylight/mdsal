@@ -40,7 +40,7 @@ public abstract class AbstractBaseType implements Type {
      * @param name
      *            string with the name for this <code>Type</code>
      */
-    protected AbstractBaseType(final String pkName, final String name, ModuleContext context) {
+    protected AbstractBaseType(final String pkName, final String name, final ModuleContext context) {
         Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
         Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
         this.packageName = JavaIdentifierNormalizer.normalizeFullPackageName(pkName);
@@ -77,7 +77,7 @@ public abstract class AbstractBaseType implements Type {
     }
 
     protected AbstractBaseType(final String pkName, final String name, final boolean isPkNameNormalized,
-            final boolean isTypeNormalized, ModuleContext context ) {
+            final boolean isTypeNormalized, final ModuleContext context ) {
         Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
         Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
         if (isPkNameNormalized) {

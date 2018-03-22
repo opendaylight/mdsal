@@ -7,18 +7,22 @@
  */
 package org.opendaylight.mdsal.binding.javav2.generator.impl;
 
+import static org.mockito.Mockito.mock;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.util.generated.type.builder.GeneratedTypeBuilderImpl;
 import org.opendaylight.mdsal.binding.javav2.model.api.type.builder.GeneratedTypeBuilder;
+import org.opendaylight.yangtools.yang.model.api.Module;
 
 public class GeneratedClassLoadingStrategyTest {
 
     @Test
     public void loadClassTest() throws Exception {
         final Dummy dummy = new Dummy();
-        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("test", "dummy", new ModuleContext());
+        final GeneratedTypeBuilder gtb = new GeneratedTypeBuilderImpl("test", "dummy",
+            new ModuleContextImpl(mock(Module.class)));
         final Class<?> loadClass = dummy.loadClass(gtb.toInstance());
         Assert.assertNotNull(loadClass);
     }
