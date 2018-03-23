@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.model.api.type.builder;
 
 import com.google.common.annotations.Beta;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.common.JavaTypeName;
 
 /**
  * Common interface for java type builders which allow attaching annotations to them.

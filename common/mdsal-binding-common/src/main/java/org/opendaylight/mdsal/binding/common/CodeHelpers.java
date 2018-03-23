@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018 Cisco Systems, Inc. and others.  All rights reserved.
+ * Copyright (c) 2018 Pantheon Technologies, s.r.o.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.javav2.spec.runtime;
+package org.opendaylight.mdsal.binding.common;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Verify.verify;
@@ -27,9 +27,6 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author Robert Varga
  */
 public final class CodeHelpers {
-    private static final String NEGATED_PATTERN_PREFIX = "^(?!";
-    private static final String NEGATED_PATTERN_SUFFIX = ").*$";
-
     private CodeHelpers() {
         // Hidden
     }
@@ -128,15 +125,11 @@ public final class CodeHelpers {
      */
     public static void checkPattern(final String value, final Pattern pattern, final String regex) {
         if (!pattern.matcher(value).matches()) {
-            final String match = isNegatedPattern(pattern.toString()) ? "matches forbidden"
+            final String match = BindingMappingBase.isNegatedPattern(pattern) ? "matches forbidden"
                 : "does not match required";
             throw new IllegalArgumentException("Supplied value \"" + value + "\" " + match + " pattern \""
                     + regex + "\"");
         }
-    }
-
-    private static boolean isNegatedPattern(final String pattern) {
-        return pattern.startsWith(NEGATED_PATTERN_PREFIX) && pattern.endsWith(NEGATED_PATTERN_SUFFIX);
     }
 
     /**
@@ -151,7 +144,8 @@ public final class CodeHelpers {
      * @throws VerifyException if the size of patterns and regexes does not match
      */
     public static void checkPattern(final String value, final Pattern[] patterns, final String[] regexes) {
-        verify(patterns.length == regexes.length, "Patterns and regular expression lengths have to match");
+        verify(patterns.length == regexes.length,
+            "Patterns and regular expression lengths have to match");
         for (int i = 0; i < patterns.length; ++i) {
             checkPattern(value, patterns[i], regexes[i]);
         }

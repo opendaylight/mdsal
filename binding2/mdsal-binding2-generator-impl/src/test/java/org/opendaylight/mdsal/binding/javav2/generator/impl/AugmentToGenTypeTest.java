@@ -464,8 +464,7 @@ public class AugmentToGenTypeTest {
         final Map<String, Map<String, GeneratedTypeBuilder>> genTypeBuilders = new HashMap<>();
 
         when(moduleAug.getName()).thenReturn("augm-module");
-        when(moduleAug.getNamespace()).thenReturn(qnamePath.getNamespace());
-        when(moduleAug.getRevision()).thenReturn(qnamePath.getRevision());
+        when(moduleAug.getQNameModule()).thenReturn(qnamePath.getModule());
 
         final Map<Module, ModuleContext> result =
                 AugmentToGenType.augmentationToGenTypes(augmPackName, schemaPathAugmentListEntry, moduleAug, context,
@@ -702,8 +701,7 @@ public class AugmentToGenTypeTest {
         final CaseSchemaNode schemaNode = mock(CaseSchemaNode.class);
         when(schemaNode.getPath()).thenReturn(path);
         when(module.getDataChildByName(qnamePath)).thenReturn(schemaNode);
-        when(module.getRevision()).thenReturn(qnamePath.getRevision());
-        when(module.getNamespace()).thenReturn(qnamePath.getNamespace());
+        when(module.getQNameModule()).thenReturn(qnamePath.getModule());
         final String pckgName = "test.augment.choice.cases";
         final GeneratedType targetType = mock(GeneratedType.class);
         when(targetType.getFullyQualifiedName()).thenReturn(Augmentable.class.getName());

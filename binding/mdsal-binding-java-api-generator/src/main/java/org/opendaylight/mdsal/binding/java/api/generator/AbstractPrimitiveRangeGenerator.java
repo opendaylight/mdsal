@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import org.opendaylight.yangtools.yang.binding.CodeHelpers;
+import org.opendaylight.mdsal.binding.common.CodeHelpers;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
