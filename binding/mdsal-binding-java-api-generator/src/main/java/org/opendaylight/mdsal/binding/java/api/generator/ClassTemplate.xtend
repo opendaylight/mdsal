@@ -21,6 +21,7 @@ import java.util.List
 import java.util.Map
 import java.util.Objects
 import java.util.regex.Pattern
+import org.opendaylight.mdsal.binding.common.CodeHelpers
 import org.opendaylight.mdsal.binding.model.api.ConcreteType
 import org.opendaylight.mdsal.binding.model.api.Constant
 import org.opendaylight.mdsal.binding.model.api.Enumeration
@@ -30,7 +31,6 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType
 import org.opendaylight.mdsal.binding.model.api.Restrictions
 import org.opendaylight.mdsal.binding.model.api.Type
 import org.opendaylight.mdsal.binding.model.util.TypeConstants
-import org.opendaylight.yangtools.yang.binding.CodeHelpers
 import org.opendaylight.yangtools.yang.model.api.type.BitsTypeDefinition
 
 /**
