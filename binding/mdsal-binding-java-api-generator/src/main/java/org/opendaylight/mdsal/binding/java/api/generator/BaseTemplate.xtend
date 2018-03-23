@@ -17,6 +17,7 @@ import java.util.Collection
 import java.util.List
 import java.util.StringTokenizer
 import java.util.regex.Pattern
+import org.opendaylight.mdsal.binding.common.CodeHelpers
 import org.opendaylight.mdsal.binding.model.api.ConcreteType
 import org.opendaylight.mdsal.binding.model.api.Constant
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
@@ -29,7 +30,6 @@ import org.opendaylight.mdsal.binding.model.api.TypeMember
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition.Single
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition.Multiple
 import org.opendaylight.mdsal.binding.model.util.Types
-import org.opendaylight.yangtools.yang.binding.CodeHelpers
 import org.opendaylight.yangtools.yang.common.QName
 import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode
