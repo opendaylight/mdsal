@@ -9,60 +9,20 @@ package org.opendaylight.yangtools.yang.binding;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Splitter;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import java.util.Collection;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.opendaylight.mdsal.binding.common.BindingMappingBase;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.common.Revision;
 
-public final class BindingMapping {
+public final class BindingMapping extends BindingMappingBase {
 
-    public static final String VERSION = "0.6";
-
-    public static final Set<String> JAVA_RESERVED_WORDS = ImmutableSet.of(
-        // https://docs.oracle.com/javase/specs/jls/se9/html/jls-3.html#jls-3.9
-        "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue",
-        "default", "do", "double", "else", "enum", "extends", "final", "finally", "float", "for", "goto", "if",
-        "implements", "import", "instanceof", "int", "interface", "long", "native", "new", "package", "private",
-        "protected", "public", "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this",
-        "throw", "throws", "transient", "try", "void", "volatile", "while", "_",
-        // https://docs.oracle.com/javase/specs/jls/se9/html/jls-3.html#jls-3.10.3
-        "false", "true",
-        // https://docs.oracle.com/javase/specs/jls/se9/html/jls-3.html#jls-3.10.7
-        "null");
-
-    public static final String DATA_ROOT_SUFFIX = "Data";
-    public static final String RPC_SERVICE_SUFFIX = "Service";
-    public static final String NOTIFICATION_LISTENER_SUFFIX = "Listener";
-    public static final String QNAME_STATIC_FIELD_NAME = "QNAME";
     public static final String PACKAGE_PREFIX = "org.opendaylight.yang.gen.v1";
-    public static final String AUGMENTATION_FIELD = "augmentation";
-
-    private static final Splitter CAMEL_SPLITTER = Splitter.on(CharMatcher.anyOf(" _.-/").precomputed())
-            .omitEmptyStrings().trimResults();
-    private static final Pattern COLON_SLASH_SLASH = Pattern.compile("://", Pattern.LITERAL);
-    private static final String QUOTED_DOT = Matcher.quoteReplacement(".");
-    private static final Splitter DOT_SPLITTER = Splitter.on('.');
-
-    public static final String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
-    public static final String MODEL_BINDING_PROVIDER_CLASS_NAME = "$YangModelBindingProvider";
-
-    public static final String RPC_INPUT_SUFFIX = "Input";
-    public static final String RPC_OUTPUT_SUFFIX = "Output";
-
-    private static final String NEGATED_PATTERN_PREFIX = "^(?!";
-    private static final String NEGATED_PATTERN_SUFFIX = ").*$";
 
     private static final Interner<String> PACKAGE_INTERNER = Interners.newWeakInterner();
 
@@ -75,58 +35,7 @@ public final class BindingMapping {
     }
 
     public static String getRootPackageName(final QNameModule module) {
-        checkArgument(module != null, "Module must not be null");
-        checkArgument(module.getRevision() != null, "Revision must not be null");
-        checkArgument(module.getNamespace() != null, "Namespace must not be null");
-        final StringBuilder packageNameBuilder = new StringBuilder();
-
-        packageNameBuilder.append(BindingMapping.PACKAGE_PREFIX);
-        packageNameBuilder.append('.');
-
-        String namespace = module.getNamespace().toString();
-        namespace = COLON_SLASH_SLASH.matcher(namespace).replaceAll(QUOTED_DOT);
-
-        final char[] chars = namespace.toCharArray();
-        for (int i = 0; i < chars.length; ++i) {
-            switch (chars[i]) {
-                case '/':
-                case ':':
-                case '-':
-                case '@':
-                case '$':
-                case '#':
-                case '\'':
-                case '*':
-                case '+':
-                case ',':
-                case ';':
-                case '=':
-                    chars[i] = '.';
-                    break;
-                default:
-                    // no-op
-            }
-        }
-
-        packageNameBuilder.append(chars);
-        if (chars[chars.length - 1] != '.') {
-            packageNameBuilder.append('.');
-        }
-
-        final Optional<Revision> optRev = module.getRevision();
-        if (optRev.isPresent()) {
-            // Revision is in format 2017-10-26, we want the output to be 171026, which is a matter of picking the
-            // right characters.
-            final String rev = optRev.get().toString();
-            checkArgument(rev.length() == 10, "Unsupported revision %s", rev);
-            packageNameBuilder.append("rev");
-            packageNameBuilder.append(rev.substring(2, 4)).append(rev.substring(5, 7)).append(rev.substring(8));
-        } else {
-            // No-revision packages are special
-            packageNameBuilder.append("norev");
-        }
-
-        return normalizePackageName(packageNameBuilder.toString());
+        return normalizePackageName(getRootPackageName(module, BindingMapping.PACKAGE_PREFIX));
     }
 
     public static String normalizePackageName(final String packageName) {

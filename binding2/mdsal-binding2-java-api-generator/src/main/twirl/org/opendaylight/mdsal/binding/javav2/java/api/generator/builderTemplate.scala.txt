@@ -7,6 +7,7 @@
  *@
 
 @import java.util.List
+@import org.opendaylight.mdsal.binding.common.BindingMappingBase
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.fieldName
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.formatDataForJavaDocBuilder
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.util.TextTemplateUtil.getSimpleNameForBuilder
@@ -20,7 +21,6 @@
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.renderers.BuilderRenderer.toListOfNames
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.AbstractRangeGenerator
 @import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.LengthGenerator
-@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping
 @import org.opendaylight.mdsal.binding.javav2.generator.util.Types
 @import org.opendaylight.mdsal.binding.javav2.model.api.ConcreteType
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType
@@ -342,9 +342,9 @@ public class @{genType.getName}Builder implements @{getSimpleNameForBuilder} <@{
     }
     @for(currentConstant <- genType.getConstantDefinitions) {
         @defining(fieldName(field)) { suffix =>
-        @if(currentConstant.getName.startsWith(BindingMapping.PATTERN_CONSTANT_NAME)
-                && suffix.equals(currentConstant.getName.substring(BindingMapping.PATTERN_CONSTANT_NAME.length))) {
-            @{importedNames.get("codeHelpers")}.checkPattern(value, @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix}, @{BindingMapping.MEMBER_REGEX_LIST}@{suffix});
+        @if(currentConstant.getName.startsWith(BindingMappingBase.PATTERN_CONSTANT_NAME)
+                && suffix.equals(currentConstant.getName.substring(BindingMappingBase.PATTERN_CONSTANT_NAME.length))) {
+            @{importedNames.get("codeHelpers")}.checkPattern(value, @{BindingMappingBase.MEMBER_PATTERN_LIST}@{suffix}, @{BindingMappingBase.MEMBER_REGEX_LIST}@{suffix});
         }
         }
     }
