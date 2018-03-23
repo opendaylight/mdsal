@@ -157,8 +157,7 @@ public class RpcActionGenHelperTest {
 
         final Module module = mock(Module.class);
         when(module.getName()).thenReturn("module-name");
-        when(module.getRevision()).thenReturn(rpcQName.getRevision());
-        when(module.getNamespace()).thenReturn(rpcQName.getNamespace());
+        when(module.getQNameModule()).thenReturn(rpcQName.getModule());
         when(module.getDescription()).thenReturn(java.util.Optional.empty());
         when(module.getReference()).thenReturn(java.util.Optional.empty());
         final Set<RpcDefinition> rpcs = new HashSet<>();
@@ -221,8 +220,7 @@ public class RpcActionGenHelperTest {
 
         final Module module = mock(Module.class);
         when(module.getName()).thenReturn("module-name");
-        when(module.getRevision()).thenReturn(actionQName.getRevision());
-        when(module.getNamespace()).thenReturn(actionQName.getNamespace());
+        when(module.getQNameModule()).thenReturn(actionQName.getModule());
         when(module.getDescription()).thenReturn(java.util.Optional.empty());
         when(module.getReference()).thenReturn(java.util.Optional.empty());
 

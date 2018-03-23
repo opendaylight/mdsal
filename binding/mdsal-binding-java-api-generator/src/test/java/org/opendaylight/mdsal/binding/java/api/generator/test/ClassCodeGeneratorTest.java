@@ -14,13 +14,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.common.JavaTypeName;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.java.api.generator.TOGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.common.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;

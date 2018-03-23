@@ -35,5 +35,6 @@
       <module>features</module>
       <module>mdsal-common-api</module>
       <module>mdsal-common-util</module>
+      <module>mdsal-binding-common</module>
     </modules>
 </project>

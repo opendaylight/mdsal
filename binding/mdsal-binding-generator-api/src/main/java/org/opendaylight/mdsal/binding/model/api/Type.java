@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.model.api;
 
+import org.opendaylight.mdsal.binding.common.JavaTypeName;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
 /**

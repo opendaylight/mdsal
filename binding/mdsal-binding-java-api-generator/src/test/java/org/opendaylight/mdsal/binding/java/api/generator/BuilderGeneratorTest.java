@@ -15,8 +15,8 @@ import static org.mockito.Mockito.spy;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
+import org.opendaylight.mdsal.binding.common.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
 

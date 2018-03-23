@@ -17,7 +17,7 @@ import java.util.Set;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.common.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
 import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;

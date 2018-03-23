@@ -376,6 +376,10 @@ public final class JavaIdentifierNormalizer {
         if (javaIdentifier != JavaIdentifier.PACKAGE) {
             final String lower = identifier.toLowerCase();
             if (BindingMapping.JAVA_RESERVED_WORDS.contains(lower) || WINDOWS_RESERVED_WORDS.contains(lower)) {
+                //FIXME:temporarily hard code for "_" in java 9.
+                if ("_".equals(identifier)) {
+                    return "_" + fixCasesByJavaType(UNDERSCORE + RESERVED_KEYWORD, javaIdentifier);
+                }
                 return fixCasesByJavaType(lower + UNDERSCORE + RESERVED_KEYWORD, javaIdentifier);
             }
         }
@@ -545,6 +549,10 @@ public final class JavaIdentifierNormalizer {
      *            - string to be capitalized
      */
     private static String capitalize(final String identifier) {
+        if (identifier.length() == 0) {
+            return identifier;
+        }
+
         return identifier.substring(0, 1).toUpperCase() + identifier.substring(1);
     }
 

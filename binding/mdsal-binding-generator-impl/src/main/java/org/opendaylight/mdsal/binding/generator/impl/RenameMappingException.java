@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static java.util.Objects.requireNonNull;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.common.JavaTypeName;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 /**
