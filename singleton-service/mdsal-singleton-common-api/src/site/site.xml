@@ -2,10 +2,10 @@
 <project name="mdsal">
     <body>
         <menu name="Overview">
-          <item name="Javadocs" href="apidocs/index.html" />
+          <item name="Javadocs" href="apidocs/index.html"/>
         </menu>
         <menu name="Cluster &amp; Wide &amp; Service &amp; Design">
-          <item name="Cluster Wide Service Design" href="cluster-wide-services.html" />
+          <item name="Cluster Wide Service Design" href="cluster-wide-services.html"/>
         </menu>
     </body>
 </project>
