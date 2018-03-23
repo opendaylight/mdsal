@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.common.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
