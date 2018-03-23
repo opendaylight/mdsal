@@ -12,7 +12,7 @@ import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
+import org.opendaylight.mdsal.binding.common.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.binding.Action;
