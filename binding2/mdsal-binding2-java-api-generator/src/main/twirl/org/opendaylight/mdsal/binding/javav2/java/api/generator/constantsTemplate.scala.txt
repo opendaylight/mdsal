@@ -7,29 +7,29 @@
  *@
 
 @import org.apache.commons.text.StringEscapeUtils.escapeJava
+@import org.opendaylight.mdsal.binding.common.BindingMappingBase
 @import org.opendaylight.mdsal.binding.javav2.model.api.Type
 @import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType
 @import org.opendaylight.mdsal.binding.javav2.model.api.Constant
-@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping
 @import org.opendaylight.mdsal.binding.javav2.generator.util.Types
 @import org.opendaylight.yangtools.yang.common.QName;
 @import org.opendaylight.yangtools.yang.common.Revision;
 
 @(genType: GeneratedType, importedNames: Map[String, String], importedName: Function[Type, String], qnameOnly: Boolean)
 @for(c <- genType.getConstantDefinitions) {
-    @if(c.getName.startsWith(BindingMapping.PATTERN_CONSTANT_NAME)) {
+    @if(c.getName.startsWith(BindingMappingBase.PATTERN_CONSTANT_NAME)) {
     @if(!qnameOnly) {
-        @defining(c.getName.substring(BindingMapping.PATTERN_CONSTANT_NAME.length)) { suffix =>
+        @defining(c.getName.substring(BindingMappingBase.PATTERN_CONSTANT_NAME.length)) { suffix =>
         @defining(c.getValue.asInstanceOf[Map[String, String]]) { cValue =>
         @if(cValue.size == 1) {
-            private static final @{importedNames.get("pattern")} @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix} =
+            private static final @{importedNames.get("pattern")} @{BindingMappingBase.MEMBER_PATTERN_LIST}@{suffix} =
                 @{importedNames.get("pattern")}.compile("@{escapeJava(cValue.keySet.head)}");
-            private static final @{importedNames.get("string")} @{BindingMapping.MEMBER_REGEX_LIST}@{suffix} = "@{escapeJava(cValue.values.head)}";
+            private static final @{importedNames.get("string")} @{BindingMappingBase.MEMBER_REGEX_LIST}@{suffix} = "@{escapeJava(cValue.values.head)}";
         } else {
-            private static final @{importedNames.get("pattern")}[] @{BindingMapping.MEMBER_PATTERN_LIST}@{suffix} =
+            private static final @{importedNames.get("pattern")}[] @{BindingMappingBase.MEMBER_PATTERN_LIST}@{suffix} =
                 @{importedNames.get("codeHelpers")}.compilePatterns(@{importedNames.get("immutableList")}.of(
                     @{(cValue.keySet map {escapeJava}).mkString("\"", "\", \"", "\"")}));
-            private static final @{importedNames.get("string")}[] @{BindingMapping.MEMBER_REGEX_LIST}@{suffix} = {
+            private static final @{importedNames.get("string")}[] @{BindingMappingBase.MEMBER_REGEX_LIST}@{suffix} = {
                 @{(cValue.keySet map {escapeJava}).mkString("\"", "\", \"", "\"")}
             };
         }}}}

@@ -6,16 +6,15 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *@
 
-@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MODEL_BINDING_PROVIDER_CLASS_NAME
-@import org.opendaylight.mdsal.binding.javav2.util.BindingMapping.MODULE_INFO_CLASS_NAME
+@import org.opendaylight.mdsal.binding.common.BindingMappingBase
 
 @(packageName: String, yangModelBindingProviderName: String, yangModuleInfoName: String)
 package @{packageName};
 
-public final class @{MODEL_BINDING_PROVIDER_CLASS_NAME} implements @{yangModelBindingProviderName} {
+public final class @{BindingMappingBase.MODEL_BINDING_PROVIDER_CLASS_NAME} implements @{yangModelBindingProviderName} {
 
     @@Override
     public @{yangModuleInfoName} getModuleInfo() {
-        return @{MODULE_INFO_CLASS_NAME}.getInstance();
+        return @{BindingMappingBase.MODULE_INFO_CLASS_NAME}.getInstance();
     }
 }
