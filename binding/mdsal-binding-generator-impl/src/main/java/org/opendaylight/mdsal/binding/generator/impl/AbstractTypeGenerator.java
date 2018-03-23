@@ -41,11 +41,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.common.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
@@ -222,7 +222,7 @@ abstract class AbstractTypeGenerator {
      * Converts all extended type definitions of module to the list of
      * <code>Type</code> objects.
      *
-     * @param module
+     * @param context
      *            module from which is obtained set of type definitions
      * @throws IllegalArgumentException
      *             <ul>
@@ -324,7 +324,7 @@ abstract class AbstractTypeGenerator {
      * Converts all <b>augmentation</b> of the module to the list
      * <code>Type</code> objects.
      *
-     * @param module
+     * @param context
      *            module from which is obtained list of all augmentation objects
      *            to iterate over them
      * @throws IllegalArgumentException
@@ -374,7 +374,7 @@ abstract class AbstractTypeGenerator {
     /**
      * Create GeneratedTypeBuilder object from module argument.
      *
-     * @param module
+     * @param context
      *            Module object from which builder will be created
      * @return <code>GeneratedTypeBuilder</code> which is internal
      *         representation of the module
@@ -396,7 +396,7 @@ abstract class AbstractTypeGenerator {
      * to the list of <code>Type</code> objects. In addition are to containers
      * and lists which belong to input or output also part of returning list.
      *
-     * @param module
+     * @param context
      *            module from which is obtained set of all rpc objects to
      *            iterate over them
      * @throws IllegalArgumentException
@@ -482,7 +482,7 @@ abstract class AbstractTypeGenerator {
      * <code>Type</code> objects. In addition are to this list added containers
      * and lists which are part of this notification.
      *
-     * @param module
+     * @param context
      *            module from which is obtained set of all notification objects
      *            to iterate over them
      * @throws IllegalArgumentException
@@ -532,12 +532,9 @@ abstract class AbstractTypeGenerator {
      * Converts all <b>identities</b> of the module to the list of
      * <code>Type</code> objects.
      *
-     * @param module
+     * @param context
      *            module from which is obtained set of all identity objects to
      *            iterate over them
-     * @param schemaContext
-     *            schema context only used as input parameter for method
-     *            {@link BindingGeneratorImpl#identityToGenType}
      *
      */
     private void allIdentitiesToGenTypes(final ModuleContext context) {
@@ -558,10 +555,8 @@ abstract class AbstractTypeGenerator {
      * class {@link org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode
      * BaseIdentity} is added
      *
-     * @param module
-     *            current module
-     * @param basePackageName
-     *            string contains the module package name
+     * @param context
+     *            current module context
      * @param identity
      *            IdentitySchemaNode which contains data about identity
      */
@@ -608,7 +603,7 @@ abstract class AbstractTypeGenerator {
      * saved at first positions. For every grouping the record is added to map
      * {@link ModuleContext#groupings allGroupings}
      *
-     * @param module
+     * @param moduleContext
      *            current module
      * @param groupings
      *            collection of groupings from which types will be generated
@@ -641,7 +636,7 @@ abstract class AbstractTypeGenerator {
      *            builder
      * @param typeBuilder
      *            GeneratedTypeBuilder to which will be enum builder assigned
-     * @param module
+     * @param moduleContext
      *            Module in which type should be generated
      * @return enumeration builder which contains data from
      *         <code>enumTypeDef</code>
@@ -661,7 +656,7 @@ abstract class AbstractTypeGenerator {
     /**
      * Generates type builder for <code>module</code>.
      *
-     * @param module
+     * @param moduleContext
      *            Module which is source of package name for generated type
      *            builder
      * @param postfix
@@ -696,7 +691,7 @@ abstract class AbstractTypeGenerator {
      * @param augSchema
      *            AugmentationSchema which is contains data about augmentation
      *            (target path, childs...)
-     * @param module
+     * @param moduleContext
      *            current module
      * @throws IllegalArgumentException
      *             <ul>
@@ -944,7 +939,7 @@ abstract class AbstractTypeGenerator {
      * The subnodes aren't mapped to the methods if they are part of grouping or
      * augment (in this case are already part of them).
      *
-     * @param module
+     * @param moduleContext
      *            current module
      * @param parent
      *            generated type builder which represents any node. The subnodes
@@ -976,7 +971,7 @@ abstract class AbstractTypeGenerator {
      * Adds the methods to <code>typeBuilder</code> what represents subnodes of
      * node for which <code>typeBuilder</code> was created.
      *
-     * @param module
+     * @param moduleContext
      *            current module
      * @param typeBuilder
      *            generated type builder which represents any node. The subnodes
@@ -1017,7 +1012,7 @@ abstract class AbstractTypeGenerator {
      *            added as a method.
      * @param childOf
      *            parent type
-     * @param module
+     * @param moduleContext
      *            current module
      */
     private void addSchemaNodeToBuilderAsMethod(final ModuleContext context, final DataSchemaNode node,
@@ -1157,7 +1152,7 @@ abstract class AbstractTypeGenerator {
      * Generates list of generated types for all the cases of a choice which are
      * added to the choice through the augment.
      *
-     * @param module
+     * @param moduleContext
      *            current module
      * @param basePackageName
      *            string contains name of package to which augment belongs. If
@@ -1273,7 +1268,7 @@ abstract class AbstractTypeGenerator {
      * @param leaf
      *            leaf schema node which is mapped as getter method which is
      *            added to <code>typeBuilder</code>
-     * @param module
+     * @param moduleContext
      *            Module in which type was defined
      * @return boolean value
      *         <ul>
@@ -1483,7 +1478,7 @@ abstract class AbstractTypeGenerator {
      * @param node
      *            leaf list schema node which is added to
      *            <code>typeBuilder</code> as getter method
-     * @param module module
+     * @param moduleContext module
      * @return boolean value
      *         <ul>
      *         <li>true - if <code>node</code>, <code>typeBuilder</code>,
@@ -1791,7 +1786,7 @@ abstract class AbstractTypeGenerator {
      *            generated TO builder for the list keys
      * @param listKeys
      *            list of string which contains names of the list keys
-     * @param module
+     * @param moduleContext
      *            current module
      * @throws IllegalArgumentException
      *             <ul>

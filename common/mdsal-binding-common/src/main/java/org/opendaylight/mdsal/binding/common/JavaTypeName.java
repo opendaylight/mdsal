@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.mdsal.binding.model.api;
+package org.opendaylight.mdsal.binding.common;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
@@ -201,7 +201,7 @@ public abstract class JavaTypeName implements Identifier, Immutable {
      * @throws NullPointerException if any of the arguments is null
      * @throws IllegalArgumentException if any of the arguments is empty
      */
-    public static JavaTypeName create(final String packageName, final String simpleName) {
+    public static JavaTypeName create(String packageName, String simpleName) {
         return new TopLevel(packageName, simpleName);
     }
 
@@ -213,7 +213,7 @@ public abstract class JavaTypeName implements Identifier, Immutable {
      * @throws IllegalArgumentException if the simpleName is empty
      * @throws UnsupportedOperationException if this type name does not support nested type
      */
-    public abstract boolean canCreateEnclosed(final String simpleName);
+    public abstract boolean canCreateEnclosed(String simpleName);
 
     /**
      * Create a TypeName for a class immediately enclosed by this class.
