@@ -36,6 +36,7 @@
       <module>artifacts</module>
       <module>features</module>
       <module>mdsal-common-api</module>
+      <module>mdsal-binding-common</module>
     </modules>
 
   <!--
