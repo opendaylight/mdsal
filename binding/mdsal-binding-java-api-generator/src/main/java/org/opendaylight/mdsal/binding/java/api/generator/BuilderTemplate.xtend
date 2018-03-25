@@ -88,7 +88,7 @@ class BuilderTemplate extends BaseTemplate {
      * @throws IllegalArgumentException if <code>genType</code> equals <code>null</code>
      */
     new(GeneratedType genType) {
-        super(genType)
+        super(JavaImportTracker.forBuilderOf(genType), genType)
         this.properties = propertiesFromMethods(createMethods)
         addImport(Builder)
     }
