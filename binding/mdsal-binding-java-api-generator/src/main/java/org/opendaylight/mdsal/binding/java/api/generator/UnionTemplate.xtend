@@ -28,6 +28,18 @@ class UnionTemplate extends ClassTemplate {
      *
      * @param genType generated transfer object which will be transformed to JAVA class source code
      */
+    new(JavaImportTracker importTracker, GeneratedTransferObject genType) {
+        super(importTracker, genType)
+        if (isBaseEncodingImportRequired) {
+            addImport(BaseEncoding)
+        }
+    }
+
+    /**
+     * Creates instance of this class with concrete <code>genType</code>.
+     *
+     * @param genType generated transfer object which will be transformed to JAVA class source code
+     */
     new(GeneratedTransferObject genType) {
         super(genType)
         if (isBaseEncodingImportRequired) {
