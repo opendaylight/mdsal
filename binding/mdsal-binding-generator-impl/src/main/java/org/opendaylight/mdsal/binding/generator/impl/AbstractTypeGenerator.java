@@ -30,11 +30,9 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1572,28 +1570,11 @@ abstract class AbstractTypeGenerator {
 
     private GeneratedTOBuilder createUnionBuilder(final GeneratedTOBuilder genTOBuilder,
             final GeneratedTypeBuilder typeBuilder) {
-        final StringBuilder sb = new StringBuilder();
-
         // Append enclosing path hierarchy without dots
-        // TODO: JavaTypeName could be giving us a Stream<String> or similar, but there is no sense in generalizing
-        //       unless there is another caller.
-        Optional<JavaTypeName> outerClass = genTOBuilder.getIdentifier().immediatelyEnclosingClass();
-        if (outerClass.isPresent()) {
-            final Deque<String> enclosingPath = new ArrayDeque<>();
-            do {
-                final JavaTypeName outerName = outerClass.get();
-                enclosingPath.push(outerName.simpleName());
-                outerClass = outerName.immediatelyEnclosingClass();
-            } while (outerClass.isPresent());
-
-            while (!enclosingPath.isEmpty()) {
-                sb.append(enclosingPath.pop());
-            }
-        }
-
-        sb.append(genTOBuilder.getName()).append("Builder");
+        final StringBuilder sb = new StringBuilder();
+        genTOBuilder.getIdentifier().localNameComponents().forEach(sb::append);
         final GeneratedTOBuilder unionBuilder = typeProvider.newGeneratedTOBuilder(
-            JavaTypeName.create(typeBuilder.getPackageName(), sb.toString()));
+            JavaTypeName.create(typeBuilder.getPackageName(), sb.append("Builder").toString()));
         unionBuilder.setIsUnionBuilder(true);
         return unionBuilder;
     }
