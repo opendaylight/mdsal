@@ -93,6 +93,30 @@
       "revId": "e540b7cf6f2dcdf88c8dc6ba85d6b331752d3f0c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c6f67d27_621e4710",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1794,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-25T22:40:35Z",
+      "side": 1,
+      "message": "The JDT ones are type annotations, but for a return type it does not matter much.  More for consistency, I personally would love to see us just use JDTs everywhere, but we already have the javax one in many other places, so... doesn\u0027t really matter; I don\u0027t particularly mind this used here.",
+      "parentUuid": "80d4c640_8d2de252",
+      "range": {
+        "startLine": 1794,
+        "startChar": 36,
+        "endLine": 1794,
+        "endChar": 66
+      },
+      "revId": "e540b7cf6f2dcdf88c8dc6ba85d6b331752d3f0c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
