@@ -26,6 +26,16 @@ class EnumTemplate extends BaseTemplate {
      *
      * @param enums enumeration which will be transformed to JAVA source code
      */
+    new(JavaImportTracker importTracker, Enumeration enums) {
+        super(importTracker, enums as GeneratedType)
+        this.enums = enums
+    }
+
+    /**
+     * Constructs instance of this class with concrete <code>enums</code>.
+     *
+     * @param enums enumeration which will be transformed to JAVA source code
+     */
     new(Enumeration enums) {
         super(enums as GeneratedType)
         this.enums = enums
