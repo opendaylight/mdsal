@@ -11,6 +11,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -55,6 +58,16 @@ public abstract class JavaTypeName implements Identifier, Immutable {
         public JavaTypeName createEnclosed(final String simpleName) {
             throw new UnsupportedOperationException("Primitive type " + simpleName() + " cannot enclose type "
                     + simpleName);
+        }
+
+        @Override
+        public String localName() {
+            return simpleName();
+        }
+
+        @Override
+        public List<String> localNameComponents() {
+            return ImmutableList.of(simpleName());
         }
 
         @Override
@@ -126,6 +139,18 @@ public abstract class JavaTypeName implements Identifier, Immutable {
         }
 
         @Override
+        public String localName() {
+            return simpleName();
+        }
+
+        @Override
+        public List<String> localNameComponents() {
+            final List<String> ret = new ArrayList<>();
+            ret.add(simpleName());
+            return ret;
+        }
+
+        @Override
         StringBuilder appendClass(final StringBuilder sb) {
             return sb.append(packageName).append('.').append(simpleName());
         }
@@ -164,6 +189,18 @@ public abstract class JavaTypeName implements Identifier, Immutable {
         @Override
         public boolean canCreateEnclosed(final String simpleName) {
             return super.canCreateEnclosed(simpleName) && immediatelyEnclosingClass.canCreateEnclosed(simpleName);
+        }
+
+        @Override
+        public String localName() {
+            return immediatelyEnclosingClass.localName() + "." + simpleName();
+        }
+
+        @Override
+        public List<String> localNameComponents() {
+            final List<String> ret = immediatelyEnclosingClass.localNameComponents();
+            ret.add(simpleName());
+            return ret;
         }
     }
 
@@ -261,6 +298,20 @@ public abstract class JavaTypeName implements Identifier, Immutable {
      * @return Enclosing class TypeName.
      */
     public abstract Optional<JavaTypeName> immediatelyEnclosingClass();
+
+    /**
+     * Return the package-local name by which this type can be referenced by classes living in the same package.
+     *
+     * @return Local name.
+     */
+    public abstract String localName();
+
+    /**
+     * Return broken-down package-local name components.
+     *
+     * @return List of package-local components.
+     */
+    public abstract List<String> localNameComponents();
 
     @Override
     public final int hashCode() {
