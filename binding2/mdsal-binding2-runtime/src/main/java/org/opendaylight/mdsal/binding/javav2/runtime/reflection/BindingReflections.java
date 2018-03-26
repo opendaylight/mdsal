@@ -61,9 +61,9 @@ public final class BindingReflections {
     private static final String OPERATION_ACTION_OUTPUT_SUFFIX = "Output";
     private static final String MODULE_INFO_CLASS_NAME = "$YangModuleInfoImpl";
     private static final String PACKAGE_PREFIX = "org.opendaylight.mdsal.gen.javav2";
+    //TODO: Adds a pattern that supports semantic version.
     private static final String ROOT_PACKAGE_PATTERN_STRING =
             "(org.opendaylight.mdsal.gen.javav2.[a-z0-9_\\.]*\\.rev[0-9][0-9][0-1][0-9][0-3][0-9])";
-
     private static final Pattern ROOT_PACKAGE_PATTERN = Pattern.compile(ROOT_PACKAGE_PATTERN_STRING);
 
     private static final LoadingCache<Class<?>, Optional<QName>> CLASS_TO_QNAME = CacheBuilder.newBuilder().weakKeys()
