@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.opendaylight.yangtools.concepts.SemVer;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
 
@@ -72,7 +73,8 @@ public abstract class BindingMappingBase {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    protected static String getRootPackageName(final QNameModule module, final String packagePrefix) {
+    protected static String getRawRootPackageName(final QNameModule module, final Optional<SemVer> semVer,
+            final String packagePrefix) {
         checkArgument(module != null, "Module must not be null");
         checkArgument(module.getRevision() != null, "Revision must not be null");
         checkArgument(module.getNamespace() != null, "Namespace must not be null");
@@ -111,26 +113,23 @@ public abstract class BindingMappingBase {
             packageNameBuilder.append('.');
         }
 
-        //TODO: per yangtools dev, semantic version not used yet
-//        final SemVer semVer = module.getSemanticVersion();
-//        if (semVer != null) {
-//            packageNameBuilder.append(semVer.toString());
-//        } else {
-//            packageNameBuilder.append("rev");
-//            packageNameBuilder.append(PACKAGE_DATE_FORMAT.get().format(module.getRevision()));
-//        }
-
-        final Optional<Revision> optRev = module.getRevision();
-        if (optRev.isPresent()) {
-            // Revision is in format 2017-10-26, we want the output to be 171026, which is a matter of picking the
-            // right characters.
-            final String rev = optRev.get().toString();
-            checkArgument(rev.length() == 10, "Unsupported revision %s", rev);
-            packageNameBuilder.append("rev");
-            packageNameBuilder.append(rev.substring(2, 4)).append(rev.substring(5, 7)).append(rev.substring(8));
+        if (semVer.isPresent()) {
+            // Modules will increment major revision number where backwards incompatible
+            // changes to the model are made, so we should put major version into package name.
+            packageNameBuilder.append("semver").append(semVer.get().getMajor());
         } else {
-            // No-revision packages are special
-            packageNameBuilder.append("norev");
+            final Optional<Revision> optRev = module.getRevision();
+            if (optRev.isPresent()) {
+                // Revision is in format 2017-10-26, we want the output to be 171026, which is a matter of picking the
+                // right characters.
+                final String rev = optRev.get().toString();
+                checkArgument(rev.length() == 10, "Unsupported revision %s", rev);
+                packageNameBuilder.append("rev");
+                packageNameBuilder.append(rev.substring(2, 4)).append(rev.substring(5, 7)).append(rev.substring(8));
+            } else {
+                // No-revision packages are special
+                packageNameBuilder.append("norev");
+            }
         }
         return packageNameBuilder.toString();
     }

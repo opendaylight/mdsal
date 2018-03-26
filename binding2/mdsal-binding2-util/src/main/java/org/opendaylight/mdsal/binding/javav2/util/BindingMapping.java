@@ -28,6 +28,6 @@ public final class BindingMapping extends BindingMappingBase {
     }
 
     public static String getRootPackageName(final Module module) {
-        return getRootPackageName(module.getQNameModule(), PACKAGE_PREFIX);
+        return getRawRootPackageName(module.getQNameModule(), module.getSemanticVersion(), PACKAGE_PREFIX);
     }
 }
