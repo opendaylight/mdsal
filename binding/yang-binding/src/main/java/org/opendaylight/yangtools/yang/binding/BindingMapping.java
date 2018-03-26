@@ -15,6 +15,7 @@ import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import org.opendaylight.mdsal.binding.common.BindingMappingBase;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -35,7 +36,7 @@ public final class BindingMapping extends BindingMappingBase {
     }
 
     public static String getRootPackageName(final QNameModule module) {
-        return normalizePackageName(getRootPackageName(module, BindingMapping.PACKAGE_PREFIX));
+        return normalizePackageName(getRawRootPackageName(module, Optional.empty(), BindingMapping.PACKAGE_PREFIX));
     }
 
     public static String normalizePackageName(final String packageName) {
