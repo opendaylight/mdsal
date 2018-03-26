@@ -160,6 +160,7 @@ public class RpcActionGenHelperTest {
         when(module.getQNameModule()).thenReturn(rpcQName.getModule());
         when(module.getDescription()).thenReturn(java.util.Optional.empty());
         when(module.getReference()).thenReturn(java.util.Optional.empty());
+        when(module.getSemanticVersion()).thenReturn(java.util.Optional.empty());
         final Set<RpcDefinition> rpcs = new HashSet<>();
         final RpcDefinition rpcDefinition = mock(RpcDefinition.class);
         when(rpcDefinition.getDescription()).thenReturn(java.util.Optional.empty());
@@ -223,6 +224,7 @@ public class RpcActionGenHelperTest {
         when(module.getQNameModule()).thenReturn(actionQName.getModule());
         when(module.getDescription()).thenReturn(java.util.Optional.empty());
         when(module.getReference()).thenReturn(java.util.Optional.empty());
+        when(module.getSemanticVersion()).thenReturn(java.util.Optional.empty());
 
         final Collection<DataSchemaNode> childNodes = new ArrayList<>();
         final T actionNodeContainer = mock(clazz);
