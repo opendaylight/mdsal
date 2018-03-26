@@ -520,7 +520,7 @@ abstract class AbstractTypeGenerator {
 
                 addComment(listenerInterface.addMethod("on" + notificationInterface.getName())
                     .setAccessModifier(AccessModifier.PUBLIC).addParameter(notificationInterface, "notification")
-                    .setReturnType(Types.VOID), notification);
+                    .setReturnType(Types.primitiveVoidType()), notification);
             }
         }
 

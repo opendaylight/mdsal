@@ -56,6 +56,8 @@ public final class Types {
     public static final ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
     public static final ConcreteType CHAR_ARRAY = typeForClass(char[].class);
 
+    private static final ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
+
     /**
      * It is not desirable to create instance of this class
      */
@@ -63,15 +65,21 @@ public final class Types {
     }
 
     /**
-     * Creates the instance of type
-     * {@link org.opendaylight.mdsal.binding.model.api.ConcreteType
-     * ConcreteType} which represents JAVA <code>void</code> type.
+     * Returns an instance of {@link ConcreteType} which represents JAVA <code>java.lang.Void</code> type.
      *
-     * @return <code>ConcreteType</code> instance which represents JAVA
-     *         <code>void</code>
+     * @return <code>ConcreteType</code> instance which represents JAVA <code>java.lang.Void</code>
      */
     public static ConcreteType voidType() {
         return VOID;
+    }
+
+    /**
+     * Returns an instance of {@link ConcreteType} which represents JAVA <code>void</code> type.
+     *
+     * @return <code>ConcreteType</code> instance which represents JAVA <code>void</code>
+     */
+    public static ConcreteType primitiveVoidType() {
+        return PRIMITIVE_VOID;
     }
 
     /**
