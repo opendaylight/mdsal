@@ -361,6 +361,20 @@ public final class JavaIdentifierNormalizer {
         return normalizeClassIdentifier(basePackageName, convertedClassName, convertedClassName, 1, context);
     }
 
+    static String normalizeClassIdentifier(final String packageName, final String className) {
+        if (packageName.isEmpty() && PRIMITIVE_TYPES.contains(className)) {
+            return className;
+        }
+
+        for (final String reservedPath : SPECIAL_RESERVED_PATHS) {
+            if (packageName.startsWith(reservedPath)) {
+                return className;
+            }
+        }
+
+        return normalizeSpecificIdentifier(className, JavaIdentifier.CLASS);
+    }
+
     /**
      * Find and convert non Java chars in identifiers of generated transfer objects, initially
      * derived from corresponding YANG.
@@ -448,6 +462,7 @@ public final class JavaIdentifierNormalizer {
             return actualClassName;
         }
     }
+
 
     /**
      * Fix cases of converted identifiers by Java type

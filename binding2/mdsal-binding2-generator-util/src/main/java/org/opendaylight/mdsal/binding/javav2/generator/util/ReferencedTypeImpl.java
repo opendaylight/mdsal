@@ -50,6 +50,13 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
             boolean isTypeNormalized, ModuleContext context) {
         super(packageName, name, isPkgNormalized, isTypeNormalized, context);
     }
+
+
+
+    public ReferencedTypeImpl(String packageName, String name, boolean isPkgNormalized,
+                              boolean isTypeNormalized) {
+        super(packageName, name, isPkgNormalized, isTypeNormalized);
+    }
     /**
      * Creates instance of this class with Generated type
      *
