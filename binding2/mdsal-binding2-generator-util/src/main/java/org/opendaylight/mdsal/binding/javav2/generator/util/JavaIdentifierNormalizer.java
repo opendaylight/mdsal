@@ -361,6 +361,23 @@ public final class JavaIdentifierNormalizer {
         return normalizeClassIdentifier(basePackageName, convertedClassName, convertedClassName, 1, context);
     }
 
+    //FIXME: It's better not to pass 'ModuleContext' just aiming to use a map to resolve confilctions
+    //of types that should be fixed by MDSAL-271, here just eliminates the argument to make the change
+    // be workable first, once this resolution is accept, we could reimplement it.
+    static String normalizeClassIdentifier(final String packageName, final String className) {
+        if (packageName.isEmpty() && PRIMITIVE_TYPES.contains(className)) {
+            return className;
+        }
+
+        for (final String reservedPath : SPECIAL_RESERVED_PATHS) {
+            if (packageName.startsWith(reservedPath)) {
+                return className;
+            }
+        }
+
+        return normalizeSpecificIdentifier(className, JavaIdentifier.CLASS);
+    }
+
     /**
      * Find and convert non Java chars in identifiers of generated transfer objects, initially
      * derived from corresponding YANG.
@@ -448,6 +465,7 @@ public final class JavaIdentifierNormalizer {
             return actualClassName;
         }
     }
+
 
     /**
      * Fix cases of converted identifiers by Java type
