@@ -90,11 +90,11 @@ public class BindingRuntimeContext implements Immutable {
     private static final char DOT = '.';
     private final ClassLoadingStrategy strategy;
     private final SchemaContext schemaContext;
-    private final Multimap<Type, AugmentationSchemaNode> augmentationToSchemas = HashMultimap.create();
-    private final BiMap<SchemaPath,Type> targetToAugmentation = HashBiMap.create();
-    private final BiMap<Type, Object> typeToDefiningSchema = HashBiMap.create();
-    private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
-    private final Map<QName, Type> identities = new HashMap<>();
+    private Multimap<Type, AugmentationSchemaNode> augmentationToSchemas = HashMultimap.create();
+    private BiMap<SchemaPath,Type> targetToAugmentation = HashBiMap.create();
+    private BiMap<Type, Object> typeToDefiningSchema = HashBiMap.create();
+    private Multimap<Type, Type> choiceToCases = HashMultimap.create();
+    private Map<QName, Type> identities = new HashMap<>();
 
     private final LoadingCache<QName, Class<?>> identityClasses = CacheBuilder.newBuilder().weakValues().build(
         new CacheLoader<QName, Class<?>>() {
@@ -114,26 +114,12 @@ public class BindingRuntimeContext implements Immutable {
         this.strategy = strategy;
         this.schemaContext = schema;
 
-        final BindingGeneratorImpl generator = new BindingGeneratorImpl(false);
-        final Map<Module, ModuleContext> modules = generator.getModuleContexts(this.schemaContext);
-
-        for (final ModuleContext ctx : modules.values()) {
-            ctx.getTypeToAugmentations().entries().forEach(
-                entry ->  this.augmentationToSchemas.put(referencedType(entry.getKey()), entry.getValue()));
-
-            ctx.getTargetToAugmentation().entrySet().forEach(
-                entry ->  this.targetToAugmentation.put(entry.getKey(), referencedType(entry.getValue())));
-
-            ctx.getTypeToSchema().entrySet().forEach(
-                entry ->  this.typeToDefiningSchema.put(referencedType(entry.getKey()), entry.getValue()));
-
-            ctx.getChoiceToCases().entries().forEach(
-                entry -> this.choiceToCases.put(referencedType(entry.getKey()),
-                    referencedType(entry.getValue())));
-
-            ctx.getIdentities().entrySet().forEach(
-                entry -> this.identities.put(entry.getKey(), referencedType(entry.getValue())));
-        }
+        final RuntimeBindingGenerator generator = new RuntimeBindingGenerator(this.schemaContext);
+        this.augmentationToSchemas = generator.getAugmentationToSchemas();
+        this.targetToAugmentation = generator.getTargetToAugmentation();
+        this.typeToDefiningSchema = generator.getTypeToSchemas();
+        this.choiceToCases = generator.getChoiceToCases();
+        this.identities = generator.getIdentities();
     }
 
     /**

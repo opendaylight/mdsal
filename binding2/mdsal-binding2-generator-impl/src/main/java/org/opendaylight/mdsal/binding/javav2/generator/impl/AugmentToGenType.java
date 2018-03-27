@@ -166,7 +166,7 @@ final class AugmentToGenType {
      *             if set of module augmentations is null
      */
     @VisibleForTesting
-    static List<AugmentationSchemaNode> resolveAugmentations(final Module module,
+    public static List<AugmentationSchemaNode> resolveAugmentations(final Module module,
             final SchemaContext schemaContext) {
         Preconditions.checkArgument(module != null, "Module reference cannot be NULL.");
         Preconditions.checkState(module.getAugmentations() != null, "Augmentations Set cannot be NULL.");
