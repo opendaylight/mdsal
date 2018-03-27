@@ -15,7 +15,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import java.lang.reflect.Method;
@@ -29,8 +28,6 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.binding.javav2.generator.api.ClassLoadingStrategy;
-import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
-import org.opendaylight.mdsal.binding.javav2.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.util.ReferencedTypeImpl;
@@ -56,7 +53,6 @@ import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
-import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -94,12 +90,11 @@ public class BindingRuntimeContext implements Immutable {
     private static final char DOT = '.';
     private final ClassLoadingStrategy strategy;
     private final SchemaContext schemaContext;
-    private final Multimap<Type, AugmentationSchemaNode> augmentationToSchemas = HashMultimap.create();
-    private final BiMap<SchemaPath,Type> targetToAugmentation = HashBiMap.create();
-    private final BiMap<Type, WithStatus> typeToDefiningSchema = HashBiMap.create();
-    private final Multimap<Type, Type> choiceToCases = HashMultimap.create();
-    private final Map<QName, Type> identities = new HashMap<>();
-
+    private final Multimap<Type, AugmentationSchemaNode> augmentationToSchemas;
+    private final BiMap<SchemaPath,Type> targetToAugmentation;
+    private final BiMap<Type, WithStatus> typeToDefiningSchema;
+    private final Multimap<Type, Type> choiceToCases;
+    private final Map<QName, Type> identities;
     private final LoadingCache<QName, Class<?>> identityClasses = CacheBuilder.newBuilder().weakValues().build(
         new CacheLoader<QName, Class<?>>() {
             @Override
@@ -118,26 +113,12 @@ public class BindingRuntimeContext implements Immutable {
         this.strategy = strategy;
         this.schemaContext = schema;
 
-        final BindingGeneratorImpl generator = new BindingGeneratorImpl(false);
-        final Map<Module, ModuleContext> modules = generator.getModuleContexts(this.schemaContext);
-
-        for (final ModuleContext ctx : modules.values()) {
-            ctx.getTypeToAugmentations().entries().forEach(
-                entry ->  this.augmentationToSchemas.put(referencedType(entry.getKey()), entry.getValue()));
-
-            ctx.getTargetToAugmentation().entrySet().forEach(
-                entry ->  this.targetToAugmentation.put(entry.getKey(), referencedType(entry.getValue())));
-
-            ctx.getTypeToSchema().entrySet().forEach(
-                entry ->  this.typeToDefiningSchema.put(referencedType(entry.getKey()), entry.getValue()));
-
-            ctx.getChoiceToCases().entries().forEach(
-                entry -> this.choiceToCases.put(referencedType(entry.getKey()),
-                    referencedType(entry.getValue())));
-
-            ctx.getIdentities().entrySet().forEach(
-                entry -> this.identities.put(entry.getKey(), referencedType(entry.getValue())));
-        }
+        final RuntimeBindingGenerator generator = new RuntimeBindingGenerator(this.schemaContext);
+        this.augmentationToSchemas = generator.getAugmentationToSchemas();
+        this.targetToAugmentation = generator.getTargetToAugmentation();
+        this.typeToDefiningSchema = generator.getTypeToSchemas();
+        this.choiceToCases = generator.getChoiceToCases();
+        this.identities = generator.getIdentities();
     }
 
     /**
