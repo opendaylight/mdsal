@@ -76,6 +76,26 @@ public abstract class AbstractBaseType implements Type {
         }
     }
 
+    //FIXME: It's better not to pass 'ModuleContext' just aiming to use a map to resolve confilctions
+    //of types that should be fixed by MDSAL-271, here just eliminates the argument to make the change
+    // be workable first, once this resolution is accept, we could reimplement it.
+    protected AbstractBaseType(final String pkName, final String name, final boolean isPkNameNormalized,
+            final boolean isTypeNormalized) {
+        Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
+        Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");
+        if (isPkNameNormalized) {
+            this.packageName = pkName;
+        } else {
+            this.packageName = JavaIdentifierNormalizer.normalizeFullPackageName(pkName);
+        }
+
+        if (isTypeNormalized) {
+            this.name = name;
+        } else {
+            this.name = JavaIdentifierNormalizer.normalizeClassIdentifier(pkName, name);
+        }
+    }
+
     protected AbstractBaseType(final String pkName, final String name) {
         Preconditions.checkNotNull(pkName, "Package Name for Generated Type cannot be null!");
         Preconditions.checkNotNull(name, "Name of Generated Type cannot be null!");

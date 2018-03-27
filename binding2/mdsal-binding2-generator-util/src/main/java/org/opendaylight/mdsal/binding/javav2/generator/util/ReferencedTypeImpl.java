@@ -50,6 +50,14 @@ public final class ReferencedTypeImpl extends AbstractBaseType {
             boolean isTypeNormalized, ModuleContext context) {
         super(packageName, name, isPkgNormalized, isTypeNormalized, context);
     }
+
+    //FIXME: It's better not to pass 'ModuleContext' just aiming to use a map to resolve confilctions
+    //of types that should be fixed by MDSAL-271, here just eliminates the argument to make the change
+    // be workable first, once this resolution is accept, we could reimplement it.
+    public ReferencedTypeImpl(String packageName, String name, boolean isPkgNormalized,
+            boolean isTypeNormalized) {
+        super(packageName, name, isPkgNormalized, isTypeNormalized);
+    }
     /**
      * Creates instance of this class with Generated type
      *
