@@ -7,14 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.codec.gen.impl;
 
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.binding.DataObjectSerializerImplementation;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 
 abstract class AugmentableDataNodeContainerEmitterSource extends DataNodeContainerSerializerSource {
     private static final String AUGMENTABLE_SERIALIZER = "AUGMENTABLE_SERIALIZER";
 
-    AugmentableDataNodeContainerEmitterSource(final AbstractStreamWriterGenerator generator, final GeneratedType type,
+    AugmentableDataNodeContainerEmitterSource(final AbstractStreamWriterGenerator generator, final Type type,
             final DataNodeContainer node) {
         super(generator, type, node);
         /*

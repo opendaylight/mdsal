@@ -104,7 +104,7 @@ public class BindingRuntimeContext implements Immutable {
     private BindingRuntimeContext(final ClassLoadingStrategy strategy, final SchemaContext schema) {
         this.strategy = strategy;
         this.schemaContext = schema;
-        runtimeTypes = new BindingGeneratorImpl().generateTypeMapping(schema);
+        runtimeTypes = new RuntimeBindingGenerator(schemaContext).getRuntimeTypes();
     }
 
     /**
@@ -248,7 +248,7 @@ public class BindingRuntimeContext implements Immutable {
         return found;
     }
 
-    private static Type referencedType(final Class<?> type) {
+    public static Type referencedType(final Class<?> type) {
         return new ReferencedTypeImpl(JavaTypeName.create(type));
     }
 
@@ -263,45 +263,23 @@ public class BindingRuntimeContext implements Immutable {
      *     {@link DataSchemaNode}, {@link AugmentationSchemaNode} or {@link TypeDefinition}
      *     which was used to generate supplied class.
      */
-    public Entry<GeneratedType, WithStatus> getTypeWithSchema(final Class<?> type) {
+    public Entry<Type, WithStatus> getTypeWithSchema(final Class<?> type) {
         return getTypeWithSchema(referencedType(type));
     }
 
-    private Entry<GeneratedType, WithStatus> getTypeWithSchema(final Type referencedType) {
+    private Entry<Type, WithStatus> getTypeWithSchema(final Type referencedType) {
         final WithStatus schema = runtimeTypes.findSchema(referencedType).orElseThrow(
             () -> new NullPointerException("Failed to find schema for type " + referencedType));
         final Type definedType = runtimeTypes.findType(schema).orElseThrow(
             () -> new NullPointerException("Failed to find defined type for " + referencedType + " schema " + schema));
 
-        if (definedType instanceof GeneratedTypeBuilder) {
-            return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).build(), schema);
-        }
-        checkArgument(definedType instanceof GeneratedType, "Type %s is not a GeneratedType", referencedType);
-        return new SimpleEntry<>((GeneratedType) definedType, schema);
+        return new SimpleEntry<>(definedType, schema);
     }
 
+    @Deprecated
     public ImmutableMap<Type, Entry<Type, Type>> getChoiceCaseChildren(final DataNodeContainer schema) {
-        final Map<Type, Entry<Type, Type>> childToCase = new HashMap<>();
-
-        for (final ChoiceSchemaNode choice :  Iterables.filter(schema.getChildNodes(), ChoiceSchemaNode.class)) {
-            final ChoiceSchemaNode originalChoice = getOriginalSchema(choice);
-            final java.util.Optional<Type> optType = runtimeTypes.findType(originalChoice);
-            checkState(optType.isPresent(), "Failed to find generated type for choice %s", originalChoice);
-            final Type choiceType = optType.get();
-
-            for (Type caze : runtimeTypes.findCases(referencedType(choiceType))) {
-                final Entry<Type,Type> caseIdentifier = new SimpleEntry<>(choiceType, caze);
-                final HashSet<Type> caseChildren = new HashSet<>();
-                if (caze instanceof GeneratedTypeBuilder) {
-                    caze = ((GeneratedTypeBuilder) caze).build();
-                }
-                collectAllContainerTypes((GeneratedType) caze, caseChildren);
-                for (final Type caseChild : caseChildren) {
-                    childToCase.put(caseChild, caseIdentifier);
-                }
-            }
-        }
-        return ImmutableMap.copyOf(childToCase);
+        //TODO: No one calls and reimplements this if needed or eliminates it evently.
+        return ImmutableMap.of();
     }
 
     /**
@@ -311,7 +289,7 @@ public class BindingRuntimeContext implements Immutable {
      * @return mapped enum constants from yang with their corresponding values in generated binding classes
      */
     public BiMap<String, String> getEnumMapping(final Class<?> enumClass) {
-        final Entry<GeneratedType, WithStatus> typeWithSchema = getTypeWithSchema(enumClass);
+        final Entry<Type, WithStatus> typeWithSchema = getTypeWithSchema(enumClass);
         return getEnumMapping(typeWithSchema);
     }
 
@@ -325,7 +303,7 @@ public class BindingRuntimeContext implements Immutable {
         return getEnumMapping(findTypeWithSchema(enumClassName));
     }
 
-    private Entry<GeneratedType, WithStatus> findTypeWithSchema(final String className) {
+    private Entry<Type, WithStatus> findTypeWithSchema(final String className) {
         // All we have is a straight FQCN, which we need to split into a hierarchical JavaTypeName. This involves
         // some amount of guesswork -- we do that by peeling components at the dot and trying out, e.g. given
         // "foo.bar.baz.Foo.Bar.Baz" we end up trying:
@@ -361,17 +339,15 @@ public class BindingRuntimeContext implements Immutable {
             }
 
             final Type definedType = optDefinedType.get();
-            if (definedType instanceof GeneratedTypeBuilder) {
-                return new SimpleEntry<>(((GeneratedTypeBuilder) definedType).build(), schema);
-            }
-            checkArgument(definedType instanceof GeneratedType, "Type %s is not a GeneratedType", className);
-            return new SimpleEntry<>((GeneratedType) definedType, schema);
+
+            checkArgument(definedType instanceof ReferencedTypeImpl, "Type %s is not a Type", className);
+            return new SimpleEntry<>(definedType, schema);
         }
 
         throw new IllegalArgumentException("Failed to find type for " + className);
     }
 
-    private static BiMap<String, String> getEnumMapping(final Entry<GeneratedType, WithStatus> typeWithSchema) {
+    private static BiMap<String, String> getEnumMapping(final Entry<Type, WithStatus> typeWithSchema) {
         final TypeDefinition<?> typeDef = (TypeDefinition<?>) typeWithSchema.getValue();
 
         Preconditions.checkArgument(typeDef instanceof EnumTypeDefinition);
@@ -445,29 +421,17 @@ public class BindingRuntimeContext implements Immutable {
         return new AugmentationIdentifier(childNames);
     }
 
-    private static Type referencedType(final Type type) {
+    public static Type referencedType(final Type type) {
         if (type instanceof ReferencedTypeImpl) {
             return type;
         }
         return new ReferencedTypeImpl(type.getIdentifier());
     }
 
+    @Deprecated
     private static Set<Type> collectAllContainerTypes(final GeneratedType type, final Set<Type> collection) {
-        for (final MethodSignature definition : type.getMethodDefinitions()) {
-            Type childType = definition.getReturnType();
-            if (childType instanceof ParameterizedType) {
-                childType = ((ParameterizedType) childType).getActualTypeArguments()[0];
-            }
-            if (childType instanceof GeneratedType || childType instanceof GeneratedTypeBuilder) {
-                collection.add(referencedType(childType));
-            }
-        }
-        for (final Type parent : type.getImplements()) {
-            if (parent instanceof GeneratedType) {
-                collectAllContainerTypes((GeneratedType) parent, collection);
-            }
-        }
-        return collection;
+        //TODO: No one calls and reimplements this if needed or eliminates it evently.
+        return new HashSet<>();
     }
 
     private static <T extends SchemaNode> T getOriginalSchema(final T choice) {

@@ -8,14 +8,14 @@
 
 package org.opendaylight.mdsal.binding.dom.codec.gen.impl;
 
+import static org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext.referencedType;
+
 import com.google.common.base.Preconditions;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.List;
 import org.opendaylight.mdsal.binding.dom.codec.util.ChoiceDispatchSerializer;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
-import org.opendaylight.mdsal.binding.model.api.MethodSignature;
-import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.util.ClassLoaderUtils;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.BindingSerializer;
 import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
@@ -45,9 +45,9 @@ abstract class DataNodeContainerSerializerSource extends DataObjectSerializerSou
     private static final String CHOICE_PREFIX = "CHOICE_";
 
     protected final DataNodeContainer schemaNode;
-    private final GeneratedType dtoType;
+    private final Type dtoType;
 
-    DataNodeContainerSerializerSource(final AbstractGenerator generator, final GeneratedType type,
+    DataNodeContainerSerializerSource(final AbstractGenerator generator, final Type type,
             final DataNodeContainer node) {
         super(generator);
         this.dtoType = Preconditions.checkNotNull(type);
@@ -96,18 +96,6 @@ abstract class DataNodeContainerSerializerSource extends DataObjectSerializerSou
         // No-op
     }
 
-    private static Map<String, Type> collectAllProperties(final GeneratedType type, final Map<String, Type> hashMap) {
-        for (final MethodSignature definition : type.getMethodDefinitions()) {
-            hashMap.put(definition.getName(), definition.getReturnType());
-        }
-        for (final Type parent : type.getImplements()) {
-            if (parent instanceof GeneratedType) {
-                collectAllProperties((GeneratedType) parent, hashMap);
-            }
-        }
-        return hashMap;
-    }
-
     private static String getGetterName(final DataSchemaNode node) {
         final TypeDefinition<?> type;
         if (node instanceof TypedDataSchemaNode) {
@@ -129,33 +117,51 @@ abstract class DataNodeContainerSerializerSource extends DataObjectSerializerSou
     }
 
     private void emitBody(final StringBuilder sb) {
-        final Map<String, Type> getterToType = collectAllProperties(dtoType, new HashMap<String, Type>());
+        final Class<?> typeClazz;
+        try {
+            typeClazz = ClassLoaderUtils.loadClass(
+                DataNodeContainerSerializerSource.class.getClassLoader(), dtoType.getFullyQualifiedName());
+        } catch (final ClassNotFoundException exception) {
+            throw new IllegalArgumentException("Can not find class" + dtoType, exception);
+        }
+
         for (final DataSchemaNode schemaChild : schemaNode.getChildNodes()) {
             if (!schemaChild.isAugmenting()) {
                 final String getter = getGetterName(schemaChild);
-                final Type childType = getterToType.get(getter);
-                if (childType == null) {
+                final Type returnType;
+                final Type childType;
+                try {
+                    final Method getterMethod = typeClazz.getMethod(getter);
+                    //Use 'getName' string to take nested classes into consideration.
+                    returnType = referencedType(getterMethod.getReturnType());
+                    if (List.class.isAssignableFrom(getterMethod.getReturnType())) {
+                        childType = referencedType((Class<? extends DataObject>) ClassLoaderUtils
+                            .getFirstGenericParameter(getterMethod.getGenericReturnType()));
+                    } else {
+                        childType = returnType;
+                    }
+                } catch (NoSuchMethodException exp) {
                     // FIXME AnyXml nodes are ignored, since their type cannot be found in generated bindnig
                     // Bug-706 https://bugs.opendaylight.org/show_bug.cgi?id=706
                     if (schemaChild instanceof AnyXmlSchemaNode) {
                         LOG.warn("Node {} will be ignored. AnyXml is not yet supported from binding aware code."
-                                + "Binding Independent code can be used to serialize anyXml nodes.",
-                                schemaChild.getPath());
+                            + "Binding Independent code can be used to serialize anyXml nodes.", schemaChild.getPath());
                         continue;
                     }
 
                     throw new IllegalStateException(
-                        String.format("Unable to find type for child node %s. Expected child nodes: %s",
-                            schemaChild.getPath(), getterToType));
+                        String.format("Unable to find getter method %s for child node %s",
+                            getter, schemaChild.getPath()), exp);
                 }
-                emitChild(sb, getter, childType, schemaChild);
+
+                emitChild(sb, getter, returnType, childType, schemaChild);
             }
         }
     }
 
-    private void emitChild(final StringBuilder sb, final String getterName, final Type childType,
+    private void emitChild(final StringBuilder sb, final String getterName, final Type returnType, final Type childType,
             final DataSchemaNode schemaChild) {
-        sb.append(statement(assign(childType, getterName, cast(childType, invoke(INPUT, getterName)))));
+        sb.append(statement(assign(returnType, getterName, cast(returnType, invoke(INPUT, getterName)))));
 
         sb.append("if (").append(getterName).append(" != null) {\n");
         emitChildInner(sb, getterName, childType, schemaChild);
@@ -176,13 +182,11 @@ abstract class DataNodeContainerSerializerSource extends DataObjectSerializerSou
                 startEvent = startLeafSet(child.getQName().getLocalName(),invoke(getterName, "size"));
             }
             sb.append(statement(startEvent));
-            final Type valueType = ((ParameterizedType) childType).getActualTypeArguments()[0];
-            sb.append(forEach(getterName, valueType, statement(leafSetEntryNode(CURRENT))));
+            sb.append(forEach(getterName, childType, statement(leafSetEntryNode(CURRENT))));
             sb.append(statement(endNode()));
         } else if (child instanceof ListSchemaNode) {
-            final Type valueType = ((ParameterizedType) childType).getActualTypeArguments()[0];
             final ListSchemaNode casted = (ListSchemaNode) child;
-            emitList(sb, getterName, valueType, casted);
+            emitList(sb, getterName, childType, casted);
         } else if (child instanceof ContainerSchemaNode) {
             sb.append(tryToUseCacheElse(getterName,statement(staticInvokeEmitter(childType, getterName))));
         } else if (child instanceof ChoiceSchemaNode) {

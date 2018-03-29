@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.dom.codec.gen.impl;
 import org.opendaylight.mdsal.binding.dom.codec.util.AugmentableDispatchSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.util.ChoiceDispatchSerializer;
 import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataObjectSerializerImplementation;
@@ -53,7 +53,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected DataObjectSerializerSource generateContainerSerializer(final GeneratedType type,
+    protected DataObjectSerializerSource generateContainerSerializer(final Type type,
             final ContainerSchemaNode node) {
         return new AugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
@@ -64,7 +64,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected DataObjectSerializerSource generateNotificationSerializer(final GeneratedType type,
+    protected DataObjectSerializerSource generateNotificationSerializer(final Type type,
             final NotificationDefinition node) {
         return new AugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
@@ -75,7 +75,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected DataObjectSerializerSource generateCaseSerializer(final GeneratedType type, final CaseSchemaNode node) {
+    protected DataObjectSerializerSource generateCaseSerializer(final Type type, final CaseSchemaNode node) {
         return new AugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
             public CharSequence emitStartEvent() {
@@ -85,7 +85,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected DataObjectSerializerSource generateUnkeyedListEntrySerializer(final GeneratedType type,
+    protected DataObjectSerializerSource generateUnkeyedListEntrySerializer(final Type type,
             final ListSchemaNode node) {
         return new AugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
@@ -96,7 +96,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected DataObjectSerializerSource generateSerializer(final GeneratedType type,
+    protected DataObjectSerializerSource generateSerializer(final Type type,
             final AugmentationSchemaNode schema) {
         return new DataNodeContainerSerializerSource(this, type, schema) {
             @Override
@@ -107,7 +107,7 @@ public final class StreamWriterGenerator extends AbstractStreamWriterGenerator {
     }
 
     @Override
-    protected DataObjectSerializerSource generateMapEntrySerializer(final GeneratedType type,
+    protected DataObjectSerializerSource generateMapEntrySerializer(final Type type,
             final ListSchemaNode node) {
         return new AugmentableDataNodeContainerEmitterSource(this, type, node) {
             @Override
