@@ -117,6 +117,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>ietf-ip-2014-06-16</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ietf-type-util</artifactId>
         </dependency>
         <dependency>
