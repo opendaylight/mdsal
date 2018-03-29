@@ -26,7 +26,7 @@ import org.opendaylight.mdsal.binding.dom.codec.gen.spi.StaticConstantDefinition
 import org.opendaylight.mdsal.binding.dom.codec.util.AugmentableDispatchSerializer;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
-import org.opendaylight.mdsal.binding.model.api.GeneratedType;
+import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
@@ -174,8 +174,8 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
     private DataObjectSerializerSource generateEmitterSource(final Class<?> type, final String serializerName) {
         Types.typeForClass(type);
         javassist.appendClassLoaderIfMissing(type.getClassLoader());
-        final Entry<GeneratedType, WithStatus> typeWithSchema = context.getTypeWithSchema(type);
-        final GeneratedType generatedType = typeWithSchema.getKey();
+        final Entry<Type, WithStatus> typeWithSchema = context.getTypeWithSchema(type);
+        final Type generatedType = typeWithSchema.getKey();
         final WithStatus schema = typeWithSchema.getValue();
 
         final DataObjectSerializerSource source;
@@ -250,7 +250,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * @param node Schema of container
      * @return Source for container node writer
      */
-    protected abstract DataObjectSerializerSource generateContainerSerializer(GeneratedType type,
+    protected abstract DataObjectSerializerSource generateContainerSerializer(Type type,
             ContainerSchemaNode node);
 
     /**
@@ -264,7 +264,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * @param node Schema of case
      * @return Source for case node writer
      */
-    protected abstract DataObjectSerializerSource generateCaseSerializer(GeneratedType type, CaseSchemaNode node);
+    protected abstract DataObjectSerializerSource generateCaseSerializer(Type type, CaseSchemaNode node);
 
     /**
      * Generates serializer source for supplied list node, which will read supplied binding type and invoke proper
@@ -277,7 +277,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * @param node Schema of list
      * @return Source for list node writer
      */
-    protected abstract DataObjectSerializerSource generateMapEntrySerializer(GeneratedType type, ListSchemaNode node);
+    protected abstract DataObjectSerializerSource generateMapEntrySerializer(Type type, ListSchemaNode node);
 
     /**
      * Generates serializer source for supplied list node, which will read supplied binding type and invoke proper
@@ -290,7 +290,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * @param node Schema of list
      * @return Source for list node writer
      */
-    protected abstract DataObjectSerializerSource generateUnkeyedListEntrySerializer(GeneratedType type,
+    protected abstract DataObjectSerializerSource generateUnkeyedListEntrySerializer(Type type,
             ListSchemaNode node);
 
     /**
@@ -304,7 +304,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * @param schema Schema of augmentation
      * @return Source for augmentation node writer
      */
-    protected abstract DataObjectSerializerSource generateSerializer(GeneratedType type, AugmentationSchemaNode schema);
+    protected abstract DataObjectSerializerSource generateSerializer(Type type, AugmentationSchemaNode schema);
 
     /**
      * Generates serializer source for notification node, which will read supplied binding type and invoke proper
@@ -317,6 +317,6 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
      * @param node Schema of notification
      * @return Source for notification node writer
      */
-    protected abstract DataObjectSerializerSource generateNotificationSerializer(GeneratedType type,
+    protected abstract DataObjectSerializerSource generateNotificationSerializer(Type type,
             NotificationDefinition node);
 }
