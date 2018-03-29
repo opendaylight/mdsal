@@ -45,6 +45,7 @@
         <module>ietf-inet-types-2013-07-15</module>
 
         <module>ietf-type-util</module>
+        <module>ietf-ip-2014-06-16</module>
     </modules>
 
   <!--
