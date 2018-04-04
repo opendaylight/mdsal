@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.javav2.dom.codec.impl;
 
-import static org.opendaylight.yangtools.yang.binding.BindingMapping.toFirstUpper;
+import static org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer.normalizeSpecificIdentifier;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
@@ -19,10 +19,8 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.UnionValueOp
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.context.base.BindingCodecContext;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.value.ReflectionBasedCodec;
 import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifier;
-import org.opendaylight.mdsal.binding.javav2.generator.util.JavaIdentifierNormalizer;
 import org.opendaylight.mdsal.binding.javav2.generator.yang.types.BaseYangTypes;
 import org.opendaylight.yangtools.concepts.Codec;
-import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.RevisionAwareXPath;
@@ -66,8 +64,8 @@ public final class UnionTypeCodec extends ReflectionBasedCodec {
                 if (subtype instanceof LeafrefTypeDefinition) {
                     addLeafrefValueCodec(unionCls, unionType, bindingCodecContext, values, subtype);
                 } else {
-                    final Method valueGetter = unionCls.getMethod("get" + JavaIdentifierNormalizer
-                            .normalizeSpecificIdentifier(subtype.getQName().getLocalName(), JavaIdentifier.CLASS));
+                    final Method valueGetter = unionCls.getMethod("get"
+                        + normalizeSpecificIdentifier(subtype.getQName().getLocalName(), JavaIdentifier.CLASS));
                     final Class<?> valueType = valueGetter.getReturnType();
                     final Codec<Object, Object> valueCodec = bindingCodecContext.getCodec(valueType, subtype);
                     values.add(new UnionValueOptionContext(unionCls, valueType, valueGetter, valueCodec));
@@ -105,19 +103,19 @@ public final class UnionTypeCodec extends ReflectionBasedCodec {
         } else {
             dataNode = SchemaContextUtil.findDataSchemaNodeForRelativeXPath(schemaContext, module, unionType, xpath);
         }
-        final String className = BindingMapping.getClassName(unionCls.getSimpleName());
+
         final LeafSchemaNode typeNode = (LeafSchemaNode) dataNode;
 
         // prepare name of type form return type of referenced leaf
-        final String typeName = BindingMapping.getClassName(BaseYangTypes.BASE_YANG_TYPES_PROVIDER
-            .javaTypeForSchemaDefinitionType(typeNode.getType(), typeNode, null).getName());
+        final String typeName = BaseYangTypes.BASE_YANG_TYPES_PROVIDER
+            .javaTypeForSchemaDefinitionType(typeNode.getType(), typeNode, null).getName();
 
         // get method via reflection from generated code according to
         // get_TypeName_Value method
-        final String method = toFirstUpper(JavaIdentifierNormalizer.normalizeSpecificIdentifier(
-            new StringBuilder(typeName).append(className).append("Value").toString(), JavaIdentifier.METHOD));
-        final Method valueGetterParent = unionCls
-            .getMethod(new StringBuilder("get").append(method).toString());
+        final String method = normalizeSpecificIdentifier(new StringBuilder("get").append("_")
+            .append(typeName).append(unionCls.getSimpleName()).append("Value").toString(),
+            JavaIdentifier.METHOD);
+        final Method valueGetterParent = unionCls.getMethod(method);
         final Class<?> returnType = valueGetterParent.getReturnType();
 
         // prepare codec of union subtype according to return type of referenced
