@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: JakubToth <jakub.toth@pantheon.tech>
+Code-Review+2: Jie Han <han.jie@zte.com.cn>
+Submitted-by: Jie Han <han.jie@zte.com.cn>
+Submitted-at: Wed, 04 Apr 2018 06:42:22 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/70154
+Project: mdsal
+Branch: refs/heads/stable/oxygen
