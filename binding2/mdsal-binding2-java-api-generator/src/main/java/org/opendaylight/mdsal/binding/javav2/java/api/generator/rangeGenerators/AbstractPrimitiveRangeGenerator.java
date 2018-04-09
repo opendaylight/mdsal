@@ -47,6 +47,28 @@ abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
         return minValue.compareTo(minToEnforce) < 0;
     }
 
+    /**
+     * Format a value into a Java-compilable 'greater equal' compare expression.
+     * The method would be overrided by {@link AbstractUnsignedIntegerRangeGenerator}.
+     *
+     * @param value Number value
+     * @return Java language compare string representation
+     */
+    @Nonnull protected String gtExpression(T value) {
+        return "value >= " + format(value);
+    }
+
+    /**
+     * Format a value into a Java-compilable 'less equal' compare expression.
+     * The method would be overrided by {@link AbstractUnsignedIntegerRangeGenerator}.
+     *
+     * @param value Number value
+     * @return Java language compare string representation
+     */
+    @Nonnull protected String ltExpression(T value) {
+        return "value <= " + format(value);
+    }
+
     private Collection<String> createExpressions(final RangeConstraint<?> constraint) {
         final Set<? extends Range<? extends Number>> constraints = constraint.getAllowedRanges().asRanges();
         final Collection<String> ret = new ArrayList<>(constraints.size());
@@ -65,13 +87,13 @@ abstract class AbstractPrimitiveRangeGenerator<T extends Number & Comparable<T>>
 
             final StringBuilder sb = new StringBuilder();
             if (needMin) {
-                sb.append("value >= ").append(format(min));
+                sb.append(gtExpression(min));
             }
             if (needMax) {
                 if (needMin) {
                     sb.append(" && ");
                 }
-                sb.append("value <= ").append(format(max));
+                sb.append(ltExpression(max));
             }
 
             ret.add(sb.toString());
