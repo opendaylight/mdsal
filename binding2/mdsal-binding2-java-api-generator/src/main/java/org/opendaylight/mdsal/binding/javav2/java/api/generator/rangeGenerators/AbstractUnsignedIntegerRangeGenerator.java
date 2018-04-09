@@ -9,14 +9,28 @@ package org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators
 
 import javax.annotation.Nonnull;
 
-abstract class AbstractSubIntegerRangeGenerator<T extends Number & Comparable<T>> extends AbstractPrimitiveRangeGenerator<T> {
-    protected AbstractSubIntegerRangeGenerator(final Class<T> typeClass, final String primitiveName, final T minValue, final T maxValue) {
+abstract class AbstractUnsignedIntegerRangeGenerator<T extends Number & Comparable<T>>
+        extends AbstractPrimitiveRangeGenerator<T> {
+    protected AbstractUnsignedIntegerRangeGenerator(final Class<T> typeClass, final String primitiveName,
+            final T minValue, final T maxValue) {
         super(typeClass, primitiveName, minValue, maxValue);
     }
 
     @Override
     protected final String format(final T value) {
         // Make sure the number constant is cast to the corresponding primitive type
-        return '(' + getPrimitiveName() + ')' + value;
+        return getPrimitiveName() + ".valueOf(" + value + ")";
+    }
+
+    @Nonnull
+    @Override
+    protected String gtExpression(T value) {
+        return "value.compareTo(" + format(value) + ") >= 0";
+    }
+
+    @Nonnull
+    @Override
+    protected String ltExpression(T value) {
+        return "value.compareTo(" + format(value) + ") <= 0";
     }
 }
