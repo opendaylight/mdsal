@@ -42,6 +42,10 @@ import org.opendaylight.mdsal.binding.javav2.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.javav2.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.common.Uint64;
+import org.opendaylight.yangtools.yang.common.Uint8;
 
 public class ClassRenderer extends BaseRenderer {
     protected final GeneratedTransferObject genTO;
@@ -139,6 +143,10 @@ public class ClassRenderer extends BaseRenderer {
         getImportedNames().put("short", importedName(Short.class));
         getImportedNames().put("integer", importedName(Integer.class));
         getImportedNames().put("long", importedName(Long.class));
+        getImportedNames().put("uint8", importedName(Uint8.class));
+        getImportedNames().put("uint16", importedName(Uint16.class));
+        getImportedNames().put("uint32", importedName(Uint32.class));
+        getImportedNames().put("uint64", importedName(Uint64.class));
         getImportedNames().put("stringBuilder", importedName(StringBuilder.class));
         getImportedNames().put("list", importedName(List.class));
         getImportedNames().put("lists", importedName(Lists.class));

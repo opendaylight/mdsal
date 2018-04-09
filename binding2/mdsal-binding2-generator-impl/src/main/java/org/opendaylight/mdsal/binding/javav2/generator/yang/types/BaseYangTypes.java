@@ -23,6 +23,10 @@ import org.opendaylight.mdsal.binding.javav2.model.api.Type;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.util.BindingMapping;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.common.Uint64;
+import org.opendaylight.yangtools.yang.common.Uint8;
 import org.opendaylight.yangtools.yang.model.api.LeafSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
@@ -94,23 +98,22 @@ public final class BaseYangTypes {
     /**
      * <code>Type</code> representation of <code>uint8</code> YANG type
      */
-    public static final Type UINT8_TYPE = Types.typeForClass(Short.class, singleRangeRestrictions((short)0, (short)255));
+    public static final Type UINT8_TYPE = Types.typeForClass(Uint8.class);
 
     /**
      * <code>Type</code> representation of <code>uint16</code> YANG type
      */
-    public static final Type UINT16_TYPE = Types.typeForClass(Integer.class, singleRangeRestrictions(0, 65535));
+    public static final Type UINT16_TYPE = Types.typeForClass(Uint16.class);
 
     /**
      * <code>Type</code> representation of <code>uint32</code> YANG type
      */
-    public static final Type UINT32_TYPE = Types.typeForClass(Long.class, singleRangeRestrictions(0L, 4294967295L));
+    public static final Type UINT32_TYPE = Types.typeForClass(Uint32.class);
 
     /**
      * <code>Type</code> representation of <code>uint64</code> YANG type
      */
-    public static final Type UINT64_TYPE = Types.typeForClass(BigInteger.class,
-            singleRangeRestrictions(BigInteger.ZERO, new BigInteger("18446744073709551615")));
+    public static final Type UINT64_TYPE = Types.typeForClass(Uint64.class);
 
     /**
      * <code>Type</code> representation of <code>union</code> YANG type
@@ -188,13 +191,13 @@ public final class BaseYangTypes {
                 case "string":
                     return Types.typeForClass(String.class, restrictions, context);
                 case "uint8":
-                    return Types.typeForClass(Short.class, restrictions, context);
+                    return Types.typeForClass(Uint8.class, restrictions, context);
                 case "uint16":
-                    return Types.typeForClass(Integer.class, restrictions, context);
+                    return Types.typeForClass(Uint16.class, restrictions, context);
                 case "uint32":
-                    return Types.typeForClass(Long.class, restrictions, context);
+                    return Types.typeForClass(Uint32.class, restrictions, context);
                 case "uint64":
-                    return Types.typeForClass(BigInteger.class, restrictions, context);
+                    return Types.typeForClass(Uint64.class, restrictions, context);
                 case "union" :
                     return UNION_TYPE;
                 default:
@@ -219,6 +222,7 @@ public final class BaseYangTypes {
         }
     };
 
+    @Deprecated
     private static <T extends Number & Comparable<T>> Restrictions singleRangeRestrictions(final T min, final T max) {
         return Types.getDefaultRestrictions(min, max);
     }
