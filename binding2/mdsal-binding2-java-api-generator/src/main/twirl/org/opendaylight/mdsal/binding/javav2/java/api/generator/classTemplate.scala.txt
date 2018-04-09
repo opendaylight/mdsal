@@ -186,6 +186,18 @@ class @{genType.getName}
                     case "java.lang.Long" => {
                         return new @{genTo.getName}(@{importedNames.get("long")}.valueOf(defaultValue));
                     }
+                    case "org.opendaylight.yangtools.yang.common.Uint8" => {
+                        return new @{genTo.getName}(@{importedNames.get("uint8")}.valueOf(defaultValue));
+                    }
+                    case "org.opendaylight.yangtools.yang.common.Uint16" => {
+                        return new @{genTo.getName}(@{importedNames.get("uint16")}.valueOf(defaultValue));
+                    }
+                    case "org.opendaylight.yangtools.yang.common.Uint32" => {
+                        return new @{genTo.getName}(@{importedNames.get("uint32")}.valueOf(defaultValue));
+                    }
+                    case "org.opendaylight.yangtools.yang.common.Uint64" => {
+                        return new @{genTo.getName}(@{importedNames.get("uint64")}.valueOf(defaultValue));
+                    }
                     case _ => {
                         return new @{genTo.getName}(new @{allProperties.get(0).getReturnType.getName}(defaultValue));
                     }

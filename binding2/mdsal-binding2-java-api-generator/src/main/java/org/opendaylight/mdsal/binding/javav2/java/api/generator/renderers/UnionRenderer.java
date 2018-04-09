@@ -160,7 +160,8 @@ public class UnionRenderer extends ClassRenderer {
             //generated type int*, uint, decimal64 or enumeration*
         } else if (propertyReturnType.getFullyQualifiedName().startsWith("java.lang") ||
                 propertyReturnType instanceof Enumeration ||
-                propertyReturnType.getFullyQualifiedName().startsWith("java.math")) {
+                propertyReturnType.getFullyQualifiedName().startsWith("java.math") ||
+                propertyReturnType.getFullyQualifiedName().startsWith("org.opendaylight.yangtools.yang.common")) {
             sb.append(fieldName).append(".toString().toCharArray();");
 
         } else if (propertyReturnType instanceof GeneratedTransferObject) {

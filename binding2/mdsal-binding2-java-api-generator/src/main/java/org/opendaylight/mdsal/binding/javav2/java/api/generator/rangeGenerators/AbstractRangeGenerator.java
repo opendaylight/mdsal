@@ -32,6 +32,10 @@ public abstract class AbstractRangeGenerator<T extends Number & Comparable<T>> {
         addGenerator(b, new ShortRangeGenerator());
         addGenerator(b, new IntegerRangeGenerator());
         addGenerator(b, new LongRangeGenerator());
+        addGenerator(b, new Uint8RangeGenerator());
+        addGenerator(b, new Uint16RangeGenerator());
+        addGenerator(b, new Uint32RangeGenerator());
+        addGenerator(b, new Uint64RangeGenerator());
         addGenerator(b, new BigDecimalRangeGenerator());
         addGenerator(b, new BigIntegerRangeGenerator());
         GENERATORS = b.build();
