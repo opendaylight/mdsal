@@ -1288,6 +1288,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         final Restrictions r = BindingGeneratorUtil.getRestrictions(typedef);
         genTOBuilder.setRestrictions(r);
+        addStringRegExAsConstant(genTOBuilder, resolveRegExpressionsFromTypedef(typedef));
+
         if (typedef.getStatus() == Status.DEPRECATED) {
             genTOBuilder.addAnnotation("java.lang", "Deprecated");
         }
