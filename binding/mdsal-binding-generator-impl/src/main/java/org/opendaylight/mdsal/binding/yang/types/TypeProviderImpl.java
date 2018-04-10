@@ -1285,6 +1285,8 @@ public final class TypeProviderImpl implements TypeProvider {
         genTOBuilder.setTypedef(true);
         final Restrictions r = BindingGeneratorUtil.getRestrictions(typedef);
         genTOBuilder.setRestrictions(r);
+        addStringRegExAsConstant(genTOBuilder, resolveRegExpressionsFromTypedef(typedef));
+
         if (typedef.getStatus() == Status.DEPRECATED) {
             genTOBuilder.addAnnotation("", "Deprecated");
         }
