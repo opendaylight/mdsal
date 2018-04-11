@@ -19,10 +19,10 @@ public class HostBuilderTest {
 
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor constructor = HostBuilder.class.getDeclaredConstructor();
+        final Constructor<HostBuilder> constructor = HostBuilder.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
-        final HostBuilder newInstance = (HostBuilder) constructor.newInstance();
+        final HostBuilder newInstance = constructor.newInstance();
         assertNotNull(newInstance);
 
         testIpv4("1.1.1.1");
