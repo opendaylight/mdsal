@@ -19,10 +19,10 @@ public class IpAddressNoZoneBuilderTest {
 
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor constructor = IpAddressNoZoneBuilder.class.getDeclaredConstructor();
+        final Constructor<IpAddressNoZoneBuilder> constructor = IpAddressNoZoneBuilder.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
-        final IpAddressNoZoneBuilder newInstance = (IpAddressNoZoneBuilder) constructor.newInstance();
+        final IpAddressNoZoneBuilder newInstance = constructor.newInstance();
         assertNotNull(newInstance);
 
         testIpv4("1.1.1.1");
