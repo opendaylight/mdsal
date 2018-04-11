@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.RegEx;
 
-final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpClass, IpClass, IpClass> {
+final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpClass, IpClass, IpClass, IpClass,
+        IpClass, IpClass> {
 
     @RegEx
     private static final String IP_V4_REGEX = "^\\d+\\.\\d+\\.\\d+\\.\\d+$";
@@ -29,20 +30,30 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
     }
 
     @Override
+    protected IpClass ipv4AddressNoZone(final IpClass addr) {
+        return addr;
+    }
+
+    @Override
     @Nonnull
     protected IpClass ipv6Address(final IpClass addr) {
         return addr;
     }
 
     @Override
-    @Nonnull
-    protected IpClass ipv4Prefix(IpClass addr) {
+    protected IpClass ipv6AddressNoZone(final IpClass addr) {
         return addr;
     }
 
     @Override
     @Nonnull
-    protected IpClass ipv6Prefix(IpClass addr) {
+    protected IpClass ipv4Prefix(final IpClass addr) {
+        return addr;
+    }
+
+    @Override
+    @Nonnull
+    protected IpClass ipv6Prefix(final IpClass addr) {
         return addr;
     }
 
@@ -71,12 +82,12 @@ final class IpUtil extends AbstractIetfInetUtil<IpClass, IpClass, IpClass, IpCla
     }
 
     @Override
-    protected IpClass maybeIpv4Address(IpClass addr) {
+    protected IpClass maybeIpv4Address(final IpClass addr) {
         return IP_V4_PATTERN.matcher(addr.getValue()).matches() ? addr : null;
     }
 
     @Override
-    protected IpClass maybeIpv6Address(IpClass addr) {
+    protected IpClass maybeIpv6Address(final IpClass addr) {
         return addr.getValue().indexOf(':') != -1 ? addr : null;
     }
 }
