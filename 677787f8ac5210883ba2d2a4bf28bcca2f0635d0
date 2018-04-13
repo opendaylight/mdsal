@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0384b85d_2b756c5f",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/AbstractJavaGeneratedType.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-04-13T07:13:15Z",
+      "side": 1,
+      "message": "Should we collect all enclosed types recursively here?",
+      "range": {
+        "startLine": 61,
+        "startChar": 27,
+        "endLine": 62,
+        "endChar": 95
+      },
+      "revId": "677787f8ac5210883ba2d2a4bf28bcca2f0635d0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "398ce7fc_959f9523",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/AbstractJavaGeneratedType.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-04-13T07:13:15Z",
+      "side": 1,
+      "message": "...and also here, check with all enclosed types recursively, although\nbinding v1 can not support multi-level nested union class right now.",
+      "range": {
+        "startLine": 137,
+        "startChar": 55,
+        "endLine": 137,
+        "endChar": 92
+      },
+      "revId": "677787f8ac5210883ba2d2a4bf28bcca2f0635d0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
