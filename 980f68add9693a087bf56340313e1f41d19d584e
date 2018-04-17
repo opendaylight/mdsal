@@ -16,6 +16,24 @@
       "revId": "980f68add9693a087bf56340313e1f41d19d584e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e28b1664_818ed6d5",
+        "filename": "model/ietf/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-04-17T11:58:58Z",
+      "side": 1,
+      "message": "I think we should be consistent the other way around. The reasons for rfc-based naming are two:\n- it makes it clear this is a standard, published model\n- there are instances when a single RFC defines multiple models (for example ietf-{inet,yang}-types) -- mix-n-matching there is actually harmful\n\nGoing forward I would like to consolidate naming and rework packaging, so we have a feature-per-rfc.",
+      "parentUuid": "7b4f03e6_91ed4c6a",
+      "revId": "980f68add9693a087bf56340313e1f41d19d584e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
