@@ -46,6 +46,9 @@
 
         <module>ietf-type-util</module>
         <module>ietf-ip-2014-06-16</module>
+
+        <!-- RFC7895 YANG Module Library -->
+        <module>rfc7895</module>
     </modules>
 
   <!--
