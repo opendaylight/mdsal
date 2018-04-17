@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7b4f03e6_91ed4c6a",
+        "filename": "model/ietf/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-17T11:50:13Z",
+      "side": 1,
+      "message": "Should we be consistent with the rest of the modules and call it ietf-yang-library? Plus I don\u0027t think most folks tend to recognize/remember RFC numbers.",
+      "revId": "980f68add9693a087bf56340313e1f41d19d584e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
