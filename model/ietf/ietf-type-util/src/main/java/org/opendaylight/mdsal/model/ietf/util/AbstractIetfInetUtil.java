@@ -347,7 +347,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         return nozone6Factory.newInstance(addressStringV6(addr));
     }
 
-    @Nonnull public final A6 ipv6AddressFrom(@Nonnull final P6 prefix) {
+    @Nonnull public final A6NZ ipv6AddressFrom(@Nonnull final P6 prefix) {
         return prefixToAddress(nozone6Factory, ipv6PrefixString(prefix));
     }
 
