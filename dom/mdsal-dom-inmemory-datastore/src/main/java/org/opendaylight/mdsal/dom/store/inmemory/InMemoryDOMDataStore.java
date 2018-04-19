@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
  * classes such as {@link SnapshotBackedWriteTransaction}.
  * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} to implement {@link DOMStore}
  * contract.
- *
  */
 public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> implements DOMStore,
         Identifiable<String>, SchemaContextListener, AutoCloseable, DOMStoreTreeChangePublisher {
