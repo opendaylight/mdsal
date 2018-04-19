@@ -8,10 +8,15 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
+import org.opendaylight.mdsal.dom.api.xpath.DOMXPathCallback;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreReadWriteTransaction;
@@ -19,13 +24,18 @@ import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTransactionChain;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreTreeChangePublisher;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
+import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction;
+import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedTransactions;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype;
+import org.opendaylight.mdsal.dom.spi.store.XPathAwareDOMStore;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ExecutorServiceUtil;
+import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeConfiguration;
@@ -46,10 +56,9 @@ import org.slf4j.LoggerFactory;
  * classes such as {@link SnapshotBackedWriteTransaction}.
  * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedReadTransaction} to implement {@link DOMStore}
  * contract.
- *
  */
 public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> implements DOMStore,
-        Identifiable<String>, SchemaContextListener, AutoCloseable, DOMStoreTreeChangePublisher {
+        Identifiable<String>, SchemaContextListener, AutoCloseable, DOMStoreTreeChangePublisher, XPathAwareDOMStore {
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDOMDataStore.class);
 
     private final DataTree dataTree = new InMemoryDataTreeFactory().create(DataTreeConfiguration.DEFAULT_OPERATIONAL);
@@ -173,5 +182,37 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
     synchronized void commit(final DataTreeCandidate candidate) {
         dataTree.commit(candidate);
         changePublisher.publishChange(candidate);
+    }
+
+    @Override
+    public void evaluate(final DOMStoreReadTransaction transaction, final YangInstanceIdentifier path,
+            final String xpath, final BiMap<String, QNameModule> prefixMapping, final DOMXPathCallback callback,
+            final Executor callbackExecutor) {
+
+        final Optional<NormalizedNode<?, ?>> data = readData(transaction, path);
+        if (!data.isPresent()) {
+            callbackExecutor.execute(() -> callback.accept(Optional.empty(), null));
+            return;
+        }
+
+
+
+        // FIXME: Implement this
+
+    }
+
+    private static Optional<NormalizedNode<?, ?>> readData(final DOMStoreReadTransaction transaction,
+            final YangInstanceIdentifier path) {
+        try {
+            if (transaction instanceof SnapshotBackedReadTransaction) {
+                return transaction.read(path).get().toJavaUtil();
+            } else if (transaction instanceof SnapshotBackedReadWriteTransaction) {
+                return transaction.read(path).get().toJavaUtil();
+            } else {
+                throw new IllegalArgumentException("Unknown transaction " + transaction);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new IllegalStateException("Failed to read data", e);
+        }
     }
 }
