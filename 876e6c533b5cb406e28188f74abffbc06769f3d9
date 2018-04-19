@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "25eba21e_202ae797",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-04-19T15:37:49Z",
+      "side": 1,
+      "message": "Jie, shadowing reported for this method is a real problem, which requires refactoring -- it is quite obvious TypeProviderImpl is part of mutable state used by generation. These three arguments should not be passed in, but rather the fields in this class should be used.\n\nThat unfortunately requires an end-to-end cleanup of codepaths, so that these things are not passed around. That has the added benefit of making the code a lot simpler.",
+      "range": {
+        "startLine": 194,
+        "startChar": 44,
+        "endLine": 196,
+        "endChar": 56
+      },
+      "revId": "876e6c533b5cb406e28188f74abffbc06769f3d9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
