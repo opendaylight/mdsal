@@ -24,27 +24,24 @@ import org.opendaylight.yangtools.yang.binding.util.StringValueObjectFactory;
  * A set of utility methods to efficiently instantiate various ietf-inet-types DTOs.
  */
 @Beta
-public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ extends A6, P6, A, ANZ, P> {
-    protected static final int INET4_LENGTH = 4;
-    protected static final int INET6_LENGTH = 16;
-    private final StringValueObjectFactory<A4NZ> nozone4Factory;
+public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A, P> {
+    private static final int INET4_LENGTH = 4;
+    private static final int INET6_LENGTH = 16;
+    private final StringValueObjectFactory<A4> address4Factory;
     private final StringValueObjectFactory<P4> prefix4Factory;
-    private final StringValueObjectFactory<A6NZ> nozone6Factory;
+    private final StringValueObjectFactory<A6> address6Factory;
     private final StringValueObjectFactory<P6> prefix6Factory;
 
-    protected AbstractIetfInetUtil(final Class<A4NZ> nozone4Class, final Class<P4> prefix4Class,
-            final Class<A6NZ> nozone6Class, final Class<P6> prefix6Class) {
-        this.nozone4Factory = StringValueObjectFactory.create(nozone4Class, "0.0.0.0");
+    protected AbstractIetfInetUtil(final Class<A4> addr4Class, final Class<P4> prefix4Class,
+            final Class<A6> addr6Class, final Class<P6> prefix6Class) {
+        this.address4Factory = StringValueObjectFactory.create(addr4Class, "0.0.0.0");
         this.prefix4Factory = StringValueObjectFactory.create(prefix4Class, "0.0.0.0/0");
-        this.nozone6Factory = StringValueObjectFactory.create(nozone6Class, "::0");
+        this.address6Factory = StringValueObjectFactory.create(addr6Class, "::0");
         this.prefix6Factory = StringValueObjectFactory.create(prefix6Class, "::0/0");
     }
 
     @Nonnull protected abstract A ipv4Address(@Nonnull A4 addr);
     @Nonnull protected abstract A ipv6Address(@Nonnull A6 addr);
-    @Nonnull protected abstract ANZ ipv4AddressNoZone(@Nonnull A4NZ addr);
-    @Nonnull protected abstract ANZ ipv6AddressNoZone(@Nonnull A6NZ addr);
-
     @Nonnull protected abstract P ipv4Prefix(@Nonnull P4 addr);
     @Nonnull protected abstract P ipv6Prefix(@Nonnull P6 addr);
     @Nullable protected abstract A4 maybeIpv4Address(@Nonnull A addr);
@@ -73,42 +70,12 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         }
     }
 
-    /**
-     * Create an IpAddress by interpreting input bytes as an IPv4 or IPv6 address, based on array length.
-     *
-     * @param bytes 4-byte (IPv4) or 6-byte (IPv6) array
-     * @return A no-zone IpAddress object
-     * @throws IllegalArgumentException if bytes has length different from 4 or 6
-     * @throws NullPointerException if bytes is null
-     */
-    @Nonnull public final ANZ ipAddressNoZoneFor(@Nonnull final byte[] bytes) {
-        switch (bytes.length) {
-            case INET4_LENGTH:
-                return ipv4AddressNoZone(ipv4AddressFor(bytes));
-            case INET6_LENGTH:
-                return ipv6AddressNoZone(ipv6AddressFor(bytes));
-            default:
-                throw new IllegalArgumentException("Invalid array length " + bytes.length);
-        }
-    }
-
     @Nonnull public final A ipAddressFor(@Nonnull final InetAddress addr) {
         Preconditions.checkNotNull(addr, "Address must not be null");
         if (addr instanceof Inet4Address) {
             return ipv4Address(ipv4AddressFor(addr));
         } else if (addr instanceof Inet6Address) {
             return ipv6Address(ipv6AddressFor(addr));
-        } else {
-            throw new IllegalArgumentException("Unhandled address " + addr);
-        }
-    }
-
-    @Nonnull public final ANZ ipAddressNoZoneFor(@Nonnull final InetAddress addr) {
-        Preconditions.checkNotNull(addr, "Address must not be null");
-        if (addr instanceof Inet4Address) {
-            return ipv4AddressNoZone(ipv4AddressFor(addr));
-        } else if (addr instanceof Inet6Address) {
-            return ipv6AddressNoZone(ipv6AddressFor(addr));
         } else {
             throw new IllegalArgumentException("Unhandled address " + addr);
         }
@@ -126,6 +93,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      *         in range 0-32 or 0-128 respectively
      * @throws NullPointerException if bytes is null
      */
+
     @Nonnull public final P ipPrefixFor(@Nonnull final byte[] bytes, final int mask) {
         switch (bytes.length) {
             case INET4_LENGTH:
@@ -182,8 +150,8 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws IllegalArgumentException if bytes has length different from 4
      * @throws NullPointerException if bytes is null
      */
-    @Nonnull public final A4NZ ipv4AddressFor(@Nonnull final byte[] bytes) {
-        return nozone4Factory.newInstance(addressStringV4(bytes));
+    @Nonnull public final A4 ipv4AddressFor(@Nonnull final byte[] bytes) {
+        return address4Factory.newInstance(addressStringV4(bytes));
     }
 
     /**
@@ -194,14 +162,14 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws IllegalArgumentException if addr is not an {@link Inet4Address}
      * @throws NullPointerException if addr is null
      */
-    @Nonnull public final A4NZ ipv4AddressFor(@Nonnull final InetAddress addr) {
+    @Nonnull public final A4 ipv4AddressFor(@Nonnull final InetAddress addr) {
         Preconditions.checkNotNull(addr, "Address must not be null");
         Preconditions.checkArgument(addr instanceof Inet4Address, "Address has to be an Inet4Address");
-        return nozone4Factory.newInstance(addr.getHostAddress());
+        return address4Factory.newInstance(addr.getHostAddress());
     }
 
-    @Nonnull public final A4NZ ipv4AddressFrom(@Nonnull final P4 prefix) {
-        return prefixToAddress(nozone4Factory, ipv4PrefixString(prefix));
+    @Nonnull public final A4 ipv4AddressFrom(@Nonnull final P4 prefix) {
+        return prefixToAddress(address4Factory, ipv4PrefixString(prefix));
     }
 
     @Nonnull public final byte[] ipv4AddressBytes(@Nonnull final A4 addr) {
@@ -210,13 +178,9 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
          * the Ipv4Address pattern, which may include a zone index.
          */
         final String str = ipv4AddressString(addr);
-        final int percent = str.indexOf('%');
-        return ipv4AddressBytes(str, percent == -1 ? str.length() : percent);
-    }
-
-    protected static final byte[] ipv4AddressBytes(@Nonnull final String str, final int length) {
         final byte[] bytes = new byte[INET4_LENGTH];
-        Ipv4Utils.fillIpv4Bytes(bytes, 0, str, 0, length);
+        final int percent = str.indexOf('%');
+        Ipv4Utils.fillIpv4Bytes(bytes, 0, str, 0, percent == -1 ? str.length() : percent);
         return bytes;
     }
 
@@ -254,7 +218,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
             return prefix4Factory.getTemplate();
         }
 
-        return v4PrefixForShort(address, 0, mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1), mask);
+        return v4PrefixForShort(address, 0, (mask / Byte.SIZE) + ((mask % Byte.SIZE == 0) ? 0 : 1), mask);
     }
 
     @Nonnull public final P4 ipv4PrefixForShort(@Nonnull final byte[] array, final int startOffset, final int mask) {
@@ -263,7 +227,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
             return prefix4Factory.getTemplate();
         }
 
-        return v4PrefixForShort(array, startOffset, mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1), mask);
+        return v4PrefixForShort(array, startOffset, (mask / Byte.SIZE) + ((mask % Byte.SIZE == 0) ? 0 : 1), mask);
     }
 
     /**
@@ -307,8 +271,8 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         return prefix4Factory.newInstance(ipv4AddressString(addr) + '/' + mask);
     }
 
-    @Nonnull public final Entry<A4NZ, Integer> splitIpv4Prefix(@Nonnull final P4 prefix) {
-        return splitPrefix(nozone4Factory, ipv4PrefixString(prefix));
+    @Nonnull public final Entry<A4, Integer> splitIpv4Prefix(@Nonnull final P4 prefix) {
+        return splitPrefix(address4Factory, ipv4PrefixString(prefix));
     }
 
     @Nonnull public final byte[] ipv4PrefixToBytes(@Nonnull final P4 prefix) {
@@ -329,8 +293,8 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws IllegalArgumentException if bytes has length different from 16
      * @throws NullPointerException if bytes is null
      */
-    @Nonnull public final A6NZ ipv6AddressFor(@Nonnull final byte[] bytes) {
-        return nozone6Factory.newInstance(addressStringV6(bytes));
+    @Nonnull public final A6 ipv6AddressFor(@Nonnull final byte[] bytes) {
+        return address6Factory.newInstance(addressStringV6(bytes));
     }
 
     /**
@@ -341,28 +305,23 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
      * @throws IllegalArgumentException if addr is not an {@link Inet6Address}
      * @throws NullPointerException if addr is null
      */
-    @Nonnull public final A6NZ ipv6AddressFor(@Nonnull final InetAddress addr) {
+    @Nonnull public final A6 ipv6AddressFor(@Nonnull final InetAddress addr) {
         Preconditions.checkNotNull(addr, "Address must not be null");
         Preconditions.checkArgument(addr instanceof Inet6Address, "Address has to be an Inet6Address");
-        return nozone6Factory.newInstance(addressStringV6(addr));
+        return address6Factory.newInstance(addressStringV6(addr));
     }
 
-    @Nonnull public final A6NZ ipv6AddressFrom(@Nonnull final P6 prefix) {
-        return prefixToAddress(nozone6Factory, ipv6PrefixString(prefix));
+    @Nonnull public final A6 ipv6AddressFrom(@Nonnull final P6 prefix) {
+        return prefixToAddress(address6Factory, ipv6PrefixString(prefix));
     }
 
     @Nonnull public final byte[] ipv6AddressBytes(@Nonnull final A6 addr) {
         final String str = ipv6AddressString(addr);
-        final int percent = str.indexOf('%');
-        return ipv6AddressBytes(str, percent == -1 ? str.length() : percent);
-    }
-
-    protected static final byte[] ipv6AddressBytes(@Nonnull final String str, final int length) {
         final byte[] bytes = new byte[INET6_LENGTH];
-        Ipv6Utils.fillIpv6Bytes(bytes, str, length);
+        final int percent = str.indexOf('%');
+        Ipv6Utils.fillIpv6Bytes(bytes, str, percent == -1 ? str.length() : percent);
         return bytes;
     }
-
 
     /**
      * Create a /128 Ipv6Prefix by interpreting input bytes as an IPv6 address.
@@ -403,7 +362,7 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         }
 
         Preconditions.checkArgument(mask > 0 && mask <= 128, "Invalid mask %s", mask);
-        final int size = mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1);
+        final int size = (mask / Byte.SIZE) + ((mask % Byte.SIZE == 0) ? 0 : 1);
 
         // Until we can instantiate an IPv6 address for a partial array, use a temporary buffer
         byte[] tmp = new byte[INET6_LENGTH];
@@ -452,8 +411,8 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         return prefix6Factory.newInstance(ipv6AddressString(addr) + '/' + mask);
     }
 
-    @Nonnull public final Entry<A6NZ, Integer> splitIpv6Prefix(@Nonnull final P6 prefix) {
-        return splitPrefix(nozone6Factory, ipv6PrefixString(prefix));
+    @Nonnull public final Entry<A6, Integer> splitIpv6Prefix(@Nonnull final P6 prefix) {
+        return splitPrefix(address6Factory, ipv6PrefixString(prefix));
     }
 
     private static <T> T prefixToAddress(final StringValueObjectFactory<T> factory, final String str) {

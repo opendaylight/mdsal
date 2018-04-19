@@ -19,10 +19,10 @@ public class IpPrefixBuilderTest {
 
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor<IpPrefixBuilder> constructor = IpPrefixBuilder.class.getDeclaredConstructor();
+        final Constructor constructor = IpPrefixBuilder.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
-        final IpPrefixBuilder newInstance = constructor.newInstance();
+        final IpPrefixBuilder newInstance = (IpPrefixBuilder) constructor.newInstance();
         assertNotNull(newInstance);
 
         testIpv6("ff00::/8");
