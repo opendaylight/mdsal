@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "cf7417fa_ba34f14a",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/AbstractJavaGeneratedType.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-04-19T10:41:55Z",
+      "side": 1,
+      "message": "No, as types not immediately enclosed are not visible by this type. I.e.:\n\nclass Foo {\n    class Bar {\n        class Baz {\n        }\n    }\n\n    void method() {\n        Bar.class; // okay\n        Baz.class; // compile error, because ...\n        Bar.Baz.class; // ... this is how you refer to it\n    }\n}",
+      "parentUuid": "0384b85d_2b756c5f",
+      "range": {
+        "startLine": 61,
+        "startChar": 27,
+        "endLine": 62,
+        "endChar": 95
+      },
+      "revId": "677787f8ac5210883ba2d2a4bf28bcca2f0635d0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "398ce7fc_959f9523",
         "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/AbstractJavaGeneratedType.java",
         "patchSetId": 17
@@ -36,6 +60,30 @@
       "writtenOn": "2018-04-13T07:13:15Z",
       "side": 1,
       "message": "...and also here, check with all enclosed types recursively, although\nbinding v1 can not support multi-level nested union class right now.",
+      "range": {
+        "startLine": 137,
+        "startChar": 55,
+        "endLine": 137,
+        "endChar": 92
+      },
+      "revId": "677787f8ac5210883ba2d2a4bf28bcca2f0635d0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b17930d9_d65c72a1",
+        "filename": "binding/mdsal-binding-java-api-generator/src/main/java/org/opendaylight/mdsal/binding/java/api/generator/AbstractJavaGeneratedType.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-04-19T10:41:55Z",
+      "side": 1,
+      "message": "See above for explanation. Note that AbstractJavaGeneratedTypes form a tree structure reflecting the declared class tree in the output. We enter the tree for \u0027what name should I use here\u0027 always at the corresponding AbstractJavaGenerated type corresponding to the type we are generating (i.e. which is making the reference) and move up the tree as needed). Hence nested types are taken care of :)",
+      "parentUuid": "398ce7fc_959f9523",
       "range": {
         "startLine": 137,
         "startChar": 55,
