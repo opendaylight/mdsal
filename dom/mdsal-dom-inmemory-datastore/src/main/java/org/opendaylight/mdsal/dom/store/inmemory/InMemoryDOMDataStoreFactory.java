@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
+import org.opendaylight.yangtools.yang.data.api.schema.xpath.XPathSchemaContextFactory;
 
 /**
  * A factory for creating InMemoryDOMDataStore instances.
@@ -36,6 +37,19 @@ public final class InMemoryDOMDataStoreFactory {
     }
 
     /**
+     * Creates an XPathAwareInMemoryDOMDataStore instance with default properties.
+     *
+     * @param name the name of the data store
+     * @param xpathContextFactory XPathSchemaContextFactory to use
+     * @param schemaService the SchemaService to which to register the data store.
+     * @return an InMemoryDOMDataStore instance
+     */
+    public static XPathAwareInMemoryDOMDataStore create(final String name,
+            final XPathSchemaContextFactory xpathContextFactory, final @Nullable DOMSchemaService schemaService) {
+        return create(name, InMemoryDOMDataStoreConfigProperties.getDefault(), xpathContextFactory, schemaService);
+    }
+
+    /**
      * Creates an InMemoryDOMDataStore instance.
      *
      * @param name the name of the data store
@@ -48,6 +62,30 @@ public final class InMemoryDOMDataStoreFactory {
         final ExecutorService dataChangeListenerExecutor = createExecutorService(name, properties);
         final InMemoryDOMDataStore dataStore = new InMemoryDOMDataStore(name, dataChangeListenerExecutor,
             properties.getMaxDataChangeListenerQueueSize(), properties.getDebugTransactions());
+
+        if (schemaService != null) {
+            schemaService.registerSchemaContextListener(dataStore);
+        }
+
+        return dataStore;
+    }
+
+    /**
+     * Creates an XPathAwareInMemoryDOMDataStore instance.
+     *
+     * @param name the name of the data store
+     * @param properties configuration properties for the InMemoryDOMDataStore instance.
+     * @param xpathContextFactory XPathSchemaContextFactory to use
+     * @param schemaService the SchemaService to which to register the data store.
+     * @return an InMemoryDOMDataStore instance
+     */
+    public static XPathAwareInMemoryDOMDataStore create(final String name,
+            final InMemoryDOMDataStoreConfigProperties properties, final XPathSchemaContextFactory xpathContextFactory,
+            @Nullable final DOMSchemaService schemaService) {
+        final ExecutorService dataChangeListenerExecutor = createExecutorService(name, properties);
+        final XPathAwareInMemoryDOMDataStore dataStore = new XPathAwareInMemoryDOMDataStore(name,
+            dataChangeListenerExecutor, properties.getMaxDataChangeListenerQueueSize(),
+            properties.getDebugTransactions(), xpathContextFactory);
 
         if (schemaService != null) {
             schemaService.registerSchemaContextListener(dataStore);
