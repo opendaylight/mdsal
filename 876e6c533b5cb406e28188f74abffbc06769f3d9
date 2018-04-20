@@ -22,6 +22,30 @@
       "revId": "876e6c533b5cb406e28188f74abffbc06769f3d9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d1eba32_7b583d9c",
+        "filename": "binding2/mdsal-binding2-generator-impl/src/main/java/org/opendaylight/mdsal/binding/javav2/generator/yang/types/TypeProviderImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-04-20T01:01:13Z",
+      "side": 1,
+      "message": "Yes, agree, I thought it might plan to make these methods be static for passing these arguments around.\nI\u0027ll refactor it soon.",
+      "parentUuid": "25eba21e_202ae797",
+      "range": {
+        "startLine": 194,
+        "startChar": 44,
+        "endLine": 196,
+        "endChar": 56
+      },
+      "revId": "876e6c533b5cb406e28188f74abffbc06769f3d9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
