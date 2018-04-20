@@ -255,15 +255,13 @@ final class AuxiliaryGenUtils {
      */
     static GeneratedTOBuilder addTOToTypeBuilder(final TypeDefinition<?> typeDef, final GeneratedTypeBuilder
             typeBuilder, final DataSchemaNode leaf, final Module parentModule, final TypeProvider typeProvider,
-            final SchemaContext schemaContext, ModuleContext context, final Map<Module, ModuleContext> genCtx) {
+            ModuleContext context, final Map<Module, ModuleContext> genCtx) {
         final String classNameFromLeaf = leaf.getQName().getLocalName();
         GeneratedTOBuilder genTOBuilder = null;
         final String packageName = typeBuilder.getFullyQualifiedName();
         if (typeDef instanceof UnionTypeDefinition) {
-            genTOBuilder = ((TypeProviderImpl) typeProvider)
-                    .provideGeneratedTOBuilderForUnionTypeDef(packageName, ((UnionTypeDefinition) typeDef),
-                            classNameFromLeaf, leaf, schemaContext,
-                            ((TypeProviderImpl) typeProvider).getGenTypeDefsContextMap(), context);
+            genTOBuilder = ((TypeProviderImpl) typeProvider).provideGeneratedTOBuilderForUnionTypeDef(packageName,
+                ((UnionTypeDefinition) typeDef), classNameFromLeaf, leaf, context);
         } else if (typeDef instanceof BitsTypeDefinition) {
             genTOBuilder = (((TypeProviderImpl) typeProvider)).provideGeneratedTOBuilderForBitsTypeDefinition(
                     packageName, typeDef, classNameFromLeaf, parentModule.getName(), context);

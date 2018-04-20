@@ -907,7 +907,7 @@ final class GenHelperUtil {
                 ((TypeProviderImpl) typeProvider).putReferencedType(leaf.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule,
-                        typeProvider, schemaContext, genCtx.get(module), genCtx);
+                        typeProvider, genCtx.get(module), genCtx);
                 if (genTOBuilder != null) {
                     //TODO: https://bugs.opendaylight.org/show_bug.cgi?id=2289
                     returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule,
@@ -915,7 +915,7 @@ final class GenHelperUtil {
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule,
-                        typeProvider, schemaContext, genCtx.get(module), genCtx);
+                        typeProvider, genCtx.get(module), genCtx);
                 if (genTOBuilder != null) {
                     returnType = genTOBuilder.toInstance();
                 }
@@ -999,14 +999,14 @@ final class GenHelperUtil {
                 ((TypeProviderImpl) typeProvider).putReferencedType(node.getPath(), returnType);
             } else if (typeDef instanceof UnionTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule,
-                        typeProvider, schemaContext, genCtx.get(module), genCtx);
+                        typeProvider, genCtx.get(module), genCtx);
                 if (genTOBuilder != null) {
                     returnType = createReturnTypeForUnion(genTOBuilder, typeDef, typeBuilder, parentModule,
                         typeProvider, verboseClassComments);
                 }
             } else if (typeDef instanceof BitsTypeDefinition) {
                 final GeneratedTOBuilder genTOBuilder = addTOToTypeBuilder(typeDef, typeBuilder, node, parentModule,
-                        typeProvider, schemaContext, genCtx.get(module), genCtx);
+                        typeProvider, genCtx.get(module), genCtx);
                 returnType = genTOBuilder.toInstance();
             } else {
                 final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(typeDef);
