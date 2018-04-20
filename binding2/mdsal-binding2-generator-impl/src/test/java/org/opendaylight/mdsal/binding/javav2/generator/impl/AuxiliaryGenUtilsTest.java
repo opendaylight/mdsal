@@ -250,7 +250,7 @@ public class AuxiliaryGenUtilsTest {
         genCtx.put(parentModule, new ModuleContext());
 
         final GeneratedTOBuilder result = AuxiliaryGenUtils.addTOToTypeBuilder(typeDef, typeBuilder, leaf, parentModule,
-            typeProvider, schemaContext, new ModuleContext(), genCtx);
+            typeProvider, new ModuleContext(), genCtx);
         assertEquals(null, result);
     }
 
@@ -276,7 +276,7 @@ public class AuxiliaryGenUtilsTest {
         genCtx.put(schemaContext.getModules().iterator().next(), new ModuleContext());
 
         return AuxiliaryGenUtils.addTOToTypeBuilder(typeDef, typeBuilder, leafSchemaNode,
-            schemaContext.getModules().iterator().next(), typeProvider, schemaContext, new ModuleContext(), genCtx);
+            schemaContext.getModules().iterator().next(), typeProvider, new ModuleContext(), genCtx);
     }
 
     @Test
