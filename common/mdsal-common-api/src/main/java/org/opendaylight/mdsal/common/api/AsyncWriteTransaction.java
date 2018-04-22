@@ -8,7 +8,9 @@
 package org.opendaylight.mdsal.common.api;
 
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.opendaylight.yangtools.concepts.Path;
 
 /**
@@ -460,9 +462,363 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      *         operation is complete. A successful commit returns nothing. On failure, the Future
      *         will fail with a {@link TransactionCommitFailedException} or an exception derived
      *         from TransactionCommitFailedException.
+     * @throws IllegalStateException if the transaction is already submitted or was canceled.
+     * @deprecated Use {@link #commit()} instead.
+     */
+    @Deprecated
+    CheckedFuture<Void, TransactionCommitFailedException> submit();
+
+    /**
+     * Submits this transaction to be asynchronously applied to update the logical data tree. The returned
+     * {@link FluentFuture} conveys the result of applying the data changes.
      *
+     * <p>
+     * This call logically seals the transaction, which prevents the client from further changing the data tree using
+     * this transaction. Any subsequent calls to <code>put(LogicalDatastoreType, Path, Object)</code>,
+     * <code>merge(LogicalDatastoreType, Path, Object)</code>, <code>delete(LogicalDatastoreType, Path)</code> will fail
+     * with {@link IllegalStateException}. The transaction is marked as submitted and enqueued into the data store
+     * back-end for processing.
+     *
+     * <p>
+     * Whether or not the commit is successful is determined by versioning of the data tree and validation of registered
+     * commit participants if the transaction changes the data tree.
+     *
+     * <p>
+     * The effects of a successful commit of data depends on listeners and commit participants that are registered with
+     * the data broker.
+     *
+     * <p>
+     * <h3>Example usage:</h3>
+     * <pre>
+     *  private void doWrite(final int tries) {
+     *      WriteTransaction writeTx = dataBroker.newWriteOnlyTransaction();
+     *      MyDataObject data = ...;
+     *      InstanceIdentifier&lt;MyDataObject&gt; path = ...;
+     *      writeTx.put(LogicalDatastoreType.OPERATIONAL, path, data);
+     *      Futures.addCallback(writeTx.submit(), new FutureCallback&lt;Void&gt;() {
+     *          public void onSuccess(Void result) {
+     *              // succeeded
+     *          }
+     *          public void onFailure(Throwable t) {
+     *              if(t instanceof OptimisticLockFailedException) {
+     *                  if(( tries - 1) &gt; 0 ) {
+     *                      // do retry
+     *                      doWrite(tries - 1);
+     *                  } else {
+     *                      // out of retries
+     *                  }
+     *              } else {
+     *                  // failed due to another type of TransactionCommitFailedException.
+     *              }
+     *          });
+     * }
+     * ...
+     * doWrite(2);
+     * </pre>
+     *
+     * <h2>Failure scenarios</h2>
+     *
+     * <p>
+     * Transaction may fail because of multiple reasons, such as
+     * <ul>
+     *   <li>
+     *     Another transaction finished earlier and modified the same node in a non-compatible way (see below). In this
+     *     case the returned future will fail with an {@link OptimisticLockFailedException}. It is the responsibility
+     *     of the caller to create a new transaction and submit the same modification again in order to update data
+     *     tree.
+     *     <i>
+     *       <b>Warning</b>: In most cases, retrying after an OptimisticLockFailedException will result in a high
+     *       probability of success. However, there are scenarios, albeit unusual, where any number of retries will
+     *       not succeed. Therefore it is strongly recommended to limit the number of retries (2 or 3) to avoid
+     *       an endless loop.
+     *     </i>
+     *   </li>
+     *   <li>Data change introduced by this transaction did not pass validation by commit handlers or data was incorrectly
+     *       structured. Returned future will fail with a {@link DataValidationFailedException}. User should not retry
+     *       to create new transaction with same data, since it probably will fail again.
+     *   </li>
+     * </ul>
+     *
+     * <h3>Change compatibility</h3>
+     * There are several sets of changes which could be considered incompatible between two transactions which are
+     * derived from same initial state. Rules for conflict detection applies recursively for each subtree level.
+     *
+     * <h4>Change compatibility of leafs, leaf-list items</h4>
+     * Following table shows state changes and failures between two concurrent transactions, which are based on same
+     * initial state, Tx 1 completes successfully before Tx 2 is submitted.
+     *
+     * <table summary="Change compatibility of leaf values">
+     * <tr>
+     * <th>Initial state</th>
+     * <th>Tx 1</th>
+     * <th>Tx 2</th>
+     * <th>Result</th>
+     * </tr>
+     * <tr>
+     * <td>Empty</td>
+     * <td>put(A,1)</td>
+     * <td>put(A,2)</td>
+     * <td>Tx 2 will fail, state is A=1</td>
+     * </tr>
+     * <tr>
+     * <td>Empty</td>
+     * <td>put(A,1)</td>
+     * <td>merge(A,2)</td>
+     * <td>A=2</td>
+     * </tr>
+     *
+     * <tr>
+     * <td>Empty</td>
+     * <td>merge(A,1)</td>
+     * <td>put(A,2)</td>
+     * <td>Tx 2 will fail, state is A=1</td>
+     * </tr>
+     * <tr>
+     * <td>Empty</td>
+     * <td>merge(A,1)</td>
+     * <td>merge(A,2)</td>
+     * <td>A=2</td>
+     * </tr>
+     *
+     *
+     * <tr>
+     * <td>A=0</td>
+     * <td>put(A,1)</td>
+     * <td>put(A,2)</td>
+     * <td>Tx 2 will fail, A=1</td>
+     * </tr>
+     * <tr>
+     * <td>A=0</td>
+     * <td>put(A,1)</td>
+     * <td>merge(A,2)</td>
+     * <td>A=2</td>
+     * </tr>
+     * <tr>
+     * <td>A=0</td>
+     * <td>merge(A,1)</td>
+     * <td>put(A,2)</td>
+     * <td>Tx 2 will fail, A=1</td>
+     * </tr>
+     * <tr>
+     * <td>A=0</td>
+     * <td>merge(A,1)</td>
+     * <td>merge(A,2)</td>
+     * <td>A=2</td>
+     * </tr>
+     *
+     * <tr>
+     * <td>A=0</td>
+     * <td>delete(A)</td>
+     * <td>put(A,2)</td>
+     * <td>Tx 2 will fail, A does not exists</td>
+     * </tr>
+     * <tr>
+     * <td>A=0</td>
+     * <td>delete(A)</td>
+     * <td>merge(A,2)</td>
+     * <td>A=2</td>
+     * </tr>
+     * </table>
+     *
+     * <h4>Change compatibility of subtrees</h4>
+     * Following table shows state changes and failures between two concurrent transactions, which are based on same
+     * initial state, Tx 1 completes successfully before Tx 2 is submitted.
+     *
+     * <table summary="Change compatibility of containers">
+     * <tr>
+     * <th>Initial state</th>
+     * <th>Tx 1</th>
+     * <th>Tx 2</th>
+     * <th>Result</th>
+     * </tr>
+     *
+     * <tr>
+     * <td>Empty</td>
+     * <td>put(TOP,[])</td>
+     * <td>put(TOP,[])</td>
+     * <td>Tx 2 will fail, state is TOP=[]</td>
+     * </tr>
+     * <tr>
+     * <td>Empty</td>
+     * <td>put(TOP,[])</td>
+     * <td>merge(TOP,[])</td>
+     * <td>TOP=[]</td>
+     * </tr>
+     *
+     * <tr>
+     * <td>Empty</td>
+     * <td>put(TOP,[FOO=1])</td>
+     * <td>put(TOP,[BAR=1])</td>
+     * <td>Tx 2 will fail, state is TOP=[FOO=1]</td>
+     * </tr>
+     * <tr>
+     * <td>Empty</td>
+     * <td>put(TOP,[FOO=1])</td>
+     * <td>merge(TOP,[BAR=1])</td>
+     * <td>TOP=[FOO=1,BAR=1]</td>
+     * </tr>
+     *
+     * <tr>
+     * <td>Empty</td>
+     * <td>merge(TOP,[FOO=1])</td>
+     * <td>put(TOP,[BAR=1])</td>
+     * <td>Tx 2 will fail, state is TOP=[FOO=1]</td>
+     * </tr>
+     * <tr>
+     * <td>Empty</td>
+     * <td>merge(TOP,[FOO=1])</td>
+     * <td>merge(TOP,[BAR=1])</td>
+     * <td>TOP=[FOO=1,BAR=1]</td>
+     * </tr>
+     *
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>put(TOP,[FOO=1])</td>
+     * <td>put(TOP,[BAR=1])</td>
+     * <td>Tx 2 will fail, state is TOP=[FOO=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>put(TOP,[FOO=1])</td>
+     * <td>merge(TOP,[BAR=1])</td>
+     * <td>state is TOP=[FOO=1,BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>merge(TOP,[FOO=1])</td>
+     * <td>put(TOP,[BAR=1])</td>
+     * <td>Tx 2 will fail, state is TOP=[FOO=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>merge(TOP,[FOO=1])</td>
+     * <td>merge(TOP,[BAR=1])</td>
+     * <td>state is TOP=[FOO=1,BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>delete(TOP)</td>
+     * <td>put(TOP,[BAR=1])</td>
+     * <td>Tx 2 will fail, state is empty store</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>delete(TOP)</td>
+     * <td>merge(TOP,[BAR=1])</td>
+     * <td>state is TOP=[BAR=1]</td>
+     * </tr>
+     *
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>put(TOP/FOO,1)</td>
+     * <td>put(TOP/BAR,1])</td>
+     * <td>state is TOP=[FOO=1,BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>put(TOP/FOO,1)</td>
+     * <td>merge(TOP/BAR,1)</td>
+     * <td>state is TOP=[FOO=1,BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>merge(TOP/FOO,1)</td>
+     * <td>put(TOP/BAR,1)</td>
+     * <td>state is TOP=[FOO=1,BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>merge(TOP/FOO,1)</td>
+     * <td>merge(TOP/BAR,1)</td>
+     * <td>state is TOP=[FOO=1,BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>delete(TOP)</td>
+     * <td>put(TOP/BAR,1)</td>
+     * <td>Tx 2 will fail, state is empty store</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[]</td>
+     * <td>delete(TOP)</td>
+     * <td>merge(TOP/BAR,1]</td>
+     * <td>Tx 2 will fail, state is empty store</td>
+     * </tr>
+     *
+     * <tr>
+     * <td>TOP=[FOO=1]</td>
+     * <td>put(TOP/FOO,2)</td>
+     * <td>put(TOP/BAR,1)</td>
+     * <td>state is TOP=[FOO=2,BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[FOO=1]</td>
+     * <td>put(TOP/FOO,2)</td>
+     * <td>merge(TOP/BAR,1)</td>
+     * <td>state is TOP=[FOO=2,BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[FOO=1]</td>
+     * <td>merge(TOP/FOO,2)</td>
+     * <td>put(TOP/BAR,1)</td>
+     * <td>state is TOP=[FOO=2,BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[FOO=1]</td>
+     * <td>merge(TOP/FOO,2)</td>
+     * <td>merge(TOP/BAR,1)</td>
+     * <td>state is TOP=[FOO=2,BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[FOO=1]</td>
+     * <td>delete(TOP/FOO)</td>
+     * <td>put(TOP/BAR,1)</td>
+     * <td>state is TOP=[BAR=1]</td>
+     * </tr>
+     * <tr>
+     * <td>TOP=[FOO=1]</td>
+     * <td>delete(TOP/FOO)</td>
+     * <td>merge(TOP/BAR,1]</td>
+     * <td>state is TOP=[BAR=1]</td>
+     * </tr>
+     * </table>
+     *
+     *
+     * <h3>Examples of failure scenarios</h3>
+     *
+     * <h4>Conflict of two transactions</h4>
+     * This example illustrates two concurrent transactions, which derived from same initial state
+     * of data tree and proposes conflicting modifications.
+     *
+     * <pre>
+     * txA = broker.newWriteTransaction(); // allocates new transaction, data tree is empty
+     * txB = broker.newWriteTransaction(); // allocates new transaction, data tree is empty
+     * txA.put(CONFIGURATION, PATH, A);    // writes to PATH value A
+     * txB.put(CONFIGURATION, PATH, B)     // writes to PATH value B
+     * ListenableFuture futureA = txA.submit(); // transaction A is sealed and submitted
+     * ListenebleFuture futureB = txB.submit(); // transaction B is sealed and submitted
+     * </pre>
+     * Commit of transaction A will be processed asynchronously and data tree will be updated to
+     * contain value <code>A</code> for <code>PATH</code>. Returned {@link ListenableFuture} will
+     * successfully complete once state is applied to data tree.
+     * Commit of Transaction B will fail, because previous transaction also modified path in a
+     * concurrent way. The state introduced by transaction B will not be applied. Returned
+     * {@link ListenableFuture} object will fail with {@link OptimisticLockFailedException}
+     * exception, which indicates to client that concurrent transaction prevented the submitted
+     * transaction from being applied. <br>
+     *
+     * <p>
+     * A successful commit produces implementation-specific {@link CommitInfo} structure, which is used to communicate
+     * post-condition information to the caller. Such information can contain commit-id, timing information or any
+     * other information the implementation wishes to share.
+     *
+     * @return a FluentFuture containing the result of the commit information. The Future blocks until the commit
+     *         operation is complete. A successful commit returns nothing. On failure, the Future will fail with a
+     *         {@link TransactionCommitFailedException} or an exception derived from TransactionCommitFailedException.
      * @throws IllegalStateException if the transaction is already submitted or was canceled.
      */
-    CheckedFuture<Void,TransactionCommitFailedException> submit();
-
+    default FluentFuture<CommitInfo> commit() {
+        return FluentFuture.from(submit()).transformAsync((ignored) -> CommitInfo.emptyFluentFuture(),
+            MoreExecutors.directExecutor());
+    }
 }
