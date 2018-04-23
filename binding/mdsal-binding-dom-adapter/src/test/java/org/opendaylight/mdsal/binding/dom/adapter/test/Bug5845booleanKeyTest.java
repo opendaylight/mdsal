@@ -44,7 +44,7 @@ public class Bug5845booleanKeyTest extends AbstractDataBrokerTest {
 
         final BooleanContainer booleanContainer = new BooleanContainerBuilder().setBooleanList(Collections
                 .singletonList(new BooleanListBuilder()
-                        .setKey(new BooleanListKey(true, true))
+                        .withKey(new BooleanListKey(true, true))
                         .setBooleanLeaf1(true)
                         .setBooleanLeaf2(true)
                         .build()))
@@ -52,7 +52,7 @@ public class Bug5845booleanKeyTest extends AbstractDataBrokerTest {
 
         final BooleanContainer booleanContainerInt = new BooleanContainerBuilder().setBooleanListInt(Collections
                 .singletonList(new BooleanListIntBuilder()
-                        .setKey(new BooleanListIntKey((byte) 1))
+                        .withKey(new BooleanListIntKey((byte) 1))
                         .setBooleanLeafInt((byte) 1)
                         .build()))
                 .build();
