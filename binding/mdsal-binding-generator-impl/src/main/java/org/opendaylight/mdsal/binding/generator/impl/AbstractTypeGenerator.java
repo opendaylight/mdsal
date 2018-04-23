@@ -49,6 +49,7 @@ import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotableTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.AnnotationTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.EnumBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
@@ -114,6 +115,8 @@ import org.slf4j.LoggerFactory;
 abstract class AbstractTypeGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(BindingGeneratorImpl.class);
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
+    private static final JavaTypeName DEPRECATED_ANNOTATION = JavaTypeName.create(Deprecated.class);
+    private static final JavaTypeName OVERRIDE_ANNOTATION = JavaTypeName.create(Override.class);
 
     /**
      * Comparator based on augment target path.
@@ -1766,10 +1769,7 @@ abstract class AbstractTypeGenerator {
         final MethodSignatureBuilder getMethod = interfaceBuilder.addMethod(
             getterMethodName(node.getQName().getLocalName(), returnType));
         getMethod.setReturnType(returnType);
-
-        if (node.getStatus() == Status.DEPRECATED) {
-            getMethod.addAnnotation("java.lang", "Deprecated");
-        }
+        annotateDeprecatedIfNecessary(node.getStatus(), getMethod);
         addComment(getMethod, node);
 
         return getMethod;
@@ -1835,11 +1835,9 @@ abstract class AbstractTypeGenerator {
 
         if (genTOBuilder != null) {
             final GeneratedTransferObject genTO = genTOBuilder.build();
-
-            // Fake the 'getKey()' for items, this is equivalent to constructGetter()
-            final MethodSignatureBuilder getMethod = typeBuilder.addMethod(getterMethodName("key", genTO));
-            getMethod.setReturnType(genTO);
-            getMethod.setComment("Returns Primary Key of Yang List Type");
+            // Add Identifiable.getKey() for items
+            typeBuilder.addMethod(BindingMapping.IDENTIFIABLE_KEY_NAME).setReturnType(genTO)
+                .addAnnotation(OVERRIDE_ANNOTATION);
             context.addGeneratedTOBuilder(genTOBuilder);
         }
     }
@@ -2026,9 +2024,9 @@ abstract class AbstractTypeGenerator {
         return null;
     }
 
-    private static void annotateDeprecatedIfNecessary(final Status status, final GeneratedTypeBuilder builder) {
+    private static void annotateDeprecatedIfNecessary(final Status status, final AnnotableTypeBuilder builder) {
         if (status == Status.DEPRECATED) {
-            builder.addAnnotation("java.lang", "Deprecated");
+            builder.addAnnotation(DEPRECATED_ANNOTATION);
         }
     }
 }
