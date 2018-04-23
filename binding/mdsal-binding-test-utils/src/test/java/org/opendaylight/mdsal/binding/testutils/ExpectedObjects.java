@@ -35,7 +35,7 @@ public final class ExpectedObjects {
     public static TopLevelList topLevelList() {
         TopLevelListBuilder it = new TopLevelListBuilder();
         TopLevelListKey topLevelListKey = new TopLevelListKey("foo");
-        it.setKey(topLevelListKey);
+        it.withKey(topLevelListKey);
         it.setName("foo");
         TreeComplexUsesAugmentBuilder treeComplexUsesAugmentBuilder = new TreeComplexUsesAugmentBuilder();
         ContainerWithUsesBuilder containerWithUsesBuilder = new ContainerWithUsesBuilder();
