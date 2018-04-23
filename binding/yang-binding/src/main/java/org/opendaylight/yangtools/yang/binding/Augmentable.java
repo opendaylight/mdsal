@@ -28,5 +28,5 @@ public interface Augmentable<T> {
      *            Type of augmentation to be returned.
      * @return instance of augmentation.
      */
-    <E extends Augmentation<T>> E getAugmentation(Class<E> augmentationType);
+    <E extends Augmentation<T>> E augmentation(Class<E> augmentationType);
 }
