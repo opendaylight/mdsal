@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -65,7 +66,7 @@ public class AugmentRelativeXPathTest extends AbstractTypesTest {
         assertNotNull("Interface methods are null", gtInterfaceMethods);
         MethodSignature getIfcKeyMethod = null;
         for (final MethodSignature method : gtInterfaceMethods) {
-            if (method.getName().equals("getKey")) {
+            if (BindingMapping.IDENTIFIABLE_KEY_NAME.equals(method.getName())) {
                 getIfcKeyMethod = method;
                 break;
             }
@@ -97,7 +98,7 @@ public class AugmentRelativeXPathTest extends AbstractTypesTest {
         assertNotNull("Tunnel methods are null", tunnelMethods);
         MethodSignature getTunnelKeyMethod = null;
         for (MethodSignature method : tunnelMethods) {
-            if (method.getName().equals("getKey")) {
+            if (BindingMapping.IDENTIFIABLE_KEY_NAME.equals(method.getName())) {
                 getTunnelKeyMethod = method;
                 break;
             }

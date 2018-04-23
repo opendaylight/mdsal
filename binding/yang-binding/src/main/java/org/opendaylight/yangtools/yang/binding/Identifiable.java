@@ -21,5 +21,5 @@ public interface Identifiable<T extends Identifier<? extends Identifiable<T>>> {
      *
      * @return Key for the object
      */
-    T getKey();
+    T key();
 }

@@ -21,6 +21,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -114,10 +115,14 @@ public class GeneratedTypesLeafrefTest {
         MethodSignature getIfcKey = null;
         MethodSignature getHigherLayerIf = null;
         for (final MethodSignature method : gtIfcMethods) {
-            if (method.getName().equals("getKey")) {
-                getIfcKey = method;
-            } else if (method.getName().equals("getHigherLayerIf")) {
-                getHigherLayerIf = method;
+            switch (method.getName()) {
+                case BindingMapping.IDENTIFIABLE_KEY_NAME:
+                    getIfcKey = method;
+                    break;
+                case "getHigherLayerIf":
+                    getHigherLayerIf = method;
+                    break;
+                default:
             }
         }
         assertNotNull(getIfcKey);
@@ -182,7 +187,7 @@ public class GeneratedTypesLeafrefTest {
         assertNotNull(gtTunnelMethods);
         MethodSignature getTunnelKey = null;
         for (MethodSignature method : gtTunnelMethods) {
-            if (method.getName().equals("getKey")) {
+            if (BindingMapping.IDENTIFIABLE_KEY_NAME.equals(method.getName())) {
                 getTunnelKey = method;
             }
         }
