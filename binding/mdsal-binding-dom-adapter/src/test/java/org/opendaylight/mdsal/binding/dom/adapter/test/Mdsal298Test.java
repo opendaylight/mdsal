@@ -120,8 +120,8 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final Container containerAfter = changedContainer.getDataAfter();
         assertEquals(new ContainerBuilder()
             .setKeyed(ImmutableList.of(
-                new KeyedBuilder().setFoo("foo").setKey(new KeyedKey("foo")).build(),
-                new KeyedBuilder().setFoo("bar").setKey(new KeyedKey("bar")).build()))
+                new KeyedBuilder().setFoo("foo").withKey(new KeyedKey("foo")).build(),
+                new KeyedBuilder().setFoo("bar").withKey(new KeyedKey("bar")).build()))
             .build(), containerAfter);
 
         final Collection<DataObjectModification<?>> changedChildren = changedContainer.getModifiedChildren();
