@@ -1835,11 +1835,8 @@ abstract class AbstractTypeGenerator {
 
         if (genTOBuilder != null) {
             final GeneratedTransferObject genTO = genTOBuilder.build();
-
-            // Fake the 'getKey()' for items, this is equivalent to constructGetter()
-            final MethodSignatureBuilder getMethod = typeBuilder.addMethod(getterMethodName("key", genTO));
-            getMethod.setReturnType(genTO);
-            getMethod.setComment("Returns Primary Key of Yang List Type");
+            // Add Identifiable.getKey() for items
+            typeBuilder.addMethod(BindingMapping.IDENTIFIABLE_KEY_NAME).setReturnType(genTO);
             context.addGeneratedTOBuilder(genTOBuilder);
         }
     }

@@ -35,7 +35,7 @@ public class ModuleBuilderTest {
         moduleBuilder.setFeature(yangIdentifierList);
         moduleBuilder.setName(yangIdentifierOne);
         moduleBuilder.setNamespace(namespace);
-        moduleBuilder.setKey(moduleKeyOne);
+        moduleBuilder.withKey(moduleKeyOne);
         final Module moduleOne = moduleBuilder.build();
         final Module moduleTwo = new ModuleBuilder(moduleOne).build();
 
