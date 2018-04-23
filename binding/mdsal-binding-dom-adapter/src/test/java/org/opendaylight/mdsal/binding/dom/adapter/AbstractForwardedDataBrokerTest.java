@@ -47,7 +47,7 @@ public class AbstractForwardedDataBrokerTest {
         testContext.start();
         data = testContext.getCodec().toYangInstanceIdentifier(BA_TREE_LEAF_ONLY);
         normalizedNode = testContext.getCodec().toNormalizedNode(BA_TOP_LEVEL_LIST,
-                new TopLevelListBuilder().setKey(TOP_FOO_KEY).build()).getValue();
+                new TopLevelListBuilder().withKey(TOP_FOO_KEY).build()).getValue();
         forwardedDataBroker =
                 new AbstractForwardedDataBrokerImpl(testContext.getDomAsyncDataBroker(), testContext.getCodec());
     }

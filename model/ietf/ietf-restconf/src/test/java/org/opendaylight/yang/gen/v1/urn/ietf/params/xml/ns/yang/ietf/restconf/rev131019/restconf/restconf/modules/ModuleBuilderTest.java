@@ -35,7 +35,7 @@ public class ModuleBuilderTest {
         moduleBuilder.setFeature(yangIdentifierList);
         moduleBuilder.setName(yangIdentifierOne);
         moduleBuilder.setNamespace(namespace);
-        moduleBuilder.setKey(moduleKeyOne);
+        moduleBuilder.withKey(moduleKeyOne);
         final Module moduleOne = moduleBuilder.build();
         final Module moduleTwo = new ModuleBuilder(moduleOne).build();
 
@@ -59,7 +59,7 @@ public class ModuleBuilderTest {
         assertEquals(yangIdentifierList, moduleBuilder.getFeature());
         assertEquals(yangIdentifierOne, moduleBuilder.getName());
         assertEquals(namespace, moduleBuilder.getNamespace());
-        assertEquals(moduleKeyOne, moduleBuilder.getKey());
+        assertEquals(moduleKeyOne, moduleBuilder.key());
         assertEquals(moduleOne.toString(), moduleTwo.toString());
         assertEquals(moduleKeyOne.toString(), moduleKeyTwo.toString());
 
