@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.mdsal.binding.model.api.MethodSignature;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.test.util.YangParserTestUtils;
 
@@ -253,22 +254,31 @@ public class GeneratedTypesTest {
                     simpleListMethodsCount = genType.getMethodDefinitions().size();
                     final List<MethodSignature> methods = genType.getMethodDefinitions();
                     for (final MethodSignature method : methods) {
-                        if (method.getName().equals("getKey")) {
-                            getSimpleListKeyMethodCount++;
-                            getSimpleListKeyMethodReturnTypeName = method.getReturnType().getName();
-                        } else if (method.getName().equals("getListChildContainer")) {
-                            getListChildContainerMethodCount++;
-                            getListChildContainerMethodReturnTypeName = method.getReturnType().getName();
-                        } else if (method.getName().equals("getFoo")) {
-                            getFooMethodCount++;
-                        } else if (method.getName().equals("setFoo")) {
-                            setFooMethodCount++;
-                        } else if (method.getName().equals("getSimpleLeafList")) {
-                            getSimpleLeafListMethodCount++;
-                        } else if (method.getName().equals("setSimpleLeafList")) {
-                            setSimpleLeafListMethodCount++;
-                        } else if (method.getName().equals("getBar")) {
-                            getBarMethodCount++;
+                        switch (method.getName()) {
+                            case BindingMapping.IDENTIFIABLE_KEY_NAME:
+                                getSimpleListKeyMethodCount++;
+                                getSimpleListKeyMethodReturnTypeName = method.getReturnType().getName();
+                                break;
+                            case "getListChildContainer":
+                                getListChildContainerMethodCount++;
+                                getListChildContainerMethodReturnTypeName = method.getReturnType().getName();
+                                break;
+                            case "getFoo":
+                                getFooMethodCount++;
+                                break;
+                            case "setFoo":
+                                setFooMethodCount++;
+                                break;
+                            case "getSimpleLeafList":
+                                getSimpleLeafListMethodCount++;
+                                break;
+                            case "setSimpleLeafList":
+                                setSimpleLeafListMethodCount++;
+                                break;
+                            case "getBar":
+                                getBarMethodCount++;
+                                break;
+                            default:
                         }
                     }
                 } else if (genType.getName().equals("ListChildContainer")) {
