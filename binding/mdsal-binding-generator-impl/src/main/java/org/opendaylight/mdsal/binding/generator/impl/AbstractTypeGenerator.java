@@ -30,6 +30,7 @@ import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findP
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -588,15 +589,16 @@ abstract class AbstractTypeGenerator {
         newType.setModuleName(module.getName());
         newType.setSchemaPath(identity.getPath());
 
-        qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, identity.getQName());
+        qnameConstant(newType, JavaTypeName.create(context.modulePackageName(), BindingMapping.MODULE_INFO_CLASS_NAME),
+            identity.getQName().getLocalName());
 
         context.addIdentityType(identity.getQName(), newType);
     }
 
-
-    private static Constant qnameConstant(final GeneratedTypeBuilderBase<?> toBuilder, final String constantName,
-            final QName name) {
-        return toBuilder.addConstant(typeForClass(QName.class), constantName, name);
+    private static Constant qnameConstant(final GeneratedTypeBuilderBase<?> toBuilder,
+            final JavaTypeName yangModuleInfo, final String localName) {
+        return toBuilder.addConstant(typeForClass(QName.class), BindingMapping.QNAME_STATIC_FIELD_NAME,
+            new SimpleImmutableEntry<>(yangModuleInfo, localName));
     }
 
     /**
@@ -1686,7 +1688,8 @@ abstract class AbstractTypeGenerator {
         // FIXME: Validation of name conflict
         final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(identifier);
         final Module module = findParentModule(schemaContext, schemaNode);
-        qnameConstant(newType, BindingMapping.QNAME_STATIC_FIELD_NAME, schemaNode.getQName());
+        qnameConstant(newType, JavaTypeName.create(BindingMapping.getRootPackageName(module.getQNameModule()),
+            BindingMapping.MODULE_INFO_CLASS_NAME), schemaNode.getQName().getLocalName());
 
         addCodegenInformation(newType, module, schemaNode);
         newType.setSchemaPath(schemaNode.getPath());
