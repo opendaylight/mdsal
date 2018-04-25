@@ -117,6 +117,30 @@
       "revId": "e540b7cf6f2dcdf88c8dc6ba85d6b331752d3f0c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ec057ab4_5db6a6b1",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1794,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-04-25T09:00:50Z",
+      "side": 1,
+      "message": "The JDT decided for us, we can’t use type annotations on a return *value*.",
+      "parentUuid": "c6f67d27_621e4710",
+      "range": {
+        "startLine": 1794,
+        "startChar": 36,
+        "endLine": 1794,
+        "endChar": 66
+      },
+      "revId": "e540b7cf6f2dcdf88c8dc6ba85d6b331752d3f0c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
