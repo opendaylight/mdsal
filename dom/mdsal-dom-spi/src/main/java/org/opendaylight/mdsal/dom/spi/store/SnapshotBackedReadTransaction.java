@@ -7,11 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.spi.store;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
@@ -29,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 @Beta
 public final class SnapshotBackedReadTransaction<T> extends
-        AbstractDOMStoreTransaction<T> implements DOMStoreReadTransaction {
+        AbstractDOMStoreTransaction<T> implements DOMStoreReadTransaction, SnapshotBackedTransaction {
 
     private static final Logger LOG = LoggerFactory.getLogger(SnapshotBackedReadTransaction.class);
     private volatile DataTreeSnapshot stableSnapshot;
@@ -43,7 +42,7 @@ public final class SnapshotBackedReadTransaction<T> extends
      */
     SnapshotBackedReadTransaction(final T identifier, final boolean debug, final DataTreeSnapshot snapshot) {
         super(identifier, debug);
-        this.stableSnapshot = Preconditions.checkNotNull(snapshot);
+        this.stableSnapshot = requireNonNull(snapshot);
         LOG.debug("ReadOnly Tx: {} allocated with snapshot {}", identifier, snapshot);
     }
 
@@ -57,7 +56,7 @@ public final class SnapshotBackedReadTransaction<T> extends
     @Override
     public CheckedFuture<Optional<NormalizedNode<?,?>>, ReadFailedException> read(final YangInstanceIdentifier path) {
         LOG.debug("Tx: {} Read: {}", getIdentifier(), path);
-        checkNotNull(path, "Path must not be null.");
+        requireNonNull(path, "Path must not be null.");
 
         final DataTreeSnapshot snapshot = stableSnapshot;
         if (snapshot == null) {
@@ -75,12 +74,17 @@ public final class SnapshotBackedReadTransaction<T> extends
     @Override
     public CheckedFuture<Boolean, ReadFailedException> exists(final YangInstanceIdentifier path) {
         LOG.debug("Tx: {} Exists: {}", getIdentifier(), path);
-        checkNotNull(path, "Path must not be null.");
+        requireNonNull(path, "Path must not be null.");
 
         try {
             return Futures.immediateCheckedFuture(read(path).checkedGet().isPresent());
         } catch (ReadFailedException e) {
             return Futures.immediateFailedCheckedFuture(e);
         }
+    }
+
+    @Override
+    public java.util.Optional<DataTreeSnapshot> getSnapshot() {
+        return java.util.Optional.ofNullable(stableSnapshot);
     }
 }
