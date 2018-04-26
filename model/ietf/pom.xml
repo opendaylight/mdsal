@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.opendaylight.odlparent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>2.0.5</version>
+        <version>2.0.6</version>
         <relativePath/>
     </parent>
 
@@ -23,6 +23,13 @@
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
+
+    <repositories>
+      <repository>
+        <id>odlparent-2.0.6</id>
+        <url>https://nexus.opendaylight.org/content/repositories/odlparent-1100/</url>
+      </repository>
+    </repositories>
 
     <modules>
         <module>ietf-inet-types</module>

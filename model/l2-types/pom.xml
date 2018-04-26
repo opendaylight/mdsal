@@ -21,6 +21,13 @@
     <artifactId>opendaylight-l2-types</artifactId>
     <version>2013.08.27.11.3-SNAPSHOT</version>
     <packaging>bundle</packaging>
+ 
+    <repositories>
+      <repository>
+        <id>odlparent-2.0.6</id>
+        <url>https://nexus.opendaylight.org/content/repositories/odlparent-1100/</url>
+      </repository>
+    </repositories>
 
 
   <!--
