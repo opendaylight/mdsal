@@ -5,8 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.store.inmemory;
+
+import org.immutables.value.Value;
 
 /**
  * Holds configuration properties when creating an {@link InMemoryDOMDataStore} instance via the
@@ -15,59 +16,17 @@ package org.opendaylight.mdsal.dom.store.inmemory;
  * @author Thomas Pantelis
  * @see InMemoryDOMDataStoreFactory
  */
-public final class InMemoryDOMDataStoreConfigProperties {
+@Value.Immutable
+public abstract class InMemoryDOMDataStoreConfigProperties {
 
     public static final int DEFAULT_MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE = 1000;
     public static final int DEFAULT_MAX_DATA_CHANGE_EXECUTOR_POOL_SIZE = 20;
     public static final int DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE = 1000;
     public static final int DEFAULT_MAX_DATA_STORE_EXECUTOR_QUEUE_SIZE = 5000;
 
-    private static final InMemoryDOMDataStoreConfigProperties DEFAULT =
-            create(DEFAULT_MAX_DATA_CHANGE_EXECUTOR_POOL_SIZE,
-                    DEFAULT_MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE,
-                    DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE,
-                    DEFAULT_MAX_DATA_STORE_EXECUTOR_QUEUE_SIZE);
+    private static final InMemoryDOMDataStoreConfigProperties DEFAULT = new InMemoryDOMDataStoreConfigProperties() {
 
-    private final int maxDataChangeExecutorQueueSize;
-    private final int maxDataChangeExecutorPoolSize;
-    private final int maxDataChangeListenerQueueSize;
-    private final int maxDataStoreExecutorQueueSize;
-
-    private InMemoryDOMDataStoreConfigProperties(final int maxDataChangeExecutorPoolSize,
-            final int maxDataChangeExecutorQueueSize, final int maxDataChangeListenerQueueSize,
-            final int maxDataStoreExecutorQueueSize) {
-        this.maxDataChangeExecutorQueueSize = maxDataChangeExecutorQueueSize;
-        this.maxDataChangeExecutorPoolSize = maxDataChangeExecutorPoolSize;
-        this.maxDataChangeListenerQueueSize = maxDataChangeListenerQueueSize;
-        this.maxDataStoreExecutorQueueSize = maxDataStoreExecutorQueueSize;
-    }
-
-    /**
-     * Constructs an instance with the given property values.
-     *
-     * @param maxDataChangeExecutorPoolSize
-     *            maximum thread pool size for the data change notification executor.
-     * @param maxDataChangeExecutorQueueSize
-     *            maximum queue size for the data change notification executor.
-     * @param maxDataChangeListenerQueueSize
-     *            maximum queue size for the data change listeners.
-     * @param maxDataStoreExecutorQueueSize
-     *            maximum queue size for the data store executor.
-     */
-    public static InMemoryDOMDataStoreConfigProperties create(final int maxDataChangeExecutorPoolSize,
-            final int maxDataChangeExecutorQueueSize, final int maxDataChangeListenerQueueSize,
-            final int maxDataStoreExecutorQueueSize) {
-        return new InMemoryDOMDataStoreConfigProperties(maxDataChangeExecutorPoolSize,
-                maxDataChangeExecutorQueueSize, maxDataChangeListenerQueueSize,
-                maxDataStoreExecutorQueueSize);
-    }
-
-    public static InMemoryDOMDataStoreConfigProperties create(final int maxDataChangeExecutorPoolSize,
-            final int maxDataChangeExecutorQueueSize, final int maxDataChangeListenerQueueSize) {
-        return new InMemoryDOMDataStoreConfigProperties(maxDataChangeExecutorPoolSize,
-                maxDataChangeExecutorQueueSize, maxDataChangeListenerQueueSize,
-                DEFAULT_MAX_DATA_STORE_EXECUTOR_QUEUE_SIZE);
-    }
+    };
 
     /**
      * Returns the InMemoryDOMDataStoreConfigProperties instance with default values.
@@ -77,30 +36,48 @@ public final class InMemoryDOMDataStoreConfigProperties {
     }
 
     /**
-     * Returns the maximum queue size for the data change notification executor.
+     * Returns true if transaction allocation debugging should be enabled.
+     *
+     * @return true if transaction allocation debugging should be enabled.
      */
+    @Value.Default
+    public boolean getDebugTransactions() {
+        return false;
+    }
+
+    /**
+     * Returns the maximum queue size for the data change notification executor.
+     *
+     * @return the maximum queue size for the data change notification executor.
+     */
+    @Value.Default
     public int getMaxDataChangeExecutorQueueSize() {
-        return maxDataChangeExecutorQueueSize;
+        return DEFAULT_MAX_DATA_CHANGE_EXECUTOR_QUEUE_SIZE;
     }
 
     /**
      * Returns the maximum thread pool size for the data change notification executor.
+     *
+     * @return the maximum thread pool size for the data change notification executor.
      */
+    @Value.Default
     public int getMaxDataChangeExecutorPoolSize() {
-        return maxDataChangeExecutorPoolSize;
+        return DEFAULT_MAX_DATA_CHANGE_EXECUTOR_POOL_SIZE;
     }
 
     /**
      * Returns the maximum queue size for the data change listeners.
      */
+    @Value.Default
     public int getMaxDataChangeListenerQueueSize() {
-        return maxDataChangeListenerQueueSize;
+        return DEFAULT_MAX_DATA_CHANGE_LISTENER_QUEUE_SIZE;
     }
 
     /**
      * Returns the maximum queue size for the data store executor.
      */
+    @Value.Default
     public int getMaxDataStoreExecutorQueueSize() {
-        return maxDataStoreExecutorQueueSize;
+        return DEFAULT_MAX_DATA_STORE_EXECUTOR_QUEUE_SIZE;
     }
 }

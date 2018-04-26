@@ -39,22 +39,6 @@ public final class InMemoryDOMDataStoreFactory {
     public static InMemoryDOMDataStore create(final String name,
             @Nullable final DOMSchemaService schemaService,
             @Nullable final InMemoryDOMDataStoreConfigProperties properties) {
-        return create(name, schemaService, false, properties);
-    }
-
-    /**
-     * Creates an InMemoryDOMDataStore instance.
-     *
-     * @param name the name of the data store
-     * @param schemaService the SchemaService to which to register the data store.
-     * @param debugTransactions enable transaction debugging
-     * @param properties configuration properties for the InMemoryDOMDataStore instance. If null,
-     *                   default property values are used.
-     * @return an InMemoryDOMDataStore instance
-     */
-    public static InMemoryDOMDataStore create(final String name,
-            @Nullable final DOMSchemaService schemaService, final boolean debugTransactions,
-            @Nullable final InMemoryDOMDataStoreConfigProperties properties) {
 
         InMemoryDOMDataStoreConfigProperties actualProperties = properties;
         if (actualProperties == null) {
@@ -72,7 +56,8 @@ public final class InMemoryDOMDataStoreFactory {
                 dclExecutorMaxPoolSize, dclExecutorMaxQueueSize, name + "-DCL", InMemoryDOMDataStore.class);
 
         final InMemoryDOMDataStore dataStore = new InMemoryDOMDataStore(name, dataChangeListenerExecutor,
-                actualProperties.getMaxDataChangeListenerQueueSize(), debugTransactions);
+                actualProperties.getMaxDataChangeListenerQueueSize(),
+                properties == null ? false : properties.getDebugTransactions());
 
         if (schemaService != null) {
             schemaService.registerSchemaContextListener(dataStore);
