@@ -25,6 +25,7 @@ import org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.Trans
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ExecutorServiceUtil;
+import org.opendaylight.yangtools.util.concurrent.QueuedNotificationManager;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTree;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
@@ -74,6 +75,10 @@ public class InMemoryDOMDataStore extends TransactionReadyPrototype<String> impl
         this.debugTransactions = debugTransactions;
         changePublisher = new InMemoryDOMStoreTreeChangePublisher(this.dataChangeListenerExecutor,
                 maxDataChangeListenerQueueSize);
+    }
+
+    public QueuedNotificationManager<?, ?> getDataChangeListenerNotificationManager() {
+        return changePublisher.getNotificationManager();
     }
 
     public void setCloseable(final AutoCloseable closeable) {

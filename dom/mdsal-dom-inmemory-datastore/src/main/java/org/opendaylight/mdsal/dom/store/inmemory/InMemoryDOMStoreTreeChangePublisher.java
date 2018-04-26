@@ -44,9 +44,13 @@ final class InMemoryDOMStoreTreeChangePublisher extends AbstractDOMStoreTreeChan
                 "DataTreeChangeListenerQueueMgr");
     }
 
-    private InMemoryDOMStoreTreeChangePublisher(QueuedNotificationManager<
+    private InMemoryDOMStoreTreeChangePublisher(final QueuedNotificationManager<
             AbstractDOMDataTreeChangeListenerRegistration<?>, DataTreeCandidate> notificationManager) {
         this.notificationManager = notificationManager;
+    }
+
+    QueuedNotificationManager<?, ?> getNotificationManager() {
+        return notificationManager;
     }
 
     @Override
