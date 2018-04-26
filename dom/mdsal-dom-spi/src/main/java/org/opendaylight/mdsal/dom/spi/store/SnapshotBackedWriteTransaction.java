@@ -24,15 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of Write transaction which is backed by
- * {@link DataTreeSnapshot} and executed according to
- * {@link org.opendaylight.mdsal.dom.spi.store.SnapshotBackedWriteTransaction.TransactionReadyPrototype}.
+ * Implementation of Write transaction which is backed by {@link DataTreeSnapshot} and executed according to
+ * {@link TransactionReadyPrototype}.
  *
  * @param <T> Identifier type
  */
 @Beta
 public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransaction<T>
-        implements DOMStoreWriteTransaction {
+        implements DOMStoreWriteTransaction, SnapshotBackedTransaction {
 
     private static final Logger LOG = LoggerFactory.getLogger(SnapshotBackedWriteTransaction.class);
 
@@ -168,6 +167,11 @@ public class SnapshotBackedWriteTransaction<T> extends AbstractDOMStoreTransacti
         } else {
             LOG.debug("Store transaction: {} : Closed after submit", getIdentifier());
         }
+    }
+
+    @Override
+    public Optional<DataTreeSnapshot> getSnapshot() {
+        return readyImpl == null ? Optional.ofNullable(mutableTree) : Optional.empty();
     }
 
     @Override

@@ -21,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of Read-Write transaction which is backed by {@link DataTreeSnapshot}
- * and executed according to {@link TransactionReadyPrototype}.
+ * Implementation of Read-Write transaction which is backed by {@link DataTreeSnapshot} and executed according
+ * to {@link SnapshotBackedWriteTransaction.TransactionReadyPrototype}.
  *
  * @param <T> identifier type
  */
