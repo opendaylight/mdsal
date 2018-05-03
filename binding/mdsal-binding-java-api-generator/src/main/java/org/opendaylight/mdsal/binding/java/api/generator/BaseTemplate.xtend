@@ -487,6 +487,19 @@ abstract class BaseTemplate extends JavaFileTemplate {
         return actualType.restrictions;
     }
 
+    def protected generateInnerClass(GeneratedType innerClass) '''
+        «IF innerClass instanceof GeneratedTransferObject»
+            «val innerJavaType = javaType.getEnclosedType(innerClass.identifier)»
+            «IF innerClass.unionType»
+                «val unionTemplate = new UnionTemplate(innerJavaType, innerClass)»
+                «unionTemplate.generateAsInnerClass»
+            «ELSE»
+                «val classTemplate = new ClassTemplate(innerJavaType, innerClass)»
+                «classTemplate.generateAsInnerClass»
+            «ENDIF»
+        «ENDIF»
+    '''
+
     def static Restrictions getRestrictions(Type type) {
         if (type instanceof ConcreteType) {
             return type.restrictions

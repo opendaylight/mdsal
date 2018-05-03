@@ -12,9 +12,9 @@ import java.util.Collections;
 import java.util.List;
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedPropertyBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
@@ -130,6 +130,11 @@ abstract class AbstractGeneratedTOBuilder extends AbstractGeneratedTypeBuilder<G
     @Override
     public final void setIsUnion(final boolean isUnion) {
         this.isUnionType = isUnion;
+    }
+
+    @Override
+    public final boolean isUnion() {
+        return isUnionType;
     }
 
     @Override
