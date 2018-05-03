@@ -122,17 +122,7 @@ class InterfaceTemplate extends BaseTemplate {
     def private generateInnerClasses() '''
         «IF !enclosedGeneratedTypes.empty»
             «FOR innerClass : enclosedGeneratedTypes SEPARATOR "\n"»
-                «IF (innerClass instanceof GeneratedTransferObject)»
-                    «val innerJavaType = javaType.getEnclosedType(innerClass.identifier)»
-                    «IF innerClass.unionType»
-                        «val unionTemplate = new UnionTemplate(innerJavaType, innerClass)»
-                        «unionTemplate.generateAsInnerClass»
-                    «ELSE»
-                        «val classTemplate = new ClassTemplate(innerJavaType, innerClass)»
-                        «classTemplate.generateAsInnerClass»
-                    «ENDIF»
-
-                «ENDIF»
+                generateInnerClass(innerClass)
             «ENDFOR»
         «ENDIF»
     '''

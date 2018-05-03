@@ -45,7 +45,7 @@ public class Mdsal320Test {
                     assertTrue(enc instanceof GeneratedTransferObject);
                     bar = (GeneratedTransferObject) enc;
                     break;
-                case "Bar1":
+                case "Bar$1":
                     assertTrue(enc instanceof GeneratedTransferObject);
                     bar1 = (GeneratedTransferObject) enc;
                     break;
@@ -65,7 +65,7 @@ public class Mdsal320Test {
         assertTrue(getBarTO.isUnionType());
         assertEquals(bar, getBarTO);
 
-        final GeneratedProperty bar1Prop = bar.getProperties().stream().filter(prop -> "bar1".equals(prop.getName()))
+        final GeneratedProperty bar1Prop = bar.getProperties().stream().filter(prop -> "bar$1".equals(prop.getName()))
                 .findFirst().get();
         final Type bar1PropRet = bar1Prop.getReturnType();
         assertEquals(bar1, bar1PropRet);

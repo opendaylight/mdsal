@@ -23,6 +23,6 @@ public class Mdsal324Test {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal324.yang");
         final List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
         assertNotNull(generateTypes);
-        assertEquals(4, generateTypes.size());
+        assertEquals(6, generateTypes.size());
     }
 }
