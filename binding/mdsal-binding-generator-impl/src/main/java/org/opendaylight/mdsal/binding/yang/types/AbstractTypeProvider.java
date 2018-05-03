@@ -898,11 +898,10 @@ public abstract class AbstractTypeProvider implements TypeProvider {
     private GeneratedTransferObject wrapJavaTypeIntoTO(final String basePackageName, final TypeDefinition<?> typedef,
             final Type javaType, final String moduleName) {
         Preconditions.checkNotNull(javaType, "javaType cannot be null");
-        final String propertyName = "value";
 
         final GeneratedTOBuilder genTOBuilder = typedefToTransferObject(basePackageName, typedef, moduleName);
         genTOBuilder.setRestrictions(BindingGeneratorUtil.getRestrictions(typedef));
-        final GeneratedPropertyBuilder genPropBuilder = genTOBuilder.addProperty(propertyName);
+        final GeneratedPropertyBuilder genPropBuilder = genTOBuilder.addProperty("value");
         genPropBuilder.setReturnType(javaType);
         genTOBuilder.addEqualsIdentity(genPropBuilder);
         genTOBuilder.addHashIdentity(genPropBuilder);
@@ -965,12 +964,16 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final Module module = findParentModule(schemaContext, parentNode);
 
         final GeneratedTOBuilder unionGenTOBuilder = newGeneratedTOBuilder(typeName);
+        unionGenTOBuilder.setIsUnion(true);
+        final GeneratedPropertyBuilder genPropBuilder = unionGenTOBuilder.addProperty("value");
+        genPropBuilder.setReturnType(Types.CHAR_ARRAY);
+        unionGenTOBuilder.addEqualsIdentity(genPropBuilder);
+        unionGenTOBuilder.addHashIdentity(genPropBuilder);
+        unionGenTOBuilder.addToStringProperty(genPropBuilder);
         unionGenTOBuilder.setSchemaPath(typedef.getPath());
         unionGenTOBuilder.setModuleName(module.getName());
         addCodegenInformation(unionGenTOBuilder, typedef);
-
         generatedTOBuilders.add(unionGenTOBuilder);
-        unionGenTOBuilder.setIsUnion(true);
 
         // Pattern string is the key, XSD regex is the value. The reason for this choice is that the pattern carries
         // also negation information and hence guarantees uniqueness.
@@ -1030,7 +1033,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final GeneratedPropertyBuilder propertyBuilder;
         propertyBuilder = parentUnionGenTOBuilder.addProperty(BindingMapping.getPropertyName(
             newTOBuilderName.simpleName()));
-        propertyBuilder.setReturnType(subUnionGenTOBUilders.get(0));
+        propertyBuilder.setReturnType(subUnionGenTOBUilders.get(0).build());
         parentUnionGenTOBuilder.addEqualsIdentity(propertyBuilder);
         parentUnionGenTOBuilder.addToStringProperty(propertyBuilder);
 
