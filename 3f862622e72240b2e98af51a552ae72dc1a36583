@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d3957dd0_7d2ab44e",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/gen/impl/AbstractStreamWriterGenerator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-05-08T18:56:01Z",
+      "side": 1,
+      "message": "This should be a while loop. If this is concurrency issue:\n\nWhat is guaranteeing that the second invocation does not need the same protections?\n\nIf it does, this leads should be a recursive call to getSerializer() -- which leads to potential StackOverflowError -- which it should be impossible to hit in this codepath (because we certainly do not want to deal with that in a customer deployment).",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 58
+      },
+      "revId": "3f862622e72240b2e98af51a552ae72dc1a36583",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
