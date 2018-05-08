@@ -86,24 +86,20 @@ public final class JavassistUtils {
     }
 
     @GuardedBy("this")
-    public CtClass asCtClass(final Class<?> class1) {
-        return get(this.classPool, class1);
-    }
-
-    public CtClass get(final ClassPool pool, final Class<? extends Object> cls) {
+    public CtClass asCtClass(final Class<?> cls) {
         try {
-            return pool.get(cls.getName());
+            return classPool.get(cls.getName());
         } catch (NotFoundException nfe1) {
             appendClassLoaderIfMissing(cls.getClassLoader());
             try {
-                return pool.get(cls.getName());
+                return classPool.get(cls.getName());
             } catch (final NotFoundException nfe2) {
                 LOG.warn("Appending ClassClassPath for {}", cls, nfe2);
-                pool.appendClassPath(new ClassClassPath(cls));
+                classPool.appendClassPath(new ClassClassPath(cls));
                 try {
-                    return pool.get(cls.getName());
+                    return classPool.get(cls.getName());
                 } catch (NotFoundException e) {
-                    LOG.warn("Failed to load class {} from pool {}", cls, pool, e);
+                    LOG.warn("Failed to load class {} from pool {}", cls, classPool, e);
                     throw new IllegalStateException("Failed to load class", e);
                 }
             }
