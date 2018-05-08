@@ -14,7 +14,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.collect.ImmutableList;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -42,13 +41,6 @@ public class JavassistUtilsTest {
         ctField = javassistUtils.staticField(ctClass, "testStaticField", Object.class);
         assertEquals(ctField, ctClass.getField("testStaticField"));
 
-        final MethodGenerator methodGenerator = mock(MethodGenerator.class);
-        doNothing().when(methodGenerator).process(any());
-        javassistUtils.method(ctClass, Void.class, "testMethod", Object.class, methodGenerator);
-        javassistUtils.method(ctInterface, Void.class, "testInterfaceMethod", Object.class, methodGenerator);
-        javassistUtils.method(ctClass, Void.class, "testMethod2", ImmutableList.of(Object.class), methodGenerator);
-        javassistUtils.staticMethod(ctClass, Void.class, "testStaticMethod", Object.class, methodGenerator);
-        javassistUtils.implementMethodsFrom(ctClass, ctInterface, methodGenerator);
         assertNotNull(ctClass.getDeclaredMethod("testMethod"));
         assertNotNull(ctClass.getDeclaredMethod("testMethod2"));
         assertNotNull(ctClass.getDeclaredMethod("testStaticMethod"));
