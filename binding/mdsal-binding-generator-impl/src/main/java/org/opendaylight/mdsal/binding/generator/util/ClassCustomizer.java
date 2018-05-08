@@ -8,19 +8,22 @@
 package org.opendaylight.mdsal.binding.generator.util;
 
 import com.google.common.annotations.Beta;
-
+import javassist.CannotCompileException;
 import javassist.CtClass;
+import javassist.NotFoundException;
 
 /**
  * Interface allowing customization of classes after loading.
  */
 @Beta
+@FunctionalInterface
 public interface ClassCustomizer {
     /**
      * Customize a class.
      *
      * @param cls Class to be customized
-     * @throws Exception when a problem ensues.
+     * @throws CannotCompileException when a javassist error occurs
+     * @throws NotFoundException when a javassist error occurs
      */
-    void customizeClass(CtClass cls) throws Exception;
+    void customizeClass(CtClass cls) throws CannotCompileException, NotFoundException;
 }

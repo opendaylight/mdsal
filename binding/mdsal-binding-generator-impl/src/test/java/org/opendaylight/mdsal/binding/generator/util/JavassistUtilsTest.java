@@ -15,20 +15,18 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableList;
+import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
+import javassist.NotFoundException;
 import javassist.bytecode.AccessFlag;
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.generator.util.ClassCustomizer;
-import org.opendaylight.mdsal.binding.generator.util.ClassGenerator;
-import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
-import org.opendaylight.mdsal.binding.generator.util.MethodGenerator;
 
 public class JavassistUtilsTest {
 
     @Test
-    public void forClassPool() throws Exception {
+    public void forClassPool() throws CannotCompileException, NotFoundException {
         final JavassistUtils javassistUtils = JavassistUtils.forClassPool(ClassPool.getDefault());
         final ClassGenerator classGenerator = mock(ClassGenerator.class);
         doNothing().when(classGenerator).process(any());
