@@ -83,7 +83,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
         this.implementations = CacheBuilder.newBuilder()
                 .removalListener(notification -> LOG.debug("onRemoval: cause={}, wasEvicted={}",
                         notification.getCause(), notification.wasEvicted()))
-                .weakKeys().build(new SerializerImplementationLoader());
+                .build(new SerializerImplementationLoader());
         LOG.info("AbstractStreamWriterGenerator constructor, new instance: {}", this);
     }
 
