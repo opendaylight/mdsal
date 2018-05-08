@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a569c0c7_3b6b64e8",
+        "filename": "binding/mdsal-binding-dom-codec/src/main/java/org/opendaylight/mdsal/binding/dom/codec/gen/impl/StreamWriterGenerator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-08T15:08:32Z",
+      "side": 0,
+      "message": "FTR: I\u0027ve verified with a grep over mdsal that this private static method isn\u0027t somehow magically (Reflection, Javassist) used somewhere anyway - but found no hits, so should be perfectly safe.",
+      "range": {
+        "startLine": 51,
+        "startChar": 23,
+        "endLine": 51,
+        "endChar": 24
+      },
+      "revId": "47f758c43c2c7957aaf474d75848010936abef65",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
