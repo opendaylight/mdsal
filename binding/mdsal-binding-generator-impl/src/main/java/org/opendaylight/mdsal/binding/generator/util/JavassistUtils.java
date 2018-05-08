@@ -20,6 +20,8 @@ import javassist.CtClass;
 import javassist.LoaderClassPath;
 import javassist.NotFoundException;
 import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,11 +29,15 @@ import org.slf4j.LoggerFactory;
  * Users of this utility class are expected to synchronize on this instance
  * it they need to ensure atomic operations on it.
  */
+@NonNullByDefault
+@ThreadSafe
 public final class JavassistUtils {
     private static final Logger LOG = LoggerFactory.getLogger(JavassistUtils.class);
     private static final Map<ClassPool, JavassistUtils> INSTANCES = new WeakHashMap<>();
 
+    @GuardedBy("this")
     private final Map<ClassLoader, ClassPath> loaderClassPaths = new WeakHashMap<>();
+    @GuardedBy("this")
     private final ClassPool classPool;
 
     private JavassistUtils(final ClassPool pool) {
@@ -47,12 +53,7 @@ public final class JavassistUtils {
      * @return shared utility instance for specified pool
      */
     public static synchronized JavassistUtils forClassPool(final ClassPool pool) {
-        JavassistUtils ret = INSTANCES.get(requireNonNull(pool));
-        if (ret == null) {
-            ret = new JavassistUtils(pool);
-            INSTANCES.put(pool, ret);
-        }
-        return ret;
+        return INSTANCES.computeIfAbsent(requireNonNull(pool), JavassistUtils::new);
     }
 
     /**
