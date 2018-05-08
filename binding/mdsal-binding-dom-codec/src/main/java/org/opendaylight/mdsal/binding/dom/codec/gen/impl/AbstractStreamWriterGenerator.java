@@ -12,6 +12,7 @@ import com.google.common.base.Supplier;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map.Entry;
@@ -85,7 +86,18 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
 
     @Override
     public final DataObjectSerializerImplementation getSerializer(final Class<?> type) {
-        return implementations.getUnchecked(type);
+        try {
+            return implementations.getUnchecked(type);
+        } catch (UncheckedExecutionException e) {
+            // MDSAL-213: Do a retry in case of the frozen class problem (suspected concurrency issue)
+            if (e.getCause() instanceof RuntimeException && e.getCause().getMessage().contains("frozen class")) {
+                LOG.warn("Princess Elsa of Arendelle (frozen class) situation, "
+                       + "suspected concurrency bug - retrying cache get...", e);
+                return implementations.getUnchecked(type);
+            } else {
+                throw e;
+            }
+        }
     }
 
     @Override
