@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.generator.util;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -17,7 +16,6 @@ import static org.mockito.Mockito.mock;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtField;
 import javassist.NotFoundException;
 import javassist.bytecode.AccessFlag;
 import org.junit.Test;
@@ -35,11 +33,6 @@ public class JavassistUtilsTest {
         javassistUtils.ensureClassLoader(ctClass.getClass());
         assertNotNull(ctClass);
         assertNotNull(javassistUtils.get(ClassPool.getDefault(), ctClass.getClass()));
-
-        CtField ctField = javassistUtils.field(ctClass, "testField", Object.class);
-        assertEquals(ctField, ctClass.getField("testField"));
-        ctField = javassistUtils.staticField(ctClass, "testStaticField", Object.class);
-        assertEquals(ctField, ctClass.getField("testStaticField"));
 
         assertNotNull(ctClass.getDeclaredMethod("testMethod"));
         assertNotNull(ctClass.getDeclaredMethod("testMethod2"));

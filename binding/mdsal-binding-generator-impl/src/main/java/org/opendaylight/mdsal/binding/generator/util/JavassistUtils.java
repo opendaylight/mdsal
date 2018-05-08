@@ -18,9 +18,7 @@ import javassist.ClassClassPath;
 import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtField;
 import javassist.LoaderClassPath;
-import javassist.Modifier;
 import javassist.NotFoundException;
 import javax.annotation.concurrent.GuardedBy;
 import org.slf4j.Logger;
@@ -110,31 +108,6 @@ public final class JavassistUtils {
     @GuardedBy("this")
     public CtClass asCtClass(final Class<?> class1) {
         return get(this.classPool, class1);
-    }
-
-    public CtField field(final CtClass it, final String name, final Class<?> returnValue) throws CannotCompileException {
-        final CtField field = new CtField(asCtClass(returnValue), name, it);
-        field.setModifiers(Modifier.PUBLIC);
-        it.addField(field);
-        return field;
-    }
-
-    public CtField staticField(final CtClass it, final String name, final Class<?> returnValue) throws CannotCompileException {
-        return staticField(it, name, returnValue, null);
-    }
-
-    public CtField staticField(final CtClass it, final String name,
-            final Class<?> returnValue,
-            final SourceCodeGenerator sourceGenerator) throws CannotCompileException {
-        final CtField field = new CtField(asCtClass(returnValue), name, it);
-        field.setModifiers(Modifier.PUBLIC + Modifier.STATIC);
-        it.addField(field);
-
-        if (sourceGenerator != null) {
-            sourceGenerator.appendField(field, null);
-        }
-
-        return field;
     }
 
     public CtClass get(final ClassPool pool, final Class<? extends Object> cls) {
