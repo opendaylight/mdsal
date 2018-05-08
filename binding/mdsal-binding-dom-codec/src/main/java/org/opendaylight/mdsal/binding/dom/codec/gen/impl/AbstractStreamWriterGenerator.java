@@ -80,7 +80,11 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
                 javassist.asCtClass(BindingStreamEventWriter.class),
         };
         javassist.appendClassLoaderIfMissing(DataObjectSerializerPrototype.class.getClassLoader());
-        this.implementations = CacheBuilder.newBuilder().weakKeys().build(new SerializerImplementationLoader());
+        this.implementations = CacheBuilder.newBuilder()
+                .removalListener(notification -> LOG.debug("onRemoval: cause={}, wasEvicted={}",
+                        notification.getCause(), notification.wasEvicted()))
+                .weakKeys().build(new SerializerImplementationLoader());
+        LOG.info("AbstractStreamWriterGenerator constructor, new instance: {}", this);
     }
 
     @Override
@@ -91,6 +95,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
     @Override
     public final void onBindingRuntimeContextUpdated(final BindingRuntimeContext runtime) {
         this.context = runtime;
+        LOG.debug("onBindingRuntimeContextUpdated() : {}", runtime);
     }
 
     @Override
@@ -127,7 +132,7 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
 
             final DataObjectSerializerImplementation obj =
                     (DataObjectSerializerImplementation) cls.getDeclaredMethod(GETINSTANCE_METHOD_NAME).invoke(null);
-            LOG.debug("Loaded serializer {} for class {}", obj, type);
+            LOG.trace("Loaded serializer {} for class {}", obj, type);
             return obj;
         }
 
@@ -135,6 +140,8 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
                 final String serializerName) throws CannotCompileException, IllegalAccessException,
                 IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException,
                 NoSuchFieldException {
+            LOG.debug("generateSerializer() due to Cache miss: typeName={}, typeClassLoader={}, serializerName={}",
+                    type.getTypeName(), type.getClassLoader(), serializerName);
             final DataObjectSerializerSource source = generateEmitterSource(type, serializerName);
             final CtClass poolClass = generateEmitter0(type, source, serializerName);
             @SuppressWarnings("unchecked")
