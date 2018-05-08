@@ -86,16 +86,18 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
 
     @Override
     public final DataObjectSerializerImplementation getSerializer(final Class<?> type) {
-        try {
-            return implementations.getUnchecked(type);
-        } catch (UncheckedExecutionException e) {
-            // MDSAL-213: Do a retry in case of the frozen class problem (suspected concurrency issue)
-            if (e.getCause() instanceof RuntimeException && e.getCause().getMessage().contains("frozen class")) {
-                LOG.warn("Princess Elsa of Arendelle (frozen class) situation, "
-                       + "suspected concurrency bug - retrying cache get...", e);
+        synchronized (type) {
+            try {
                 return implementations.getUnchecked(type);
-            } else {
-                throw e;
+            } catch (UncheckedExecutionException e) {
+                // MDSAL-213: Do a retry in case of the frozen class problem (suspected concurrency issue)
+                if (e.getCause() instanceof RuntimeException && e.getCause().getMessage().contains("frozen class")) {
+                    LOG.warn("Princess Elsa of Arendelle (frozen class) situation, "
+                           + "suspected concurrency bug - retrying cache get...", e);
+                    return implementations.getUnchecked(type);
+                } else {
+                    throw e;
+                }
             }
         }
     }
