@@ -7,8 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.generator.util;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -22,6 +24,7 @@ import javassist.CtMethod;
 import javassist.LoaderClassPath;
 import javassist.Modifier;
 import javassist.NotFoundException;
+import javax.annotation.concurrent.GuardedBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +34,13 @@ import org.slf4j.LoggerFactory;
  */
 public final class JavassistUtils {
     private static final Logger LOG = LoggerFactory.getLogger(JavassistUtils.class);
-
     private static final Map<ClassPool, JavassistUtils> INSTANCES = new WeakHashMap<>();
+
     private final Map<ClassLoader, ClassPath> loaderClassPaths = new WeakHashMap<>();
     private final ClassPool classPool;
 
     private JavassistUtils(final ClassPool pool) {
-        classPool = Preconditions.checkNotNull(pool);
+        classPool = requireNonNull(pool);
     }
 
     /**
@@ -49,7 +52,7 @@ public final class JavassistUtils {
      * @return shared utility instance for specified pool
      */
     public static synchronized JavassistUtils forClassPool(final ClassPool pool) {
-        JavassistUtils ret = INSTANCES.get(Preconditions.checkNotNull(pool));
+        JavassistUtils ret = INSTANCES.get(requireNonNull(pool));
         if (ret == null) {
             ret = new JavassistUtils(pool);
             INSTANCES.put(pool, ret);
@@ -67,7 +70,8 @@ public final class JavassistUtils {
     }
 
     public void method(final CtClass it, final Class<?> returnType, final String name,
-            final Collection<? extends Class<?>> parameters, final MethodGenerator function1) throws CannotCompileException {
+            final Collection<? extends Class<?>> parameters, final MethodGenerator function1)
+                    throws CannotCompileException {
         final CtClass[] pa = new CtClass[parameters.size()];
 
         int i = 0;
@@ -89,7 +93,8 @@ public final class JavassistUtils {
         it.addMethod(method);
     }
 
-    public void implementMethodsFrom(final CtClass target, final CtClass source, final MethodGenerator function1) throws CannotCompileException {
+    public void implementMethodsFrom(final CtClass target, final CtClass source, final MethodGenerator function1)
+            throws CannotCompileException {
         for (CtMethod method : source.getMethods()) {
             if (method.getDeclaringClass() == source) {
                 CtMethod redeclaredMethod = new CtMethod(method, target, null);
@@ -105,7 +110,8 @@ public final class JavassistUtils {
         return target;
     }
 
-    public CtClass createClass(final String fqn, final CtClass superInterface, final ClassGenerator cls) throws CannotCompileException {
+    public CtClass createClass(final String fqn, final CtClass superInterface, final ClassGenerator cls)
+            throws CannotCompileException {
         CtClass target = classPool.makeClass(fqn);
         implementsType(target, superInterface);
         cls.process(target);
@@ -113,8 +119,8 @@ public final class JavassistUtils {
     }
 
     /**
-     * Instantiate a new class based on a prototype. The class is set to automatically
-     * prune.
+     * Instantiate a new class based on a prototype. The class is set to automatically prune. The {@code customizer}
+     * is guaranteed to run with this object locked.
      *
      * @param prototype Prototype class fully qualified name
      * @param fqn Target class fully qualified name
@@ -123,25 +129,31 @@ public final class JavassistUtils {
      * @throws NotFoundException when the prototype class is not found
      */
     @Beta
-    public synchronized CtClass instantiatePrototype(final String prototype, final String fqn, final ClassCustomizer customizer) throws NotFoundException {
+    public synchronized CtClass instantiatePrototype(final String prototype, final String fqn,
+            final ClassCustomizer customizer) throws CannotCompileException, NotFoundException {
         final CtClass result = classPool.getAndRename(prototype, fqn);
         try {
             customizer.customizeClass(result);
+        } catch (CannotCompileException | NotFoundException e) {
+            result.detach();
+            throw e;
         } catch (Exception e) {
             LOG.warn("Failed to customize {} from prototype {}", fqn, prototype, e);
             result.detach();
-            throw new IllegalStateException(String.format("Failed to instantiate prototype %s as %s", prototype, fqn), e);
+            throw new IllegalStateException(String.format("Failed to instantiate prototype %s as %s", prototype, fqn),
+                e);
         }
 
         result.stopPruning(false);
         return result;
     }
 
-    public void implementsType(final CtClass it, final CtClass supertype) {
-        Preconditions.checkArgument(supertype.isInterface(), "Supertype must be interface");
+    private static void implementsType(final CtClass it, final CtClass supertype) {
+        checkArgument(supertype.isInterface(), "Supertype %s is not an interface", supertype);
         it.addInterface(supertype);
     }
 
+    @GuardedBy("this")
     public CtClass asCtClass(final Class<?> class1) {
         return get(this.classPool, class1);
     }
