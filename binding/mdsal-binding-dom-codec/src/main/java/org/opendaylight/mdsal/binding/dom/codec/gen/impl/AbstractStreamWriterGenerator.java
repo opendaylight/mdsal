@@ -94,8 +94,8 @@ abstract class AbstractStreamWriterGenerator extends AbstractGenerator implement
     }
 
     @Override
-    protected final String loadSerializerFor(final Class<?> cls) {
-        return implementations.getUnchecked(cls).getClass().getName();
+    protected final String loadSerializerFor(final Class<?> type) {
+        return getSerializer(type).getClass().getName();
     }
 
     private final class SerializerImplementationLoader
