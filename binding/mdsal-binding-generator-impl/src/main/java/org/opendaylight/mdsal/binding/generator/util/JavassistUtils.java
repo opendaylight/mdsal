@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
-import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javassist.CannotCompileException;
@@ -20,7 +19,6 @@ import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
-import javassist.CtMethod;
 import javassist.LoaderClassPath;
 import javassist.Modifier;
 import javassist.NotFoundException;
@@ -58,50 +56,6 @@ public final class JavassistUtils {
             INSTANCES.put(pool, ret);
         }
         return ret;
-    }
-
-    public void method(final CtClass it, final Class<?> returnType, final String name,
-            final Class<?> parameter, final MethodGenerator function1) throws CannotCompileException {
-        final CtClass[] pa = new CtClass[] { asCtClass(parameter) };
-        final CtMethod method = new CtMethod(asCtClass(returnType), name, pa, it);
-
-        function1.process(method);
-        it.addMethod(method);
-    }
-
-    public void method(final CtClass it, final Class<?> returnType, final String name,
-            final Collection<? extends Class<?>> parameters, final MethodGenerator function1)
-                    throws CannotCompileException {
-        final CtClass[] pa = new CtClass[parameters.size()];
-
-        int i = 0;
-        for (Class<?> parameter : parameters) {
-            pa[i] = asCtClass(parameter);
-            ++i;
-        }
-
-        final CtMethod method = new CtMethod(asCtClass(returnType), name, pa, it);
-        function1.process(method);
-        it.addMethod(method);
-    }
-
-    public void staticMethod(final CtClass it, final Class<?> returnType, final String name,
-            final Class<?> parameter, final MethodGenerator function1) throws CannotCompileException {
-        final CtClass[] pa = new CtClass[] { asCtClass(parameter) };
-        final CtMethod method = new CtMethod(asCtClass(returnType), name, pa, it);
-        function1.process(method);
-        it.addMethod(method);
-    }
-
-    public void implementMethodsFrom(final CtClass target, final CtClass source, final MethodGenerator function1)
-            throws CannotCompileException {
-        for (CtMethod method : source.getMethods()) {
-            if (method.getDeclaringClass() == source) {
-                CtMethod redeclaredMethod = new CtMethod(method, target, null);
-                function1.process(redeclaredMethod);
-                target.addMethod(redeclaredMethod);
-            }
-        }
     }
 
     public CtClass createClass(final String fqn, final ClassGenerator cls) throws CannotCompileException {
