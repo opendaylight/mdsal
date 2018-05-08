@@ -15,9 +15,7 @@ import static org.mockito.Mockito.mock;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
-import javassist.CtClass;
 import javassist.NotFoundException;
-import javassist.bytecode.AccessFlag;
 import org.junit.Test;
 
 public class JavassistUtilsTest {
@@ -27,12 +25,6 @@ public class JavassistUtilsTest {
         final JavassistUtils javassistUtils = JavassistUtils.forClassPool(ClassPool.getDefault());
         final ClassGenerator classGenerator = mock(ClassGenerator.class);
         doNothing().when(classGenerator).process(any());
-        final CtClass ctInterface = javassistUtils.createClass("TestInterface", classGenerator);
-        ctInterface.setModifiers(AccessFlag.INTERFACE);
-        final CtClass ctClass = javassistUtils.createClass("TestClass", ctInterface, classGenerator);
-        javassistUtils.ensureClassLoader(ctClass.getClass());
-        assertNotNull(ctClass);
-        assertNotNull(javassistUtils.get(ClassPool.getDefault(), ctClass.getClass()));
 
         final ClassCustomizer classCustomizer = mock(ClassCustomizer.class);
         doNothing().when(classCustomizer).customizeClass(any());

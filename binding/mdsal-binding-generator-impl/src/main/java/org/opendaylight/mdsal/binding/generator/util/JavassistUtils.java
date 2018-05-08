@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.generator.util;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
@@ -56,20 +55,6 @@ public final class JavassistUtils {
         return ret;
     }
 
-    public CtClass createClass(final String fqn, final ClassGenerator cls) throws CannotCompileException {
-        CtClass target = classPool.makeClass(fqn);
-        cls.process(target);
-        return target;
-    }
-
-    public CtClass createClass(final String fqn, final CtClass superInterface, final ClassGenerator cls)
-            throws CannotCompileException {
-        CtClass target = classPool.makeClass(fqn);
-        implementsType(target, superInterface);
-        cls.process(target);
-        return target;
-    }
-
     /**
      * Instantiate a new class based on a prototype. The class is set to automatically prune. The {@code customizer}
      * is guaranteed to run with this object locked.
@@ -98,11 +83,6 @@ public final class JavassistUtils {
 
         result.stopPruning(false);
         return result;
-    }
-
-    private static void implementsType(final CtClass it, final CtClass supertype) {
-        checkArgument(supertype.isInterface(), "Supertype %s is not an interface", supertype);
-        it.addInterface(supertype);
     }
 
     @GuardedBy("this")
@@ -136,9 +116,5 @@ public final class JavassistUtils {
             classPool.appendClassPath(ctLoader);
             loaderClassPaths.put(loader, ctLoader);
         }
-    }
-
-    public void ensureClassLoader(final Class<?> child) {
-        appendClassLoaderIfMissing(child.getClassLoader());
     }
 }
