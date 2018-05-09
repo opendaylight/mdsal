@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Daniel Farrell <dfarrell@redhat.com>
+Code-Review+2: Tom Pantelis <tompantelis@gmail.com>
+Submitted-by: Tom Pantelis <tompantelis@gmail.com>
+Submitted-at: Wed, 09 May 2018 15:34:29 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/71890
+Project: mdsal
+Branch: refs/heads/stable/oxygen
