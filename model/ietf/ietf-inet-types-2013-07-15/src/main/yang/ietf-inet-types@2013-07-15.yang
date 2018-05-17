@@ -328,6 +328,7 @@ module ietf-inet-types {
             + '((([^:]+:)*[^:]+)?::(([^:]+:)*[^:]+)?)'
             + '(/.+)';
     }
+
     description
      "The ipv6-prefix type represents an IPv6 address prefix.
       The prefix length is given by the number following the

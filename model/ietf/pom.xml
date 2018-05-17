@@ -25,10 +25,15 @@
     <description>${project.artifactId}</description>
 
     <modules>
-        <module>ietf-inet-types</module>
-        <module>ietf-interfaces</module>
-        <module>ietf-yang-types</module>
+        <!-- RFC6991 -->
+        <module>ietf-inet-types-2013-07-15</module>
         <module>ietf-yang-types-20130715</module>
+        <module>ietf-type-util</module>
+
+        <!-- RFC7895 YANG Module Library -->
+        <module>rfc7895</module>
+
+        <module>ietf-interfaces</module>
         <module>ietf-network</module>
         <module>ietf-packet-fields</module>
         <module>ietf-access-control-list</module>
@@ -42,29 +47,7 @@
         <module>ietf-topology-ospf</module>
 
         <module>ietf-restconf</module>
-        <module>ietf-inet-types-2013-07-15</module>
 
-        <module>ietf-type-util</module>
         <module>ietf-ip-2014-06-16</module>
-
-        <!-- RFC7895 YANG Module Library -->
-        <module>rfc7895</module>
     </modules>
-
-  <!--
-      Maven Site Configuration
-
-      The following configuration is necessary for maven-site-plugin to
-      correctly identify the correct deployment path for OpenDaylight Maven
-      sites.
-  -->
-  <url>${odl.site.url}/${project.groupId}/${stream}/${project.artifactId}/</url>
-
-  <distributionManagement>
-    <site>
-      <id>opendaylight-site</id>
-      <url>${nexus.site.url}/${project.artifactId}/</url>
-    </site>
-  </distributionManagement>
-
 </project>

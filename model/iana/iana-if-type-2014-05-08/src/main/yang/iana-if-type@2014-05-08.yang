@@ -59,11 +59,6 @@ module iana-if-type {
        defined in the 'ifType definitions' registry.";
   }
 
-
-
-
-
-
   identity other {
     base iana-interface-type;
   }
@@ -159,7 +154,6 @@ module iana-if-type {
                   DS1, J1, E1, DS2, and E2 Interface Types";
   }
 
-
   identity basicISDN {
     base iana-interface-type;
     description
@@ -253,8 +247,6 @@ module iana-if-type {
     description
       "ARCnet Plus.";
   }
-
-
 
   identity atm {
     base iana-interface-type;
@@ -350,8 +342,6 @@ module iana-if-type {
       "Fibre Channel.";
   }
 
-
-
   identity hippiInterface {
     base iana-interface-type;
     description
@@ -397,8 +387,6 @@ module iana-if-type {
       "RFC 1356 - Multiprotocol Interconnect on X.25 and ISDN
                   in the Packet Mode";
   }
-
-
 
   identity v11 {
     base iana-interface-type;
@@ -687,7 +675,6 @@ module iana-if-type {
     base iana-interface-type;
     status deprecated;
 
-
     description
       "Obsoleted via RFC 3635.
        ethernetCsmacd(6) should be used instead.";
@@ -974,8 +961,6 @@ module iana-if-type {
       "Packet over SONET/SDH Interface.";
   }
 
-
-
   identity dvbAsiIn {
     base iana-interface-type;
     description
@@ -1021,8 +1006,6 @@ module iana-if-type {
     description
       "Cisco proprietary Maclayer.";
   }
-
-
 
   identity propDocsWirelessDownstream {
     base iana-interface-type;
@@ -1118,8 +1101,6 @@ module iana-if-type {
       "Voice Over Cable Interface.";
   }
 
-
-
   identity infiniband {
     base iana-interface-type;
     description
@@ -1165,8 +1146,6 @@ module iana-if-type {
     description
       "FSAN 155Mb Symetrical PON interface.";
   }
-
-
 
   identity pon622 {
     base iana-interface-type;
@@ -1261,8 +1240,6 @@ module iana-if-type {
     description
       "Resilient Packet Ring Interface Type.";
   }
-
-
 
   identity qam {
     base iana-interface-type;
@@ -1454,7 +1431,6 @@ module iana-if-type {
     description
       "DOCSIS CATV Upstream RF Port.";
   }
-
 
   identity cableDownstreamRfPort {
     base iana-interface-type;

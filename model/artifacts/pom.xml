@@ -32,23 +32,22 @@
         <dependencies>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>iana-afn-safi</artifactId>
-                <version>2013.07.04.13.0-SNAPSHOT</version>
+                <artifactId>opendaylight-l2-types</artifactId>
+                <version>2013.08.27.13.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>iana-if-type-2014-05-08</artifactId>
-                <version>2014.05.08.13.0-SNAPSHOT</version>
+                <artifactId>general-entity</artifactId>
+                <version>0.13.0-SNAPSHOT</version>
             </dependency>
+
+            <!-- RFC6991 -->
+            <!-- FIXME: harmonize packaging of these two, as per the discussion at
+                 https://lists.opendaylight.org/pipermail/mdsal-dev/2018-April/001656.html -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-inet-types</artifactId>
-                <version>2010.09.24.13.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-yang-types</artifactId>
-                <version>2010.09.24.13.0-SNAPSHOT</version>
+                <artifactId>ietf-inet-types-2013-07-15</artifactId>
+                <version>1.5.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
@@ -57,19 +56,54 @@
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>ietf-type-util</artifactId>
+                <version>2.1.0-SNAPSHOT</version>
+            </dependency>
+
+            <!-- RFC7223 -->
+            <!-- FIXME: upgrade this to RFC8343 (2018-02-20, NMDA) -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-interfaces</artifactId>
                 <version>2014.05.08.13.0-SNAPSHOT</version>
             </dependency>
+
+            <!-- RFC7224, live version lives here: https://github.com/YangModels/yang/blob/master/standard/ietf/RFC/iana-if-type.yang -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>iana-if-type-2014-05-08</artifactId>
+                <version>2014.05.08.13.0-SNAPSHOT</version>
+            </dependency>
+
+            <!-- RFC7277 -->
+            <!-- FIXME: upgrade this to RFC8344 (2018-02-22, NMDA) -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-ip-2014-06-16</artifactId>
                 <version>2014.06.16.13.0-SNAPSHOT</version>
             </dependency>
+
+            <!-- RFC7895 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>rfc7895</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
+            <!-- draft-bierman-netconf-restconf-02 -->
+            <!-- FIXME: upgrade to RFC8040 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-restconf</artifactId>
                 <version>2013.10.19.13.0-SNAPSHOT</version>
             </dependency>
+
+            <!-- draft-clemm-netmod-yang-network-topo-01 -->
+            <!-- FIXME: figure out migration path towads:
+                        RFC8345
+                        RFC8346
+                        draft-ietf-teas-yang-te-topo-15 (?)
+                        draft-ietf-teas-yang-l3-te-topo-01 (?) -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-ted</artifactId>
@@ -102,17 +136,7 @@
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>opendaylight-l2-types</artifactId>
-                <version>2013.08.27.13.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>ietf-network-2015-06-08</artifactId>
-                <version>1.5.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-inet-types-2013-07-15</artifactId>
                 <version>1.5.0-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -120,6 +144,29 @@
                 <artifactId>ietf-lisp-address-types-2015-11-05</artifactId>
                 <version>1.2.0-SNAPSHOT</version>
             </dependency>
+
+            <!-- draft-ietf-netmod-acl-model-07 -->
+            <!-- FIXME: figure out the upgrade path towards
+                        draft-ietf-netmod-acl-model-18 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>ietf-packet-fields</artifactId>
+                <version>0.11.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>ietf-access-control-list</artifactId>
+                <version>0.11.0-SNAPSHOT</version>
+            </dependency>
+
+            <!-- FIXME: where is the authoritative source of this ? -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>iana-afn-safi</artifactId>
+                <version>2013.07.04.13.0-SNAPSHOT</version>
+            </dependency>
+
+            <!-- Features -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>features-mdsal-model</artifactId>
@@ -134,50 +181,6 @@
                 <classifier>features</classifier>
                 <type>xml</type>
             </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>general-entity</artifactId>
-                <version>0.13.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-type-util</artifactId>
-                <version>2.1.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-packet-fields</artifactId>
-                <version>0.11.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>ietf-access-control-list</artifactId>
-                <version>0.11.0-SNAPSHOT</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>rfc7895</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-            </dependency>
-            <!-- TODO: Sort dependencies alphabetically? -->
         </dependencies>
     </dependencyManagement>
-
-  <!--
-      Maven Site Configuration
-
-      The following configuration is necessary for maven-site-plugin to
-      correctly identify the correct deployment path for OpenDaylight Maven
-      sites.
-  -->
-  <url>${odl.site.url}/${project.groupId}/${stream}/${project.artifactId}/</url>
-
-  <distributionManagement>
-    <site>
-      <id>opendaylight-site</id>
-      <url>${nexus.site.url}/${project.artifactId}/</url>
-    </site>
-  </distributionManagement>
-
 </project>
