@@ -34,7 +34,7 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, TOP_PATH, new TopBuilder().build());
         writeTx.put(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE);
-        writeTx.submit().get();
+        writeTx.commit().get();
     }
 
     @Test
@@ -42,7 +42,7 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<Top> topNode = readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();
@@ -56,7 +56,7 @@ public class WriteTransactionTest extends AbstractDataBrokerTest {
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.merge(LogicalDatastoreType.OPERATIONAL, NODE_PATH, NODE,true);
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         final ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         final Optional<Top> topNode = readTx.read(LogicalDatastoreType.OPERATIONAL, TOP_PATH).get();

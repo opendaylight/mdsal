@@ -127,7 +127,7 @@ public class DOMBrokerTest {
          */
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
 
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         final Optional<NormalizedNode<?, ?>> afterCommitRead = domBroker.newReadOnlyTransaction()
                 .read(OPERATIONAL, TestModel.TEST_PATH).get();
@@ -135,7 +135,8 @@ public class DOMBrokerTest {
     }
 
     @Test(expected = TransactionCommitFailedException.class)
-    public void testRejectedCommit() throws Exception {
+    @SuppressWarnings({"checkstyle:AvoidHidingCauseException", "checkstyle:IllegalThrows"})
+    public void testRejectedCommit() throws Throwable {
         commitExecutor.delegate = Mockito.mock(ExecutorService.class);
         Mockito.doThrow(new RejectedExecutionException("mock"))
             .when(commitExecutor.delegate).execute(Mockito.any(Runnable.class));
@@ -148,7 +149,11 @@ public class DOMBrokerTest {
         final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
 
-        writeTx.submit().checkedGet(5, TimeUnit.SECONDS);
+        try {
+            writeTx.commit().get(5, TimeUnit.SECONDS);
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
@@ -159,7 +164,7 @@ public class DOMBrokerTest {
             public void run() {
 
                 try {
-                    writeTx.submit();
+                    writeTx.commit();
                 } catch (final Throwable e) {
                     caughtEx.set(e);
                 }
@@ -187,7 +192,7 @@ public class DOMBrokerTest {
         assertNotNull(((SerializedDOMDataBroker) domBroker).getCommitStatsTracker());
 
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
-        writeTx.submit().get();
+        writeTx.commit().get();
         assertFalse(writeTx.cancel());
 
         assertEquals(false, domBroker.newReadOnlyTransaction().exists(CONFIGURATION, TestModel.TEST_PATH).get());
@@ -197,14 +202,14 @@ public class DOMBrokerTest {
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
         writeTx.delete(OPERATIONAL, TestModel.TEST_PATH);
-        writeTx.submit().get();
+        writeTx.commit().get();
         assertEquals(false, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
         assertTrue(domBroker.newWriteOnlyTransaction().cancel());
 
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
         writeTx.merge(OPERATIONAL, TestModel.TEST_PATH, testContainer);
-        writeTx.submit().get();
+        writeTx.commit().get();
         assertEquals(Boolean.TRUE, domBroker.newReadOnlyTransaction().exists(OPERATIONAL, TestModel.TEST_PATH).get());
         assertEquals(Boolean.TRUE, domBroker.newReadOnlyTransaction().read(OPERATIONAL, TestModel.TEST_PATH).get()
                  .get().toString().contains(testContainer.toString()));

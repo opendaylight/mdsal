@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * Implementation of blocking three-phase commit-coordination tasks without
  * support of cancellation.
  */
-final class CommitCoordinationTask implements Callable<Void> {
+final class CommitCoordinationTask implements Callable<CommitInfo> {
     private enum Phase {
         CAN_COMMIT,
         PRE_COMMIT,
@@ -47,7 +48,7 @@ final class CommitCoordinationTask implements Callable<Void> {
     }
 
     @Override
-    public Void call() throws TransactionCommitFailedException {
+    public CommitInfo call() throws TransactionCommitFailedException {
         final long startTime = commitStatTracker != null ? System.nanoTime() : 0;
 
         Phase phase = Phase.CAN_COMMIT;
@@ -65,7 +66,7 @@ final class CommitCoordinationTask implements Callable<Void> {
             commitBlocking();
 
             LOG.debug("Transaction {}: doCommit completed", tx.getIdentifier());
-            return null;
+            return CommitInfo.empty();
         } catch (final TransactionCommitFailedException e) {
             LOG.warn("Tx: {} Error during phase {}, starting Abort", tx.getIdentifier(), phase, e);
             abortBlocking(e);

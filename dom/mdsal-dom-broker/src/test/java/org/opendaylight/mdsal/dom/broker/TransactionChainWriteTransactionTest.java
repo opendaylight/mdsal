@@ -14,9 +14,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import org.junit.Test;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 
@@ -50,13 +51,13 @@ public class TransactionChainWriteTransactionTest {
         transactionChainWriteTransaction.delete(any(), any());
         verify(writeTransaction).delete(any(), any());
 
-        CheckedFuture<Void, TransactionCommitFailedException> writeResult = Futures.immediateCheckedFuture(null);
-        doReturn(writeResult).when(writeTransaction).submit();
-        assertEquals(writeResult, transactionChainWriteTransaction.submit());
+        ListenableFuture<? extends CommitInfo> writeResult = Futures.immediateFuture(null);
+        doReturn(writeResult).when(writeTransaction).commit();
+        assertEquals(writeResult, transactionChainWriteTransaction.commit());
 
-        writeResult = Futures.immediateFailedCheckedFuture(mock(TransactionCommitFailedException.class));
+        writeResult = Futures.immediateFailedFuture(mock(TransactionCommitFailedException.class));
         doNothing().when(chainAdapter).transactionFailed(any(), any());
-        doReturn(writeResult).when(writeTransaction).submit();
-        assertEquals(writeResult, transactionChainWriteTransaction.submit());
+        doReturn(writeResult).when(writeTransaction).commit();
+        assertEquals(writeResult, transactionChainWriteTransaction.commit());
     }
 }
