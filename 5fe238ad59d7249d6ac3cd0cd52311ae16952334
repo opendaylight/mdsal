@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a561e447_49cde538",
+        "filename": "binding/mdsal-binding-generator-impl/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-05-22T15:43:50Z",
+      "side": 1,
+      "message": "No, please do not make annotations runtime-mandatory ...",
+      "range": {
+        "startLine": 85,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 21
+      },
+      "revId": "5fe238ad59d7249d6ac3cd0cd52311ae16952334",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "50b7c4ca_d60c794f",
+        "filename": "binding/mdsal-binding-generator-impl/src/main/java/org/opendaylight/mdsal/binding/generator/impl/AbstractTypeGenerator.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-05-22T15:43:50Z",
+      "side": 1,
+      "message": "... just to have a sexy constant.",
+      "range": {
+        "startLine": 154,
+        "startChar": 51,
+        "endLine": 154,
+        "endChar": 65
+      },
+      "revId": "5fe238ad59d7249d6ac3cd0cd52311ae16952334",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
