@@ -32,6 +32,6 @@ public interface ClusterSingletonService extends Identifiable<ServiceGroupIdenti
      *
      * @return a ListenableFuture that is completed when the underlying instance close operation is complete.
      */
-    ListenableFuture<Void> closeServiceInstance();
+    ListenableFuture<? extends Object> closeServiceInstance();
 
 }

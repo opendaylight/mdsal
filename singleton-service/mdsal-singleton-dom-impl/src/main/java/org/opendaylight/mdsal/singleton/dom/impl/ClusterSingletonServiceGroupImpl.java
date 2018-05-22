@@ -661,9 +661,9 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             case STARTED:
                 localServicesState = ServiceState.STOPPING;
 
-                final List<ListenableFuture<Void>> serviceCloseFutureList = new ArrayList<>(serviceGroup.size());
+                final List<ListenableFuture<?>> serviceCloseFutureList = new ArrayList<>(serviceGroup.size());
                 for (final ClusterSingletonService service : serviceGroup) {
-                    final ListenableFuture<Void> future;
+                    final ListenableFuture<?> future;
 
                     try {
                         future = service.closeServiceInstance();
@@ -678,7 +678,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
                 LOG.debug("Service group {} initiated service shutdown", identifier);
 
-                Futures.addCallback(Futures.allAsList(serviceCloseFutureList), new FutureCallback<List<Void>>() {
+                Futures.addCallback(Futures.allAsList(serviceCloseFutureList), new FutureCallback<List<?>>() {
                     @Override
                     public void onFailure(final Throwable cause) {
                         LOG.warn("Service group {} service stopping reported error", identifier, cause);
@@ -686,7 +686,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
                     }
 
                     @Override
-                    public void onSuccess(final List<Void> nulls) {
+                    public void onSuccess(final List<?> nulls) {
                         onServicesStopped();
                     }
                 }, MoreExecutors.directExecutor());
