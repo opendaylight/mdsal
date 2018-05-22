@@ -17,6 +17,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import javax.annotation.Nullable;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
@@ -26,12 +27,12 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 public class TransactionChainReadTransaction implements DOMDataTreeReadTransaction {
 
     private final DOMDataTreeReadTransaction delegateReadTx;
-    private final ListenableFuture<Void> previousWriteTxFuture;
+    private final ListenableFuture<? extends CommitInfo> previousWriteTxFuture;
     private final Object identifier;
     private final ShardedDOMTransactionChainAdapter txChain;
 
     TransactionChainReadTransaction(final Object txIdentifier, final DOMDataTreeReadTransaction delegateReadTx,
-                                    final ListenableFuture<Void> previousWriteTxFuture,
+                                    final ListenableFuture<? extends CommitInfo> previousWriteTxFuture,
                                     final ShardedDOMTransactionChainAdapter txChain) {
         this.delegateReadTx = delegateReadTx;
         this.previousWriteTxFuture = previousWriteTxFuture;
@@ -44,9 +45,9 @@ public class TransactionChainReadTransaction implements DOMDataTreeReadTransacti
             final YangInstanceIdentifier path) {
         final SettableFuture<Optional<NormalizedNode<?, ?>>> readResult = SettableFuture.create();
 
-        Futures.addCallback(previousWriteTxFuture, new FutureCallback<Void>() {
+        Futures.addCallback(previousWriteTxFuture, new FutureCallback<CommitInfo>() {
             @Override
-            public void onSuccess(@Nullable final Void result) {
+            public void onSuccess(@Nullable final CommitInfo result) {
                 Futures.addCallback(delegateReadTx.read(store, path),
                     new FutureCallback<Optional<NormalizedNode<?, ?>>>() {
 

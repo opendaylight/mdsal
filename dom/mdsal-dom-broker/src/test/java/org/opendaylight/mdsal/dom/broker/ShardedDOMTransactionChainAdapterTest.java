@@ -74,11 +74,11 @@ public class ShardedDOMTransactionChainAdapterTest {
                 new ShardedDOMTransactionChainAdapter(identifier, dataTreeService, chainListener);
         writeTransaction = transactionChainAdapter.newWriteOnlyTransaction();
         writeTransaction.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
-        assertNotNull(writeTransaction.submit());
+        assertNotNull(writeTransaction.commit());
         assertFalse(writeTransaction.cancel());
         transactionChainAdapter.closeWriteTransaction(Futures.immediateFuture(null));
 
-        assertNotNull(transactionChainAdapter.newWriteOnlyTransaction().submit());
+        assertNotNull(transactionChainAdapter.newWriteOnlyTransaction().commit());
 
         DOMDataTreeReadTransaction readTransaction = transactionChainAdapter.newReadOnlyTransaction();
         assertNotNull(readTransaction);

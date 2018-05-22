@@ -8,12 +8,13 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
@@ -61,21 +62,20 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
     protected abstract Object newTransactionIdentifier();
 
     /**
-     * User-supplied implementation of {@link DOMDataTreeWriteTransaction#submit()} for transaction.
+     * User-supplied implementation of {@link DOMDataTreeWriteTransaction#commit()} for transaction.
      *
      *<p>
-     * Callback invoked when {@link DOMDataTreeWriteTransaction#submit()} is invoked on transaction
+     * Callback invoked when {@link DOMDataTreeWriteTransaction#commit()} is invoked on transaction
      * created by this factory.
      *
-     * @param transaction Transaction on which {@link DOMDataTreeWriteTransaction#submit()} was invoked.
+     * @param transaction Transaction on which {@link DOMDataTreeWriteTransaction#commit()} was invoked.
      * @param cohorts Iteratable of cohorts for subtransactions associated with the transaction
      *        being committed.
-     * @return a CheckedFuture. if commit coordination on cohorts finished successfully, nothing is
-     *         returned from the Future, On failure, the Future fails with a
-     *         {@link TransactionCommitFailedException}.
+     * @return a FluentFuture. if commit coordination on cohorts finished successfully,
+     *         a CommitInfo is returned from the Future, On failure,
+     *         the Future fails with a {@link TransactionCommitFailedException}.
      */
-    protected abstract CheckedFuture<Void,TransactionCommitFailedException> submit(
-            DOMDataTreeWriteTransaction transaction,
+    protected abstract FluentFuture<? extends CommitInfo> commit(DOMDataTreeWriteTransaction transaction,
             Collection<DOMStoreThreePhaseCommitCohort> cohorts);
 
     /**
@@ -139,9 +139,9 @@ abstract class AbstractDOMForwardedTransactionFactory<T extends DOMStoreTransact
      * - backing subtransaction is selected by {@link LogicalDatastoreType},
      * {@link DOMStoreWriteTransaction#delete(org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier)}
      * is invoked on selected subtransaction.
-     * <li> {@link DOMDataTreeWriteTransaction#submit()} - results in invoking
+     * <li> {@link DOMDataTreeWriteTransaction#commit()} - results in invoking
      * {@link DOMStoreWriteTransaction#ready()}, gathering all resulting cohorts and then invoking
-     * finalized implementation callback {@link #submit(DOMDataTreeWriteTransaction, Collection)} with
+     * finalized implementation callback {@link #commit(DOMDataTreeWriteTransaction, Collection)} with
      * transaction which was commited and gathered results.</li>
      * </ul>
      *

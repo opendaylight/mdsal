@@ -42,9 +42,9 @@ public class ForwardingDOMDataWriteTransactionTest extends ForwardingDOMDataWrit
         this.delete(null, null);
         verify(domDataTreeWriteTransaction).delete(null, null);
 
-        doReturn(null).when(domDataTreeWriteTransaction).submit();
-        this.submit();
-        verify(domDataTreeWriteTransaction).submit();
+        doReturn(null).when(domDataTreeWriteTransaction).commit();
+        this.commit();
+        verify(domDataTreeWriteTransaction).commit();
 
         doReturn(false).when(domDataTreeWriteTransaction).cancel();
         this.cancel();

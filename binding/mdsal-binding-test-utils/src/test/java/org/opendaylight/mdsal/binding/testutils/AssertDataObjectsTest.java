@@ -75,7 +75,7 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
         WriteTransaction initialTx = getDataBroker().newWriteOnlyTransaction();
         put(initialTx, OPERATIONAL, ExampleYangObjects.topEmpty());
         put(initialTx, OPERATIONAL, ExampleYangObjects.topLevelList());
-        initialTx.submit().checkedGet();
+        initialTx.commit().get();
 
         ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         InstanceIdentifier<Top> id = InstanceIdentifier.create(Top.class);

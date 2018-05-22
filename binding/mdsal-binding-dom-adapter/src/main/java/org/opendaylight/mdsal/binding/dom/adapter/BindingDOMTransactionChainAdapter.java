@@ -8,19 +8,20 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionChain;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
@@ -65,8 +66,8 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
         return new BindingDOMWriteTransactionAdapter<DOMDataTreeWriteTransaction>(delegateTx, codec) {
 
             @Override
-            public CheckedFuture<Void,TransactionCommitFailedException> submit() {
-                return listenForFailure(this,super.submit());
+            public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+                return listenForFailure(this, super.commit());
             }
 
         };
@@ -78,10 +79,9 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
         return new BindingDOMReadWriteTransactionAdapter(delegateTx, codec) {
 
             @Override
-            public CheckedFuture<Void, TransactionCommitFailedException> submit() {
-                return listenForFailure(this,super.submit());
+            public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+                return listenForFailure(this, super.commit());
             }
-
         };
     }
 
@@ -100,6 +100,7 @@ final class BindingDOMTransactionChainAdapter implements BindingTransactionChain
 
         return future;
     }
+
 
     private void failTransactionChain(final WriteTransaction tx, final Throwable throwable) {
         /*

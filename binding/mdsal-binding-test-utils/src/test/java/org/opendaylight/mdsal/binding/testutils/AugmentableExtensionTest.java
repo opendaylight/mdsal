@@ -50,7 +50,7 @@ public class AugmentableExtensionTest extends AbstractDataBrokerTest {
     public void testAugmentableExtensionWithDataBroker() throws Exception {
         WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         put(writeTx, OPERATIONAL, ExampleYangObjects.topLevelList());
-        writeTx.submit().checkedGet();
+        writeTx.commit().get();
 
         ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         InstanceIdentifier<Top> id = InstanceIdentifier.create(Top.class);

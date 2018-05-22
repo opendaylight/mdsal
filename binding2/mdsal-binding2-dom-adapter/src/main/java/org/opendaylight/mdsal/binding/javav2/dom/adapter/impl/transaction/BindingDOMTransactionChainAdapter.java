@@ -9,11 +9,12 @@ package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.transaction;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.javav2.api.BindingTransactionChain;
 import org.opendaylight.mdsal.binding.javav2.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.javav2.api.WriteTransaction;
@@ -22,9 +23,9 @@ import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.common.api.AsyncReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionChain;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -71,8 +72,8 @@ public final class BindingDOMTransactionChainAdapter
         return new BindingDOMWriteTransactionAdapter<DOMDataTreeWriteTransaction>(delegateTx, codec) {
 
             @Override
-            public CheckedFuture<Void, TransactionCommitFailedException> submit() {
-                return listenForFailure(this, super.submit());
+            public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+                return listenForFailure(this, super.commit());
             }
 
         };

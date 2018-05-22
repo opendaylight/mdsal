@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
@@ -24,7 +25,8 @@ class TransactionChainReadWriteTransaction extends TransactionChainWriteTransact
 
     TransactionChainReadWriteTransaction(final Object identifier,
             final DOMDataTreeReadWriteTransaction delegateWriteTx, final DOMDataTreeReadTransaction delegateReadTx,
-            final ListenableFuture<Void> previousWriteTxFuture, final ShardedDOMTransactionChainAdapter txChain) {
+            final ListenableFuture<? extends CommitInfo> previousWriteTxFuture,
+            final ShardedDOMTransactionChainAdapter txChain) {
         super(identifier, delegateWriteTx, txChain);
         readTx = new TransactionChainReadTransaction(identifier, delegateReadTx, previousWriteTxFuture, txChain);
     }

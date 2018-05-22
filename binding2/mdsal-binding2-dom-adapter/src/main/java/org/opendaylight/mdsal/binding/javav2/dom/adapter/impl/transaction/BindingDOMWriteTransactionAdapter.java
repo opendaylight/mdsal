@@ -8,14 +8,15 @@
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.impl.transaction;
 
 import com.google.common.annotations.Beta;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.javav2.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.AbstractWriteTransaction;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 
 /**
@@ -51,8 +52,8 @@ public class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransac
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> submit() {
-        return doSubmit();
+    public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+        return doCommit();
     }
 
     @Override
