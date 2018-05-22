@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verify;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.junit.Test;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -30,7 +31,7 @@ public class TransactionChainReadTransactionTest {
         final String identifier = "testIdent";
         final DOMDataTreeReadTransaction readTransaction = mock(DOMDataTreeReadTransaction.class);
         final ShardedDOMTransactionChainAdapter chainAdapter = mock(ShardedDOMTransactionChainAdapter.class);
-        ListenableFuture<Void> previousWriteTxFuture = Futures.immediateFuture(null);
+        ListenableFuture<? extends CommitInfo> previousWriteTxFuture = Futures.immediateFuture(null);
 
         TransactionChainReadTransaction transactionChainReadTransaction =
                 new TransactionChainReadTransaction(identifier, readTransaction, previousWriteTxFuture, chainAdapter);

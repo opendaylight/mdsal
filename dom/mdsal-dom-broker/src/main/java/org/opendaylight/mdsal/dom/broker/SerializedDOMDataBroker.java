@@ -9,15 +9,15 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.MappingCheckedFuture;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
@@ -63,26 +63,24 @@ public class SerializedDOMDataBroker extends AbstractDOMDataBroker {
     }
 
     @Override
-    protected CheckedFuture<Void,TransactionCommitFailedException> submit(
-            final DOMDataTreeWriteTransaction transaction,
+    protected FluentFuture<? extends CommitInfo> commit(final DOMDataTreeWriteTransaction transaction,
             final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
         Preconditions.checkArgument(transaction != null, "Transaction must not be null.");
         Preconditions.checkArgument(cohorts != null, "Cohorts must not be null.");
         LOG.debug("Tx: {} is submitted for execution.", transaction.getIdentifier());
 
-        ListenableFuture<Void> commitFuture = null;
+        ListenableFuture<CommitInfo> commitFuture = null;
         try {
             commitFuture = executor.submit(new CommitCoordinationTask(transaction, cohorts,
                     commitStatsTracker));
         } catch (RejectedExecutionException e) {
             LOG.error("The commit executor's queue is full - submit task was rejected. \n"
                     + executor, e);
-            return Futures.immediateFailedCheckedFuture(
+            return FluentFuture.from(Futures.immediateFailedFuture(
                     new TransactionCommitFailedException(
-                        "Could not submit the commit task - the commit queue capacity has been exceeded.", e));
+                        "Could not submit the commit task - the commit queue capacity has been exceeded.", e)));
         }
 
-        return MappingCheckedFuture.create(commitFuture,
-                TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER);
+        return FluentFuture.from(commitFuture);
     }
 }

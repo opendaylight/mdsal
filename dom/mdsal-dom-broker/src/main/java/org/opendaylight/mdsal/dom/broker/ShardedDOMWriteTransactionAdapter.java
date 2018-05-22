@@ -9,7 +9,7 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -17,8 +17,9 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
@@ -69,7 +70,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> submit() {
+    public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
         checkRunning();
         LOG.debug("{}: Submitting transaction", txIdentifier);
         if (!initialized) {
@@ -77,7 +78,7 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
             // not even initialized just seal this transaction and
             // return immediate future
             finished = true;
-            return Futures.immediateCheckedFuture(null);
+            return CommitInfo.emptyFluentFuture();
         }
         // First we need to close cursors
         cursorMap.values().forEach(DOMDataTreeWriteCursor::close);
@@ -89,9 +90,8 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
         closeProducers();
         finished = true;
 
-        return Futures.makeChecked(
-                Futures.transform(aggregatedSubmit, input -> input.get(0), MoreExecutors.directExecutor()),
-                TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER);
+        return FluentFuture.from(Futures.transform(aggregatedSubmit,
+            unused -> CommitInfo.empty(), MoreExecutors.directExecutor()));
     }
 
     @Override

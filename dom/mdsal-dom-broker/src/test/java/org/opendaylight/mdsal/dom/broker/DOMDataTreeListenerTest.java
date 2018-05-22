@@ -140,7 +140,7 @@ public class DOMDataTreeListenerTest {
 
         final DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
-        writeTx.submit();
+        writeTx.commit();
 
         latch.await(5, TimeUnit.SECONDS);
 
@@ -165,14 +165,14 @@ public class DOMDataTreeListenerTest {
 
         DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         final TestDataTreeListener listener = new TestDataTreeListener(latch);
         final ListenerRegistration<TestDataTreeListener> listenerReg =
                 dataTreeChangeService.registerDataTreeChangeListener(ROOT_DATA_TREE_ID, listener);
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER_2);
-        writeTx.submit();
+        writeTx.commit();
 
         latch.await(5, TimeUnit.SECONDS);
 
@@ -205,7 +205,7 @@ public class DOMDataTreeListenerTest {
 
         DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         final TestDataTreeListener listener = new TestDataTreeListener(latch);
         final ListenerRegistration<TestDataTreeListener> listenerReg =
@@ -213,7 +213,7 @@ public class DOMDataTreeListenerTest {
 
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.delete(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH);
-        writeTx.submit();
+        writeTx.commit();
 
         latch.await(5, TimeUnit.SECONDS);
 
@@ -246,7 +246,7 @@ public class DOMDataTreeListenerTest {
 
         DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         final TestDataTreeListener listener = new TestDataTreeListener(latch);
         final ListenerRegistration<TestDataTreeListener> listenerReg =
@@ -254,7 +254,7 @@ public class DOMDataTreeListenerTest {
 
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH, OUTER_LIST_2);
-        writeTx.submit();
+        writeTx.commit();
 
         latch.await(5, TimeUnit.SECONDS);
 
@@ -291,7 +291,7 @@ public class DOMDataTreeListenerTest {
 
         DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         final TestDataTreeListener listener = new TestDataTreeListener(latch);
         final ListenerRegistration<TestDataTreeListener> listenerReg =
@@ -299,7 +299,7 @@ public class DOMDataTreeListenerTest {
 
         writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER_2);
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         latch.await(1, TimeUnit.SECONDS);
 
@@ -332,7 +332,7 @@ public class DOMDataTreeListenerTest {
 
         DOMDataTreeWriteTransaction writeTx = domBroker.newWriteOnlyTransaction();
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.TEST_PATH, TEST_CONTAINER);
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         final TestDataTreeListener listener = new TestDataTreeListener(latch);
         final ListenerRegistration<TestDataTreeListener> listenerReg =
@@ -363,7 +363,7 @@ public class DOMDataTreeListenerTest {
                 outerListEntry2);
         writeTx.put(LogicalDatastoreType.CONFIGURATION, TestModel.OUTER_LIST_PATH.node(outerListEntryId3),
                 outerListEntry3);
-        writeTx.submit();
+        writeTx.commit();
 
         latch.await(5, TimeUnit.SECONDS);
 

@@ -104,7 +104,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
                 .addChild(ImmutableNodes.leafNode(FOO_QNAME, "bar"))
                 .build())
             .build());
-        domTx.submit().get();
+        domTx.commit().get();
 
         final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
         verify(listener).onDataTreeChanged(captor.capture());
@@ -159,7 +159,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
                 .addChild(ImmutableNodes.leafNode(FOO_QNAME, "bar"))
                 .build())
             .build());
-        domTx.submit().get();
+        domTx.commit().get();
 
         final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
         verify(listener).onDataTreeChanged(captor.capture());
@@ -191,7 +191,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, ADDRESSABLE_CASE, new AddressableBuilder().build());
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
         verify(listener).onDataTreeChanged(captor.capture());
@@ -224,7 +224,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         writeTx.put(CONFIGURATION, ADDRESSABLE_CONTAINER.child(AddressableChild.class),
             new AddressableChildBuilder().build());
-        writeTx.submit().get();
+        writeTx.commit().get();
 
         final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
         verify(listener).onDataTreeChanged(captor.capture());
@@ -258,7 +258,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         domTx.put(CONFIGURATION, YangInstanceIdentifier.create(UNADDRESSABLE_CONTAINER_NID)
             .node(QName.create(UnaddressableCont.QNAME, "baz")),
             ImmutableNodes.leafNode(BAZ_QNAME, "baz"));
-        domTx.submit().get();
+        domTx.commit().get();
 
         final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
         verify(listener).onDataTreeChanged(captor.capture());
@@ -290,7 +290,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
                 .withChildValue("foo")
                 .build())
             .build());
-        domTx.submit().get();
+        domTx.commit().get();
 
         final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
         verify(listener).onDataTreeChanged(captor.capture());
@@ -322,7 +322,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DOMDataTreeWriteTransaction domTx = getDomBroker().newWriteOnlyTransaction();
         domTx.put(CONFIGURATION, YangInstanceIdentifier.create(new NodeIdentifier(qname)),
             ImmutableNodes.containerNode(qname));
-        domTx.submit().get();
+        domTx.commit().get();
 
         final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
         verify(listener).onDataTreeChanged(captor.capture());
@@ -358,7 +358,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
             .withNodeIdentifier(CHOICE_CONTAINER_NID)
             .withChild(Builders.choiceBuilder().withNodeIdentifier(CHOICE_NID).build())
             .build());
-        domTx.submit().get();
+        domTx.commit().get();
 
         final ArgumentCaptor<Collection> captor = ArgumentCaptor.forClass(Collection.class);
         verify(listener).onDataTreeChanged(captor.capture());

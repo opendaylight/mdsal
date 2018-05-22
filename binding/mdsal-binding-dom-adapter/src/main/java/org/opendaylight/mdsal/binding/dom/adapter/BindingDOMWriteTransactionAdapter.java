@@ -7,10 +7,11 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -42,8 +43,8 @@ class BindingDOMWriteTransactionAdapter<T extends DOMDataTreeWriteTransaction> e
     }
 
     @Override
-    public CheckedFuture<Void,TransactionCommitFailedException> submit() {
-        return doSubmit();
+    public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+        return doCommit();
     }
 
     @Override
