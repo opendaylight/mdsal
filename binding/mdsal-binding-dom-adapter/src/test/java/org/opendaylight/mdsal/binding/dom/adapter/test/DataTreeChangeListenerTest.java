@@ -98,7 +98,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
 
         createAndVerifyTop(listener);
 
-        putTx(BAR_PATH, BAR_DATA).submit().get();
+        putTx(BAR_PATH, BAR_DATA).commit().get();
         final DataObjectModification<Top> afterBarPutEvent
                 = Iterables.getOnlyElement(listener.nextEvent()).getRootNode();
         verifyModification(afterBarPutEvent, TOP_ARGUMENT, ModificationType.SUBTREE_MODIFIED);
@@ -107,7 +107,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
         assertNotNull(barPutMod);
         verifyModification(barPutMod, BAR_ARGUMENT, ModificationType.WRITE);
 
-        deleteTx(BAR_PATH).submit().get();
+        deleteTx(BAR_PATH).commit().get();
         final DataObjectModification<Top> afterBarDeleteEvent
                 = Iterables.getOnlyElement(listener.nextEvent()).getRootNode();
         verifyModification(afterBarDeleteEvent, TOP_ARGUMENT, ModificationType.SUBTREE_MODIFIED);
@@ -125,18 +125,18 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
                 LogicalDatastoreType.OPERATIONAL, TOP_PATH.child(TopLevelList.class));
         dataBrokerImpl.registerDataTreeChangeListener(wildcard, listener);
 
-        putTx(TOP_PATH, TOP_INITIAL_DATA).submit().get();
+        putTx(TOP_PATH, TOP_INITIAL_DATA).commit().get();
 
         final DataTreeModification<TopLevelList> fooWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
         assertEquals(FOO_PATH, fooWriteEvent.getRootPath().getRootIdentifier());
         verifyModification(fooWriteEvent.getRootNode(), FOO_ARGUMENT, ModificationType.WRITE);
 
-        putTx(BAR_PATH, BAR_DATA).submit().get();
+        putTx(BAR_PATH, BAR_DATA).commit().get();
         final DataTreeModification<TopLevelList> barWriteEvent = Iterables.getOnlyElement(listener.nextEvent());
         assertEquals(BAR_PATH, barWriteEvent.getRootPath().getRootIdentifier());
         verifyModification(barWriteEvent.getRootNode(), BAR_ARGUMENT, ModificationType.WRITE);
 
-        deleteTx(BAR_PATH).submit().get();
+        deleteTx(BAR_PATH).commit().get();
         final DataTreeModification<TopLevelList> barDeleteEvent = Iterables.getOnlyElement(listener.nextEvent());
         assertEquals(BAR_PATH, barDeleteEvent.getRootPath().getRootIdentifier());
         verifyModification(barDeleteEvent.getRootNode(), BAR_ARGUMENT, ModificationType.DELETE);
@@ -144,7 +144,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
 
     @Test
     public void testWildcardedListListenerWithPreexistingData() throws Exception {
-        putTx(TOP_PATH, TOP_INITIAL_DATA).submit().get();
+        putTx(TOP_PATH, TOP_INITIAL_DATA).commit().get();
 
         final EventCapturingListener<TopLevelList> listener = new EventCapturingListener<>();
         final DataTreeIdentifier<TopLevelList> wildcard = DataTreeIdentifier.create(
@@ -157,7 +157,7 @@ public class DataTreeChangeListenerTest extends AbstractDataBrokerTest {
     }
 
     private void createAndVerifyTop(final EventCapturingListener<Top> listener) throws Exception {
-        putTx(TOP_PATH,TOP_INITIAL_DATA).submit().get();
+        putTx(TOP_PATH,TOP_INITIAL_DATA).commit().get();
         final Collection<DataTreeModification<Top>> events = listener.nextEvent();
 
         assertFalse("Non empty collection should be received.",events.isEmpty());

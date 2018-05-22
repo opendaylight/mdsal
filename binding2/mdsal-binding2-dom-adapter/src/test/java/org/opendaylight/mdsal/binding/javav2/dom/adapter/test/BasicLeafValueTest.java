@@ -8,12 +8,12 @@
 
 package org.opendaylight.mdsal.binding.javav2.dom.adapter.test;
 
+import java.util.concurrent.ExecutionException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.javav2.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.gen.javav2.urn.test.rev170627.data.MyCont;
 import org.opendaylight.mdsal.gen.javav2.urn.test.rev170627.dto.MyContBuilder;
 
@@ -24,10 +24,10 @@ public class BasicLeafValueTest extends AbstractDataBrokerTest {
 
     @Ignore
     @Test
-    public void testMyContLeafNode() throws TransactionCommitFailedException {
+    public void testMyContLeafNode() throws InterruptedException, ExecutionException  {
         final WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();
         final MyContBuilder hello = new MyContBuilder().setMyLeaf("hello");
         writeTx.put(LogicalDatastoreType.OPERATIONAL, MY_CONT_NODE_PATH, hello.build());
-        writeTx.submit().checkedGet();
+        writeTx.commit().get();
     }
 }

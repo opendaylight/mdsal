@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
@@ -46,7 +47,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
     private final CachedDataTreeService cachedDataTreeService;
     private TransactionChainWriteTransaction writeTx;
     private TransactionChainReadTransaction readTx;
-    private ListenableFuture<Void> writeTxSubmitFuture;
+    private ListenableFuture<? extends CommitInfo> writeTxCommitFuture;
     private boolean finished = false;
 
     public ShardedDOMTransactionChainAdapter(final Object txChainIdentifier,
@@ -67,7 +68,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         checkWriteTxClosed();
         readTx = new TransactionChainReadTransaction(newTransactionIdentifier(),
                 new ShardedDOMReadTransactionAdapter(newTransactionIdentifier(), dataTreeService),
-                writeTxSubmitFuture, this);
+                writeTxCommitFuture, this);
 
         return readTx;
     }
@@ -92,7 +93,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         ShardedDOMReadWriteTransactionAdapter adapter = new ShardedDOMReadWriteTransactionAdapter(
                 newTransactionIdentifier(), cachedDataTreeService);
         TransactionChainReadWriteTransaction readWriteTx = new TransactionChainReadWriteTransaction(
-                newTransactionIdentifier(), adapter, adapter.getReadAdapter(), writeTxSubmitFuture, this);
+                newTransactionIdentifier(), adapter, adapter.getReadAdapter(), writeTxCommitFuture, this);
 
         writeTx = readWriteTx;
         return readWriteTx;
@@ -107,9 +108,9 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
 
         checkReadTxClosed();
         checkWriteTxClosed();
-        Futures.addCallback(writeTxSubmitFuture, new FutureCallback<Void>() {
+        Futures.addCallback(writeTxCommitFuture, new FutureCallback<CommitInfo>() {
             @Override
-            public void onSuccess(@Nullable final Void result) {
+            public void onSuccess(@Nullable final CommitInfo result) {
                 txChainListener.onTransactionChainSuccessful(ShardedDOMTransactionChainAdapter.this);
             }
 
@@ -128,8 +129,8 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         readTx = null;
     }
 
-    public void closeWriteTransaction(final ListenableFuture<Void> submitFuture) {
-        writeTxSubmitFuture = submitFuture;
+    public void closeWriteTransaction(final ListenableFuture<? extends CommitInfo> commitFuture) {
+        writeTxCommitFuture = commitFuture;
         writeTx = null;
     }
 

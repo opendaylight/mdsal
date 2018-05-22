@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
@@ -77,7 +78,7 @@ public class DOMTransactionChainTest {
          * First transaction is marked as ready, we are able to allocate chained
          * transactions.
          */
-        final ListenableFuture<Void> firstWriteTxFuture = firstTx.submit();
+        final ListenableFuture<? extends CommitInfo> firstWriteTxFuture = firstTx.commit();
 
         /**
          * We alocate chained transaction - read transaction.
@@ -121,8 +122,7 @@ public class DOMTransactionChainTest {
         /**
          * third transaction is sealed and commited.
          */
-        final ListenableFuture<Void> thirdDeleteTxFuture = thirdDeleteTx.submit();
-        assertCommitSuccessful(thirdDeleteTxFuture);
+        assertCommitSuccessful(thirdDeleteTx.commit());
 
         /**
          * We close transaction chain.
@@ -174,9 +174,9 @@ public class DOMTransactionChainTest {
         return tx;
     }
 
-    private static void assertCommitSuccessful(final ListenableFuture<Void> future)
+    private static void assertCommitSuccessful(final ListenableFuture<? extends CommitInfo> firstWriteTxFuture)
             throws InterruptedException, ExecutionException {
-        future.get();
+        firstWriteTxFuture.get();
     }
 
     private static void assertTestContainerExists(final DOMDataTreeReadTransaction readTx)

@@ -11,13 +11,15 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
@@ -36,7 +38,7 @@ public class DOMForwardedWriteTransactionTest {
     }
 
     @Test
-    public void readyRuntimeExceptionAndCancel() {
+    public void readyRuntimeExceptionAndCancel() throws InterruptedException {
         RuntimeException thrown = new RuntimeException();
         doThrow(thrown).when(domStoreWriteTransaction).ready();
         DOMForwardedWriteTransaction<DOMStoreWriteTransaction> domForwardedWriteTransaction =
@@ -44,32 +46,34 @@ public class DOMForwardedWriteTransactionTest {
                         new Object(),
                         Collections.singletonMap(LogicalDatastoreType.OPERATIONAL, domStoreWriteTransaction),
                         abstractDOMForwardedTransactionFactory);
-        CheckedFuture<Void, TransactionCommitFailedException> submitFuture = domForwardedWriteTransaction.submit();
+        FluentFuture<? extends CommitInfo> submitFuture = domForwardedWriteTransaction.commit();
         try {
-            submitFuture.checkedGet();
+            submitFuture.get();
             Assert.fail("TransactionCommitFailedException expected");
-        } catch (TransactionCommitFailedException e) {
-            assertTrue(e.getCause() == thrown);
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof TransactionCommitFailedException);
+            assertTrue(e.getCause().getCause() == thrown);
             domForwardedWriteTransaction.cancel();
         }
     }
 
     @Test
-    public void submitRuntimeExceptionAndCancel() {
+    public void submitRuntimeExceptionAndCancel() throws InterruptedException {
         RuntimeException thrown = new RuntimeException();
         doReturn(null).when(domStoreWriteTransaction).ready();
-        doThrow(thrown).when(abstractDOMForwardedTransactionFactory).submit(any(), any());
+        doThrow(thrown).when(abstractDOMForwardedTransactionFactory).commit(any(), any());
         DOMForwardedWriteTransaction<DOMStoreWriteTransaction> domForwardedWriteTransaction =
                 new DOMForwardedWriteTransaction<>(
                         new Object(),
                         Collections.singletonMap(LogicalDatastoreType.OPERATIONAL, domStoreWriteTransaction),
                         abstractDOMForwardedTransactionFactory);
-        CheckedFuture<Void, TransactionCommitFailedException> submitFuture = domForwardedWriteTransaction.submit();
+        FluentFuture<? extends CommitInfo> submitFuture = domForwardedWriteTransaction.commit();
         try {
-            submitFuture.checkedGet();
+            submitFuture.get();
             Assert.fail("TransactionCommitFailedException expected");
-        } catch (TransactionCommitFailedException e) {
-            assertTrue(e.getCause() == thrown);
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof TransactionCommitFailedException);
+            assertTrue(e.getCause().getCause() == thrown);
             domForwardedWriteTransaction.cancel();
         }
     }

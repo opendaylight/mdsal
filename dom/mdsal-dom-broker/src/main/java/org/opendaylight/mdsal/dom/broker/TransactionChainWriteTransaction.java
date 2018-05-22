@@ -9,13 +9,14 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -57,11 +58,11 @@ public class TransactionChainWriteTransaction implements DOMDataTreeWriteTransac
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> submit() {
-        final CheckedFuture<Void, TransactionCommitFailedException> writeResultFuture = delegateTx.submit();
-        Futures.addCallback(writeResultFuture, new FutureCallback<Void>() {
+    public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
+        final FluentFuture<? extends CommitInfo> writeResultFuture = delegateTx.commit();
+        Futures.addCallback(writeResultFuture, new FutureCallback<CommitInfo>() {
             @Override
-            public void onSuccess(@Nullable final Void result) {
+            public void onSuccess(@Nullable final CommitInfo result) {
                 // NOOP
             }
 
