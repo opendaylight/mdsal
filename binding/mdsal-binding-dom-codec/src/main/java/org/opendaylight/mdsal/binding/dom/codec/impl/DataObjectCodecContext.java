@@ -181,8 +181,18 @@ abstract class DataObjectCodecContext<D extends DataObject, T extends DataNodeCo
                 childNonNull(ctxProto, argType, "Class %s is not valid child of %s", argType, getBindingClass()).get();
         if (context instanceof ChoiceNodeCodecContext) {
             final ChoiceNodeCodecContext<?> choice = (ChoiceNodeCodecContext<?>) context;
-            final DataContainerCodecContext<?, ?> caze = choice.getCazeByChildClass(arg.getType());
             choice.addYangPathArgument(arg, builder);
+
+            final java.util.Optional<? extends Class<? extends DataObject>> caseType = arg.getCaseType();
+            final Class<? extends DataObject> type = arg.getType();
+            final DataContainerCodecContext<?, ?> caze;
+            if (caseType.isPresent()) {
+                // Non-ambiguous addressing this should not pose any problems
+                caze = choice.streamChild(caseType.get());
+            } else {
+                caze = choice.getCaseByChildClass(type);
+            }
+
             caze.addYangPathArgument(arg, builder);
             return caze.bindingPathArgumentChild(arg, builder);
         }
