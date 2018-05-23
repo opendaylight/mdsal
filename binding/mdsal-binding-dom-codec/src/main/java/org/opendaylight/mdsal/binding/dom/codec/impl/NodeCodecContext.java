@@ -15,7 +15,7 @@ import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataObjectSerializer;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.KeyedPathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -75,7 +75,7 @@ abstract class NodeCodecContext<D extends DataObject> implements BindingCodecTre
          * @param schema Schema of list item
          * @return Path argument codec for supplied list item.
          */
-        Codec<NodeIdentifierWithPredicates, IdentifiableItem<?, ?>> getPathArgumentCodec(Class<?> type,
+        Codec<NodeIdentifierWithPredicates, KeyedPathArgument> getPathArgumentCodec(Class<?> type,
                 ListSchemaNode schema);
 
         DataObjectSerializer getEventStreamSerializer(Class<?> type);

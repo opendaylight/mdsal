@@ -42,7 +42,7 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
     private final QNameModule namespace;
     private final CodecContextFactory factory;
     private final Class<?> bindingClass;
-    private final InstanceIdentifier.Item<?> bindingArg;
+    private final InstanceIdentifier.PathArgument bindingArg;
     private final YangInstanceIdentifier.PathArgument yangArg;
     private final ChildAddressabilitySummary childAddressabilitySummary;
 
@@ -55,7 +55,7 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
         this.yangArg = arg;
         this.schema = nodeSchema;
         this.factory = factory;
-        this.bindingArg = new InstanceIdentifier.Item(bindingClass);
+        this.bindingArg = InstanceIdentifier.PathArgument.of((Class) bindingClass);
 
         if (arg instanceof AugmentationIdentifier) {
             this.namespace = Iterables.getFirst(((AugmentationIdentifier) arg).getPossibleChildNames(), null)
@@ -184,11 +184,11 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
         return bindingClass;
     }
 
-    protected InstanceIdentifier.Item<?> getBindingArg() {
+    protected InstanceIdentifier.PathArgument getBindingArg() {
         return bindingArg;
     }
 
-    protected YangInstanceIdentifier.PathArgument getYangArg() {
+    protected PathArgument getYangArg() {
         return yangArg;
     }
 

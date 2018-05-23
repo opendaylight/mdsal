@@ -26,7 +26,6 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -45,7 +44,7 @@ public class BindingDOMDataTreeWriteCursorAdapterTest {
         final BindingDOMDataTreeWriteCursorAdapter<?> adapter =
                 new BindingDOMDataTreeWriteCursorAdapter<>(identifier, delegate, codec);
 
-        final PathArgument pathArgument = new Item<>(DataObject.class);
+        final PathArgument pathArgument = PathArgument.of(DataObject.class);
         final DataObject data = mock(DataObject.class);
 
         adapter.enter(pathArgument, pathArgument);

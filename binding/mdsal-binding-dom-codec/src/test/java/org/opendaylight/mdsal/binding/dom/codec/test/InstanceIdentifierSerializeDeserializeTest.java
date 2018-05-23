@@ -84,8 +84,8 @@ public class InstanceIdentifierSerializeDeserializeTest extends AbstractBindingR
         final InstanceIdentifier.PathArgument last = Iterables.getLast(instanceIdentifier.getPathArguments());
         assertEquals(TopLevelList.class, instanceIdentifier.getTargetType());
         assertFalse(instanceIdentifier.isWildcarded());
-        assertTrue(last instanceof InstanceIdentifier.IdentifiableItem);
-        final Identifier<?> key = ((InstanceIdentifier.IdentifiableItem<?, ?>) last).getKey();
+        assertTrue(last instanceof InstanceIdentifier.KeyedPathArgument);
+        final Identifier<?> key = ((InstanceIdentifier.KeyedPathArgument) last).getKey();
         assertEquals(TopLevelListKey.class, key.getClass());
         assertEquals(TOP_LEVEL_LIST_KEY_VALUE, ((TopLevelListKey)key).getName());
     }

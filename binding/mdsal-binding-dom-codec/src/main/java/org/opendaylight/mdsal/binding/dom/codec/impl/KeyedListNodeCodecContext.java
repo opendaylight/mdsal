@@ -14,7 +14,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.KeyedPathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
@@ -22,7 +22,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 
 final class KeyedListNodeCodecContext<D extends DataObject & Identifiable<?>> extends ListNodeCodecContext<D> {
-    private final Codec<NodeIdentifierWithPredicates, IdentifiableItem<?, ?>> codec;
+    private final Codec<NodeIdentifierWithPredicates, KeyedPathArgument> codec;
     private final Method keyGetter;
 
     KeyedListNodeCodecContext(final DataContainerCodecPrototype<ListSchemaNode> prototype) {
@@ -48,8 +48,8 @@ final class KeyedListNodeCodecContext<D extends DataObject & Identifiable<?>> ex
         }
 
         super.addYangPathArgument(arg, builder);
-        if (arg instanceof IdentifiableItem<?, ?>) {
-            builder.add(codec.serialize((IdentifiableItem<?, ?>) arg));
+        if (arg instanceof KeyedPathArgument) {
+            builder.add(codec.serialize((KeyedPathArgument) arg));
         } else {
             // Adding wildcarded
             super.addYangPathArgument(arg, builder);
@@ -76,13 +76,13 @@ final class KeyedListNodeCodecContext<D extends DataObject & Identifiable<?>> ex
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     NodeIdentifierWithPredicates serialize(final Identifier<?> key) {
-        return codec.serialize(new IdentifiableItem(getBindingClass(), key));
+        return codec.serialize(KeyedPathArgument.of((Class) getBindingClass(), (Identifier) key));
     }
 
     @Override
     public YangInstanceIdentifier.PathArgument serializePathArgument(final InstanceIdentifier.PathArgument arg) {
-        if (arg instanceof IdentifiableItem) {
-            return codec.serialize((IdentifiableItem<?,?>) arg);
+        if (arg instanceof KeyedPathArgument) {
+            return codec.serialize((KeyedPathArgument) arg);
         }
         return super.serializePathArgument(arg);
     }
