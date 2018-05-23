@@ -7,9 +7,11 @@
  */
 package org.opendaylight.yangtools.yang.binding;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Path;
@@ -83,8 +87,8 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
 
     InstanceIdentifier(final Class<T> type, final Iterable<PathArgument> pathArguments, final boolean wildcarded,
             final int hash) {
-        this.pathArguments = Preconditions.checkNotNull(pathArguments);
-        this.targetType = Preconditions.checkNotNull(type);
+        this.pathArguments = requireNonNull(pathArguments);
+        this.targetType = requireNonNull(type);
         this.wildcarded = wildcarded;
         this.hash = hash;
     }
@@ -285,7 +289,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      */
     @Override
     public final boolean contains(final InstanceIdentifier<? extends DataObject> other) {
-        Preconditions.checkNotNull(other, "other should not be null");
+        requireNonNull(other, "other should not be null");
 
         final Iterator<?> lit = pathArguments.iterator();
         final Iterator<?> oit = other.pathArguments.iterator();
@@ -312,7 +316,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      * @return true if this identifier contains the other object
      */
     public final boolean containsWildcarded(final InstanceIdentifier<?> other) {
-        Preconditions.checkNotNull(other, "other should not be null");
+        requireNonNull(other, "other should not be null");
 
         final Iterator<PathArgument> lit = pathArguments.iterator();
         final Iterator<PathArgument> oit = other.pathArguments.iterator();
@@ -353,6 +357,17 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
     public final <N extends DataObject & Augmentation<? super T>> InstanceIdentifier<N> augmentation(
             final Class<N> container) {
         return childIdentifier(new Item<>(container));
+    }
+
+    public final <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>> InstanceIdentifier<N> child(
+            final Class<C> caze, final Class<N> container) {
+        return childIdentifier(new CaseItem<>(caze, container));
+    }
+
+    public final <C extends ChoiceIn<? super T> & DataObject, K extends Identifier<N>,
+        N extends Identifiable<K> & ChildOf<? super C>> InstanceIdentifier<N> child(final Class<C> caze,
+                final Class<N> listItem, final K listKey) {
+        return childIdentifier(new CaseIdentifiableItem<>(caze, listItem, listKey));
     }
 
     @Deprecated
@@ -427,15 +442,15 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      * @throws IllegalArgumentException if pathArguments is empty or contains a null element.
      */
     private static InstanceIdentifier<?> internalCreate(final Iterable<PathArgument> pathArguments) {
-        final Iterator<? extends PathArgument> it = Preconditions.checkNotNull(pathArguments,
-                "pathArguments may not be null").iterator();
+        final Iterator<? extends PathArgument> it = requireNonNull(pathArguments, "pathArguments may not be null")
+                .iterator();
         final HashCodeBuilder<PathArgument> hashBuilder = new HashCodeBuilder<>();
         boolean wildcard = false;
         PathArgument arg = null;
 
         while (it.hasNext()) {
             arg = it.next();
-            Preconditions.checkArgument(arg != null, "pathArguments may not contain null elements");
+            checkArgument(arg != null, "pathArguments may not contain null elements");
 
             // TODO: sanity check ChildOf<>;
             hashBuilder.addArgument(arg);
@@ -444,7 +459,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
                 wildcard = true;
             }
         }
-        Preconditions.checkArgument(arg != null, "pathArguments may not be empty");
+        checkArgument(arg != null, "pathArguments may not be empty");
 
         return trustedCreate(arg, pathArguments, hashBuilder.build(), wildcard);
     }
@@ -502,8 +517,8 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      */
     public static <N extends Identifiable<K> & DataObject, K extends Identifier<N>> K keyOf(
             final InstanceIdentifier<N> id) {
-        Preconditions.checkNotNull(id);
-        Preconditions.checkArgument(id instanceof KeyedInstanceIdentifier, "%s does not have a key", id);
+        requireNonNull(id);
+        checkArgument(id instanceof KeyedInstanceIdentifier, "%s does not have a key", id);
 
         @SuppressWarnings("unchecked")
         final K ret = ((KeyedInstanceIdentifier<N, K>)id).getKey();
@@ -515,8 +530,8 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
             final Iterable<PathArgument> pathArguments, final int hash, boolean wildcarded) {
         if (Identifiable.class.isAssignableFrom(arg.getType()) && !wildcarded) {
             Identifier<?> key = null;
-            if (arg instanceof IdentifiableItem<?, ?>) {
-                key = ((IdentifiableItem<?, ?>)arg).key;
+            if (arg instanceof KeyedPathArgument) {
+                key = ((KeyedPathArgument)arg).getKey();
             } else {
                 wildcarded = true;
             }
@@ -533,14 +548,23 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      */
     public interface PathArgument extends Comparable<PathArgument> {
         Class<? extends DataObject> getType();
+
+        default Optional<? extends Class<? extends DataObject>> getCaseType() {
+            return Optional.empty();
+        }
+    }
+
+    public interface KeyedPathArgument extends PathArgument {
+
+        Identifier<?> getKey();
     }
 
     private abstract static class AbstractPathArgument<T extends DataObject> implements PathArgument, Serializable {
         private static final long serialVersionUID = 1L;
         private final Class<T> type;
 
-        protected AbstractPathArgument(final Class<T> type) {
-            this.type = Preconditions.checkNotNull(type, "Type may not be null.");
+        AbstractPathArgument(final Class<T> type) {
+            this.type = requireNonNull(type, "Type may not be null.");
         }
 
         @Override
@@ -548,29 +572,44 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
             return type;
         }
 
-        @Override
-        public int hashCode() {
-            return type.hashCode();
+        Object getKey() {
+            return null;
         }
 
         @Override
-        public boolean equals(final Object obj) {
+        public final int hashCode() {
+            return Objects.hash(type, getCaseType(), getKey());
+        }
+
+        @Override
+        public final boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (!(obj instanceof AbstractPathArgument)) {
                 return false;
             }
             final AbstractPathArgument<?> other = (AbstractPathArgument<?>) obj;
-            return type.equals(other.type);
+            return type.equals(other.type) && Objects.equals(getKey(), other.getKey())
+                    && getCaseType().equals(other.getCaseType());
         }
 
         @Override
-        public int compareTo(final PathArgument arg) {
-            return type.getCanonicalName().compareTo(arg.getType().getCanonicalName());
+        public final int compareTo(final PathArgument arg) {
+            final int cmp = compareClasses(type, arg.getType());
+            if (cmp != 0) {
+                return cmp;
+            }
+            final Optional<? extends Class<?>> caseType = getCaseType();
+            if (!caseType.isPresent()) {
+                return arg.getCaseType().isPresent() ? -1 : 1;
+            }
+            final Optional<? extends Class<?>> argCaseType = getCaseType();
+            return argCaseType.isPresent() ? compareClasses(caseType.get(), argCaseType.get()) : 1;
+        }
+
+        private static int compareClasses(final Class<?> first, final Class<?> second) {
+            return first.getCanonicalName().compareTo(second.getCanonicalName());
         }
     }
 
@@ -601,27 +640,18 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      * @param <T> The identifier of the object
      */
     public static final class IdentifiableItem<I extends Identifiable<T> & DataObject, T extends Identifier<I>>
-            extends AbstractPathArgument<I> {
+            extends AbstractPathArgument<I> implements KeyedPathArgument {
         private static final long serialVersionUID = 1L;
         private final T key;
 
         public IdentifiableItem(final Class<I> type, final T key) {
             super(type);
-            this.key = Preconditions.checkNotNull(key, "Key may not be null.");
+            this.key = requireNonNull(key, "Key may not be null.");
         }
 
+        @Override
         public T getKey() {
-            return this.key;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            return super.equals(obj) && key.equals(((IdentifiableItem<?, ?>) obj).getKey());
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode() * 31 + key.hashCode();
+            return key;
         }
 
         @Override
@@ -630,6 +660,47 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
         }
     }
 
+    public static final class CaseItem<C extends ChoiceIn<?> & DataObject, T extends ChildOf<? super C>>
+            extends AbstractPathArgument<T> {
+        private static final long serialVersionUID = 1L;
+
+        private final Class<C> caseType;
+
+        public CaseItem(final Class<C> caseType, final Class<T> type) {
+            super(type);
+            this.caseType = requireNonNull(caseType);
+        }
+
+        @Override
+        public Optional<Class<C>> getCaseType() {
+            return Optional.of(caseType);
+        }
+    }
+
+    public static final class CaseIdentifiableItem<C extends ChoiceIn<?> & DataObject,
+            T extends ChildOf<? super C> & Identifiable<K>, K extends Identifier<T>> extends AbstractPathArgument<T>
+            implements KeyedPathArgument {
+        private static final long serialVersionUID = 1L;
+
+        private final Class<C> caseType;
+        private final K key;
+
+        public CaseIdentifiableItem(final Class<C> caseType, final Class<T> type, final K key) {
+            super(type);
+            this.caseType = requireNonNull(caseType);
+            this.key = requireNonNull(key);
+        }
+
+        @Override
+        public Optional<Class<C>> getCaseType() {
+            return Optional.of(caseType);
+        }
+
+        @Override
+        public K getKey() {
+            return key;
+        }
+    }
 
     public interface InstanceIdentifierBuilder<T extends DataObject> extends Builder<InstanceIdentifier<T>> {
         /**
@@ -651,8 +722,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
          * @param <N>
          * @return
          */
-        <N extends ChildOf<? super T>> InstanceIdentifierBuilder<N> child(
-                Class<N> container);
+        <N extends ChildOf<? super T>> InstanceIdentifierBuilder<N> child(Class<N> container);
 
         /**
          * Append the specified listItem as a child of the current InstanceIdentifier referenced by the builder.
@@ -677,8 +747,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
          * @param <N> augmentation type
          * @return this builder
          */
-        <N extends DataObject & Augmentation<? super T>> InstanceIdentifierBuilder<N> augmentation(
-                Class<N> container);
+        <N extends DataObject & Augmentation<? super T>> InstanceIdentifierBuilder<N> augmentation(Class<N> container);
 
         /**
          * Build the instance identifier.
