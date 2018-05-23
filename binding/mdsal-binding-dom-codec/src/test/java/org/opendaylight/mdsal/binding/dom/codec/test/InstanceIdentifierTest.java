@@ -20,6 +20,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.te
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.Top;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsal.test.binding.rev140701.two.level.list.TopLevelListKey;
+import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal45.aug.norev.cont.cont.choice.ContAug;
+import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal45.base.norev.Cont;
+import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal45.base.norev.cont.cont.choice.ContBase;
+import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal45.base.norev.grp.GrpCont;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -61,6 +65,17 @@ public class InstanceIdentifierTest extends AbstractBindingRuntimeTest {
         final PathArgument leafOnlyLastArg = registry.toYangInstanceIdentifier(BA_TREE_LEAF_ONLY).getLastPathArgument();
         assertTrue("Last argument should be AugmentationIdentifier", leafOnlyLastArg instanceof AugmentationIdentifier);
         assertTrue(((AugmentationIdentifier) leafOnlyLastArg).getPossibleChildNames().contains(SIMPLE_VALUE_QNAME));
+    }
+
+    @Test
+    public void testRootChoice() {
+//        final YangInstanceIdentifier rootCase = registry.toYangInstanceIdentifier(
+//            InstanceIdentifier.<Root, Grp>builder(RootBase.class, GrpCont.class).build());
+
+      final YangInstanceIdentifier contBase = registry.toYangInstanceIdentifier(
+          InstanceIdentifier.builder(Cont.class).child(ContBase.class, GrpCont.class).build());
+      final YangInstanceIdentifier contAug = registry.toYangInstanceIdentifier(
+          InstanceIdentifier.builder(Cont.class).child(ContAug.class, GrpCont.class).build());
     }
 
 }
