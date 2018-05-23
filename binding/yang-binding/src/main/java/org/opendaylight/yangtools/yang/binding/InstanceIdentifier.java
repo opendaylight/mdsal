@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.concepts.Path;
@@ -357,6 +359,17 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
         return childIdentifier(new Item<>(container));
     }
 
+    public final <C extends ChoiceIn<? super T> & DataObject, N extends ChildOf<? super C>> InstanceIdentifier<N> child(
+            final Class<C> caze, final Class<N> container) {
+        return childIdentifier(new CaseItem<>(caze, container));
+    }
+
+    public final <C extends ChoiceIn<? super T> & DataObject, K extends Identifier<N>,
+        N extends Identifiable<K> & ChildOf<? super C>> InstanceIdentifier<N> child(final Class<C> caze,
+                final Class<N> listItem, final K listKey) {
+        return childIdentifier(new CaseIdentifiableItem<>(caze, listItem, listKey));
+    }
+
     @Deprecated
     private List<PathArgument> legacyCache;
 
@@ -491,7 +504,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      */
     @SuppressWarnings("unchecked")
     public static <T extends DataObject> InstanceIdentifier<T> create(final Class<T> type) {
-        return (InstanceIdentifier<T>) create(Collections.singletonList(new Item<>(type)));
+        return (InstanceIdentifier<T>) create(ImmutableList.of(new Item<>(type)));
     }
 
     /**
@@ -517,8 +530,8 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
             final Iterable<PathArgument> pathArguments, final int hash, boolean wildcarded) {
         if (Identifiable.class.isAssignableFrom(arg.getType()) && !wildcarded) {
             Identifier<?> key = null;
-            if (arg instanceof IdentifiableItem<?, ?>) {
-                key = ((IdentifiableItem<?, ?>)arg).key;
+            if (arg instanceof IdentifiableItem) {
+                key = ((IdentifiableItem<?, ?>)arg).getKey();
             } else {
                 wildcarded = true;
             }
@@ -540,13 +553,17 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
          * @return Data object type.
          */
         Class<? extends DataObject> getType();
+
+        default Optional<? extends Class<? extends DataObject>> getCaseType() {
+            return Optional.empty();
+        }
     }
 
     private abstract static class AbstractPathArgument<T extends DataObject> implements PathArgument, Serializable {
         private static final long serialVersionUID = 1L;
         private final Class<T> type;
 
-        protected AbstractPathArgument(final Class<T> type) {
+        AbstractPathArgument(final Class<T> type) {
             this.type = requireNonNull(type, "Type may not be null.");
         }
 
@@ -555,29 +572,44 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
             return type;
         }
 
-        @Override
-        public int hashCode() {
-            return type.hashCode();
+        Object getKey() {
+            return null;
         }
 
         @Override
-        public boolean equals(final Object obj) {
+        public final int hashCode() {
+            return Objects.hash(type, getCaseType(), getKey());
+        }
+
+        @Override
+        public final boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (!(obj instanceof AbstractPathArgument)) {
                 return false;
             }
             final AbstractPathArgument<?> other = (AbstractPathArgument<?>) obj;
-            return type.equals(other.type);
+            return type.equals(other.type) && Objects.equals(getKey(), other.getKey())
+                    && getCaseType().equals(other.getCaseType());
         }
 
         @Override
-        public int compareTo(final PathArgument arg) {
-            return type.getCanonicalName().compareTo(arg.getType().getCanonicalName());
+        public final int compareTo(final PathArgument arg) {
+            final int cmp = compareClasses(type, arg.getType());
+            if (cmp != 0) {
+                return cmp;
+            }
+            final Optional<? extends Class<?>> caseType = getCaseType();
+            if (!caseType.isPresent()) {
+                return arg.getCaseType().isPresent() ? -1 : 1;
+            }
+            final Optional<? extends Class<?>> argCaseType = getCaseType();
+            return argCaseType.isPresent() ? compareClasses(caseType.get(), argCaseType.get()) : 1;
+        }
+
+        private static int compareClasses(final Class<?> first, final Class<?> second) {
+            return first.getCanonicalName().compareTo(second.getCanonicalName());
         }
     }
 
@@ -587,7 +619,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      *
      * @param <T> Item type
      */
-    public static final class Item<T extends DataObject> extends AbstractPathArgument<T> {
+    public static class Item<T extends DataObject> extends AbstractPathArgument<T> {
         private static final long serialVersionUID = 1L;
 
         /**
@@ -612,6 +644,11 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
             return new Item<>(type);
         }
 
+        public static <C extends ChoiceIn<?> & DataObject, T extends ChildOf<? super C>> Item<T> of(
+                final Class<C> caseType, final Class<T> type) {
+            return new CaseItem<>(caseType, type);
+        }
+
         @Override
         public String toString() {
             return getType().getName();
@@ -625,7 +662,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      * @param <I> An object that is identifiable by an identifier
      * @param <T> The identifier of the object
      */
-    public static final class IdentifiableItem<I extends Identifiable<T> & DataObject, T extends Identifier<I>>
+    public static class IdentifiableItem<I extends Identifiable<T> & DataObject, T extends Identifier<I>>
             extends AbstractPathArgument<I> {
         private static final long serialVersionUID = 1L;
         private final T key;
@@ -656,28 +693,59 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
             return new IdentifiableItem<>(type, key);
         }
 
+        public static <C extends ChoiceIn<?> & DataObject, T extends ChildOf<? super C> & Identifiable<K>,
+                K extends Identifier<T>> IdentifiableItem<T, K> of(final Class<C> caseType, final Class<T> type,
+                        final K key) {
+            return new CaseIdentifiableItem<>(caseType, type, key);
+        }
+
         /**
          * Return the data object type backing this PathArgument.
          *
          * @return Data object type.
          */
-        public T getKey() {
-            return this.key;
-        }
-
         @Override
-        public boolean equals(final Object obj) {
-            return super.equals(obj) && key.equals(((IdentifiableItem<?, ?>) obj).getKey());
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode() * 31 + key.hashCode();
+        public final T getKey() {
+            return key;
         }
 
         @Override
         public String toString() {
             return getType().getName() + "[key=" + key + "]";
+        }
+    }
+
+    static final class CaseItem<C extends ChoiceIn<?> & DataObject, T extends ChildOf<? super C>>
+            extends Item<T> {
+        private static final long serialVersionUID = 1L;
+
+        private final Class<C> caseType;
+
+        CaseItem(final Class<C> caseType, final Class<T> type) {
+            super(type);
+            this.caseType = requireNonNull(caseType);
+        }
+
+        @Override
+        public Optional<Class<C>> getCaseType() {
+            return Optional.of(caseType);
+        }
+    }
+
+    static final class CaseIdentifiableItem<C extends ChoiceIn<?> & DataObject,
+            T extends ChildOf<? super C> & Identifiable<K>, K extends Identifier<T>> extends IdentifiableItem<T, K> {
+        private static final long serialVersionUID = 1L;
+
+        private final Class<C> caseType;
+
+        CaseIdentifiableItem(final Class<C> caseType, final Class<T> type, final K key) {
+            super(type, key);
+            this.caseType = requireNonNull(caseType);
+        }
+
+        @Override
+        public Optional<Class<C>> getCaseType() {
+            return Optional.of(caseType);
         }
     }
 
@@ -726,8 +794,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
          * @param <N> augmentation type
          * @return this builder
          */
-        <N extends DataObject & Augmentation<? super T>> InstanceIdentifierBuilder<N> augmentation(
-                Class<N> container);
+        <N extends DataObject & Augmentation<? super T>> InstanceIdentifierBuilder<N> augmentation(Class<N> container);
 
         /**
          * Build the instance identifier.
