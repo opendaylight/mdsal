@@ -349,7 +349,7 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
 
     public final <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>> KeyedInstanceIdentifier<N, K>
             child(final Class<N> listItem, final K listKey) {
-        return (KeyedInstanceIdentifier<N, K>) childIdentifier(new IdentifiableItem<>(listItem, listKey));
+        return (KeyedInstanceIdentifier<N, K>) childIdentifier(IdentifiableItem.of(listItem, listKey));
     }
 
     public final <N extends DataObject & Augmentation<? super T>> InstanceIdentifier<N> augmentation(
@@ -590,8 +590,26 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
     public static final class Item<T extends DataObject> extends AbstractPathArgument<T> {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Construct an Item.
+         *
+         * @param type Backing class
+         * @deprecated Use {@link #of(Class)} instead.
+         */
+        @Deprecated
         public Item(final Class<T> type) {
             super(type);
+        }
+
+        /**
+         * Return a PathArgument instance backed by the specified class.
+         *
+         * @param type Backing class
+         * @return A new PathArgument
+         * @throws NullPointerException if {@code} is null.
+         */
+        public static <T extends DataObject> Item<T> of(final Class<T> type) {
+            return new Item<>(type);
         }
 
         @Override
@@ -612,9 +630,30 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
         private static final long serialVersionUID = 1L;
         private final T key;
 
+        /**
+         * Construct an Item.
+         *
+         * @param type Backing class
+         * @param key key
+         * @deprecated Use {@link #of(Class, Identifier)} instead.
+         */
+        @Deprecated
         public IdentifiableItem(final Class<I> type, final T key) {
             super(type);
             this.key = requireNonNull(key, "Key may not be null.");
+        }
+
+        /**
+         * Return an IdentifiableItem instance backed by the specified class with specified key.
+         *
+         * @param type Backing class
+         * @param key Key
+         * @return An IdentifiableItem
+         * @throws NullPointerException if any argument is null.
+         */
+        public static <T extends Identifiable<K> & DataObject, K extends Identifier<T>> IdentifiableItem<T, K> of(
+                final Class<T> type, final K key) {
+            return new IdentifiableItem<>(type, key);
         }
 
         /**
