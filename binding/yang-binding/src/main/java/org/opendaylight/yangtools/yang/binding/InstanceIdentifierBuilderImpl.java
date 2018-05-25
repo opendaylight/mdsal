@@ -12,9 +12,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.Objects;
 import org.opendaylight.yangtools.util.HashCodeBuilder;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.KeyedPathArgument;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 
 final class InstanceIdentifierBuilderImpl<T extends DataObject> implements InstanceIdentifierBuilder<T> {
@@ -58,7 +57,7 @@ final class InstanceIdentifierBuilderImpl<T extends DataObject> implements Insta
 
     @SuppressWarnings("unchecked")
     <N extends DataObject> InstanceIdentifierBuilderImpl<N> addNode(final Class<N> container) {
-        arg = new Item<>(container);
+        arg = PathArgument.of(container);
         hashBuilder.addArgument(arg);
         pathBuilder.add(arg);
 
@@ -72,7 +71,7 @@ final class InstanceIdentifierBuilderImpl<T extends DataObject> implements Insta
     @SuppressWarnings("unchecked")
     <N extends DataObject & Identifiable<K>, K extends Identifier<N>> InstanceIdentifierBuilderImpl<N> addNode(
             final Class<N> listItem, final K listKey) {
-        arg = new IdentifiableItem<>(listItem, listKey);
+        arg = KeyedPathArgument.of(listItem, listKey);
         hashBuilder.addArgument(arg);
         pathBuilder.add(arg);
         return (InstanceIdentifierBuilderImpl<N>) this;

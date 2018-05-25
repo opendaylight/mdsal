@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.KeyedPathArgument;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -235,21 +235,20 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     @SuppressWarnings("unchecked")
     public <C extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<C>> DataObjectModification<C>
             getModifiedChildListItem(final Class<C> listItem, final K listKey) {
-        return (DataObjectModification<C>) getModifiedChild(new InstanceIdentifier.IdentifiableItem<>(
-                listItem, listKey));
+        return (DataObjectModification<C>) getModifiedChild(KeyedPathArgument.of(listItem, listKey));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(final Class<C> arg) {
-        return (DataObjectModification<C>) getModifiedChild(new InstanceIdentifier.Item<>(arg));
+        return (DataObjectModification<C>) getModifiedChild(PathArgument.of(arg));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <C extends Augmentation<T> & DataObject> DataObjectModification<C> getModifiedAugmentation(
             final Class<C> augmentation) {
-        return (DataObjectModification<C>) getModifiedChild(new InstanceIdentifier.Item<>(augmentation));
+        return (DataObjectModification<C>) getModifiedChild(PathArgument.of(augmentation));
     }
 
     private T deserialize(final Optional<NormalizedNode<?, ?>> dataAfter) {

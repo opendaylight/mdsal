@@ -540,6 +540,17 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
          * @return Data object type.
          */
         Class<? extends DataObject> getType();
+
+        /**
+         * Return a PathArgument instance backed by the specified class.
+         *
+         * @param type Backing class
+         * @return A new PathArgument
+         * @throws NullPointerException if {@code} is null.
+         */
+        static PathArgument of(final Class<? extends DataObject> type) {
+            return new Item<>(type);
+        }
     }
 
     /**
@@ -553,6 +564,19 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
          * @return Data object type.
          */
         Identifier<?> getKey();
+
+        /**
+         * Return a KeyedPathArgument instance backed by the specified class with specified key.
+         *
+         * @param type Backing class
+         * @param key Key
+         * @return A new PathArgument
+         * @throws NullPointerException if any argument is null.
+         */
+        static <T extends Identifiable<K> & DataObject, K extends Identifier<T>> KeyedPathArgument of(
+                final Class<T> type, final K key) {
+            return new IdentifiableItem<>(type, key);
+        }
     }
 
     private abstract static class AbstractPathArgument<T extends DataObject> implements PathArgument, Serializable {
@@ -599,7 +623,9 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      * a kind. In YANG terms this would probably represent a container.
      *
      * @param <T> Item type
+     * @deprecated Use {@link PathArgument} instead and its static methods {@link PathArgument#of(Class)}.
      */
+    @Deprecated
     public static final class Item<T extends DataObject> extends AbstractPathArgument<T> {
         private static final long serialVersionUID = 1L;
 
@@ -619,7 +645,10 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      *
      * @param <I> An object that is identifiable by an identifier
      * @param <T> The identifier of the object
+     * @deprecated Use {@link KeyedPathArgument} instead and its static method
+     *             {@link KeyedPathArgument#of(Class, Identifier)}.
      */
+    @Deprecated
     public static final class IdentifiableItem<I extends Identifiable<T> & DataObject, T extends Identifier<I>>
             extends AbstractPathArgument<I> implements KeyedPathArgument {
         private static final long serialVersionUID = 1L;

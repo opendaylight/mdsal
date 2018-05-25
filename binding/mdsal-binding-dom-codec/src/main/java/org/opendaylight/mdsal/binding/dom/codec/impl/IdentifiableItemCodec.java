@@ -21,12 +21,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.yang.binding.Identifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.KeyedPathArgument;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifierWithPredicates;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 
-final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPredicates, IdentifiableItem<?, ?>> {
+final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPredicates, KeyedPathArgument> {
     private final Map<QName, ValueContext> keyValueContexts;
     private final List<QName> keysInBindingOrder;
     private final ListSchemaNode schema;
@@ -86,7 +86,7 @@ final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPredicates,
 
     @Override
     @SuppressWarnings("checkstyle:illegalCatch")
-    public IdentifiableItem<?, ?> deserialize(final NodeIdentifierWithPredicates input) {
+    public KeyedPathArgument deserialize(final NodeIdentifierWithPredicates input) {
         final Object[] bindingValues = new Object[keysInBindingOrder.size()];
         int offset = 0;
 
@@ -104,12 +104,12 @@ final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPredicates,
         }
 
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        final IdentifiableItem identifiableItem = new IdentifiableItem(identifiable, identifier);
+        final KeyedPathArgument identifiableItem = KeyedPathArgument.of((Class)identifiable, (Identifier)identifier);
         return identifiableItem;
     }
 
     @Override
-    public NodeIdentifierWithPredicates serialize(final IdentifiableItem<?, ?> input) {
+    public NodeIdentifierWithPredicates serialize(final KeyedPathArgument input) {
         final Object value = input.getKey();
 
         final Map<QName, Object> values = new LinkedHashMap<>();
