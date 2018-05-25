@@ -28,8 +28,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.Item;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.KeyedPathArgument;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 
 public final class DataObjectReadingUtil {
@@ -237,13 +236,10 @@ public final class DataObjectReadingUtil {
             try {
                 Object potentialList = getGetterMethod().invoke(parent);
                 if (potentialList instanceof Iterable) {
-
                     final Iterable<Identifiable> dataList = (Iterable<Identifiable>) potentialList;
-                    if (childArgument instanceof IdentifiableItem<?, ?>) {
-                        return readUsingIdentifiableItem(dataList, (IdentifiableItem) childArgument, builder);
-                    } else {
-                        return readAll(dataList, builder);
-                    }
+                    return childArgument instanceof KeyedPathArgument
+                            ? readUsingIdentifiableItem(dataList, (KeyedPathArgument) childArgument, builder)
+                                    : readAll(dataList, builder);
                 }
             } catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
                 throw new IllegalStateException(e);
@@ -264,7 +260,7 @@ public final class DataObjectReadingUtil {
 
         @SuppressWarnings("unchecked")
         private static Map<InstanceIdentifier, DataContainer> readUsingIdentifiableItem(
-                final Iterable<Identifiable> dataList, final IdentifiableItem childArgument,
+                final Iterable<Identifiable> dataList, final KeyedPathArgument childArgument,
                 final InstanceIdentifier parentPath) {
             final Identifier<?> key = childArgument.getKey();
             for (Identifiable item : dataList) {
@@ -290,7 +286,7 @@ public final class DataObjectReadingUtil {
         @Override
         public Map<InstanceIdentifier, DataContainer> readUsingPathArgument(final DataContainer parent,
                 final PathArgument childArgument, final InstanceIdentifier builder) {
-            checkArgument(childArgument instanceof Item<?>, "Path Argument must be Item without keys");
+            checkArgument(!(childArgument instanceof KeyedPathArgument), "Path Argument must be Item without keys");
             DataContainer aug = read(parent, childArgument.getType());
             if (aug == null) {
                 return Collections.emptyMap();

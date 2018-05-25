@@ -38,7 +38,7 @@ import org.opendaylight.yangtools.yang.binding.DataObjectSerializer;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.IdentifiableItem;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.KeyedPathArgument;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -325,7 +325,7 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
     }
 
     @Override
-    public Codec<NodeIdentifierWithPredicates, IdentifiableItem<?, ?>> getPathArgumentCodec(final Class<?> listClz,
+    public Codec<NodeIdentifierWithPredicates, KeyedPathArgument> getPathArgumentCodec(final Class<?> listClz,
             final ListSchemaNode schema) {
         final Class<? extends Identifier<?>> identifier = ClassLoaderUtils.findFirstGenericArgument(listClz,
                 Identifiable.class);
