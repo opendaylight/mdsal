@@ -114,7 +114,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataTreeModification<Container> change = capture.iterator().next();
         assertEquals(CONTAINER_TID, change.getRootPath());
         final DataObjectModification<Container> changedContainer = change.getRootNode();
-        assertEquals(new Item<>(Container.class), changedContainer.getIdentifier());
+        assertEquals(Item.of(Container.class), changedContainer.getIdentifier());
         assertEquals(ModificationType.SUBTREE_MODIFIED, changedContainer.getModificationType());
 
         final Container containerAfter = changedContainer.getDataAfter();
@@ -169,7 +169,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataTreeModification<Container> change = capture.iterator().next();
         assertEquals(CONTAINER_TID, change.getRootPath());
         final DataObjectModification<Container> changedContainer = change.getRootNode();
-        assertEquals(new Item<>(Container.class), changedContainer.getIdentifier());
+        assertEquals(Item.of(Container.class), changedContainer.getIdentifier());
         assertEquals(ModificationType.WRITE, changedContainer.getModificationType());
 
         final Container containerAfter = changedContainer.getDataAfter();
@@ -202,7 +202,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(CHOICE_CONTAINER_TID, choiceChange.getRootPath());
         final DataObjectModification<WithChoice> changedContainer = choiceChange.getRootNode();
         assertEquals(ModificationType.SUBTREE_MODIFIED, changedContainer.getModificationType());
-        assertEquals(new Item<>(WithChoice.class), changedContainer.getIdentifier());
+        assertEquals(Item.of(WithChoice.class), changedContainer.getIdentifier());
 
         final Collection<DataObjectModification<?>> choiceChildren = changedContainer.getModifiedChildren();
         assertEquals(1, choiceChildren.size());
@@ -210,7 +210,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataObjectModification<Addressable> changedCase = (DataObjectModification<Addressable>) choiceChildren
                 .iterator().next();
         assertEquals(ModificationType.WRITE, changedCase.getModificationType());
-        assertEquals(new Item<>(Addressable.class), changedCase.getIdentifier());
+        assertEquals(Item.of(Addressable.class), changedCase.getIdentifier());
         assertEquals(new AddressableBuilder().build(), changedCase.getDataAfter());
     }
 
@@ -235,7 +235,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(ADDRESSABLE_CONTAINER_TID, contChange.getRootPath());
         final DataObjectModification<AddressableCont> changedContainer = contChange.getRootNode();
         assertEquals(ModificationType.SUBTREE_MODIFIED, changedContainer.getModificationType());
-        assertEquals(new Item<>(AddressableCont.class), changedContainer.getIdentifier());
+        assertEquals(Item.of(AddressableCont.class), changedContainer.getIdentifier());
 
         final Collection<DataObjectModification<?>> contChildren = changedContainer.getModifiedChildren();
         assertEquals(1, contChildren.size());
@@ -243,7 +243,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         final DataObjectModification<Addressable> changedChild = (DataObjectModification<Addressable>) contChildren
                 .iterator().next();
         assertEquals(ModificationType.WRITE, changedChild.getModificationType());
-        assertEquals(new Item<>(AddressableChild.class), changedChild.getIdentifier());
+        assertEquals(Item.of(AddressableChild.class), changedChild.getIdentifier());
         assertEquals(new AddressableChildBuilder().build(), changedChild.getDataAfter());
     }
 
@@ -269,7 +269,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(UNADDRESSABLE_CONTAINER_TID, contChange.getRootPath());
         final DataObjectModification<UnaddressableCont> changedContainer = contChange.getRootNode();
         assertEquals(ModificationType.WRITE, changedContainer.getModificationType());
-        assertEquals(new Item<>(UnaddressableCont.class), changedContainer.getIdentifier());
+        assertEquals(Item.of(UnaddressableCont.class), changedContainer.getIdentifier());
 
         final Collection<DataObjectModification<?>> contChildren = changedContainer.getModifiedChildren();
         assertEquals(0, contChildren.size());
@@ -303,7 +303,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
 
         // Should be write
         assertEquals(ModificationType.WRITE, changedContainer.getModificationType());
-        assertEquals(new Item<>(WithChoice.class), changedContainer.getIdentifier());
+        assertEquals(Item.of(WithChoice.class), changedContainer.getIdentifier());
 
         final Collection<DataObjectModification<?>> choiceChildren = changedContainer.getModifiedChildren();
         assertEquals(0, choiceChildren.size());
@@ -333,7 +333,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(dti, change.getRootPath());
         final DataObjectModification<T> changedContainer = change.getRootNode();
         assertEquals(ModificationType.WRITE, changedContainer.getModificationType());
-        assertEquals(new Item<>(bindingClass), changedContainer.getIdentifier());
+        assertEquals(Item.of(bindingClass), changedContainer.getIdentifier());
 
         final T containerAfter = changedContainer.getDataAfter();
         assertEquals(expected, containerAfter);
@@ -369,7 +369,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(CHOICE_CONTAINER_TID, change.getRootPath());
         final DataObjectModification<WithChoice> changedContainer = change.getRootNode();
         assertEquals(ModificationType.WRITE, changedContainer.getModificationType());
-        assertEquals(new Item<>(WithChoice.class), changedContainer.getIdentifier());
+        assertEquals(Item.of(WithChoice.class), changedContainer.getIdentifier());
 
         final WithChoice containerAfter = changedContainer.getDataAfter();
         assertEquals(new WithChoiceBuilder().build(), containerAfter);
