@@ -45,7 +45,7 @@ public class BindingDOMDataTreeWriteCursorAdapterTest {
         final BindingDOMDataTreeWriteCursorAdapter<?> adapter =
                 new BindingDOMDataTreeWriteCursorAdapter<>(identifier, delegate, codec);
 
-        final PathArgument pathArgument = new Item<>(DataObject.class);
+        final PathArgument pathArgument = Item.of(DataObject.class);
         final DataObject data = mock(DataObject.class);
 
         adapter.enter(pathArgument, pathArgument);
