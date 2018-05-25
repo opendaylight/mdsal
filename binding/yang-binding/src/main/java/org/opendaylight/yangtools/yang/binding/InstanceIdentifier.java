@@ -471,9 +471,9 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
             @SuppressWarnings("unchecked")
             final Iterable<PathArgument> immutableArguments = (Iterable<PathArgument>) pathArguments;
             return internalCreate(immutableArguments);
-        } else {
-            return internalCreate(ImmutableList.copyOf(pathArguments));
         }
+
+        return internalCreate(ImmutableList.copyOf(pathArguments));
     }
 
     /**
@@ -534,6 +534,11 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
      * path in overall data tree.
      */
     public interface PathArgument extends Comparable<PathArgument> {
+        /**
+         * Return the data object type backing this PathArgument.
+         *
+         * @return Data object type.
+         */
         Class<? extends DataObject> getType();
     }
 
@@ -612,6 +617,11 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
             this.key = requireNonNull(key, "Key may not be null.");
         }
 
+        /**
+         * Return the data object type backing this PathArgument.
+         *
+         * @return Data object type.
+         */
         public T getKey() {
             return this.key;
         }
@@ -632,7 +642,6 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
         }
     }
 
-
     public interface InstanceIdentifierBuilder<T extends DataObject> extends Builder<InstanceIdentifier<T>> {
         /**
          * Append the specified container as a child of the current InstanceIdentifier referenced by the builder.
@@ -649,12 +658,11 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
          * NOTE :- The above example is only for illustration purposes InstanceIdentifier.builder() has been deprecated
          * and should not be used. Use InstanceIdentifier.builder(Nodes.class) instead
          *
-         * @param container
-         * @param <N>
-         * @return
+         * @param container Container to append
+         * @param <N> Container type
+         * @return this builder
          */
-        <N extends ChildOf<? super T>> InstanceIdentifierBuilder<N> child(
-                Class<N> container);
+        <N extends ChildOf<? super T>> InstanceIdentifierBuilder<N> child(Class<N> container);
 
         /**
          * Append the specified listItem as a child of the current InstanceIdentifier referenced by the builder.
@@ -662,11 +670,11 @@ public class InstanceIdentifier<T extends DataObject> implements Path<InstanceId
          * This method should be used when you want to build an instance identifier by appending a specific list element
          * to the identifier
          *
-         * @param listItem
-         * @param listKey
-         * @param <N>
-         * @param <K>
-         * @return
+         * @param listItem List to append
+         * @param listKey List key
+         * @param <N> List type
+         * @param <K> Key type
+         * @return this builder
          */
         <N extends Identifiable<K> & ChildOf<? super T>, K extends Identifier<N>> InstanceIdentifierBuilder<N> child(
                 Class<N> listItem, K listKey);
