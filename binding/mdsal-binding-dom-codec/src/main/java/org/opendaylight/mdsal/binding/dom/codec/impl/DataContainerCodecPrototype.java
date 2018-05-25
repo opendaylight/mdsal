@@ -11,11 +11,11 @@ import com.google.common.collect.Iterables;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode.ChildAddressabilitySummary;
 import org.opendaylight.mdsal.binding.dom.codec.impl.NodeCodecContext.CodecContextFactory;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.DataRoot;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -42,20 +42,20 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
     private final QNameModule namespace;
     private final CodecContextFactory factory;
     private final Class<?> bindingClass;
-    private final InstanceIdentifier.Item<?> bindingArg;
-    private final YangInstanceIdentifier.PathArgument yangArg;
+    private final InstanceIdentifier.PathArgument bindingArg;
+    private final PathArgument yangArg;
     private final ChildAddressabilitySummary childAddressabilitySummary;
 
     private volatile DataContainerCodecContext<?, T> instance = null;
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private DataContainerCodecPrototype(final Class<?> cls, final YangInstanceIdentifier.PathArgument arg,
-            final T nodeSchema, final CodecContextFactory factory) {
+    @SuppressWarnings("unchecked")
+    private DataContainerCodecPrototype(final Class<?> cls, final PathArgument arg, final T nodeSchema,
+            final CodecContextFactory factory) {
         this.bindingClass = cls;
         this.yangArg = arg;
         this.schema = nodeSchema;
         this.factory = factory;
-        this.bindingArg = new InstanceIdentifier.Item(bindingClass);
+        this.bindingArg = InstanceIdentifier.PathArgument.of((Class<? extends DataObject>) bindingClass);
 
         if (arg instanceof AugmentationIdentifier) {
             this.namespace = Iterables.getFirst(((AugmentationIdentifier) arg).getPossibleChildNames(), null)
@@ -184,11 +184,11 @@ final class DataContainerCodecPrototype<T extends WithStatus> implements NodeCon
         return bindingClass;
     }
 
-    protected InstanceIdentifier.Item<?> getBindingArg() {
+    protected InstanceIdentifier.PathArgument getBindingArg() {
         return bindingArg;
     }
 
-    protected YangInstanceIdentifier.PathArgument getYangArg() {
+    protected PathArgument getYangArg() {
         return yangArg;
     }
 

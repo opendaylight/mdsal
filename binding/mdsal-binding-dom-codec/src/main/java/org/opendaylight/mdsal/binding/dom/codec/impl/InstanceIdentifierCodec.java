@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.KeyedPathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 
@@ -37,7 +38,7 @@ final class InstanceIdentifierCodec implements Codec<YangInstanceIdentifier, Ins
         if (codec == null) {
             return null;
         }
-        if (codec instanceof ListNodeCodecContext && Iterables.getLast(builder) instanceof InstanceIdentifier.Item) {
+        if (codec instanceof ListNodeCodecContext && !(Iterables.getLast(builder) instanceof KeyedPathArgument)) {
             // We ended up in list, but without key, which means it represent list as a whole,
             // which is not binding representable.
             return null;
