@@ -154,7 +154,6 @@ public final class Types {
      *            JAVA <code>Type</code>s for actual parameter types
      * @return <code>ParametrizedType</code> reprezentation of <code>type</code>
      *         and its parameters <code>parameters</code>
-     * @throws NullPointerException if any argument is null
      */
     public static ParameterizedType parameterizedTypeFor(final Type type, final Type... parameters) {
         return new ParametrizedTypeImpl(type, parameters);

@@ -14,18 +14,12 @@ import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.computeDefaultSUID;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.packageNameForAugmentedGeneratedType;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.packageNameForGeneratedType;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.BASE_IDENTITY;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_OBJECT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_ROOT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.IDENTIFIABLE;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.IDENTIFIER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION_LISTENER;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.ROUTING_CONTEXT;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_SERVICE;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.augmentable;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.childOf;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.FUTURE;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
@@ -63,6 +57,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.TypeConstants;
 import org.opendaylight.mdsal.binding.model.util.Types;
@@ -70,7 +65,11 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.Generate
 import org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider;
 import org.opendaylight.mdsal.binding.yang.types.BaseYangTypes;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
+import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
+import org.opendaylight.yangtools.yang.binding.DataContainer;
+import org.opendaylight.yangtools.yang.binding.RpcService;
+import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -415,7 +414,7 @@ abstract class AbstractTypeGenerator {
         }
 
         final GeneratedTypeBuilder interfaceBuilder = moduleTypeBuilder(context, "Service");
-        interfaceBuilder.addImplementsType(RPC_SERVICE);
+        interfaceBuilder.addImplementsType(Types.typeForClass(RpcService.class));
 
         addCodegenInformation(interfaceBuilder, module, "RPCs", rpcDefinitions);
 
@@ -479,7 +478,7 @@ abstract class AbstractTypeGenerator {
         }
 
         final GeneratedTypeBuilder listenerInterface = moduleTypeBuilder(context, "Listener");
-        listenerInterface.addImplementsType(NOTIFICATION_LISTENER);
+        listenerInterface.addImplementsType(BindingTypes.NOTIFICATION_LISTENER);
 
         for (final NotificationDefinition notification : notifications) {
             if (notification != null) {
@@ -550,15 +549,16 @@ abstract class AbstractTypeGenerator {
             packageNameForGeneratedType(context.modulePackageName(), identity.getPath()),
             BindingMapping.getClassName(identity.getQName())));
         final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
-        if (!baseIdentities.isEmpty()) {
+        if (baseIdentities.isEmpty()) {
+            final GeneratedTOBuilder gto = typeProvider.newGeneratedTOBuilder(JavaTypeName.create(BaseIdentity.class));
+            newType.addImplementsType(gto.build());
+        } else {
             for (IdentitySchemaNode baseIdentity : baseIdentities) {
                 final QName qname = baseIdentity.getQName();
                 final GeneratedTransferObject gto = typeProvider.newGeneratedTOBuilder(JavaTypeName.create(
                     BindingMapping.getRootPackageName(qname.getModule()), BindingMapping.getClassName(qname))).build();
                 newType.addImplementsType(gto);
             }
-        } else {
-            newType.addImplementsType(BASE_IDENTITY);
         }
 
         final Module module = context.module();
@@ -1049,14 +1049,11 @@ abstract class AbstractTypeGenerator {
             final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(
                 JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), choiceNode.getPath()),
                 BindingMapping.getClassName(choiceNode.getQName())), choiceNode);
-            choiceTypeBuilder.addImplementsType(choiceIn(parent));
+            constructGetter(parent, choiceTypeBuilder, choiceNode);
+            choiceTypeBuilder.addImplementsType(typeForClass(DataContainer.class));
             annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
             context.addChildNodeType(choiceNode, choiceTypeBuilder);
-
-            final GeneratedType choiceType = choiceTypeBuilder.build();
-            generateTypesFromChoiceCases(context, choiceType, choiceNode);
-
-            constructGetter(parent, choiceType, choiceNode);
+            generateTypesFromChoiceCases(context, choiceTypeBuilder.build(), choiceNode);
         }
     }
 
@@ -1363,7 +1360,7 @@ abstract class AbstractTypeGenerator {
                             + nodeParam);
                 }
 
-                final AnnotationTypeBuilder rc = getter.addAnnotation(ROUTING_CONTEXT);
+                final AnnotationTypeBuilder rc = getter.addAnnotation(JavaTypeName.create(RoutingContext.class));
                 final String packageName = packageNameForGeneratedType(basePackageName, identity.getPath());
                 final String genTypeName = BindingMapping.getClassName(identity.getQName().getLocalName());
                 rc.addParameter("value", packageName + "." + genTypeName + ".class");
@@ -1600,15 +1597,18 @@ abstract class AbstractTypeGenerator {
             final Type parent, final ModuleContext context) {
         final GeneratedTypeBuilder it = addRawInterfaceDefinition(
             JavaTypeName.create(packageName, BindingMapping.getClassName(schemaNode.getQName())), schemaNode);
-
-        it.addImplementsType(parent == null ? DATA_OBJECT : childOf(parent));
+        if (parent == null) {
+            it.addImplementsType(DATA_OBJECT);
+        } else {
+            it.addImplementsType(BindingTypes.childOf(parent));
+        }
         if (!(schemaNode instanceof GroupingDefinition)) {
             it.addImplementsType(augmentable(it));
         }
+
         if (schemaNode instanceof DataNodeContainer) {
-            final DataNodeContainer containerSchema = (DataNodeContainer) schemaNode;
-            groupingsToGenTypes(context, containerSchema.getGroupings());
-            addImplementedInterfaceFromUses(containerSchema, it);
+            groupingsToGenTypes(context, ((DataNodeContainer) schemaNode).getGroupings());
+            addImplementedInterfaceFromUses((DataNodeContainer) schemaNode, it);
         }
 
         return it;
