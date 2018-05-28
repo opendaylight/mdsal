@@ -10,11 +10,15 @@ package org.opendaylight.mdsal.binding.dom.codec.impl;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
+import com.google.common.base.Verify;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
+import java.lang.reflect.Type;
+import java.util.List;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
+import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -240,6 +244,40 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
     @Override
     public YangInstanceIdentifier.PathArgument serializePathArgument(final InstanceIdentifier.PathArgument arg) {
         Preconditions.checkArgument(arg == null);
+        return null;
+    }
+
+    @Override
+    public DataContainerCodecContext<?, ?> bindingPathArgumentChild(final InstanceIdentifier.PathArgument arg,
+            final List<PathArgument> builder) {
+        final java.util.Optional<? extends Class<? extends DataObject>> caseType = arg.getCaseType();
+        if (!caseType.isPresent()) {
+            return super.bindingPathArgumentChild(arg, builder);
+        }
+
+        final Class<? extends DataObject> caseClass = caseType.get();
+        final Class<?> choiceClass = findCaseChoice(caseClass);
+        final DataSchemaNode schema = factory().getRuntimeContext().getSchemaDefinition(choiceClass);
+        Preconditions.checkArgument(schema instanceof ChoiceSchemaNode);
+
+        final DataContainerCodecContext<?, ChoiceSchemaNode> choice = DataContainerCodecPrototype.from(choiceClass,
+            (ChoiceSchemaNode)schema, factory()).get();
+        Verify.verify(choice instanceof ChoiceNodeCodecContext);
+        final DataContainerCodecContext<?, ?> caze = ((ChoiceNodeCodecContext<?>)choice).getCase(arg);
+        caze.addYangPathArgument(arg, builder);
+        return caze.bindingPathArgumentChild(arg, builder);
+    }
+
+    private static Class<?> findCaseChoice(final Class<? extends DataObject> caseClass) {
+        for (Type type : caseClass.getGenericInterfaces()) {
+            if (type instanceof Class) {
+                final Class<?> typeClass = (Class<?>) type;
+                if (ChoiceIn.class.isAssignableFrom(typeClass)) {
+                    return typeClass.asSubclass(ChoiceIn.class);
+                }
+            }
+        }
+
         return null;
     }
 

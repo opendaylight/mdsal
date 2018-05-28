@@ -80,9 +80,9 @@ abstract class DataContainerCodecContext<D extends DataObject, T extends WithSta
      */
     @Override
     @Nullable
-    public DataContainerCodecContext<?,?> bindingPathArgumentChild(final PathArgument arg,
+    public DataContainerCodecContext<?, ?> bindingPathArgumentChild(final PathArgument arg,
             final List<YangInstanceIdentifier.PathArgument> builder) {
-        final DataContainerCodecContext<?,?> child = streamChild(arg.getType());
+        final DataContainerCodecContext<?, ?> child = this.streamChild(arg.getType());
         if (child != null) {
             if (builder != null) {
                 child.addYangPathArgument(arg,builder);
