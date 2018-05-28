@@ -15,7 +15,6 @@ import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.com
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.packageNameForAugmentedGeneratedType;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.packageNameForGeneratedType;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.BASE_IDENTITY;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_CONTAINER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_OBJECT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_ROOT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.IDENTIFIABLE;
@@ -26,6 +25,7 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.ROUTING_CON
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_SERVICE;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.augmentable;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.childOf;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.FUTURE;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
@@ -1049,7 +1049,7 @@ abstract class AbstractTypeGenerator {
             final GeneratedTypeBuilder choiceTypeBuilder = addRawInterfaceDefinition(
                 JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), choiceNode.getPath()),
                 BindingMapping.getClassName(choiceNode.getQName())), choiceNode);
-            choiceTypeBuilder.addImplementsType(DATA_CONTAINER);
+            choiceTypeBuilder.addImplementsType(choiceIn(parent));
             annotateDeprecatedIfNecessary(choiceNode.getStatus(), choiceTypeBuilder);
             context.addChildNodeType(choiceNode, choiceTypeBuilder);
 
