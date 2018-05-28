@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="odl-mdsal-binding-base">
     <feature name="odl-mdsal-binding-base">
-        <feature version="[2.0.3,3)">odl-yangtools-common</feature>
+        <feature version="[2.0.5,3)">odl-yangtools-common</feature>
     </feature>
 </features>
 
