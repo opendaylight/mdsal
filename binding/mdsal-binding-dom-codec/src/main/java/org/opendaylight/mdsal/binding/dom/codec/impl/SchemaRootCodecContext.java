@@ -175,7 +175,7 @@ final class SchemaRootCodecContext<D extends DataObject> extends DataContainerCo
         return getOrRethrow(rpcDataByPath, notification);
     }
 
-    private DataContainerCodecContext<?,?> createDataTreeChildContext(final Class<?> key) {
+    DataContainerCodecContext<?,?> createDataTreeChildContext(final Class<?> key) {
         final QName qname = BindingReflections.findQName(key);
         final DataSchemaNode childSchema = childNonNull(getSchema().getDataChildByName(qname), key,
             "%s is not top-level item.", key);
