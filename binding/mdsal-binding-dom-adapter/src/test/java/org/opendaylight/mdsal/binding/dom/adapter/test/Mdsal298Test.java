@@ -124,10 +124,10 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
                 new KeyedBuilder().setFoo("bar").withKey(new KeyedKey("bar")).build()))
             .build(), containerAfter);
 
-        final Collection<DataObjectModification<?>> changedChildren = changedContainer.getModifiedChildren();
+        final Collection<? extends DataObjectModification<?>> changedChildren = changedContainer.getModifiedChildren();
         assertEquals(2, changedChildren.size());
 
-        final Iterator<DataObjectModification<?>> it = changedChildren.iterator();
+        final Iterator<? extends DataObjectModification<?>> it = changedChildren.iterator();
         final DataObjectModification<?> changedChild1 = it.next();
         assertEquals(ModificationType.WRITE, changedChild1.getModificationType());
         assertEquals(Collections.emptyList(), changedChild1.getModifiedChildren());
@@ -179,7 +179,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
                     new UnkeyedBuilder().setFoo("bar").build()))
                 .build(), containerAfter);
 
-        final Collection<DataObjectModification<?>> changedChildren = changedContainer.getModifiedChildren();
+        final Collection<? extends DataObjectModification<?>> changedChildren = changedContainer.getModifiedChildren();
         assertEquals(0, changedChildren.size());
     }
 
@@ -204,7 +204,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(ModificationType.SUBTREE_MODIFIED, changedContainer.getModificationType());
         assertEquals(Item.of(WithChoice.class), changedContainer.getIdentifier());
 
-        final Collection<DataObjectModification<?>> choiceChildren = changedContainer.getModifiedChildren();
+        final Collection<? extends DataObjectModification<?>> choiceChildren = changedContainer.getModifiedChildren();
         assertEquals(1, choiceChildren.size());
 
         final DataObjectModification<Addressable> changedCase = (DataObjectModification<Addressable>) choiceChildren
@@ -237,7 +237,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(ModificationType.SUBTREE_MODIFIED, changedContainer.getModificationType());
         assertEquals(Item.of(AddressableCont.class), changedContainer.getIdentifier());
 
-        final Collection<DataObjectModification<?>> contChildren = changedContainer.getModifiedChildren();
+        final Collection<? extends DataObjectModification<?>> contChildren = changedContainer.getModifiedChildren();
         assertEquals(1, contChildren.size());
 
         final DataObjectModification<Addressable> changedChild = (DataObjectModification<Addressable>) contChildren
@@ -271,7 +271,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(ModificationType.WRITE, changedContainer.getModificationType());
         assertEquals(Item.of(UnaddressableCont.class), changedContainer.getIdentifier());
 
-        final Collection<DataObjectModification<?>> contChildren = changedContainer.getModifiedChildren();
+        final Collection<? extends DataObjectModification<?>> contChildren = changedContainer.getModifiedChildren();
         assertEquals(0, contChildren.size());
     }
 
@@ -305,7 +305,7 @@ public class Mdsal298Test extends AbstractDataBrokerTest {
         assertEquals(ModificationType.WRITE, changedContainer.getModificationType());
         assertEquals(Item.of(WithChoice.class), changedContainer.getIdentifier());
 
-        final Collection<DataObjectModification<?>> choiceChildren = changedContainer.getModifiedChildren();
+        final Collection<? extends DataObjectModification<?>> choiceChildren = changedContainer.getModifiedChildren();
         assertEquals(0, choiceChildren.size());
     }
 
