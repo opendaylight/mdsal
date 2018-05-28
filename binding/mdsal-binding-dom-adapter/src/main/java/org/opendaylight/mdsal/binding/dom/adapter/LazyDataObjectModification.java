@@ -17,6 +17,7 @@ import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
+import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
@@ -218,6 +219,14 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     }
 
     @Override
+    public <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
+            Collection<DataObjectModification<C>> getModifiedChildren(final Class<H> caseType,
+                    final Class<C> childType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public DataObjectModification<? extends DataObject> getModifiedChild(final PathArgument arg) {
         final List<YangInstanceIdentifier.PathArgument> domArgumentList = new ArrayList<>();
         final BindingCodecTreeNode<?> childCodec = codec.bindingPathArgumentChild(arg, domArgumentList);
@@ -241,8 +250,23 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
 
     @Override
     @SuppressWarnings("unchecked")
-    public <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(final Class<C> arg) {
-        return (DataObjectModification<C>) getModifiedChild(Item.of(arg));
+    public <H extends ChoiceIn<? super T> & DataObject, C extends Identifiable<K> & ChildOf<? super H>,
+            K extends Identifier<C>> DataObjectModification<C> getModifiedChildListItem(final Class<H> caseType,
+                    final Class<C> listItem, final K listKey) {
+        return (DataObjectModification<C>) getModifiedChild(IdentifiableItem.of(caseType, listItem, listKey));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(final Class<C> child) {
+        return (DataObjectModification<C>) getModifiedChild(Item.of(child));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> DataObjectModification<C>
+            getModifiedChildContainer(final Class<H> caseType, final Class<C> child) {
+        return (DataObjectModification<C>) getModifiedChild(Item.of(caseType, child));
     }
 
     @Override
@@ -253,9 +277,6 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     }
 
     private T deserialize(final Optional<NormalizedNode<?, ?>> dataAfter) {
-        if (dataAfter.isPresent()) {
-            return codec.deserialize(dataAfter.get());
-        }
-        return null;
+        return dataAfter.map(codec::deserialize).orElse(null);
     }
 }
