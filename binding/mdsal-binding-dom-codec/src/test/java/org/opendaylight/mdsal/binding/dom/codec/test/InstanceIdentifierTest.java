@@ -25,6 +25,7 @@ import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal45.base.norev.Con
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal45.base.norev.cont.ContChoice;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal45.base.norev.cont.cont.choice.ContBase;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal45.base.norev.grp.GrpCont;
+import org.opendaylight.yang.gen.v1.urn.test.opendaylight.mdsal45.base.norev.root.RootBase;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -91,9 +92,7 @@ public class InstanceIdentifierTest extends AbstractBindingRuntimeTest {
           NodeIdentifier.create(ContChoice.QNAME),
           NodeIdentifier.create(GrpCont.QNAME.withModule(ContAug.QNAME.getModule()))), contAugLegacy);
 
-      // FIXME: root choice handling is busted
-      //      final YangInstanceIdentifier rootAugLegacy = registry.toYangInstanceIdentifier(
-      //          InstanceIdentifier.create((Class) GrpCont.class));
+      final YangInstanceIdentifier rootBase = registry.toYangInstanceIdentifier(
+          InstanceIdentifier.builder(RootBase.class, GrpCont.class).build());
     }
-
 }
