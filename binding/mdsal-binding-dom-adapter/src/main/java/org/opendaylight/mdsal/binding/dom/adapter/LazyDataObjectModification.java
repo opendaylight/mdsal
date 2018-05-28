@@ -14,10 +14,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
+import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.Identifier;
@@ -48,7 +51,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     private final DataTreeCandidateNode domData;
     private final PathArgument identifier;
 
-    private volatile Collection<DataObjectModification<? extends DataObject>> childNodesCache;
+    private volatile Collection<LazyDataObjectModification<? extends DataObject>> childNodesCache;
     private volatile ModificationType modificationType;
 
     private LazyDataObjectModification(final BindingCodecTreeNode<T> codec, final DataTreeCandidateNode domData) {
@@ -57,19 +60,19 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
         this.identifier = codec.deserializePathArgument(domData.getIdentifier());
     }
 
-    static <T extends DataObject> DataObjectModification<T> create(final BindingCodecTreeNode<T> codec,
+    static <T extends DataObject> LazyDataObjectModification<T> create(final BindingCodecTreeNode<T> codec,
             final DataTreeCandidateNode domData) {
         return new LazyDataObjectModification<>(codec,domData);
     }
 
-    private static Collection<DataObjectModification<? extends DataObject>> from(final BindingCodecTreeNode<?>
+    private static Collection<LazyDataObjectModification<? extends DataObject>> from(final BindingCodecTreeNode<?>
             parentCodec, final Collection<DataTreeCandidateNode> domChildNodes) {
-        final List<DataObjectModification<? extends DataObject>> result = new ArrayList<>(domChildNodes.size());
+        final List<LazyDataObjectModification<? extends DataObject>> result = new ArrayList<>(domChildNodes.size());
         populateList(result, parentCodec, domChildNodes);
         return result;
     }
 
-    private static void populateList(final List<DataObjectModification<? extends DataObject>> result,
+    private static void populateList(final List<LazyDataObjectModification<? extends DataObject>> result,
             final BindingCodecTreeNode<?> parentCodec, final Collection<DataTreeCandidateNode> domChildNodes) {
         for (final DataTreeCandidateNode domChildNode : domChildNodes) {
             final BindingStructuralType type = BindingStructuralType.from(domChildNode);
@@ -94,7 +97,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
         }
     }
 
-    private static void populateList(final List<DataObjectModification<? extends DataObject>> result,
+    private static void populateList(final List<LazyDataObjectModification<? extends DataObject>> result,
             final BindingStructuralType type, final BindingCodecTreeNode<?> childCodec,
             final DataTreeCandidateNode domChildNode) {
         switch (type) {
@@ -113,7 +116,7 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
         }
     }
 
-    private static void populateListWithSingleCodec(final List<DataObjectModification<? extends DataObject>> result,
+    private static void populateListWithSingleCodec(final List<LazyDataObjectModification<? extends DataObject>> result,
             final BindingCodecTreeNode<?> codec, final Collection<DataTreeCandidateNode> childNodes) {
         for (final DataTreeCandidateNode child : childNodes) {
             result.add(create(codec, child));
@@ -197,25 +200,35 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     }
 
     @Override
-    public Collection<DataObjectModification<? extends DataObject>> getModifiedChildren() {
-        Collection<DataObjectModification<? extends DataObject>> local = childNodesCache;
+    public Collection<LazyDataObjectModification<? extends DataObject>> getModifiedChildren() {
+        Collection<LazyDataObjectModification<? extends DataObject>> local = childNodesCache;
         if (local == null) {
             childNodesCache = local = from(codec, domData.getChildNodes());
         }
         return local;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <C extends ChildOf<? super T>> Collection<DataObjectModification<C>>
             getModifiedChildren(final Class<C> childType) {
-        List<DataObjectModification<C>> children = new ArrayList<>();
-        for (DataObjectModification<? extends DataObject> potential : getModifiedChildren()) {
-            if (childType.isAssignableFrom(potential.getDataType())) {
-                children.add((DataObjectModification<C>) potential);
-            }
-        }
-        return children;
+        return streamModifiedChildren(childType).collect(Collectors.toList());
+    }
+
+    @Override
+    public <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>>
+            Collection<DataObjectModification<C>> getModifiedChildren(final Class<H> caseType,
+                    final Class<C> childType) {
+        return streamModifiedChildren(childType)
+                .filter(child -> caseType.equals(child.identifier.getCaseType().orElse(null)))
+                .collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    private <C extends DataObject> Stream<LazyDataObjectModification<C>> streamModifiedChildren(
+            final Class<C> childType) {
+        return getModifiedChildren().stream()
+                .filter(child -> childType.isAssignableFrom(child.getDataType()))
+                .map(child -> (LazyDataObjectModification<C>) child);
     }
 
     @Override
@@ -242,8 +255,23 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
 
     @Override
     @SuppressWarnings("unchecked")
-    public <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(final Class<C> arg) {
-        return (DataObjectModification<C>) getModifiedChild(Item.of(arg));
+    public <H extends ChoiceIn<? super T> & DataObject, C extends Identifiable<K> & ChildOf<? super H>,
+            K extends Identifier<C>> DataObjectModification<C> getModifiedChildListItem(final Class<H> caseType,
+                    final Class<C> listItem, final K listKey) {
+        return (DataObjectModification<C>) getModifiedChild(IdentifiableItem.of(caseType, listItem, listKey));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <C extends ChildOf<? super T>> DataObjectModification<C> getModifiedChildContainer(final Class<C> child) {
+        return (DataObjectModification<C>) getModifiedChild(Item.of(child));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <H extends ChoiceIn<? super T> & DataObject, C extends ChildOf<? super H>> DataObjectModification<C>
+            getModifiedChildContainer(final Class<H> caseType, final Class<C> child) {
+        return (DataObjectModification<C>) getModifiedChild(Item.of(caseType, child));
     }
 
     @Override
@@ -259,9 +287,6 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     }
 
     private T deserialize(final Optional<NormalizedNode<?, ?>> dataAfter) {
-        if (dataAfter.isPresent()) {
-            return codec.deserialize(dataAfter.get());
-        }
-        return null;
+        return dataAfter.map(codec::deserialize).orElse(null);
     }
 }
