@@ -1169,25 +1169,7 @@ abstract class AbstractTypeGenerator {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(context, caseNode);
                 caseTypeBuilder.addImplementsType(targetType);
 
-                SchemaNode parent;
-                final SchemaPath nodeSp = targetNode.getPath();
-                parent = findDataSchemaNode(schemaContext, nodeSp.getParent());
-
-                GeneratedTypeBuilder childOfType = null;
-                if (parent instanceof Module) {
-                    childOfType = moduleContext(((Module) parent).getQNameModule()).getModuleNode();
-                } else if (parent instanceof CaseSchemaNode) {
-                    childOfType = findCaseByPath(parent.getPath());
-                } else if (parent instanceof DataSchemaNode || parent instanceof NotificationDefinition) {
-                    childOfType = findChildNodeByPath(parent.getPath());
-                } else if (parent instanceof GroupingDefinition) {
-                    childOfType = findGroupingByPath(parent.getPath());
-                }
-
-                if (childOfType == null) {
-                    throw new IllegalArgumentException("Failed to find parent type of choice " + targetNode);
-                }
-
+                GeneratedTypeBuilder childOfType = findChildOfType(targetNode);
                 CaseSchemaNode node = null;
                 final String caseLocalName = caseNode.getQName().getLocalName();
                 if (caseNode instanceof CaseSchemaNode) {
@@ -1212,6 +1194,30 @@ abstract class AbstractTypeGenerator {
                 context.addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
             }
         }
+    }
+
+    private GeneratedTypeBuilder findChildOfType(final ChoiceSchemaNode targetNode) {
+        final SchemaPath nodePath = targetNode.getPath();
+        final SchemaPath parentSp = nodePath.getParent();
+        if (parentSp.getParent() == null) {
+            return moduleContext(nodePath.getLastComponent().getModule()).getModuleNode();
+        }
+
+        final SchemaNode parent = findDataSchemaNode(schemaContext, parentSp);
+        GeneratedTypeBuilder childOfType = null;
+        if (parent instanceof CaseSchemaNode) {
+            childOfType = findCaseByPath(parent.getPath());
+        } else if (parent instanceof DataSchemaNode || parent instanceof NotificationDefinition) {
+            childOfType = findChildNodeByPath(parent.getPath());
+        } else if (parent instanceof GroupingDefinition) {
+            childOfType = findGroupingByPath(parent.getPath());
+        }
+
+        if (childOfType == null) {
+            throw new IllegalArgumentException("Failed to find parent type of choice " + targetNode);
+        }
+
+        return childOfType;
     }
 
     private static CaseSchemaNode findNamedCase(final ChoiceSchemaNode choice, final String caseName) {
