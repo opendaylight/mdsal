@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="odl-mdsal-dom-api">
     <feature name="odl-mdsal-dom-api">
-        <feature version="[2.0.3,3)">odl-yangtools-data-api</feature>
+        <feature version="[2.0.5,3)">odl-yangtools-data-api</feature>
     </feature>
 </features>
 
