@@ -60,8 +60,8 @@ import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
-import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
+import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
 import org.opendaylight.mdsal.binding.yang.types.AbstractTypeProvider;
 import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySort;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -1237,25 +1237,7 @@ abstract class AbstractTypeGenerator {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(packageName, caseNode, module);
                 caseTypeBuilder.addImplementsType(targetType);
 
-                SchemaNode parent;
-                final SchemaPath nodeSp = targetNode.getPath();
-                parent = findDataSchemaNode(schemaContext, nodeSp.getParent());
-
-                GeneratedTypeBuilder childOfType = null;
-                if (parent instanceof Module) {
-                    childOfType = genCtx.get(parent).getModuleNode();
-                } else if (parent instanceof CaseSchemaNode) {
-                    childOfType = findCaseByPath(parent.getPath());
-                } else if (parent instanceof DataSchemaNode || parent instanceof NotificationDefinition) {
-                    childOfType = findChildNodeByPath(parent.getPath());
-                } else if (parent instanceof GroupingDefinition) {
-                    childOfType = findGroupingByPath(parent.getPath());
-                }
-
-                if (childOfType == null) {
-                    throw new IllegalArgumentException("Failed to find parent type of choice " + targetNode);
-                }
-
+                GeneratedTypeBuilder childOfType = findChildOfType(targetNode);
                 CaseSchemaNode node = null;
                 final String caseLocalName = caseNode.getQName().getLocalName();
                 if (caseNode instanceof CaseSchemaNode) {
@@ -1280,6 +1262,30 @@ abstract class AbstractTypeGenerator {
                 genCtx.get(module).addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
             }
         }
+    }
+
+    private GeneratedTypeBuilder findChildOfType(final ChoiceSchemaNode targetNode) {
+        final SchemaPath nodePath = targetNode.getPath();
+        final SchemaPath parentSp = nodePath.getParent();
+        if (parentSp.getParent() == null) {
+            return genCtx.get(schemaContext.findModule(nodePath.getLastComponent().getModule()).get()).getModuleNode();
+        }
+
+        final SchemaNode parent = findDataSchemaNode(schemaContext, parentSp);
+        GeneratedTypeBuilder childOfType = null;
+        if (parent instanceof CaseSchemaNode) {
+            childOfType = findCaseByPath(parent.getPath());
+        } else if (parent instanceof DataSchemaNode || parent instanceof NotificationDefinition) {
+            childOfType = findChildNodeByPath(parent.getPath());
+        } else if (parent instanceof GroupingDefinition) {
+            childOfType = findGroupingByPath(parent.getPath());
+        }
+
+        if (childOfType == null) {
+            throw new IllegalArgumentException("Failed to find parent type of choice " + targetNode);
+        }
+
+        return childOfType;
     }
 
     private static CaseSchemaNode findNamedCase(final ChoiceSchemaNode choice, final String caseName) {
