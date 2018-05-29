@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2509436a_7ab583a1",
+        "filename": "binding/yang-binding/src/main/java/org/opendaylight/yangtools/yang/binding/InstanceIdentifier.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 691,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-05-29T01:43:23Z",
+      "side": 1,
+      "message": "Minor thing but I think the generic type var names used here should be consistent with the class\u0027s (I and T).",
+      "revId": "6a8471c0ae1f42fc3bd6164cb870a9303284c265",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
