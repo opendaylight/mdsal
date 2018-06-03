@@ -13,7 +13,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * A chain of transactions. Transactions in a chain need to be committed in
  * sequence and each transaction should see the effects of previous committed transactions
  * as they occurred. A chain makes no guarantees of atomicity across the chained transactions -
- * the transactions are committed as soon as possible in the order that they were submitted.
+ * the transactions are committed as soon as possible in the order that they were committed.
  * This behaviour is different from the default AsyncDataBroker, where a
  * transaction is always created from the current global state, not taking into
  * account any transactions previously committed by the calling thread. Due to
@@ -23,7 +23,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * <pre><code>
  * AsyncWriteTransaction t1 = broker.newWriteOnlyTransaction();
  * t1.put(id, data);
- * t1.submit();
+ * t1.commit();
  *
  * AsyncReadTransaction t2 = broker.newReadOnlyTransaction();
  * Optional&lt;?&gt; maybeData = t2.read(id).get();
@@ -45,7 +45,7 @@ public interface TransactionChain<P extends Path<P>, D> extends AutoCloseable,
      *
      * <p>
      * The previous write transaction has to be either SUBMITTED
-     * ({@link AsyncWriteTransaction#submit submit} was invoked) or CANCELLED
+     * ({@link AsyncWriteTransaction#commit commit} was invoked) or CANCELLED
      * ({@link #close close} was invoked).
      *
      * <p>
@@ -69,7 +69,7 @@ public interface TransactionChain<P extends Path<P>, D> extends AutoCloseable,
      *
      * <p>
      * The previous write transaction has to be either SUBMITTED
-     * ({@link AsyncWriteTransaction#submit submit} was invoked) or CANCELLED
+     * ({@link AsyncWriteTransaction#commit commit} was invoked) or CANCELLED
      * ({@link #close close} was invoked)
      *
      * <p>
@@ -80,8 +80,8 @@ public interface TransactionChain<P extends Path<P>, D> extends AutoCloseable,
      * the previous transaction is not visible
      *
      * <p>
-     * Committing this write-only transaction using {@link AsyncWriteTransaction#submit submit}
-     * will submit the state changes in this transaction to be visible to any subsequent
+     * Committing this write-only transaction using {@link AsyncWriteTransaction#commit commit}
+     * will commit the state changes in this transaction to be visible to any subsequent
      * transaction in this chain and also to any transaction outside this chain.
      *
      * @return New transaction in the chain.
@@ -98,7 +98,7 @@ public interface TransactionChain<P extends Path<P>, D> extends AutoCloseable,
      *
      * <p>
      * The previous write transaction has to be either SUBMITTED
-     * ({@link AsyncWriteTransaction#submit submit} was invoked) or CANCELLED
+     * ({@link AsyncWriteTransaction#commit commit} was invoked) or CANCELLED
      * ({@link #close close} was invoked).
      *
      * <p>
@@ -109,8 +109,8 @@ public interface TransactionChain<P extends Path<P>, D> extends AutoCloseable,
      * the previous transaction is not visible.
      *
      * <p>
-     * Committing this read-write transaction using {@link AsyncWriteTransaction#submit submit}
-     * will submit the state changes in this transaction to be visible to any subsequent
+     * Committing this read-write transaction using {@link AsyncWriteTransaction#commit commit}
+     * will commit the state changes in this transaction to be visible to any subsequent
      * transaction in this chain and also to any transaction outside this chain.
      *
      * @return New transaction in the chain.

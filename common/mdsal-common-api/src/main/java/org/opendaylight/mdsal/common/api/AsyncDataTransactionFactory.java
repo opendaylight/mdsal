@@ -35,7 +35,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * <p>
  * For a detailed explanation of how transaction are isolated and how transaction-local changes are
  * committed to global data tree, see {@link AsyncReadTransaction}, {@link AsyncWriteTransaction}
- * and {@link AsyncWriteTransaction#submit()}.
+ * and {@link AsyncWriteTransaction#commit()}.
  *
  * <p>
  * It is strongly recommended to use the type of transaction, which provides only the minimal
@@ -74,13 +74,13 @@ public interface AsyncDataTransactionFactory<P extends Path<P>, D> {
      * <p>
      * Preconditions for mutation of data tree are captured from the snapshot of data tree state,
      * when the transaction is allocated. If data was changed during transaction in an incompatible
-     * way then the commit of this transaction will fail. See {@link AsyncWriteTransaction#submit()}
+     * way then the commit of this transaction will fail. See {@link AsyncWriteTransaction#commit()}
      * for more details about conflicting and not-conflicting changes and failure scenarios.
      *
      * <p>
      * Since this transaction does not provide a view of the data it SHOULD BE used only by callers
      * which are exclusive writers (exporters of data) to the subtree they modify. This prevents
-     * optimistic lock failures as described in {@link AsyncWriteTransaction#submit()}.
+     * optimistic lock failures as described in {@link AsyncWriteTransaction#commit()}.
      *
      * <p>
      * Exclusivity of writers to particular subtree SHOULD BE enforced by external locking
@@ -96,7 +96,7 @@ public interface AsyncDataTransactionFactory<P extends Path<P>, D> {
      * <p>
      * Preconditions for mutation of data tree are captured from the snapshot of data tree state, when the transaction
      * is allocated. If data was changed during transaction in an incompatible way then the commit of this transaction
-     * will fail. See {@link AsyncWriteTransaction#submit()} for more details about conflicting and not-conflicting
+     * will fail. See {@link AsyncWriteTransaction#commit()} for more details about conflicting and not-conflicting
      * changes and failure scenarios.
      *
      * @return new read-write transaction
