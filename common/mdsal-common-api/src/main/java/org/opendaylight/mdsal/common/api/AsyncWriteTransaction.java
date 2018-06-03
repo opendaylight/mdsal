@@ -7,14 +7,11 @@
  */
 package org.opendaylight.mdsal.common.api;
 
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import javax.annotation.CheckReturnValue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Path;
-import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 
 /**
  * Write transaction provides mutation capabilities for a data tree.
@@ -76,13 +73,13 @@ import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
  *
  * <p>
  * After applying changes to the local data tree, applications publish the changes proposed in the
- * transaction by calling {@link #submit} on the transaction. This seals the transaction
- * (preventing any further writes using this transaction) and submits it to be
+ * transaction by calling {@link #commit} on the transaction. This seals the transaction
+ * (preventing any further writes using this transaction) and commits it to be
  * processed and applied to global conceptual data tree.
  *
  * <p>
  * The transaction commit may fail due to a concurrent transaction modifying and committing data in
- * an incompatible way. See {@link #submit} for more concrete commit failure examples.
+ * an incompatible way. See {@link #commit} for more concrete commit failure examples.
  *
  * <p>
  * <b>Implementation Note:</b> This interface is not intended to be implemented
@@ -97,10 +94,10 @@ import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransaction<P, D> {
     /**
      * Cancels the transaction.
-     * Transactions can only be cancelled if it was not yet submited.
+     * Transactions can only be cancelled if it was not yet committed.
      * Invoking cancel() on failed or already canceled will have no effect, and transaction is
      * considered cancelled.
-     * Invoking cancel() on finished transaction (future returned by {@link #submit()} already
+     * Invoking cancel() on finished transaction (future returned by {@link #commit()} already
      * successfully completed) will always fail (return false).
      *
      * @return <tt>false</tt> if the task could not be cancelled, typically because it has already
@@ -115,37 +112,19 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      *
      * @param store Logical data store which should be modified
      * @param path Data object path
-     * @throws IllegalStateException if the transaction was submitted or canceled.
+     * @throws IllegalStateException if the transaction was committed or canceled.
      */
     void delete(LogicalDatastoreType store, P path);
 
     /**
-     * Submits this transaction to be asynchronously applied to update the logical data tree. The
-     * returned CheckedFuture conveys the result of applying the data changes.
-     *
-     * @return a CheckFuture containing the result of the commit. The Future blocks until the commit
-     *         operation is complete. A successful commit returns nothing. On failure, the Future
-     *         will fail with a {@link TransactionCommitFailedException} or an exception derived
-     *         from TransactionCommitFailedException.
-     * @throws IllegalStateException if the transaction is already submitted or was canceled.
-     * @deprecated Use {@link #commit()} instead.
-     */
-    @Deprecated
-    @CheckReturnValue
-    default CheckedFuture<Void, TransactionCommitFailedException> submit() {
-        return MappingCheckedFuture.create(commit().transform(ignored -> null, MoreExecutors.directExecutor()),
-                SUBMIT_EXCEPTION_MAPPER);
-    }
-
-    /**
-     * Submits this transaction to be asynchronously applied to update the logical data tree. The returned
+     * Commits this transaction to be asynchronously applied to update the logical data tree. The returned
      * {@link FluentFuture} conveys the result of applying the data changes.
      *
      * <p>
      * This call logically seals the transaction, which prevents the client from further changing the data tree using
      * this transaction. Any subsequent calls to <code>put(LogicalDatastoreType, Path, Object)</code>,
      * <code>merge(LogicalDatastoreType, Path, Object)</code>, <code>delete(LogicalDatastoreType, Path)</code> will fail
-     * with {@link IllegalStateException}. The transaction is marked as submitted and enqueued into the data store
+     * with {@link IllegalStateException}. The transaction is marked as committed and enqueued into the data store
      * back-end for processing.
      *
      * <p>
@@ -164,8 +143,8 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      *      MyDataObject data = ...;
      *      InstanceIdentifier&lt;MyDataObject&gt; path = ...;
      *      writeTx.put(LogicalDatastoreType.OPERATIONAL, path, data);
-     *      Futures.addCallback(writeTx.submit(), new FutureCallback&lt;Void&gt;() {
-     *          public void onSuccess(Void result) {
+     *      Futures.addCallback(writeTx.commit(), new FutureCallback&lt;CommitInfo&gt;() {
+     *          public void onSuccess(CommitInfo result) {
      *              // succeeded
      *          }
      *          public void onFailure(Throwable t) {
@@ -193,7 +172,7 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      *   <li>
      *     Another transaction finished earlier and modified the same node in a non-compatible way (see below). In this
      *     case the returned future will fail with an {@link OptimisticLockFailedException}. It is the responsibility
-     *     of the caller to create a new transaction and submit the same modification again in order to update data
+     *     of the caller to create a new transaction and commit the same modification again in order to update data
      *     tree.
      *     <i>
      *       <b>Warning</b>: In most cases, retrying after an OptimisticLockFailedException will result in a high
@@ -214,7 +193,7 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      *
      * <h4>Change compatibility of leafs, leaf-list items</h4>
      * Following table shows state changes and failures between two concurrent transactions, which are based on same
-     * initial state, Tx 1 completes successfully before Tx 2 is submitted.
+     * initial state, Tx 1 completes successfully before Tx 2 is committed.
      *
      * <table summary="Change compatibility of leaf values">
      * <tr>
@@ -291,7 +270,7 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      *
      * <h4>Change compatibility of subtrees</h4>
      * Following table shows state changes and failures between two concurrent transactions, which are based on same
-     * initial state, Tx 1 completes successfully before Tx 2 is submitted.
+     * initial state, Tx 1 completes successfully before Tx 2 is committed.
      *
      * <table summary="Change compatibility of containers">
      * <tr>
@@ -464,8 +443,8 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * txB = broker.newWriteTransaction(); // allocates new transaction, data tree is empty
      * txA.put(CONFIGURATION, PATH, A);    // writes to PATH value A
      * txB.put(CONFIGURATION, PATH, B)     // writes to PATH value B
-     * ListenableFuture futureA = txA.submit(); // transaction A is sealed and submitted
-     * ListenebleFuture futureB = txB.submit(); // transaction B is sealed and submitted
+     * ListenableFuture futureA = txA.commit(); // transaction A is sealed and committed
+     * ListenebleFuture futureB = txB.commit(); // transaction B is sealed and committed
      * </pre>
      * Commit of transaction A will be processed asynchronously and data tree will be updated to
      * contain value <code>A</code> for <code>PATH</code>. Returned {@link ListenableFuture} will
@@ -473,7 +452,7 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * Commit of Transaction B will fail, because previous transaction also modified path in a
      * concurrent way. The state introduced by transaction B will not be applied. Returned
      * {@link ListenableFuture} object will fail with {@link OptimisticLockFailedException}
-     * exception, which indicates to client that concurrent transaction prevented the submitted
+     * exception, which indicates to client that concurrent transaction prevented the committed
      * transaction from being applied. <br>
      *
      * <p>
@@ -484,20 +463,8 @@ public interface AsyncWriteTransaction<P extends Path<P>, D> extends AsyncTransa
      * @return a FluentFuture containing the result of the commit information. The Future blocks until the commit
      *         operation is complete. A successful commit returns nothing. On failure, the Future will fail with a
      *         {@link TransactionCommitFailedException} or an exception derived from TransactionCommitFailedException.
-     * @throws IllegalStateException if the transaction is already submitted or was canceled.
+     * @throws IllegalStateException if the transaction is already committed or was canceled.
      */
     @CheckReturnValue
     @NonNull FluentFuture<? extends @NonNull CommitInfo> commit();
-
-    /**
-     * This only exists for reuse by the deprecated {@link #submit} method and is not intended for general use.
-     */
-    @Deprecated
-    ExceptionMapper<TransactionCommitFailedException> SUBMIT_EXCEPTION_MAPPER =
-        new ExceptionMapper<TransactionCommitFailedException>("submit", TransactionCommitFailedException.class) {
-            @Override
-            protected TransactionCommitFailedException newWithCause(String message, Throwable cause) {
-                return new TransactionCommitFailedException(message, cause);
-            }
-        };
 }

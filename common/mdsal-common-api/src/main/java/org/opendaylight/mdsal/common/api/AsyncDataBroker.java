@@ -28,7 +28,7 @@ import org.opendaylight.yangtools.concepts.Path;
  * <p>
  * For a detailed explanation of how transaction are isolated and how transaction-local changes are
  * committed to global data tree, see {@link AsyncReadTransaction}, {@link AsyncWriteTransaction}
- * and {@link AsyncWriteTransaction#submit()}.
+ * and {@link AsyncWriteTransaction#commit()}.
  *
  *
  * <p>
