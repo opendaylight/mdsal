@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -53,7 +52,6 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
-import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -62,8 +60,6 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
-import org.opendaylight.yangtools.yang.model.api.meta.EffectiveStatement;
-import org.opendaylight.yangtools.yang.model.api.meta.StatementSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -311,16 +307,8 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     private Method findRpcMethod(final Class<? extends RpcService> key, final RpcDefinition rpcDef)
             throws NoSuchMethodException {
         final String methodName = BindingMapping.getMethodName(rpcDef.getQName());
-        if (rpcDef.getInput() != null && isExplicitStatement(rpcDef.getInput())) {
-            final Class<?> inputClz = runtimeContext().getClassForSchema(rpcDef.getInput());
-            return key.getMethod(methodName, inputClz);
-        }
-        return key.getMethod(methodName);
-    }
-
-    private static boolean isExplicitStatement(final ContainerSchemaNode node) {
-        return node instanceof EffectiveStatement
-                && ((EffectiveStatement<?, ?>) node).getDeclared().getStatementSource() == StatementSource.DECLARATION;
+        final Class<?> inputClz = runtimeContext().getClassForSchema(rpcDef.getInput());
+        return key.getMethod(methodName, inputClz);
     }
 
     @Override
@@ -334,7 +322,7 @@ public final class BindingToNormalizedNodeCodec implements BindingCodecTreeFacto
     }
 
     @Nonnull
-    protected Map.Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> getSubtreeCodec(
+    protected Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> getSubtreeCodec(
             final YangInstanceIdentifier domIdentifier) {
 
         final BindingCodecTree currentCodecTree = codecRegistry.getCodecContext();

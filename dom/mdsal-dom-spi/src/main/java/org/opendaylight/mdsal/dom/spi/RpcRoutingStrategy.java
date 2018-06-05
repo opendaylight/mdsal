@@ -11,7 +11,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.opendaylight.yangtools.concepts.Identifiable;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.model.api.ContainerSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.UnknownSchemaNode;
@@ -55,13 +54,10 @@ public abstract class RpcRoutingStrategy implements Identifiable<QName> {
     public abstract boolean isContextBasedRouted();
 
     public static RpcRoutingStrategy from(final RpcDefinition rpc) {
-        ContainerSchemaNode input = rpc.getInput();
-        if (input != null) {
-            for (DataSchemaNode schemaNode : input.getChildNodes()) {
-                Optional<QName> context = getRoutingContext(schemaNode);
-                if (context.isPresent()) {
-                    return new RoutedRpcStrategy(rpc.getQName(), context.get(), schemaNode.getQName());
-                }
+        for (DataSchemaNode schemaNode : rpc.getInput().getChildNodes()) {
+            Optional<QName> context = getRoutingContext(schemaNode);
+            if (context.isPresent()) {
+                return new RoutedRpcStrategy(rpc.getQName(), context.get(), schemaNode.getQName());
             }
         }
         return new GlobalRpcStrategy(rpc.getQName());
