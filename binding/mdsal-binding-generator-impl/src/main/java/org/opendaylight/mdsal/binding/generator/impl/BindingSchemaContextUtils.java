@@ -147,13 +147,14 @@ public final class BindingSchemaContextUtils {
     }
 
     private static Optional<DataNodeContainer> findInputOutput(final RpcDefinition rpc, final String targetType) {
-        String rpcName = BindingMapping.getClassName(rpc.getQName());
-        String rpcInputName = rpcName + BindingMapping.RPC_INPUT_SUFFIX;
-        String rpcOutputName = rpcName + BindingMapping.RPC_OUTPUT_SUFFIX;
-        if(targetType.equals(rpcInputName)) {
-            return Optional.<DataNodeContainer>of(rpc.getInput());
-        } else if (targetType.equals(rpcOutputName)) {
-            return Optional.<DataNodeContainer>of(rpc.getOutput());
+        final String rpcName = BindingMapping.getClassName(rpc.getQName());
+        final String rpcInputName = rpcName + BindingMapping.RPC_INPUT_SUFFIX;
+        if (targetType.equals(rpcInputName)) {
+            return Optional.of(rpc.getInput());
+        }
+        final String rpcOutputName = rpcName + BindingMapping.RPC_OUTPUT_SUFFIX;
+        if (targetType.equals(rpcOutputName)) {
+            return Optional.of(rpc.getOutput());
         }
        return Optional.absent();
     }
