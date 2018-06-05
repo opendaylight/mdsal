@@ -17,7 +17,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>mdsal-binding2-runtime</artifactId>
-    <version>0.12.2-SNAPSHOT</version>
+    <version>0.12.2</version>
     <packaging>bundle</packaging>
 
     <dependencyManagement>
@@ -25,7 +25,7 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>2.4.2-SNAPSHOT</version>
+                <version>2.4.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
