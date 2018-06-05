@@ -41,14 +41,8 @@ final class TypedefResolver {
         final Set<RpcDefinition> rpcs = module.getRpcs();
         for (RpcDefinition rpcDefinition : rpcs) {
             ret.addAll(rpcDefinition.getTypeDefinitions());
-            ContainerSchemaNode input = rpcDefinition.getInput();
-            if (input != null) {
-                fillRecursively(ret, input);
-            }
-            ContainerSchemaNode output = rpcDefinition.getOutput();
-            if (output != null) {
-                fillRecursively(ret, output);
-            }
+            fillRecursively(ret, rpcDefinition.getInput());
+            fillRecursively(ret, rpcDefinition.getOutput());
         }
 
         return ret;
