@@ -53,6 +53,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>mdsal-common-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-common-util</artifactId>
+        </dependency>
     </dependencies>
 
     <!--

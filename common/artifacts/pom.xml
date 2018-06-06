@@ -42,6 +42,12 @@
 
             <dependency>
                 <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-common-util</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.opendaylight.mdsal</groupId>
                 <artifactId>mdsal-dom-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
