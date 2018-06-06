@@ -116,7 +116,7 @@ public class Ipv6UtilsTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void privateConstructTest() throws Throwable {
-        final Constructor constructor = Ipv6Utils.class.getDeclaredConstructor();
+        final Constructor<Ipv6Utils> constructor = Ipv6Utils.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
         try {

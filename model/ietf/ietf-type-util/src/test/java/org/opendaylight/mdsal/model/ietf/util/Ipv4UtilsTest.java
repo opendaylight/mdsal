@@ -18,7 +18,7 @@ public class Ipv4UtilsTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void privateConstructTest() throws Throwable {
-        final Constructor constructor = Ipv4Utils.class.getDeclaredConstructor();
+        final Constructor<Ipv4Utils> constructor = Ipv4Utils.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
         try {

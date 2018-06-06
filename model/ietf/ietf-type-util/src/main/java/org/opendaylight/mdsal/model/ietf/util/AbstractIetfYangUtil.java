@@ -108,9 +108,9 @@ public abstract class AbstractIetfYangUtil<T> {
         final char[] input = getValue(macAddress).toCharArray();
         if (ensureLowerCase(input)) {
             return factory.newInstance(input.toString());
-        } else {
-            return macAddress;
         }
+
+        return macAddress;
     }
 
     /**
@@ -147,7 +147,7 @@ public abstract class AbstractIetfYangUtil<T> {
         final byte[] ret = new byte[MAC_BYTE_LENGTH];
 
         for (int i = 0, base = 0; i < MAC_BYTE_LENGTH; ++i, base += 3) {
-            ret[i] = (byte) ((hexValue(mac.charAt(base)) << 4) | hexValue(mac.charAt(base + 1)));
+            ret[i] = (byte) (hexValue(mac.charAt(base)) << 4 | hexValue(mac.charAt(base + 1)));
         }
 
         return ret;
