@@ -46,6 +46,30 @@
       "revId": "cd12701f466b8df3d3a8f02405f9e1dc79443f2d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9c5589c2_473aaf4f",
+        "filename": "common/mdsal-common-util/src/main/java/org/opendaylight/mdsal/common/util/osgi/WaitingServiceTracker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-06T19:00:39Z",
+      "side": 1,
+      "message": "Actually looking at it again, it\u0027s really just a thin wrapper around ServiceTracker#waitForService. There\u0027s only 3 users - I can just convert those users to ServiceTracker. Hold off in this for now...",
+      "parentUuid": "a353bf8e_271a2112",
+      "range": {
+        "startLine": 22,
+        "startChar": 19,
+        "endLine": 22,
+        "endChar": 40
+      },
+      "revId": "cd12701f466b8df3d3a8f02405f9e1dc79443f2d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
