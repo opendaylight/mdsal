@@ -45,10 +45,9 @@ public abstract class AbstractIetfYangUtil<T> {
         this.factory = StringValueObjectFactory.create(clazz, "00:00:00:00:00:00");
     }
 
-    private static final void appendHexByte(final StringBuilder sb, final byte b) {
+    static StringBuilder appendHexByte(final StringBuilder sb, final byte b) {
         final int v = Byte.toUnsignedInt(b);
-        sb.append(HEX_CHARS[v >>> 4]);
-        sb.append(HEX_CHARS[v &  15]);
+        return sb.append(HEX_CHARS[v >>> 4]).append(HEX_CHARS[v & 15]);
     }
 
     /**
