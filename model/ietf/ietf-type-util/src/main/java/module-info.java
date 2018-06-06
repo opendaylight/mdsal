@@ -8,6 +8,7 @@
 module org.opendaylight.mdsal.model.ietf.type.util {
     exports org.opendaylight.mdsal.model.ietf.type.util;
 
+    requires transitive org.opendaylight.yangtools.yang.common;
     requires com.google.common;
 
     // Annotations
