@@ -94,6 +94,30 @@
       "revId": "cd12701f466b8df3d3a8f02405f9e1dc79443f2d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dae01a88_cb49dd7c",
+        "filename": "common/mdsal-common-util/src/main/java/org/opendaylight/mdsal/common/util/osgi/WaitingServiceTracker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-06T20:58:42Z",
+      "side": 1,
+      "message": "Agreed (although blueprint blocks by default too) but that\u0027s outside the scope of this work and should really fall on the app devs. At this point I just need to move users away from WaitingServiceTracker to unblock CSS removal. I pushed a bgpcep patch to use ServiceTracker directly and will do the same netvirt.",
+      "parentUuid": "ca3bd01d_080efc44",
+      "range": {
+        "startLine": 22,
+        "startChar": 19,
+        "endLine": 22,
+        "endChar": 40
+      },
+      "revId": "cd12701f466b8df3d3a8f02405f9e1dc79443f2d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
