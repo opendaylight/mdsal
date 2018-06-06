@@ -70,6 +70,30 @@
       "revId": "cd12701f466b8df3d3a8f02405f9e1dc79443f2d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca3bd01d_080efc44",
+        "filename": "common/mdsal-common-util/src/main/java/org/opendaylight/mdsal/common/util/osgi/WaitingServiceTracker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-06-06T20:28:02Z",
+      "side": 1,
+      "message": "We have seen deadlocks and stalls on it, around autumn last year. I really do not believe it should be necessary to ever block for a service -- express that dependency in blueprint and be done with it.",
+      "parentUuid": "9c5589c2_473aaf4f",
+      "range": {
+        "startLine": 22,
+        "startChar": 19,
+        "endLine": 22,
+        "endChar": 40
+      },
+      "revId": "cd12701f466b8df3d3a8f02405f9e1dc79443f2d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
