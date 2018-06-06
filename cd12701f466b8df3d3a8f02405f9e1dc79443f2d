@@ -22,6 +22,30 @@
       "revId": "cd12701f466b8df3d3a8f02405f9e1dc79443f2d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a353bf8e_271a2112",
+        "filename": "common/mdsal-common-util/src/main/java/org/opendaylight/mdsal/common/util/osgi/WaitingServiceTracker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-06T18:55:36Z",
+      "side": 1,
+      "message": "I didn\u0027t think it has caused any grief. I don\u0027t think it needs to be deprecated. If we do, what\u0027s the alternative?",
+      "parentUuid": "551cc4c1_8610806f",
+      "range": {
+        "startLine": 22,
+        "startChar": 19,
+        "endLine": 22,
+        "endChar": 40
+      },
+      "revId": "cd12701f466b8df3d3a8f02405f9e1dc79443f2d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
