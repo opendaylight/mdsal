@@ -227,9 +227,9 @@ public abstract class AbstractIetfYangUtil<M, P, H, Q, U> {
         return sb.toString();
     }
 
-    private static void appendHexByte(final StringBuilder sb, final byte byteVal) {
+    static StringBuilder appendHexByte(final StringBuilder sb, final byte byteVal) {
         final int intVal = Byte.toUnsignedInt(byteVal);
-        sb.append(HEX_CHARS[intVal >>> 4]).append(HEX_CHARS[intVal & 15]);
+        return sb.append(HEX_CHARS[intVal >>> 4]).append(HEX_CHARS[intVal & 15]);
     }
 
     private static byte @NonNull[] stringToBytes(final String str, final int length) {
