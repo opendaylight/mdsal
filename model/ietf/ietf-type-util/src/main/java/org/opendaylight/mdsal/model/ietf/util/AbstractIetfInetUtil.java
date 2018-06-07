@@ -218,7 +218,7 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A, P> {
             return prefix4Factory.getTemplate();
         }
 
-        return v4PrefixForShort(address, 0, (mask / Byte.SIZE) + ((mask % Byte.SIZE == 0) ? 0 : 1), mask);
+        return v4PrefixForShort(address, 0, mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1), mask);
     }
 
     @Nonnull public final P4 ipv4PrefixForShort(@Nonnull final byte[] array, final int startOffset, final int mask) {
@@ -227,7 +227,7 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A, P> {
             return prefix4Factory.getTemplate();
         }
 
-        return v4PrefixForShort(array, startOffset, (mask / Byte.SIZE) + ((mask % Byte.SIZE == 0) ? 0 : 1), mask);
+        return v4PrefixForShort(array, startOffset, mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1), mask);
     }
 
     /**
@@ -262,13 +262,18 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A, P> {
 
     @Nonnull public final P4 ipv4PrefixFor(@Nonnull final A4 addr) {
         Preconditions.checkNotNull(addr, "Address must not be null");
-        return prefix4Factory.newInstance(ipv4AddressString(addr) + "/32");
+        return prefix4Factory.newInstance(stripZone(ipv4AddressString(addr)) + "/32");
     }
 
     @Nonnull public final P4 ipv4PrefixFor(@Nonnull final A4 addr, final int mask) {
         Preconditions.checkNotNull(addr, "Address must not be null");
         Preconditions.checkArgument(mask >= 0 && mask <= 32, "Invalid mask %s", mask);
-        return prefix4Factory.newInstance(ipv4AddressString(addr) + '/' + mask);
+        return prefix4Factory.newInstance(stripZone(ipv4AddressString(addr)) + '/' + mask);
+    }
+
+    private static String stripZone(final String str) {
+        final int percent = str.indexOf('%');
+        return percent == -1 ? str : str.substring(0, percent);
     }
 
     @Nonnull public final Entry<A4, Integer> splitIpv4Prefix(@Nonnull final P4 prefix) {
@@ -362,7 +367,7 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A, P> {
         }
 
         Preconditions.checkArgument(mask > 0 && mask <= 128, "Invalid mask %s", mask);
-        final int size = (mask / Byte.SIZE) + ((mask % Byte.SIZE == 0) ? 0 : 1);
+        final int size = mask / Byte.SIZE + (mask % Byte.SIZE == 0 ? 0 : 1);
 
         // Until we can instantiate an IPv6 address for a partial array, use a temporary buffer
         byte[] tmp = new byte[INET6_LENGTH];
@@ -402,13 +407,13 @@ public abstract class AbstractIetfInetUtil<A4, P4, A6, P6, A, P> {
 
     @Nonnull public final P6 ipv6PrefixFor(@Nonnull final A6 addr) {
         Preconditions.checkNotNull(addr, "Address must not be null");
-        return prefix6Factory.newInstance(ipv6AddressString(addr) + "/128");
+        return prefix6Factory.newInstance(stripZone(ipv6AddressString(addr)) + "/128");
     }
 
     @Nonnull public final P6 ipv6PrefixFor(@Nonnull final A6 addr, final int mask) {
         Preconditions.checkNotNull(addr, "Address must not be null");
         Preconditions.checkArgument(mask >= 0 && mask <= 128, "Invalid mask %s", mask);
-        return prefix6Factory.newInstance(ipv6AddressString(addr) + '/' + mask);
+        return prefix6Factory.newInstance(stripZone(ipv6AddressString(addr)) + '/' + mask);
     }
 
     @Nonnull public final Entry<A6, Integer> splitIpv6Prefix(@Nonnull final P6 prefix) {
