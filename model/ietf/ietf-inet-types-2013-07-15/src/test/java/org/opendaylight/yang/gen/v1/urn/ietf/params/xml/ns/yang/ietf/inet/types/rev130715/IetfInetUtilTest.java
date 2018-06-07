@@ -57,4 +57,10 @@ public class IetfInetUtilTest {
         assertEquals(ipv6AddressString, maybeIpv6Address.getValue());
         assertEquals(ipAddress, new IpAddress(ipv6Address));
     }
+
+    @Test
+    public void testAddressToString() {
+        assertEquals(new Ipv4Prefix("1.2.3.4/8"), IetfInetUtil.INSTANCE.ipv4PrefixFor(new Ipv4Address("1.2.3.4%1"), 8));
+        assertEquals(new Ipv6Prefix("ff00::/8"), IetfInetUtil.INSTANCE.ipv6PrefixFor(new Ipv6Address("ff00::%bar"), 8));
+    }
 }
