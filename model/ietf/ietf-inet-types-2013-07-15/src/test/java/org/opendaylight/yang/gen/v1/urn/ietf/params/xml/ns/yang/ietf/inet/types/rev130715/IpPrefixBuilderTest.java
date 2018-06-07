@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
 import static org.junit.Assert.assertEquals;
@@ -19,10 +18,10 @@ public class IpPrefixBuilderTest {
 
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor constructor = IpPrefixBuilder.class.getDeclaredConstructor();
+        final Constructor<IpPrefixBuilder> constructor = IpPrefixBuilder.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
-        final IpPrefixBuilder newInstance = (IpPrefixBuilder) constructor.newInstance();
+        final IpPrefixBuilder newInstance = constructor.newInstance();
         assertNotNull(newInstance);
 
         testIpv6("ff00::/8");

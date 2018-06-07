@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
 import static org.junit.Assert.assertEquals;
@@ -19,11 +18,11 @@ public class IetfInetUtilTest {
 
     @Test
     public void testIetfInetUtilConstructor() throws Exception {
-        final Constructor constructor = IetfInetUtil.class.getDeclaredConstructor();
+        final Constructor<IetfInetUtil> constructor = IetfInetUtil.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
 
-        final IetfInetUtil newInstance = (IetfInetUtil) constructor.newInstance();
+        final IetfInetUtil newInstance = constructor.newInstance();
         assertNotNull(newInstance);
     }
 

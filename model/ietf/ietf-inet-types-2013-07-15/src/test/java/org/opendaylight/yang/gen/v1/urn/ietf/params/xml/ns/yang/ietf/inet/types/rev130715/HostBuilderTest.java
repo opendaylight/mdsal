@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715;
 
 import static org.junit.Assert.assertEquals;
@@ -19,10 +18,10 @@ public class HostBuilderTest {
 
     @Test
     public void testGetDefaultInstance() throws Exception {
-        final Constructor constructor = HostBuilder.class.getDeclaredConstructor();
+        final Constructor<HostBuilder> constructor = HostBuilder.class.getDeclaredConstructor();
         assertFalse(constructor.isAccessible());
         constructor.setAccessible(true);
-        final HostBuilder newInstance = (HostBuilder) constructor.newInstance();
+        final HostBuilder newInstance = constructor.newInstance();
         assertNotNull(newInstance);
 
         testIpv4("1.1.1.1");
