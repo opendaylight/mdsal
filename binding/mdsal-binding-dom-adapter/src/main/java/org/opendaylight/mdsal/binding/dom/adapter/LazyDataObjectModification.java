@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -250,6 +251,11 @@ final class LazyDataObjectModification<T extends DataObject> implements DataObje
     public <C extends Augmentation<T> & DataObject> DataObjectModification<C> getModifiedAugmentation(
             final Class<C> augmentation) {
         return (DataObjectModification<C>) getModifiedChild(Item.of(augmentation));
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("identifier", identifier).add("domData", domData).toString();
     }
 
     private T deserialize(final Optional<NormalizedNode<?, ?>> dataAfter) {

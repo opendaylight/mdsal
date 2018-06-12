@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,19 +37,9 @@ class LazyDataTreeModification<T extends DataObject> implements DataTreeModifica
     private final DataTreeIdentifier<T> path;
     private final DataObjectModification<T> rootNode;
 
-    LazyDataTreeModification(DataTreeIdentifier<T> path, final DataObjectModification<T> modification) {
+    LazyDataTreeModification(final DataTreeIdentifier<T> path, final DataObjectModification<T> modification) {
         this.path = Preconditions.checkNotNull(path);
         this.rootNode = Preconditions.checkNotNull(modification);
-    }
-
-    @Override
-    public DataObjectModification<T> getRootNode() {
-        return rootNode;
-    }
-
-    @Override
-    public DataTreeIdentifier<T> getRootPath() {
-        return path;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -63,8 +54,8 @@ class LazyDataTreeModification<T extends DataObject> implements DataTreeModifica
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static <T extends DataObject> DataTreeModification<T> create(BindingToNormalizedNodeCodec codec,
-            DOMDataTreeCandidate candidate) {
+    static <T extends DataObject> DataTreeModification<T> create(final BindingToNormalizedNodeCodec codec,
+            final DOMDataTreeCandidate candidate) {
         final Entry<InstanceIdentifier<?>, BindingCodecTreeNode<?>> codecCtx =
                 codec.getSubtreeCodec(candidate.getRootPath().getRootIdentifier());
         final DataTreeIdentifier<?> path =
@@ -83,4 +74,18 @@ class LazyDataTreeModification<T extends DataObject> implements DataTreeModifica
         return result;
     }
 
+    @Override
+    public DataObjectModification<T> getRootNode() {
+        return rootNode;
+    }
+
+    @Override
+    public DataTreeIdentifier<T> getRootPath() {
+        return path;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("path", path).add("rootNode", rootNode).toString();
+    }
 }
