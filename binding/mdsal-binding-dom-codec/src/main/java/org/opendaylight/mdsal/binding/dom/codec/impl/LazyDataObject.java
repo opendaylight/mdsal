@@ -181,27 +181,50 @@ class LazyDataObject<D extends DataObject> implements InvocationHandler, Augment
     }
 
     private Object getAugmentationImpl(final Class<?> cls) {
+        Preconditions.checkNotNull(cls, "Supplied augmentation must not be null.");
+
         final ImmutableMap<Class<? extends Augmentation<?>>, Augmentation<?>> aug = cachedAugmentations;
         if (aug != null) {
-            return aug.get(cls);
+            return verifyAugmentationObject(cls, aug.get(cls));
         }
-        Preconditions.checkNotNull(cls,"Supplied augmentation must not be null.");
 
         @SuppressWarnings({"unchecked","rawtypes"})
         final Optional<DataContainerCodecContext<?, ?>> augCtx = context.possibleStreamChild((Class) cls);
         if (augCtx.isPresent()) {
             final java.util.Optional<NormalizedNode<?, ?>> augData = data.getChild(augCtx.get().getDomPathArgument());
             if (augData.isPresent()) {
-                return augCtx.get().deserialize(augData.get());
+                return verifyAugmentationObject(cls, augCtx.get().deserialize(augData.get()));
             }
         }
         return null;
     }
 
+    private Object verifyAugmentationObject(final Class<?> cls, final Object obj) {
+        if (obj == null || cls.isInstance(obj)) {
+            return obj;
+        }
+
+        // Somehow we ended up attempting to return an incompatible object, let's try to extract some data out
+        // of it.
+        final Class<?> objClass = obj.getClass();
+        LOG.warn("Returning object {} class {} does not implement required augmentation {}", obj, objClass, cls);
+        LOG.warn("Superclass: {}", objClass.getGenericSuperclass());
+        LOG.warn("Implemented interfaces: {}", Arrays.asList(objClass.getGenericInterfaces()));
+        LOG.warn("This LDO: {}", bindingToString());
+        LOG.warn("This NN: {}", data);
+
+        if (Proxy.isProxyClass(objClass)) {
+            final InvocationHandler handler = Proxy.getInvocationHandler(obj);
+            LOG.warn("Dynamic proxy handler: {}", handler);
+        }
+
+        return obj;
+    }
+
     public String bindingToString() {
         final ToStringHelper helper = MoreObjects.toStringHelper(context.getBindingClass()).omitNullValues();
 
-        for (final Method m :context.getHashCodeAndEqualsMethods()) {
+        for (final Method m : context.getHashCodeAndEqualsMethods()) {
             helper.add(m.getName(), getBindingData(m));
         }
         if (Augmentable.class.isAssignableFrom(context.getBindingClass())) {
