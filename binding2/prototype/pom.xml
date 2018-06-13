@@ -4,7 +4,7 @@
 
     <groupId>org.opendaylight.yangtools.yang.binding2</groupId>
     <artifactId>prototype</artifactId>
-    <version>0.4.2-SNAPSHOT</version>
+    <version>0.4.3-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>yang-binding2</artifactId>
-            <version>0.12.2-SNAPSHOT</version>
+            <version>0.12.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

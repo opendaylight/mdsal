@@ -18,7 +18,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>singleton-service</artifactId>
-    <version>2.4.2-SNAPSHOT</version>
+    <version>2.4.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name> <!-- Used by Sonar to set project name -->
     <description>${project.artifactId}</description>

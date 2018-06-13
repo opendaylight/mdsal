@@ -11,14 +11,14 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>0.12.2-SNAPSHOT</version>
+        <version>0.12.3-SNAPSHOT</version>
         <relativePath>../../../binding/binding-parent</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendaylight.mdsal.model</groupId>
     <artifactId>ietf-inet-types-2013-07-15</artifactId>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.4.3-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
     <packaging>bundle</packaging>
