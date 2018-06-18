@@ -95,6 +95,7 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
+import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.OperationDefinition;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -283,6 +284,7 @@ abstract class AbstractTypeGenerator {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
             actionsToGenType(context, genType, node);
+            notifsToGenType(context, genType, node);
         }
     }
 
@@ -301,6 +303,7 @@ abstract class AbstractTypeGenerator {
                 genType.addImplementsType(identifiableMarker);
 
                 actionsToGenType(context, genType, node);
+                notifsToGenType(context, genType, node);
             }
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
@@ -492,6 +495,21 @@ abstract class AbstractTypeGenerator {
         context.addChildNodeType(schema, outType);
         return outType.build();
     }
+
+    private <T extends DataSchemaNode & NotificationNodeContainer> void notifsToGenType(final ModuleContext context,
+            final GeneratedTypeBuilder parentBuilder, final T node) {
+        final Collection<NotificationDefinition> notifs = node.getNotifications();
+        if (notifs.isEmpty()) {
+            return;
+        }
+
+        final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
+            packageNameForGeneratedType(context.modulePackageName(), node.getPath()),
+            BindingMapping.getClassName(node.getQName()) + "Listener"));
+
+
+    }
+
 
     /**
      * Converts all <b>notifications</b> of the module to the list of
