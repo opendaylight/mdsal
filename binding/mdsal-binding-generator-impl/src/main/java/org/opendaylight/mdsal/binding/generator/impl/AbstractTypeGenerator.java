@@ -26,6 +26,7 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.childOf;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifiable;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifier;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.FUTURE;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
@@ -74,7 +75,6 @@ import org.opendaylight.mdsal.binding.yang.types.GroupingDefinitionDependencySor
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.QNameModule;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.ChoiceSchemaNode;
@@ -434,8 +434,7 @@ abstract class AbstractTypeGenerator {
                 method.addParameter(
                     createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput())), "input");
                 method.setReturnType(Types.parameterizedTypeFor(FUTURE,
-                    Types.parameterizedTypeFor(Types.typeForClass(RpcResult.class),
-                    createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getOutput())))));
+                    rpcResult(createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getOutput())))));
             }
         }
 

@@ -29,6 +29,7 @@ import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
+import org.opendaylight.yangtools.yang.common.RpcResult;
 
 public final class BindingTypes {
 
@@ -50,6 +51,7 @@ public final class BindingTypes {
 
     private static final ConcreteType CHILD_OF = typeForClass(ChildOf.class);
     private static final ConcreteType CHOICE_IN = typeForClass(ChoiceIn.class);
+    private static final ConcreteType RPC_RESULT = typeForClass(RpcResult.class);
 
     private BindingTypes() {
 
@@ -108,5 +110,16 @@ public final class BindingTypes {
      */
     public static ParameterizedType identifiable(final Type type) {
         return parameterizedTypeFor(IDENTIFIABLE, type);
+    }
+
+    /**
+     * Type specializing {@link RpcResult} for a particular type.
+     *
+     * @param type Type for which to specialize
+     * @return A parameterized type corresponding to {@code RpcResult<Type>}
+     * @throws NullPointerException if {@code type} is null
+     */
+    public static ParameterizedType rpcResult(final Type type) {
+        return parameterizedTypeFor(RPC_RESULT, type);
     }
 }
