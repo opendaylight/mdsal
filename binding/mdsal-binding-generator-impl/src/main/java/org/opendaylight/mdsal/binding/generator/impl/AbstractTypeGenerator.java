@@ -284,6 +284,7 @@ abstract class AbstractTypeGenerator {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
             actionsToGenType(context, genType, node.getActions());
+            notifsToGenType(context, genType, node.getNotifications());
         }
     }
 
@@ -302,6 +303,7 @@ abstract class AbstractTypeGenerator {
                 genType.addImplementsType(identifiableMarker);
 
                 actionsToGenType(context, genTOBuilder, node.getActions());
+                notifsToGenType(context, genType, node.getNotifications());
             }
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
@@ -423,6 +425,11 @@ abstract class AbstractTypeGenerator {
         final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, schema);
         resolveDataSchemaNodes(context, genType, genType, schema.getChildNodes());
         return genType.build();
+    }
+
+    private void notifsToGenType(final ModuleContext context,
+            final Type parent, final Set<NotificationDefinition> notifications) {
+        // FIXME: generate types
     }
 
     /**
