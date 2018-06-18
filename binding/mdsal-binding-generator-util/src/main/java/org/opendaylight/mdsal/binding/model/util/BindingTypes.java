@@ -14,6 +14,7 @@ import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -49,12 +50,26 @@ public final class BindingTypes {
     // This is an annotation, we are current just referencing the type
     public static final JavaTypeName ROUTING_CONTEXT = JavaTypeName.create(RoutingContext.class);
 
+    private static final ConcreteType ACTION = typeForClass(Action.class);
     private static final ConcreteType CHILD_OF = typeForClass(ChildOf.class);
     private static final ConcreteType CHOICE_IN = typeForClass(ChoiceIn.class);
     private static final ConcreteType RPC_RESULT = typeForClass(RpcResult.class);
 
     private BindingTypes() {
 
+    }
+
+    /**
+     * Type specializing {@link Action} for a particular type.
+     *
+     * @param parent Type of parent defining the action
+     * @param input Type input type
+     * @param output Type output type
+     * @return A parameterized type corresponding to {@code Action<Parent, Input, Output>}
+     * @throws NullPointerException if any argument is is null
+     */
+    public static ParameterizedType action(final Type parent, final Type input, final Type output) {
+        return parameterizedTypeFor(ACTION, parent, input, output);
     }
 
     /**
@@ -113,6 +128,17 @@ public final class BindingTypes {
     }
 
     /**
+     * Type specializing {@link InstanceIdentifier} for a particular type.
+     *
+     * @param type Type for which to specialize
+     * @return A parameterized type corresponding to {@code InstanceIdentifier<Type>}
+     * @throws NullPointerException if {@code type} is null
+     */
+    public static ParameterizedType instanceIdentifier(final Type type) {
+        return parameterizedTypeFor(INSTANCE_IDENTIFIER, type);
+    }
+
+    /**
      * Type specializing {@link RpcResult} for a particular type.
      *
      * @param type Type for which to specialize
@@ -121,5 +147,4 @@ public final class BindingTypes {
      */
     public static ParameterizedType rpcResult(final Type type) {
         return parameterizedTypeFor(RPC_RESULT, type);
-    }
 }
