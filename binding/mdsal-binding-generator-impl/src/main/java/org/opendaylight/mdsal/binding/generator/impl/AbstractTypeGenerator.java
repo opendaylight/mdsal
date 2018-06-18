@@ -17,7 +17,6 @@ import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.pac
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.BASE_IDENTITY;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_OBJECT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_ROOT;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.INSTANCE_IDENTIFIER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION_LISTENER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.ROUTING_CONTEXT;
@@ -66,6 +65,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilde
 import org.opendaylight.mdsal.binding.model.api.type.builder.MethodSignatureBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.TypeMemberBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
+import org.opendaylight.mdsal.binding.model.util.BindingTypes;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.TypeConstants;
 import org.opendaylight.mdsal.binding.model.util.Types;
@@ -281,7 +281,7 @@ abstract class AbstractTypeGenerator {
         if (genType != null) {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
-            actionsToGenType(context, genType, node);
+            actionsToGenType(context, genType, node.getActions());
         }
     }
 
@@ -299,7 +299,7 @@ abstract class AbstractTypeGenerator {
                 genTOBuilder.addImplementsType(identifierMarker);
                 genType.addImplementsType(identifiableMarker);
 
-                actionsToGenType(context, genType, node);
+                actionsToGenType(context, genTOBuilder, node.getActions());
             }
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
@@ -400,32 +400,23 @@ abstract class AbstractTypeGenerator {
     }
 
     private <T extends DataSchemaNode & ActionNodeContainer> void actionsToGenType(final ModuleContext context,
-            final GeneratedTypeBuilder parentBuilder, final T node) {
-        final Collection<ActionDefinition> actions = node.getActions();
-        if (actions.isEmpty()) {
-            return;
-        }
-
-        final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(
-            parentBuilder.getIdentifier().createSibling(parentBuilder.getName() + "Service"));
-        builder.addImplementsType(RPC_SERVICE);
+            final Type parent, final Collection<ActionDefinition> actions) {
         for (final ActionDefinition action : actions) {
-            final String operName = BindingMapping.getClassName(action.getQName());
-            final MethodSignatureBuilder method = builder.addMethod(BindingMapping.getPropertyName(operName));
+            final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
+                packageNameForGeneratedType(context.modulePackageName(), action.getPath()),
+                BindingMapping.getClassName(action.getQName())));
 
-            // Do not refer to annotation class, as it may not be available at runtime
-            method.addAnnotation("javax.annotation", "CheckReturnValue");
-            addComment(method, action);
-            method.addParameter(INSTANCE_IDENTIFIER, "path");
-            method.addParameter(
-                createOperationContainer(context, operName, action, verifyNotNull(action.getInput())), "input");
-            method.setReturnType(Types.parameterizedTypeFor(FUTURE,
-                Types.parameterizedTypeFor(rpcResult(
-                    createOperationContainer(context, operName, action, verifyNotNull(action.getOutput()))))));
+            // FIXME: regenerate input/output types
+
+            builder.addImplementsType(BindingTypes.action(BindingTypes.instanceIdentifier(parent),
+                createOperationContainer(context, operName, action, verifyNotNull(action.getInput())),
+                Types.parameterizedTypeFor(FUTURE, rpcResult(createOperationContainer(context, operName, action,
+                    verifyNotNull(action.getOutput()))))));
+
+            addCodegenInformation(builder, context.module(), "Actions", actions);
+
+            context.addChildNodeType(action, builder);
         }
-        addCodegenInformation(builder, context.module(), "Actions", actions);
-
-        context.addTopLevelNodeType(builder);
     }
 
     /**
