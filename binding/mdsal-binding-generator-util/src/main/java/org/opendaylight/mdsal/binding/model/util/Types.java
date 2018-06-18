@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableRangeSet;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ public final class Types {
     public static final ConcreteType CHAR_ARRAY = typeForClass(char[].class);
 
     private static final ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
+    private static final ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
 
     /**
      * It is not desirable to create instance of this class
@@ -80,6 +82,15 @@ public final class Types {
      */
     public static ConcreteType primitiveVoidType() {
         return PRIMITIVE_VOID;
+    }
+
+    /**
+     * Returns an instance of {@link ConcreteType} which represents {@link Serializable} type.
+     *
+     * @return <code>ConcreteType</code> instance which represents JAVA <code>{@link Serializable}</code>
+     */
+    public static ConcreteType serializableType() {
+        return SERIALIZABLE;
     }
 
     /**

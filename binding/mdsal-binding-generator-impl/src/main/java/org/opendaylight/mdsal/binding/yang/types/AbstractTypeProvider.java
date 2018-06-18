@@ -1320,7 +1320,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      *            transfer object which needs to be serializable
      */
     private static void makeSerializable(final GeneratedTOBuilder gto) {
-        gto.addImplementsType(Types.typeForClass(Serializable.class));
+        gto.addImplementsType(Types.serializableType());
         final GeneratedPropertyBuilder prop = new GeneratedPropertyBuilderImpl("serialVersionUID");
         prop.setValue(Long.toString(BindingGeneratorUtil.computeDefaultSUID(gto)));
         gto.setSUID(prop);
