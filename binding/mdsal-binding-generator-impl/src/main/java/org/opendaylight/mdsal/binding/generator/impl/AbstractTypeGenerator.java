@@ -17,8 +17,6 @@ import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.pac
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.BASE_IDENTITY;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_OBJECT;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.DATA_ROOT;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.IDENTIFIABLE;
-import static org.opendaylight.mdsal.binding.model.util.BindingTypes.IDENTIFIER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.NOTIFICATION_LISTENER;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.ROUTING_CONTEXT;
@@ -26,6 +24,8 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.RPC_SERVICE
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.augmentable;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.childOf;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.choiceIn;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifiable;
+import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifier;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
 import static org.opendaylight.mdsal.binding.model.util.Types.FUTURE;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
@@ -289,8 +289,8 @@ abstract class AbstractTypeGenerator {
             final List<String> listKeys = listKeys(node);
             final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(context, node);
             if (genTOBuilder != null) {
-                final Type identifierMarker = Types.parameterizedTypeFor(IDENTIFIER, genType);
-                final Type identifiableMarker = Types.parameterizedTypeFor(IDENTIFIABLE, genTOBuilder);
+                final Type identifierMarker = identifier(genType);
+                final Type identifiableMarker = identifiable(genTOBuilder);
                 genTOBuilder.addImplementsType(identifierMarker);
                 genType.addImplementsType(identifiableMarker);
             }

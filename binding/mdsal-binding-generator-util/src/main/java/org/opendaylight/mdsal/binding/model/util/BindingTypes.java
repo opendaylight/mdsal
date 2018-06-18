@@ -87,4 +87,26 @@ public final class BindingTypes {
     public static ParameterizedType choiceIn(final Type type) {
         return parameterizedTypeFor(CHOICE_IN, type);
     }
+
+    /**
+     * Type specializing {@link Identifier} for a particular type.
+     *
+     * @param type Type for which to specialize
+     * @return A parameterized type corresponding to {@code Identifier<Type>}
+     * @throws NullPointerException if {@code type} is null
+     */
+    public static ParameterizedType identifier(final Type type) {
+        return parameterizedTypeFor(IDENTIFIER, type);
+    }
+
+    /**
+     * Type specializing {@link Identifiable} for a particular type.
+     *
+     * @param type Type for which to specialize
+     * @return A parameterized type corresponding to {@code Identifiable<Type>}
+     * @throws NullPointerException if {@code type} is null
+     */
+    public static ParameterizedType identifiable(final Type type) {
+        return parameterizedTypeFor(IDENTIFIABLE, type);
+    }
 }
