@@ -14,6 +14,7 @@ import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -27,6 +28,8 @@ import org.opendaylight.yangtools.yang.binding.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Notification;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
+import org.opendaylight.yangtools.yang.binding.RpcInput;
+import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.annotations.RoutingContext;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -44,17 +47,33 @@ public final class BindingTypes {
     public static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
     public static final ConcreteType NOTIFICATION = typeForClass(Notification.class);
     public static final ConcreteType NOTIFICATION_LISTENER = typeForClass(NotificationListener.class);
+    public static final ConcreteType RPC_INPUT = typeForClass(RpcInput.class);
+    public static final ConcreteType RPC_OUTPUT = typeForClass(RpcOutput.class);
     public static final ConcreteType RPC_SERVICE = typeForClass(RpcService.class);
 
     // This is an annotation, we are current just referencing the type
     public static final JavaTypeName ROUTING_CONTEXT = JavaTypeName.create(RoutingContext.class);
 
+    private static final ConcreteType ACTION = typeForClass(Action.class);
     private static final ConcreteType CHILD_OF = typeForClass(ChildOf.class);
     private static final ConcreteType CHOICE_IN = typeForClass(ChoiceIn.class);
     private static final ConcreteType RPC_RESULT = typeForClass(RpcResult.class);
 
     private BindingTypes() {
 
+    }
+
+    /**
+     * Type specializing {@link Action} for a particular type.
+     *
+     * @param parent Type of parent defining the action
+     * @param input Type input type
+     * @param output Type output type
+     * @return A parameterized type corresponding to {@code Action<Parent, Input, Output>}
+     * @throws NullPointerException if any argument is is null
+     */
+    public static ParameterizedType action(final Type parent, final Type input, final Type output) {
+        return parameterizedTypeFor(ACTION, parent, input, output);
     }
 
     /**
@@ -110,6 +129,17 @@ public final class BindingTypes {
      */
     public static ParameterizedType identifiable(final Type type) {
         return parameterizedTypeFor(IDENTIFIABLE, type);
+    }
+
+    /**
+     * Type specializing {@link InstanceIdentifier} for a particular type.
+     *
+     * @param type Type for which to specialize
+     * @return A parameterized type corresponding to {@code InstanceIdentifier<Type>}
+     * @throws NullPointerException if {@code type} is null
+     */
+    public static ParameterizedType instanceIdentifier(final Type type) {
+        return parameterizedTypeFor(INSTANCE_IDENTIFIER, type);
     }
 
     /**
