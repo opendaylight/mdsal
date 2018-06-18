@@ -57,6 +57,7 @@ public final class Types {
     public static final ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
     public static final ConcreteType CHAR_ARRAY = typeForClass(char[].class);
 
+    private static final ConcreteType CLASS = typeForClass(Class.class);
     private static final ConcreteType OBJECT = typeForClass(Object.class);
     private static final ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
     private static final ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
@@ -65,6 +66,18 @@ public final class Types {
      * It is not desirable to create instance of this class
      */
     private Types() {
+    }
+
+    /**
+     * Returns an instance of {@link ParameterizedType} which represents JAVA <code>java.lang.Class</code> type
+     * specialized to specified type.
+     *
+     * @param type Type for which to specialize
+     * @return A parameterized type corresponding to {@code Class<Type>}
+     * @throws NullPointerException if {@code type} is null
+     */
+    public static ParameterizedType classType(final Type type) {
+        return parameterizedTypeFor(CLASS, type);
     }
 
     /**

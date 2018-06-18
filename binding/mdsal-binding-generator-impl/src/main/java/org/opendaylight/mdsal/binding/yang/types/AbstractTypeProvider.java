@@ -394,8 +394,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final String basePackageName = BindingMapping.getRootPackageName(module.getQNameModule());
         final JavaTypeName identifier = JavaTypeName.create(BindingGeneratorUtil.packageNameForGeneratedType(basePackageName,
             identity.getPath()), BindingMapping.getClassName(identity.getQName()));
-        final Type paramType = Types.wildcardTypeFor(identifier);
-        return Types.parameterizedTypeFor(Types.typeForClass(Class.class), paramType);
+        return Types.classType(Types.wildcardTypeFor(identifier));
     }
 
     /**
