@@ -558,7 +558,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                     returnType = resolveTypeFromDataSchemaNode(dataNode);
                 }
             } else {
-                returnType = Types.typeForClass(Object.class);
+                returnType = Types.objectType();
             }
         }
         Preconditions.checkArgument(returnType != null, "Failed to find leafref target: %s in module %s (%s)",

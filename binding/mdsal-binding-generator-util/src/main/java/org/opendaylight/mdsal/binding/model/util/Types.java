@@ -57,6 +57,7 @@ public final class Types {
     public static final ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
     public static final ConcreteType CHAR_ARRAY = typeForClass(char[].class);
 
+    private static final ConcreteType OBJECT = typeForClass(Object.class);
     private static final ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
     private static final ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
 
@@ -73,6 +74,15 @@ public final class Types {
      */
     public static ConcreteType voidType() {
         return VOID;
+    }
+
+    /**
+     * Returns an instance of {@link ConcreteType} which represents {@link Object} type.
+     *
+     * @return <code>ConcreteType</code> instance which represents {@link Object}
+     */
+    public static ConcreteType objectType() {
+        return OBJECT;
     }
 
     /**
