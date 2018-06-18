@@ -107,6 +107,7 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
+import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -301,6 +302,7 @@ abstract class AbstractTypeGenerator {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes(), inGrouping);
             actionsToGenType(context, genType, node, null, inGrouping);
+            notifsToGenType(context, genType, node, null, inGrouping);
         }
     }
 
@@ -319,9 +321,9 @@ abstract class AbstractTypeGenerator {
                 final Type identifiableMarker = identifiable(genTOBuilder);
                 genTOBuilder.addImplementsType(identifierMarker);
                 genType.addImplementsType(identifiableMarker);
-
             }
             actionsToGenType(context, genType, node, genTOBuilder, inGrouping);
+            notifsToGenType(context, genType, node, getTOBuilder, inGrouping);
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
                 if (!schemaNode.isAugmenting()) {
@@ -478,6 +480,11 @@ abstract class AbstractTypeGenerator {
         final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, schema, inGrouping);
         resolveDataSchemaNodes(context, genType, genType, schema.getChildNodes(), inGrouping);
         return genType.build();
+    }
+
+    private <T extends DataNodeContainer & NotificationNodeContainer> void notifsToGenType(final ModuleContext context,
+            final Type parent, final T parentSchema, final Type keyType, final boolean inGrouping) {
+        // FIXME: generate types
     }
 
     /**
@@ -705,6 +712,7 @@ abstract class AbstractTypeGenerator {
             groupingsToGenTypes(context, grouping.getGroupings());
             processUsesAugments(grouping, context, true);
             actionsToGenType(context, genType, grouping, null, true);
+            notifsToGenType(context, genType, grouping, null, true);
         }
     }
 
