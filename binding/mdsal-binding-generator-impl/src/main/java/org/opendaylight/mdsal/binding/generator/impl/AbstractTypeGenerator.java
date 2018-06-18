@@ -98,6 +98,7 @@ import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.ModuleImport;
 import org.opendaylight.yangtools.yang.model.api.NotificationDefinition;
+import org.opendaylight.yangtools.yang.model.api.NotificationNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
@@ -286,6 +287,7 @@ abstract class AbstractTypeGenerator {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
             actionsToGenType(context, genType, node);
+            notifsToGenType(context, genType, node);
         }
     }
 
@@ -304,6 +306,7 @@ abstract class AbstractTypeGenerator {
                 genType.addImplementsType(identifiableMarker);
 
                 actionsToGenType(context, genTOBuilder, node);
+                notifsToGenType(context, genType, node);
             }
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
@@ -447,6 +450,11 @@ abstract class AbstractTypeGenerator {
         final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, schema);
         resolveDataSchemaNodes(context, genType, genType, schema.getChildNodes());
         return genType.build();
+    }
+
+    private <T extends DataNodeContainer & NotificationNodeContainer> void notifsToGenType(final ModuleContext context,
+            final Type parent, final T parentSchema) {
+        // FIXME: generate types
     }
 
     /**
@@ -661,6 +669,7 @@ abstract class AbstractTypeGenerator {
             groupingsToGenTypes(context, grouping.getGroupings());
             processUsesAugments(grouping, context);
             actionsToGenType(context, genType, grouping);
+            notifsToGenType(context, genType, grouping);
         }
     }
 
