@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.model.api.AccessModifier;
 import org.opendaylight.mdsal.binding.model.api.Constant;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
@@ -251,12 +252,12 @@ abstract class AbstractTypeGenerator {
         }
     }
 
-    private GeneratedTypeBuilder processDataSchemaNode(final ModuleContext context, final Type childOf,
+    private GeneratedTypeBuilder processDataSchemaNode(final ModuleContext context, final Type baseInterface,
             final DataSchemaNode node) {
         if (node.isAugmenting() || node.isAddedByUses()) {
             return null;
         }
-        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(context, node, childOf);
+        final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(context, node, baseInterface);
         annotateDeprecatedIfNecessary(node.getStatus(), genType);
 
         final Module module = context.module();
@@ -272,17 +273,17 @@ abstract class AbstractTypeGenerator {
     }
 
     private void containerToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
-            final Type childOf, final ContainerSchemaNode node) {
-        final GeneratedTypeBuilder genType = processDataSchemaNode(context, childOf, node);
+            final Type baseInterface, final ContainerSchemaNode node) {
+        final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, node);
         if (genType != null) {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
         }
     }
 
-    private void listToGenType(final ModuleContext context, final GeneratedTypeBuilder parent, final Type childOf,
-            final ListSchemaNode node) {
-        final GeneratedTypeBuilder genType = processDataSchemaNode(context, childOf, node);
+    private void listToGenType(final ModuleContext context, final GeneratedTypeBuilder parent,
+            final Type baseInterface, final ListSchemaNode node) {
+        final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, node);
         if (genType != null) {
             constructGetter(parent, Types.listTypeFor(genType), node);
 
@@ -488,7 +489,7 @@ abstract class AbstractTypeGenerator {
                 processUsesAugments(notification, context);
 
                 final GeneratedTypeBuilder notificationInterface = addDefaultInterfaceDefinition(
-                    context.modulePackageName(), notification, null, context);
+                    context.modulePackageName(), notification, DATA_OBJECT, context);
                 annotateDeprecatedIfNecessary(notification.getStatus(), notificationInterface);
                 notificationInterface.addImplementsType(NOTIFICATION);
                 context.addChildNodeType(notification, notificationInterface);
@@ -862,7 +863,7 @@ abstract class AbstractTypeGenerator {
         annotateDeprecatedIfNecessary(augSchema.getStatus(), augTypeBuilder);
         addImplementedInterfaceFromUses(augSchema, augTypeBuilder);
 
-        augSchemaNodeToMethods(context, augTypeBuilder, augTypeBuilder, augSchema.getChildNodes());
+        augSchemaNodeToMethods(context, augTypeBuilder, augSchema.getChildNodes());
         augmentBuilders.put(augTypeName, augTypeBuilder);
 
         if (!augSchema.getChildNodes().isEmpty()) {
@@ -940,11 +941,12 @@ abstract class AbstractTypeGenerator {
      *         added to it.
      */
     private GeneratedTypeBuilder resolveDataSchemaNodes(final ModuleContext context, final GeneratedTypeBuilder parent,
-            final Type childOf, final Iterable<DataSchemaNode> schemaNodes) {
+            final @Nullable Type childOf, final Iterable<DataSchemaNode> schemaNodes) {
         if (schemaNodes != null && parent != null) {
+            final Type baseInterface = childOf == null ? DATA_OBJECT : childOf(childOf);
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting() && !schemaNode.isAddedByUses()) {
-                    addSchemaNodeToBuilderAsMethod(context, schemaNode, parent, childOf);
+                    addSchemaNodeToBuilderAsMethod(context, schemaNode, parent, baseInterface);
                 }
             }
         }
@@ -972,11 +974,12 @@ abstract class AbstractTypeGenerator {
      *         added to it.
      */
     private GeneratedTypeBuilder augSchemaNodeToMethods(final ModuleContext context,
-            final GeneratedTypeBuilder typeBuilder, final Type childOf, final Iterable<DataSchemaNode> schemaNodes) {
+            final GeneratedTypeBuilder typeBuilder, final Iterable<DataSchemaNode> schemaNodes) {
         if (schemaNodes != null && typeBuilder != null) {
+            final Type baseInterface = childOf(typeBuilder);
             for (final DataSchemaNode schemaNode : schemaNodes) {
                 if (!schemaNode.isAugmenting()) {
-                    addSchemaNodeToBuilderAsMethod(context, schemaNode, typeBuilder, childOf);
+                    addSchemaNodeToBuilderAsMethod(context, schemaNode, typeBuilder, baseInterface);
                 }
             }
         }
@@ -999,16 +1002,16 @@ abstract class AbstractTypeGenerator {
      *            current module
      */
     private void addSchemaNodeToBuilderAsMethod(final ModuleContext context, final DataSchemaNode node,
-            final GeneratedTypeBuilder typeBuilder, final Type childOf) {
+            final GeneratedTypeBuilder typeBuilder, final Type baseInterface) {
         if (node != null && typeBuilder != null) {
             if (node instanceof LeafSchemaNode) {
                 resolveLeafSchemaNodeAsMethod(typeBuilder, (LeafSchemaNode) node, context);
             } else if (node instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(typeBuilder, (LeafListSchemaNode) node, context);
             } else if (node instanceof ContainerSchemaNode) {
-                containerToGenType(context, typeBuilder, childOf, (ContainerSchemaNode) node);
+                containerToGenType(context, typeBuilder, baseInterface, (ContainerSchemaNode) node);
             } else if (node instanceof ListSchemaNode) {
-                listToGenType(context, typeBuilder, childOf, (ListSchemaNode) node);
+                listToGenType(context, typeBuilder, baseInterface, (ListSchemaNode) node);
             } else if (node instanceof ChoiceSchemaNode) {
                 choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) node);
             } else {
@@ -1170,7 +1173,6 @@ abstract class AbstractTypeGenerator {
                 final GeneratedTypeBuilder caseTypeBuilder = addDefaultInterfaceDefinition(context, caseNode);
                 caseTypeBuilder.addImplementsType(targetType);
 
-                final Type childOfType = findChildOfType(targetNode);
                 CaseSchemaNode node = null;
                 final String caseLocalName = caseNode.getQName().getLocalName();
                 if (caseNode instanceof CaseSchemaNode) {
@@ -1189,7 +1191,7 @@ abstract class AbstractTypeGenerator {
                 }
                 final Iterable<DataSchemaNode> childNodes = node.getChildNodes();
                 if (childNodes != null) {
-                    resolveDataSchemaNodes(context, caseTypeBuilder, childOfType, childNodes);
+                    resolveDataSchemaNodes(context, caseTypeBuilder, findChildOfType(targetNode), childNodes);
                 }
                 context.addCaseType(caseNode.getPath(), caseTypeBuilder);
                 context.addChoiceToCaseMapping(targetType, caseTypeBuilder, node);
@@ -1570,13 +1572,13 @@ abstract class AbstractTypeGenerator {
 
     private GeneratedTypeBuilder addDefaultInterfaceDefinition(final ModuleContext context,
             final SchemaNode schemaNode) {
-        return addDefaultInterfaceDefinition(context, schemaNode, null);
+        return addDefaultInterfaceDefinition(context, schemaNode, DATA_OBJECT);
     }
 
     private GeneratedTypeBuilder addDefaultInterfaceDefinition(final ModuleContext context,
-            final SchemaNode schemaNode, final Type childOf) {
+            final SchemaNode schemaNode, final Type baseInterface) {
         final String packageName = packageNameForGeneratedType(context.modulePackageName(), schemaNode.getPath());
-        return addDefaultInterfaceDefinition(packageName, schemaNode, childOf, context);
+        return addDefaultInterfaceDefinition(packageName, schemaNode, baseInterface, context);
     }
 
 
@@ -1604,11 +1606,11 @@ abstract class AbstractTypeGenerator {
      * @return generated type builder <code>schemaNode</code>
      */
     private GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
-            final Type parent, final ModuleContext context) {
+            final Type baseInterface, final ModuleContext context) {
         final GeneratedTypeBuilder it = addRawInterfaceDefinition(
             JavaTypeName.create(packageName, BindingMapping.getClassName(schemaNode.getQName())), schemaNode);
 
-        it.addImplementsType(parent == null ? DATA_OBJECT : childOf(parent));
+        it.addImplementsType(baseInterface);
         if (!(schemaNode instanceof GroupingDefinition)) {
             it.addImplementsType(augmentable(it));
         }
@@ -1790,11 +1792,12 @@ abstract class AbstractTypeGenerator {
             if (schemaNode instanceof LeafListSchemaNode) {
                 resolveLeafListSchemaNode(typeBuilder, (LeafListSchemaNode) schemaNode, context);
             } else if (schemaNode instanceof ContainerSchemaNode) {
-                containerToGenType(context, typeBuilder, typeBuilder, (ContainerSchemaNode) schemaNode);
+                containerToGenType(context, typeBuilder, childOf(typeBuilder),
+                    (ContainerSchemaNode) schemaNode);
             } else if (schemaNode instanceof ChoiceSchemaNode) {
                 choiceToGeneratedType(context, typeBuilder, (ChoiceSchemaNode) schemaNode);
             } else if (schemaNode instanceof ListSchemaNode) {
-                listToGenType(context, typeBuilder, typeBuilder, (ListSchemaNode) schemaNode);
+                listToGenType(context, typeBuilder, childOf(typeBuilder), (ListSchemaNode) schemaNode);
             }
         }
     }
