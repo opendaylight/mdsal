@@ -300,7 +300,7 @@ abstract class BaseTemplate extends JavaFileTemplate {
     def private static String formatSchemaPath(String moduleName, Iterable<QName> schemaPath) {
         val sb = new StringBuilder().append(moduleName);
 
-        var currentElement = Iterables.getFirst(schemaPath, null);
+        var currentElement = Iterables.getFirst(schemaPath, null as QName);
         for (QName pathElement : schemaPath) {
             sb.append('/')
             if (!currentElement.namespace.equals(pathElement.namespace)) {
