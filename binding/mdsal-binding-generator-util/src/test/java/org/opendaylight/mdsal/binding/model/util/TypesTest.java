@@ -12,9 +12,9 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Type;
-import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.WildcardType;
 
 public class TypesTest {
@@ -34,20 +34,35 @@ public class TypesTest {
 
     @Test
     public void testMapTypeFor() {
-        final ParameterizedType mapType = Types.mapTypeFor(null, null);
+        final ParameterizedType mapType = Types.mapTypeFor(Types.objectType(), Types.objectType());
         assertEquals("Map", mapType.getName());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testMapTypeForNull() {
+        Types.mapTypeFor(null, null);
     }
 
     @Test
     public void testSetTypeFor() {
-        final ParameterizedType setType = Types.setTypeFor(null);
+        final ParameterizedType setType = Types.setTypeFor(Types.objectType());
         assertEquals("Set", setType.getName());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSetTypeForNull() {
+        Types.setTypeFor(null);
     }
 
     @Test
     public void testListTypeFor() {
-        final ParameterizedType listType = Types.listTypeFor(null);
+        final ParameterizedType listType = Types.listTypeFor(Types.objectType());
         assertEquals("List", listType.getName());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testListTypeForNull() {
+        Types.listTypeFor(null);
     }
 
     @Test
@@ -57,15 +72,25 @@ public class TypesTest {
         assertEquals("WildcardTypeTest", wildcardType.getName());
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testAugmentableTypeForNull() {
+        Types.augmentableTypeFor(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void augmentationTypeForNull() {
+        Types.augmentationTypeFor(null);
+    }
+
     @Test
     public void testAugmentableTypeFor() {
-        ParameterizedType augmentableType = Types.augmentableTypeFor(null);
+        ParameterizedType augmentableType = Types.augmentableTypeFor(Types.objectType());
         assertEquals("Augmentable", augmentableType.getName());
     }
 
     @Test
     public void augmentationTypeFor() {
-        ParameterizedType augmentationType = Types.augmentationTypeFor(null);
+        ParameterizedType augmentationType = Types.augmentationTypeFor(Types.objectType());
         assertEquals("Augmentation", augmentationType.getName());
     }
 }

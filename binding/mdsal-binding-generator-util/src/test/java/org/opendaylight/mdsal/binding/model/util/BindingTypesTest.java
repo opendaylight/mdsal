@@ -12,7 +12,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 
 import org.junit.Test;
-import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
@@ -42,15 +41,23 @@ public class BindingTypesTest {
         assertEquals("RPC_SERVICE", typeForClass(RpcService.class), BindingTypes.RPC_SERVICE);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testAugmentableNull() {
+        BindingTypes.augmentable(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testChildOfNull() {
+        BindingTypes.childOf(null);
+    }
+
     @Test
     public void testAugmentable() {
-        ParameterizedType augmentType = BindingTypes.augmentable(null);
-        assertNotNull(augmentType);
+        assertNotNull(BindingTypes.augmentable(Types.objectType()));
     }
 
     @Test
     public void testChildOf() {
-        ParameterizedType childOfType = BindingTypes.childOf(null);
-        assertNotNull(childOfType);
+        assertNotNull(BindingTypes.childOf(Types.objectType()));
     }
 }
