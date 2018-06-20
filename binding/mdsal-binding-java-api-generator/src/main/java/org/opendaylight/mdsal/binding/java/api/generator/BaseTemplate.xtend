@@ -12,7 +12,6 @@ import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.enc
 import com.google.common.base.CharMatcher
 import com.google.common.base.MoreObjects
 import com.google.common.base.Splitter
-import com.google.common.collect.Iterables
 import java.util.Collection
 import java.util.List
 import java.util.Map.Entry
@@ -300,7 +299,11 @@ abstract class BaseTemplate extends JavaFileTemplate {
     def private static String formatSchemaPath(String moduleName, Iterable<QName> schemaPath) {
         val sb = new StringBuilder().append(moduleName);
 
-        var currentElement = Iterables.getFirst(schemaPath, null);
+        var currentElement = null as QName
+		val iter = schemaPath.iterator
+        if (iter.hasNext) {
+            currentElement = iter.next
+        }
         for (QName pathElement : schemaPath) {
             sb.append('/')
             if (!currentElement.namespace.equals(pathElement.namespace)) {
