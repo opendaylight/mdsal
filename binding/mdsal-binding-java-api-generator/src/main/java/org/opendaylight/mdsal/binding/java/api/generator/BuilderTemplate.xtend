@@ -78,7 +78,7 @@ class BuilderTemplate extends BaseTemplate {
      */
     val Type keyType
 
-    private static val METHOD_COMPARATOR = new AlphabeticallyTypeMemberComparator<MethodSignature>();
+    static val METHOD_COMPARATOR = new AlphabeticallyTypeMemberComparator<MethodSignature>();
 
     /**
      * Constructs new instance of this class.
@@ -757,7 +757,7 @@ class BuilderTemplate extends BaseTemplate {
         «ENDIF»
     '''
 
-    def override generateToString(Collection<GeneratedProperty> properties) '''
+    override generateToString(Collection<GeneratedProperty> properties) '''
         «IF properties !== null»
             @«Override.importedName»
             public «String.importedName» toString() {
@@ -788,7 +788,7 @@ class BuilderTemplate extends BaseTemplate {
     '''
     }
 
-    override def protected String formatDataForJavaDoc(GeneratedType type) {
+    override protected String formatDataForJavaDoc(GeneratedType type) {
         val typeDescription = createDescription(type)
 
         return '''
