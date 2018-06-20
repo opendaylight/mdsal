@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.model.util;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -16,9 +18,11 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
@@ -186,9 +190,9 @@ public final class Types {
      *            JAVA <code>Type</code> for raw type
      * @param parameters
      *            JAVA <code>Type</code>s for actual parameter types
-     * @return <code>ParametrizedType</code> reprezentation of <code>type</code>
+     * @return <code>ParametrizedType</code> representation of <code>type</code>
      *         and its parameters <code>parameters</code>
-     * @throws NullPointerException if any argument is null
+     * @throws NullPointerException if any argument or any member of {@code parameters} is null
      */
     public static ParameterizedType parameterizedTypeFor(final Type type, final Type... parameters) {
         return new ParametrizedTypeImpl(type, parameters);
@@ -334,8 +338,11 @@ public final class Types {
          */
         public ParametrizedTypeImpl(final Type rawType, final Type[] actTypes) {
             super(rawType.getIdentifier());
-            this.rawType = rawType;
-            this.actualTypes = actTypes.clone();
+            this.rawType = requireNonNull(rawType);
+            actualTypes = actTypes.clone();
+            if (Arrays.stream(actualTypes).anyMatch(Objects::isNull)) {
+                throw new NullPointerException("actTypes contains a null");
+            }
         }
     }
 
