@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dc376521_d455eefb",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingToNormalizedNodeCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-06-21T14:39:12Z",
+      "side": 1,
+      "message": "expected module name",
+      "range": {
+        "startLine": 304,
+        "startChar": 67,
+        "endLine": 304,
+        "endChar": 78
+      },
+      "revId": "68ad835a61c0725d2253766ff2630d3c71fc75f8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
