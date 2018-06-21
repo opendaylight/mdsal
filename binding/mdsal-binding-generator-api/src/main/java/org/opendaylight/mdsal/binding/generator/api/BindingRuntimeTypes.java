@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.generator.api;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
@@ -29,6 +30,7 @@ import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 @Beta
 @ThreadSafe
 public final class BindingRuntimeTypes implements Immutable {
+
     private final Map<Type, AugmentationSchemaNode> typeToAugmentation;
     private final BiMap<Type, WithStatus> typeToSchema;
     private final Multimap<Type, Type> choiceToCases;
@@ -65,5 +67,15 @@ public final class BindingRuntimeTypes implements Immutable {
 
     public Collection<Type> findCases(final Type choiceType) {
         return choiceToCases.get(choiceType);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("typeToAugmentation", typeToAugmentation)
+                .add("typeToSchema", typeToSchema)
+                .add("choiceToCases", choiceToCases)
+                .add("identities", identities)
+                .toString();
     }
 }

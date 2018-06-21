@@ -368,9 +368,14 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
             checkState(localRuntimeContext != null, "BindingRuntimeContext is not available.");
             module = localRuntimeContext.getSchemaContext().findModule(moduleName).orElse(null);
         }
-        checkState(module != null, "Schema for %s is not available; expected module name: %s.", modeledClass,
-                moduleName);
-        return module;
+        if (module != null) {
+            return module;
+        }
+
+        LOG.debug("Schema for {} is not available; expected module name: {}; BindingRuntimeContext: {}",
+                modeledClass, moduleName, localRuntimeContext);
+        throw new IllegalStateException(String.format("Schema for %s is not available; expected module name: %s; "
+                + "full BindingRuntimeContext available in debug log", modeledClass, moduleName));
     }
 
     private void waitForSchema(final Collection<Class<?>> binding, final MissingSchemaException exception) {
