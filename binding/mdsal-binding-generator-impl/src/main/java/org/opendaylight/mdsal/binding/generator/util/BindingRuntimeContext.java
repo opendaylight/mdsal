@@ -63,23 +63,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * Runtime Context for Java YANG Binding classes
  *
- *<p>
- * Runtime Context provides additional insight in Java YANG Binding,
+ * <p>Runtime Context provides additional insight in Java YANG Binding,
  * binding classes and underlying YANG schema, it contains
  * runtime information, which could not be derived from generated
  * classes alone using {@link org.opendaylight.yangtools.yang.binding.util.BindingReflections}.
- * <p>
- * Some of this information are for example list of all available
+ *
+ * <p>Some of this information are for example list of all available
  * children for cases {@link #getChoiceCaseChildren(DataNodeContainer)}, since
  * choices are augmentable and new choices may be introduced by additional models.
- * <p>
- * Same goes for all possible augmentations.
  *
+ * <p>Same goes for all possible augmentations.
  */
-public class BindingRuntimeContext implements Immutable {
+public final class BindingRuntimeContext implements Immutable {
+
     private static final Logger LOG = LoggerFactory.getLogger(BindingRuntimeContext.class);
     private static final char DOT = '.';
 
@@ -108,14 +106,13 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     /**
-     *
      * Creates Binding Runtime Context from supplied class loading strategy and schema context.
      *
      * @param strategy Class loading strategy to retrieve generated Binding classes
      * @param ctx Schema Context which describes YANG model and to which Binding classes should be mapped
      * @return Instance of BindingRuntimeContext for supplied schema context.
      */
-    public static final BindingRuntimeContext create(final ClassLoadingStrategy strategy, final SchemaContext ctx) {
+    public static BindingRuntimeContext create(final ClassLoadingStrategy strategy, final SchemaContext ctx) {
         return new BindingRuntimeContext(strategy, ctx);
     }
 
@@ -139,18 +136,19 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     /**
-     * Returns schema of augmentation
-     * <p>
-     * Returned schema is schema definition from which augmentation class was generated.
+     * Returns schema of augmentation.
+     *
+     * <p>Returned schema is schema definition from which augmentation class was generated.
      * This schema is isolated from other augmentations. This means it contains
      * augmentation definition as was present in original YANG module.
-     * <p>
-     * Children of returned schema does not contain any additional augmentations,
+     *
+     * <p>Children of returned schema does not contain any additional augmentations,
      * which may be present in runtime for them, thus returned schema is unsuitable
      * for use for validation of data.
-     * <p>
-     * For retrieving {@link AugmentationSchemaNode}, which will contains
-     * full model for child nodes, you should use method {@link #getResolvedAugmentationSchema(DataNodeContainer, Class)}
+     *
+     * <p>For retrieving {@link AugmentationSchemaNode}, which will contains
+     * full model for child nodes, you should use method
+     * {@link #getResolvedAugmentationSchema(DataNodeContainer, Class)}
      * which will return augmentation schema derived from supplied augmentation target
      * schema.
      *
@@ -167,12 +165,11 @@ public class BindingRuntimeContext implements Immutable {
     /**
      * Returns defining {@link DataSchemaNode} for supplied class.
      *
-     * <p>
-     * Returned schema is schema definition from which class was generated.
+     * <p>Returned schema is schema definition from which class was generated.
      * This schema may be isolated from augmentations, if supplied class
      * represent node, which was child of grouping or augmentation.
-     * <p>
-     * For getting augmentation schema from augmentation class use
+     *
+     * <p>For getting augmentation schema from augmentation class use
      * {@link #getAugmentationDefinition(Class)} instead.
      *
      * @param cls Class which represents list, container, choice or case.
@@ -224,8 +221,7 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     /**
-     *
-     * Returns resolved case schema for supplied class
+     * Returns resolved case schema for supplied class.
      *
      * @param schema Resolved parent choice schema
      * @param childClass Class representing case.
@@ -305,7 +301,7 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     /**
-     * Map enum constants: yang - java
+     * Map enum constants: yang - java.
      *
      * @param enumClass enum generated class
      * @return mapped enum constants from yang with their corresponding values in generated binding classes
@@ -316,7 +312,7 @@ public class BindingRuntimeContext implements Immutable {
     }
 
     /**
-     * Map enum constants: yang - java
+     * Map enum constants: yang - java.
      *
      * @param enumClassName enum generated class name
      * @return mapped enum constants from yang with their corresponding values in generated binding classes
@@ -390,7 +386,7 @@ public class BindingRuntimeContext implements Immutable {
     public Set<Class<?>> getCases(final Class<?> choice) {
         final Collection<Type> cazes = runtimeTypes.findCases(referencedType(choice));
         final Set<Class<?>> ret = new HashSet<>(cazes.size());
-        for(final Type caze : cazes) {
+        for (final Type caze : cazes) {
             try {
                 final Class<?> c = strategy.loadClass(caze);
                 ret.add(c);
