@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Function;
@@ -300,7 +301,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
             Preconditions.checkState(localRuntimeContext != null, "BindingRuntimeContext is not available.");
             module = localRuntimeContext.getSchemaContext().findModule(moduleName).orElse(null);
         }
-        Preconditions.checkState(module != null, "Schema for %s is not available.", modeledClass);
+        checkState(module != null, "Schema for %s is not available; moduleName: %s.", modeledClass, moduleName);
         return module;
     }
 
