@@ -26,17 +26,22 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import javassist.ClassPool;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.dom.codec.impl.MissingSchemaException;
 import org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
+import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -86,6 +91,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     private final BindingNormalizedNodeCodecRegistry codecRegistry;
     private final ClassLoadingStrategy classLoadingStrategy;
     private final FutureSchema futureSchema;
+    private ListenerRegistration<?> listenerRegistration;
 
     public BindingToNormalizedNodeCodec(final ClassLoadingStrategy classLoadingStrategy,
             final BindingNormalizedNodeCodecRegistry codecRegistry) {
@@ -97,6 +103,16 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
         this.classLoadingStrategy = Preconditions.checkNotNull(classLoadingStrategy, "classLoadingStrategy");
         this.codecRegistry = Preconditions.checkNotNull(codecRegistry, "codecRegistry");
         this.futureSchema = FutureSchema.create(WAIT_DURATION_SEC, TimeUnit.SECONDS, waitForSchema);
+    }
+
+    public static BindingToNormalizedNodeCodec newInstance(final ClassLoadingStrategy classLoadingStrategy,
+            final DOMSchemaService schemaService) {
+        final BindingNormalizedNodeCodecRegistry codecRegistry = new BindingNormalizedNodeCodecRegistry(
+                StreamWriterGenerator.create(JavassistUtils.forClassPool(ClassPool.getDefault())));
+        BindingToNormalizedNodeCodec instance = new BindingToNormalizedNodeCodec(
+                classLoadingStrategy, codecRegistry, true);
+        instance.listenerRegistration = schemaService.registerSchemaContextListener(instance);
+        return instance;
     }
 
     protected YangInstanceIdentifier toYangInstanceIdentifierBlocking(
@@ -254,7 +270,9 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
 
     @Override
     public void close() {
-        // NOOP Intentionally
+        if (listenerRegistration != null) {
+            listenerRegistration.close();
+        }
     }
 
     public final BindingNormalizedNodeCodecRegistry getCodecFactory() {
