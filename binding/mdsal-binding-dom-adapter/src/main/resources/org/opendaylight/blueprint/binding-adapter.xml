@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0">
+
+  <!-- Runtime binding/normalized mapping service -->
+  <reference id="classLoadingStrategy" interface="org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy"/>
+  <reference id="schemaService" interface="org.opendaylight.mdsal.dom.api.DOMSchemaService" />
+
+  <bean id="mappingCodec" class="org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec"
+         factory-method="newInstance" destroy-method="close">
+    <argument ref="classLoadingStrategy"/>
+    <argument ref="schemaService"/>
+  </bean>
+
+  <service ref="mappingCodec" odl:type="default">
+    <interfaces>
+      <value>org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer</value>
+      <value>org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory</value>
+    </interfaces>
+  </service>
+
+  <!-- Adapter factory based on the codec -->
+  <bean id="adapterFactory" class="org.opendaylight.mdsal.binding.dom.adapter.AdapterFactory">
+    <argument ref="mappingCodec"/>
+  </bean>
+
+  <!-- Automatic DOM/Binding adapter instantiation -->
+  <bean id="dynamicAdapter" class="org.opendaylight.mdsal.binding.dom.adapter.osgi.DynamicBindingAdapter"
+      destroy-method="close">
+    <argument ref="adapterFactory"/>
+    <argument ref="blueprintBundleContext"/>
+  </bean>
+</blueprint>
