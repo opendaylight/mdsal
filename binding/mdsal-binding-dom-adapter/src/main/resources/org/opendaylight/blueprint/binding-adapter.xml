@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0">
+
+  <!-- Runtime binding/normalized mapping service -->
+
+  <reference id="classLoadingStrategy" interface="org.opendaylight.mdsal.binding.generator.api.ClassLoadingStrategy"/>
+  <reference id="schemaService" interface="org.opendaylight.mdsal.dom.api.DOMSchemaService" />
+
+  <bean id="mappingCodec" class="org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec"
+         factory-method="newInstance" destroy-method="close">
+    <argument ref="classLoadingStrategy"/>
+    <argument ref="schemaService"/>
+  </bean>
+
+  <service ref="mappingCodec" odl:type="default">
+    <interfaces>
+      <value>org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer</value>
+      <value>org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory</value>
+    </interfaces>
+  </service>
+
+  <!-- Binding RPC Registry Service -->
+
+  <reference id="domRpcService" interface="org.opendaylight.mdsal.dom.api.DOMRpcService"/>
+
+  <bean id="bindingRpcServiceAdapter" class="org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter" >
+    <argument ref="domRpcService"/>
+    <argument ref="mappingCodec"/>
+  </bean>
+
+  <service ref="bindingRpcServiceAdapter" interface="org.opendaylight.mdsal.binding.api.RpcConsumerRegistry"
+          odl:type="default"/>
+
+  <reference id="domRpcRegistry" interface="org.opendaylight.mdsal.dom.api.DOMRpcProviderService"/>
+
+  <bean id="bindingRpcProviderAdapter" class="org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcProviderServiceAdapter" >
+    <argument ref="domRpcRegistry"/>
+    <argument ref="mappingCodec"/>
+  </bean>
+
+  <service ref="bindingRpcProviderAdapter" interface="org.opendaylight.mdsal.binding.api.RpcProviderService"
+          odl:type="default"/>
+
+  <!-- Binding MountPoint Service -->
+
+  <reference id="domMountPointService" interface="org.opendaylight.mdsal.dom.api.DOMMountPointService"/>
+
+  <bean id="bindingMountPointService" class="org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter" >
+    <argument ref="domMountPointService"/>
+    <argument ref="mappingCodec"/>
+  </bean>
+
+  <service ref="bindingMountPointService" interface="org.opendaylight.mdsal.binding.api.MountPointService"
+          odl:type="default"/>
+
+  <!-- Binding Notification Service -->
+
+  <reference id="domNotificationService" interface="org.opendaylight.mdsal.dom.api.DOMNotificationService"/>
+
+  <bean id="bindingNotificationServiceAdapter" class="org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter">
+    <argument>
+      <bean factory-ref="mappingCodec" factory-method="getCodecRegistry"/>
+    </argument>
+    <argument ref="domNotificationService"/>
+  </bean>
+
+  <service ref="bindingNotificationServiceAdapter" interface="org.opendaylight.mdsal.binding.api.NotificationService"
+          odl:type="default"/>
+
+  <reference id="domNotificationPublishService" interface="org.opendaylight.mdsal.dom.api.DOMNotificationPublishService"/>
+
+  <bean id="bindingNotificationPublishAdapter" class="org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter">
+    <argument ref="mappingCodec"/>
+    <argument ref="domNotificationPublishService"/>
+  </bean>
+
+  <service ref="bindingNotificationPublishAdapter" interface="org.opendaylight.mdsal.binding.api.NotificationPublishService"
+          odl:type="default"/>
+
+  <reference id="domNotificationListenerRegistry" interface="org.opendaylight.mdsal.dom.spi.DOMNotificationSubscriptionListenerRegistry"/>
+
+  <!-- Binding DataBroker -->
+
+  <bean id="adapterFactory" class="org.opendaylight.mdsal.binding.dom.adapter.DataBrokerFactoryImpl">
+    <argument ref="mappingCodec"/>
+  </bean>
+
+  <service ref="adapterFactory" interface="org.opendaylight.mdsal.binding.spi.DataBrokerFactory"/>
+
+  <reference id="domDefaultDataBroker" interface="org.opendaylight.mdsal.dom.api.DOMDataBroker"
+          odl:type="default"/>
+
+  <bean id="bindingDataBroker" factory-ref="adapterFactory" factory-method="newInstance">
+    <argument ref="domDefaultDataBroker"/>
+  </bean>
+
+  <service ref="bindingDataBroker" interface="org.opendaylight.mdsal.binding.api.DataBroker"
+          odl:type="default"/>
+
+  <!-- Binding PingPong DataBroker -->
+
+<!--   <reference id="domPingPongDataBroker" interface="org.opendaylight.mdsal.dom.api.DOMDataBroker" -->
+<!--           odl:type="pingpong"/> -->
+
+<!--   <bean id="bindingPingPongDataBroker" factory-ref="adapterFactory" factory-method="newInstance"> -->
+<!--     <argument ref="domPingPongDataBroker"/> -->
+<!--   </bean> -->
+
+<!--   <service ref="bindingPingPongDataBroker" interface="org.opendaylight.mdsal.binding.api.DataBroker" -->
+<!--           odl:type="pingpong"/> -->
+</blueprint>
