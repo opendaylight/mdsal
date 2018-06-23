@@ -105,6 +105,8 @@ public class DOMNotificationRouter implements AutoCloseable, DOMNotificationPubl
 
     public static DOMNotificationRouter create(final int queueDepth, final long spinTime,
             final long parkTime, final TimeUnit unit) {
+        Preconditions.checkArgument(Long.lowestOneBit(queueDepth) == Long.highestOneBit(queueDepth),
+                "Queue depth %s is not power-of-two", queueDepth);
         final ExecutorService executor = Executors.newCachedThreadPool();
         final WaitStrategy strategy = PhasedBackoffWaitStrategy.withLock(spinTime, parkTime, unit);
 
