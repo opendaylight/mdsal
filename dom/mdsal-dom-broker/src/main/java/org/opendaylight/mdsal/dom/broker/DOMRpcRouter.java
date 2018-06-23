@@ -36,6 +36,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
+import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -55,6 +56,14 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     private Collection<Registration<?>> listeners = Collections.emptyList();
 
     private volatile DOMRpcRoutingTable routingTable = DOMRpcRoutingTable.EMPTY;
+
+    private ListenerRegistration<?> listenerRegistration;
+
+    public static DOMRpcRouter newInstance(final DOMSchemaService schemaService) {
+        final DOMRpcRouter rpcRouter = new DOMRpcRouter();
+        rpcRouter.listenerRegistration = schemaService.registerSchemaContextListener(rpcRouter);
+        return rpcRouter;
+    }
 
     @Override
     public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
@@ -133,6 +142,10 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     @Override
     public void close() {
         listenerNotifier.shutdown();
+
+        if (listenerRegistration != null) {
+            listenerRegistration.close();
+        }
     }
 
     @VisibleForTesting
