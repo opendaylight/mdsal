@@ -50,21 +50,21 @@ public final class Types {
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
 
-    public static final Type SET_TYPE = typeForClass(Set.class);
-    public static final Type LIST_TYPE = typeForClass(List.class);
-    public static final Type MAP_TYPE = typeForClass(Map.class);
 
     public static final ConcreteType BOOLEAN = typeForClass(Boolean.class);
-    public static final ConcreteType FUTURE = typeForClass(ListenableFuture.class);
     public static final ConcreteType STRING = typeForClass(String.class);
     public static final ConcreteType VOID = typeForClass(Void.class);
     public static final ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
     public static final ConcreteType CHAR_ARRAY = typeForClass(char[].class);
 
     private static final ConcreteType CLASS = typeForClass(Class.class);
+    private static final ConcreteType LIST_TYPE = typeForClass(List.class);
+    private static final ConcreteType LISTENABLE_FUTURE = typeForClass(ListenableFuture.class);
+    private static final ConcreteType MAP_TYPE = typeForClass(Map.class);
     private static final ConcreteType OBJECT = typeForClass(Object.class);
     private static final ConcreteType PRIMITIVE_VOID = typeForClass(void.class);
     private static final ConcreteType SERIALIZABLE = typeForClass(Serializable.class);
+    private static final ConcreteType SET_TYPE = typeForClass(Set.class);
 
     /**
      * It is not desirable to create instance of this class
@@ -179,6 +179,22 @@ public final class Types {
      */
     public static ParameterizedType listTypeFor(final Type valueType) {
         return parameterizedTypeFor(LIST_TYPE, valueType);
+    }
+
+    public static boolean isListType(final Type type) {
+        return type instanceof ParameterizedType && LIST_TYPE.equals(((ParameterizedType) type).getRawType());
+    }
+
+    /**
+     * Returns an instance of {@link ParameterizedType} describing the typed
+     * {@link ListenableFuture}&lt;V&gt; with concrete type of value.
+     *
+     * @param valueType
+     *            Value Type
+     * @return Description of type instance of ListenableFuture
+     */
+    public static ParameterizedType listenableFutureTypeFor(final Type valueType) {
+        return parameterizedTypeFor(LISTENABLE_FUTURE, valueType);
     }
 
     /**
