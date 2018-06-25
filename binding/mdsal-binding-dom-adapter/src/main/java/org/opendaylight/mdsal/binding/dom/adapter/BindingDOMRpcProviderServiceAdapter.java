@@ -24,10 +24,9 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-
 public class BindingDOMRpcProviderServiceAdapter implements RpcProviderService {
-
     private static final Set<YangInstanceIdentifier> GLOBAL = ImmutableSet.of(YangInstanceIdentifier.builder().build());
+
     private final BindingToNormalizedNodeCodec codec;
     private final DOMRpcProviderService domRpcRegistry;
 
