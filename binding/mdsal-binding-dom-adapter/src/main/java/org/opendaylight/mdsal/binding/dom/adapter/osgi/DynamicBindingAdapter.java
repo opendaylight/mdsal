@@ -18,14 +18,7 @@ import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataTreeServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcProviderServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMRpcServiceAdapter;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
+import org.opendaylight.mdsal.binding.dom.adapter.AdapterFactory;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -51,22 +44,20 @@ public final class DynamicBindingAdapter implements AutoCloseable {
     @GuardedBy("this")
     private List<AdaptingTracker<?, ?>> trackers;
 
-    public DynamicBindingAdapter(final BindingToNormalizedNodeCodec codec, final BundleContext ctx) {
+    public DynamicBindingAdapter(final AdapterFactory factory, final BundleContext ctx) {
         trackers = ImmutableList.of(
-            new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, codec,
-                    BindingDOMDataBrokerAdapter::new),
-            new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, codec,
-                    BindingDOMDataTreeServiceAdapter::create),
-            new AdaptingTracker<>(ctx, DOMMountPointService.class, MountPointService.class, codec,
-                    BindingDOMMountPointServiceAdapter::new),
-            new AdaptingTracker<>(ctx, DOMNotificationService.class, NotificationService.class, codec,
-                    BindingDOMNotificationServiceAdapter::new),
-            new AdaptingTracker<>(ctx, DOMNotificationPublishService.class, NotificationPublishService.class, codec,
-                    BindingDOMNotificationPublishServiceAdapter::new),
-            new AdaptingTracker<>(ctx, DOMRpcService.class, RpcConsumerRegistry.class, codec,
-                    BindingDOMRpcServiceAdapter::new),
-            new AdaptingTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class, codec,
-                    BindingDOMRpcProviderServiceAdapter::new));
+            new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker),
+            new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService),
+            new AdaptingTracker<>(ctx, DOMMountPointService.class, MountPointService.class,
+                    factory::createMountPointService),
+            new AdaptingTracker<>(ctx, DOMNotificationService.class, NotificationService.class,
+                    factory::createNotificationService),
+            new AdaptingTracker<>(ctx, DOMNotificationPublishService.class, NotificationPublishService.class,
+                    factory::createNotificationPublishService),
+            new AdaptingTracker<>(ctx, DOMRpcService.class, RpcConsumerRegistry.class,
+                    factory::createRpcConsumerRegistry),
+            new AdaptingTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
+                    factory::createRpcProviderService));
 
         LOG.debug("Starting {} DOMService trackers", trackers.size());
         trackers.forEach(ServiceTracker::open);
