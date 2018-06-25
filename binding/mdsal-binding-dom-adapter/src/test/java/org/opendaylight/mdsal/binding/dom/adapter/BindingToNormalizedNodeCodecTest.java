@@ -130,7 +130,6 @@ public class BindingToNormalizedNodeCodecTest {
 
         final YangInstanceIdentifier path = YangInstanceIdentifier.create(pathArgs);
         final Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = codec.fromNormalizedNode(path, data);
-        codec.close();
         return fromNormalizedNode;
     }
 }

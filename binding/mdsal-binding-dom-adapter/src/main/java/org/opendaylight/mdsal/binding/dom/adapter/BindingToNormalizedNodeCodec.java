@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
  * NOTE: this class is non-final to allow controller adapter migration without duplicated code.
  */
 public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
-        BindingNormalizedNodeSerializer, SchemaContextListener, AutoCloseable {
+        BindingNormalizedNodeSerializer, SchemaContextListener {
 
     private static final long WAIT_DURATION_SEC = 5;
     private static final Logger LOG = LoggerFactory.getLogger(BindingToNormalizedNodeCodec.class);
@@ -250,11 +250,6 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
 
     public final BindingNormalizedNodeCodecRegistry getCodecRegistry() {
         return codecRegistry;
-    }
-
-    @Override
-    public void close() {
-        // NOOP Intentionally
     }
 
     public final BindingNormalizedNodeCodecRegistry getCodecFactory() {
