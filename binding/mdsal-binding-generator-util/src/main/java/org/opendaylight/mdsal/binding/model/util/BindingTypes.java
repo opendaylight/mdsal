@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.model.util;
 import static org.opendaylight.mdsal.binding.model.util.Types.parameterizedTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.opendaylight.mdsal.binding.model.api.ConcreteType;
 import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
@@ -36,15 +37,10 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 
 public final class BindingTypes {
 
-    public static final ConcreteType AUGMENTABLE = typeForClass(Augmentable.class);
-    public static final ConcreteType AUGMENTATION = typeForClass(Augmentation.class);
     public static final ConcreteType BASE_IDENTITY = typeForClass(BaseIdentity.class);
     public static final ConcreteType DATA_CONTAINER = typeForClass(DataContainer.class);
     public static final ConcreteType DATA_OBJECT = typeForClass(DataObject.class);
     public static final ConcreteType DATA_ROOT = typeForClass(DataRoot.class);
-    public static final ConcreteType IDENTIFIABLE = typeForClass(Identifiable.class);
-    public static final ConcreteType IDENTIFIER = typeForClass(Identifier.class);
-    public static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
     public static final ConcreteType NOTIFICATION = typeForClass(Notification.class);
     public static final ConcreteType NOTIFICATION_LISTENER = typeForClass(NotificationListener.class);
     public static final ConcreteType RPC_INPUT = typeForClass(RpcInput.class);
@@ -53,6 +49,17 @@ public final class BindingTypes {
 
     // This is an annotation, we are current just referencing the type
     public static final JavaTypeName ROUTING_CONTEXT = JavaTypeName.create(RoutingContext.class);
+
+    @VisibleForTesting
+    static final ConcreteType AUGMENTABLE = typeForClass(Augmentable.class);
+    @VisibleForTesting
+    static final ConcreteType AUGMENTATION = typeForClass(Augmentation.class);
+    @VisibleForTesting
+    static final ConcreteType IDENTIFIABLE = typeForClass(Identifiable.class);
+    @VisibleForTesting
+    static final ConcreteType IDENTIFIER = typeForClass(Identifier.class);
+    @VisibleForTesting
+    static final ConcreteType INSTANCE_IDENTIFIER = typeForClass(InstanceIdentifier.class);
 
     private static final ConcreteType ACTION = typeForClass(Action.class);
     private static final ConcreteType CHILD_OF = typeForClass(ChildOf.class);
