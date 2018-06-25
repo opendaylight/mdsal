@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Optional;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,17 +25,16 @@ import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractForwardedDataBroker implements Delegator<DOMDataBroker>, AutoCloseable {
-
+public abstract class AbstractForwardedDataBroker implements Delegator<DOMDataBroker> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractForwardedDataBroker.class);
+
     // The Broker to whom we do all forwarding
     private final DOMDataBroker domDataBroker;
-
     private final BindingToNormalizedNodeCodec codec;
 
     protected AbstractForwardedDataBroker(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
-        this.domDataBroker = domDataBroker;
-        this.codec = codec;
+        this.domDataBroker = requireNonNull(domDataBroker);
+        this.codec = requireNonNull(codec);
     }
 
     protected BindingToNormalizedNodeCodec getCodec() {
@@ -91,10 +92,4 @@ public abstract class AbstractForwardedDataBroker implements Delegator<DOMDataBr
         }
         return (Optional<DataObject>) getCodec().deserializeFunction(path).apply(Optional.of(data));
     }
-
-    @Override
-    public void close() {
-        // Intentional NOOP
-    }
-
 }
