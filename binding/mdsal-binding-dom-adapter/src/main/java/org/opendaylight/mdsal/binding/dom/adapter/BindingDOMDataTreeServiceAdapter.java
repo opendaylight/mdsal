@@ -19,8 +19,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
-final class BindingDOMDataTreeServiceAdapter implements DataTreeService {
-
+public final class BindingDOMDataTreeServiceAdapter implements DataTreeService {
     private final DOMDataTreeService delegate;
     private final BindingToNormalizedNodeCodec codec;
 
@@ -30,7 +29,7 @@ final class BindingDOMDataTreeServiceAdapter implements DataTreeService {
         this.codec = Preconditions.checkNotNull(codec, "codec");
     }
 
-    static BindingDOMDataTreeServiceAdapter create(final DOMDataTreeService domService,
+    public static BindingDOMDataTreeServiceAdapter create(final DOMDataTreeService domService,
             final BindingToNormalizedNodeCodec codec) {
         return new BindingDOMDataTreeServiceAdapter(domService, codec);
     }

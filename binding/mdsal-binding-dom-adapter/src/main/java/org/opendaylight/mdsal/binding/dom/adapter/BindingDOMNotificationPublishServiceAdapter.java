@@ -26,10 +26,16 @@ public class BindingDOMNotificationPublishServiceAdapter implements Notification
     private final BindingToNormalizedNodeCodec codecRegistry;
     private final DOMNotificationPublishService domPublishService;
 
-    public BindingDOMNotificationPublishServiceAdapter(final BindingToNormalizedNodeCodec codec,
-            final DOMNotificationPublishService domPublishService) {
+    public BindingDOMNotificationPublishServiceAdapter(final DOMNotificationPublishService domPublishService,
+            final BindingToNormalizedNodeCodec codec) {
         this.codecRegistry = codec;
         this.domPublishService = domPublishService;
+    }
+
+    @Deprecated
+    public BindingDOMNotificationPublishServiceAdapter(final BindingToNormalizedNodeCodec codec,
+            final DOMNotificationPublishService domPublishService) {
+        this(domPublishService, codec);
     }
 
     public BindingToNormalizedNodeCodec getCodecRegistry() {
