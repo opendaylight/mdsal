@@ -19,7 +19,7 @@ import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.NotificationListener;
 
-public class BindingDOMNotificationServiceAdapter implements NotificationService, AutoCloseable {
+public class BindingDOMNotificationServiceAdapter implements NotificationService {
 
     public static final Factory<NotificationService> BUILDER_FACTORY = Builder::new;
 
@@ -39,11 +39,6 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
         final ListenerRegistration<BindingDOMNotificationListenerAdapter> domRegistration =
                 domNotifService.registerNotificationListener(domListener, domListener.getSupportedNotifications());
         return new ListenerRegistrationImpl<>(listener, domRegistration);
-    }
-
-    @Override
-    public void close() throws Exception {
-
     }
 
     private static class ListenerRegistrationImpl<T extends NotificationListener>

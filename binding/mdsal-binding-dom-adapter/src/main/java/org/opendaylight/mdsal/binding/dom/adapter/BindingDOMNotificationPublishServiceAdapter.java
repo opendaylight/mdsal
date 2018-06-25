@@ -19,7 +19,7 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.Notification;
 
-public class BindingDOMNotificationPublishServiceAdapter implements NotificationPublishService, AutoCloseable {
+public class BindingDOMNotificationPublishServiceAdapter implements NotificationPublishService {
 
     static final Factory<NotificationPublishService> BUILDER_FACTORY = Builder::new;
 
@@ -65,11 +65,6 @@ public class BindingDOMNotificationPublishServiceAdapter implements Notification
 
     private DOMNotification toDomNotification(final Notification notification) {
         return LazySerializedDOMNotification.create(codecRegistry, notification);
-    }
-
-    @Override
-    public void close() throws Exception {
-
     }
 
     protected static class Builder extends BindingDOMAdapterBuilder<NotificationPublishService> {
