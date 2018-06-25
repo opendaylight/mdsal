@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2a69511_b91c6e63",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/spi/DataBrokerFactory.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-06-25T08:07:08Z",
+      "side": 1,
+      "message": "Can you keep this as AdapterFactory, with createDataBroker, just as it\u0027s done in controller.git?\nThe reason for that is MDSAL-353, i.e. this would cover more than just databroker.",
+      "range": {
+        "startLine": 20,
+        "startChar": 17,
+        "endLine": 20,
+        "endChar": 27
+      },
+      "revId": "b748cbd522b3ed00174ad867125525c62906f16d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
