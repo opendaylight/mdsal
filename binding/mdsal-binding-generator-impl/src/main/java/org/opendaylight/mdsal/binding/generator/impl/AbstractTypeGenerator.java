@@ -31,6 +31,7 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifiabl
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifier;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
+import static org.opendaylight.mdsal.binding.model.util.Types.listTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.listenableFutureTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
@@ -121,6 +122,7 @@ abstract class AbstractTypeGenerator {
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
     private static final JavaTypeName DEPRECATED_ANNOTATION = JavaTypeName.create(Deprecated.class);
     private static final JavaTypeName OVERRIDE_ANNOTATION = JavaTypeName.create(Override.class);
+    private static final Type LIST_STRING_TYPE = listTypeFor(BaseYangTypes.STRING_TYPE);
 
     /**
      * Comparator based on augment target path.
@@ -291,7 +293,7 @@ abstract class AbstractTypeGenerator {
             final Type baseInterface, final ListSchemaNode node) {
         final GeneratedTypeBuilder genType = processDataSchemaNode(context, baseInterface, node);
         if (genType != null) {
-            constructGetter(parent, Types.listTypeFor(genType), node);
+            constructGetter(parent, listTypeFor(genType), node);
 
             final List<String> listKeys = listKeys(node);
             final GeneratedTOBuilder genTOBuilder = resolveListKeyTOBuilder(context, node);
@@ -1279,7 +1281,7 @@ abstract class AbstractTypeGenerator {
         if (!patternConstraints.isEmpty()) {
             final StringBuilder field = new StringBuilder().append(TypeConstants.PATTERN_CONSTANT_NAME).append("_")
                 .append(BindingMapping.getPropertyName(leafName));
-            typeBuilder.addConstant(Types.listTypeFor(BaseYangTypes.STRING_TYPE), field.toString(),
+            typeBuilder.addConstant(LIST_STRING_TYPE, field.toString(),
                 typeProvider.resolveRegExpressions(patternConstraints));
         }
     }
@@ -1553,7 +1555,7 @@ abstract class AbstractTypeGenerator {
             addPatternConstant(typeBuilder, node.getQName().getLocalName(), restrictions.getPatternConstraints());
         }
 
-        final ParameterizedType listType = Types.listTypeFor(returnType);
+        final ParameterizedType listType = listTypeFor(returnType);
         constructGetter(typeBuilder, listType, node);
         return true;
     }
