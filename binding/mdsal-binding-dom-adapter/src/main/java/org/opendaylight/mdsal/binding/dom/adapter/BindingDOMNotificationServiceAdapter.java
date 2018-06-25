@@ -26,10 +26,16 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
     private final BindingNormalizedNodeSerializer codec;
     private final DOMNotificationService domNotifService;
 
-    public BindingDOMNotificationServiceAdapter(final BindingNormalizedNodeSerializer codec,
-            final DOMNotificationService domNotifService) {
+    public BindingDOMNotificationServiceAdapter(final DOMNotificationService domNotifService,
+            final BindingNormalizedNodeSerializer codec) {
         this.codec = codec;
         this.domNotifService = domNotifService;
+    }
+
+    @Deprecated
+    public BindingDOMNotificationServiceAdapter(final BindingNormalizedNodeSerializer codec,
+            final DOMNotificationService domNotifService) {
+        this(domNotifService, codec);
     }
 
     @Override
