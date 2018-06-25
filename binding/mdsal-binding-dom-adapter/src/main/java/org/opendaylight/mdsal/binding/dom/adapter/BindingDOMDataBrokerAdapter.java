@@ -44,6 +44,10 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
     static final Factory<DataBroker> BUILDER_FACTORY = Builder::new;
     private final DataTreeChangeService treeChangeService;
 
+    public BindingDOMDataBrokerAdapter(final BindingToNormalizedNodeCodec codec, final DOMDataBroker domDataBroker) {
+        this(domDataBroker, codec);
+    }
+
     public BindingDOMDataBrokerAdapter(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
         super(domDataBroker, codec);
         final DOMDataTreeChangeService domTreeChange

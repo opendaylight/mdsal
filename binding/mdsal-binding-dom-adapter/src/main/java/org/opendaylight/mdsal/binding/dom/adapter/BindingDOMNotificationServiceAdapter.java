@@ -42,8 +42,8 @@ public class BindingDOMNotificationServiceAdapter implements NotificationService
     }
 
     @Override
-    public void close() throws Exception {
-
+    public void close() {
+        // No-op
     }
 
     private static class ListenerRegistrationImpl<T extends NotificationListener>
