@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
  * defined in YANG models.
  *
  */
-public interface RpcProviderService {
+public interface RpcProviderService extends BindingService {
 
     <S extends RpcService, T extends S> ObjectRegistration<T> registerRpcImplementation(Class<S> type,
             T implementation);
