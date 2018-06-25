@@ -46,6 +46,10 @@ public class BindingDOMRpcServiceAdapter implements RpcConsumerRegistry {
     private final DOMRpcService domService;
     private final BindingToNormalizedNodeCodec codec;
 
+    public BindingDOMRpcServiceAdapter(final BindingToNormalizedNodeCodec codec, final DOMRpcService domService) {
+        this(domService, codec);
+    }
+
     public BindingDOMRpcServiceAdapter(final DOMRpcService domService, final BindingToNormalizedNodeCodec codec) {
         this.domService = domService;
         this.codec = codec;
