@@ -16,7 +16,6 @@ import org.opendaylight.mdsal.dom.api.DOMMountPoint;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-
 public class BindingMountPointAdapter implements MountPoint {
 
     private final InstanceIdentifier<?> identifier;
@@ -27,7 +26,7 @@ public class BindingMountPointAdapter implements MountPoint {
         services = CacheBuilder.newBuilder().build(new BindingDOMAdapterLoader(codec) {
 
             @Override
-            protected DOMService getDelegate(Class<? extends DOMService> reqDeleg) {
+            protected DOMService getDelegate(final Class<? extends DOMService> reqDeleg) {
                 return domMountPoint.getService(reqDeleg).orNull();
             }
         });
@@ -39,12 +38,7 @@ public class BindingMountPointAdapter implements MountPoint {
     }
 
     @Override
-    public <T extends BindingService> Optional<T> getService(Class<T> service) {
-        Optional<BindingService> potential = services.getUnchecked(service);
-        if (potential.isPresent()) {
-            return Optional.of(service.cast(potential.get()));
-        }
-        return Optional.absent();
+    public <T extends BindingService> Optional<T> getService(final Class<T> service) {
+        return services.getUnchecked(service).transform(service::cast);
     }
-
 }
