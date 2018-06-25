@@ -9,9 +9,8 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.opendaylight.mdsal.binding.api.BindingService;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -31,15 +30,13 @@ final class AdaptingTracker<D extends DOMService, B extends BindingService>
         extends ServiceTracker<D, ServiceRegistration<B>> {
     private static final Logger LOG = LoggerFactory.getLogger(AdaptingTracker.class);
 
-    private final BiFunction<D, BindingToNormalizedNodeCodec, B> bindingFactory;
-    private final BindingToNormalizedNodeCodec codec;
+    private final Function<D, B> bindingFactory;
     private final Class<B> bindingClass;
 
     AdaptingTracker(final BundleContext ctx, final Class<D> domClass, final Class<B> bindingClass,
-        final BindingToNormalizedNodeCodec codec, final BiFunction<D, BindingToNormalizedNodeCodec, B> bindingFactory) {
+        final Function<D, B> bindingFactory) {
         super(ctx, domClass, null);
         this.bindingClass = requireNonNull(bindingClass);
-        this.codec = requireNonNull(codec);
         this.bindingFactory = requireNonNull(bindingFactory);
     }
 
@@ -61,7 +58,7 @@ final class AdaptingTracker<D extends DOMService, B extends BindingService>
             LOG.debug("Could not get {} service from {}, ignoring it", bindingClass.getName(), reference);
             return null;
         }
-        final B binding = bindingFactory.apply(dom, codec);
+        final B binding = bindingFactory.apply(dom);
         final Dict props = Dict.fromReference(reference);
         final ServiceRegistration<B> reg = context.registerService(bindingClass, binding, props);
         LOG.debug("Registered {} adapter {} of {} with {} as {}", bindingClass.getName(), binding, dom, props, reg);
