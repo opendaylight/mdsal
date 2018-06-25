@@ -31,7 +31,7 @@ import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifiabl
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.identifier;
 import static org.opendaylight.mdsal.binding.model.util.BindingTypes.rpcResult;
 import static org.opendaylight.mdsal.binding.model.util.Types.BOOLEAN;
-import static org.opendaylight.mdsal.binding.model.util.Types.FUTURE;
+import static org.opendaylight.mdsal.binding.model.util.Types.listenableFutureTypeFor;
 import static org.opendaylight.mdsal.binding.model.util.Types.typeForClass;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findNodeInSchemaContext;
@@ -466,7 +466,7 @@ abstract class AbstractTypeGenerator {
                 addComment(method, rpc);
                 method.addParameter(
                     createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput())), "input");
-                method.setReturnType(Types.parameterizedTypeFor(FUTURE,
+                method.setReturnType(listenableFutureTypeFor(
                     rpcResult(createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getOutput())))));
             }
         }
