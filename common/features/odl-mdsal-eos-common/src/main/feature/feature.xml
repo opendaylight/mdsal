@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="odl-mdsal-eos-common">
     <feature name="odl-mdsal-eos-common">
-        <feature version="[2.0.5,3)">odl-yangtools-data-api</feature>
+        <feature version="[2.0.7,3)">odl-yangtools-data-api</feature>
     </feature>
 </features>
-
