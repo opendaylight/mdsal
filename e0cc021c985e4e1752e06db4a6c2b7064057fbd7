@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a83929ee_3905db53",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingToNormalizedNodeCodec.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-06-26T09:58:05Z",
+      "side": 1,
+      "message": "this is adding up too much noise even in bundle:diag output... it would be great if we can just log this to karaf. Even for karaf logs, during the bring up time, i think it is filling up the logs a lot, just sent you logs for reference, could you please check?",
+      "revId": "e0cc021c985e4e1752e06db4a6c2b7064057fbd7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
