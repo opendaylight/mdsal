@@ -16,6 +16,24 @@
       "revId": "e0cc021c985e4e1752e06db4a6c2b7064057fbd7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3f21af59_f8ff3508",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingToNormalizedNodeCodec.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-26T10:23:39Z",
+      "side": 1,
+      "message": "agreed that while this may be useful to understnd the current problem, this is perhaps excessive, so self -1",
+      "parentUuid": "a83929ee_3905db53",
+      "revId": "e0cc021c985e4e1752e06db4a6c2b7064057fbd7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
