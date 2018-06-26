@@ -94,6 +94,30 @@
       "revId": "cf17eb803a2af2b9229f65d40ff0f3de07ef3b58",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "62645220_733e9a4d",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingToNormalizedNodeCodec.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-26T12:47:22Z",
+      "side": 1,
+      "message": "How about like it is now?",
+      "parentUuid": "406a7664_46c96793",
+      "range": {
+        "startLine": 306,
+        "startChar": 28,
+        "endLine": 306,
+        "endChar": 47
+      },
+      "revId": "cf17eb803a2af2b9229f65d40ff0f3de07ef3b58",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
