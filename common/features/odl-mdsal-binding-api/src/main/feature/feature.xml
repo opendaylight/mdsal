@@ -4,4 +4,3 @@
         <feature version="[2.0.5,3)">odl-yangtools-data-api</feature>
     </feature>
 </features>
-
