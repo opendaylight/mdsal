@@ -7,7 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.java.api.generator;
 
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -18,19 +23,48 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 import org.opendaylight.mdsal.binding.model.api.CodeGenerator;
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonatype.plexus.build.incremental.BuildContext;
-import org.sonatype.plexus.build.incremental.DefaultBuildContext;
 
 /**
  * Generates files with JAVA source codes for every specified type.
  *
  */
 public final class GeneratorJavaFile {
+    public enum FileKind {
+        /**
+         * Transient file. It should be generated in target/generated-sources/ directory or similar.
+         */
+        TRANSIENT,
+        /**
+         * Persistent file. It should be generated in src/main/java/ directory or similar.
+         */
+        PERSISTENT,
+    }
+
+    private static final class GeneratorStringSupplier implements Supplier<String> {
+        private final CodeGenerator generator;
+        private final Type type;
+
+        GeneratorStringSupplier(final CodeGenerator generator, final Type type) {
+            this.generator = requireNonNull(generator);
+            this.type = requireNonNull(type);
+        }
+
+        @Override
+        public String get() {
+            return generator.generate(type);
+        }
+
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this).add("generator", generator).add("type", type).toString();
+        }
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorJavaFile.class);
 
@@ -45,31 +79,6 @@ public final class GeneratorJavaFile {
     private final Collection<? extends Type> types;
 
     /**
-     * BuildContext used for instantiating files
-     */
-    private final BuildContext buildContext;
-
-    /**
-     * Creates instance of this class with the set of <code>types</code> for
-     * which the JAVA code is generated.
-     *
-     * The instances of concrete JAVA code generator are created.
-     *
-     * @param buildContext
-     *            build context to use for accessing files
-     * @param types
-     *            set of types for which JAVA code should be generated
-     */
-    public GeneratorJavaFile(final BuildContext buildContext, final Collection<? extends Type> types) {
-        this.buildContext = Preconditions.checkNotNull(buildContext);
-        this.types = Preconditions.checkNotNull(types);
-        generators.add(new InterfaceGenerator());
-        generators.add(new TOGenerator());
-        generators.add(new EnumGenerator());
-        generators.add(new BuilderGenerator());
-    }
-
-    /**
      * Creates instance of this class with the set of <code>types</code> for
      * which the JAVA code is generated. Generator instantiated this way uses
      * the default build context, e.g. it will re-generate any and all files.
@@ -80,7 +89,11 @@ public final class GeneratorJavaFile {
      *            set of types for which JAVA code should be generated
      */
     public GeneratorJavaFile(final Collection<? extends Type> types) {
-        this(new DefaultBuildContext(), types);
+        this.types = Preconditions.checkNotNull(types);
+        generators.add(new InterfaceGenerator());
+        generators.add(new TOGenerator());
+        generators.add(new EnumGenerator());
+        generators.add(new BuilderGenerator());
     }
 
     /**
@@ -95,6 +108,37 @@ public final class GeneratorJavaFile {
      */
     public List<File> generateToFile(final File generatedSourcesDirectory) throws IOException {
         return generateToFile(generatedSourcesDirectory, generatedSourcesDirectory);
+    }
+
+    public Table<FileKind, String, Supplier<String>> generateFileContent(final boolean ignoreDuplicates) {
+        final Table<FileKind, String, Supplier<String>> result = HashBasedTable.create();
+        for (Type type : types) {
+            for (CodeGenerator generator : generators) {
+                if (!generator.isAcceptable(type)) {
+                    continue;
+                }
+
+                final FileKind kind = type instanceof GeneratedTransferObject
+                        && ((GeneratedTransferObject) type).isUnionTypeBuilder()
+                        ? FileKind.PERSISTENT : FileKind.TRANSIENT;
+                final String file = type.getPackageName().replace('.', File.separatorChar)
+                        + generator.getUnitName(type) + ".java";
+
+                if (result.contains(kind, file)) {
+                    if (ignoreDuplicates) {
+                        LOG.warn("Naming conflict for type '{}': file with same name already exists and will not be "
+                                + "generated.", type.getFullyQualifiedName());
+                        continue;
+                    }
+                    throw new IllegalStateException("Duplicate " + kind + " file '" + file + "' for "
+                            + type.getFullyQualifiedName());
+                }
+
+                result.put(kind, file, new GeneratorStringSupplier(generator, type));
+            }
+        }
+
+        return result;
     }
 
     public List<File> generateToFile(final File generatedSourcesDirectory, final File persistenSourcesDirectory)
