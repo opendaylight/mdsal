@@ -11,6 +11,9 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
+import com.google.common.collect.Table;
+import com.google.common.collect.Table.Cell;
+import com.google.common.io.Files;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -18,15 +21,18 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import org.apache.maven.project.MavenProject;
 import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
+import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile.FileKind;
 import org.opendaylight.mdsal.binding.java.api.generator.YangModuleInfoTemplate;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
@@ -42,6 +48,9 @@ import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContextAware, MavenProjectAware {
+    public static final String CONFIG_PERSISTENT_SOURCES_DIR = "persistentSourcesDir";
+    public static final String CONFIG_IGNORE_DUPLICATE_FILES = "ignoreDuplicateFiles";
+
     private static final Logger LOG = LoggerFactory.getLogger(CodeGeneratorImpl.class);
     private static final String FS = File.separator;
     private BuildContext buildContext;
@@ -59,20 +68,58 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         outputBaseDir = outputDir == null ? getDefaultOutputBaseDir() : outputDir;
 
         final List<Type> types = new BindingGeneratorImpl().generateTypes(context, yangModules);
-        final GeneratorJavaFile generator = new GeneratorJavaFile(buildContext, types);
+        final GeneratorJavaFile generator = new GeneratorJavaFile(types);
 
         File persistentSourcesDir = null;
+        boolean ignoreDuplicateFiles = true;
         if (additionalConfig != null) {
-            String persistenSourcesPath = additionalConfig.get("persistentSourcesDir");
+            String persistenSourcesPath = additionalConfig.get(CONFIG_PERSISTENT_SOURCES_DIR);
             if (persistenSourcesPath != null) {
                 persistentSourcesDir = new File(persistenSourcesPath);
+            }
+            String ignoreDuplicateFilesString = additionalConfig.get(CONFIG_IGNORE_DUPLICATE_FILES);
+            if (ignoreDuplicateFilesString != null) {
+                ignoreDuplicateFiles = Boolean.parseBoolean(ignoreDuplicateFilesString);
             }
         }
         if (persistentSourcesDir == null) {
             persistentSourcesDir = new File(projectBaseDir, "src" + FS + "main" + FS + "java");
         }
 
-        List<File> result = generator.generateToFile(outputBaseDir, persistentSourcesDir);
+        final Table<FileKind, String, Supplier<String>> generatedFiles = generator.generateFileContent(
+            ignoreDuplicateFiles);
+        final List<File> result = new ArrayList<>(generatedFiles.size());
+        for (Cell<FileKind, String, Supplier<String>> cell : generatedFiles.cellSet()) {
+            final File target;
+            switch (cell.getRowKey()) {
+                case PERSISTENT:
+                    target = new File(persistentSourcesDir, cell.getColumnKey());
+                    if (target.exists()) {
+                        LOG.debug("Skipping existing persistent {}", target);
+                        continue;
+                    }
+                    break;
+                case TRANSIENT:
+                    target = new File(outputBaseDir, cell.getColumnKey());
+                    break;
+                default:
+                    throw new IllegalStateException("Unsupported file type in " + cell);
+            }
+
+            Files.createParentDirs(target);
+            try (OutputStream stream = buildContext.newFileOutputStream(target)) {
+                try (Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+                    try (BufferedWriter bw = new BufferedWriter(fw)) {
+                        bw.write(cell.getValue().get());
+                    }
+                } catch (IOException e) {
+                    LOG.error("Failed to write generate output into {}", target.getPath(), e);
+                    throw e;
+                }
+            }
+
+            result.add(target);
+        }
 
         result.addAll(generateModuleInfos(outputBaseDir, yangModules, context, moduleResourcePathResolver));
         return result;
