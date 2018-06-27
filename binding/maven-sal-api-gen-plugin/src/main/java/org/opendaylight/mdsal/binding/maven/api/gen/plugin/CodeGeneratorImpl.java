@@ -71,7 +71,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         final GeneratorJavaFile generator = new GeneratorJavaFile(types);
 
         File persistentSourcesDir = null;
-        boolean ignoreDuplicateFiles = true;
+        boolean ignoreDuplicateFiles = false;
         if (additionalConfig != null) {
             String persistenSourcesPath = additionalConfig.get(CONFIG_PERSISTENT_SOURCES_DIR);
             if (persistenSourcesPath != null) {
