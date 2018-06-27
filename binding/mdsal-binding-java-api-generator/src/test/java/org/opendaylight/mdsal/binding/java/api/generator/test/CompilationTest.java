@@ -629,7 +629,7 @@ public class CompilationTest extends BaseCompilationTest {
         CompilationTestUtils.cleanUp(sourcesOutputDir, compiledOutputDir);
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void classNamesColisionTest() throws Exception {
         final File sourcesOutputDir = CompilationTestUtils.generatorOutput("class-name-collision");
         final File compiledOutputDir = CompilationTestUtils.compilerOutput("class-name-collision");

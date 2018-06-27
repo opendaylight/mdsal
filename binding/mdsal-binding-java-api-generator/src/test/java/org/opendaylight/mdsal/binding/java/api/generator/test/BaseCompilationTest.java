@@ -56,7 +56,7 @@ public abstract class BaseCompilationTest {
         Collections.sort(types, (o1, o2) -> o2.getName().compareTo(o1.getName()));
 
         final GeneratorJavaFile generator = new GeneratorJavaFile(ImmutableSet.copyOf(types));
-        final Table<?, String, Supplier<String>> generatedFiles = generator.generateFileContent(true);
+        final Table<?, String, Supplier<String>> generatedFiles = generator.generateFileContent(false);
         for (Cell<?, String, Supplier<String>> cell : generatedFiles.cellSet()) {
             final File target = new File(sourcesOutputDir, cell.getColumnKey());
             Files.createParentDirs(target);
