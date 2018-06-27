@@ -11,6 +11,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
+import com.google.common.collect.Table;
+import com.google.common.collect.Table.Cell;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -18,15 +20,18 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import org.apache.maven.project.MavenProject;
 import org.opendaylight.mdsal.binding.generator.impl.BindingGeneratorImpl;
 import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile;
+import org.opendaylight.mdsal.binding.java.api.generator.GeneratorJavaFile.FileKind;
 import org.opendaylight.mdsal.binding.java.api.generator.YangModuleInfoTemplate;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
@@ -59,7 +64,7 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
         outputBaseDir = outputDir == null ? getDefaultOutputBaseDir() : outputDir;
 
         final List<Type> types = new BindingGeneratorImpl().generateTypes(context, yangModules);
-        final GeneratorJavaFile generator = new GeneratorJavaFile(buildContext, types);
+        final GeneratorJavaFile generator = new GeneratorJavaFile(types);
 
         File persistentSourcesDir = null;
         if (additionalConfig != null) {
@@ -72,7 +77,40 @@ public final class CodeGeneratorImpl implements BasicCodeGenerator, BuildContext
             persistentSourcesDir = new File(projectBaseDir, "src" + FS + "main" + FS + "java");
         }
 
-        List<File> result = generator.generateToFile(outputBaseDir, persistentSourcesDir);
+        final Table<FileKind, String, Supplier<String>> generatedFiles = generator.generateFileContent(true);
+        final List<File> result = new ArrayList<>(generatedFiles.size());
+        for (Cell<FileKind, String, Supplier<String>> cell : generatedFiles.cellSet()) {
+            final File base;
+            switch (cell.getRowKey()) {
+                case PERSISTENT:
+                    base = persistentSourcesDir;
+                    break;
+                case TRANSIENT:
+                    base = outputBaseDir;
+                    break;
+                default:
+                    throw new IllegalStateException("Unsupported file type in " + cell);
+            }
+
+            final File target = new File(base, cell.getColumnKey());
+            final File parent = target.getParentFile();
+            if (!parent.exists()) {
+                parent.mkdirs();
+            }
+
+            try (final OutputStream stream = buildContext.newFileOutputStream(target)) {
+                try (final Writer fw = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+                    try (final BufferedWriter bw = new BufferedWriter(fw)) {
+                        bw.write(cell.getValue().get());
+                    }
+                } catch (IOException e) {
+                    LOG.error("Failed to write generate output into {}", target.getPath(), e);
+                    throw e;
+                }
+            }
+
+            result.add(target);
+        }
 
         result.addAll(generateModuleInfos(outputBaseDir, yangModules, context, moduleResourcePathResolver));
         return result;
