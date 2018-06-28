@@ -34,11 +34,18 @@
         <!-- FIXME: superseded by RFC8343 -->
         <module>ietf-interfaces</module>
 
+        <!-- RFC7277 -->
+        <!-- FIXME: superseded by RFC8344 -->
+        <module>ietf-ip-2014-06-16</module>
+
         <!-- RFC7895 YANG Module Library -->
         <module>rfc7895</module>
 
         <!-- RFC8343 Interface Management -->
         <module>rfc8343</module>
+
+        <!-- RFC8344 IP Management -->
+        <module>rfc8344</module>
 
         <!-- RFC8345 Network Topologies -->
         <module>rfc8345</module>
@@ -58,8 +65,8 @@
         <module>ietf-topology-l3-unicast-igp</module>
         <module>ietf-topology-ospf</module>
 
+        <!-- Legacy RESTCONF -->
+        <!-- FIXME: move this to the netconf project -->
         <module>ietf-restconf</module>
-
-        <module>ietf-ip-2014-06-16</module>
     </modules>
 </project>
