@@ -30,8 +30,15 @@
         <module>ietf-yang-types-20130715</module>
         <module>ietf-type-util</module>
 
+        <!-- RFC7223 -->
+        <!-- FIXME: superseded by RFC8343 -->
+        <module>ietf-interfaces</module>
+
         <!-- RFC7895 YANG Module Library -->
         <module>rfc7895</module>
+
+        <!-- RFC8343 Interface Management -->
+        <module>rfc8343</module>
 
         <!-- RFC8345 Network Topologies -->
         <module>rfc8345</module>
@@ -40,7 +47,6 @@
         <module>rfc8345-ietf-network-topology</module>
         <module>rfc8345-ietf-network-topology-state</module>
 
-        <module>ietf-interfaces</module>
         <module>ietf-packet-fields</module>
         <module>ietf-access-control-list</module>
         <module>ietf-lisp-address-types</module>
