@@ -33,6 +33,9 @@
         <!-- RFC7895 YANG Module Library -->
         <module>rfc7895</module>
 
+        <!-- RFC8343 Interface Management -->
+        <module>rfc8343</module>
+
         <!-- RFC8345 Network Topologies -->
         <module>rfc8345</module>
         <module>rfc8345-ietf-network</module>
