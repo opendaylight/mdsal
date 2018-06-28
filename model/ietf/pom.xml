@@ -36,6 +36,9 @@
         <!-- RFC8343 Interface Management -->
         <module>rfc8343</module>
 
+        <!-- RFC8344 IP Management -->
+        <module>rfc8344</module>
+
         <!-- RFC8345 Network Topologies -->
         <module>rfc8345</module>
         <module>rfc8345-ietf-network</module>
