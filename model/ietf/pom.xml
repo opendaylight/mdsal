@@ -33,8 +33,14 @@
         <!-- RFC7895 YANG Module Library -->
         <module>rfc7895</module>
 
+        <!-- RFC8345 Network Topologies -->
+        <module>rfc8345</module>
+        <module>rfc8345-ietf-network</module>
+        <module>rfc8345-ietf-network-state</module>
+        <module>rfc8345-ietf-network-topology</module>
+        <module>rfc8345-ietf-network-topology-state</module>
+
         <module>ietf-interfaces</module>
-        <module>ietf-network</module>
         <module>ietf-packet-fields</module>
         <module>ietf-access-control-list</module>
         <module>ietf-lisp-address-types</module>
