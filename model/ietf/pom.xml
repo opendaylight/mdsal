@@ -33,6 +33,9 @@
         <!-- RFC7895 YANG Module Library -->
         <module>rfc7895</module>
 
+        <!-- RFC7895 YANG Metadata -->
+        <module>rfc7952</module>
+
         <!-- RFC8345 Network Topologies -->
         <module>rfc8345</module>
         <module>rfc8345-ietf-network</module>
