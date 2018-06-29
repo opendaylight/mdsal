@@ -44,6 +44,11 @@
         <!-- RFC7895 YANG Metadata -->
         <module>rfc7952</module>
 
+        <!-- RFC8342 Network Management Datastore Architecture -->
+        <module>rfc8342</module>
+        <module>rfc8342-ietf-datastores</module>
+        <module>rfc8342-ietf-origin</module>
+
         <!-- RFC8343 Interface Management -->
         <module>rfc8343</module>
 
