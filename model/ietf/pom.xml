@@ -41,6 +41,9 @@
         <!-- RFC7895 YANG Module Library -->
         <module>rfc7895</module>
 
+        <!-- RFC7895 YANG Metadata -->
+        <module>rfc7952</module>
+
         <!-- RFC8343 Interface Management -->
         <module>rfc8343</module>
 
