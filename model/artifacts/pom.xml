@@ -93,6 +93,13 @@
             <!-- RFC8343 -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8342</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
+            <!-- RFC8343 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
                 <artifactId>rfc8343</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>

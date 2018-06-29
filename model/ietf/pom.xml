@@ -41,6 +41,9 @@
         <!-- RFC7895 YANG Module Library -->
         <module>rfc7895</module>
 
+        <!-- RFC8342 Network Management Datastore Architecture -->
+        <module>rfc8342</module>
+
         <!-- RFC8343 Interface Management -->
         <module>rfc8343</module>
 
