@@ -39,6 +39,7 @@
         <module>model-binding2</module>
         <module>entityownership</module>
         <module>singleton-service</module>
+        <module>yanglib</module>
     </modules>
 
     <build>
@@ -58,4 +59,41 @@
             </plugins>
         </pluginManagement>
     </build>
+<<<<<<< HEAD
+=======
+
+    <profiles>
+        <profile>
+            <!--
+              This profile is to ensure we only build javadocs reports
+              when we plan to deploy Maven site for our project.
+              -->
+          <id>maven-site</id>
+          <activation>
+              <file>
+                  <exists>${user.dir}/deploy-site.xml</exists>
+              </file>
+          </activation>
+
+          <build>
+              <plugins>
+                  <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-javadoc-plugin</artifactId>
+                      <inherited>false</inherited>
+                      <executions>
+                          <execution>
+                              <id>aggregate</id>
+                              <goals>
+                                  <goal>aggregate</goal>
+                              </goals>
+                              <phase>package</phase>
+                          </execution>
+                      </executions>
+                  </plugin>
+              </plugins>
+          </build>
+      </profile>
+  </profiles>
+>>>>>>> 8db57d35c... WIP: add yanglib
 </project>
