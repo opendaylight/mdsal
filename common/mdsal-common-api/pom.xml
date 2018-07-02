@@ -81,27 +81,10 @@
         </plugins>
     </build>
 
-  <scm>
-    <connection>scm:git:http://git.opendaylight.org/gerrit/mdsal.git</connection>
-    <developerConnection>scm:git:ssh://git.opendaylight.org:29418/mdsal.git</developerConnection>
-    <tag>HEAD</tag>
-    <url>https://wiki.opendaylight.org/view/MD-SAL:Main</url>
-  </scm>
-
-  <!--
-      Maven Site Configuration
-
-      The following configuration is necessary for maven-site-plugin to
-      correctly identify the correct deployment path for OpenDaylight Maven
-      sites.
-  -->
-  <url>${odl.site.url}/${project.groupId}/${stream}/${project.artifactId}/</url>
-
-  <distributionManagement>
-    <site>
-      <id>opendaylight-site</id>
-      <url>${nexus.site.url}/${project.artifactId}/</url>
-    </site>
-  </distributionManagement>
-
+    <scm>
+        <connection>scm:git:http://git.opendaylight.org/gerrit/mdsal.git</connection>
+        <developerConnection>scm:git:ssh://git.opendaylight.org:29418/mdsal.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://wiki.opendaylight.org/view/MD-SAL:Main</url>
+    </scm>
 </project>

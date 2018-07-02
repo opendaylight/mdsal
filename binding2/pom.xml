@@ -10,10 +10,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-      <groupId>org.opendaylight.odlparent</groupId>
-      <artifactId>odlparent-lite</artifactId>
-      <version>3.1.2</version>
-      <relativePath/>
+        <groupId>org.opendaylight.odlparent</groupId>
+        <artifactId>odlparent-lite</artifactId>
+        <version>3.1.2</version>
+        <relativePath/>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -25,41 +25,24 @@
     <description>${project.artifactId}</description>
 
     <modules>
-      <module>mdsal-binding2-spec</module>
-      <module>mdsal-model-binding2-parent</module>
+        <module>mdsal-binding2-spec</module>
+        <module>mdsal-model-binding2-parent</module>
 
-      <!-- binding2 generator -->
-      <module>mdsal-binding2-maven-api-gen-plugin</module>
-      <module>mdsal-binding2-generator-api</module>
-      <module>mdsal-binding2-generator-impl</module>
-      <module>mdsal-binding2-java-api-generator</module>
-      <module>mdsal-binding2-generator-util</module>
+        <!-- binding2 generator -->
+        <module>mdsal-binding2-maven-api-gen-plugin</module>
+        <module>mdsal-binding2-generator-api</module>
+        <module>mdsal-binding2-generator-impl</module>
+        <module>mdsal-binding2-java-api-generator</module>
+        <module>mdsal-binding2-generator-util</module>
 
-      <!-- binding2 runtime -->
-      <module>mdsal-binding2-api</module>
-      <module>mdsal-binding2-runtime</module>
-      <module>mdsal-binding2-dom-codec</module>
-      <module>mdsal-binding2-dom-adapter</module>
+        <!-- binding2 runtime -->
+        <module>mdsal-binding2-api</module>
+        <module>mdsal-binding2-runtime</module>
+        <module>mdsal-binding2-dom-codec</module>
+        <module>mdsal-binding2-dom-adapter</module>
 
-      <!-- binding2 utils and testing models -->
-      <module>mdsal-binding2-util</module>
-      <module>mdsal-binding2-test-model</module>
+        <!-- binding2 utils and testing models -->
+        <module>mdsal-binding2-util</module>
+        <module>mdsal-binding2-test-model</module>
     </modules>
-
-  <!--
-      Maven Site Configuration
-
-      The following configuration is necessary for maven-site-plugin to
-      correctly identify the correct deployment path for OpenDaylight Maven
-      sites.
-  -->
-  <url>${odl.site.url}/${project.groupId}/${stream}/${project.artifactId}/</url>
-
-  <distributionManagement>
-    <site>
-      <id>opendaylight-site</id>
-      <url>${nexus.site.url}/${project.artifactId}/</url>
-    </site>
-  </distributionManagement>
-
 </project>
