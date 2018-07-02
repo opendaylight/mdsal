@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 
+import static org.opendaylight.mdsal.binding.dom.adapter.osgi.AdaptingTracker.DEFAULT_SERVICE_TYPE;
+
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import javax.annotation.concurrent.GuardedBy;
@@ -46,18 +48,22 @@ public final class DynamicBindingAdapter implements AutoCloseable {
 
     public DynamicBindingAdapter(final AdapterFactory factory, final BundleContext ctx) {
         trackers = ImmutableList.of(
-            new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker),
-            new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService),
+            new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker,
+                    DEFAULT_SERVICE_TYPE),
+            new AdaptingTracker<>(ctx, DOMDataBroker.class, DataBroker.class, factory::createDataBroker,
+                    "pingpong"),
+            new AdaptingTracker<>(ctx, DOMDataTreeService.class, DataTreeService.class, factory::createDataTreeService,
+                    DEFAULT_SERVICE_TYPE),
             new AdaptingTracker<>(ctx, DOMMountPointService.class, MountPointService.class,
-                    factory::createMountPointService),
+                    factory::createMountPointService, DEFAULT_SERVICE_TYPE),
             new AdaptingTracker<>(ctx, DOMNotificationService.class, NotificationService.class,
-                    factory::createNotificationService),
+                    factory::createNotificationService, DEFAULT_SERVICE_TYPE),
             new AdaptingTracker<>(ctx, DOMNotificationPublishService.class, NotificationPublishService.class,
-                    factory::createNotificationPublishService),
+                    factory::createNotificationPublishService, DEFAULT_SERVICE_TYPE),
             new AdaptingTracker<>(ctx, DOMRpcService.class, RpcConsumerRegistry.class,
-                    factory::createRpcConsumerRegistry),
+                    factory::createRpcConsumerRegistry, DEFAULT_SERVICE_TYPE),
             new AdaptingTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
-                    factory::createRpcProviderService));
+                    factory::createRpcProviderService, DEFAULT_SERVICE_TYPE));
 
         LOG.debug("Starting {} DOMService trackers", trackers.size());
         trackers.forEach(ServiceTracker::open);

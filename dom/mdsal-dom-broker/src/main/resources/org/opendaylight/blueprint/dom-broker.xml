@@ -57,14 +57,14 @@
 
   <!-- DOM PingPong Data Broker -->
 
-<!--   <reference id="domDefaultDataBroker" interface="org.opendaylight.controller.md.sal.dom.api.DOMDataBroker" -->
-<!--       odl:type="default"/> -->
+  <reference id="domDefaultDataBroker" interface="org.opendaylight.mdsal.dom.api.DOMDataBroker"
+      odl:type="default"/>
 
-<!--   <bean id="domPingPongDataBroker" class="org.opendaylight.controller.md.sal.dom.broker.impl.PingPongDataBroker"> -->
-<!--     <argument ref="domDefaultDataBroker"/> -->
-<!--   </bean> -->
+  <bean id="domPingPongDataBroker" class="org.opendaylight.mdsal.dom.broker.pingpong.PingPongDataBroker">
+    <argument ref="domDefaultDataBroker"/>
+  </bean>
 
-<!--   <service ref="domPingPongDataBroker" interface="org.opendaylight.controller.md.sal.dom.api.DOMDataBroker" -->
-<!--       odl:type="pingpong"/> -->
+  <service ref="domPingPongDataBroker" interface="org.opendaylight.mdsal.dom.api.DOMDataBroker"
+      odl:type="pingpong"/>
 
 </blueprint>

@@ -10,14 +10,12 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Iterators;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.osgi.framework.ServiceReference;
 
 @NonNullByDefault
 final class Dict extends Dictionary<String, Object> {
@@ -29,21 +27,12 @@ final class Dict extends Dictionary<String, Object> {
         this.map = requireNonNull(map);
     }
 
-    static Dict fromReference(final ServiceReference<?> ref) {
-        final String[] keys = ref.getPropertyKeys();
-        if (keys.length == 0) {
+    static Dict from(@Nullable final String serviceType) {
+        if (serviceType == null) {
             return EMPTY;
         }
 
-        final Builder<String, Object> b = ImmutableMap.builderWithExpectedSize(keys.length);
-        for (String key : keys) {
-            final Object value = ref.getProperty(key);
-            if (value != null) {
-                b.put(key, value);
-            }
-        }
-
-        return new Dict(b.build());
+        return new Dict(ImmutableMap.of(AdaptingTracker.SERVICE_TYPE_PROP, serviceType));
     }
 
     @Override
