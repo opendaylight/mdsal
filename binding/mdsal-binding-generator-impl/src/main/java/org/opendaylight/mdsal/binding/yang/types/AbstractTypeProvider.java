@@ -1066,7 +1066,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final TypeDefinition<?> baseType = baseTypeDefForExtendedType(unionSubtype);
         if (unionTypeName.equals(baseType.getQName().getLocalName())) {
             final Type javaType = BaseYangTypes.BASE_YANG_TYPES_PROVIDER.javaTypeForSchemaDefinitionType(baseType,
-                parentNode);
+                parentNode, BindingGeneratorUtil.getRestrictions(unionSubtype));
             if (javaType != null) {
                 updateUnionTypeAsProperty(parentUnionGenTOBuilder, javaType, unionTypeName);
             }
