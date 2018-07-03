@@ -1,0 +1,7 @@
+Code-Review+2: Robert Varga <nite@hq.sk>
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Tue, 03 Jul 2018 08:10:50 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/73680
+Project: mdsal
+Branch: refs/heads/stable/oxygen
