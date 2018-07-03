@@ -39,7 +39,7 @@ final class LengthGenerator {
             final int min = l.lowerEndpoint().intValue();
             final int max = l.upperEndpoint().intValue();
 
-            if (min > 0 || max < Integer.MAX_VALUE) {
+            if (min >= 0 || max < Integer.MAX_VALUE) {
                 final StringBuilder sb = new StringBuilder("length >");
                 if (min <= Integer.MAX_VALUE) {
                     sb.append('=');
