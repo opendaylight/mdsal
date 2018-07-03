@@ -7,6 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
+import static com.google.common.base.Verify.verifyNotNull;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
@@ -113,13 +116,13 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     @Override
     public synchronized <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(
             final T listener) {
-        final Registration<T> ret = new Registration<>(this, listener);
+        final Registration<T> ret = new Registration<>(this, listener, routingTable.getRpcs(listener));
         final Builder<Registration<?>> b = ImmutableList.builder();
         b.addAll(listeners);
         b.add(ret);
         listeners = b.build();
 
-        listenerNotifier.execute(() -> ret.initialTable(routingTable));
+        listenerNotifier.execute(() -> ret.initialTable());
         return ret;
     }
 
@@ -152,9 +155,11 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
 
         private Map<SchemaPath, Set<YangInstanceIdentifier>> prevRpcs;
 
-        Registration(final DOMRpcRouter router, final T listener) {
+        Registration(final DOMRpcRouter router, final T listener,
+                final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs) {
             super(listener);
-            this.router = router;
+            this.router = requireNonNull(router);
+            this.prevRpcs = requireNonNull(rpcs);
         }
 
         @Override
@@ -162,30 +167,23 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
             router.removeListener(this);
         }
 
-        void initialTable(final DOMRpcRoutingTable newTable) {
-            final T l = getInstance();
-            if (l == null) {
-                return;
-            }
-
-            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = newTable.getRpcs(l);
+        void initialTable() {
             final Collection<DOMRpcIdentifier> added = new ArrayList<>();
-            for (Entry<SchemaPath, Set<YangInstanceIdentifier>> e : rpcs.entrySet()) {
+            for (Entry<SchemaPath, Set<YangInstanceIdentifier>> e : prevRpcs.entrySet()) {
                 added.addAll(Collections2.transform(e.getValue(), i -> DOMRpcIdentifier.create(e.getKey(), i)));
             }
-            prevRpcs = rpcs;
             if (!added.isEmpty()) {
-                l.onRpcAvailable(added);
+                getInstance().onRpcAvailable(added);
             }
         }
 
         void addRpc(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
             final T l = getInstance();
-            if (l == null || !l.acceptsImplementation(impl)) {
+            if (!l.acceptsImplementation(impl)) {
                 return;
             }
 
-            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = newTable.getRpcs(l);
+            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getRpcs(l));
             final MapDifference<SchemaPath, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
             final Collection<DOMRpcIdentifier> added = new ArrayList<>();
@@ -207,11 +205,11 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
 
         void removeRpc(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
             final T l = getInstance();
-            if (l == null || !l.acceptsImplementation(impl)) {
+            if (!l.acceptsImplementation(impl)) {
                 return;
             }
 
-            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = newTable.getRpcs(l);
+            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getRpcs(l));
             final MapDifference<SchemaPath, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
             final Collection<DOMRpcIdentifier> removed = new ArrayList<>();
