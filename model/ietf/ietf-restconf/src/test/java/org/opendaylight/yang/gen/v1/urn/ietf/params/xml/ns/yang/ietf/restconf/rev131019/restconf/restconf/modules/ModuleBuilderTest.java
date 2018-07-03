@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.restconf.rev131019.RevisionIdentifier;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.YangIdentifier;
 
 public class ModuleBuilderTest {
@@ -23,7 +24,7 @@ public class ModuleBuilderTest {
     @Test
     public void testModuleBuilder() {
         final ModuleBuilder moduleBuilder = new ModuleBuilder();
-        final Module.Revision revision = new Module.Revision("first revision");
+        final Module.Revision revision = new Module.Revision(new RevisionIdentifier("2016-10-11"));
         final YangIdentifier yangIdentifierOne = new YangIdentifier("YangIdentifier1");
         final YangIdentifier yangIdentifierTwo = new YangIdentifier("YangIdentifier2");
         final Uri namespace = new Uri("namespace");
