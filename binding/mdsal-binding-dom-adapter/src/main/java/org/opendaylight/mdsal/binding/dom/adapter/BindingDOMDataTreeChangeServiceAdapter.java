@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Preconditions;
+import org.opendaylight.mdsal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -47,11 +48,17 @@ final class BindingDOMDataTreeChangeServiceAdapter implements DataTreeChangeServ
     public <T extends DataObject, L extends DataTreeChangeListener<T>> ListenerRegistration<L>
             registerDataTreeChangeListener(final DataTreeIdentifier<T> treeId, final L listener) {
         final DOMDataTreeIdentifier domIdentifier = toDomTreeIdentifier(treeId);
-        final BindingDOMDataTreeChangeListenerAdapter<T> domListener
-                = new BindingDOMDataTreeChangeListenerAdapter<>(codec,listener, treeId.getDatastoreType());
-        final ListenerRegistration<BindingDOMDataTreeChangeListenerAdapter<T>> domReg
-                = dataTreeChangeService.registerDataTreeChangeListener(domIdentifier, domListener);
-        return new BindingDataTreeChangeListenerRegistration<>(listener,domReg);
+
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        final BindingDOMDataTreeChangeListenerAdapter<T> domListener =
+                listener instanceof ClusteredDataTreeChangeListener
+                        ? new BindingClusteredDOMDataTreeChangeListenerAdapter<>(
+                                codec, (ClusteredDataTreeChangeListener) listener, treeId.getDatastoreType())
+                        : new BindingDOMDataTreeChangeListenerAdapter<>(codec, listener, treeId.getDatastoreType());
+
+        final ListenerRegistration<BindingDOMDataTreeChangeListenerAdapter<T>> domReg =
+                dataTreeChangeService.registerDataTreeChangeListener(domIdentifier, domListener);
+        return new BindingDataTreeChangeListenerRegistration<>(listener, domReg);
     }
 
     private DOMDataTreeIdentifier toDomTreeIdentifier(final DataTreeIdentifier<?> treeId) {
