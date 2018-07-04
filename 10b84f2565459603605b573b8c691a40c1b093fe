@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "04295d62_e223ee4e",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/BindingToNormalizedNodeCodec.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-07-04T14:13:07Z",
+      "side": 1,
+      "message": "This is duplicate check, hence:\nif (module !\u003d null) {\n    return module;\n}\n\nLOG.debug(...)\nthrow new IllegalStatementException(...)",
+      "range": {
+        "startLine": 326,
+        "startChar": 8,
+        "endLine": 326,
+        "endChar": 33
+      },
+      "revId": "10b84f2565459603605b573b8c691a40c1b093fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
