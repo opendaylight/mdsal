@@ -22,9 +22,9 @@ import org.opendaylight.yangtools.concepts.Path;
 public interface GenericEntityOwnershipCandidateRegistration<P extends Path<P>, E extends GenericEntity<P>>
         extends ObjectRegistration<E> {
 
-  /**
-   * Unregister the candidate.
-   */
+    /**
+     * Unregister the candidate.
+     */
     @Override
     void close();
 }
