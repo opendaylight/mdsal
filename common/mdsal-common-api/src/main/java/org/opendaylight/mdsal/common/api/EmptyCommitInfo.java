@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.common.api;
 
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
  * Empty commit info singleton. Useful when {@link AsyncWriteTransaction#commit()} has nothing more to say.
@@ -19,7 +19,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 @NonNullByDefault
 final class EmptyCommitInfo implements CommitInfo {
     static final CommitInfo INSTANCE = new EmptyCommitInfo();
-    static final FluentFuture<CommitInfo> FLUENT_INSTANCE = FluentFuture.from(Futures.immediateFuture(INSTANCE));
+    static final FluentFuture<CommitInfo> FLUENT_INSTANCE = FluentFutures.immediateFluentFuture(INSTANCE);
 
     private EmptyCommitInfo() {
         // Hidden

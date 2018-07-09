@@ -21,6 +21,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreWriteTransaction;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.slf4j.Logger;
@@ -141,8 +142,8 @@ class DOMForwardedWriteTransaction<T extends DOMStoreWriteTransaction> extends
 
             ret = impl.commit(this, cohorts);
         } catch (RuntimeException e) {
-            ret = FluentFuture.from(Futures.immediateFailedFuture(
-                    TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER.apply(e)));
+            ret = FluentFutures.immediateFailedFluentFuture(
+                    TransactionCommitFailedExceptionMapper.COMMIT_ERROR_MAPPER.apply(e));
         }
         FUTURE_UPDATER.lazySet(this, ret);
         return ret;
