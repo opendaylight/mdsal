@@ -146,7 +146,7 @@ class RpcServiceAdapter implements InvocationHandler {
             return rpcName;
         }
 
-        private ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final NormalizedNode<?, ?> input) {
+        ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final NormalizedNode<?, ?> input) {
             final ListenableFuture<DOMRpcResult> result = delegate.invokeRpc(schemaPath, input);
             if (result instanceof LazyDOMRpcResultFuture) {
                 return ((LazyDOMRpcResultFuture) result).getBindingFuture();
