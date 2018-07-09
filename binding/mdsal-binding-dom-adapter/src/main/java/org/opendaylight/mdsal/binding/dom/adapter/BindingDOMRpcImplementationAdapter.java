@@ -83,8 +83,8 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
     }
 
     private DataObject deserialize(final SchemaPath rpcPath, final NormalizedNode<?, ?> input) {
-        if (input instanceof LazySerializedContainerNode) {
-            return ((LazySerializedContainerNode) input).bindingData();
+        if (input instanceof BindingDataAware) {
+            return ((BindingDataAware) input).bindingData();
         }
         final SchemaPath inputSchemaPath = rpcPath.createChild(inputQname);
         return codec.fromNormalizedNodeRpcData(inputSchemaPath, (ContainerNode) input);
