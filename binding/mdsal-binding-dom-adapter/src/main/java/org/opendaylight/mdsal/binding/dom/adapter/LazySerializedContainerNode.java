@@ -25,7 +25,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 /**
  * FIXME: Should this be moved to binding-data-codec.
  */
-class LazySerializedContainerNode implements ContainerNode {
+class LazySerializedContainerNode implements ContainerNode, BindingDataAware {
 
     private final NodeIdentifier identifier;
     private final DataObject bindingData;
@@ -89,7 +89,8 @@ class LazySerializedContainerNode implements ContainerNode {
         return delegate().getAttributeValue(name);
     }
 
-    final DataObject bindingData() {
+    @Override
+    public final DataObject bindingData() {
         return bindingData;
     }
 
