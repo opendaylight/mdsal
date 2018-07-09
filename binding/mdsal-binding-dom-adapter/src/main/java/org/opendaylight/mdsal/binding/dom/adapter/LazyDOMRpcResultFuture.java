@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Preconditions;
@@ -23,7 +22,7 @@ import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-final class LazyDOMRpcResultFuture implements CheckedFuture<DOMRpcResult, DOMRpcException> {
+final class LazyDOMRpcResultFuture implements CheckedFuture<DOMRpcResult, DOMRpcException>, BindingRpcFutureAware {
 
     private final ListenableFuture<RpcResult<?>> bindingFuture;
     private final BindingNormalizedNodeCodecRegistry codec;
@@ -40,7 +39,8 @@ final class LazyDOMRpcResultFuture implements CheckedFuture<DOMRpcResult, DOMRpc
         return new LazyDOMRpcResultFuture(bindingResult, codec);
     }
 
-    ListenableFuture<RpcResult<?>> getBindingFuture() {
+    @Override
+    public ListenableFuture<RpcResult<?>> getBindingFuture() {
         return bindingFuture;
     }
 
