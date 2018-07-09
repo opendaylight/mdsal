@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Function;
@@ -148,8 +147,8 @@ class RpcServiceAdapter implements InvocationHandler {
 
         ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final NormalizedNode<?, ?> input) {
             final ListenableFuture<DOMRpcResult> result = delegate.invokeRpc(schemaPath, input);
-            if (result instanceof LazyDOMRpcResultFuture) {
-                return ((LazyDOMRpcResultFuture) result).getBindingFuture();
+            if (result instanceof BindingFutureAware) {
+                return ((BindingFutureAware) result).getBindingFuture();
             }
 
             return transformFuture(schemaPath, result, codec.getCodecFactory());
