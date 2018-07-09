@@ -5,13 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import java.util.Collection;
 import java.util.Map;
@@ -23,6 +20,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
 import org.opendaylight.yangtools.util.DurationStatisticsTracker;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,18 +67,13 @@ public class SerializedDOMDataBroker extends AbstractDOMDataBroker {
         Preconditions.checkArgument(cohorts != null, "Cohorts must not be null.");
         LOG.debug("Tx: {} is submitted for execution.", transaction.getIdentifier());
 
-        ListenableFuture<CommitInfo> commitFuture = null;
         try {
-            commitFuture = executor.submit(new CommitCoordinationTask(transaction, cohorts,
-                    commitStatsTracker));
+            return FluentFuture.from(executor.submit(
+                new CommitCoordinationTask(transaction, cohorts, commitStatsTracker)));
         } catch (RejectedExecutionException e) {
-            LOG.error("The commit executor's queue is full - submit task was rejected. \n"
-                    + executor, e);
-            return FluentFuture.from(Futures.immediateFailedFuture(
-                    new TransactionCommitFailedException(
-                        "Could not submit the commit task - the commit queue capacity has been exceeded.", e)));
+            LOG.error("The commit executor's queue is full - submit task was rejected. \n{}", executor, e);
+            return FluentFutures.immediateFailedFluentFuture(new TransactionCommitFailedException(
+                "Could not submit the commit task - the commit queue capacity has been exceeded.", e));
         }
-
-        return FluentFuture.from(commitFuture);
     }
 }

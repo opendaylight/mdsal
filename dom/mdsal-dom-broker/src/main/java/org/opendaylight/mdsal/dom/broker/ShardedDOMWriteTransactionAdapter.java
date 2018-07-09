@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -82,16 +81,15 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
         }
         // First we need to close cursors
         cursorMap.values().forEach(DOMDataTreeWriteCursor::close);
-        final ListenableFuture<List<Void>> aggregatedSubmit = Futures.allAsList(
+        final FluentFuture<List<Void>> aggregatedSubmit = FluentFuture.from(Futures.allAsList(
                 transactionMap.get(LogicalDatastoreType.CONFIGURATION).submit(),
-                transactionMap.get(LogicalDatastoreType.OPERATIONAL).submit());
+                transactionMap.get(LogicalDatastoreType.OPERATIONAL).submit()));
 
         // Now we can close producers and mark transaction as finished
         closeProducers();
         finished = true;
 
-        return FluentFuture.from(Futures.transform(aggregatedSubmit,
-            unused -> CommitInfo.empty(), MoreExecutors.directExecutor()));
+        return aggregatedSubmit.transform(unused -> CommitInfo.empty(), MoreExecutors.directExecutor());
     }
 
     @Override
