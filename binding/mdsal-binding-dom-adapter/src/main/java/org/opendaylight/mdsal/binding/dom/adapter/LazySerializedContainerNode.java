@@ -15,13 +15,11 @@ import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.binding.dom.codec.api.AbstractBindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.DataContainerChild;
 import org.opendaylight.yangtools.yang.data.api.schema.LeafNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
@@ -33,20 +31,25 @@ class LazySerializedContainerNode extends AbstractBindingLazyContainerNode<DataO
     @GuardedBy("this")
     private BindingNormalizedNodeCodecRegistry registry;
 
-    private LazySerializedContainerNode(final QName identifier, final DataObject binding,
+    private LazySerializedContainerNode(final NodeIdentifier identifier, final DataObject binding,
             final BindingNormalizedNodeCodecRegistry registry) {
-        super(NodeIdentifier.create(identifier), binding);
+        super(identifier, binding);
         this.registry = requireNonNull(registry);
     }
 
-    static NormalizedNode<?, ?> create(final SchemaPath rpcName, final DataObject data,
+    static ContainerNode create(final SchemaPath rpcName, final DataObject data,
             final BindingNormalizedNodeCodecRegistry codec) {
-        return new LazySerializedContainerNode(rpcName.getLastComponent(), data, codec);
+        return create(NodeIdentifier.create(rpcName.getLastComponent()), data, codec);
     }
 
-    static NormalizedNode<?, ?> withContextRef(final SchemaPath rpcName, final DataObject data,
+    static ContainerNode create(final NodeIdentifier identifier, final DataObject data,
+            final BindingNormalizedNodeCodecRegistry codec) {
+        return new LazySerializedContainerNode(identifier, data, codec);
+    }
+
+    static ContainerNode withContextRef(final SchemaPath rpcName, final DataObject data,
             final LeafNode<?> contextRef, final BindingNormalizedNodeCodecRegistry codec) {
-        return new WithContextRef(rpcName.getLastComponent(), data, contextRef, codec);
+        return new WithContextRef(NodeIdentifier.create(rpcName.getLastComponent()), data, contextRef, codec);
     }
 
     @Override
@@ -67,8 +70,8 @@ class LazySerializedContainerNode extends AbstractBindingLazyContainerNode<DataO
     private static final class WithContextRef extends LazySerializedContainerNode {
         private final LeafNode<?> contextRef;
 
-        protected WithContextRef(final QName identifier, final DataObject binding, final LeafNode<?> contextRef,
-                final BindingNormalizedNodeCodecRegistry registry) {
+        protected WithContextRef(final NodeIdentifier identifier, final DataObject binding,
+                final LeafNode<?> contextRef, final BindingNormalizedNodeCodecRegistry registry) {
             super(identifier, binding, registry);
             this.contextRef = requireNonNull(contextRef);
         }
