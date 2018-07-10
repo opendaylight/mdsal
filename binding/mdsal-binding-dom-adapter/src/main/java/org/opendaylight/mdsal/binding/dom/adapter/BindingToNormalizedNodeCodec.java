@@ -381,7 +381,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
         return result;
     }
 
-    private BindingRuntimeContext runtimeContext() {
+    public BindingRuntimeContext runtimeContext() {
         return futureSchema.runtimeContext();
     }
 
