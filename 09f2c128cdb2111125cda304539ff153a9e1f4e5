@@ -22,6 +22,30 @@
       "revId": "09f2c128cdb2111125cda304539ff153a9e1f4e5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "32212801_9a714d7b",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/osgi/DynamicBindingAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-10T15:18:44Z",
+      "side": 1,
+      "message": "yeah - not sure what I was thinking here. Dict transfers all the delegate service properties which includes service instance-specific ones like \"service.id\" and \"service.bundleid\" but those get set properly in the new instance. (However I\u0027m not sure if modifiedService -\u003e setProperties would overwrite them) \"osgi.service.blueprint.compname\" technically doesn\u0027t apply to the new service instance but I think it\u0027s OK. So I changed Dict back to the way it was.",
+      "parentUuid": "67d470b6_0634ca3f",
+      "range": {
+        "startLine": 52,
+        "startChar": 20,
+        "endLine": 52,
+        "endChar": 40
+      },
+      "revId": "09f2c128cdb2111125cda304539ff153a9e1f4e5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
