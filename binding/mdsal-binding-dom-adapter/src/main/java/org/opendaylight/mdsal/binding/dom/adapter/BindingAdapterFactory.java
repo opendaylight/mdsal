@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import javax.annotation.concurrent.ThreadSafe;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeService;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -25,6 +26,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+import org.opendaylight.mdsal.dom.api.DOMOperationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 
@@ -125,5 +127,16 @@ public final class BindingAdapterFactory implements AdapterFactory {
     @Override
     public RpcProviderService createRpcProviderService(final DOMRpcProviderService domService) {
         return new BindingDOMRpcProviderServiceAdapter(domService, codec);
+    }
+
+    /**
+     * Create a {@link ActionService} backed by a {@link DOMOperationService}.
+     *
+     * @param domService Backing DOMOperationService
+     * @return A ActionService
+     * @throws NullPointerException if {@code domService} is null
+     */
+    public ActionService createActionService(final DOMOperationService domService) {
+        return new ActionServiceAdapter(codec, domService);
     }
 }
