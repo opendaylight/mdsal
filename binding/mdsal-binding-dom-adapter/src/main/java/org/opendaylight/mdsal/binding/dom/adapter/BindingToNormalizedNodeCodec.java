@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verify;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Function;
@@ -43,6 +44,7 @@ import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -58,6 +60,8 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
+import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -379,6 +383,16 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
             }
         }
         return result;
+    }
+
+    SchemaPath getActionPath(final Class<? extends Action<?, ?, ?>> type) {
+        final DataSchemaNode schema = runtimeContext().getSchemaDefinition(type);
+        if (schema == null) {
+            return Optional.absent();
+        }
+
+        verify(schema instanceof ActionDefinition, "Type %s resolves to non-action schema %s", type, schema);
+        return Optional.of((ActionDefinition) schema);
     }
 
     private BindingRuntimeContext runtimeContext() {
