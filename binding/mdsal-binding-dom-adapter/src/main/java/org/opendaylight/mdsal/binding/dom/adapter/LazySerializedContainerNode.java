@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -33,9 +35,9 @@ class LazySerializedContainerNode implements ContainerNode, BindingDataAware {
     private BindingNormalizedNodeCodecRegistry registry;
     private ContainerNode domData;
 
-    private LazySerializedContainerNode(final QName identifier, final DataObject binding,
+    private LazySerializedContainerNode(final NodeIdentifier identifier, final DataObject binding,
             final BindingNormalizedNodeCodecRegistry registry) {
-        this.identifier = NodeIdentifier.create(identifier);
+        this.identifier = requireNonNull(identifier);
         this.bindingData = binding;
         this.registry = registry;
         this.domData = null;
@@ -43,12 +45,17 @@ class LazySerializedContainerNode implements ContainerNode, BindingDataAware {
 
     static NormalizedNode<?, ?> create(final SchemaPath rpcName, final DataObject data,
             final BindingNormalizedNodeCodecRegistry codec) {
-        return new LazySerializedContainerNode(rpcName.getLastComponent(), data, codec);
+        return create(NodeIdentifier.create(rpcName.getLastComponent()), data, codec);
+    }
+
+    static NormalizedNode<?, ?> create(final NodeIdentifier identifier, final DataObject data,
+            final BindingNormalizedNodeCodecRegistry codec) {
+        return new LazySerializedContainerNode(identifier, data, codec);
     }
 
     static NormalizedNode<?, ?> withContextRef(final SchemaPath rpcName, final DataObject data,
             final LeafNode<?> contextRef, final BindingNormalizedNodeCodecRegistry codec) {
-        return new WithContextRef(rpcName.getLastComponent(), data, contextRef, codec);
+        return new WithContextRef(NodeIdentifier.create(rpcName.getLastComponent()), data, contextRef, codec);
     }
 
     @Override
@@ -102,8 +109,8 @@ class LazySerializedContainerNode implements ContainerNode, BindingDataAware {
 
         private final LeafNode<?> contextRef;
 
-        protected WithContextRef(final QName identifier, final DataObject binding, final LeafNode<?> contextRef,
-                final BindingNormalizedNodeCodecRegistry registry) {
+        protected WithContextRef(final NodeIdentifier identifier, final DataObject binding,
+                final LeafNode<?> contextRef, final BindingNormalizedNodeCodecRegistry registry) {
             super(identifier, binding, registry);
             this.contextRef = contextRef;
         }
