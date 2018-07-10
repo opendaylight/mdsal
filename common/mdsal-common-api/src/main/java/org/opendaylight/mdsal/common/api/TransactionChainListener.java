@@ -14,8 +14,9 @@ import java.util.EventListener;
  */
 public interface TransactionChainListener extends EventListener {
     /**
-     * Invoked if when a transaction in the chain fails. All other transactions are automatically cancelled by the time
-     * this notification is invoked. Implementations should invoke chain.close() to close the chain.
+     * Invoked if when a transaction in the chain fails. All transactions following the failed transaction, in the
+     * chain, are automatically cancelled by the time this notification is invoked.
+     * Implementations should invoke chain.close() to close the chain.
      *
      * @param chain Transaction chain which failed
      * @param transaction Transaction which caused the chain to fail
