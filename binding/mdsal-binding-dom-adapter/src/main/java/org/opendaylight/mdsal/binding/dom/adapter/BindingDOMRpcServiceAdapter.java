@@ -14,6 +14,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -21,34 +22,24 @@ import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 
-
-public class BindingDOMRpcServiceAdapter implements RpcConsumerRegistry {
+public class BindingDOMRpcServiceAdapter extends AbstracBindingAdapter<@NonNull DOMRpcService>
+        implements RpcConsumerRegistry {
 
     protected static final Factory<RpcConsumerRegistry> BUILDER_FACTORY = Builder::new;
 
     private final LoadingCache<Class<? extends RpcService>, RpcServiceAdapter> proxies = CacheBuilder.newBuilder()
             .weakKeys()
             .build(new CacheLoader<Class<? extends RpcService>, RpcServiceAdapter>() {
-
-                private RpcServiceAdapter createProxy(final Class<? extends RpcService> key) {
-                    Preconditions.checkArgument(BindingReflections.isBindingClass(key));
-                    Preconditions.checkArgument(key.isInterface(), "Supplied RPC service type must be interface.");
-                    return new RpcServiceAdapter(key, codec, domService);
-                }
-
                 @Override
                 public RpcServiceAdapter load(final Class<? extends RpcService> key) throws Exception {
-                    return createProxy(key);
+                    Preconditions.checkArgument(BindingReflections.isBindingClass(key));
+                    Preconditions.checkArgument(key.isInterface(), "Supplied RPC service type must be interface.");
+                    return new RpcServiceAdapter(key, getCodec(), getDelegate());
                 }
-
             });
 
-    private final DOMRpcService domService;
-    private final BindingToNormalizedNodeCodec codec;
-
     public BindingDOMRpcServiceAdapter(final DOMRpcService domService, final BindingToNormalizedNodeCodec codec) {
-        this.domService = domService;
-        this.codec = codec;
+        super(codec, domService);
     }
 
     @SuppressWarnings("unchecked")
@@ -59,7 +50,6 @@ public class BindingDOMRpcServiceAdapter implements RpcConsumerRegistry {
     }
 
     private static final class Builder extends BindingDOMAdapterBuilder<RpcConsumerRegistry> {
-
         @Override
         protected RpcConsumerRegistry createInstance(final BindingToNormalizedNodeCodec codec,
                 final ClassToInstanceMap<DOMService> delegates) {
@@ -71,7 +61,5 @@ public class BindingDOMRpcServiceAdapter implements RpcConsumerRegistry {
         public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
             return ImmutableSet.of(DOMRpcService.class);
         }
-
     }
-
 }
