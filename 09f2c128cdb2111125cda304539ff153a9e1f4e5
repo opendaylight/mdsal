@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "67d470b6_0634ca3f",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/osgi/DynamicBindingAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-07-10T09:07:43Z",
+      "side": 1,
+      "message": "I don\u0027t think we want to do this. For this particular thing we actually want to catch all services, so that mdsal-trace will be adapted automatically.",
+      "range": {
+        "startLine": 52,
+        "startChar": 20,
+        "endLine": 52,
+        "endChar": 40
+      },
+      "revId": "09f2c128cdb2111125cda304539ff153a9e1f4e5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
