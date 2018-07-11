@@ -93,12 +93,6 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
     }
 
     @Override
-    @Deprecated
-    public Map<Class<? extends DOMDataBrokerExtension>, DOMDataBrokerExtension> getSupportedExtensions() {
-        return extensions;
-    }
-
-    @Override
     public ClassToInstanceMap<DOMDataBrokerExtension> getExtensions() {
         return extensions;
     }

@@ -63,13 +63,6 @@ public class ShardedDOMReadTransactionAdapterTest {
     }
 
     private static class TestTreeService implements DOMDataTreeService {
-
-        @Override
-        @Deprecated
-        public Map<Class<? extends DOMDataTreeServiceExtension>, DOMDataTreeServiceExtension> getSupportedExtensions() {
-            return ImmutableClassToInstanceMap.of();
-        }
-
         @Override
         public ClassToInstanceMap<DOMDataTreeServiceExtension> getExtensions() {
             return ImmutableClassToInstanceMap.of();
