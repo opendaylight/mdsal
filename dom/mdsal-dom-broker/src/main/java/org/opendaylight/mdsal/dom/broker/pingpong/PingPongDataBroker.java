@@ -57,8 +57,8 @@ public final class PingPongDataBroker extends ForwardingDOMDataBroker implements
     @Override
     public <L extends DOMDataTreeChangeListener> ListenerRegistration<L> registerDataTreeChangeListener(
             final DOMDataTreeIdentifier treeId, final L listener) {
-        final DOMDataTreeChangeService treeService = (DOMDataTreeChangeService) delegate.getSupportedExtensions()
-                .get(DOMDataTreeChangeService.class);
+        final DOMDataTreeChangeService treeService = delegate.getExtensions()
+                .getInstance(DOMDataTreeChangeService.class);
         if (treeService != null) {
             return treeService.registerDataTreeChangeListener(treeId, listener);
         }

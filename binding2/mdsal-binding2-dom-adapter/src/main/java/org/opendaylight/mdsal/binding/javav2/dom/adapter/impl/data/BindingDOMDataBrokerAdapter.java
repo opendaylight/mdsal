@@ -58,8 +58,9 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
 
     public BindingDOMDataBrokerAdapter(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
         super(domDataBroker, codec);
+        // FIXME: this is an invalid lookup
         final DOMDataTreeService domTreeChange =
-                (DOMDataTreeService) domDataBroker.getSupportedExtensions().get(DOMDataTreeService.class);
+                (DOMDataTreeService) domDataBroker.getExtensions().get(DOMDataTreeService.class);
         if (domTreeChange != null) {
             treeService = BindingDOMDataTreeServiceAdapter.create(domTreeChange, codec);
         } else {

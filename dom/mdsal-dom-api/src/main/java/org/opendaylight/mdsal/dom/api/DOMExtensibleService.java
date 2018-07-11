@@ -9,8 +9,6 @@ package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
-import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
@@ -28,18 +26,6 @@ public interface DOMExtensibleService<T extends DOMExtensibleService<T, E>,
      * which provide access to the specific functionality bound to this service.
      *
      * @return A map of supported functionality.
-     * @deprecated Use {@link #getExtensions()} instead.
      */
-    @Deprecated
-    @NonNull Map<Class<? extends E>, E> getSupportedExtensions();
-
-    /**
-     * Return a map of currently-supported extensions, along with accessor services
-     * which provide access to the specific functionality bound to this service.
-     *
-     * @return A map of supported functionality.
-     */
-    default @NonNull ClassToInstanceMap<E> getExtensions() {
-        return ImmutableClassToInstanceMap.copyOf(getSupportedExtensions());
-    }
+    @NonNull ClassToInstanceMap<E> getExtensions();
 }

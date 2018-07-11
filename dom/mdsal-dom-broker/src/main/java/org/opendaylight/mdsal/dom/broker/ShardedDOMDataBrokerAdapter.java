@@ -5,12 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -29,12 +27,6 @@ public class ShardedDOMDataBrokerAdapter implements DOMDataBroker {
 
     public ShardedDOMDataBrokerAdapter(final DOMDataTreeService service) {
         this.service = service;
-    }
-
-    @Override
-    @Deprecated
-    public Map<Class<? extends DOMDataBrokerExtension>, DOMDataBrokerExtension> getSupportedExtensions() {
-        return ImmutableClassToInstanceMap.of();
     }
 
     @Override
