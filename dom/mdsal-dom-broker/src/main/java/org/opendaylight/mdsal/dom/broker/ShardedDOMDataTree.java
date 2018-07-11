@@ -10,7 +10,8 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
@@ -133,8 +134,14 @@ public final class ShardedDOMDataTree implements DOMDataTreeService, DOMDataTree
     }
 
     @Override
+    @Deprecated
     public Map<Class<? extends DOMDataTreeServiceExtension>, DOMDataTreeServiceExtension> getSupportedExtensions() {
-        return ImmutableMap.of();
+        return ImmutableClassToInstanceMap.of();
+    }
+
+    @Override
+    public ClassToInstanceMap<DOMDataTreeServiceExtension> getExtensions() {
+        return ImmutableClassToInstanceMap.of();
     }
 
     @GuardedBy("this")

@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitDeadlockException;
-import org.opendaylight.mdsal.dom.api.DOMDataBrokerExtension;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeChangeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
@@ -414,16 +413,7 @@ public class DOMDataTreeListenerTest {
     }
 
     private DOMDataTreeChangeService getDOMDataTreeChangeService() {
-        final DOMDataBrokerExtension extension = domBroker.getSupportedExtensions()
-                .get(DOMDataTreeChangeService.class);
-        if (extension == null) {
-            return null;
-        }
-        DOMDataTreeChangeService dataTreeChangeService = null;
-        if (extension instanceof DOMDataTreeChangeService) {
-            dataTreeChangeService = (DOMDataTreeChangeService) extension;
-        }
-        return dataTreeChangeService;
+        return domBroker.getExtensions().getInstance(DOMDataTreeChangeService.class);
     }
 
     static class CommitExecutorService extends ForwardingExecutorService {

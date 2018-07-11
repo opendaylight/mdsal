@@ -22,7 +22,7 @@ public class ShardedDOMDataBrokerAdapterTest {
         final ShardedDOMDataBrokerAdapter shardedDOMDataBrokerAdapter =
                 new ShardedDOMDataBrokerAdapter(dataTreeService);
 
-        assertTrue(shardedDOMDataBrokerAdapter.getSupportedExtensions().isEmpty());
+        assertTrue(shardedDOMDataBrokerAdapter.getExtensions().isEmpty());
         assertNotNull(shardedDOMDataBrokerAdapter.newWriteOnlyTransaction());
         assertNotNull(shardedDOMDataBrokerAdapter.newReadOnlyTransaction());
         assertNotNull(shardedDOMDataBrokerAdapter.createTransactionChain(null));

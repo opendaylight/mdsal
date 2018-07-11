@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.spi;
 
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ForwardingObject;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -49,7 +50,13 @@ public abstract class ForwardingDOMDataBroker extends ForwardingObject implement
     }
 
     @Override
+    @Deprecated
     public Map<Class<? extends DOMDataBrokerExtension>, DOMDataBrokerExtension> getSupportedExtensions() {
         return delegate().getSupportedExtensions();
+    }
+
+    @Override
+    public ClassToInstanceMap<DOMDataBrokerExtension> getExtensions() {
+        return delegate().getExtensions();
     }
 }

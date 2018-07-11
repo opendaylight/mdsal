@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.Map;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -37,7 +37,8 @@ public interface DOMSchemaService extends DOMExtensibleService<DOMSchemaService,
     ListenerRegistration<SchemaContextListener> registerSchemaContextListener(SchemaContextListener listener);
 
     @Override
+    @Deprecated
     default Map<Class<? extends DOMSchemaServiceExtension>, DOMSchemaServiceExtension> getSupportedExtensions() {
-        return ImmutableMap.of();
+        return ImmutableClassToInstanceMap.of();
     }
 }
