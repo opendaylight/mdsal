@@ -55,9 +55,6 @@ public class UnionTypeDefTest {
                         case "stringRefValue":
                             assertEquals(Types.STRING, generatedProperty.getReturnType());
                             break;
-                        case "value":
-                            assertEquals(Types.CHAR_ARRAY, generatedProperty.getReturnType());
-                            break;
                     }
                 }
             }

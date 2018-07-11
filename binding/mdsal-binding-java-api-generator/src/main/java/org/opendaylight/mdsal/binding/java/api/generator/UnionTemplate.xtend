@@ -12,7 +12,6 @@ import static org.opendaylight.mdsal.binding.model.util.Types.getOuterClassName;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.BaseEncoding
-import java.beans.ConstructorProperties
 import java.util.Arrays
 import org.opendaylight.mdsal.binding.model.api.GeneratedProperty
 import org.opendaylight.mdsal.binding.model.api.GeneratedTransferObject
@@ -55,49 +54,24 @@ class UnionTemplate extends ClassTemplate {
 
     private def unionConstructors() '''
         «FOR property : finalProperties SEPARATOR "\n"»
-            «val propRet = property.returnType»
-            «IF "char[]".equals(propRet.name)»
-                /**
-                 * Constructor provided only for using in JMX. Don't use it for
-                 * construction new object of this union type.
-                 */
-                @«ConstructorProperties.importedName»("«property.name»")
-                public «type.name»(«propRet.importedName» «property.fieldName») {
-                    «String.importedName» defVal = new «String.importedName»(«property.fieldName»);
-                    «type.name» defInst = «typeBuilder()».getDefaultInstance(defVal);
-                    «FOR other : finalProperties»
-                        «IF other.name.equals("value")»
-                            «IF other.returnType.importedName.contains("[]")»
-                            this.«other.fieldName» = «other.fieldName» == null ? null : «other.fieldName».clone();
-                            «ELSE»
-                            this.«other.fieldName» = «other.fieldName»;
-                            «ENDIF»
-                        «ELSE»
-                            this.«other.fieldName» = defInst.«other.fieldName»;
-                        «ENDIF»
-                    «ENDFOR»
-                }
-            «ELSE»
-                «val actualType = property.returnType»
-                «val restrictions = restrictionsForSetter(actualType)»
-                «IF restrictions !== null»
-                    «generateCheckers(property, restrictions, actualType)»
-
-                «ENDIF»
-                «val propertyAndTopParentProperties = parentProperties + #[property]»
-                public «type.name»(«propertyAndTopParentProperties.asArgumentsDeclaration») {
-                    super(«parentProperties.asArguments»);
-                    «IF restrictions !== null»
-                        «checkArgument(property, restrictions, actualType, property.fieldName.toString)»
-                    «ENDIF»
-                    this.«property.fieldName» = «property.fieldName»;
-                    «FOR other : finalProperties»
-                        «IF property != other && !"value".equals(other.name)»
-                             this.«other.fieldName» = null;
-                        «ENDIF»
-                    «ENDFOR»
-                }
+            «val actualType = property.returnType»
+            «val restrictions = restrictionsForSetter(actualType)»
+            «IF restrictions !== null»
+                «generateCheckers(property, restrictions, actualType)»
             «ENDIF»
+            «val propertyAndTopParentProperties = parentProperties + #[property]»
+            public «type.name»(«propertyAndTopParentProperties.asArgumentsDeclaration») {
+                super(«parentProperties.asArguments»);
+                «IF restrictions !== null»
+                    «checkArgument(property, restrictions, actualType, property.fieldName.toString)»
+                «ENDIF»
+                this.«property.fieldName» = «property.fieldName»;
+                «FOR other : finalProperties»
+                    «IF property != other && !"value".equals(other.name)»
+                         this.«other.fieldName» = null;
+                    «ENDIF»
+                «ENDFOR»
+            }
         «ENDFOR»
     '''
 

@@ -1951,11 +1951,6 @@ abstract class AbstractTypeGenerator {
             resultTOBuilder.addEnclosingTransferObject(genTOBuilder);
         }
 
-        final GeneratedPropertyBuilder genPropBuilder = resultTOBuilder.addProperty("value");
-        genPropBuilder.setReturnType(Types.CHAR_ARRAY);
-        resultTOBuilder.addEqualsIdentity(genPropBuilder);
-        resultTOBuilder.addHashIdentity(genPropBuilder);
-        resultTOBuilder.addToStringProperty(genPropBuilder);
         processEnclosedTOBuilderes(typeBuilder, genTOBuilders);
         return resultTOBuilder;
     }
