@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import java.util.Collections;
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,7 +35,8 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
 
     private final AtomicLong txNum = new AtomicLong();
     private final AtomicLong chainNum = new AtomicLong();
-    private final Map<Class<? extends DOMDataBrokerExtension>, DOMDataBrokerExtension> extensions;
+    private final ClassToInstanceMap<DOMDataBrokerExtension> extensions;
+
     private volatile AutoCloseable closeable;
 
     protected AbstractDOMDataBroker(final Map<LogicalDatastoreType, DOMStore> datastores) {
@@ -50,7 +51,7 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
         }
 
         if (treeChange) {
-            extensions = ImmutableMap.<Class<? extends DOMDataBrokerExtension>, DOMDataBrokerExtension>of(
+            extensions = ImmutableClassToInstanceMap.of(
                     DOMDataTreeChangeService.class, new DOMDataTreeChangeService() {
                         @Override
                         public <L extends DOMDataTreeChangeListener> ListenerRegistration<L>
@@ -64,7 +65,7 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
                             }
                         });
         } else {
-            extensions = Collections.emptyMap();
+            extensions = ImmutableClassToInstanceMap.of();
         }
     }
 
@@ -92,7 +93,13 @@ public abstract class AbstractDOMDataBroker extends AbstractDOMForwardedTransact
     }
 
     @Override
+    @Deprecated
     public Map<Class<? extends DOMDataBrokerExtension>, DOMDataBrokerExtension> getSupportedExtensions() {
+        return extensions;
+    }
+
+    @Override
+    public ClassToInstanceMap<DOMDataBrokerExtension> getExtensions() {
         return extensions;
     }
 
