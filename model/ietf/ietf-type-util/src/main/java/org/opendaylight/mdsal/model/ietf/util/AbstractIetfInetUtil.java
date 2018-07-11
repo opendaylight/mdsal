@@ -171,11 +171,11 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
     @Nonnull public final InetAddress inetAddressForNoZone(@Nonnull final ANZ addr) {
         final A4NZ v4 = maybeIpv4AddressNoZone(addr);
         if (v4 != null) {
-            return inet4AddressFor(v4);
+            return inet4AddressForNoZone(v4);
         }
         final A6NZ v6 = maybeIpv6AddressNoZone(addr);
         checkArgument(v6 != null, "Address %s is neither IPv4 nor IPv6", addr);
-        return inet6AddressFor(v6);
+        return inet6AddressForNoZone(v6);
     }
 
 
@@ -354,6 +354,26 @@ public abstract class AbstractIetfInetUtil<A4, A4NZ extends A4, P4, A6, A6NZ ext
         requireNonNull(addr, "Address must not be null");
         checkArgument(addr instanceof Inet4Address, "Address has to be an Inet4Address");
         return prefix4Factory.newInstance(addr.getHostAddress() + "/32");
+    }
+
+    @Nonnull public final String stringForIpAddress(@Nonnull final A addr) {
+        final A4 ipv4 = maybeIpv4Address(addr);
+        if (ipv4 != null) {
+            return ipv4AddressString(ipv4);
+        }
+        final A6 v6 = maybeIpv6Address(addr);
+        checkArgument(v6 != null, "Address %s is neither IPv4 nor IPv6", addr);
+        return ipv6AddressString(v6);
+    }
+
+    @Nonnull public final String stringForIpAddressNoZone(@Nonnull final ANZ addr) {
+        final A4NZ v4 = maybeIpv4AddressNoZone(addr);
+        if (v4 != null) {
+            return ipv4AddressString(v4);
+        }
+        final A6NZ v6 = maybeIpv6AddressNoZone(addr);
+        checkArgument(v6 != null, "Address %s is neither IPv4 nor IPv6", addr);
+        return ipv6AddressString(v6);
     }
 
     /**
