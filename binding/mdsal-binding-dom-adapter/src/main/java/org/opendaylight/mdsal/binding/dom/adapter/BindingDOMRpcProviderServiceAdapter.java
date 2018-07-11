@@ -24,16 +24,13 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-public class BindingDOMRpcProviderServiceAdapter implements RpcProviderService {
+public class BindingDOMRpcProviderServiceAdapter extends AbstractBindingAdapter<DOMRpcProviderService>
+        implements RpcProviderService {
     private static final Set<YangInstanceIdentifier> GLOBAL = ImmutableSet.of(YangInstanceIdentifier.builder().build());
-
-    private final BindingToNormalizedNodeCodec codec;
-    private final DOMRpcProviderService domRpcRegistry;
 
     public BindingDOMRpcProviderServiceAdapter(final DOMRpcProviderService domRpcRegistry,
             final BindingToNormalizedNodeCodec codec) {
-        this.codec = codec;
-        this.domRpcRegistry = domRpcRegistry;
+        super(codec, domRpcRegistry);
     }
 
     @Override
@@ -50,12 +47,12 @@ public class BindingDOMRpcProviderServiceAdapter implements RpcProviderService {
 
     private <S extends RpcService, T extends S> ObjectRegistration<T> register(final Class<S> type,
             final T implementation, final Collection<YangInstanceIdentifier> rpcContextPaths) {
-        final Map<SchemaPath, Method> rpcs = codec.getRpcMethodToSchemaPath(type).inverse();
+        final Map<SchemaPath, Method> rpcs = getCodec().getRpcMethodToSchemaPath(type).inverse();
 
         final BindingDOMRpcImplementationAdapter adapter = new BindingDOMRpcImplementationAdapter(
-                codec.getCodecRegistry(), type, rpcs, implementation);
+            getCodec().getCodecRegistry(), type, rpcs, implementation);
         final Set<DOMRpcIdentifier> domRpcs = createDomRpcIdentifiers(rpcs.keySet(), rpcContextPaths);
-        final DOMRpcImplementationRegistration<?> domReg = domRpcRegistry.registerRpcImplementation(adapter, domRpcs);
+        final DOMRpcImplementationRegistration<?> domReg = getDelegate().registerRpcImplementation(adapter, domRpcs);
         return new BindingRpcAdapterRegistration<>(implementation, domReg);
     }
 
@@ -73,7 +70,7 @@ public class BindingDOMRpcProviderServiceAdapter implements RpcProviderService {
     private Collection<YangInstanceIdentifier> toYangInstanceIdentifiers(final Set<InstanceIdentifier<?>> identifiers) {
         final Collection<YangInstanceIdentifier> ret = new ArrayList<>(identifiers.size());
         for (final InstanceIdentifier<?> binding : identifiers) {
-            ret.add(codec.toYangInstanceIdentifierCached(binding));
+            ret.add(getCodec().toYangInstanceIdentifierCached(binding));
         }
         return ret;
     }

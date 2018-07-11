@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
 import java.util.Collection;
 import org.opendaylight.mdsal.binding.api.CursorAwareWriteTransaction;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -18,39 +17,34 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducerException;
 
-class BindingDOMDataTreeProducerAdapter implements DataTreeProducer {
+class BindingDOMDataTreeProducerAdapter extends AbstractBindingAdapter<DOMDataTreeProducer>
+        implements DataTreeProducer {
 
-    private final DOMDataTreeProducer delegate;
-    private final BindingToNormalizedNodeCodec codec;
-
-    protected BindingDOMDataTreeProducerAdapter(final DOMDataTreeProducer delegate,
-            final BindingToNormalizedNodeCodec codec) {
-        this.delegate = Preconditions.checkNotNull(delegate);
-        this.codec = codec;
+    BindingDOMDataTreeProducerAdapter(final BindingToNormalizedNodeCodec codec, final DOMDataTreeProducer delegate) {
+        super(codec, delegate);
     }
 
     @Override
     public CursorAwareWriteTransaction createTransaction(final boolean isolated) {
-        final DOMDataTreeCursorAwareTransaction domTx = delegate.createTransaction(isolated);
-        return new BindingDOMCursorAwareWriteTransactionAdapter<>(domTx, codec);
+        final DOMDataTreeCursorAwareTransaction domTx = getDelegate().createTransaction(isolated);
+        return new BindingDOMCursorAwareWriteTransactionAdapter<>(domTx, getCodec());
     }
 
-    static DataTreeProducer create(final DOMDataTreeProducer domProducer,
-            final BindingToNormalizedNodeCodec codec) {
-        return new BindingDOMDataTreeProducerAdapter(domProducer, codec);
+    static DataTreeProducer create(final DOMDataTreeProducer domProducer, final BindingToNormalizedNodeCodec codec) {
+        return new BindingDOMDataTreeProducerAdapter(codec, domProducer);
     }
 
     @Override
     public DataTreeProducer createProducer(final Collection<DataTreeIdentifier<?>> subtrees) {
-        final Collection<DOMDataTreeIdentifier> domSubtrees = codec.toDOMDataTreeIdentifiers(subtrees);
-        final DOMDataTreeProducer domChildProducer = delegate.createProducer(domSubtrees);
-        return BindingDOMDataTreeProducerAdapter.create(domChildProducer, codec);
+        final Collection<DOMDataTreeIdentifier> domSubtrees = getCodec().toDOMDataTreeIdentifiers(subtrees);
+        final DOMDataTreeProducer domChildProducer = getDelegate().createProducer(domSubtrees);
+        return BindingDOMDataTreeProducerAdapter.create(domChildProducer, getCodec());
     }
 
     @Override
     public void close() throws DataTreeProducerException {
         try {
-            delegate.close();
+            getDelegate().close();
         } catch (final DOMDataTreeProducerException e) {
             throw new DataTreeProducerException(e.getMessage(), e);
         }
