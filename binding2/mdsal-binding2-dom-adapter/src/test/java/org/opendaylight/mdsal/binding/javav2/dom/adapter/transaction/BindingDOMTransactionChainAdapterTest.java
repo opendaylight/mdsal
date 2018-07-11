@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import javax.annotation.Nullable;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +51,7 @@ public class BindingDOMTransactionChainAdapterTest {
     public void setUp() throws Exception {
         initMocks(this);
         doReturn(transactionChain).when(domService).createTransactionChain(any());
+        doReturn(ImmutableClassToInstanceMap.of()).when(domService).getExtensions();
         BindingDOMAdapterLoader bindingDOMAdapterLoader = new BindingDOMAdapterLoader(
                 new BindingToNormalizedNodeCodec((GeneratedClassLoadingStrategy)
                         GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), mockCodecRegistry)) {

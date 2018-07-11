@@ -11,8 +11,10 @@ package org.opendaylight.mdsal.binding.javav2.dom.adapter.spi.loader;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import javax.annotation.Nullable;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +41,8 @@ public class BindingDOMAdapterLoaderTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
+        doReturn(ImmutableClassToInstanceMap.of()).when(domService).getExtensions();
+
         bindingDOMAdapterLoader = new BindingDOMAdapterLoader(
                 new BindingToNormalizedNodeCodec((GeneratedClassLoadingStrategy)
                         GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), mockCodecRegistry)) {

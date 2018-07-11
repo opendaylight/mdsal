@@ -7,7 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.test.util;
 
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.mdsal.dom.api.DOMSchemaServiceExtension;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.ListenerRegistry;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -39,6 +42,11 @@ public final class MockSchemaService implements DOMSchemaService, SchemaContextP
     @Override
     public synchronized SchemaContext getSchemaContext() {
         return schemaContext;
+    }
+
+    @Override
+    public ClassToInstanceMap<DOMSchemaServiceExtension> getExtensions() {
+        return ImmutableClassToInstanceMap.of();
     }
 
     public synchronized void changeSchema(final SchemaContext newContext) {
