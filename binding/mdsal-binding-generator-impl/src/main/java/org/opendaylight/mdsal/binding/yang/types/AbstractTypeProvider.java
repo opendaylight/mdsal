@@ -931,8 +931,6 @@ public abstract class AbstractTypeProvider implements TypeProvider {
 
         final GeneratedTOBuilder resultTOBuilder = builders.remove(0);
         builders.forEach(resultTOBuilder::addEnclosingTransferObject);
-
-        resultTOBuilder.addProperty("value").setReturnType(Types.CHAR_ARRAY);
         return resultTOBuilder;
     }
 
