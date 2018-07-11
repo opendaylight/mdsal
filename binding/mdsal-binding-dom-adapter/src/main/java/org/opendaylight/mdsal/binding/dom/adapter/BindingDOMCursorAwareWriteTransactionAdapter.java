@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.util.concurrent.CheckedFuture;
@@ -21,34 +20,28 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class BindingDOMCursorAwareWriteTransactionAdapter<T extends DOMDataTreeCursorAwareTransaction>
-        implements CursorAwareWriteTransaction {
-
-    private final T delegate;
-    private final BindingToNormalizedNodeCodec codec;
+        extends AbstractBindingAdapter<T> implements CursorAwareWriteTransaction {
 
     public BindingDOMCursorAwareWriteTransactionAdapter(final T delegate, final BindingToNormalizedNodeCodec codec) {
-
-        this.delegate = delegate;
-        this.codec = codec;
+        super(codec, delegate);
     }
 
     @Nullable
     @Override
     public <P extends DataObject> DataTreeWriteCursor createCursor(final DataTreeIdentifier<P> path) {
-        final YangInstanceIdentifier yPath = codec.toNormalized(path.getRootIdentifier());
-        final DOMDataTreeWriteCursor cursor = delegate.createCursor(
+        final YangInstanceIdentifier yPath = getCodec().toNormalized(path.getRootIdentifier());
+        final DOMDataTreeWriteCursor cursor = getDelegate().createCursor(
                 new DOMDataTreeIdentifier(path.getDatastoreType(), yPath));
-        return new BindingDOMDataTreeWriteCursorAdapter<>(path, cursor, codec);
+        return new BindingDOMDataTreeWriteCursorAdapter<>(path, cursor, getCodec());
     }
 
     @Override
     public boolean cancel() {
-        return delegate.cancel();
+        return getDelegate().cancel();
     }
 
     @Override
     public CheckedFuture<Void, TransactionCommitFailedException> submit() {
-        return delegate.submit();
+        return getDelegate().submit();
     }
-
 }

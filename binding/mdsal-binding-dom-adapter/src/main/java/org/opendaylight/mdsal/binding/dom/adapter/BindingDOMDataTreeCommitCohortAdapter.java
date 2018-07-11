@@ -8,7 +8,6 @@
 
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
@@ -19,20 +18,18 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohort;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
-class BindingDOMDataTreeCommitCohortAdapter<T extends DataObject> implements DOMDataTreeCommitCohort {
+class BindingDOMDataTreeCommitCohortAdapter<T extends DataObject>
+        extends AbstractBindingAdapter<DataTreeCommitCohort<T>> implements DOMDataTreeCommitCohort {
 
-    private final BindingToNormalizedNodeCodec codec;
-    private final DataTreeCommitCohort<T> cohort;
-
-    BindingDOMDataTreeCommitCohortAdapter(BindingToNormalizedNodeCodec codec, DataTreeCommitCohort<T> cohort) {
-        this.codec = Preconditions.checkNotNull(codec);
-        this.cohort = Preconditions.checkNotNull(cohort);
+    BindingDOMDataTreeCommitCohortAdapter(final BindingToNormalizedNodeCodec codec,
+            final DataTreeCommitCohort<T> cohort) {
+        super(codec, cohort);
     }
 
     @Override
-    public CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(Object txId,
-            DOMDataTreeCandidate candidate, SchemaContext ctx) {
-        DataTreeModification<T> modification = LazyDataTreeModification.create(codec, candidate);
-        return cohort.canCommit(txId, modification);
+    public CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(final Object txId,
+            final DOMDataTreeCandidate candidate, final SchemaContext ctx) {
+        DataTreeModification<T> modification = LazyDataTreeModification.create(getCodec(), candidate);
+        return getDelegate().canCommit(txId, modification);
     }
 }
