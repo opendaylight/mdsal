@@ -22,24 +22,20 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCursor> implements DataTreeWriteCursor {
+public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCursor>
+        extends AbstractBindingAdapter<T> implements DataTreeWriteCursor {
     private final Deque<PathArgument> stack = new ArrayDeque<>();
-
-    private final T delegate;
-    private final BindingToNormalizedNodeCodec codec;
 
     public BindingDOMDataTreeWriteCursorAdapter(final DataTreeIdentifier<?> path, final T delegate,
             final BindingToNormalizedNodeCodec codec) {
-
-        this.delegate = delegate;
-        this.codec = codec;
+        super(codec, delegate);
         path.getRootIdentifier().getPathArguments().forEach(stack::push);
     }
 
     private YangInstanceIdentifier.PathArgument convertToNormalized(final PathArgument child) {
         stack.push(child);
         final InstanceIdentifier<?> iid = InstanceIdentifier.create(stack);
-        final YangInstanceIdentifier ret = codec.toNormalized(iid);
+        final YangInstanceIdentifier ret = getCodec().toNormalized(iid);
         stack.pop();
         return ret.getLastPathArgument();
     }
@@ -48,27 +44,27 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
             final PathArgument child, final P data) {
         stack.push(child);
         final InstanceIdentifier<?> iid = InstanceIdentifier.create(stack);
-        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry
-                = codec.toNormalizedNode(new SimpleEntry<>(iid, data));
+        final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = getCodec()
+                .toNormalizedNode(new SimpleEntry<>(iid, data));
         stack.pop();
         return entry;
     }
 
     @Override
     public void delete(final PathArgument child) {
-        delegate.delete(convertToNormalized(child));
+        getDelegate().delete(convertToNormalized(child));
     }
 
     @Override
     public <P extends DataObject> void merge(final PathArgument child, final P data) {
         final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = convertToNormalized(child, data);
-        delegate.merge(entry.getKey().getLastPathArgument(), entry.getValue());
+        getDelegate().merge(entry.getKey().getLastPathArgument(), entry.getValue());
     }
 
     @Override
     public <P extends DataObject> void write(final PathArgument child, final P data) {
         final Entry<YangInstanceIdentifier, NormalizedNode<?, ?>> entry = convertToNormalized(child, data);
-        delegate.write(entry.getKey().getLastPathArgument(), entry.getValue());
+        getDelegate().write(entry.getKey().getLastPathArgument(), entry.getValue());
     }
 
     @Override
@@ -102,7 +98,7 @@ public class BindingDOMDataTreeWriteCursorAdapter<T extends DOMDataTreeWriteCurs
 
     @Override
     public void close() {
-        delegate.close();
+        getDelegate().close();
     }
 
     @VisibleForTesting

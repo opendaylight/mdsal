@@ -38,50 +38,50 @@ public class BindingDOMDataTreeProducerAdapterTest {
     private DOMDataTreeProducer delegate;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         initMocks(this);
         final BindingBrokerTestFactory testFactory = new BindingBrokerTestFactory();
         testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
         final BindingTestContext testContext = testFactory.getTestContext();
         testContext.start();
         codec = testContext.getCodec();
-        bindingDOMDataTreeProducerAdapter = new BindingDOMDataTreeProducerAdapter(delegate, codec);
+        bindingDOMDataTreeProducerAdapter = new BindingDOMDataTreeProducerAdapter(codec, delegate);
     }
 
     @Test
-    public void createTransactionTest() throws Exception {
+    public void createTransactionTest() {
         doReturn(mock(DOMDataTreeCursorAwareTransaction.class)).when(delegate).createTransaction(true);
         assertNotNull(bindingDOMDataTreeProducerAdapter.createTransaction(true));
         verify(delegate).createTransaction(true);
     }
 
     @Test
-    public void createTest() throws Exception {
+    public void createTest() {
         assertNotNull(BindingDOMDataTreeProducerAdapter.create(delegate, codec));
     }
 
     @Test
-    public void createProducerTest() throws Exception {
+    public void createProducerTest() {
         doReturn(mock(DOMDataTreeProducer.class)).when(delegate).createProducer(any());
         assertNotNull(bindingDOMDataTreeProducerAdapter.createProducer(ImmutableSet.of()));
         verify(delegate).createProducer(any());
     }
 
     @Test
-    public void closeTest() throws Exception {
+    public void closeTest() throws DataTreeProducerException, DOMDataTreeProducerException {
         reset(delegate);
         bindingDOMDataTreeProducerAdapter.close();
         verify(delegate).close();
     }
 
     @Test(expected = DataTreeProducerException.class)
-    public void closeTestWithException1() throws Exception {
+    public void closeTestWithException1() throws DataTreeProducerException, DOMDataTreeProducerException {
         doThrow(new DOMDataTreeProducerBusyException("test")).when(delegate).close();
         bindingDOMDataTreeProducerAdapter.close();
     }
 
     @Test(expected = DataTreeProducerException.class)
-    public void closeTestWithException2() throws Exception {
+    public void closeTestWithException2() throws DataTreeProducerException, DOMDataTreeProducerException {
         doThrow(new DOMDataTreeProducerException("test")).when(delegate).close();
         bindingDOMDataTreeProducerAdapter.close();
     }
