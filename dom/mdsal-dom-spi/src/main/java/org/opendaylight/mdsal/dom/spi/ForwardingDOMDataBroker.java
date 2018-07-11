@@ -9,7 +9,6 @@ package org.opendaylight.mdsal.dom.spi;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ForwardingObject;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -47,12 +46,6 @@ public abstract class ForwardingDOMDataBroker extends ForwardingObject implement
     @Override
     public DOMTransactionChain createTransactionChain(final TransactionChainListener listener) {
         return delegate().createTransactionChain(listener);
-    }
-
-    @Override
-    @Deprecated
-    public Map<Class<? extends DOMDataBrokerExtension>, DOMDataBrokerExtension> getSupportedExtensions() {
-        return delegate().getSupportedExtensions();
     }
 
     @Override
