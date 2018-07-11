@@ -187,12 +187,6 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         }
 
         @Override
-        @Deprecated
-        public Map<Class<? extends DOMDataTreeServiceExtension>, DOMDataTreeServiceExtension> getSupportedExtensions() {
-            return delegateTreeService.getSupportedExtensions();
-        }
-
-        @Override
         public ClassToInstanceMap<DOMDataTreeServiceExtension> getExtensions() {
             return delegateTreeService.getExtensions();
         }
