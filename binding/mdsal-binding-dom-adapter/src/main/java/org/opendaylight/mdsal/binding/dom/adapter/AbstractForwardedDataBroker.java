@@ -7,16 +7,14 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.base.Optional;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
-import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -25,25 +23,11 @@ import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractForwardedDataBroker implements Delegator<DOMDataBroker> {
+public abstract class AbstractForwardedDataBroker extends AbstractBindingAdapter<@NonNull DOMDataBroker> {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractForwardedDataBroker.class);
 
-    // The Broker to whom we do all forwarding
-    private final DOMDataBroker domDataBroker;
-    private final BindingToNormalizedNodeCodec codec;
-
     protected AbstractForwardedDataBroker(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
-        this.domDataBroker = requireNonNull(domDataBroker);
-        this.codec = requireNonNull(codec);
-    }
-
-    protected BindingToNormalizedNodeCodec getCodec() {
-        return codec;
-    }
-
-    @Override
-    public DOMDataBroker getDelegate() {
-        return domDataBroker;
+        super(codec, domDataBroker);
     }
 
     protected Map<InstanceIdentifier<?>, DataObject> toBinding(final InstanceIdentifier<?> path,

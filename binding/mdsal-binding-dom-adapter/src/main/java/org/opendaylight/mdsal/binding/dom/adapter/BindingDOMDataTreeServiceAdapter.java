@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
 import java.util.Collection;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeListener;
@@ -19,26 +18,23 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
-public final class BindingDOMDataTreeServiceAdapter implements DataTreeService {
-    private final DOMDataTreeService delegate;
-    private final BindingToNormalizedNodeCodec codec;
-
-    private BindingDOMDataTreeServiceAdapter(final DOMDataTreeService delegate,
-            final BindingToNormalizedNodeCodec codec) {
-        this.delegate = Preconditions.checkNotNull(delegate, "delegate");
-        this.codec = Preconditions.checkNotNull(codec, "codec");
+public final class BindingDOMDataTreeServiceAdapter extends AbstractBindingAdapter<DOMDataTreeService>
+        implements DataTreeService {
+    private BindingDOMDataTreeServiceAdapter(final BindingToNormalizedNodeCodec codec,
+            final DOMDataTreeService delegate) {
+        super(codec, delegate);
     }
 
     public static BindingDOMDataTreeServiceAdapter create(final DOMDataTreeService domService,
             final BindingToNormalizedNodeCodec codec) {
-        return new BindingDOMDataTreeServiceAdapter(domService, codec);
+        return new BindingDOMDataTreeServiceAdapter(codec, domService);
     }
 
     @Override
     public DataTreeProducer createProducer(final Collection<DataTreeIdentifier<?>> subtrees) {
-        final Collection<DOMDataTreeIdentifier> domSubtrees = codec.toDOMDataTreeIdentifiers(subtrees);
-        final DOMDataTreeProducer domChildProducer = delegate.createProducer(domSubtrees);
-        return BindingDOMDataTreeProducerAdapter.create(domChildProducer, codec);
+        final Collection<DOMDataTreeIdentifier> domSubtrees = getCodec().toDOMDataTreeIdentifiers(subtrees);
+        final DOMDataTreeProducer domChildProducer = getDelegate().createProducer(domSubtrees);
+        return BindingDOMDataTreeProducerAdapter.create(domChildProducer, getCodec());
     }
 
     @Override
