@@ -46,8 +46,8 @@ public class BindingDOMDataBrokerAdapter extends AbstractForwardedDataBroker imp
 
     public BindingDOMDataBrokerAdapter(final DOMDataBroker domDataBroker, final BindingToNormalizedNodeCodec codec) {
         super(domDataBroker, codec);
-        final DOMDataTreeChangeService domTreeChange
-            = (DOMDataTreeChangeService) domDataBroker.getSupportedExtensions().get(DOMDataTreeChangeService.class);
+        final DOMDataTreeChangeService domTreeChange = domDataBroker.getExtensions()
+                .getInstance(DOMDataTreeChangeService.class);
         if (domTreeChange != null) {
             treeChangeService = BindingDOMDataTreeChangeServiceAdapter.create(codec, domTreeChange);
         } else {

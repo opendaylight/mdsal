@@ -12,6 +12,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import javax.annotation.Nonnull;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -31,7 +32,11 @@ public class ForwardingDOMDataBrokerTest extends ForwardingDOMDataBroker {
         this.createTransactionChain(null);
         verify(domDataBroker).createTransactionChain(any());
 
-        doReturn(null).when(domDataBroker).getSupportedExtensions();
+        doReturn(ImmutableClassToInstanceMap.of()).when(domDataBroker).getExtensions();
+        this.getExtensions();
+        verify(domDataBroker).getExtensions();
+
+        doReturn(ImmutableClassToInstanceMap.of()).when(domDataBroker).getSupportedExtensions();
         this.getSupportedExtensions();
         verify(domDataBroker).getSupportedExtensions();
 
