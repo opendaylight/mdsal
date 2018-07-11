@@ -21,30 +21,29 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BindingDOMMountPointServiceAdapter implements MountPointService {
-    public static final Logger LOG = LoggerFactory.getLogger(BindingDOMMountPointServiceAdapter.class);
+public class BindingDOMMountPointServiceAdapter extends AbstractBindingAdapter<DOMMountPointService>
+        implements MountPointService {
+    // FIXME: this really should be hidden
+    static final Logger LOG = LoggerFactory.getLogger(BindingDOMMountPointServiceAdapter.class);
 
-    private final BindingToNormalizedNodeCodec codec;
-    private final DOMMountPointService mountService;
     private final LoadingCache<DOMMountPoint, BindingMountPointAdapter> bindingMountpoints = CacheBuilder.newBuilder()
             .weakKeys().build(new CacheLoader<DOMMountPoint, BindingMountPointAdapter>() {
 
                 @Override
                 public BindingMountPointAdapter load(final DOMMountPoint key) {
-                    return new BindingMountPointAdapter(codec,key);
+                    return new BindingMountPointAdapter(getCodec(), key);
                 }
             });
 
     public BindingDOMMountPointServiceAdapter(final DOMMountPointService mountService,
             final BindingToNormalizedNodeCodec codec) {
-        this.codec = codec;
-        this.mountService = mountService;
+        super(codec, mountService);
     }
 
     @Override
     public Optional<MountPoint> getMountPoint(final InstanceIdentifier<?> mountPoint) {
-        YangInstanceIdentifier domPath = codec.toYangInstanceIdentifierBlocking(mountPoint);
-        Optional<DOMMountPoint> domMount = mountService.getMountPoint(domPath);
+        YangInstanceIdentifier domPath = getCodec().toYangInstanceIdentifierBlocking(mountPoint);
+        Optional<DOMMountPoint> domMount = getDelegate().getMountPoint(domPath);
         if (domMount.isPresent()) {
             return Optional.fromNullable(bindingMountpoints.getUnchecked(domMount.get()));
         }
@@ -54,6 +53,6 @@ public class BindingDOMMountPointServiceAdapter implements MountPointService {
     @Override
     public <T extends MountPointListener> ListenerRegistration<T> registerListener(final InstanceIdentifier<?> path,
             final T listener) {
-        return new BindingDOMMountPointListenerAdapter<>(listener, codec, mountService);
+        return new BindingDOMMountPointListenerAdapter<>(listener, getCodec(), getDelegate());
     }
 }
