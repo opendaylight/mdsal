@@ -36,10 +36,6 @@ public class ForwardingDOMDataBrokerTest extends ForwardingDOMDataBroker {
         this.getExtensions();
         verify(domDataBroker).getExtensions();
 
-        doReturn(ImmutableClassToInstanceMap.of()).when(domDataBroker).getSupportedExtensions();
-        this.getSupportedExtensions();
-        verify(domDataBroker).getSupportedExtensions();
-
         doReturn(null).when(domDataBroker).newReadOnlyTransaction();
         this.newReadOnlyTransaction();
         verify(domDataBroker).newReadOnlyTransaction();
