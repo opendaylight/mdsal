@@ -40,12 +40,11 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
 import org.opendaylight.yangtools.yang.model.api.type.RangeConstraint;
 
 public final class Types {
-    private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER =
-            new CacheLoader<Class<?>, ConcreteType>() {
-                @Override
-                public ConcreteType load(final Class<?> key) {
-                    return new ConcreteTypeImpl(JavaTypeName.create(key), null);
-                }
+    private static final CacheLoader<Class<?>, ConcreteType> TYPE_LOADER = new CacheLoader<Class<?>, ConcreteType>() {
+        @Override
+        public ConcreteType load(final Class<?> key) {
+            return new ConcreteTypeImpl(JavaTypeName.create(key), null);
+        }
     };
     private static final LoadingCache<Class<?>, ConcreteType> TYPE_CACHE =
             CacheBuilder.newBuilder().weakKeys().build(TYPE_LOADER);
@@ -55,7 +54,6 @@ public final class Types {
     public static final ConcreteType STRING = typeForClass(String.class);
     public static final ConcreteType VOID = typeForClass(Void.class);
     public static final ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
-    public static final ConcreteType CHAR_ARRAY = typeForClass(char[].class);
 
     private static final ConcreteType CLASS = typeForClass(Class.class);
     private static final ConcreteType LIST_TYPE = typeForClass(List.class);
