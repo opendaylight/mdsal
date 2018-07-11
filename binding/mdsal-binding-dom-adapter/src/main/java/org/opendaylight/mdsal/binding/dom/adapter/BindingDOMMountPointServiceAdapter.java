@@ -8,9 +8,6 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Optional;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.dom.api.DOMMountPoint;
@@ -21,19 +18,11 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BindingDOMMountPointServiceAdapter extends AbstractBindingAdapter<DOMMountPointService>
+public class BindingDOMMountPointServiceAdapter
+        extends AbstractBindingLoadingAdapter<DOMMountPointService, DOMMountPoint, BindingMountPointAdapter>
         implements MountPointService {
     // FIXME: this really should be hidden
     static final Logger LOG = LoggerFactory.getLogger(BindingDOMMountPointServiceAdapter.class);
-
-    private final LoadingCache<DOMMountPoint, BindingMountPointAdapter> bindingMountpoints = CacheBuilder.newBuilder()
-            .weakKeys().build(new CacheLoader<DOMMountPoint, BindingMountPointAdapter>() {
-
-                @Override
-                public BindingMountPointAdapter load(final DOMMountPoint key) {
-                    return new BindingMountPointAdapter(getCodec(), key);
-                }
-            });
 
     public BindingDOMMountPointServiceAdapter(final DOMMountPointService mountService,
             final BindingToNormalizedNodeCodec codec) {
@@ -44,15 +33,17 @@ public class BindingDOMMountPointServiceAdapter extends AbstractBindingAdapter<D
     public Optional<MountPoint> getMountPoint(final InstanceIdentifier<?> mountPoint) {
         YangInstanceIdentifier domPath = getCodec().toYangInstanceIdentifierBlocking(mountPoint);
         Optional<DOMMountPoint> domMount = getDelegate().getMountPoint(domPath);
-        if (domMount.isPresent()) {
-            return Optional.fromNullable(bindingMountpoints.getUnchecked(domMount.get()));
-        }
-        return Optional.absent();
+        return domMount.transform(this::getAdapter);
     }
 
     @Override
     public <T extends MountPointListener> ListenerRegistration<T> registerListener(final InstanceIdentifier<?> path,
             final T listener) {
         return new BindingDOMMountPointListenerAdapter<>(listener, getCodec(), getDelegate());
+    }
+
+    @Override
+    BindingMountPointAdapter loadAdapter(final DOMMountPoint key) {
+        return new BindingMountPointAdapter(getCodec(), key);
     }
 }
