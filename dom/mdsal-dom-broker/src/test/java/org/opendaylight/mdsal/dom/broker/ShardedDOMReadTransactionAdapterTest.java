@@ -12,7 +12,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
@@ -64,8 +65,14 @@ public class ShardedDOMReadTransactionAdapterTest {
     private static class TestTreeService implements DOMDataTreeService {
 
         @Override
+        @Deprecated
         public Map<Class<? extends DOMDataTreeServiceExtension>, DOMDataTreeServiceExtension> getSupportedExtensions() {
-            return ImmutableMap.of();
+            return ImmutableClassToInstanceMap.of();
+        }
+
+        @Override
+        public ClassToInstanceMap<DOMDataTreeServiceExtension> getExtensions() {
+            return ImmutableClassToInstanceMap.of();
         }
 
         @Nonnull

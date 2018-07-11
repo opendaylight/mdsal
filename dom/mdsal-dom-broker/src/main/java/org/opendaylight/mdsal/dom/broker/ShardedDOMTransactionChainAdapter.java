@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -186,8 +187,14 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         }
 
         @Override
+        @Deprecated
         public Map<Class<? extends DOMDataTreeServiceExtension>, DOMDataTreeServiceExtension> getSupportedExtensions() {
             return delegateTreeService.getSupportedExtensions();
+        }
+
+        @Override
+        public ClassToInstanceMap<DOMDataTreeServiceExtension> getExtensions() {
+            return delegateTreeService.getExtensions();
         }
 
         @Override

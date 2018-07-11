@@ -8,6 +8,8 @@
 
 package org.opendaylight.mdsal.dom.broker;
 
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -31,8 +33,14 @@ public class ShardedDOMDataBrokerAdapter implements DOMDataBroker {
     }
 
     @Override
+    @Deprecated
     public Map<Class<? extends DOMDataBrokerExtension>, DOMDataBrokerExtension> getSupportedExtensions() {
         return Collections.emptyMap();
+    }
+
+    @Override
+    public ClassToInstanceMap<DOMDataBrokerExtension> getExtensions() {
+        return ImmutableClassToInstanceMap.of();
     }
 
     @Override

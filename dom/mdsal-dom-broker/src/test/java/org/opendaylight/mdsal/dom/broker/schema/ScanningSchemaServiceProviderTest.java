@@ -155,7 +155,7 @@ public class ScanningSchemaServiceProviderTest {
 
     @Test
     public void getSupportedExtensionsTest() {
-        assertEquals(schemaService.getSupportedExtensions().values().iterator().next(), schemaService);
+        assertEquals(schemaService.getExtensions().values().iterator().next(), schemaService);
     }
 
     @Test(expected = UnsupportedOperationException.class)

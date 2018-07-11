@@ -31,6 +31,10 @@ public class ForwardingDOMDataBrokerTest extends ForwardingDOMDataBroker {
         this.createTransactionChain(null);
         verify(domDataBroker).createTransactionChain(any());
 
+        doReturn(null).when(domDataBroker).getExtensions();
+        this.getExtensions();
+        verify(domDataBroker).getExtensions();
+
         doReturn(null).when(domDataBroker).getSupportedExtensions();
         this.getSupportedExtensions();
         verify(domDataBroker).getSupportedExtensions();
