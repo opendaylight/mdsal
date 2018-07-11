@@ -20,6 +20,7 @@ import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecR
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -34,6 +35,7 @@ public class BindingDOMCursorAwareWriteTransactionAdapterTest {
                 new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
         final YangInstanceIdentifier yangInstanceIdentifier = YangInstanceIdentifier.EMPTY;
         doReturn(yangInstanceIdentifier).when(registry).toYangInstanceIdentifier(any());
+        doReturn(mock(DOMDataTreeWriteCursor.class)).when(delegate).createCursor(any());
 
         final BindingDOMCursorAwareWriteTransactionAdapter adapter =
                 new BindingDOMCursorAwareWriteTransactionAdapter<>(delegate, codec);

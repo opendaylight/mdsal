@@ -8,7 +8,6 @@
 
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Preconditions;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohortRegistry;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -18,15 +17,12 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
-public class BindingDOMDataTreeCommitCohortRegistryAdapter implements DataTreeCommitCohortRegistry {
-
-    private final BindingToNormalizedNodeCodec codec;
-    private final DOMDataTreeCommitCohortRegistry registry;
+public class BindingDOMDataTreeCommitCohortRegistryAdapter
+        extends AbstractBindingAdapter<DOMDataTreeCommitCohortRegistry> implements DataTreeCommitCohortRegistry {
 
     BindingDOMDataTreeCommitCohortRegistryAdapter(final BindingToNormalizedNodeCodec codec,
             final DOMDataTreeCommitCohortRegistry registry) {
-        this.codec = Preconditions.checkNotNull(codec);
-        this.registry = Preconditions.checkNotNull(registry);
+        super(codec, registry);
     }
 
     static DataTreeCommitCohortRegistry from(final BindingToNormalizedNodeCodec codec,
@@ -38,9 +34,9 @@ public class BindingDOMDataTreeCommitCohortRegistryAdapter implements DataTreeCo
     public <D extends DataObject, T extends DataTreeCommitCohort<D>> ObjectRegistration<T> registerCommitCohort(
             final DataTreeIdentifier<D> subtree, final T cohort) {
         final BindingDOMDataTreeCommitCohortAdapter<D> adapter =
-                new BindingDOMDataTreeCommitCohortAdapter<>(codec, cohort);
-        final DOMDataTreeIdentifier domPath = codec.toDOMDataTreeIdentifier(subtree);
-        final DOMDataTreeCommitCohortRegistration<?> domReg = registry.registerCommitCohort(domPath, adapter);
+                new BindingDOMDataTreeCommitCohortAdapter<>(getCodec(), cohort);
+        final DOMDataTreeIdentifier domPath = getCodec().toDOMDataTreeIdentifier(subtree);
+        final DOMDataTreeCommitCohortRegistration<?> domReg = getDelegate().registerCommitCohort(domPath, adapter);
         return new ObjectRegistration<T>() {
 
             @Override

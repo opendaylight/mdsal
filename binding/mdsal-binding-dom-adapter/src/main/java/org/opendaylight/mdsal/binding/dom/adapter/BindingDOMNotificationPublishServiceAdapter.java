@@ -19,17 +19,14 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.Notification;
 
-public class BindingDOMNotificationPublishServiceAdapter implements NotificationPublishService {
+public class BindingDOMNotificationPublishServiceAdapter extends AbstractBindingAdapter<DOMNotificationPublishService>
+        implements NotificationPublishService {
 
     static final Factory<NotificationPublishService> BUILDER_FACTORY = Builder::new;
 
-    private final BindingToNormalizedNodeCodec codecRegistry;
-    private final DOMNotificationPublishService domPublishService;
-
     public BindingDOMNotificationPublishServiceAdapter(final DOMNotificationPublishService domPublishService,
             final BindingToNormalizedNodeCodec codec) {
-        this.codecRegistry = codec;
-        this.domPublishService = domPublishService;
+        super(codec, domPublishService);
     }
 
     @Deprecated
@@ -39,21 +36,21 @@ public class BindingDOMNotificationPublishServiceAdapter implements Notification
     }
 
     public BindingToNormalizedNodeCodec getCodecRegistry() {
-        return codecRegistry;
+        return getCodec();
     }
 
     public DOMNotificationPublishService getDomPublishService() {
-        return domPublishService;
+        return getDelegate();
     }
 
     @Override
     public void putNotification(final Notification notification) throws InterruptedException {
-        domPublishService.putNotification(toDomNotification(notification));
+        getDelegate().putNotification(toDomNotification(notification));
     }
 
     @Override
     public ListenableFuture<? extends Object> offerNotification(final Notification notification) {
-        ListenableFuture<?> offerResult = domPublishService.offerNotification(toDomNotification(notification));
+        ListenableFuture<?> offerResult = getDelegate().offerNotification(toDomNotification(notification));
         return DOMNotificationPublishService.REJECTED.equals(offerResult)
                 ? NotificationPublishService.REJECTED
                 : offerResult;
@@ -62,15 +59,15 @@ public class BindingDOMNotificationPublishServiceAdapter implements Notification
     @Override
     public ListenableFuture<? extends Object> offerNotification(final Notification notification,
                                                  final int timeout, final TimeUnit unit) throws InterruptedException {
-        ListenableFuture<?> offerResult = domPublishService.offerNotification(
-                toDomNotification(notification), timeout, unit);
+        ListenableFuture<?> offerResult = getDelegate().offerNotification(toDomNotification(notification), timeout,
+            unit);
         return DOMNotificationPublishService.REJECTED.equals(offerResult)
                 ? NotificationPublishService.REJECTED
                 : offerResult;
     }
 
     private DOMNotification toDomNotification(final Notification notification) {
-        return LazySerializedDOMNotification.create(codecRegistry, notification);
+        return LazySerializedDOMNotification.create(getCodec(), notification);
     }
 
     protected static class Builder extends BindingDOMAdapterBuilder<NotificationPublishService> {

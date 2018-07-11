@@ -27,17 +27,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeCandidate;
 
-public class BindingDOMDataTreeListenerAdapter implements DOMDataTreeListener {
+public class BindingDOMDataTreeListenerAdapter extends AbstractBindingAdapter<DataTreeListener>
+        implements DOMDataTreeListener {
 
-    private final DataTreeListener delegate;
-    private final BindingToNormalizedNodeCodec codec;
     private final LogicalDatastoreType store;
-
 
     protected BindingDOMDataTreeListenerAdapter(final DataTreeListener delegate,
             final BindingToNormalizedNodeCodec codec, final LogicalDatastoreType store) {
-        this.delegate = Preconditions.checkNotNull(delegate, "delegate");
-        this.codec = Preconditions.checkNotNull(codec, "codec");
+        super(codec, delegate);
         this.store = Preconditions.checkNotNull(store, "store");
     }
 
@@ -48,7 +45,7 @@ public class BindingDOMDataTreeListenerAdapter implements DOMDataTreeListener {
         final Collection<DataTreeModification<?>> changes = toBinding(domChanges);
         final Map<DataTreeIdentifier<?>, DataObject> subtrees = toBinding(domSubtrees);
 
-        delegate.onDataTreeChanged(changes, subtrees);
+        getDelegate().onDataTreeChanged(changes, subtrees);
     }
 
     private Map<DataTreeIdentifier<?>, DataObject> toBinding(
@@ -57,7 +54,7 @@ public class BindingDOMDataTreeListenerAdapter implements DOMDataTreeListener {
         final Map<DataTreeIdentifier<?>, DataObject> ret = Maps.newHashMapWithExpectedSize(domSubtrees.size());
         for (final Entry<DOMDataTreeIdentifier, NormalizedNode<?, ?>> domEntry : domSubtrees.entrySet()) {
             final Entry<InstanceIdentifier<?>, DataObject> bindingEntry =
-                    codec.fromNormalizedNode(domEntry.getKey().getRootIdentifier(), domEntry.getValue());
+                    getCodec().fromNormalizedNode(domEntry.getKey().getRootIdentifier(), domEntry.getValue());
             ret.put(DataTreeIdentifier.create(store, bindingEntry.getKey()), bindingEntry.getValue());
         }
         return ret;
@@ -65,7 +62,7 @@ public class BindingDOMDataTreeListenerAdapter implements DOMDataTreeListener {
 
     @SuppressWarnings("unchecked")
     private Collection<DataTreeModification<?>> toBinding(final Collection<DataTreeCandidate> domChanges) {
-        return Collection.class.cast(LazyDataTreeModification.from(codec, domChanges, store));
+        return Collection.class.cast(LazyDataTreeModification.from(getCodec(), domChanges, store));
     }
 
     @Override
@@ -75,7 +72,7 @@ public class BindingDOMDataTreeListenerAdapter implements DOMDataTreeListener {
             bindingCauses.add(mapException(cause));
         }
 
-        delegate.onDataTreeFailed(bindingCauses);
+        getDelegate().onDataTreeFailed(bindingCauses);
     }
 
     private static DataTreeListeningException mapException(final DOMDataTreeListeningException cause) {
