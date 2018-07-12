@@ -20,7 +20,7 @@
   </service>
 
   <!-- Adapter factory based on the codec -->
-  <bean id="adapterFactory" class="org.opendaylight.mdsal.binding.dom.adapter.AdapterFactory">
+  <bean id="adapterFactory" class="org.opendaylight.mdsal.binding.dom.adapter.BindingAdapterFactory">
     <argument ref="mappingCodec"/>
   </bean>
 
@@ -30,4 +30,6 @@
     <argument ref="adapterFactory"/>
     <argument ref="blueprintBundleContext"/>
   </bean>
+
+  <service ref="adapterFactory" interface="org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory/>
 </blueprint>
