@@ -30,10 +30,8 @@ public class NotificationProcessingTest extends AbstractBindingRuntimeTest {
 
     private BindingNormalizedNodeCodecRegistry registry;
 
-    @Override
     @Before
-    public void setup() {
-        super.setup();
+    public void before() {
         final JavassistUtils utils = JavassistUtils.forClassPool(ClassPool.getDefault());
         registry = new BindingNormalizedNodeCodecRegistry(StreamWriterGenerator.create(utils));
         registry.onBindingRuntimeContextUpdated(getRuntimeContext());
