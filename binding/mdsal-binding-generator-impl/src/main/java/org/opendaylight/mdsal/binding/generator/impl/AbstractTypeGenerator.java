@@ -425,6 +425,8 @@ abstract class AbstractTypeGenerator {
                 final GeneratedTypeBuilder builder = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
                     packageNameForGeneratedType(context.modulePackageName(), action.getPath()),
                     BindingMapping.getClassName(qname)));
+                qnameConstant(builder, JavaTypeName.create(context.modulePackageName(),
+                    BindingMapping.MODULE_INFO_CLASS_NAME), qname.getLocalName());
 
                 annotateDeprecatedIfNecessary(action.getStatus(), builder);
                 builder.addImplementsType(action(parent, input, output));
