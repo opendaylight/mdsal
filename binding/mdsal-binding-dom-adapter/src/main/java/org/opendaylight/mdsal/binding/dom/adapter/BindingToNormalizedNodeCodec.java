@@ -33,6 +33,7 @@ import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeFactory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
@@ -50,10 +51,13 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.binding.Notification;
+import org.opendaylight.yangtools.yang.binding.RpcInput;
+import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
@@ -209,6 +213,30 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     @Override
     public final ContainerNode toNormalizedNodeRpcData(@Nonnull final DataContainer data) {
         return codecRegistry.toNormalizedNodeRpcData(data);
+    }
+
+    @Override
+    public ContainerNode toNormalizedNodeActionInput(final Class<? extends Action<?, ?, ?>> action,
+            final RpcInput input) {
+        return codecRegistry.toNormalizedNodeActionInput(action, input);
+    }
+
+    @Override
+    public ContainerNode toNormalizedNodeActionOutput(final Class<? extends Action<?, ?, ?>> action,
+            final RpcOutput output) {
+        return codecRegistry.toNormalizedNodeActionOutput(action, output);
+    }
+
+    @Override
+    public BindingLazyContainerNode<RpcInput> toLazyNormalizedNodeActionInput(
+            final Class<? extends Action<?, ?, ?>> action, final NodeIdentifier identifier, final RpcInput input) {
+        return codecRegistry.toLazyNormalizedNodeActionInput(action, identifier, input);
+    }
+
+    @Override
+    public BindingLazyContainerNode<RpcOutput> toLazyNormalizedNodeActionOutput(
+            final Class<? extends Action<?, ?, ?>> action, final NodeIdentifier identifier, final RpcOutput output) {
+        return codecRegistry.toLazyNormalizedNodeActionOutput(action, identifier, output);
     }
 
     /**
