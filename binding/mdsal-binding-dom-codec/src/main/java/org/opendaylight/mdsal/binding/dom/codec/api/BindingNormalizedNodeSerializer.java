@@ -10,10 +10,14 @@ package org.opendaylight.mdsal.binding.dom.codec.api;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.Notification;
+import org.opendaylight.yangtools.yang.binding.RpcInput;
+import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -109,4 +113,22 @@ public interface BindingNormalizedNodeSerializer {
      * @return NormalizedNode representation of rpc data
      */
     @Nonnull ContainerNode toNormalizedNodeRpcData(@Nonnull DataContainer data);
+
+    /**
+     * Translates supplied Binding action input into NormalizedNode data.
+     *
+     * @param input Binding action input
+     * @return NormalizedNode representation of action input
+     */
+    @NonNull ContainerNode toNormalizedNodeActionInput(@NonNull Class<? extends Action<?, ?, ?>> action,
+            @NonNull RpcInput input);
+
+    /**
+     * Translates supplied Binding action output into NormalizedNode data.
+     *
+     * @param input Binding action output
+     * @return NormalizedNode representation of action output
+     */
+    @NonNull ContainerNode toNormalizedNodeActionOutput(@NonNull Class<? extends Action<?, ?, ?>> action,
+            @NonNull RpcOutput output);
 }
