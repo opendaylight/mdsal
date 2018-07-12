@@ -39,7 +39,8 @@ public interface DOMOperationImplementation {
          * @return A FluentFuture which completes with the result of invocation
          * @throws NullPointerException if any of the arguments is null
          */
-        FluentFuture<DOMOperationResult> invokeAction(SchemaPath type, DOMDataTreeIdentifier path, ContainerNode input);
+        FluentFuture<? extends DOMOperationResult> invokeAction(SchemaPath type, DOMDataTreeIdentifier path,
+                ContainerNode input);
     }
 
     /**
@@ -55,7 +56,7 @@ public interface DOMOperationImplementation {
          * @return A FluentFuture which completes with the result of invocation
          * @throws NullPointerException if any of the arguments is null
          */
-        FluentFuture<DOMOperationResult> invokeRpc(QName type, ContainerNode input);
+        FluentFuture<? extends DOMOperationResult> invokeRpc(QName type, ContainerNode input);
     }
 
     /**
