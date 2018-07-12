@@ -11,7 +11,7 @@ import com.google.common.annotations.Beta;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.StoreTreeNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -40,7 +40,7 @@ public interface DOMOperationImplementation {
          * @param callbackExecutor Executor to use for executing the callback
          * @throws NullPointerException if any of the arguments is null
          */
-        void invokeAction(SchemaPath type, DOMDataTreeIdentifier path, NormalizedNode<?, ?> input,
+        void invokeAction(SchemaPath type, DOMDataTreeIdentifier path, ContainerNode input,
                 DOMOperationCallback callback, Executor callbackExecutor);
     }
 
@@ -58,8 +58,7 @@ public interface DOMOperationImplementation {
          * @param callbackExecutor Executor to use for executing the callback
          * @throws NullPointerException if any of the arguments is null
          */
-        void invokeRpc(QName type, NormalizedNode<?, ?> input, DOMOperationCallback callback,
-                Executor callbackExecutor);
+        void invokeRpc(QName type, ContainerNode input, DOMOperationCallback callback, Executor callbackExecutor);
     }
 
     /**
