@@ -12,7 +12,6 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import javax.annotation.concurrent.ThreadSafe;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeService;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -20,6 +19,7 @@ import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
+import org.opendaylight.mdsal.binding.dom.adapter.spi.AdapterFactory;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -27,20 +27,19 @@ import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
-import org.opendaylight.mdsal.dom.api.DOMService;
 
 /**
- * Factory to turn various {@link DOMService}s into {@link BindingService}s.
+ * Implementation of AdapterFactory.
  *
  * @author Robert Varga
  */
 @Beta
 @NonNullByDefault
 @ThreadSafe
-public final class AdapterFactory {
+public final class BindingAdapterFactory implements AdapterFactory {
     private final BindingToNormalizedNodeCodec codec;
 
-    public AdapterFactory(final BindingToNormalizedNodeCodec codec) {
+    public BindingAdapterFactory(final BindingToNormalizedNodeCodec codec) {
         this.codec = requireNonNull(codec);
     }
 
@@ -51,6 +50,7 @@ public final class AdapterFactory {
      * @return A DataBroker
      * @throws NullPointerException if {@code domService} is null
      */
+    @Override
     public DataBroker createDataBroker(final DOMDataBroker domService) {
         return new BindingDOMDataBrokerAdapter(domService, codec);
     }
@@ -62,6 +62,7 @@ public final class AdapterFactory {
      * @return A DataTreeService
      * @throws NullPointerException if {@code domService} is null
      */
+    @Override
     public DataTreeService createDataTreeService(final DOMDataTreeService domService) {
         return BindingDOMDataTreeServiceAdapter.create(domService, codec);
     }
@@ -73,6 +74,7 @@ public final class AdapterFactory {
      * @return A MountPointService
      * @throws NullPointerException if {@code domService} is null
      */
+    @Override
     public MountPointService createMountPointService(final DOMMountPointService domService) {
         return new BindingDOMMountPointServiceAdapter(domService, codec);
     }
@@ -84,6 +86,7 @@ public final class AdapterFactory {
      * @return A DataBroker
      * @throws NullPointerException if {@code domService} is null
      */
+    @Override
     public NotificationService createNotificationService(final DOMNotificationService domService) {
         return new BindingDOMNotificationServiceAdapter(domService, codec);
     }
@@ -95,6 +98,7 @@ public final class AdapterFactory {
      * @return A NotificationPublishService
      * @throws NullPointerException if {@code domService} is null
      */
+    @Override
     public NotificationPublishService createNotificationPublishService(final DOMNotificationPublishService domService) {
         return new BindingDOMNotificationPublishServiceAdapter(domService, codec);
     }
@@ -106,6 +110,7 @@ public final class AdapterFactory {
      * @return A RpcConsumerRegistry
      * @throws NullPointerException if {@code domService} is null
      */
+    @Override
     public RpcConsumerRegistry createRpcConsumerRegistry(final DOMRpcService domService) {
         return new BindingDOMRpcServiceAdapter(domService, codec);
     }
@@ -117,6 +122,7 @@ public final class AdapterFactory {
      * @return A RpcProviderService
      * @throws NullPointerException if {@code domService} is null
      */
+    @Override
     public RpcProviderService createRpcProviderService(final DOMRpcProviderService domService) {
         return new BindingDOMRpcProviderServiceAdapter(domService, codec);
     }
