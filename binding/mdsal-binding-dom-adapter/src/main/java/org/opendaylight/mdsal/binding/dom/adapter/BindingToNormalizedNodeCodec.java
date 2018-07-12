@@ -50,6 +50,8 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.binding.Notification;
+import org.opendaylight.yangtools.yang.binding.RpcInput;
+import org.opendaylight.yangtools.yang.binding.RpcOutput;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.common.QNameModule;
@@ -209,6 +211,18 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
     @Override
     public final ContainerNode toNormalizedNodeRpcData(@Nonnull final DataContainer data) {
         return codecRegistry.toNormalizedNodeRpcData(data);
+    }
+
+    @Override
+    public ContainerNode toNormalizedNodeActionInput(final Class<? extends Action<?, ?, ?>> action,
+            final RpcInput input) {
+        return codecRegistry.toNormalizedNodeActionInput(action, input);
+    }
+
+    @Override
+    public ContainerNode toNormalizedNodeActionOutput(final Class<? extends Action<?, ?, ?>> action,
+            final RpcOutput output) {
+        return codecRegistry.toNormalizedNodeActionOutput(action, output);
     }
 
     /**
