@@ -42,10 +42,12 @@ import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.yangtools.concepts.Immutable;
+import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.AugmentationIdentifier;
+import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.AugmentationTarget;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
@@ -176,9 +178,14 @@ public final class BindingRuntimeContext implements Immutable {
      * @return Schema node, from which class was generated.
      */
     public DataSchemaNode getSchemaDefinition(final Class<?> cls) {
-        checkArgument(!Augmentation.class.isAssignableFrom(cls), "Supplied class must not be augmentation (%s is)",
+        checkArgument(!Augmentation.class.isAssignableFrom(cls), "Supplied class must not be an augmentation (%s is)",
             cls);
+        checkArgument(!Action.class.isAssignableFrom(cls), "Supplied class must not be an action (%s is)", cls);
         return (DataSchemaNode) runtimeTypes.findSchema(referencedType(cls)).orElse(null);
+    }
+
+    public ActionDefinition getActionDefinition(final Class<? extends Action<?, ?, ?>> cls) {
+        return (ActionDefinition) runtimeTypes.findSchema(referencedType(cls)).orElse(null);
     }
 
     public Entry<AugmentationIdentifier, AugmentationSchemaNode> getResolvedAugmentationSchema(

@@ -7,12 +7,12 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -43,6 +43,7 @@ import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -58,6 +59,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.impl.codec.DeserializationException;
 import org.opendaylight.yangtools.yang.data.impl.schema.Builders;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
+import org.opendaylight.yangtools.yang.model.api.ActionDefinition;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
 import org.opendaylight.yangtools.yang.model.api.ListSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
@@ -101,8 +103,8 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
 
     public BindingToNormalizedNodeCodec(final ClassLoadingStrategy classLoadingStrategy,
             final BindingNormalizedNodeCodecRegistry codecRegistry, final boolean waitForSchema) {
-        this.classLoadingStrategy = Preconditions.checkNotNull(classLoadingStrategy, "classLoadingStrategy");
-        this.codecRegistry = Preconditions.checkNotNull(codecRegistry, "codecRegistry");
+        this.classLoadingStrategy = requireNonNull(classLoadingStrategy, "classLoadingStrategy");
+        this.codecRegistry = requireNonNull(codecRegistry, "codecRegistry");
         this.futureSchema = FutureSchema.create(WAIT_DURATION_SEC, TimeUnit.SECONDS, waitForSchema);
     }
 
@@ -316,7 +318,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
             localRuntimeContext.getSchemaContext().findModule(moduleName).orElse(null);
         if (module == null && futureSchema.waitForSchema(moduleName)) {
             localRuntimeContext = runtimeContext();
-            Preconditions.checkState(localRuntimeContext != null, "BindingRuntimeContext is not available.");
+            checkState(localRuntimeContext != null, "BindingRuntimeContext is not available.");
             module = localRuntimeContext.getSchemaContext().findModule(moduleName).orElse(null);
         }
         checkState(module != null, "Schema for %s is not available; expected module name: %s.", modeledClass,
@@ -355,7 +357,7 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
 
         final BindingCodecTree currentCodecTree = codecRegistry.getCodecContext();
         final InstanceIdentifier<?> bindingPath = codecRegistry.fromYangInstanceIdentifier(domIdentifier);
-        Preconditions.checkArgument(bindingPath != null);
+        checkArgument(bindingPath != null);
         /**
          * If we are able to deserialize YANG instance identifier, getSubtreeCodec must
          * return non-null value.
@@ -379,6 +381,12 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
             }
         }
         return result;
+    }
+
+    SchemaPath getActionPath(final Class<? extends Action<?, ?, ?>> type) {
+        final ActionDefinition schema = runtimeContext().getActionDefinition(type);
+        checkArgument(schema != null, "Failed to find schema for %s", type);
+        return schema.getPath();
     }
 
     private BindingRuntimeContext runtimeContext() {
