@@ -30,6 +30,7 @@ import org.opendaylight.mdsal.binding.model.api.GeneratedType;
 import org.opendaylight.yangtools.concepts.Codec;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.util.ClassLoaderUtils;
+import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
@@ -120,6 +121,16 @@ final class BindingCodecContext implements CodecContextFactory, BindingCodecTree
     BindingStreamEventWriter newNotificationWriter(final Class<? extends Notification> notification,
             final NormalizedNodeStreamWriter domWriter) {
         return root.getNotification(notification).createWriter(domWriter);
+    }
+
+    BindingStreamEventWriter newActionInputWriter(final Class<? extends Action<?, ?, ?>> action,
+            final NormalizedNodeStreamWriter domWriter) {
+        return root.getAction(action).createInputWriter(domWriter);
+    }
+
+    BindingStreamEventWriter newActionOutputWriter(final Class<? extends Action<?, ?, ?>> action,
+            final NormalizedNodeStreamWriter domWriter) {
+        return root.getAction(action).createOutputWriter(domWriter);
     }
 
     public DataContainerCodecContext<?,?> getCodecContextNode(final InstanceIdentifier<?> binding,
