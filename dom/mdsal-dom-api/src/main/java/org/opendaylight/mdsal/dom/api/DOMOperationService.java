@@ -15,7 +15,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.common.QName;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.StoreTreeNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
@@ -38,7 +38,7 @@ public interface DOMOperationService extends DOMExtensibleService<DOMOperationSe
      * @param callbackExecutor Executor to use for executing the callback
      * @throws NullPointerException if any of the arguments is null
      */
-    void invokeRpc(QName type, NormalizedNode<?, ?> input, DOMOperationCallback callback,
+    void invokeRpc(QName type, ContainerNode input, DOMOperationCallback callback,
             Executor callbackExecutor);
 
     /**
@@ -49,7 +49,7 @@ public interface DOMOperationService extends DOMExtensibleService<DOMOperationSe
      * @return A FluentFuture which completes with the result of invocation
      * @throws NullPointerException if any of the arguments is null
      */
-    default FluentFuture<DOMOperationResult> invokeRpc(final QName type, final NormalizedNode<?, ?> input) {
+    default FluentFuture<DOMOperationResult> invokeRpc(final QName type, final ContainerNode input) {
         final SettableFuture<DOMOperationResult> future = SettableFuture.create();
         invokeRpc(type, input, DOMOperationCallback.completingFuture(future), directExecutor());
         return future;
@@ -66,8 +66,8 @@ public interface DOMOperationService extends DOMExtensibleService<DOMOperationSe
      * @param callbackExecutor Executor to use for executing the callback
      * @throws NullPointerException if any of the arguments is null
      */
-    void invokeAction(SchemaPath type, DOMDataTreeIdentifier path,
-            NormalizedNode<?, ?> input, DOMOperationCallback callback, Executor callbackExecutor);
+    void invokeAction(SchemaPath type, DOMDataTreeIdentifier path, ContainerNode input, DOMOperationCallback callback,
+            Executor callbackExecutor);
 
     /**
      * Initiate invocation of an Action. This method is guaranteed to not block on any external resources.
@@ -80,7 +80,7 @@ public interface DOMOperationService extends DOMExtensibleService<DOMOperationSe
      * @throws NullPointerException if any of the arguments is null
      */
     default FluentFuture<DOMOperationResult> invokeAction(final SchemaPath type, final DOMDataTreeIdentifier path,
-            final NormalizedNode<?, ?> input) {
+            final ContainerNode input) {
         final SettableFuture<DOMOperationResult> future = SettableFuture.create();
         invokeAction(type, path, input, DOMOperationCallback.completingFuture(future), directExecutor());
         return future;
