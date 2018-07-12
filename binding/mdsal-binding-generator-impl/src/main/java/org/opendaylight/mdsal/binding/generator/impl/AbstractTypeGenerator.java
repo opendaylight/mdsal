@@ -409,7 +409,7 @@ abstract class AbstractTypeGenerator {
             final GeneratedType input;
             final GeneratedType output;
             if (action.isAddedByUses()) {
-                final ActionDefinition orig = findAction(parentSchema, action).get();
+                final ActionDefinition orig = findOrigAction(parentSchema, action).get();
                 input = context.getChildNode(orig.getInput().getPath()).build();
                 output = context.getChildNode(orig.getOutput().getPath()).build();
             } else {
@@ -435,11 +435,18 @@ abstract class AbstractTypeGenerator {
         }
     }
 
-    private Optional<ActionDefinition> findAction(final DataNodeContainer parent, final ActionDefinition action) {
-        return parent.getUses().stream()
-                .flatMap(uses -> findUsedGrouping(uses).getActions().stream())
-                .filter(act -> action.getQName().equals(act.getQName()))
-                .findFirst();
+    private Optional<ActionDefinition> findOrigAction(final DataNodeContainer parent, final ActionDefinition action) {
+        for (UsesNode uses : parent.getUses()) {
+            final GroupingDefinition grp = findUsedGrouping(uses);
+            final Optional<ActionDefinition> found = grp.getActions().stream()
+                    .filter(act -> action.getQName().equals(act.getQName())).findFirst();
+            if (found.isPresent()) {
+                final ActionDefinition result = found.get();
+                return result.isAddedByUses() ? findOrigAction(grp, result) : found;
+            }
+        }
+
+        return Optional.empty();
     }
 
     private GeneratedType actionContainer(final ModuleContext context, final Type baseInterface,
