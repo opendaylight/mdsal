@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotEquals;
 
 import com.google.common.base.Optional;
 import javassist.ClassPool;
+import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
@@ -25,9 +26,8 @@ public class BinaryKeyTest extends AbstractBindingRuntimeTest {
     private BindingNormalizedNodeCodecRegistry registry;
     private InstanceIdentifier<BinaryList> instanceIdentifier;
 
-    @Override
-    public void setup() {
-        super.setup();
+    @Before
+    public void before() {
         final JavassistUtils utils = JavassistUtils.forClassPool(ClassPool.getDefault());
         registry = new BindingNormalizedNodeCodecRegistry(StreamWriterGenerator.create(utils));
         registry.onBindingRuntimeContextUpdated(getRuntimeContext());

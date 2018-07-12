@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.Map.Entry;
 import javassist.ClassPool;
+import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.gen.impl.StreamWriterGenerator;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
@@ -48,9 +49,8 @@ public class EmptyLeafTest extends AbstractBindingRuntimeTest {
 
     private BindingNormalizedNodeCodecRegistry registry;
 
-    @Override
-    public void setup() {
-        super.setup();
+    @Before
+    public void before() {
         final JavassistUtils utils = JavassistUtils.forClassPool(ClassPool.getDefault());
         registry = new BindingNormalizedNodeCodecRegistry(StreamWriterGenerator.create(utils));
         registry.onBindingRuntimeContextUpdated(getRuntimeContext());

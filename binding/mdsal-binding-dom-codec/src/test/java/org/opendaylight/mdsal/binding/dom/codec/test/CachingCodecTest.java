@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.List;
 import javassist.ClassPool;
+import org.junit.Before;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeCachingCodec;
@@ -48,16 +49,13 @@ public class CachingCodecTest extends AbstractBindingRuntimeTest {
     private BindingNormalizedNodeCodecRegistry registry;
     private BindingCodecTreeNode<Top> topNode;
 
-    @Override
-    public void setup() {
-        super.setup();
+    @Before
+    public void before() {
         final JavassistUtils utils = JavassistUtils.forClassPool(ClassPool.getDefault());
         registry = new BindingNormalizedNodeCodecRegistry(StreamWriterGenerator.create(utils));
         registry.onBindingRuntimeContextUpdated(getRuntimeContext());
         topNode = registry.getCodecContext().getSubtreeCodec(TOP_PATH);
-
     }
-
 
     private static List<TopLevelList> createList(final int num) {
 
@@ -83,7 +81,6 @@ public class CachingCodecTest extends AbstractBindingRuntimeTest {
         verifyListItemSame(first, third);
         verifyListItemSame(second, third);
     }
-
 
     @Test
     public void testTopAndListCache() {
@@ -115,9 +112,7 @@ public class CachingCodecTest extends AbstractBindingRuntimeTest {
         }
     }
 
-
     private static MapNode getListItems(final NormalizedNode<?, ?> top) {
         return (MapNode) ((DataContainerNode<?>) top).getChild(TOP_LEVEL_LIST_ARG).get();
     }
-
 }
