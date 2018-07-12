@@ -26,6 +26,7 @@ import org.opendaylight.mdsal.binding.dom.codec.gen.impl.DataObjectSerializerGen
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.BindingRuntimeContext;
 import org.opendaylight.yangtools.concepts.Delegator;
+import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.BindingStreamEventWriter;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -223,6 +224,18 @@ public class BindingNormalizedNodeCodecRegistry implements DataObjectSerializerR
     public BindingStreamEventWriter newNotificationWriter(final Class<? extends Notification> notification,
             final NormalizedNodeStreamWriter streamWriter) {
         return codecContext.newNotificationWriter(notification, streamWriter);
+    }
+
+    @Override
+    public BindingStreamEventWriter newActionInputWriter(Class<? extends Action<?, ?, ?>> action,
+            NormalizedNodeStreamWriter domWriter) {
+        return codecContext.newActionInputWriter(action, domWriter);
+    }
+
+    @Override
+    public BindingStreamEventWriter newActionOutputWriter(Class<? extends Action<?, ?, ?>> action,
+            NormalizedNodeStreamWriter domWriter) {
+        return codecContext.newActionOutputWriter(action, domWriter);
     }
 
     @Override
