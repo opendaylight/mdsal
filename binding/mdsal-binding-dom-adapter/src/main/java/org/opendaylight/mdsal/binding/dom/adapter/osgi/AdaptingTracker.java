@@ -53,6 +53,11 @@ final class AdaptingTracker<D extends DOMService, B extends BindingService>
             LOG.debug("Null reference for {}, ignoring it", bindingClass.getName());
             return null;
         }
+        if (reference.getProperty(ServiceProperties.IGNORE_PROP) != null) {
+            LOG.debug("Ignoring reference {} due to {}", reference, ServiceProperties.IGNORE_PROP);
+            return null;
+        }
+
         final D dom = context.getService(reference);
         if (dom == null) {
             LOG.debug("Could not get {} service from {}, ignoring it", bindingClass.getName(), reference);
