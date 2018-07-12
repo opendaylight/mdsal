@@ -7,6 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.spi;
 
+import com.google.common.annotations.Beta;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeService;
@@ -29,8 +31,9 @@ import org.opendaylight.mdsal.dom.api.DOMService;
  *
  * @author Thomas Pantelis
  */
+@Beta
+@NonNullByDefault
 public interface AdapterFactory {
-
     /**
      * Create a {@link DataBroker} backed by a {@link DOMDataBroker}.
      *
@@ -93,5 +96,4 @@ public interface AdapterFactory {
      * @throws NullPointerException if {@code domService} is null
      */
     RpcProviderService createRpcProviderService(DOMRpcProviderService domService);
-
 }
