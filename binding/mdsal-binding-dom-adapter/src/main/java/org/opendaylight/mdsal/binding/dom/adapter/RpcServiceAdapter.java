@@ -89,37 +89,28 @@ class RpcServiceAdapter implements InvocationHandler {
             return rpc.invoke((DataObject) args[0]);
         }
 
-        if (isObjectMethod(method)) {
-            return callObjectMethod(proxy, method, args);
+        switch (method.getName()) {
+            case "toString":
+                if (method.getReturnType().equals(String.class) && method.getParameterTypes().length == 0) {
+                    return type.getName() + "$Adapter{delegate=" + delegate.toString() + "}";
+                }
+                break;
+            case "hashCode":
+                if (method.getReturnType().equals(int.class) && method.getParameterTypes().length == 0) {
+                    return System.identityHashCode(proxy);
+                }
+                break;
+            case "equals":
+                if (method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 1
+                        && method.getParameterTypes()[0] == Object.class) {
+                    return proxy == args[0];
+                }
+                break;
+            default:
+                break;
         }
+
         throw new UnsupportedOperationException("Method " + method.toString() + "is unsupported.");
-    }
-
-    private static boolean isObjectMethod(final Method method) {
-        switch (method.getName()) {
-            case "toString":
-                return method.getReturnType().equals(String.class) && method.getParameterTypes().length == 0;
-            case "hashCode":
-                return method.getReturnType().equals(int.class) && method.getParameterTypes().length == 0;
-            case "equals":
-                return method.getReturnType().equals(boolean.class) && method.getParameterTypes().length == 1
-                        && method.getParameterTypes()[0] == Object.class;
-            default:
-                return false;
-        }
-    }
-
-    private Object callObjectMethod(final Object self, final Method method, final Object[] args) {
-        switch (method.getName()) {
-            case "toString":
-                return type.getName() + "$Adapter{delegate=" + delegate.toString() + "}";
-            case "hashCode":
-                return System.identityHashCode(self);
-            case "equals":
-                return self == args[0];
-            default:
-                return null;
-        }
     }
 
     private abstract class RpcInvocationStrategy {
