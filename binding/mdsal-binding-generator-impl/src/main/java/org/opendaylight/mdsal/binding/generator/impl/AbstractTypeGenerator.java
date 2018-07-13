@@ -498,9 +498,9 @@ abstract class AbstractTypeGenerator {
                 method.addAnnotation("javax.annotation", "CheckReturnValue");
                 addComment(method, rpc);
                 method.addParameter(
-                    createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput())), "input");
+                    createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getInput()), RPC_INPUT), "input");
                 method.setReturnType(listenableFutureTypeFor(
-                    rpcResult(createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getOutput())))));
+                    rpcResult(createRpcContainer(context, rpcName, rpc, verifyNotNull(rpc.getOutput()), RPC_OUTPUT))));
             }
         }
 
@@ -508,13 +508,13 @@ abstract class AbstractTypeGenerator {
     }
 
     private Type createRpcContainer(final ModuleContext context, final String rpcName, final RpcDefinition rpc,
-            final ContainerSchemaNode schema) {
+            final ContainerSchemaNode schema, final Type type) {
         processUsesAugments(schema, context);
         final GeneratedTypeBuilder outType = addRawInterfaceDefinition(
             JavaTypeName.create(context.modulePackageName(), rpcName + BindingMapping.getClassName(schema.getQName())),
             schema);
         addImplementedInterfaceFromUses(schema, outType);
-        outType.addImplementsType(DATA_OBJECT);
+        outType.addImplementsType(type);
         outType.addImplementsType(augmentable(outType));
         annotateDeprecatedIfNecessary(rpc.getStatus(), outType);
         resolveDataSchemaNodes(context, outType, outType, schema.getChildNodes());
