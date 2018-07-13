@@ -134,7 +134,7 @@ class RpcServiceAdapter implements InvocationHandler {
             return invoke0(rpcName, serialize(input));
         }
 
-        abstract NormalizedNode<?, ?> serialize(DataObject input);
+        abstract ContainerNode serialize(DataObject input);
 
         final ListenableFuture<RpcResult<?>> invokeEmpty() {
             return invoke0(rpcName, null);
@@ -144,7 +144,7 @@ class RpcServiceAdapter implements InvocationHandler {
             return rpcName;
         }
 
-        ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final NormalizedNode<?, ?> input) {
+        ListenableFuture<RpcResult<?>> invoke0(final SchemaPath schemaPath, final ContainerNode input) {
             final ListenableFuture<DOMRpcResult> result = delegate.invokeRpc(schemaPath, input);
             if (result instanceof BindingRpcFutureAware) {
                 return ((BindingRpcFutureAware) result).getBindingFuture();
@@ -183,7 +183,7 @@ class RpcServiceAdapter implements InvocationHandler {
         }
 
         @Override
-        NormalizedNode<?, ?> serialize(final DataObject input) {
+        ContainerNode serialize(final DataObject input) {
             return LazySerializedContainerNode.create(getRpcName(), input, codec.getCodecRegistry());
         }
 
@@ -205,7 +205,7 @@ class RpcServiceAdapter implements InvocationHandler {
         }
 
         @Override
-        NormalizedNode<?, ?> serialize(final DataObject input) {
+        ContainerNode serialize(final DataObject input) {
             final InstanceIdentifier<?> bindingII = refExtractor.extract(input);
             if (bindingII != null) {
                 final YangInstanceIdentifier yangII = codec.toYangInstanceIdentifierCached(bindingII);
