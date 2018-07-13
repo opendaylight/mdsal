@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.api;
 import com.google.common.annotations.Beta;
 import java.util.EventListener;
 import java.util.Set;
-import java.util.concurrent.Executor;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -33,7 +32,7 @@ public interface DOMOperationAvailabilityExtension extends DOMOperationServiceEx
      *
      * <p>
      * Users should note that using a listener does not necessarily mean that
-     * {@link DOMOperationService#invokeRpc(QName, ContainerNode, DOMOperationCallback, Executor)} and
+     * {@link DOMOperationService#invokeRpc(QName, ContainerNode)} and
      * {@link DOMOperationService#invokeAction(SchemaPath, DOMDataTreeIdentifier, ContainerNode)} will not report
      * a failure due to {@link DOMOperationNotAvailableException} and need to be ready to handle it.
      *

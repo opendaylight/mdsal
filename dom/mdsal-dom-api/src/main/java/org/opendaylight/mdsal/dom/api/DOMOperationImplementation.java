@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
-import java.util.concurrent.Executor;
+import com.google.common.util.concurrent.FluentFuture;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -36,12 +36,10 @@ public interface DOMOperationImplementation {
          *             top of the conceptual {@link StoreTreeNode}.
          * @param path {@link DOMDataTreeIdentifier} of parent data node which action attached to.
          * @param input Input arguments
-         * @param callback Callback to invoke with the invocation result
-         * @param callbackExecutor Executor to use for executing the callback
+         * @return A FluentFuture which completes with the result of invocation
          * @throws NullPointerException if any of the arguments is null
          */
-        void invokeAction(SchemaPath type, DOMDataTreeIdentifier path, ContainerNode input,
-                DOMOperationCallback callback, Executor callbackExecutor);
+        FluentFuture<DOMOperationResult> invokeAction(SchemaPath type, DOMDataTreeIdentifier path, ContainerNode input);
     }
 
     /**
@@ -54,11 +52,10 @@ public interface DOMOperationImplementation {
          *
          * @param type QName of the RPC to be invoked
          * @param input Input arguments
-         * @param callback Callback to invoke with the invocation result
-         * @param callbackExecutor Executor to use for executing the callback
+         * @return A FluentFuture which completes with the result of invocation
          * @throws NullPointerException if any of the arguments is null
          */
-        void invokeRpc(QName type, ContainerNode input, DOMOperationCallback callback, Executor callbackExecutor);
+        FluentFuture<DOMOperationResult> invokeRpc(QName type, ContainerNode input);
     }
 
     /**
