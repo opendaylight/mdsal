@@ -32,7 +32,7 @@ public final class SimpleDOMOperationResult implements DOMOperationResult, Immut
 
     private SimpleDOMOperationResult(final Collection<RpcError> errors, final @Nullable ContainerNode output) {
         this.errors = ImmutableList.copyOf(errors);
-        this.output = null;
+        this.output = output;
     }
 
     public SimpleDOMOperationResult(final Collection<RpcError> errors) {
