@@ -53,7 +53,7 @@ public interface ActionService extends BindingService {
      * @throws NullPointerException if {@code actionInterface} is null
      * @throws IllegalArgumentException when {@code actionInterface} does not conform to the Binding Specification
      */
-    <O extends DataObject, T extends Action<O, ?, ?>> T getActionHandle(Class<T> actionInterface,
+    <O extends DataObject, T extends Action<?, ?, ?>> T getActionHandle(Class<T> actionInterface,
             Set<DataTreeIdentifier<O>> validNodes);
 
     default <O extends DataObject, T extends Action<O, ?, ?>> T getActionHandle(final Class<T> actionInterface) {

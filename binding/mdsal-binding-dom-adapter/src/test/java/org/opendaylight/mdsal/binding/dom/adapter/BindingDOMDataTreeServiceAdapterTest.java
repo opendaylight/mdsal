@@ -15,44 +15,39 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.mdsal.binding.api.DataTreeListener;
-import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingBrokerTestFactory;
-import org.opendaylight.mdsal.binding.dom.adapter.test.util.BindingTestContext;
+import org.opendaylight.mdsal.binding.api.DataTreeLoopException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 
-public class BindingDOMDataTreeServiceAdapterTest {
+public class BindingDOMDataTreeServiceAdapterTest extends AbstractAdapterTest {
 
     private BindingDOMDataTreeServiceAdapter bindingDOMDataTreeServiceAdapter;
-    private BindingToNormalizedNodeCodec codec;
 
     @Mock
     private DOMDataTreeService delegate;
 
+    @Override
     @Before
-    public void setUp() throws Exception {
+    public void before() {
         initMocks(this);
-        final BindingBrokerTestFactory testFactory = new BindingBrokerTestFactory();
-        testFactory.setExecutor(MoreExecutors.newDirectExecutorService());
-        final BindingTestContext testContext = testFactory.getTestContext();
-        testContext.start();
-        codec = testContext.getCodec();
+        super.before();
+
         bindingDOMDataTreeServiceAdapter = BindingDOMDataTreeServiceAdapter.create(delegate, codec);
     }
 
     @Test
-    public void createProducerTest() throws Exception {
+    public void createProducerTest() {
         doReturn(mock(DOMDataTreeProducer.class)).when(delegate).createProducer(any());
         assertNotNull(bindingDOMDataTreeServiceAdapter.createProducer(ImmutableSet.of()));
         verify(delegate).createProducer(any());
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void registerListenerTest() throws Exception {
+    public void registerListenerTest() throws DataTreeLoopException {
         bindingDOMDataTreeServiceAdapter.registerListener(mock(DataTreeListener.class), ImmutableSet.of(), false,
                 ImmutableSet.of());
     }
