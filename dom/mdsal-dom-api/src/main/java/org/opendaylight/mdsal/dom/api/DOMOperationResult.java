@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.yang.common.RpcError;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 
 /**
  * Interface defining a result of an operation invocation.
@@ -36,5 +36,5 @@ public interface DOMOperationResult {
      * @return Invocation result, absent if the operation has not produced a result. This might be the case if the
      *         operation does not produce a result, or if it failed.
      */
-    Optional<NormalizedNode<?, ?>> getOutput();
+    Optional<ContainerNode> getOutput();
 }
