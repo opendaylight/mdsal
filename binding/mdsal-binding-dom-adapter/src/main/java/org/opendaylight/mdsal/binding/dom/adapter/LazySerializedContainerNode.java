@@ -5,12 +5,14 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import java.util.Collection;
-import java.util.Map;
+import static com.google.common.base.Verify.verifyNotNull;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Optional;
+import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.mdsal.binding.dom.codec.api.AbstractBindingLazyContainerNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.common.QName;
@@ -23,22 +25,18 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
- * FIXME: Should this be moved to binding-data-codec.
+ * FIXME: This is a bit of functionality which should really live in binding-dom-codec, but for to happen we need
+ *        to extends BindingNormalizedNodeCodecRegistry with the concept of a routing context -- which would be
+ *        deprecated, as we want to move to actions in the long term.
  */
-class LazySerializedContainerNode implements ContainerNode, BindingDataAware {
-
-    private final NodeIdentifier identifier;
-    private final DataObject bindingData;
-
+class LazySerializedContainerNode extends AbstractBindingLazyContainerNode<DataObject> implements BindingDataAware {
+    @GuardedBy("this")
     private BindingNormalizedNodeCodecRegistry registry;
-    private ContainerNode domData;
 
     private LazySerializedContainerNode(final QName identifier, final DataObject binding,
             final BindingNormalizedNodeCodecRegistry registry) {
-        this.identifier = NodeIdentifier.create(identifier);
-        this.bindingData = binding;
-        this.registry = registry;
-        this.domData = null;
+        super(NodeIdentifier.create(identifier), binding);
+        this.registry = requireNonNull(registry);
     }
 
     static NormalizedNode<?, ?> create(final SchemaPath rpcName, final DataObject data,
@@ -52,73 +50,33 @@ class LazySerializedContainerNode implements ContainerNode, BindingDataAware {
     }
 
     @Override
-    public Map<QName, String> getAttributes() {
-        return delegate().getAttributes();
-    }
-
-    private ContainerNode delegate() {
-        if (domData == null) {
-            domData = registry.toNormalizedNodeRpcData(bindingData);
-            registry = null;
-        }
-        return domData;
-    }
-
-    @Override
-    public final QName getNodeType() {
-        return identifier.getNodeType();
-    }
-
-    @Override
-    public final Collection<DataContainerChild<? extends PathArgument, ?>> getValue() {
-        return delegate().getValue();
-    }
-
-    @Override
-    public final NodeIdentifier getIdentifier() {
-        return identifier;
-    }
-
-    @Override
-    public Optional<DataContainerChild<? extends PathArgument, ?>> getChild(final PathArgument child) {
-        return delegate().getChild(child);
-    }
-
-    @Override
-    public final Object getAttributeValue(final QName name) {
-        return delegate().getAttributeValue(name);
-    }
-
-    @Override
     public final DataObject bindingData() {
-        return bindingData;
+        return getDataObject();
+    }
+
+    @Override
+    protected final ContainerNode computeContainerNode() {
+        final ContainerNode ret = verifyNotNull(registry).toNormalizedNodeRpcData(getDataObject());
+        registry = null;
+        return ret;
     }
 
     /**
      * Lazy Serialized Node with pre-cached serialized leaf holding routing information.
-     *
      */
     private static final class WithContextRef extends LazySerializedContainerNode {
-
         private final LeafNode<?> contextRef;
 
         protected WithContextRef(final QName identifier, final DataObject binding, final LeafNode<?> contextRef,
                 final BindingNormalizedNodeCodecRegistry registry) {
             super(identifier, binding, registry);
-            this.contextRef = contextRef;
+            this.contextRef = requireNonNull(contextRef);
         }
 
         @Override
         public Optional<DataContainerChild<? extends PathArgument, ?>> getChild(final PathArgument child) {
-            /*
-             * Use precached value of routing field and do not run full serialization if we are
-             * accessing it.
-             */
-            if (contextRef.getIdentifier().equals(child)) {
-                return Optional.of(contextRef);
-            }
-            return super.getChild(child);
+            // Use pre-cached value of routing field and do not run full serialization if we are accessing it.
+            return contextRef.getIdentifier().equals(child) ?  Optional.of(contextRef) : super.getChild(child);
         }
     }
-
 }
