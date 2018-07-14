@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "55a58d25_19aa2d7a",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/osgi/ServiceProperties.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-14T03:55:34Z",
+      "side": 1,
+      "message": "How about make this an interface? It\u0027s a bit simpler - no need for private ctor and  \"public static final\"...",
+      "range": {
+        "startLine": 19,
+        "startChar": 19,
+        "endLine": 19,
+        "endChar": 36
+      },
+      "revId": "bb687eb7500731639f1a7c28ee1aa152558d8cc1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f5e40b4_cbf6377b",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/osgi/ServiceProperties.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-14T03:55:34Z",
+      "side": 1,
+      "message": "Could prepend PREFIX, ie PREFIX + \"ignore\".",
+      "revId": "bb687eb7500731639f1a7c28ee1aa152558d8cc1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0b0fbff5_93b2568e",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/osgi/ServiceProperties.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-14T03:55:34Z",
+      "side": 1,
+      "message": "Same here",
+      "revId": "bb687eb7500731639f1a7c28ee1aa152558d8cc1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
