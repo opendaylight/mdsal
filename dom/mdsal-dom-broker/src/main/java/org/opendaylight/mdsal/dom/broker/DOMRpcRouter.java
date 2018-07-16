@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
@@ -164,20 +165,20 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     private static final class Registration<T extends DOMRpcAvailabilityListener>
         extends AbstractListenerRegistration<T> {
 
-        private final DOMRpcRouter router;
-
         private Map<SchemaPath, Set<YangInstanceIdentifier>> prevRpcs;
+        private Consumer<Registration<T>> remove;
 
         Registration(final DOMRpcRouter router, final T listener,
                 final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs) {
             super(listener);
-            this.router = requireNonNull(router);
+            this.remove = requireNonNull(router)::removeListener;
             this.prevRpcs = requireNonNull(rpcs);
         }
 
         @Override
         protected void removeRegistration() {
-            router.removeListener(this);
+            remove.accept(this);
+            remove = null;
         }
 
         void initialTable() {
