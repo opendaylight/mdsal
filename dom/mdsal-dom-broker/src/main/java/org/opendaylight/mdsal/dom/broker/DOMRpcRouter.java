@@ -164,9 +164,8 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
     private static final class Registration<T extends DOMRpcAvailabilityListener>
         extends AbstractListenerRegistration<T> {
 
-        private final DOMRpcRouter router;
-
         private Map<SchemaPath, Set<YangInstanceIdentifier>> prevRpcs;
+        private DOMRpcRouter router;
 
         Registration(final DOMRpcRouter router, final T listener,
                 final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs) {
@@ -178,6 +177,7 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
         @Override
         protected void removeRegistration() {
             router.removeListener(this);
+            router = null;
         }
 
         void initialTable() {
