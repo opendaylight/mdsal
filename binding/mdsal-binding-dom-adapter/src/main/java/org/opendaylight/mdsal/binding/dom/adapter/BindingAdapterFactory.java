@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.annotations.Beta;
 import javax.annotation.concurrent.ThreadSafe;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeService;
@@ -132,5 +133,10 @@ public final class BindingAdapterFactory implements AdapterFactory {
     @Override
     public ActionService createActionService(final DOMActionService domService) {
         return new ActionServiceAdapter(codec, domService);
+    }
+
+    @Override
+    public ActionProviderService createActionProviderService(final DOMOperationProviderService domService) {
+        return new ActionProviderServiceAdapter(codec, domService);
     }
 }
