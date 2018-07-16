@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -25,6 +26,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+import org.opendaylight.mdsal.dom.api.DOMOperationProviderService;
 import org.opendaylight.mdsal.dom.api.DOMOperationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -60,7 +62,9 @@ public final class DynamicBindingAdapter implements AutoCloseable {
                     factory::createRpcConsumerRegistry),
             new AdaptingTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
                     factory::createRpcProviderService),
-            new AdaptingTracker<>(ctx, DOMOperationService.class, ActionService.class, factory::createActionService));
+            new AdaptingTracker<>(ctx, DOMOperationService.class, ActionService.class, factory::createActionService),
+            new AdaptingTracker<>(ctx, DOMOperationProviderService.class, ActionProviderService.class,
+                factory::createActionProviderService));
 
         LOG.debug("Starting {} DOMService trackers", trackers.size());
         trackers.forEach(ServiceTracker::open);
