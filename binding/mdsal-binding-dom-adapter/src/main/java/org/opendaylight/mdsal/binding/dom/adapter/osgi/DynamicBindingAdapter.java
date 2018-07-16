@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.osgi;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -60,7 +61,9 @@ public final class DynamicBindingAdapter implements AutoCloseable {
                     factory::createRpcConsumerRegistry),
             new AdaptingTracker<>(ctx, DOMRpcProviderService.class, RpcProviderService.class,
                     factory::createRpcProviderService),
-            new AdaptingTracker<>(ctx, DOMActionService.class, ActionService.class, factory::createActionService));
+            new AdaptingTracker<>(ctx, DOMActionService.class, ActionService.class, factory::createActionService),
+            new AdaptingTracker<>(ctx, DOMActionProviderService.class, ActionProviderService.class,
+                factory::createActionProviderService));
 
         LOG.debug("Starting {} DOMService trackers", trackers.size());
         trackers.forEach(ServiceTracker::open);
