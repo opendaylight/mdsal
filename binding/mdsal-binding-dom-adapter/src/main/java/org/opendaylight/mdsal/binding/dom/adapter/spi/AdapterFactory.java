@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter.spi;
 
 import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -23,6 +24,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationPublishService;
 import org.opendaylight.mdsal.dom.api.DOMNotificationService;
+import org.opendaylight.mdsal.dom.api.DOMOperationProviderService;
 import org.opendaylight.mdsal.dom.api.DOMOperationService;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
@@ -85,7 +87,7 @@ public interface AdapterFactory {
      * Create a {@link RpcConsumerRegistry} backed by a {@link DOMRpcService}.
      *
      * @param domService Backing DOMRpcService
-     * @return A RpcConsumerRegistry
+     * @return An RpcConsumerRegistry
      * @throws NullPointerException if {@code domService} is null
      */
     RpcConsumerRegistry createRpcConsumerRegistry(DOMRpcService domService);
@@ -94,7 +96,7 @@ public interface AdapterFactory {
      * Create a {@link RpcProviderService} backed by a {@link DOMRpcProviderService}.
      *
      * @param domService Backing DOMRpcProviderService
-     * @return A RpcProviderService
+     * @return An RpcProviderService
      * @throws NullPointerException if {@code domService} is null
      */
     RpcProviderService createRpcProviderService(DOMRpcProviderService domService);
@@ -103,8 +105,17 @@ public interface AdapterFactory {
      * Create a {@link ActionService} backed by a {@link DOMOperationService}.
      *
      * @param domService Backing DOMOperationService
-     * @return A ActionService
+     * @return An ActionService
      * @throws NullPointerException if {@code domService} is null
      */
     ActionService createActionService(DOMOperationService domService);
+
+    /**
+     * Create a {@link ActionProviderService} backed by a {@link DOMOperationProviderService}.
+     *
+     * @param domService Backing DOMOperationProviderService
+     * @return An ActionProviderService
+     * @throws NullPointerException if {@code domService} is null
+     */
+    ActionProviderService createActionProviderService(DOMOperationProviderService domService);
 }
