@@ -24,5 +24,15 @@
     <modules>
         <module>features-mdsal-model</module>
         <module>odl-mdsal-models</module>
+        <module>odl-mdsal-model-rfc6991</module>
+        <module>odl-mdsal-model-rfc7223</module>
+        <module>odl-mdsal-model-rfc7227</module>
+        <module>odl-mdsal-model-rfc7895</module>
+        <module>odl-mdsal-model-rfc7952</module>
+        <module>odl-mdsal-model-rfc8342</module>
+        <module>odl-mdsal-model-rfc8343</module>
+        <module>odl-mdsal-model-rfc8344</module>
+        <module>odl-mdsal-model-rfc8345</module>
+        <module>odl-mdsal-model-rfc8345-non-nmda</module>
     </modules>
 </project>
