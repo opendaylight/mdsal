@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "d8c398df_25220de5",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/osgi/ServiceProperties.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-16T11:28:44Z",
+      "side": 1,
+      "message": "It would be an interface with just constants and no methods. It\u0027s a design pattern - I like it - eliminates some boilerplate stuff.  It\u0027s fine either way.",
+      "parentUuid": "1bfd035b_7f279cd1",
+      "range": {
+        "startLine": 19,
+        "startChar": 19,
+        "endLine": 19,
+        "endChar": 36
+      },
+      "revId": "bb687eb7500731639f1a7c28ee1aa152558d8cc1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4f5e40b4_cbf6377b",
         "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/osgi/ServiceProperties.java",
         "patchSetId": 3
