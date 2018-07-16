@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.mdsal.common.api.AsyncReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
@@ -37,7 +37,7 @@ public interface ReadTransaction extends AsyncReadTransaction<InstanceIdentifier
      * @param path
      *            Path which uniquely identifies subtree which client want to
      *            read
-     * @return a CheckFuture containing the result of the read. The Future blocks until the
+     * @return a FluentFuture containing the result of the read. The Future blocks until the
      *         commit operation is complete. Once complete:
      *         <ul>
      *         <li>If the data at the supplied path exists, the Future returns an Optional object
@@ -48,6 +48,5 @@ public interface ReadTransaction extends AsyncReadTransaction<InstanceIdentifier
      *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
      *         </ul>
      */
-    <T extends DataObject> CheckedFuture<Optional<T>,ReadFailedException> read(
-            LogicalDatastoreType store, InstanceIdentifier<T> path);
+    <T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store, InstanceIdentifier<T> path);
 }

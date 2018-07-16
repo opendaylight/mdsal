@@ -8,10 +8,9 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -25,7 +24,7 @@ class BindingDOMReadWriteTransactionAdapter extends BindingDOMWriteTransactionAd
     }
 
     @Override
-    public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store,
+    public <T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store,
             InstanceIdentifier<T> path) {
         return doRead(getDelegate(),store, path);
     }

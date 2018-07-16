@@ -54,7 +54,7 @@ public class AugmentableExtensionTest extends AbstractDataBrokerTest {
 
         ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         InstanceIdentifier<Top> id = InstanceIdentifier.create(Top.class);
-        Top actualTop = readTx.read(OPERATIONAL, id).checkedGet().get();
+        Top actualTop = readTx.read(OPERATIONAL, id).get().get();
         AssertBeans.assertEqualByText("#{\n}", augmentableExtension.getAugmentations(actualTop));
 
         TopLevelList topLevelList = actualTop.getTopLevelList().get(0);

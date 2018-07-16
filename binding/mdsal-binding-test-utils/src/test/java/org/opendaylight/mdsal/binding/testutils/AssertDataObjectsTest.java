@@ -79,7 +79,7 @@ public class AssertDataObjectsTest extends AbstractDataBrokerTest {
 
         ReadTransaction readTx = getDataBroker().newReadOnlyTransaction();
         InstanceIdentifier<Top> id = InstanceIdentifier.create(Top.class);
-        Top actualTop = readTx.read(OPERATIONAL, id).checkedGet().get();
+        Top actualTop = readTx.read(OPERATIONAL, id).get().get();
 
         AssertDataObjects.assertEqualBeans(ExpectedObjects.top(), actualTop);
 
