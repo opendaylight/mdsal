@@ -9,13 +9,11 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.MappingCheckedFuture;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.concepts.Identifiable;
@@ -57,14 +55,12 @@ abstract class AbstractForwardedTransaction<T extends AsyncTransaction<YangInsta
         return codec;
     }
 
-    protected final <D extends DataObject> CheckedFuture<Optional<D>,ReadFailedException> doRead(
+    protected final <D extends DataObject> FluentFuture<Optional<D>> doRead(
             final DOMDataTreeReadTransaction readTx, final LogicalDatastoreType store,
             final InstanceIdentifier<D> path) {
         Preconditions.checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
-        return MappingCheckedFuture.create(
-                    Futures.transform(readTx.read(store, codec.toYangInstanceIdentifierBlocking(path)),
-                                      codec.deserializeFunction(path), MoreExecutors.directExecutor()),
-                    ReadFailedException.MAPPER);
+        return FluentFuture.from(Futures.transform(readTx.read(store, codec.toYangInstanceIdentifierBlocking(path)),
+                codec.deserializeFunction(path), MoreExecutors.directExecutor()));
     }
 }
