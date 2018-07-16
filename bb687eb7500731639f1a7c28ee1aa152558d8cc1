@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1bfd035b_7f279cd1",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/osgi/ServiceProperties.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-07-16T09:40:33Z",
+      "side": 1,
+      "message": "Interface would imply it can be implemented -- which it should not.",
+      "parentUuid": "55a58d25_19aa2d7a",
+      "range": {
+        "startLine": 19,
+        "startChar": 19,
+        "endLine": 19,
+        "endChar": 36
+      },
+      "revId": "bb687eb7500731639f1a7c28ee1aa152558d8cc1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4f5e40b4_cbf6377b",
         "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/osgi/ServiceProperties.java",
         "patchSetId": 3
@@ -36,6 +60,24 @@
       "writtenOn": "2018-07-14T03:55:34Z",
       "side": 1,
       "message": "Could prepend PREFIX, ie PREFIX + \"ignore\".",
+      "revId": "bb687eb7500731639f1a7c28ee1aa152558d8cc1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a8226b6_13af40a0",
+        "filename": "binding/mdsal-binding-dom-adapter/src/main/java/org/opendaylight/mdsal/binding/dom/adapter/osgi/ServiceProperties.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-07-16T09:40:33Z",
+      "side": 1,
+      "message": "Yeah, I actually had that originally, but that would be not as human-readable.",
+      "parentUuid": "4f5e40b4_cbf6377b",
       "revId": "bb687eb7500731639f1a7c28ee1aa152558d8cc1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
