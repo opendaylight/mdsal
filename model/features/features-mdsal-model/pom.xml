@@ -121,6 +121,12 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-draft-ietf-lisp-lcaf-10</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>odl-mdsal-model-draft-ietf-netmod-acl-model-07</artifactId>
             <classifier>features</classifier>
             <type>xml</type>

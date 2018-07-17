@@ -108,6 +108,12 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-draft-ietf-lisp-lcaf-10</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>odl-mdsal-model-draft-ietf-netmod-acl-model-07</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
@@ -134,10 +140,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>iana-if-type-2014-05-08</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ietf-lisp-address-types-2015-11-05</artifactId>
         </dependency>
     </dependencies>
 </project>
