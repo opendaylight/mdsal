@@ -23,7 +23,6 @@
 
     <modules>
         <module>features-mdsal-model</module>
-        <module>odl-mdsal-models</module>
 
         <!-- Standards -->
         <module>odl-mdsal-model-rfc6991</module>
