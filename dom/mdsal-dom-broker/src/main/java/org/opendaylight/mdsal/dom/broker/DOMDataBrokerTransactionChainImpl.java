@@ -11,7 +11,6 @@ package org.opendaylight.mdsal.dom.broker;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collection;
 import java.util.Map;
@@ -91,15 +90,15 @@ final class DOMDataBrokerTransactionChainImpl extends AbstractDOMForwardedTransa
     }
 
     @Override
-    protected FluentFuture<? extends CommitInfo> commit(DOMDataTreeWriteTransaction transaction,
-            Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
+    protected FluentFuture<? extends CommitInfo> commit(final DOMDataTreeWriteTransaction transaction,
+            final Collection<DOMStoreThreePhaseCommitCohort> cohorts) {
         checkNotFailed();
         checkNotClosed();
 
         final FluentFuture<? extends CommitInfo> ret = broker.commit(transaction, cohorts);
 
         COUNTER_UPDATER.incrementAndGet(this);
-        Futures.addCallback(ret, new FutureCallback<CommitInfo>() {
+        ret.addCallback(new FutureCallback<CommitInfo>() {
             @Override
             public void onSuccess(final CommitInfo result) {
                 transactionCompleted();

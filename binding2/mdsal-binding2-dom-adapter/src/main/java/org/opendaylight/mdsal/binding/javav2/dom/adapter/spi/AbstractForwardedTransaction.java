@@ -11,7 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.javav2.spec.base.InstanceIdentifier;
@@ -72,8 +72,8 @@ public abstract class AbstractForwardedTransaction<
             final InstanceIdentifier<D> path) {
         Preconditions.checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
-        return MappingCheckedFuture
-                .create(Futures.transform(readTx.read(store, codec.toYangInstanceIdentifierBlocking(path)),
-                        codec.deserializeFunction(path)), ReadFailedException.MAPPER);
+        return MappingCheckedFuture.create(readTx.read(store, codec.toYangInstanceIdentifierBlocking(path))
+            .transform(Optional::fromJavaUtil, MoreExecutors.directExecutor())
+            .transform(codec.deserializeFunction(path), MoreExecutors.directExecutor()), ReadFailedException.MAPPER);
     }
 }
