@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "7ec59fa1_cb54b5b7",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeReadTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-17T19:31:20Z",
+      "side": 1,
+      "message": "should be easy - might as well do it now before there\u0027s any users.",
+      "parentUuid": "915355cf_34a452e0",
+      "range": {
+        "startLine": 49,
+        "startChar": 17,
+        "endLine": 49,
+        "endChar": 25
+      },
+      "revId": "459b61fa64c2b202b8bc4c1fd7400ddfed845171",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b679e837_0cc12b01",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadTransactionAdapter.java",
         "patchSetId": 2
