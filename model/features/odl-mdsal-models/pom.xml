@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
             <!-- TODO: upgrade to rfc8344 -->
-            <artifactId>odl-mdsal-model-rfc7227</artifactId>
+            <artifactId>odl-mdsal-model-rfc7277</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
