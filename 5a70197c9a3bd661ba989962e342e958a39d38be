@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a68ac985_3115475e",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/DOMRpcRouter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 7228
+      },
+      "writtenOn": "2018-07-17T03:24:29Z",
+      "side": 1,
+      "message": "Then should \u0027prevRpcs\u0027 also be set null ?",
+      "range": {
+        "startLine": 180,
+        "startChar": 11,
+        "endLine": 180,
+        "endChar": 26
+      },
+      "revId": "5a70197c9a3bd661ba989962e342e958a39d38be",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
