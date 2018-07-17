@@ -212,6 +212,30 @@
     },
     {
       "key": {
+        "uuid": "453c06aa_233aaf05",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-07-17T18:27:15Z",
+      "side": 1,
+      "message": "Yeah, the API from Guava is not really friendly and it also holds useful constants for a null and true/false future...",
+      "parentUuid": "e484795f_951ecead",
+      "range": {
+        "startLine": 64,
+        "startChar": 19,
+        "endLine": 64,
+        "endChar": 66
+      },
+      "revId": "459b61fa64c2b202b8bc4c1fd7400ddfed845171",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "95279c2b_9974e305",
         "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransaction.java",
         "patchSetId": 2
