@@ -17,8 +17,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
-import com.google.common.base.Optional;
 import java.lang.reflect.Field;
+import java.util.Optional;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;

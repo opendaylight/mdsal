@@ -10,10 +10,11 @@ package org.opendaylight.mdsal.dom.spi.store;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Optional;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.DataTreeSnapshot;
@@ -38,33 +39,29 @@ public final class SnapshotBackedReadWriteTransaction<T> extends
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public CheckedFuture<Optional<NormalizedNode<?,?>>, ReadFailedException> read(final YangInstanceIdentifier path) {
+    public FluentFuture<Optional<NormalizedNode<?,?>>> read(final YangInstanceIdentifier path) {
         LOG.debug("Tx: {} Read: {}", getIdentifier(), path);
         checkNotNull(path, "Path must not be null.");
 
         final Optional<NormalizedNode<?, ?>> result;
 
         try {
-            result = Optional.fromJavaUtil(readSnapshotNode(path));
+            result = readSnapshotNode(path);
         } catch (Exception e) {
             LOG.error("Tx: {} Failed Read of {}", getIdentifier(), path, e);
-            return Futures.immediateFailedCheckedFuture(new ReadFailedException("Read failed", e));
+            return FluentFutures.immediateFailedFluentFuture(new ReadFailedException("Read failed", e));
         }
 
         if (result == null) {
-            return Futures.immediateFailedCheckedFuture(new ReadFailedException("Transaction is closed"));
+            return FluentFutures.immediateFailedFluentFuture(new ReadFailedException("Transaction is closed"));
         }
 
-        return Futures.immediateCheckedFuture(result);
+        return FluentFutures.immediateFluentFuture(result);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public CheckedFuture<Boolean, ReadFailedException> exists(final YangInstanceIdentifier path) {
-        try {
-            return Futures.immediateCheckedFuture(read(path).checkedGet().isPresent());
-        } catch (ReadFailedException e) {
-            return Futures.immediateFailedCheckedFuture(e);
-        }
+    public FluentFuture<Boolean> exists(final YangInstanceIdentifier path) {
+        return read(path).transform(input -> input.isPresent(), MoreExecutors.directExecutor());
     }
 }

@@ -7,11 +7,13 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+
 /**
  * Base exception for various causes why and {@link DOMDataTreeListener}
  * may be terminated by the {@link DOMDataTreeService} implementation.
  */
-public class DOMDataTreeListeningException extends Exception {
+public class DOMDataTreeListeningException extends ReadFailedException {
     private static final long serialVersionUID = 1L;
 
     public DOMDataTreeListeningException(final String message) {
