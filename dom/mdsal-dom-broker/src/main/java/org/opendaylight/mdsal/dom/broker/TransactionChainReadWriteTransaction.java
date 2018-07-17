@@ -7,12 +7,10 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.FluentFuture;
+import java.util.Optional;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -25,20 +23,20 @@ class TransactionChainReadWriteTransaction extends TransactionChainWriteTransact
 
     TransactionChainReadWriteTransaction(final Object identifier,
             final DOMDataTreeReadWriteTransaction delegateWriteTx, final DOMDataTreeReadTransaction delegateReadTx,
-            final ListenableFuture<? extends CommitInfo> previousWriteTxFuture,
+            final FluentFuture<? extends CommitInfo> previousWriteTxFuture,
             final ShardedDOMTransactionChainAdapter txChain) {
         super(identifier, delegateWriteTx, txChain);
         readTx = new TransactionChainReadTransaction(identifier, delegateReadTx, previousWriteTxFuture, txChain);
     }
 
     @Override
-    public CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> read(LogicalDatastoreType store,
-            YangInstanceIdentifier path) {
+    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(final LogicalDatastoreType store,
+            final YangInstanceIdentifier path) {
         return readTx.read(store, path);
     }
 
     @Override
-    public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store, YangInstanceIdentifier path) {
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         return readTx.exists(store, path);
     }
 

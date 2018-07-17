@@ -27,6 +27,7 @@ import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes;
 
 public class ShardedDOMTransactionChainAdapterTest {
@@ -68,7 +69,7 @@ public class ShardedDOMTransactionChainAdapterTest {
         doReturn(Futures.immediateCheckedFuture(null)).when(transaction).submit();
         doReturn(true).when(transaction).cancel();
         assertTrue(writeTransaction.cancel());
-        transactionChainAdapter.closeWriteTransaction(Futures.immediateFuture(null));
+        transactionChainAdapter.closeWriteTransaction(FluentFutures.immediateNullFluentFuture());
 
         transactionChainAdapter =
                 new ShardedDOMTransactionChainAdapter(identifier, dataTreeService, chainListener);
@@ -76,7 +77,7 @@ public class ShardedDOMTransactionChainAdapterTest {
         writeTransaction.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
         assertNotNull(writeTransaction.commit());
         assertFalse(writeTransaction.cancel());
-        transactionChainAdapter.closeWriteTransaction(Futures.immediateFuture(null));
+        transactionChainAdapter.closeWriteTransaction(FluentFutures.immediateNullFluentFuture());
 
         assertNotNull(transactionChainAdapter.newWriteOnlyTransaction().commit());
 

@@ -10,9 +10,8 @@ package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,7 +47,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
     private final CachedDataTreeService cachedDataTreeService;
     private TransactionChainWriteTransaction writeTx;
     private TransactionChainReadTransaction readTx;
-    private ListenableFuture<? extends CommitInfo> writeTxCommitFuture;
+    private FluentFuture<? extends CommitInfo> writeTxCommitFuture;
     private boolean finished = false;
 
     public ShardedDOMTransactionChainAdapter(final Object txChainIdentifier,
@@ -109,7 +108,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
 
         checkReadTxClosed();
         checkWriteTxClosed();
-        Futures.addCallback(writeTxCommitFuture, new FutureCallback<CommitInfo>() {
+        writeTxCommitFuture.addCallback(new FutureCallback<CommitInfo>() {
             @Override
             public void onSuccess(@Nullable final CommitInfo result) {
                 txChainListener.onTransactionChainSuccessful(ShardedDOMTransactionChainAdapter.this);
@@ -130,7 +129,7 @@ public class ShardedDOMTransactionChainAdapter implements DOMTransactionChain {
         readTx = null;
     }
 
-    public void closeWriteTransaction(final ListenableFuture<? extends CommitInfo> commitFuture) {
+    public void closeWriteTransaction(final FluentFuture<? extends CommitInfo> commitFuture) {
         writeTxCommitFuture = commitFuture;
         writeTx = null;
     }

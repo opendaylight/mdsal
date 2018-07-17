@@ -12,9 +12,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -237,14 +237,19 @@ public class InMemoryDataStoreTest {
     }
 
     @Test(expected = ReadFailedException.class)
-    public void testExistsThrowsReadFailedException() throws Exception {
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:AvoidHidingCauseException"})
+    public void testExistsThrowsReadFailedException() throws Throwable {
 
         DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
         readTx.close();
 
-        readTx.exists(TestModel.TEST_PATH).checkedGet();
+        try {
+            readTx.exists(TestModel.TEST_PATH).get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
     }
 
 
