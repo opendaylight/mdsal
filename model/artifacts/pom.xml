@@ -219,7 +219,7 @@
                 <version>0.11.0-SNAPSHOT</version>
             </dependency>
 
-            <!-- FIXME: where is the authoritative source of this ? -->
+            <!-- draft-ietf-netmod-iana-afn-safi-00, expired -->
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>iana-afn-safi</artifactId>
@@ -343,6 +343,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-draft-ietf-netmod-acl-model-07</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-draft-ietf-netmod-iana-afn-safi-00</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>

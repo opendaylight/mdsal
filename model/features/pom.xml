@@ -43,6 +43,7 @@
         <module>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</module>
         <module>odl-mdsal-model-draft-ietf-lisp-lcaf-10</module>
         <module>odl-mdsal-model-draft-ietf-netmod-acl-model-07</module>
+        <module>odl-mdsal-model-draft-ietf-netmod-iana-afn-safi-00</module>
 
         <!-- OpenDaylight-specific -->
         <module>odl-mdsal-model-odl-l2-types</module>
