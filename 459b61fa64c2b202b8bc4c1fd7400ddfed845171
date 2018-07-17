@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ac2be526_d0a2ca27",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeReadTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-17T15:57:13Z",
+      "side": 1,
+      "message": "sure",
+      "parentUuid": "c402b84f_f7e10b94",
+      "range": {
+        "startLine": 49,
+        "startChar": 17,
+        "endLine": 49,
+        "endChar": 25
+      },
+      "revId": "459b61fa64c2b202b8bc4c1fd7400ddfed845171",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b679e837_0cc12b01",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadTransactionAdapter.java",
         "patchSetId": 2
@@ -94,6 +118,30 @@
     },
     {
       "key": {
+        "uuid": "9bfc1588_17ef94bc",
+        "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainReadTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-17T15:57:13Z",
+      "side": 1,
+      "message": "ahh - SettableFuture is a FluentFuture - keep forgetting that - still getting used to FluentFuture.",
+      "parentUuid": "fc5d47a4_4ef1f79d",
+      "range": {
+        "startLine": 74,
+        "startChar": 15,
+        "endLine": 74,
+        "endChar": 32
+      },
+      "revId": "459b61fa64c2b202b8bc4c1fd7400ddfed845171",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7799d6e5_31fa5a46",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/TransactionChainReadTransaction.java",
         "patchSetId": 2
@@ -128,6 +176,30 @@
       "writtenOn": "2018-07-17T15:43:02Z",
       "side": 1,
       "message": "FluentFutures.immediateFailedFluentFuture()",
+      "range": {
+        "startLine": 64,
+        "startChar": 19,
+        "endLine": 64,
+        "endChar": 66
+      },
+      "revId": "459b61fa64c2b202b8bc4c1fd7400ddfed845171",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e484795f_951ecead",
+        "filename": "dom/mdsal-dom-spi/src/main/java/org/opendaylight/mdsal/dom/spi/store/SnapshotBackedReadTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-17T15:57:13Z",
+      "side": 1,
+      "message": "Didn\u0027t know there was a FluentFutures - shoulda looked for it I guess...",
+      "parentUuid": "68aa3e2d_4269ad21",
       "range": {
         "startLine": 64,
         "startChar": 19,
