@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.dom.broker.pingpong;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -23,7 +22,6 @@ import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionChain;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
@@ -415,14 +413,13 @@ public final class PingPongTransactionChain implements DOMTransactionChain {
 
         return new DOMDataTreeReadTransaction() {
             @Override
-            public CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> read(
+            public FluentFuture<Optional<NormalizedNode<?, ?>>> read(
                     final LogicalDatastoreType store, final YangInstanceIdentifier path) {
                 return tx.getTransaction().read(store, path);
             }
 
             @Override
-            public CheckedFuture<Boolean, ReadFailedException> exists(final LogicalDatastoreType store,
-                                                                      final YangInstanceIdentifier path) {
+            public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
                 return tx.getTransaction().exists(store, path);
             }
 

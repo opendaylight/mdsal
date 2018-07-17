@@ -237,14 +237,19 @@ public class InMemoryDataStoreTest {
     }
 
     @Test(expected = ReadFailedException.class)
-    public void testExistsThrowsReadFailedException() throws Exception {
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:AvoidHidingCauseException"})
+    public void testExistsThrowsReadFailedException() throws Throwable {
 
         DOMStoreReadTransaction readTx = domStore.newReadOnlyTransaction();
         assertNotNull(readTx);
 
         readTx.close();
 
-        readTx.exists(TestModel.TEST_PATH).checkedGet();
+        try {
+            readTx.exists(TestModel.TEST_PATH).get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
     }
 
 

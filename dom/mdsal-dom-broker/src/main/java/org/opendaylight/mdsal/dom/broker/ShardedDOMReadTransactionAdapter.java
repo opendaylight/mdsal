@@ -12,7 +12,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListeningException;
@@ -72,7 +71,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
     }
 
     @Override
-    public CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> read(final LogicalDatastoreType store,
+    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(final LogicalDatastoreType store,
             final YangInstanceIdentifier path) {
         checkRunning();
         LOG.debug("{}: Invoking read at {}:{}", txIdentifier, store, path);
@@ -101,19 +100,18 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
             }
         }, MoreExecutors.directExecutor());
 
-        return Futures.makeChecked(initialDataTreeChangeFuture, ReadFailedException.MAPPER);
+        return FluentFuture.from(initialDataTreeChangeFuture);
     }
 
     @Override
-    public CheckedFuture<Boolean, ReadFailedException> exists(final LogicalDatastoreType store,
-            final YangInstanceIdentifier path) {
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         checkRunning();
         LOG.debug("{}: Invoking exists at {}:{}", txIdentifier, store, path);
         final Function<Optional<NormalizedNode<?, ?>>, Boolean> transform =
             optionalNode -> optionalNode.isPresent() ? Boolean.TRUE : Boolean.FALSE;
         final ListenableFuture<Boolean> existsResult = Futures.transform(read(store, path), transform,
             MoreExecutors.directExecutor());
-        return Futures.makeChecked(existsResult, ReadFailedException.MAPPER);
+        return FluentFuture.from(existsResult);
     }
 
     private void checkRunning() {
