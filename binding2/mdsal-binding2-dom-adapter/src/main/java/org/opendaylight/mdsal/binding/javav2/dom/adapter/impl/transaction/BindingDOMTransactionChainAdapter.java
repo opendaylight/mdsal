@@ -11,8 +11,6 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.javav2.api.BindingTransactionChain;
@@ -85,8 +83,8 @@ public final class BindingDOMTransactionChainAdapter
         throw new UnsupportedOperationException();
     }
 
-    private <T, F extends ListenableFuture<T>> F listenForFailure(final WriteTransaction tx, final F future) {
-        Futures.addCallback(future, new FutureCallback<T>() {
+    private <T, F extends FluentFuture<T>> F listenForFailure(final WriteTransaction tx, final F future) {
+        future.addCallback(new FutureCallback<T>() {
             @Override
             public void onFailure(final Throwable throwable) {
                 failTransactionChain(tx, throwable);

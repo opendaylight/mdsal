@@ -5,19 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import javax.annotation.Nullable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
@@ -48,7 +47,7 @@ public class TransactionChainWriteTransaction implements DOMDataTreeWriteTransac
 
     @Override
     public boolean cancel() {
-        txChain.closeWriteTransaction(Futures.immediateFuture(null));
+        txChain.closeWriteTransaction(FluentFutures.immediateNullFluentFuture());
         return delegateTx.cancel();
     }
 
@@ -60,7 +59,7 @@ public class TransactionChainWriteTransaction implements DOMDataTreeWriteTransac
     @Override
     public @NonNull FluentFuture<? extends @NonNull CommitInfo> commit() {
         final FluentFuture<? extends CommitInfo> writeResultFuture = delegateTx.commit();
-        Futures.addCallback(writeResultFuture, new FutureCallback<CommitInfo>() {
+        writeResultFuture.addCallback(new FutureCallback<CommitInfo>() {
             @Override
             public void onSuccess(@Nullable final CommitInfo result) {
                 // NOOP

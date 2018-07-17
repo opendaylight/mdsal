@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -60,7 +59,8 @@ abstract class AbstractForwardedTransaction<T extends AsyncTransaction<YangInsta
             final InstanceIdentifier<D> path) {
         Preconditions.checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
-        return FluentFuture.from(Futures.transform(readTx.read(store, codec.toYangInstanceIdentifierBlocking(path)),
-                codec.deserializeFunction(path), MoreExecutors.directExecutor()));
+        return readTx.read(store, codec.toYangInstanceIdentifierBlocking(path))
+                .transform(Optional::fromJavaUtil, MoreExecutors.directExecutor())
+                .transform(codec.deserializeFunction(path), MoreExecutors.directExecutor());
     }
 }
