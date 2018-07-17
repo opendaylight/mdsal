@@ -14,13 +14,13 @@ import static org.junit.Assert.assertTrue;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ForwardingExecutorService;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -176,7 +176,8 @@ public class DOMBrokerTest {
     }
 
     @Test(expected = ReadFailedException.class)
-    public void basicTests() throws Exception {
+    @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:AvoidHidingCauseException"})
+    public void basicTests() throws Throwable {
         final DataContainerChild<?, ?> outerList = ImmutableNodes.mapNodeBuilder(TestModel.OUTER_LIST_QNAME)
                 .withChild(ImmutableNodes.mapEntry(TestModel.OUTER_LIST_QNAME, TestModel.ID_QNAME, 1))
                 .build();
@@ -215,8 +216,14 @@ public class DOMBrokerTest {
                  .get().toString().contains(testContainer.toString()));
 
         readRx.close();
+
         //Expected exception after close call
-        readRx.read(OPERATIONAL, TestModel.TEST_PATH).checkedGet();
+
+        try {
+            readRx.read(OPERATIONAL, TestModel.TEST_PATH).get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
     }
 
     @SuppressWarnings({"checkstyle:IllegalThrows", "checkstyle:IllegalCatch"})

@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
+import java.util.Optional;
 import org.opendaylight.mdsal.common.api.AsyncReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
@@ -35,7 +35,7 @@ public interface DOMDataTreeReadTransaction extends AsyncReadTransaction<YangIns
      * @param path
      *            Path which uniquely identifies subtree which client want to
      *            read
-     * @return a CheckFuture containing the result of the read. The Future blocks until the
+     * @return a FluentFuture containing the result of the read. The Future blocks until the
      *         commit operation is complete. Once complete:
      *         <ul>
      *         <li>If the data at the supplied path exists, the Future returns an Optional object
@@ -46,8 +46,7 @@ public interface DOMDataTreeReadTransaction extends AsyncReadTransaction<YangIns
      *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
      *         </ul>
      */
-    CheckedFuture<Optional<NormalizedNode<?,?>>, ReadFailedException> read(
-            LogicalDatastoreType store, YangInstanceIdentifier path);
+    FluentFuture<Optional<NormalizedNode<?,?>>> read(LogicalDatastoreType store, YangInstanceIdentifier path);
 
     /**
      * Checks if data is available in the logical data store located at provided path.
@@ -63,7 +62,7 @@ public interface DOMDataTreeReadTransaction extends AsyncReadTransaction<YangIns
      * @param path
      *            Path which uniquely identifies subtree which client want to
      *            check existence of
-     * @return a CheckFuture containing the result of the check.
+     * @return a FluentFuture containing the result of the check.
      *         <ul>
      *         <li>If the data at the supplied path exists, the Future returns a Boolean
      *         whose value is true, false otherwise</li>
@@ -71,7 +70,5 @@ public interface DOMDataTreeReadTransaction extends AsyncReadTransaction<YangIns
      *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
      *         </ul>
      */
-    CheckedFuture<Boolean, ReadFailedException> exists(
-        LogicalDatastoreType store, YangInstanceIdentifier path);
-
+    FluentFuture<Boolean> exists(LogicalDatastoreType store, YangInstanceIdentifier path);
 }

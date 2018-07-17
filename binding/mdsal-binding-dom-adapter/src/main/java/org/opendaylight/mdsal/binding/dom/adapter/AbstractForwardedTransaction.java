@@ -60,7 +60,9 @@ abstract class AbstractForwardedTransaction<T extends AsyncTransaction<YangInsta
             final InstanceIdentifier<D> path) {
         Preconditions.checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
-        return FluentFuture.from(Futures.transform(readTx.read(store, codec.toYangInstanceIdentifierBlocking(path)),
+        return FluentFuture.from(Futures.transform(Futures.transformAsync(
+                readTx.read(store, codec.toYangInstanceIdentifierBlocking(path)), optional ->
+                    Futures.immediateFuture(Optional.fromJavaUtil(optional)), MoreExecutors.directExecutor()),
                 codec.deserializeFunction(path), MoreExecutors.directExecutor()));
     }
 }
