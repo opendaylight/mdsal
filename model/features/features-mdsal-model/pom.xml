@@ -125,5 +125,11 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-odl-l2-types</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
     </dependencies>
 </project>

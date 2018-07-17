@@ -42,5 +42,8 @@
         <module>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01</module>
         <module>odl-mdsal-model-draft-clemm-netmod-yang-network-topo-01-minimal</module>
         <module>odl-mdsal-model-draft-ietf-netmod-acl-model-07</module>
+
+        <!-- OpenDaylight-specific -->
+        <module>odl-mdsal-model-odl-l2-types</module>
     </modules>
 </project>

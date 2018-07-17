@@ -114,12 +114,16 @@
         </dependency>
 
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>yang-ext</artifactId>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-odl-l2-types</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
         </dependency>
+
+        <!-- Uncatalogued -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>opendaylight-l2-types</artifactId>
+            <artifactId>yang-ext</artifactId>
         </dependency>
 
         <!-- TODO: these need some cleaning up -->
