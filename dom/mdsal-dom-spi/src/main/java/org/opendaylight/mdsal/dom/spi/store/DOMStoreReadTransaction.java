@@ -8,7 +8,7 @@
 package org.opendaylight.mdsal.dom.spi.store;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -21,7 +21,7 @@ public interface DOMStoreReadTransaction extends DOMStoreTransaction {
      * @param path
      *            Path which uniquely identifies subtree which client want to
      *            read
-     * @return a CheckFuture containing the result of the read. The Future blocks until the
+     * @return a FluentFuture containing the result of the read. The Future blocks until the
      *         commit operation is complete. Once complete:
      *         <ul>
      *         <li>If the data at the supplied path exists, the Future returns an Optional object
@@ -32,7 +32,7 @@ public interface DOMStoreReadTransaction extends DOMStoreTransaction {
      *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
      *         </ul>
      */
-    CheckedFuture<Optional<NormalizedNode<?,?>>, ReadFailedException> read(YangInstanceIdentifier path);
+    FluentFuture<Optional<NormalizedNode<?,?>>> read(YangInstanceIdentifier path);
 
     /**
      * Checks if data is available in the logical data store located at provided path.
@@ -46,7 +46,7 @@ public interface DOMStoreReadTransaction extends DOMStoreTransaction {
      * @param path
      *            Path which uniquely identifies subtree which client want to
      *            check existence of
-     * @return a CheckFuture containing the result of the check.
+     * @return a FluentFuture containing the result of the check.
      *         <ul>
      *         <li>If the data at the supplied path exists, the Future returns a Boolean
      *         whose value is true, false otherwise</li>
@@ -54,5 +54,5 @@ public interface DOMStoreReadTransaction extends DOMStoreTransaction {
      *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
      *         </ul>
      */
-    CheckedFuture<Boolean, ReadFailedException> exists(YangInstanceIdentifier path);
+    FluentFuture<Boolean> exists(YangInstanceIdentifier path);
 }

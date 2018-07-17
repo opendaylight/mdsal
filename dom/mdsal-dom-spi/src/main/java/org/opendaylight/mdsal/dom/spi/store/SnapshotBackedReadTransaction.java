@@ -11,8 +11,9 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -54,33 +55,29 @@ public final class SnapshotBackedReadTransaction<T> extends
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public CheckedFuture<Optional<NormalizedNode<?,?>>, ReadFailedException> read(final YangInstanceIdentifier path) {
+    public FluentFuture<Optional<NormalizedNode<?,?>>> read(final YangInstanceIdentifier path) {
         LOG.debug("Tx: {} Read: {}", getIdentifier(), path);
         requireNonNull(path, "Path must not be null.");
 
         final DataTreeSnapshot snapshot = stableSnapshot;
         if (snapshot == null) {
-            return Futures.immediateFailedCheckedFuture(new ReadFailedException("Transaction is closed"));
+            return FluentFuture.from(Futures.immediateFailedFuture(new ReadFailedException("Transaction is closed")));
         }
 
         try {
-            return Futures.immediateCheckedFuture(Optional.fromJavaUtil(snapshot.readNode(path)));
+            return FluentFuture.from(Futures.immediateFuture(Optional.fromJavaUtil(snapshot.readNode(path))));
         } catch (Exception e) {
             LOG.error("Tx: {} Failed Read of {}", getIdentifier(), path, e);
-            return Futures.immediateFailedCheckedFuture(new ReadFailedException("Read failed", e));
+            return FluentFuture.from(Futures.immediateFailedFuture(new ReadFailedException("Read failed", e)));
         }
     }
 
     @Override
-    public CheckedFuture<Boolean, ReadFailedException> exists(final YangInstanceIdentifier path) {
+    public FluentFuture<Boolean> exists(final YangInstanceIdentifier path) {
         LOG.debug("Tx: {} Exists: {}", getIdentifier(), path);
         requireNonNull(path, "Path must not be null.");
 
-        try {
-            return Futures.immediateCheckedFuture(read(path).checkedGet().isPresent());
-        } catch (ReadFailedException e) {
-            return Futures.immediateFailedCheckedFuture(e);
-        }
+        return read(path).transform(input -> input.isPresent(), MoreExecutors.directExecutor());
     }
 
     @Override
