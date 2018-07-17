@@ -16,12 +16,13 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class TransactionChainReadTransactionTest {
@@ -31,7 +32,7 @@ public class TransactionChainReadTransactionTest {
         final String identifier = "testIdent";
         final DOMDataTreeReadTransaction readTransaction = mock(DOMDataTreeReadTransaction.class);
         final ShardedDOMTransactionChainAdapter chainAdapter = mock(ShardedDOMTransactionChainAdapter.class);
-        ListenableFuture<? extends CommitInfo> previousWriteTxFuture = Futures.immediateFuture(null);
+        FluentFuture<? extends CommitInfo> previousWriteTxFuture = FluentFutures.immediateNullFluentFuture();
 
         TransactionChainReadTransaction transactionChainReadTransaction =
                 new TransactionChainReadTransaction(identifier, readTransaction, previousWriteTxFuture, chainAdapter);
@@ -55,7 +56,7 @@ public class TransactionChainReadTransactionTest {
         doNothing().when(chainAdapter).transactionFailed(any(), any());
         assertNotNull(transactionChainReadTransaction.read(
                 LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY));
-        previousWriteTxFuture = Futures.immediateFailedFuture(new NullPointerException());
+        previousWriteTxFuture = FluentFutures.immediateFailedFluentFuture(new NullPointerException());
         transactionChainReadTransaction =
                 new TransactionChainReadTransaction(identifier, readTransaction, previousWriteTxFuture, chainAdapter);
         assertNotNull(transactionChainReadTransaction.read(

@@ -7,10 +7,9 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
+import java.util.Optional;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeService;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -27,13 +26,13 @@ public class ShardedDOMReadWriteTransactionAdapter extends ShardedDOMWriteTransa
     }
 
     @Override
-    public CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> read(LogicalDatastoreType store,
+    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(LogicalDatastoreType store,
             YangInstanceIdentifier path) {
         return readAdapter.read(store, path);
     }
 
     @Override
-    public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store, YangInstanceIdentifier path) {
+    public FluentFuture<Boolean> exists(LogicalDatastoreType store, YangInstanceIdentifier path) {
         return readAdapter.exists(store, path);
     }
 
