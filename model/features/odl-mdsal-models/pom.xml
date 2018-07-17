@@ -26,13 +26,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.opendaylight.mdsal</groupId>
-                <artifactId>mdsal-artifacts</artifactId>
-                <version>2.5.0-SNAPSHOT</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>mdsal-model-artifacts</artifactId>
                 <version>${project.version}</version>
@@ -44,12 +37,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.opendaylight.mdsal</groupId>
-            <artifactId>odl-mdsal-binding-base</artifactId>
-            <classifier>features</classifier>
-            <type>xml</type>
-        </dependency>
-        <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>odl-mdsal-model-rfc6991</artifactId>
             <classifier>features</classifier>
@@ -59,6 +46,13 @@
             <groupId>org.opendaylight.mdsal.model</groupId>
             <!-- TODO: upgrade to rfc8343 -->
             <artifactId>odl-mdsal-model-rfc7223</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <!-- TODO: upgrade to 2017-01-19 ? -->
+            <artifactId>odl-mdsal-model-rfc7224</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
@@ -130,16 +124,6 @@
             <artifactId>odl-mdsal-model-odl-l2-types</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
-        </dependency>
-
-        <!-- TODO: these need some cleaning up -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>yang-ext</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>iana-if-type-2014-05-08</artifactId>
         </dependency>
     </dependencies>
 </project>
