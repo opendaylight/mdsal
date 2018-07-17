@@ -8,23 +8,19 @@
 
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListeningException;
@@ -72,7 +68,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
     }
 
     @Override
-    public CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> read(final LogicalDatastoreType store,
+    public FluentFuture<Optional<NormalizedNode<?, ?>>> read(final LogicalDatastoreType store,
             final YangInstanceIdentifier path) {
         checkRunning();
         LOG.debug("{}: Invoking read at {}:{}", txIdentifier, store, path);
@@ -89,7 +85,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
         }
 
         // After data tree change future is finished, we can close the listener registration
-        Futures.addCallback(initialDataTreeChangeFuture, new FutureCallback<Optional<NormalizedNode<?, ?>>>() {
+        initialDataTreeChangeFuture.addCallback(new FutureCallback<Optional<NormalizedNode<?, ?>>>() {
             @Override
             public void onSuccess(@Nullable final Optional<NormalizedNode<?, ?>> result) {
                 reg.close();
@@ -101,19 +97,14 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
             }
         }, MoreExecutors.directExecutor());
 
-        return Futures.makeChecked(initialDataTreeChangeFuture, ReadFailedException.MAPPER);
+        return initialDataTreeChangeFuture;
     }
 
     @Override
-    public CheckedFuture<Boolean, ReadFailedException> exists(final LogicalDatastoreType store,
-            final YangInstanceIdentifier path) {
+    public FluentFuture<Boolean> exists(final LogicalDatastoreType store, final YangInstanceIdentifier path) {
         checkRunning();
         LOG.debug("{}: Invoking exists at {}:{}", txIdentifier, store, path);
-        final Function<Optional<NormalizedNode<?, ?>>, Boolean> transform =
-            optionalNode -> optionalNode.isPresent() ? Boolean.TRUE : Boolean.FALSE;
-        final ListenableFuture<Boolean> existsResult = Futures.transform(read(store, path), transform,
-            MoreExecutors.directExecutor());
-        return Futures.makeChecked(existsResult, ReadFailedException.MAPPER);
+        return read(store, path).transform(Optional::isPresent, MoreExecutors.directExecutor());
     }
 
     private void checkRunning() {
@@ -136,7 +127,7 @@ public class ShardedDOMReadTransactionAdapter implements DOMDataTreeReadTransact
 
             for (final DataTreeCandidate change : changes) {
                 if (change.getRootNode().getModificationType().equals(ModificationType.UNMODIFIED)) {
-                    readResultFuture.set(Optional.absent());
+                    readResultFuture.set(Optional.empty());
                     return;
                 }
             }
