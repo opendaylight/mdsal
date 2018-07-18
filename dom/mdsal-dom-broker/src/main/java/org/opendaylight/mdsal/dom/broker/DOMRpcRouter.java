@@ -52,12 +52,13 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-public final class DOMRpcRouter extends AbstractRegistration implements DOMRpcService, DOMRpcProviderService,
-        SchemaContextListener {
+public final class DOMRpcRouter extends AbstractRegistration implements SchemaContextListener {
     private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(
             "DOMRpcRouter-listener-%s").setDaemon(true).build();
 
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
+    private final DOMRpcProviderService rpcProviderService = new RpcProviderServiceFacade();
+    private final DOMRpcService rpcService = new RpcServiceFacade();
 
     @GuardedBy("this")
     private Collection<Registration<?>> listeners = Collections.emptyList();
@@ -72,27 +73,12 @@ public final class DOMRpcRouter extends AbstractRegistration implements DOMRpcSe
         return rpcRouter;
     }
 
-    @Override
-    public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
-            final T implementation, final DOMRpcIdentifier... rpcs) {
-        return registerRpcImplementation(implementation, ImmutableSet.copyOf(rpcs));
+    public DOMRpcService getRpcService() {
+        return rpcService;
     }
 
-    @Override
-    public synchronized <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T>
-            registerRpcImplementation(final T implementation, final Set<DOMRpcIdentifier> rpcs) {
-        final DOMRpcRoutingTable oldTable = routingTable;
-        final DOMRpcRoutingTable newTable = oldTable.add(implementation, rpcs);
-        routingTable = newTable;
-
-        listenerNotifier.execute(() -> notifyAdded(newTable, implementation));
-
-        return new AbstractDOMRpcImplementationRegistration<T>(implementation) {
-            @Override
-            protected void removeRegistration() {
-                removeRpcImplementation(getInstance(), rpcs);
-            }
-        };
+    public DOMRpcProviderService getRpcProviderService() {
+        return rpcProviderService;
     }
 
     private synchronized void removeRpcImplementation(final DOMRpcImplementation implementation,
@@ -102,18 +88,6 @@ public final class DOMRpcRouter extends AbstractRegistration implements DOMRpcSe
         routingTable = newTable;
 
         listenerNotifier.execute(() -> notifyRemoved(newTable, implementation));
-    }
-
-    @Override
-    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final SchemaPath type,
-            final NormalizedNode<?, ?> input) {
-        final AbstractDOMRpcRoutingTableEntry entry = routingTable.getEntry(type);
-        if (entry == null) {
-            return Futures.immediateFailedCheckedFuture(
-                new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
-        }
-
-        return entry.invokeRpc(input);
     }
 
     private synchronized void removeListener(final ListenerRegistration<? extends DOMRpcAvailabilityListener> reg) {
@@ -133,25 +107,11 @@ public final class DOMRpcRouter extends AbstractRegistration implements DOMRpcSe
     }
 
     @Override
-    public synchronized <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(
-            final T listener) {
-        final Registration<T> ret = new Registration<>(this, listener, routingTable.getRpcs(listener));
-        final Builder<Registration<?>> b = ImmutableList.builder();
-        b.addAll(listeners);
-        b.add(ret);
-        listeners = b.build();
-
-        listenerNotifier.execute(() -> ret.initialTable());
-        return ret;
-    }
-
-    @Override
     public synchronized void onGlobalContextUpdated(final SchemaContext context) {
         final DOMRpcRoutingTable oldTable = routingTable;
         final DOMRpcRoutingTable newTable = oldTable.setSchemaContext(context);
         routingTable = newTable;
     }
-
 
     @Override
     protected void removeRegistration() {
@@ -251,6 +211,63 @@ public final class DOMRpcRouter extends AbstractRegistration implements DOMRpcSe
             if (!removed.isEmpty()) {
                 l.onRpcUnavailable(removed);
             }
+        }
+    }
+
+    private final class RpcServiceFacade implements DOMRpcService {
+        @Override
+        public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final SchemaPath type,
+                final NormalizedNode<?, ?> input) {
+            final AbstractDOMRpcRoutingTableEntry entry = routingTable.getEntry(type);
+            if (entry == null) {
+                return Futures.immediateFailedCheckedFuture(
+                    new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
+            }
+
+            return entry.invokeRpc(input);
+        }
+
+        @Override
+        public <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(final T listener) {
+            synchronized (DOMRpcRouter.this) {
+                final Registration<T> ret = new Registration<>(DOMRpcRouter.this, listener,
+                        routingTable.getRpcs(listener));
+                final Builder<Registration<?>> b = ImmutableList.builder();
+                b.addAll(listeners);
+                b.add(ret);
+                listeners = b.build();
+
+                listenerNotifier.execute(() -> ret.initialTable());
+                return ret;
+            }
+        }
+    }
+
+    private final class RpcProviderServiceFacade implements DOMRpcProviderService {
+        @Override
+        public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
+                final T implementation, final DOMRpcIdentifier... rpcs) {
+            return registerRpcImplementation(implementation, ImmutableSet.copyOf(rpcs));
+        }
+
+        @Override
+        public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
+                final T implementation, final Set<DOMRpcIdentifier> rpcs) {
+
+            synchronized (DOMRpcRouter.this) {
+                final DOMRpcRoutingTable oldTable = routingTable;
+                final DOMRpcRoutingTable newTable = oldTable.add(implementation, rpcs);
+                routingTable = newTable;
+
+                listenerNotifier.execute(() -> notifyAdded(newTable, implementation));
+            }
+
+            return new AbstractDOMRpcImplementationRegistration<T>(implementation) {
+                @Override
+                protected void removeRegistration() {
+                    removeRpcImplementation(getInstance(), rpcs);
+                }
+            };
         }
     }
 }
