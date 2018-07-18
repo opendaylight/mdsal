@@ -42,6 +42,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
+import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -49,7 +50,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcProviderService, SchemaContextListener {
+public final class DOMRpcRouter extends AbstractRegistration implements DOMRpcService, DOMRpcProviderService,
+        SchemaContextListener {
     private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(
             "DOMRpcRouter-listener-%s").setDaemon(true).build();
 
@@ -142,13 +144,14 @@ public final class DOMRpcRouter implements AutoCloseable, DOMRpcService, DOMRpcP
         routingTable = newTable;
     }
 
-    @Override
-    public void close() {
-        listenerNotifier.shutdown();
 
+    @Override
+    protected void removeRegistration() {
         if (listenerRegistration != null) {
             listenerRegistration.close();
+            listenerRegistration = null;
         }
+        listenerNotifier.shutdown();
     }
 
     @VisibleForTesting
