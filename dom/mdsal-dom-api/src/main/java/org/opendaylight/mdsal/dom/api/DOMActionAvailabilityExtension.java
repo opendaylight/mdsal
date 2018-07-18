@@ -62,7 +62,7 @@ public interface DOMActionAvailabilityExtension extends DOMActionServiceExtensio
          * @param removed operations which disappeared
          * @param added operations which became available
          */
-        void onActionsChanged(Set<DOMActionInstance> removed, Set<DOMActionService> added);
+        void onActionsChanged(Set<DOMActionInstance> removed, Set<DOMActionInstance> added);
 
         /**
          * Implementation filtering method. This method is useful for forwarding operation implementations,

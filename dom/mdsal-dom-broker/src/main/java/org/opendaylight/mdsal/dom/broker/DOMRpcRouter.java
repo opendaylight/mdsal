@@ -11,7 +11,9 @@ import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSet;
@@ -24,6 +26,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,6 +36,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import javax.annotation.concurrent.GuardedBy;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension;
+import org.opendaylight.mdsal.dom.api.DOMActionAvailabilityExtension.AvailabilityListener;
+import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
+import org.opendaylight.mdsal.dom.api.DOMActionInstance;
+import org.opendaylight.mdsal.dom.api.DOMActionNotAvailableException;
+import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
+import org.opendaylight.mdsal.dom.api.DOMActionProviderServiceExtension;
+import org.opendaylight.mdsal.dom.api.DOMActionResult;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
+import org.opendaylight.mdsal.dom.api.DOMActionServiceExtension;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -44,10 +59,13 @@ import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
+import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -61,13 +79,20 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
             "DOMRpcRouter-listener-%s").setDaemon(true).build();
 
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
+    private final DOMActionProviderService actionProviderService = new ActionProviderServiceFacade();
+    private final DOMActionService actionService = new ActionServiceFacade();
     private final DOMRpcProviderService rpcProviderService = new RpcProviderServiceFacade();
     private final DOMRpcService rpcService = new RpcServiceFacade();
 
     @GuardedBy("this")
     private Collection<Registration<?>> listeners = Collections.emptyList();
 
+    @GuardedBy("this")
+    private Collection<ActionRegistration<?>> actionListeners = Collections.emptyList();
+
     private volatile DOMRpcRoutingTable routingTable = DOMRpcRoutingTable.EMPTY;
+
+    private volatile DOMActionRoutingTable actionRoutingTable = DOMActionRoutingTable.EMPTY;
 
     private ListenerRegistration<?> listenerRegistration;
 
@@ -75,6 +100,14 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
         final DOMRpcRouter rpcRouter = new DOMRpcRouter();
         rpcRouter.listenerRegistration = schemaService.registerSchemaContextListener(rpcRouter);
         return rpcRouter;
+    }
+
+    public DOMActionService getActionService() {
+        return actionService;
+    }
+
+    public DOMActionProviderService getActionProviderService() {
+        return actionProviderService;
     }
 
     public DOMRpcService getRpcService() {
@@ -94,8 +127,21 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
         listenerNotifier.execute(() -> notifyRemoved(newTable, implementation));
     }
 
+    private synchronized void removeActionImplementation(final DOMActionImplementation implementation,
+            final Set<DOMActionInstance> actions) {
+        final DOMActionRoutingTable oldTable = actionRoutingTable;
+        final DOMActionRoutingTable newTable = (DOMActionRoutingTable) oldTable.remove(implementation, actions);
+        actionRoutingTable = newTable;
+
+        listenerNotifier.execute(() -> notifyActionChanged(newTable, implementation));
+    }
+
     private synchronized void removeListener(final ListenerRegistration<? extends DOMRpcAvailabilityListener> reg) {
         listeners = ImmutableList.copyOf(Collections2.filter(listeners, input -> !reg.equals(input)));
+    }
+
+    private synchronized void removeActionListener(final ListenerRegistration<? extends AvailabilityListener> reg) {
+        actionListeners = ImmutableList.copyOf(Collections2.filter(actionListeners, input -> !reg.equals(input)));
     }
 
     private synchronized void notifyAdded(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
@@ -107,6 +153,13 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
     private synchronized void notifyRemoved(final DOMRpcRoutingTable newTable, final DOMRpcImplementation impl) {
         for (Registration<?> l : listeners) {
             l.removeRpc(newTable, impl);
+        }
+    }
+
+    private synchronized void notifyActionChanged(final DOMActionRoutingTable newTable,
+            final DOMActionImplementation impl) {
+        for (ActionRegistration<?> l : actionListeners) {
+            l.actionChanged(newTable, impl);
         }
     }
 
@@ -218,6 +271,142 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
         }
     }
 
+    private static final class ActionRegistration<T extends AvailabilityListener>
+        extends AbstractListenerRegistration<T> {
+
+        private Map<SchemaPath, Set<DOMDataTreeIdentifier>> prevActions;
+        private DOMRpcRouter router;
+
+        ActionRegistration(final DOMRpcRouter router, final T listener,
+                final Map<SchemaPath, Set<DOMDataTreeIdentifier>> actions) {
+            super(listener);
+            this.router = requireNonNull(router);
+            this.prevActions = requireNonNull(actions);
+        }
+
+        @Override
+        protected void removeRegistration() {
+            router.removeActionListener(this);
+            router = null;
+        }
+
+        void initialTable() {
+            final Collection<DOMActionInstance> added = new ArrayList<>();
+            for (Entry<SchemaPath, Set<DOMDataTreeIdentifier>> e : prevActions.entrySet()) {
+                added.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
+            }
+            if (!added.isEmpty()) {
+                getInstance().onActionsChanged(ImmutableSet.of(), ImmutableSet.copyOf(added));
+            }
+        }
+
+        void actionChanged(final DOMActionRoutingTable newTable, final DOMActionImplementation impl) {
+            final T l = getInstance();
+            if (!l.acceptsImplementation(impl)) {
+                return;
+            }
+
+            final Map<SchemaPath, Set<DOMDataTreeIdentifier>> actions = verifyNotNull(newTable.getOperations(l));
+            final MapDifference<SchemaPath, Set<DOMDataTreeIdentifier>> diff = Maps.difference(prevActions, actions);
+
+            final Set<DOMActionInstance> removed = new HashSet<>();
+            final Set<DOMActionInstance> added = new HashSet<>();
+
+            for (Entry<SchemaPath, Set<DOMDataTreeIdentifier>> e : diff.entriesOnlyOnLeft().entrySet()) {
+                removed.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
+            }
+
+            for (Entry<SchemaPath, Set<DOMDataTreeIdentifier>> e : diff.entriesOnlyOnRight().entrySet()) {
+                added.addAll(Collections2.transform(e.getValue(), i -> DOMActionInstance.of(e.getKey(), i)));
+            }
+
+            for (Entry<SchemaPath, ValueDifference<Set<DOMDataTreeIdentifier>>> e :
+                diff.entriesDiffering().entrySet()) {
+                for (DOMDataTreeIdentifier i : Sets.difference(e.getValue().leftValue(), e.getValue().rightValue())) {
+                    removed.add(DOMActionInstance.of(e.getKey(), i));
+                }
+
+                for (DOMDataTreeIdentifier i : Sets.difference(e.getValue().rightValue(), e.getValue().leftValue())) {
+                    added.add(DOMActionInstance.of(e.getKey(), i));
+                }
+            }
+
+            prevActions = actions;
+            if (!removed.isEmpty() || !added.isEmpty()) {
+                l.onActionsChanged(removed, added);
+            }
+        }
+    }
+
+    @NonNullByDefault
+    private final class ActionAvailabilityFacade implements DOMActionAvailabilityExtension {
+        @Override
+        public <T extends AvailabilityListener> ListenerRegistration<T> registerAvailabilityListener(final T listener) {
+            synchronized (DOMRpcRouter.this) {
+                final ActionRegistration<T> ret = new ActionRegistration<>(DOMRpcRouter.this,
+                    listener, actionRoutingTable.getOperations(listener));
+                final Builder<ActionRegistration<?>> b = ImmutableList.builder();
+                b.addAll(actionListeners);
+                b.add(ret);
+                actionListeners = b.build();
+
+                listenerNotifier.execute(ret::initialTable);
+                return ret;
+            }
+        }
+    }
+
+    @NonNullByDefault
+    private final class ActionServiceFacade implements DOMActionService {
+        private final ClassToInstanceMap<DOMActionServiceExtension> extensions = ImmutableClassToInstanceMap.of(
+            DOMActionAvailabilityExtension.class, new ActionAvailabilityFacade());
+
+        @Override
+        public ClassToInstanceMap<DOMActionServiceExtension> getExtensions() {
+            return extensions;
+        }
+
+        @Override
+        public FluentFuture<? extends DOMActionResult> invokeAction(final SchemaPath type,
+                final DOMDataTreeIdentifier path, final ContainerNode input) {
+            final DOMActionRoutingTableEntry entry = (DOMActionRoutingTableEntry) actionRoutingTable.getEntry(type);
+            if (entry == null) {
+                return FluentFutures.immediateFailedFluentFuture(
+                    new DOMActionNotAvailableException("No implementation of Action %s available", type));
+            }
+
+            return OperationInvocation.invoke(entry, type, path, input);
+        }
+    }
+
+    @NonNullByDefault
+    private final class ActionProviderServiceFacade implements DOMActionProviderService {
+        @Override
+        public ClassToInstanceMap<DOMActionProviderServiceExtension> getExtensions() {
+            return ImmutableClassToInstanceMap.of();
+        }
+
+        @Override
+        public <T extends DOMActionImplementation> ObjectRegistration<T> registerActionImplementation(
+            final T implementation, final Set<DOMActionInstance> instances) {
+
+            synchronized (DOMRpcRouter.this) {
+                final DOMActionRoutingTable oldTable = actionRoutingTable;
+                final DOMActionRoutingTable newTable = (DOMActionRoutingTable) oldTable.add(implementation, instances);
+                actionRoutingTable = newTable;
+
+                listenerNotifier.execute(() -> notifyActionChanged(newTable, implementation));
+            }
+
+            return new AbstractObjectRegistration<T>(implementation) {
+                @Override
+                protected void removeRegistration() {
+                    removeActionImplementation(getInstance(), instances);
+                }
+            };
+        }
+    }
+
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
         public FluentFuture<DOMRpcResult> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
@@ -227,14 +416,14 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                     new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
             }
 
-            return RpcInvocation.invoke(entry, input);
+            return OperationInvocation.invoke(entry, input);
         }
 
         @Override
         public <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(final T listener) {
             synchronized (DOMRpcRouter.this) {
                 final Registration<T> ret = new Registration<>(DOMRpcRouter.this, listener,
-                        routingTable.getOperations(listener));
+                    routingTable.getOperations(listener));
                 final Builder<Registration<?>> b = ImmutableList.builder();
                 b.addAll(listeners);
                 b.add(ret);
@@ -249,13 +438,13 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
     private final class RpcProviderServiceFacade implements DOMRpcProviderService {
         @Override
         public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
-                final T implementation, final DOMRpcIdentifier... rpcs) {
+            final T implementation, final DOMRpcIdentifier... rpcs) {
             return registerRpcImplementation(implementation, ImmutableSet.copyOf(rpcs));
         }
 
         @Override
         public <T extends DOMRpcImplementation> DOMRpcImplementationRegistration<T> registerRpcImplementation(
-                final T implementation, final Set<DOMRpcIdentifier> rpcs) {
+            final T implementation, final Set<DOMRpcIdentifier> rpcs) {
 
             synchronized (DOMRpcRouter.this) {
                 final DOMRpcRoutingTable oldTable = routingTable;
@@ -274,11 +463,16 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
         }
     }
 
-    static final class RpcInvocation {
-        private static final Logger LOG = LoggerFactory.getLogger(RpcInvocation.class);
+    static final class OperationInvocation {
+        private static final Logger LOG = LoggerFactory.getLogger(OperationInvocation.class);
+
+        static FluentFuture<? extends DOMActionResult> invoke(final DOMActionRoutingTableEntry entry,
+                final SchemaPath type, final DOMDataTreeIdentifier path, final ContainerNode input) {
+            return entry.getImplementations(path).get(0).invokeAction(type, path, input);
+        }
 
         static FluentFuture<DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
-            final NormalizedNode<?, ?> input) {
+                final NormalizedNode<?, ?> input) {
             if (entry instanceof UnknownDOMRpcRoutingTableEntry) {
                 return FluentFutures.immediateFailedFluentFuture(
                     new DOMRpcImplementationNotAvailableException("SchemaPath %s is not resolved to an RPC",
@@ -294,7 +488,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
         }
 
         private static FluentFuture<DOMRpcResult> invokeRoutedRpc(final RoutedDOMRpcRoutingTableEntry entry,
-            final NormalizedNode<?, ?> input) {
+                final NormalizedNode<?, ?> input) {
             final Optional<NormalizedNode<?, ?>> maybeKey = NormalizedNodes.findNode(input,
                 entry.getRpcId().getContextReference());
 

@@ -55,6 +55,20 @@
     </interfaces>
   </service>
 
+  <bean id="domActionService" factory-ref="domRpcRouter" factory-method="getActionService"/>
+  <service ref="domActionService" odl:type="default">
+    <interfaces>
+      <value>org.opendaylight.mdsal.dom.api.DOMActionService</value>
+    </interfaces>
+  </service>
+
+  <bean id="domActionProviderService" factory-ref="domRpcRouter" factory-method="getActionProviderService"/>
+  <service ref="domActionProviderService" odl:type="default">
+    <interfaces>
+      <value>org.opendaylight.mdsal.dom.api.DOMActionProviderService</value>
+    </interfaces>
+  </service>
+
   <!-- DOM MountPoint Service -->
 
   <bean id="domMountPointService" class="org.opendaylight.mdsal.dom.broker.DOMMountPointServiceImpl"/>
