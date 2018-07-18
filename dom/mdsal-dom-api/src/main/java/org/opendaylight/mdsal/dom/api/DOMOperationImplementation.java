@@ -30,7 +30,7 @@ public interface DOMOperationImplementation {
     @FunctionalInterface
     interface Action extends DOMOperationImplementation {
         /**
-         * Initiate invocation of the RPC. Implementations of this method are expected to not block.
+         * Initiate invocation of the action. Implementations of this method are expected to not block.
          *
          * @param type SchemaPath of the action to be invoked. This path refers to an effective action instantiated on
          *             top of the conceptual {@link StoreTreeNode}.

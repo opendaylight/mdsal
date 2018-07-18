@@ -39,8 +39,8 @@ public abstract class DOMOperationInstance<T> implements Immutable {
         }
 
         /**
-         * Return the set of data trees on which this action is available. Note that
-         * {@link DOMDataTreeIdentifier#getRootIdentifier()} may be a wildcard.
+         * Return the set of data trees on which this action is available. These identifiers are required to point
+         * to concrete items, i.e. they may not be wildcards.
          *
          * @return Set of trees on which this action is available.
          */
