@@ -20,6 +20,7 @@ import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +36,7 @@ import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
+import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationRegistration;
 import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -105,7 +107,13 @@ public final class DOMRpcRouter extends AbstractRegistration implements DOMRpcSe
     @Override
     public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final SchemaPath type,
             final NormalizedNode<?, ?> input) {
-        return routingTable.invokeRpc(type, input);
+        final AbstractDOMRpcRoutingTableEntry entry = routingTable.getEntry(type);
+        if (entry == null) {
+            return Futures.immediateFailedCheckedFuture(
+                new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
+        }
+
+        return entry.invokeRpc(input);
     }
 
     private synchronized void removeListener(final ListenerRegistration<? extends DOMRpcAvailabilityListener> reg) {
