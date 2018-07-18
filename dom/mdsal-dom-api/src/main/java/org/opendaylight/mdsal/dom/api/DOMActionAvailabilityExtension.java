@@ -8,8 +8,8 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
+import java.util.Collection;
 import java.util.EventListener;
-import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -54,7 +54,7 @@ public interface DOMActionAvailabilityExtension extends DOMActionServiceExtensio
          * removed and added. To reconstruct the state, first apply removed and then added operations, like this:
          *
          * <code>
-         *     Set&lt;DOMActionInstancelt;?&gt;&gt; operations;
+         *     Collection&lt;DOMActionInstancelt;?&gt;&gt; operations;
          *     operations.removeAll(removed);
          *     operations.addAll(added);
          * </code>
@@ -62,7 +62,7 @@ public interface DOMActionAvailabilityExtension extends DOMActionServiceExtensio
          * @param removed operations which disappeared
          * @param added operations which became available
          */
-        void onActionsChanged(Set<DOMActionInstance> removed, Set<DOMActionService> added);
+        void onActionsChanged(Collection<DOMActionInstance> removed, Collection<DOMActionInstance> added);
 
         /**
          * Implementation filtering method. This method is useful for forwarding operation implementations,
