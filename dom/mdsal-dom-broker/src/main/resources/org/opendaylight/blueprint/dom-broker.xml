@@ -37,7 +37,7 @@
   <!-- DOM RPC Service -->
 
   <bean id="domRpcRouter" class="org.opendaylight.mdsal.dom.broker.DOMRpcRouter"
-          factory-method="newInstance">
+          factory-method="newInstance" destroy-method="close">
     <argument ref="schemaService"/>
   </bean>
 
