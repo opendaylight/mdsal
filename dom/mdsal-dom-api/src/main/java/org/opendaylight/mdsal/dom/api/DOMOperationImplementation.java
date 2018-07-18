@@ -28,7 +28,7 @@ public interface DOMOperationImplementation {
      * An implementation of an {@code action}.
      */
     @FunctionalInterface
-    interface Action {
+    interface Action extends DOMOperationImplementation {
         /**
          * Initiate invocation of the RPC. Implementations of this method are expected to not block.
          *
@@ -47,7 +47,7 @@ public interface DOMOperationImplementation {
      * An implementation of an {@code rpc}.
      */
     @FunctionalInterface
-    interface Rpc {
+    interface Rpc extends DOMOperationImplementation {
         /**
          * Initiate invocation of the RPC. Implementations of this method are expected to not block.
          *
