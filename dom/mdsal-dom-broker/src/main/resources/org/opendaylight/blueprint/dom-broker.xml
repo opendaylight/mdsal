@@ -41,9 +41,16 @@
     <argument ref="schemaService"/>
   </bean>
 
-  <service ref="domRpcRouter" odl:type="default">
+  <bean id="domRpcService" factory-ref="domRpcRouter" factory-method="getRpcService"/>
+  <service ref="domRpcService" odl:type="default">
     <interfaces>
       <value>org.opendaylight.mdsal.dom.api.DOMRpcService</value>
+    </interfaces>
+  </service>
+
+  <bean id="domRpcProviderService" factory-ref="domRpcRouter" factory-method="getRpcProviderService"/>
+  <service ref="domRpcProviderService" odl:type="default">
+    <interfaces>
       <value>org.opendaylight.mdsal.dom.api.DOMRpcProviderService</value>
     </interfaces>
   </service>
