@@ -29,12 +29,12 @@ public class DOMRpcRouterTest extends TestUtils {
             DOMRpcRoutingTable routingTable = rpcRouter.routingTable();
             assertFalse(routingTable.getRpcs().containsKey(SchemaPath.ROOT));
 
-            rpcRouter.registerRpcImplementation(getTestRpcImplementation(),
+            rpcRouter.getRpcProviderService().registerRpcImplementation(getTestRpcImplementation(),
                 DOMRpcIdentifier.create(SchemaPath.ROOT, null));
             routingTable = rpcRouter.routingTable();
             assertTrue(routingTable.getRpcs().containsKey(SchemaPath.ROOT));
 
-            rpcRouter.registerRpcImplementation(getTestRpcImplementation(),
+            rpcRouter.getRpcProviderService().registerRpcImplementation(getTestRpcImplementation(),
                 DOMRpcIdentifier.create(SchemaPath.SAME, null));
             routingTable = rpcRouter.routingTable();
             assertTrue(routingTable.getRpcs().containsKey(SchemaPath.SAME));
@@ -44,7 +44,7 @@ public class DOMRpcRouterTest extends TestUtils {
     @Test
     public void invokeRpc() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
-            assertNotNull(rpcRouter.invokeRpc(SchemaPath.create(false, TestModel.TEST_QNAME), null));
+            assertNotNull(rpcRouter.getRpcService().invokeRpc(SchemaPath.create(false, TestModel.TEST_QNAME), null));
         }
     }
 
@@ -55,7 +55,7 @@ public class DOMRpcRouterTest extends TestUtils {
 
             final Collection<?> listenersOriginal = rpcRouter.listeners();
 
-            assertNotNull(rpcRouter.registerRpcListener(listener));
+            assertNotNull(rpcRouter.getRpcService().registerRpcListener(listener));
 
             final Collection<?> listenersChanged = rpcRouter.listeners();
             assertNotEquals(listenersOriginal, listenersChanged);
@@ -81,6 +81,7 @@ public class DOMRpcRouterTest extends TestUtils {
     public void close() {
         final DOMRpcRouter rpcRouter = new DOMRpcRouter();
         rpcRouter.close();
-        rpcRouter.registerRpcImplementation(getTestRpcImplementation(), DOMRpcIdentifier.create(SchemaPath.ROOT, null));
+        rpcRouter.getRpcProviderService().registerRpcImplementation(getTestRpcImplementation(),
+            DOMRpcIdentifier.create(SchemaPath.ROOT, null));
     }
 }
