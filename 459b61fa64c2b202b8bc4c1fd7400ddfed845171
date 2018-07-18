@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "3735698c_cac5200c",
+        "filename": "dom/mdsal-dom-api/src/main/java/org/opendaylight/mdsal/dom/api/DOMDataTreeReadTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-18T15:18:38Z",
+      "side": 1,
+      "message": "We should change the binding read as well. I\u0027ll do that...",
+      "parentUuid": "7ec59fa1_cb54b5b7",
+      "range": {
+        "startLine": 49,
+        "startChar": 17,
+        "endLine": 49,
+        "endChar": 25
+      },
+      "revId": "459b61fa64c2b202b8bc4c1fd7400ddfed845171",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b679e837_0cc12b01",
         "filename": "dom/mdsal-dom-broker/src/main/java/org/opendaylight/mdsal/dom/broker/ShardedDOMReadTransactionAdapter.java",
         "patchSetId": 2
