@@ -11,7 +11,9 @@ import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSet;
@@ -20,6 +22,7 @@ import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
@@ -32,6 +35,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import javax.annotation.concurrent.GuardedBy;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMOperationAvailabilityExtension;
+import org.opendaylight.mdsal.dom.api.DOMOperationImplementation.Action;
+import org.opendaylight.mdsal.dom.api.DOMOperationImplementation.Rpc;
+import org.opendaylight.mdsal.dom.api.DOMOperationInstance;
+import org.opendaylight.mdsal.dom.api.DOMOperationProviderService;
+import org.opendaylight.mdsal.dom.api.DOMOperationProviderServiceExtension;
+import org.opendaylight.mdsal.dom.api.DOMOperationResult;
+import org.opendaylight.mdsal.dom.api.DOMOperationService;
+import org.opendaylight.mdsal.dom.api.DOMOperationServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -46,7 +60,10 @@ import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
@@ -57,6 +74,8 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
             "DOMRpcRouter-listener-%s").setDaemon(true).build();
 
     private final ExecutorService listenerNotifier = Executors.newSingleThreadExecutor(THREAD_FACTORY);
+    private final DOMOperationProviderService operationProviderService = new OperationProviderServiceFacade();
+    private final DOMOperationService operationService = new OperationServiceFacade();
     private final DOMRpcProviderService rpcProviderService = new RpcProviderServiceFacade();
     private final DOMRpcService rpcService = new RpcServiceFacade();
 
@@ -71,6 +90,14 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
         final DOMRpcRouter rpcRouter = new DOMRpcRouter();
         rpcRouter.listenerRegistration = schemaService.registerSchemaContextListener(rpcRouter);
         return rpcRouter;
+    }
+
+    public DOMOperationService getOperationService() {
+        return operationService;
+    }
+
+    public DOMOperationProviderService getOperationProviderService() {
+        return operationProviderService;
     }
 
     public DOMRpcService getRpcService() {
@@ -211,6 +238,61 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
             if (!removed.isEmpty()) {
                 l.onRpcUnavailable(removed);
             }
+        }
+    }
+
+    @NonNullByDefault
+    private final class OperationAvailabilityFacade implements DOMOperationAvailabilityExtension {
+        @Override
+        public <T extends AvailabilityListener> ListenerRegistration<T> registerAvailabilityListener(final T listener) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }
+
+    @NonNullByDefault
+    private final class OperationServiceFacade implements DOMOperationService {
+        private final ClassToInstanceMap<DOMOperationServiceExtension> extensions = ImmutableClassToInstanceMap.of(
+            DOMOperationAvailabilityExtension.class, new OperationAvailabilityFacade());
+
+        @Override
+        public ClassToInstanceMap<DOMOperationServiceExtension> getExtensions() {
+            return extensions;
+        }
+
+        @Override
+        public FluentFuture<DOMOperationResult> invokeRpc(final QName type, final ContainerNode input) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public FluentFuture<DOMOperationResult> invokeAction(final SchemaPath type, final DOMDataTreeIdentifier path,
+                final ContainerNode input) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }
+
+    @NonNullByDefault
+    private final class OperationProviderServiceFacade implements DOMOperationProviderService {
+        @Override
+        public ClassToInstanceMap<DOMOperationProviderServiceExtension> getExtensions() {
+            return ImmutableClassToInstanceMap.of();
+        }
+
+        @Override
+        public <T extends Action> ObjectRegistration<T> registerActionImplementation(
+                final T implementation, final Set<DOMOperationInstance.Action> instances) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public <T extends Rpc> ObjectRegistration<T> registerRpcImplementation(final T implementation,
+                final Set<DOMOperationInstance.Rpc> instances) {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 
