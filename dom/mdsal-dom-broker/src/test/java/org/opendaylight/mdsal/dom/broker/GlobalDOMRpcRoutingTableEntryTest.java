@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
-import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.RpcInvocation;
+import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.OperationInvocation;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -50,7 +50,7 @@ public class GlobalDOMRpcRoutingTableEntryTest extends TestUtils {
                 rpcImplementation));
 
         try {
-            RpcInvocation.invoke(globalDOMRpcRoutingTableEntry.newInstance(rpcImplementations),
+            OperationInvocation.invoke(globalDOMRpcRoutingTableEntry.newInstance(rpcImplementations),
                     TEST_CONTAINER).get(5, TimeUnit.SECONDS);
             fail("Expected DOMRpcImplementationNotAvailableException");
         } catch (ExecutionException e) {
