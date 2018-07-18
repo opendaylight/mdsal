@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
-import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.RpcInvocation;
+import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.OperationInvocation;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -36,7 +36,7 @@ public class RoutedDOMRpcRoutingTableEntryTest extends TestUtils {
         assertNotNull(routedDOMRpcRoutingTableEntry.newInstance(new HashMap<>()));
 
         try {
-            RpcInvocation.invoke(routedDOMRpcRoutingTableEntry, TEST_CHILD).get();
+            OperationInvocation.invoke(routedDOMRpcRoutingTableEntry, TEST_CHILD).get();
             fail("Expected DOMRpcImplementationNotAvailableException");
         } catch (ExecutionException e) {
             assertTrue(e.getCause() instanceof DOMRpcImplementationNotAvailableException);
