@@ -26,7 +26,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 @NonNullByDefault
 public interface DOMOperationAvailabilityExtension extends DOMOperationServiceExtension {
     /**
-     * Register a {@link AvailabilityListener} with this service to receive notifications about operation
+     * Register a {@link RpcAvailabilityListener} with this service to receive notifications about Rpc
      * implementations becoming (un)available. The listener will be invoked with the current implementations reported
      * and will be kept uptodate as implementations come and go.
      *
@@ -39,21 +39,42 @@ public interface DOMOperationAvailabilityExtension extends DOMOperationServiceEx
      * <p>
      * Implementations are encouraged to take reasonable precautions to prevent this scenario from occurring.
      *
-     * @param listener {@link AvailabilityListener} instance to register
+     * @param listener {@link RpcAvailabilityListener} instance to register
      * @return A {@link ListenerRegistration} representing this registration. Performing a
      *         {@link ListenerRegistration#close()} will cancel it.
      * @throws NullPointerException if {@code listener} is null
      */
-    <T extends AvailabilityListener> ListenerRegistration<T> registerAvailabilityListener(T listener);
+    <T extends RpcAvailabilityListener> ListenerRegistration<T> registerRpcAvailabilityListener(T listener);
 
     /**
-     * An {@link EventListener} used to track Operation implementations becoming (un)available
+     * Register an {@link ActionAvailabilityListener} with this service to receive notifications about Action
+     * implementations becoming (un)available. The listener will be invoked with the current implementations reported
+     * and will be kept uptodate as implementations come and go.
+     *
+     * <p>
+     * Users should note that using a listener does not necessarily mean that
+     * {@link DOMOperationService#invokeRpc(QName, ContainerNode)} and
+     * {@link DOMOperationService#invokeAction(SchemaPath, DOMDataTreeIdentifier, ContainerNode)} will not report
+     * a failure due to {@link DOMOperationNotAvailableException} and need to be ready to handle it.
+     *
+     * <p>
+     * Implementations are encouraged to take reasonable precautions to prevent this scenario from occurring.
+     *
+     * @param listener {@link RpcAvailabilityListener} instance to register
+     * @return A {@link ListenerRegistration} representing this registration. Performing a
+     *         {@link ListenerRegistration#close()} will cancel it.
+     * @throws NullPointerException if {@code listener} is null
+     */
+    <T extends ActionAvailabilityListener> ListenerRegistration<T> registerActionAvailabilityListener(T listener);
+
+    /**
+     * An {@link EventListener} used to track Rpc implementations becoming (un)available
      * to a {@link DOMOperationService}.
      */
-    interface AvailabilityListener extends EventListener {
+    interface RpcAvailabilityListener extends EventListener {
         /**
-         * Method invoked whenever an operation type becomes available or unavailable. There are two sets reported,
-         * removed and added. To reconstruct the state, first apply removed and then added operations, like this:
+         * Method invoked whenever a Rpc type becomes available or unavailable. There are two sets reported,
+         * removed and added. To reconstruct the state, first apply removed and then added Rpcs, like this:
          *
          * <code>
          *     Set&lt;AvailableOperation&lt;?&gt;&gt; operations;
@@ -61,21 +82,55 @@ public interface DOMOperationAvailabilityExtension extends DOMOperationServiceEx
          *     operations.addAll(added);
          * </code>
          *
-         * @param removed operations which disappeared
-         * @param added operations which became available
+         * @param removed Rpcs which disappeared
+         * @param added Rpcs which became available
          */
-        void onOperationsChanged(Set<DOMOperationInstance<?>> removed, Set<DOMOperationInstance<?>> added);
+        void onRpcsChanged(Set<DOMOperationInstance.Rpc> removed, Set<DOMOperationInstance.Rpc> added);
 
         /**
-         * Implementation filtering method. This method is useful for forwarding operation implementations,
+         * Implementation filtering method. This method is useful for forwarding Rpc implementations,
          * which need to ensure they do not re-announce their own implementations. Without this method
          * a forwarder which registers an implementation would be notified of its own implementation,
          * potentially re-exporting it as local -- hence creating a forwarding loop.
          *
-         * @param impl Operation implementation being registered
+         * @param impl Rpc implementation being registered
          * @return False if the implementation should not be reported, defaults to true.
          */
-        default boolean acceptsImplementation(final DOMOperationImplementation impl) {
+        default boolean acceptsRpcImplementation(final DOMOperationImplementation.Rpc impl) {
+            return true;
+        }
+    }
+
+    /**
+     * An {@link EventListener} used to track Action implementations becoming (un)available
+     * to a {@link DOMOperationService}.
+     */
+    interface ActionAvailabilityListener extends EventListener {
+        /**
+         * Method invoked whenever an Action type becomes available or unavailable. There are two sets reported,
+         * removed and added. To reconstruct the state, first apply removed and then added Actionss, like this:
+         *
+         * <code>
+         *     Set&lt;AvailableOperation&lt;?&gt;&gt; operations;
+         *     operations.removeAll(removed);
+         *     operations.addAll(added);
+         * </code>
+         *
+         * @param removed Actions which disappeared
+         * @param added Actions which became available
+         */
+        void onActionsChanged(Set<DOMOperationInstance.Action> removed, Set<DOMOperationInstance.Action> added);
+
+        /**
+         * Implementation filtering method. This method is useful for forwarding Action implementations,
+         * which need to ensure they do not re-announce their own implementations. Without this method
+         * a forwarder which registers an implementation would be notified of its own implementation,
+         * potentially re-exporting it as local -- hence creating a forwarding loop.
+         *
+         * @param impl Action implementation being registered
+         * @return False if the implementation should not be reported, defaults to true.
+         */
+        default boolean acceptsActionImplementation(final DOMOperationImplementation.Action impl) {
             return true;
         }
     }
