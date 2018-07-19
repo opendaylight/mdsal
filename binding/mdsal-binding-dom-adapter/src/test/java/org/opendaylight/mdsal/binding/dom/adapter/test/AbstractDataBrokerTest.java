@@ -7,50 +7,26 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter.test;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
-public class AbstractDataBrokerTest extends AbstractSchemaAwareTest {
-
-    private DataBrokerTestCustomizer testCustomizer;
-    private DataBroker dataBroker;
-    private DOMDataBroker domBroker;
-
+/**
+ * Abstract base for DataBroker tests. Note that it performs synchronous commits via a direct executor which can cause
+ * issues if used in a concurrent manner so it is recommended to use AbstractConcurrentDataBrokerTest instead.
+ */
+public class AbstractDataBrokerTest extends AbstractBaseDataBrokerTest {
     @Override
-    protected void setupWithSchema(final SchemaContext context) {
-        testCustomizer = createDataBrokerTestCustomizer();
-        dataBroker = testCustomizer.createDataBroker();
-        domBroker = testCustomizer.createDOMDataBroker();
-        testCustomizer.updateSchema(context);
-        setupWithDataBroker(dataBroker);
-    }
-
-    protected void setupWithDataBroker(final DataBroker broker) {
-        // Intentionally left No-op, subclasses may customize it
-    }
-
-    protected DataBrokerTestCustomizer createDataBrokerTestCustomizer() {
+    protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
         return new DataBrokerTestCustomizer();
     }
 
-    public DataBroker getDataBroker() {
-        return dataBroker;
+    @Override
+    protected void setupWithSchema(SchemaContext context) {
+        super.setupWithSchema(context);
+        setupWithDataBroker(getDataBroker());
     }
 
-    public DOMDataBroker getDomBroker() {
-        return domBroker;
-    }
-
-    protected static final void assertCommit(final ListenableFuture<Void> commit) {
-        try {
-            commit.get(500, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new IllegalStateException(e);
-        }
+    protected void setupWithDataBroker(final DataBroker dataBroker) {
+        // Intentionally left No-op, subclasses may customize it
     }
 }
