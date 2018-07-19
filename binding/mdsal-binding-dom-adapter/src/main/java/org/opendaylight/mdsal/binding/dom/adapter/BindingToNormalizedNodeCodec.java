@@ -302,9 +302,16 @@ public class BindingToNormalizedNodeCodec implements BindingCodecTreeFactory,
         futureSchema.onRuntimeContextUpdated(runtimeContext);
     }
 
+    /**
+     * Deprecated.
+     *
+     * @deprecated Use {@link BindingNormalizedNodeCodecRegistry#deserializeFunction} instead.
+     */
+    @Deprecated
     public final <T extends DataObject> Function<Optional<NormalizedNode<?, ?>>, Optional<T>> deserializeFunction(
             final InstanceIdentifier<T> path) {
-        return codecRegistry.deserializeFunction(path);
+        return input -> Optional.fromJavaUtil(codecRegistry.deserializeFunction(path).apply(
+                Optional.toJavaUtil(input)));
     }
 
     public final BindingNormalizedNodeCodecRegistry getCodecRegistry() {
