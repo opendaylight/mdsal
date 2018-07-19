@@ -70,10 +70,13 @@ public abstract class AbstractForwardedDataBroker extends AbstractBindingAdapter
         return hashSet;
     }
 
-    protected Optional<DataObject> toBindingData(final InstanceIdentifier<?> path, final NormalizedNode<?, ?> data) {
+    @SuppressWarnings("unchecked")
+    protected java.util.Optional<DataObject> toBindingData(final InstanceIdentifier<?> path,
+            final NormalizedNode<?, ?> data) {
         if (path.isWildcarded()) {
-            return Optional.absent();
+            return java.util.Optional.empty();
         }
-        return (Optional<DataObject>) getCodec().deserializeFunction(path).apply(Optional.of(data));
+        return (java.util.Optional<DataObject>) getCodec().getCodecRegistry().deserializeFunction(path)
+                .apply(java.util.Optional.of(data));
     }
 }

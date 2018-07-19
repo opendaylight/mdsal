@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FluentFuture;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadWriteTransaction;

@@ -7,10 +7,10 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Optional;
 import org.opendaylight.mdsal.common.api.AsyncTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeReadTransaction;
@@ -60,7 +60,6 @@ abstract class AbstractForwardedTransaction<T extends AsyncTransaction<YangInsta
         Preconditions.checkArgument(!path.isWildcarded(), "Invalid read of wildcarded path %s", path);
 
         return readTx.read(store, codec.toYangInstanceIdentifierBlocking(path))
-                .transform(Optional::fromJavaUtil, MoreExecutors.directExecutor())
-                .transform(codec.deserializeFunction(path), MoreExecutors.directExecutor());
+                .transform(codec.getCodecRegistry().deserializeFunction(path), MoreExecutors.directExecutor());
     }
 }
