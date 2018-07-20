@@ -40,6 +40,7 @@
         <module>mdsal-binding2-runtime</module>
         <module>mdsal-binding2-dom-codec</module>
         <module>mdsal-binding2-dom-adapter</module>
+        <module>mdsal-binding2-spi</module>
 
         <!-- binding2 utils and testing models -->
         <module>mdsal-binding2-util</module>
