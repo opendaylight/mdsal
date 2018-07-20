@@ -76,7 +76,7 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
      * @param data
      *            the data object to be written to the specified path
      * @param createMissingParents
-     *            if true, any missing parent nodes will be automatically
+     *            if {@link #CREATE_MISSING_PARENTS}, any missing parent nodes will be automatically
      *            created using a merge operation.
      * @param <T> data tree type
      * @throws IllegalStateException
@@ -132,7 +132,7 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
      * @param data
      *            the data object to be merged to the specified path
      * @param createMissingParents
-     *            if true, any missing parent nodes will be automatically created
+     *            if {@link #CREATE_MISSING_PARENTS}, any missing parent nodes will be automatically created
      *            using a merge operation.
      * @param <T> data tree type
      * @throws IllegalStateException
@@ -143,4 +143,14 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
 
     @Override
     void delete(LogicalDatastoreType store, InstanceIdentifier<? extends TreeNode> path);
+
+    /**
+     * Flag value indicating that missing parents should be created.
+     */
+    boolean CREATE_MISSING_PARENTS = true;
+
+    /**
+     * Flag value indicating that missing parents should cause an error.
+     */
+    boolean FAIL_ON_MISSING_PARENTS = false;
 }
