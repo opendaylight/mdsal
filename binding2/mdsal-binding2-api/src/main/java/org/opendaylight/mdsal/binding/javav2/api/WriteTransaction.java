@@ -141,9 +141,6 @@ public interface WriteTransaction extends AsyncWriteTransaction<InstanceIdentifi
     <T extends TreeNode> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
         boolean createMissingParents);
 
-    @Override
-    void delete(LogicalDatastoreType store, InstanceIdentifier<? extends TreeNode> path);
-
     /**
      * Flag value indicating that missing parents should be created.
      */
