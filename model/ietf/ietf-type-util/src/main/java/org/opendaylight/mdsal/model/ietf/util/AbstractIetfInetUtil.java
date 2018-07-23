@@ -20,7 +20,7 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.opendaylight.yangtools.yang.binding.util.StringValueObjectFactory;
+import org.opendaylight.mdsal.binding.util.StringValueObjectFactory;
 
 /**
  * A set of utility methods to efficiently instantiate various ietf-inet-types DTOs.
