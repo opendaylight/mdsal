@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.yangtools.yang.binding.util;
+package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -60,7 +60,7 @@ public class NotificationListenerInvokerTest {
         void onTestNotificationInterface(TestNotificationInterface notif);
     }
 
-    private interface TestNotificationInterface extends Notification {
+    public interface TestNotificationInterface extends Notification {
         QName QNAME = QName.create("test", "test");
     }
 }
