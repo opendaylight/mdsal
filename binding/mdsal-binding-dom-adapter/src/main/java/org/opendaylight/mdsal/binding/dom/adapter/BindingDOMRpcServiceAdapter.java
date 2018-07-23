@@ -17,7 +17,7 @@ import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Facto
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.yang.binding.RpcService;
-import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 
 public class BindingDOMRpcServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMRpcService, Class<? extends RpcService>, RpcServiceAdapter>

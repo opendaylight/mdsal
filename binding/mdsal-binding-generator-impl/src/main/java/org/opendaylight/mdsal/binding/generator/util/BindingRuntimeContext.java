@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
  * <p>Runtime Context provides additional insight in Java YANG Binding,
  * binding classes and underlying YANG schema, it contains
  * runtime information, which could not be derived from generated
- * classes alone using {@link org.opendaylight.yangtools.yang.binding.util.BindingReflections}.
+ * classes alone using {@link org.opendaylight.mdsal.binding.spec.reflect.BindingReflections}.
  *
  * <p>Some of this information are for example list of all available
  * children for cases {@link #getChoiceCaseChildren(DataNodeContainer)}, since
