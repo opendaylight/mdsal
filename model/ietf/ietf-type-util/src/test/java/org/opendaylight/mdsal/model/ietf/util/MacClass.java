@@ -5,16 +5,15 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.model.ietf.util;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
 
 public final class MacClass {
     private final String _value;
 
     public MacClass(final String value) {
-        this._value = Preconditions.checkNotNull(value);
+        this._value = requireNonNull(value);
     }
 
     public MacClass(final MacClass template) {
