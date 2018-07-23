@@ -67,6 +67,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>mdsal-binding-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>mdsal-binding-util</artifactId>
         </dependency>
     </dependencies>

@@ -40,6 +40,7 @@
         <module>mdsal-binding-dom-codec-osgi</module>
 
         <module>mdsal-binding-api</module>
+        <module>mdsal-binding-spi</module>
         <module>mdsal-binding-util</module>
         <module>mdsal-binding-test-utils</module>
         <module>mdsal-binding-dom-adapter</module>
