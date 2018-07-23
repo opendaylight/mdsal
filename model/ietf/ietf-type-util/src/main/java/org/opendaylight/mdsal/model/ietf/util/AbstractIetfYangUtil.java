@@ -11,7 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
-import org.opendaylight.yangtools.yang.binding.util.StringValueObjectFactory;
+import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
 
 /**
  * Abstract utility class for dealing with MAC addresses as defined in the ietf-yang-types model. This class is
