@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.yangtools.yang.binding.util;
+package org.opendaylight.mdsal.binding.dom.adapter.invoke;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
