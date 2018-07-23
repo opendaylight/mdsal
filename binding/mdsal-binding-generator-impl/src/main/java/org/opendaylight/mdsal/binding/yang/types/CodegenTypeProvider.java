@@ -24,7 +24,7 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.Abstract
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenEnumerationBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
-import org.opendaylight.yangtools.yang.binding.BindingMapping;
+import org.opendaylight.yangtools.yang.binding.RegexPatterns;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
@@ -102,7 +102,7 @@ public class CodegenTypeProvider extends AbstractTypeProvider {
     private static String applyModifier(final ModifierKind modifier, final String pattern) {
         switch (modifier) {
             case INVERT_MATCH:
-                return BindingMapping.negatePatternString(pattern);
+                return RegexPatterns.negatePatternString(pattern);
             default:
                 LOG.warn("Ignoring unhandled modifier {}", modifier);
                 return pattern;
