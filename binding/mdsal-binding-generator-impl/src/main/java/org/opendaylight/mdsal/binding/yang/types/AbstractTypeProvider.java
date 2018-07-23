@@ -52,7 +52,7 @@ import org.opendaylight.mdsal.binding.model.util.TypeConstants;
 import org.opendaylight.mdsal.binding.model.util.Types;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.AbstractEnumerationBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.GeneratedPropertyBuilderImpl;
-import org.opendaylight.yangtools.yang.binding.BindingMapping;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;

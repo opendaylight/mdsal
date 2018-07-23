@@ -36,7 +36,7 @@ import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil;
 import org.opendaylight.mdsal.binding.model.util.ReferencedTypeImpl;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTOBuilder;
-import org.opendaylight.yangtools.yang.binding.BindingMapping;
+import org.opendaylight.mdsal.binding.spec.naming.BindingMapping;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.DataNodeContainer;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
