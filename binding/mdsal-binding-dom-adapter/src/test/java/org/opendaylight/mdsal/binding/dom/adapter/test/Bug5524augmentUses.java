@@ -21,6 +21,7 @@ import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecR
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.bug._5524.module1.rev160101.grouping.module1.ListModule11Builder;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.bug._5524.module1.rev160101.grouping.module1.list.module1._1.ListModule12Builder;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.bug._5524.module1.rev160101.grouping.module1.list.module1._1.list.module1._2.ContainerModule1Builder;
@@ -39,7 +40,6 @@ import org.opendaylight.yang.gen.v1.urn.test.opendaylight.bug._5524.module4.rev1
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.bug._5524.module4.rev160101.module4.main.container.module._4.ManualContainerModule11;
 import org.opendaylight.yang.gen.v1.urn.test.opendaylight.bug._5524.module4.rev160101.module4.main.container.module._4.ManualContainerModule11Builder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
 public class Bug5524augmentUses extends AbstractDataBrokerTest {

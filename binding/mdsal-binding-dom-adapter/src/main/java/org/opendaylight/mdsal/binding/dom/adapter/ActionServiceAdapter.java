@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMOperationService;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -26,7 +27,6 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcInput;
 import org.opendaylight.yangtools.yang.binding.RpcOutput;
-import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 @Beta

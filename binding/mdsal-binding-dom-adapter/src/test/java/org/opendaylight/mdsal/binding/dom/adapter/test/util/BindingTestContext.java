@@ -33,6 +33,7 @@ import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecR
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
 import org.opendaylight.mdsal.binding.generator.util.JavassistUtils;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMMountPointService;
@@ -47,7 +48,6 @@ import org.opendaylight.mdsal.dom.broker.SerializedDOMDataBroker;
 import org.opendaylight.mdsal.dom.spi.store.DOMStore;
 import org.opendaylight.mdsal.dom.store.inmemory.InMemoryDOMDataStore;
 import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
-import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 
 @Beta

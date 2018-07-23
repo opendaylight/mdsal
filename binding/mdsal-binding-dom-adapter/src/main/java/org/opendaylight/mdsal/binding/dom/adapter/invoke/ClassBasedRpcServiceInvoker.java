@@ -14,9 +14,9 @@ import com.google.common.cache.LoadingCache;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yangtools.yang.binding.BindingMapping;
 import org.opendaylight.yangtools.yang.binding.RpcService;
-import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.common.QName;
 
 final class ClassBasedRpcServiceInvoker extends AbstractMappedRpcInvoker<String> {

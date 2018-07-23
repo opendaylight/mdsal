@@ -15,12 +15,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.ModuleInfoBackedContext;
+import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Grpcont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Othercont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.grpcont.Bar;
-import org.opendaylight.yangtools.yang.binding.util.BindingReflections;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 public class ActionLookupTest {
