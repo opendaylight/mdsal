@@ -7,8 +7,9 @@
  */
 package org.opendaylight.mdsal.model.ietf.util;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.annotations.Beta;
-import com.google.common.base.Preconditions;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
@@ -16,9 +17,12 @@ import org.opendaylight.mdsal.binding.spec.reflect.StringValueObjectFactory;
 /**
  * Abstract utility class for dealing with MAC addresses as defined in the ietf-yang-types model. This class is
  * used by revision-specific classes.
+ *
+ * @param <M> mac-address type
+ * @param <P> phys-address type
  */
 @Beta
-public abstract class AbstractIetfYangUtil<T> {
+public abstract class AbstractIetfYangUtil<M, P> {
     private static final int MAC_BYTE_LENGTH = 6;
     private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
     private static final byte[] HEX_VALUES;
@@ -39,16 +43,96 @@ public abstract class AbstractIetfYangUtil<T> {
         HEX_VALUES = b;
     }
 
-    private final StringValueObjectFactory<T> factory;
+    private final StringValueObjectFactory<M> macFactory;
+    private final StringValueObjectFactory<P> physFactory;
 
-    protected AbstractIetfYangUtil(final Class<T> clazz) {
-        this.factory = StringValueObjectFactory.create(clazz, "00:00:00:00:00:00");
+    protected AbstractIetfYangUtil(final Class<M> macClass, final Class<P> physClass) {
+        this.macFactory = StringValueObjectFactory.create(macClass, "00:00:00:00:00:00");
+        this.physFactory = StringValueObjectFactory.create(physClass, "00:00");
     }
 
-    private static final void appendHexByte(final StringBuilder sb, final byte b) {
-        final int v = Byte.toUnsignedInt(b);
-        sb.append(HEX_CHARS[v >>> 4]);
-        sb.append(HEX_CHARS[v &  15]);
+
+    /**
+     * Convert the value of a MacAddress into the canonical representation.
+     *
+     * @param macAddress Input MAC address
+     * @return A MacAddress containing the canonical representation.
+     * @throws NullPointerException if macAddress is null
+     */
+    @Nonnull public final M canonizeMacAddress(@Nonnull final M macAddress) {
+        final char[] input = getValue(macAddress).toCharArray();
+        return ensureLowerCase(input) ? macFactory.newInstance(String.valueOf(input)) : macAddress;
+    }
+
+    /**
+     * Create a MacAddress object holding the canonical representation of the 6 bytes
+     * passed in as argument.
+     * @param bytes 6-byte input array
+     * @return MacAddress with canonical string derived from input bytes
+     * @throws NullPointerException if bytes is null
+     * @throws IllegalArgumentException if length of input is not 6 bytes
+     */
+    @Nonnull public final M macAddressFor(@Nonnull final byte[] bytes) {
+        checkArgument(bytes.length == MAC_BYTE_LENGTH, "MAC address should have 6 bytes, not %s",
+                bytes.length);
+        return macFactory.newInstance(bytesToString(bytes, 17));
+    }
+
+    /**
+     * Convert the value of a PhysAddress into the canonical representation.
+     *
+     * @param physAddress Input MAC address
+     * @return A PhysAddress containing the canonical representation.
+     * @throws NullPointerException if physAddress is null
+     */
+    @Nonnull public final P canonizePhysAddress(@Nonnull final P physAddress) {
+        final char[] input = getPhysValue(physAddress).toCharArray();
+        return ensureLowerCase(input) ? physFactory.newInstance(String.valueOf(input)) : physAddress;
+    }
+
+    /**
+     * Create a PhysAddress object holding the canonical representation of the bytes passed in as argument.
+     *
+     * @param bytes input array
+     * @return PhysAddress with canonical string derived from input bytes
+     * @throws NullPointerException if bytes is null
+     * @throws IllegalArgumentException if length of input is not at least 1 byte
+     */
+    @Nonnull public final P physAddressFor(@Nonnull final byte[] bytes) {
+        checkArgument(bytes.length > 0, "Physical address should have at least one byte");
+        return physFactory.newInstance(bytesToString(bytes, (bytes.length + 1) / 3));
+    }
+
+    @Nonnull public final byte[] bytesFor(@Nonnull final M macAddress) {
+        final String mac = getValue(macAddress);
+        final byte[] ret = new byte[MAC_BYTE_LENGTH];
+
+        for (int i = 0, base = 0; i < MAC_BYTE_LENGTH; ++i, base += 3) {
+            ret[i] = (byte) (hexValue(mac.charAt(base)) << 4 | hexValue(mac.charAt(base + 1)));
+        }
+
+        return ret;
+    }
+
+    protected abstract String getValue(M macAddress);
+
+    protected abstract String getPhysValue(P physAddress);
+
+    static byte hexValue(final char c) {
+        byte v;
+        try {
+            // Performance optimization: access the array and rely on the VM for catching
+            // illegal access (which boils down to illegal character, which should never happen.
+            v = HEX_VALUES[c];
+        } catch (IndexOutOfBoundsException e) {
+            v = -1;
+        }
+
+        if (v < 0) {
+            throw new IllegalArgumentException("Invalid character '" + c + "' encountered");
+        }
+
+        return v;
     }
 
     /**
@@ -79,79 +163,23 @@ public abstract class AbstractIetfYangUtil<T> {
      * lower-case digits each, separated by colons.
      *
      * @param bytes Input bytes, may not be null
+     * @param charHint Hint at how many characters are needed
      * @return Canonical MAC address string
      * @throws NullPointerException if input is null
      * @throws IllegalArgumentException if length of input is not 6 bytes
      */
-    @Nonnull private static String bytesToString(@Nonnull final byte[] bytes) {
-        Preconditions.checkArgument(bytes.length == MAC_BYTE_LENGTH, "MAC address should have 6 bytes, not %s",
-                bytes.length);
-
-        final StringBuilder sb = new StringBuilder(17);
+    @Nonnull private static String bytesToString(@Nonnull final byte[] bytes, final int charHint) {
+        final StringBuilder sb = new StringBuilder(charHint);
         appendHexByte(sb, bytes[0]);
-        for (int i = 1; i < MAC_BYTE_LENGTH; ++i) {
-            sb.append(':');
-            appendHexByte(sb, bytes[i]);
+        for (int i = 1; i < bytes.length; ++i) {
+            appendHexByte(sb.append(':'), bytes[i]);
         }
 
         return sb.toString();
     }
 
-    /**
-     * Convert the value of a MacAddress into the canonical representation.
-     *
-     * @param macAddress Input MAC address
-     * @return A MacAddress containing the canonical representation.
-     * @throws NullPointerException if macAddress is null
-     */
-    @Nonnull public final T canonizeMacAddress(@Nonnull final T macAddress) {
-        final char[] input = getValue(macAddress).toCharArray();
-        if (ensureLowerCase(input)) {
-            return factory.newInstance(input.toString());
-        }
-
-        return macAddress;
+    private static final void appendHexByte(final StringBuilder sb, final byte b) {
+        final int v = Byte.toUnsignedInt(b);
+        sb.append(HEX_CHARS[v >>> 4]).append(HEX_CHARS[v & 15]);
     }
-
-    /**
-     * Create a MacAddress object holding the canonical representation of the 6 bytes
-     * passed in as argument.
-     * @param bytes 6-byte input array
-     * @return MacAddress with canonical string derived from input bytes
-     * @throws NullPointerException if bytes is null
-     * @throws IllegalArgumentException if length of input is not 6 bytes
-     */
-    @Nonnull public final T macAddressFor(@Nonnull final byte[] bytes) {
-        return factory.newInstance(bytesToString(bytes));
-    }
-
-    static byte hexValue(final char c) {
-        byte v;
-        try {
-            // Performance optimization: access the array and rely on the VM for catching
-            // illegal access (which boils down to illegal character, which should never happen.
-            v = HEX_VALUES[c];
-        } catch (IndexOutOfBoundsException e) {
-            v = -1;
-        }
-
-        if (v < 0) {
-            throw new IllegalArgumentException("Invalid character '" + c + "' encountered");
-        }
-
-        return v;
-    }
-
-    @Nonnull public final byte[] bytesFor(@Nonnull final T macAddress) {
-        final String mac = getValue(macAddress);
-        final byte[] ret = new byte[MAC_BYTE_LENGTH];
-
-        for (int i = 0, base = 0; i < MAC_BYTE_LENGTH; ++i, base += 3) {
-            ret[i] = (byte) (hexValue(mac.charAt(base)) << 4 | hexValue(mac.charAt(base + 1)));
-        }
-
-        return ret;
-    }
-
-    protected abstract String getValue(T macAddress);
 }

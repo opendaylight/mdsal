@@ -9,7 +9,6 @@
 package org.opendaylight.mdsal.model.ietf.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -38,8 +37,7 @@ public class AbstractIetfYangUtilTest {
 
     @Test
     public void canonizeMACTest() throws Exception {
-        assertFalse(UTIL.canonizeMacAddress(new MacClass("01:02:1E:5A:FB:88")).getValue()
-                .equals(UTIL.canonizeMacAddress(new MacClass(CANON)).getValue()));
+        assertEquals(CANON, UTIL.canonizeMacAddress(new MacClass("01:02:1E:5A:FB:88")).getValue());
     }
 
     @Test(expected = IllegalArgumentException.class)

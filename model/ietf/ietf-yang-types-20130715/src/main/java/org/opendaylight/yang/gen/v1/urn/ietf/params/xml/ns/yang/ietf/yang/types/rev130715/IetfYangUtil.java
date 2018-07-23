@@ -14,15 +14,20 @@ import org.opendaylight.mdsal.model.ietf.util.AbstractIetfYangUtil;
  * Utility methods for working with types defined in ietf-yang-types.
  */
 @Beta
-public final class IetfYangUtil extends AbstractIetfYangUtil<MacAddress> {
+public final class IetfYangUtil extends AbstractIetfYangUtil<MacAddress, PhysAddress> {
     public static final IetfYangUtil INSTANCE = new IetfYangUtil();
 
     private IetfYangUtil() {
-        super(MacAddress.class);
+        super(MacAddress.class, PhysAddress.class);
     }
 
     @Override
     protected String getValue(final MacAddress macAddress) {
         return macAddress.getValue();
+    }
+
+    @Override
+    protected String getPhysValue(final PhysAddress physAddress) {
+        return physAddress.getValue();
     }
 }
