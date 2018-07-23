@@ -8,13 +8,18 @@
 
 package org.opendaylight.mdsal.model.ietf.util;
 
-final class MacUtil extends AbstractIetfYangUtil<MacClass> {
+final class MacUtil extends AbstractIetfYangUtil<MacClass, PhysClass> {
     MacUtil() {
-        super(MacClass.class);
+        super(MacClass.class, PhysClass.class);
     }
 
     @Override
     protected String getValue(final MacClass macAddress) {
         return macAddress.getValue();
+    }
+
+    @Override
+    protected String getPhysValue(PhysClass physAddress) {
+        return physAddress.getValue();
     }
 }
