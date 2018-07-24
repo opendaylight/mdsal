@@ -11,6 +11,7 @@ import static com.google.common.base.Verify.verifyNotNull;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
@@ -20,6 +21,7 @@ import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
@@ -32,6 +34,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMOperationImplementation;
+import org.opendaylight.mdsal.dom.api.DOMOperationInstance.Action;
+import org.opendaylight.mdsal.dom.api.DOMOperationInstance.Rpc;
+import org.opendaylight.mdsal.dom.api.DOMOperationProviderService;
+import org.opendaylight.mdsal.dom.api.DOMOperationProviderServiceExtension;
+import org.opendaylight.mdsal.dom.api.DOMOperationResult;
+import org.opendaylight.mdsal.dom.api.DOMOperationService;
+import org.opendaylight.mdsal.dom.api.DOMOperationServiceExtension;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
@@ -42,11 +53,17 @@ import org.opendaylight.mdsal.dom.api.DOMRpcProviderService;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcService;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
+import org.opendaylight.mdsal.dom.broker.DOMOperationRoutingTable.DOMActionRoutingTable;
+import org.opendaylight.mdsal.dom.broker.DOMOperationRoutingTableEntry.DOMActionRoutingTableEntry;
+import org.opendaylight.mdsal.dom.broker.DOMOperationRoutingTableEntry.DOMRpcRoutingTableEntry;
 import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.concepts.ObjectRegistration;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
@@ -64,6 +81,11 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
     private Collection<Registration<?>> listeners = Collections.emptyList();
 
     private volatile DOMRpcRoutingTable routingTable = DOMRpcRoutingTable.EMPTY;
+
+    private volatile DOMOperationRoutingTable.DOMRpcRoutingTable rpcRoutingTable =
+        DOMOperationRoutingTable.DOMRpcRoutingTable.EMPTY;
+    private volatile DOMOperationRoutingTable.DOMActionRoutingTable actionRoutingTable =
+        DOMOperationRoutingTable.DOMActionRoutingTable.EMPTY;
 
     private ListenerRegistration<?> listenerRegistration;
 
@@ -270,4 +292,73 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
             };
         }
     }
+
+    private final class OperationProviderServiceFacade implements DOMOperationProviderService {
+
+        @Override
+        public <T extends DOMOperationImplementation.Action> ObjectRegistration<T> registerActionImplementation(
+                T implementation, Set<Action> instances) {
+            synchronized (DOMRpcRouter.this) {
+                final DOMActionRoutingTable oldTable = actionRoutingTable;
+                actionRoutingTable = oldTable.add(implementation, instances);
+
+                //TODO notify listeners.
+            }
+
+            //TODO return registration.
+            return null;
+        }
+
+        @Override
+        public <T extends DOMOperationImplementation.Rpc> ObjectRegistration<T> registerRpcImplementation(
+                T implementation, Set<Rpc> instances) {
+            synchronized (DOMRpcRouter.this) {
+                final DOMOperationRoutingTable.DOMRpcRoutingTable oldTable = rpcRoutingTable;
+                rpcRoutingTable = oldTable.add(implementation, instances);
+
+                //TODO notify listeners.
+            }
+
+            //TODO return registration.
+            return null;
+        }
+
+        @Override
+        public ClassToInstanceMap<DOMOperationProviderServiceExtension> getExtensions() {
+            //TODO
+            return null;
+        }
+    }
+
+    private final class OperationServiceFacade implements DOMOperationService {
+
+        @Override
+        public FluentFuture<? extends DOMOperationResult> invokeRpc(QName type, ContainerNode input) {
+            final DOMRpcRoutingTableEntry entry = rpcRoutingTable.getEntry(type);
+            if (entry == null) {
+                //TODO
+            }
+
+            return entry.invokeRpc(input);
+        }
+
+        @Override
+        public FluentFuture<? extends DOMOperationResult> invokeAction(SchemaPath type,
+                DOMDataTreeIdentifier path, ContainerNode input) {
+            final DOMActionRoutingTableEntry entry = actionRoutingTable.getEntry(type);
+            if (entry == null) {
+                //TODO
+            }
+
+            return entry.invokeAction(path, input);
+        }
+
+        @Override
+        public ClassToInstanceMap<DOMOperationServiceExtension> getExtensions() {
+            //TODO
+            return null;
+        }
+    }
+
+
 }
