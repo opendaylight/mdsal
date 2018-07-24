@@ -114,19 +114,21 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
             serviceGroup = existing;
         }
 
-        serviceGroup.registerService(service);
-        return new AbstractClusterSingletonServiceRegistration(service) {
+        final ClusterSingletonServiceRegistration reg =  new AbstractClusterSingletonServiceRegistration(service) {
             @Override
             protected void removeRegistration() {
                 // We need to bounce the unregistration through a ordered lock in order not to deal with asynchronous
                 // shutdown of the group and user registering it again.
-                AbstractClusterSingletonServiceProviderImpl.this.removeRegistration(serviceIdentifier, service);
+                AbstractClusterSingletonServiceProviderImpl.this.removeRegistration(serviceIdentifier, this);
             }
         };
+
+        serviceGroup.registerService(reg);
+        return reg;
     }
 
     private ClusterSingletonServiceGroup<P, E, C> createGroup(final String serviceIdentifier,
-            final List<ClusterSingletonService> services) {
+            final List<ClusterSingletonServiceRegistration> services) {
         return new ClusterSingletonServiceGroupImpl<>(serviceIdentifier, entityOwnershipService,
                 createEntity(SERVICE_ENTITY_TYPE, serviceIdentifier),
                 createEntity(CLOSE_SERVICE_ENTITY_TYPE, serviceIdentifier), services);
@@ -142,13 +144,13 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
         }
     }
 
-    void removeRegistration(final String serviceIdentifier, final ClusterSingletonService service) {
+    void removeRegistration(final String serviceIdentifier, final ClusterSingletonServiceRegistration reg) {
 
         final PlaceholderGroup<P, E, C> placeHolder;
         final ListenableFuture<?> future;
         synchronized (this) {
             final ClusterSingletonServiceGroup<P, E, C> lookup = verifyNotNull(serviceGroupMap.get(serviceIdentifier));
-            if (!lookup.unregisterService(service)) {
+            if (!lookup.unregisterService(reg)) {
                 return;
             }
 
@@ -157,7 +159,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
             future = lookup.closeClusterSingletonGroup();
             placeHolder = new PlaceholderGroup<>(lookup, future);
 
-            final String identifier = service.getIdentifier().getValue();
+            final String identifier = reg.getInstance().getIdentifier().getValue();
             verify(serviceGroupMap.replace(identifier, lookup, placeHolder));
             LOG.debug("Replaced group {} with {}", serviceIdentifier, placeHolder);
         }
@@ -169,7 +171,7 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
         final String identifier = placeHolder.getIdentifier();
         LOG.debug("Service group {} closed", identifier);
 
-        final List<ClusterSingletonService> services = placeHolder.getServices();
+        final List<ClusterSingletonServiceRegistration> services = placeHolder.getServices();
         if (services.isEmpty()) {
             // No services, we are all done
             if (serviceGroupMap.remove(identifier, placeHolder)) {

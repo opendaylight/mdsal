@@ -47,7 +47,7 @@ abstract class ClusterSingletonServiceGroup<P extends Path<P>, E extends Generic
      *
      * @param service instance
      */
-    abstract void registerService(ClusterSingletonService service);
+    abstract void registerService(ClusterSingletonServiceRegistration reg);
 
     /**
      * Method provides possibility to restart some service from group without change
@@ -60,7 +60,7 @@ abstract class ClusterSingletonServiceGroup<P extends Path<P>, E extends Generic
      * @param service instance
      * @return True if this was the last service registered
      */
-    abstract boolean unregisterService(ClusterSingletonService service);
+    abstract boolean unregisterService(ClusterSingletonServiceRegistration reg);
 
     /**
      * Method implementation has to apply ownershipChange for all registered services.
