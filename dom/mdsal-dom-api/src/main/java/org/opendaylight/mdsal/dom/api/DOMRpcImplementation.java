@@ -7,7 +7,7 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -23,12 +23,11 @@ public interface DOMRpcImplementation {
      *
      * @param rpc RPC identifier which was invoked
      * @param input Input arguments, null if the RPC does not take any.
-     * @return A {@link CheckedFuture} which will return either a result structure,
+     * @return A {@link FluentFuture} which will return either a result structure,
      *         or report a subclass of {@link DOMRpcException} reporting a transport
      *         error.
      */
-    @Nonnull CheckedFuture<DOMRpcResult, DOMRpcException>
-        invokeRpc(@Nonnull DOMRpcIdentifier rpc, @Nullable NormalizedNode<?, ?> input);
+    @Nonnull FluentFuture<DOMRpcResult> invokeRpc(@Nonnull DOMRpcIdentifier rpc, @Nullable NormalizedNode<?, ?> input);
 
     /**
      * Return the relative invocation cost of this implementation. Default implementation return 0.

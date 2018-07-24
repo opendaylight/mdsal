@@ -12,14 +12,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -116,7 +115,7 @@ abstract class AbstractDOMRpcRoutingTableEntry {
         return v.isEmpty() ? null : newInstance(v);
     }
 
-    protected abstract CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(NormalizedNode<?, ?> input);
+    protected abstract FluentFuture<DOMRpcResult> invokeRpc(NormalizedNode<?, ?> input);
 
     protected abstract AbstractDOMRpcRoutingTableEntry newInstance(
             Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls);

@@ -11,8 +11,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Method;
@@ -28,11 +27,9 @@ import org.opendaylight.mdsal.binding.javav2.dom.codec.serialized.LazySerialized
 import org.opendaylight.mdsal.binding.javav2.runtime.reflection.BindingReflections;
 import org.opendaylight.mdsal.binding.javav2.spec.base.Operation;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -79,29 +76,13 @@ public class BindingDOMOperationImplementationAdapter implements DOMRpcImplement
     @SuppressWarnings("deprecation")
     @Nonnull
     @Override
-    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(@Nonnull final DOMRpcIdentifier rpc,
+    public FluentFuture<DOMRpcResult> invokeRpc(@Nonnull final DOMRpcIdentifier rpc,
             @Nullable final NormalizedNode<?, ?> input) {
 
         final SchemaPath schemaPath = rpc.getType();
         final TreeNode bindingInput = input != null ? deserialize(rpc.getType(), input) : null;
         final ListenableFuture<RpcResult<?>> bindingResult = invoke(schemaPath, bindingInput);
-        return Futures.makeChecked(transformResult(bindingResult),
-                new ExceptionMapper<DOMRpcException>("invokeRPc", DOMRpcException.class) {
-
-                    @Override
-                    protected DOMRpcException newWithCause(final String message, final Throwable cause) {
-                        return new DOMRpcInvokeException(message, cause);
-                    }
-                });
-    }
-
-    private class DOMRpcInvokeException extends DOMRpcException {
-
-        private static final long serialVersionUID = 1L;
-
-        protected DOMRpcInvokeException(final String message, final Throwable cause) {
-            super(message, cause);
-        }
+        return transformResult(bindingResult);
     }
 
     @Override
@@ -121,8 +102,7 @@ public class BindingDOMOperationImplementationAdapter implements DOMRpcImplement
         return JdkFutureAdapters.listenInPoolThread(invoker.invoke(delegate, schemaPath.getLastComponent(), input));
     }
 
-    private ListenableFuture<DOMRpcResult>
-            transformResult(final ListenableFuture<RpcResult<?>> bindingResult) {
+    private FluentFuture<DOMRpcResult> transformResult(final ListenableFuture<RpcResult<?>> bindingResult) {
         return LazyDOMOperationResultFuture.create(codec, bindingResult);
     }
 }

@@ -8,7 +8,8 @@
 package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.AbstractFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -17,12 +18,22 @@ import java.util.concurrent.TimeoutException;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
+import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 
-final class LazyDOMRpcResultFuture implements CheckedFuture<DOMRpcResult, DOMRpcException>, BindingRpcFutureAware {
+final class LazyDOMRpcResultFuture extends AbstractFuture<DOMRpcResult> implements BindingRpcFutureAware {
+    private static final ExceptionMapper<DOMRpcException> DOM_RPC_EX_MAPPER =
+            new ExceptionMapper<DOMRpcException>("rpc", DOMRpcException.class) {
+        @Override
+        protected DOMRpcException newWithCause(String message, Throwable cause) {
+            return cause instanceof DOMRpcException ? (DOMRpcException)cause
+                    : new DefaultDOMRpcException("RPC failed", cause);
+        }
+    };
 
     private final ListenableFuture<RpcResult<?>> bindingFuture;
     private final BindingNormalizedNodeCodecRegistry codec;
@@ -34,7 +45,7 @@ final class LazyDOMRpcResultFuture implements CheckedFuture<DOMRpcResult, DOMRpc
         this.codec = Preconditions.checkNotNull(codec, "codec");
     }
 
-    static CheckedFuture<DOMRpcResult, DOMRpcException> create(final BindingNormalizedNodeCodecRegistry codec,
+    static FluentFuture<DOMRpcResult> create(final BindingNormalizedNodeCodecRegistry codec,
             final ListenableFuture<RpcResult<?>> bindingResult) {
         return new LazyDOMRpcResultFuture(bindingResult, codec);
     }
@@ -59,7 +70,12 @@ final class LazyDOMRpcResultFuture implements CheckedFuture<DOMRpcResult, DOMRpc
         if (result != null) {
             return result;
         }
-        return transformIfNecessary(bindingFuture.get());
+
+        try {
+            return transformIfNecessary(bindingFuture.get());
+        } catch (ExecutionException e) {
+            throw new ExecutionException(e.getMessage(), DOM_RPC_EX_MAPPER.apply(e));
+        }
     }
 
     @Override
@@ -68,26 +84,11 @@ final class LazyDOMRpcResultFuture implements CheckedFuture<DOMRpcResult, DOMRpc
         if (result != null) {
             return result;
         }
-        return transformIfNecessary(bindingFuture.get(timeout, unit));
-    }
 
-    @Override
-    public DOMRpcResult checkedGet() throws DOMRpcException {
         try {
-            return get();
-        } catch (InterruptedException | ExecutionException e) {
-            // FIXME: Add exception mapping
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public DOMRpcResult checkedGet(final long timeout, final TimeUnit unit) throws TimeoutException, DOMRpcException {
-        try {
-            return get(timeout, unit);
-        } catch (InterruptedException | ExecutionException e) {
-            // FIXME: Add exception mapping
-            throw new RuntimeException(e);
+            return transformIfNecessary(bindingFuture.get(timeout, unit));
+        } catch (ExecutionException e) {
+            throw new ExecutionException(e.getMessage(), DOM_RPC_EX_MAPPER.apply(e));
         }
     }
 
@@ -119,5 +120,4 @@ final class LazyDOMRpcResultFuture implements CheckedFuture<DOMRpcResult, DOMRpc
         }
         return new DefaultDOMRpcResult(input.getErrors());
     }
-
 }

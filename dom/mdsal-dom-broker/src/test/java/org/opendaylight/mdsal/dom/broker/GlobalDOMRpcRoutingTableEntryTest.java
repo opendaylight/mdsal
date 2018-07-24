@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
@@ -27,7 +30,7 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 public class GlobalDOMRpcRoutingTableEntryTest extends TestUtils {
 
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() throws InterruptedException, TimeoutException {
         final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> rpcImplementations = new HashMap<>();
         final List<DOMRpcImplementation> rpcImplementation = new ArrayList<>();
         final RpcDefinition rpcDefinition = mock(RpcDefinition.class);
@@ -47,10 +50,11 @@ public class GlobalDOMRpcRoutingTableEntryTest extends TestUtils {
 
         try {
             globalDOMRpcRoutingTableEntry.newInstance(rpcImplementations)
-                    .invokeRpc(TEST_CONTAINER).checkedGet();
+                    .invokeRpc(TEST_CONTAINER).get(5, TimeUnit.SECONDS);
             fail("Expected DOMRpcImplementationNotAvailableException");
-        } catch (DOMRpcImplementationNotAvailableException e) {
-            assertTrue(e.getMessage().contains(EXCEPTION_TEXT));
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof DOMRpcImplementationNotAvailableException);
+            assertTrue(e.getCause().getMessage().contains(EXCEPTION_TEXT));
         }
     }
 }
