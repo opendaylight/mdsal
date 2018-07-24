@@ -32,6 +32,7 @@ import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipListener;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipService;
 import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonService;
+import org.opendaylight.mdsal.singleton.common.api.ClusterSingletonServiceRegistration;
 import org.opendaylight.yangtools.concepts.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +117,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     private final ReentrantLock lock = new ReentrantLock(true);
 
     @GuardedBy("lock")
-    private final List<ClusterSingletonService> serviceGroup;
+    private final List<ClusterSingletonServiceRegistration> serviceGroup;
 
     /*
      * State tracking is quite involved, as we are tracking up to four asynchronous sources of events:
@@ -190,7 +191,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * @param services Services list
      */
     ClusterSingletonServiceGroupImpl(final String identifier, final S entityOwnershipService, final E mainEntity,
-            final E closeEntity, final List<ClusterSingletonService> services) {
+            final E closeEntity, final List<ClusterSingletonServiceRegistration> services) {
         Preconditions.checkArgument(!identifier.isEmpty(), "Identifier may not be empty");
         this.identifier = identifier;
         this.entityOwnershipService = Preconditions.checkNotNull(entityOwnershipService);
@@ -355,7 +356,8 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     }
 
     @Override
-    void registerService(final ClusterSingletonService service) {
+    void registerService(final ClusterSingletonServiceRegistration reg) {
+        final ClusterSingletonService service = reg.getInstance();
         Verify.verify(identifier.equals(service.getIdentifier().getValue()));
         checkNotClosed();
 
@@ -365,7 +367,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
                     "Service group %s is not initialized yet", identifier);
 
             LOG.debug("Adding service {} to service group {}", service, identifier);
-            serviceGroup.add(service);
+            serviceGroup.add(reg);
 
             switch (localServicesState) {
                 case STARTED:
@@ -386,7 +388,8 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
     @CheckReturnValue
     @Override
-    boolean unregisterService(final ClusterSingletonService service) {
+    boolean unregisterService(final ClusterSingletonServiceRegistration reg) {
+        final ClusterSingletonService service = reg.getInstance();
         Verify.verify(identifier.equals(service.getIdentifier().getValue()));
         checkNotClosed();
 
@@ -395,11 +398,11 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             // There is a slight problem here, as the type does not match the list type, hence we need to tread
             // carefully.
             if (serviceGroup.size() == 1) {
-                Verify.verify(serviceGroup.contains(service));
+                Verify.verify(serviceGroup.contains(reg));
                 return true;
             }
 
-            Verify.verify(serviceGroup.remove(service));
+            Verify.verify(serviceGroup.remove(reg));
             LOG.debug("Service {} was removed from group.", service.getIdentifier().getValue());
 
             switch (localServicesState) {
@@ -642,7 +645,8 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         }
 
         LOG.debug("Service group {} starting services", identifier);
-        serviceGroup.forEach(service -> {
+        serviceGroup.forEach(reg -> {
+            final ClusterSingletonService service = reg.getInstance();
             LOG.debug("Starting service {}", service);
             try {
                 service.instantiateServiceInstance();
@@ -662,9 +666,9 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
                 localServicesState = ServiceState.STOPPING;
 
                 final List<ListenableFuture<?>> serviceCloseFutureList = new ArrayList<>(serviceGroup.size());
-                for (final ClusterSingletonService service : serviceGroup) {
+                for (final ClusterSingletonServiceRegistration reg : serviceGroup) {
+                    final ClusterSingletonService service = reg.getInstance();
                     final ListenableFuture<?> future;
-
                     try {
                         future = service.closeServiceInstance();
                     } catch (Exception e) {
