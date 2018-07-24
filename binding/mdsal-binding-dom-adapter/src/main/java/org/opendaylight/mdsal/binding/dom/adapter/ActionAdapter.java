@@ -63,7 +63,7 @@ final class ActionAdapter extends AbstractBindingAdapter<DOMOperationService> im
                 if (args.length == 2) {
                     final InstanceIdentifier<?> path = (InstanceIdentifier<?>) requireNonNull(args[0]);
                     final RpcInput input = (RpcInput) requireNonNull(args[1]);
-                    final FluentFuture<DOMOperationResult> future = getDelegate().invokeAction(schemaPath,
+                    final FluentFuture<? extends DOMOperationResult> future = getDelegate().invokeAction(schemaPath,
                         new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, getCodec().toNormalized(path)),
                         getCodec().toLazyNormalizedNodeActionInput(type, inputName, input));
 
