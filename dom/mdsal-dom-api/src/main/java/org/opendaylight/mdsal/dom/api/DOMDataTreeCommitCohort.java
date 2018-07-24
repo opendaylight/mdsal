@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.dom.api;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -87,40 +88,62 @@ public interface DOMDataTreeCommitCohort {
     }
 
     /**
-     * Validates supplied data tree candidates and associates cohort-specific steps with data broker
+     * DO NOT implement or invoke this method. It is deprecated in favor of
+     * {@link #canCommit(Object, SchemaContext, Collection)} which returns a {@link FluentFuture} instead of the
+     * deprecated {@link CheckedFuture} which is scheduled for remkoval in a future guava release. The
+     * default implementation calls {@link #canCommit(Object, SchemaContext, Collection)}.
+     *
+     * @deprecated Implement and invoke {@link #canCommit(Object, SchemaContext, Collection)} instead.
+     */
+    @Deprecated
+    @Nonnull
+    default CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(@Nonnull final Object txId,
+            @Nonnull final Collection<DOMDataTreeCandidate> candidates, @Nonnull final SchemaContext ctx) {
+        LoggerFactory.getLogger(getClass()).error(
+                "The default implementation of DOMDataTreeCommitCohort#canCommit(Object, Collection, "
+                + "SchemaContext) was invoked on {}", getClass());
+
+        return MappingCheckedFuture.create(canCommit(txId, ctx, candidates), new DataValidationFailedExceptionMapper(
+                "canCommit", Iterables.getLast(candidates).getRootPath()));
+    }
+
+    /**
+     * Validates the supplied data tree modifications and associates the cohort-specific steps with data broker
      * transaction.
-     * If {@link DataValidationFailedException} is thrown by implementation, commit of supplied data
-     * will be prevented, with the DataBroker transaction providing the thrown exception as the
-     * cause of failure.
-     * Note the implementations are expected to do validation and processing asynchronous.
-     * Implementations SHOULD do processing fast, and are discouraged SHOULD NOT block on any
-     * external resources.
-     * Implementation MUST NOT access any data transaction related APIs during invocation of
-     * callback. Note that this may be enforced by some implementations of
-     * {@link DOMDataTreeCommitCohortRegistry} and such calls may fail.
+     *
+     * <p>
+     * If {@link DataValidationFailedException} is thrown by implementation, the commit of the supplied data
+     * will be prevented, with the DataBroker transaction providing the thrown exception as the cause of failure.
+     *
+     * <p>
+     * Note the implementations are expected to do validation and processing asynchronous. Implementations SHOULD do
+     * processing fast, and are discouraged from blocking on any external resources. Implementation MUST NOT access
+     * any data transaction related APIs during invocation of the callback. Note that this may be enforced by some
+     * implementations of {@link DOMDataTreeCommitCohortRegistry} and such calls may fail.
+     *
+     * <p>
      * Implementation MAY opt-out from implementing other steps by returning
      * {@link PostCanCommitStep#NOOP}. Otherwise implementation MUST return instance of
      * {@link PostCanCommitStep}, which will be used to invoke
      * {@link org.opendaylight.mdsal.common.api.PostPreCommitStep#commit()} or
-     * {@link PostCanCommitStep#abort()} based on accepting data by data broker and or other commit
-     * cohorts.
+     * {@link PostCanCommitStep#abort()} based on accepting data by data broker and or other commit cohorts.
      *
      * @param txId Transaction identifier. SHOULD be used only for reporting and correlation.
      *        Implementation MUST NOT use {@code txId} for validation.
      * @param candidates Data Tree candidates to be validated and committed.
      * @param ctx Schema Context to which Data Tree candidate should conform.
-     * @return Checked future which will successfully complete with the user-supplied implementation of
-     *         {@link PostCanCommitStep} if all candidates are valid, or a failed checked future with a
+     * @return a FluentFuture which will successfully complete with the user-supplied implementation of
+     *         {@link PostCanCommitStep} if all candidates are valid, or a failed future with a
      *         {@link DataValidationFailedException} if and only if a provided
      *         {@link DOMDataTreeCandidate} instance did not pass validation. Users are encouraged to use
      *         more specific subclasses of this exception to provide additional information about
      *         validation failure reason.
      */
     @Nonnull
-    default CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(@Nonnull final Object txId,
-            @Nonnull final Collection<DOMDataTreeCandidate> candidates, @Nonnull final SchemaContext ctx) {
+    default FluentFuture<PostCanCommitStep> canCommit(@Nonnull final Object txId,
+            @Nonnull final SchemaContext ctx, @Nonnull final Collection<DOMDataTreeCandidate> candidates) {
         LoggerFactory.getLogger(getClass()).warn("DOMDataTreeCommitCohort implementation {} should override "
-                + "canCommit(Object, Collection, SchemaContext)", getClass());
+                + "canCommit(Object, SchemaContext, Collection)", getClass());
 
         // For backwards compatibility, the default implementation is to invoke the deprecated
         // canCommit(Object, DOMDataTreeCandidate, SchemaContext) method for each DOMDataTreeCandidate and return the
@@ -132,8 +155,7 @@ public interface DOMDataTreeCommitCohort {
 
         final ListenableFuture<PostCanCommitStep> resultFuture = Futures.transform(Futures.allAsList(futures),
             input -> input.get(input.size() - 1), MoreExecutors.directExecutor());
-        return MappingCheckedFuture.create(resultFuture, new DataValidationFailedExceptionMapper("canCommit",
-                Iterables.getLast(candidates).getRootPath()));
+        return FluentFuture.from(resultFuture);
     }
 
     /**
