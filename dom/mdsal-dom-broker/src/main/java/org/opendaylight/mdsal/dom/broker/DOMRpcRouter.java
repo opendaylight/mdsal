@@ -19,8 +19,7 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.MapDifference.ValueDifference;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +32,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
@@ -46,6 +44,7 @@ import org.opendaylight.mdsal.dom.spi.AbstractDOMRpcImplementationRegistration;
 import org.opendaylight.yangtools.concepts.AbstractListenerRegistration;
 import org.opendaylight.yangtools.concepts.AbstractRegistration;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
@@ -216,11 +215,10 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
 
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
-        public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final SchemaPath type,
-                final NormalizedNode<?, ?> input) {
+        public FluentFuture<DOMRpcResult> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
             final AbstractDOMRpcRoutingTableEntry entry = routingTable.getEntry(type);
             if (entry == null) {
-                return Futures.immediateFailedCheckedFuture(
+                return FluentFutures.immediateFailedFluentFuture(
                     new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
             }
 

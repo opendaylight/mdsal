@@ -14,6 +14,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
@@ -24,7 +26,7 @@ public class RoutedDOMRpcRoutingTableEntryTest extends TestUtils {
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
-    public void basicTest() throws Exception {
+    public void basicTest() throws InterruptedException, TimeoutException {
         final RpcDefinition rpcDefinition = mock(RpcDefinition.class);
         doReturn(SchemaPath.ROOT).when(rpcDefinition).getPath();
 
@@ -33,10 +35,10 @@ public class RoutedDOMRpcRoutingTableEntryTest extends TestUtils {
         assertNotNull(routedDOMRpcRoutingTableEntry.newInstance(new HashMap<>()));
 
         try {
-            routedDOMRpcRoutingTableEntry.invokeRpc(TEST_CHILD).checkedGet();
+            routedDOMRpcRoutingTableEntry.invokeRpc(TEST_CHILD).get();
             fail("Expected DOMRpcImplementationNotAvailableException");
-        } catch (final Exception e) {
-            assertTrue(e instanceof DOMRpcImplementationNotAvailableException);
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof DOMRpcImplementationNotAvailableException);
         }
     }
 }

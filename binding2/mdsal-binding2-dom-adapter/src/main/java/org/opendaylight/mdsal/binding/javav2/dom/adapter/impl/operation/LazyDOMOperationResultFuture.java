@@ -17,8 +17,11 @@ import java.util.concurrent.TimeoutException;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.javav2.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
+import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.mdsal.dom.api.DefaultDOMRpcException;
 import org.opendaylight.mdsal.dom.spi.DefaultDOMRpcResult;
+import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.binding.DataContainer;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
@@ -28,6 +31,14 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
  */
 @Beta
 final class LazyDOMOperationResultFuture implements ListenableFuture<DOMRpcResult> {
+    private static final ExceptionMapper<DOMRpcException> DOM_RPC_EX_MAPPER =
+            new ExceptionMapper<DOMRpcException>("rpc", DOMRpcException.class) {
+        @Override
+        protected DOMRpcException newWithCause(String message, Throwable cause) {
+            return cause instanceof DOMRpcException ? (DOMRpcException)cause
+                    : new DefaultDOMRpcException("RPC failed", cause);
+        }
+    };
 
     private final ListenableFuture<RpcResult<?>> bindingFuture;
     private final BindingNormalizedNodeCodecRegistry codec;
@@ -63,7 +74,12 @@ final class LazyDOMOperationResultFuture implements ListenableFuture<DOMRpcResul
         if (result != null) {
             return result;
         }
-        return transformIfNecessary(bindingFuture.get());
+
+        try {
+            return transformIfNecessary(bindingFuture.get());
+        } catch (ExecutionException e) {
+            throw new ExecutionException(e.getMessage(), DOM_RPC_EX_MAPPER.apply(e));
+        }
     }
 
     @Override
@@ -72,7 +88,12 @@ final class LazyDOMOperationResultFuture implements ListenableFuture<DOMRpcResul
         if (result != null) {
             return result;
         }
-        return transformIfNecessary(bindingFuture.get(timeout, unit));
+
+        try {
+            return transformIfNecessary(bindingFuture.get(timeout, unit));
+        } catch (ExecutionException e) {
+            throw new ExecutionException(e.getMessage(), DOM_RPC_EX_MAPPER.apply(e));
+        }
     }
 
     @Override
