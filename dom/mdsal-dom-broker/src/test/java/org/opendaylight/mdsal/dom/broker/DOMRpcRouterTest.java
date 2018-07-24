@@ -27,17 +27,17 @@ public class DOMRpcRouterTest extends TestUtils {
     public void registerRpcImplementation() {
         try (DOMRpcRouter rpcRouter = new DOMRpcRouter()) {
             DOMRpcRoutingTable routingTable = rpcRouter.routingTable();
-            assertFalse(routingTable.getRpcs().containsKey(SchemaPath.ROOT));
+            assertFalse(routingTable.getOperations().containsKey(SchemaPath.ROOT));
 
             rpcRouter.getRpcProviderService().registerRpcImplementation(getTestRpcImplementation(),
                 DOMRpcIdentifier.create(SchemaPath.ROOT, null));
             routingTable = rpcRouter.routingTable();
-            assertTrue(routingTable.getRpcs().containsKey(SchemaPath.ROOT));
+            assertTrue(routingTable.getOperations().containsKey(SchemaPath.ROOT));
 
             rpcRouter.getRpcProviderService().registerRpcImplementation(getTestRpcImplementation(),
                 DOMRpcIdentifier.create(SchemaPath.SAME, null));
             routingTable = rpcRouter.routingTable();
-            assertTrue(routingTable.getRpcs().containsKey(SchemaPath.SAME));
+            assertTrue(routingTable.getOperations().containsKey(SchemaPath.SAME));
         }
     }
 

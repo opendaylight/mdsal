@@ -7,23 +7,12 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Maps;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
@@ -35,121 +24,51 @@ import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-final class DOMRpcRoutingTable {
+final class DOMRpcRoutingTable extends AbstractDOMRoutingTable<DOMRpcIdentifier, YangInstanceIdentifier,
+        DOMRpcImplementation, DOMRpcAvailabilityListener, AbstractDOMRpcRoutingTableEntry> {
     static final DOMRpcRoutingTable EMPTY = new DOMRpcRoutingTable(ImmutableMap.of(), null);
-
-    private final Map<SchemaPath, AbstractDOMRpcRoutingTableEntry> rpcs;
-    private final SchemaContext schemaContext;
 
     private DOMRpcRoutingTable(final Map<SchemaPath, AbstractDOMRpcRoutingTableEntry> rpcs,
             final SchemaContext schemaContext) {
-        this.rpcs = Preconditions.checkNotNull(rpcs);
-        this.schemaContext = schemaContext;
-    }
-
-    DOMRpcRoutingTable setSchemaContext(final SchemaContext context) {
-        final Builder<SchemaPath, AbstractDOMRpcRoutingTableEntry> b = ImmutableMap.builder();
-
-        for (Entry<SchemaPath, AbstractDOMRpcRoutingTableEntry> e : rpcs.entrySet()) {
-            b.put(e.getKey(), createRpcEntry(context, e.getKey(), e.getValue().getImplementations()));
-        }
-
-        return new DOMRpcRoutingTable(b.build(), context);
-    }
-
-    DOMRpcRoutingTable add(final DOMRpcImplementation implementation, final Set<DOMRpcIdentifier> rpcsToAdd) {
-        if (rpcsToAdd.isEmpty()) {
-            return this;
-        }
-
-        // First decompose the identifiers to a multimap
-        final ListMultimap<SchemaPath, YangInstanceIdentifier> toAdd = decomposeIdentifiers(rpcsToAdd);
-
-        // Now iterate over existing entries, modifying them as appropriate...
-        final Builder<SchemaPath, AbstractDOMRpcRoutingTableEntry> mb = ImmutableMap.builder();
-        for (Entry<SchemaPath, AbstractDOMRpcRoutingTableEntry> re : this.rpcs.entrySet()) {
-            List<YangInstanceIdentifier> newRpcs = new ArrayList<>(toAdd.removeAll(re.getKey()));
-            if (!newRpcs.isEmpty()) {
-                final AbstractDOMRpcRoutingTableEntry ne = re.getValue().add(implementation, newRpcs);
-                mb.put(re.getKey(), ne);
-            } else {
-                mb.put(re);
-            }
-        }
-
-        // Finally add whatever is left in the decomposed multimap
-        for (Entry<SchemaPath, Collection<YangInstanceIdentifier>> e : toAdd.asMap().entrySet()) {
-            final Builder<YangInstanceIdentifier, List<DOMRpcImplementation>> vb = ImmutableMap.builder();
-            final List<DOMRpcImplementation> v = ImmutableList.of(implementation);
-            for (YangInstanceIdentifier i : e.getValue()) {
-                vb.put(i, v);
-            }
-
-            mb.put(e.getKey(), createRpcEntry(schemaContext, e.getKey(), vb.build()));
-        }
-
-        return new DOMRpcRoutingTable(mb.build(), schemaContext);
-    }
-
-    DOMRpcRoutingTable remove(final DOMRpcImplementation implementation, final Set<DOMRpcIdentifier> rpcIds) {
-        if (rpcIds.isEmpty()) {
-            return this;
-        }
-
-        // First decompose the identifiers to a multimap
-        final ListMultimap<SchemaPath, YangInstanceIdentifier> toRemove = decomposeIdentifiers(rpcIds);
-
-        // Now iterate over existing entries, modifying them as appropriate...
-        final Builder<SchemaPath, AbstractDOMRpcRoutingTableEntry> b = ImmutableMap.builder();
-        for (Entry<SchemaPath, AbstractDOMRpcRoutingTableEntry> e : this.rpcs.entrySet()) {
-            final List<YangInstanceIdentifier> removed = new ArrayList<>(toRemove.removeAll(e.getKey()));
-            if (!removed.isEmpty()) {
-                final AbstractDOMRpcRoutingTableEntry ne = e.getValue().remove(implementation, removed);
-                if (ne != null) {
-                    b.put(e.getKey(), ne);
-                }
-            } else {
-                b.put(e);
-            }
-        }
-
-        // All done, whatever is in toRemove, was not there in the first place
-        return new DOMRpcRoutingTable(b.build(), schemaContext);
+        super(rpcs, schemaContext);
     }
 
     boolean contains(final DOMRpcIdentifier input) {
-        final AbstractDOMRpcRoutingTableEntry contexts = rpcs.get(input.getType());
+        final AbstractDOMRpcRoutingTableEntry contexts = (AbstractDOMRpcRoutingTableEntry) getEntry(input.getType());
         return contexts != null && contexts.containsContext(input.getContextReference());
     }
 
-    @VisibleForTesting
-    Map<SchemaPath, Set<YangInstanceIdentifier>> getRpcs() {
-        return Maps.transformValues(rpcs, AbstractDOMRpcRoutingTableEntry::registeredIdentifiers);
+    @Override
+    protected AbstractDOMRoutingTable newInstance(final Map<SchemaPath, AbstractDOMRpcRoutingTableEntry> operations,
+            final SchemaContext schemaContext) {
+        return new DOMRpcRoutingTable(operations, schemaContext);
     }
 
-    Map<SchemaPath, Set<YangInstanceIdentifier>> getRpcs(final DOMRpcAvailabilityListener listener) {
-        final Map<SchemaPath, Set<YangInstanceIdentifier>> ret = new HashMap<>(rpcs.size());
-        for (Entry<SchemaPath, AbstractDOMRpcRoutingTableEntry> e : rpcs.entrySet()) {
-            final Set<YangInstanceIdentifier> ids = e.getValue().registeredIdentifiers(listener);
-            if (!ids.isEmpty()) {
-                ret.put(e.getKey(), ids);
-            }
-        }
-
-        return ret;
-    }
-
-    @Nullable AbstractDOMRpcRoutingTableEntry getEntry(final @NonNull SchemaPath type) {
-        return rpcs.get(type);
-    }
-
-    private static ListMultimap<SchemaPath, YangInstanceIdentifier> decomposeIdentifiers(
+    @Override
+    protected ListMultimap<SchemaPath, YangInstanceIdentifier> decomposeIdentifiers(
             final Set<DOMRpcIdentifier> rpcs) {
         final ListMultimap<SchemaPath, YangInstanceIdentifier> ret = LinkedListMultimap.create();
         for (DOMRpcIdentifier i : rpcs) {
             ret.put(i.getType(), i.getContextReference());
         }
         return ret;
+    }
+
+    @Override
+    AbstractDOMRpcRoutingTableEntry createOperationEntry(final SchemaContext context, final SchemaPath key,
+            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations) {
+        final RpcDefinition rpcDef = findRpcDefinition(context, key);
+        if (rpcDef == null) {
+            return new UnknownDOMRpcRoutingTableEntry(key, implementations);
+        }
+
+        final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(rpcDef);
+        if (strategy.isContextBasedRouted()) {
+            return new RoutedDOMRpcRoutingTableEntry(rpcDef, YangInstanceIdentifier.of(strategy.getLeaf()),
+                implementations);
+        }
+
+        return new GlobalDOMRpcRoutingTableEntry(rpcDef, implementations);
     }
 
     private static RpcDefinition findRpcDefinition(final SchemaContext context, final SchemaPath schemaPath) {
@@ -166,21 +85,5 @@ final class DOMRpcRoutingTable {
         }
 
         return null;
-    }
-
-    private static AbstractDOMRpcRoutingTableEntry createRpcEntry(final SchemaContext context, final SchemaPath key,
-            final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations) {
-        final RpcDefinition rpcDef = findRpcDefinition(context, key);
-        if (rpcDef == null) {
-            return new UnknownDOMRpcRoutingTableEntry(key, implementations);
-        }
-
-        final RpcRoutingStrategy strategy = RpcRoutingStrategy.from(rpcDef);
-        if (strategy.isContextBasedRouted()) {
-            return new RoutedDOMRpcRoutingTableEntry(rpcDef, YangInstanceIdentifier.of(strategy.getLeaf()),
-                implementations);
-        }
-
-        return new GlobalDOMRpcRoutingTableEntry(rpcDef, implementations);
     }
 }

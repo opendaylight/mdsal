@@ -7,117 +7,43 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
-abstract class AbstractDOMRpcRoutingTableEntry {
-    private final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations;
+abstract class AbstractDOMRpcRoutingTableEntry extends AbstractDOMRoutingTableEntry<YangInstanceIdentifier,
+        DOMRpcImplementation, DOMRpcAvailabilityListener> {
     private final DOMRpcIdentifier rpcId;
 
     AbstractDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId, final Map<YangInstanceIdentifier,
-            List<DOMRpcImplementation>> implementations) {
+        List<DOMRpcImplementation>> implementations) {
+        super(rpcId.getType(), implementations);
         this.rpcId = Preconditions.checkNotNull(rpcId);
-        this.implementations = Preconditions.checkNotNull(implementations);
-    }
-
-    final SchemaPath getSchemaPath() {
-        return rpcId.getType();
     }
 
     final DOMRpcIdentifier getRpcId() {
         return rpcId;
     }
 
-    final List<DOMRpcImplementation> getImplementations(final YangInstanceIdentifier context) {
-        return implementations.get(context);
-    }
-
-    final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> getImplementations() {
-        return implementations;
-    }
-
     final boolean containsContext(final YangInstanceIdentifier contextReference) {
-        return implementations.containsKey(contextReference);
+        return getImplementations().containsKey(contextReference);
     }
 
-    final Set<YangInstanceIdentifier> registeredIdentifiers(final DOMRpcAvailabilityListener listener) {
-        return Maps.filterValues(implementations, list -> list.stream()
+    @Override
+    protected final Set<YangInstanceIdentifier> registeredIdentifiers(final DOMRpcAvailabilityListener listener) {
+        return Maps.filterValues(getImplementations(), list -> list.stream()
             .anyMatch(listener::acceptsImplementation)).keySet();
     }
 
-    @VisibleForTesting
-    final Set<YangInstanceIdentifier> registeredIdentifiers() {
-        return implementations.keySet();
+    @Override
+    protected Comparator<DOMRpcImplementation> implComparator() {
+        return Comparator.comparingLong(DOMRpcImplementation::invocationCost);
     }
-
-    /**
-     * This method adds the given DOMRpcImplementation instance for the given list RPC identifiers.
-     *
-     * @param implementation the DOMRpcImplementation instance to add
-     * @param newRpcs the List of new RPCs that the DOMRpcImplementation provides, must be mutable
-     * @return a new instance of AbstractDOMRpcRoutingTableEntry with the additions
-     */
-    final AbstractDOMRpcRoutingTableEntry add(
-            final DOMRpcImplementation implementation, final List<YangInstanceIdentifier> newRpcs) {
-        final Builder<YangInstanceIdentifier, List<DOMRpcImplementation>> vb = ImmutableMap.builder();
-        for (final Entry<YangInstanceIdentifier, List<DOMRpcImplementation>> ve : implementations.entrySet()) {
-            if (newRpcs.remove(ve.getKey())) {
-                final List<DOMRpcImplementation> i = new ArrayList<>(ve.getValue().size() + 1);
-                i.addAll(ve.getValue());
-                i.add(implementation);
-
-                // New implementation is at the end, this will move it to be the last among implementations
-                // with equal cost -- relying on sort() being stable.
-                i.sort(Comparator.comparingLong(DOMRpcImplementation::invocationCost));
-                vb.put(ve.getKey(), i);
-            } else {
-                vb.put(ve);
-            }
-        }
-        for (final YangInstanceIdentifier ii : newRpcs) {
-            final List<DOMRpcImplementation> impl = new ArrayList<>(1);
-            impl.add(implementation);
-            vb.put(ii, impl);
-        }
-
-        return newInstance(vb.build());
-    }
-
-    final AbstractDOMRpcRoutingTableEntry remove(
-            final DOMRpcImplementation implementation, final List<YangInstanceIdentifier> removed) {
-        final Builder<YangInstanceIdentifier, List<DOMRpcImplementation>> vb = ImmutableMap.builder();
-        for (final Entry<YangInstanceIdentifier, List<DOMRpcImplementation>> ve : implementations.entrySet()) {
-            if (removed.remove(ve.getKey())) {
-                final List<DOMRpcImplementation> i = new ArrayList<>(ve.getValue());
-                i.remove(implementation);
-                // We could trimToSize(), but that may perform another copy just to get rid
-                // of a single element. That is probably not worth the trouble.
-                if (!i.isEmpty()) {
-                    vb.put(ve.getKey(), i);
-                }
-            } else {
-                vb.put(ve);
-            }
-        }
-
-        final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> v = vb.build();
-        return v.isEmpty() ? null : newInstance(v);
-    }
-
-    protected abstract AbstractDOMRpcRoutingTableEntry newInstance(
-            Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls);
 }
