@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.dom.adapter.invoke.RpcServiceInvoker;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -68,8 +67,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
 
     @Nonnull
     @Override
-    public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(@Nonnull final DOMRpcIdentifier rpc,
-            final NormalizedNode<?, ?> input) {
+    public FluentFuture<DOMRpcResult> invokeRpc(@Nonnull final DOMRpcIdentifier rpc, final NormalizedNode<?, ?> input) {
 
         final SchemaPath schemaPath = rpc.getType();
         final DataObject bindingInput = input != null ? deserialize(rpc.getType(), input) : null;
@@ -94,8 +92,7 @@ public class BindingDOMRpcImplementationAdapter implements DOMRpcImplementation 
         return invoker.invokeRpc(delegate, schemaPath.getLastComponent(), input);
     }
 
-    private CheckedFuture<DOMRpcResult, DOMRpcException> transformResult(
-            final ListenableFuture<RpcResult<?>> bindingResult) {
+    private FluentFuture<DOMRpcResult> transformResult(final ListenableFuture<RpcResult<?>> bindingResult) {
         return LazyDOMRpcResultFuture.create(codec, bindingResult);
     }
 }
