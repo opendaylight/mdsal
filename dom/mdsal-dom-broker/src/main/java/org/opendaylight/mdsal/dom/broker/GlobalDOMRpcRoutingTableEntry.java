@@ -8,10 +8,9 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.List;
 import java.util.Map;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
@@ -37,7 +36,7 @@ final class GlobalDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
     }
 
     @Override
-    protected CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final NormalizedNode<?, ?> input) {
+    protected FluentFuture<DOMRpcResult> invokeRpc(final NormalizedNode<?, ?> input) {
         return getImplementations(YangInstanceIdentifier.EMPTY).get(0).invokeRpc(rpcId, input);
     }
 

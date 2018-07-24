@@ -10,16 +10,15 @@ package org.opendaylight.mdsal.dom.broker;
 
 import static org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNodes.leafNode;
 
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.FluentFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.NodeIdentifier;
@@ -69,16 +68,17 @@ abstract class TestUtils {
     }
 
     private static final class TestRpcImplementation implements DOMRpcImplementation {
-        private final CheckedFuture<DOMRpcResult, DOMRpcException> unknownRpc;
+        private final FluentFuture<DOMRpcResult> unknownRpc;
 
         private TestRpcImplementation() {
-            unknownRpc = Futures.immediateFailedCheckedFuture(
+            unknownRpc = FluentFutures.immediateFailedFluentFuture(
                     new DOMRpcImplementationNotAvailableException(EXCEPTION_TEXT));
         }
 
+        @Override
         @Nonnull
-        public CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(
-                @Nonnull final DOMRpcIdentifier rpc, @Nullable final NormalizedNode<?, ?> input) {
+        public FluentFuture<DOMRpcResult> invokeRpc(@Nonnull final DOMRpcIdentifier rpc,
+                @Nullable final NormalizedNode<?, ?> input) {
             return unknownRpc;
         }
     }

@@ -14,12 +14,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Set;
 import javassist.ClassPool;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMMountPointServiceAdapter;
 import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMNotificationPublishServiceAdapter;
@@ -84,7 +86,7 @@ public class BindingTestContext implements AutoCloseable {
 
     private DOMNotificationService domListenService;
 
-
+    private Set<YangModuleInfo> schemaModuleInfos;
 
     public DOMDataBroker getDomAsyncDataBroker() {
         return newDOMDataBroker;
@@ -154,11 +156,11 @@ public class BindingTestContext implements AutoCloseable {
         mockSchemaService.registerSchemaContextListener(codec);
     }
 
-    private void updateYangSchema(final ImmutableSet<YangModuleInfo> moduleInfos) {
+    private void updateYangSchema(final Set<YangModuleInfo> moduleInfos) {
         mockSchemaService.changeSchema(getContext(moduleInfos));
     }
 
-    private static SchemaContext getContext(final ImmutableSet<YangModuleInfo> moduleInfos) {
+    private static SchemaContext getContext(final Set<YangModuleInfo> moduleInfos) {
         final ModuleInfoBackedContext ctx = ModuleInfoBackedContext.create();
         ctx.addModuleInfos(moduleInfos);
         return ctx.tryToCreateSchemaContext().get();
@@ -179,7 +181,10 @@ public class BindingTestContext implements AutoCloseable {
         startBindingBroker();
 
         startForwarding();
-        if (startWithSchema) {
+
+        if (schemaModuleInfos != null) {
+            updateYangSchema(schemaModuleInfos);
+        } else if (this.startWithSchema) {
             loadYangSchemaFromClasspath();
         }
     }
@@ -217,6 +222,14 @@ public class BindingTestContext implements AutoCloseable {
         return domRouter.getRpcService();
     }
 
+    public RpcProviderService getBindingRpcProviderRegistry() {
+        return baProviderRpc;
+    }
+
+    public RpcConsumerRegistry getBindingRpcConsumerRegistry() {
+        return baConsumerRpc;
+    }
+
     @Override
     public void close() throws Exception {
 
@@ -228,5 +241,9 @@ public class BindingTestContext implements AutoCloseable {
 
     public DataBroker getDataBroker() {
         return dataBroker;
+    }
+
+    public void setSchemaModuleInfos(Set<YangModuleInfo> moduleInfos) {
+        this.schemaModuleInfos = moduleInfos;
     }
 }

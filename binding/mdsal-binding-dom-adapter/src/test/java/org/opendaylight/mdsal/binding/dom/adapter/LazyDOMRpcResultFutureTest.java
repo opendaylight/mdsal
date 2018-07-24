@@ -65,11 +65,11 @@ public class LazyDOMRpcResultFutureTest {
         verify(future).addListener(any(), any());
 
         assertTrue(lazyDOMRpcResultFuture.isCancelled() && lazyDOMRpcResultFuture.isDone());
-        assertEquals(lazyDOMRpcResultFuture.checkedGet(), lazyDOMRpcResultFuture.get(1, TimeUnit.SECONDS));
+        assertEquals(lazyDOMRpcResultFuture.get(), lazyDOMRpcResultFuture.get(1, TimeUnit.SECONDS));
         final Field result = LazyDOMRpcResultFuture.class.getDeclaredField("result");
         result.setAccessible(true);
         result.set(lazyDOMRpcResultFuture, null);
-        assertEquals(lazyDOMRpcResultFuture.checkedGet(1, TimeUnit.SECONDS), lazyDOMRpcResultFuture.get());
+        assertEquals(lazyDOMRpcResultFuture.get(1, TimeUnit.SECONDS), lazyDOMRpcResultFuture.get());
 
         result.set(lazyDOMRpcResultFuture, null);
         doReturn(new Object()).when(domRpcResult).getResult();
@@ -86,7 +86,7 @@ public class LazyDOMRpcResultFutureTest {
     public void checkedGetWithException() throws Throwable {
         doThrow(InterruptedException.class).when(future).get();
         try {
-            lazyDOMRpcResultFuture.checkedGet();
+            lazyDOMRpcResultFuture.get();
         } catch (RuntimeException e) {
             throw e.getCause();
         }
@@ -97,7 +97,7 @@ public class LazyDOMRpcResultFutureTest {
     public void checkedGetWithException2() throws Throwable {
         doThrow(InterruptedException.class).when(future).get(1, TimeUnit.SECONDS);
         try {
-            lazyDOMRpcResultFuture.checkedGet(1, TimeUnit.SECONDS);
+            lazyDOMRpcResultFuture.get(1, TimeUnit.SECONDS);
         } catch (RuntimeException e) {
             throw e.getCause();
         }
