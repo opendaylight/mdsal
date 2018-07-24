@@ -31,6 +31,6 @@ final class UnknownDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEnt
     @Override
     protected UnknownDOMRpcRoutingTableEntry newInstance(final Map<YangInstanceIdentifier,
             List<DOMRpcImplementation>> impls) {
-        return new UnknownDOMRpcRoutingTableEntry(getSchemaPath(), impls);
+        return new UnknownDOMRpcRoutingTableEntry(getType(), impls);
     }
 }

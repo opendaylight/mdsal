@@ -88,7 +88,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
     private synchronized void removeRpcImplementation(final DOMRpcImplementation implementation,
             final Set<DOMRpcIdentifier> rpcs) {
         final DOMRpcRoutingTable oldTable = routingTable;
-        final DOMRpcRoutingTable newTable = oldTable.remove(implementation, rpcs);
+        final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.remove(implementation, rpcs);
         routingTable = newTable;
 
         listenerNotifier.execute(() -> notifyRemoved(newTable, implementation));
@@ -113,7 +113,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
     @Override
     public synchronized void onGlobalContextUpdated(final SchemaContext context) {
         final DOMRpcRoutingTable oldTable = routingTable;
-        final DOMRpcRoutingTable newTable = oldTable.setSchemaContext(context);
+        final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.setSchemaContext(context);
         routingTable = newTable;
     }
 
@@ -171,7 +171,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                 return;
             }
 
-            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getRpcs(l));
+            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(l));
             final MapDifference<SchemaPath, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
             final Collection<DOMRpcIdentifier> added = new ArrayList<>();
@@ -197,7 +197,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                 return;
             }
 
-            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getRpcs(l));
+            final Map<SchemaPath, Set<YangInstanceIdentifier>> rpcs = verifyNotNull(newTable.getOperations(l));
             final MapDifference<SchemaPath, Set<YangInstanceIdentifier>> diff = Maps.difference(prevRpcs, rpcs);
 
             final Collection<DOMRpcIdentifier> removed = new ArrayList<>();
@@ -221,7 +221,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
     private final class RpcServiceFacade implements DOMRpcService {
         @Override
         public FluentFuture<DOMRpcResult> invokeRpc(final SchemaPath type, final NormalizedNode<?, ?> input) {
-            final AbstractDOMRpcRoutingTableEntry entry = routingTable.getEntry(type);
+            final AbstractDOMRpcRoutingTableEntry entry = (AbstractDOMRpcRoutingTableEntry) routingTable.getEntry(type);
             if (entry == null) {
                 return FluentFutures.immediateFailedFluentFuture(
                     new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
@@ -234,7 +234,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
         public <T extends DOMRpcAvailabilityListener> ListenerRegistration<T> registerRpcListener(final T listener) {
             synchronized (DOMRpcRouter.this) {
                 final Registration<T> ret = new Registration<>(DOMRpcRouter.this, listener,
-                        routingTable.getRpcs(listener));
+                        routingTable.getOperations(listener));
                 final Builder<Registration<?>> b = ImmutableList.builder();
                 b.addAll(listeners);
                 b.add(ret);
@@ -259,7 +259,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
 
             synchronized (DOMRpcRouter.this) {
                 final DOMRpcRoutingTable oldTable = routingTable;
-                final DOMRpcRoutingTable newTable = oldTable.add(implementation, rpcs);
+                final DOMRpcRoutingTable newTable = (DOMRpcRoutingTable) oldTable.add(implementation, rpcs);
                 routingTable = newTable;
 
                 listenerNotifier.execute(() -> notifyAdded(newTable, implementation));
@@ -282,7 +282,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
             if (entry instanceof UnknownDOMRpcRoutingTableEntry) {
                 return FluentFutures.immediateFailedFluentFuture(
                     new DOMRpcImplementationNotAvailableException("SchemaPath %s is not resolved to an RPC",
-                        entry.getSchemaPath()));
+                        entry.getType()));
             } else if (entry instanceof RoutedDOMRpcRoutingTableEntry) {
                 return invokeRoutedRpc((RoutedDOMRpcRoutingTableEntry) entry, input);
             } else if (entry instanceof GlobalDOMRpcRoutingTableEntry) {
@@ -309,7 +309,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                     final List<DOMRpcImplementation> specificImpls = entry.getImplementations(iid);
                     if (specificImpls != null) {
                         return specificImpls.get(0)
-                            .invokeRpc(DOMRpcIdentifier.create(entry.getSchemaPath(), iid), input);
+                            .invokeRpc(DOMRpcIdentifier.create(entry.getType(), iid), input);
                     }
 
                     LOG.debug("No implementation for context {} found will now look for wildcard id", iid);
@@ -321,7 +321,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
 
                     if (mayBeRemoteImpls != null) {
                         return mayBeRemoteImpls.get(0)
-                            .invokeRpc(DOMRpcIdentifier.create(entry.getSchemaPath(), iid), input);
+                            .invokeRpc(DOMRpcIdentifier.create(entry.getType(), iid), input);
                     }
 
                 } else {
@@ -336,7 +336,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
 
             return FluentFutures.immediateFailedFluentFuture(
                 new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available",
-                    entry.getSchemaPath()));
+                    entry.getType()));
         }
 
         private static FluentFuture<DOMRpcResult> invokeGlobalRpc(final GlobalDOMRpcRoutingTableEntry entry,
