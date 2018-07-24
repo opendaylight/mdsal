@@ -7,19 +7,26 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTree;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingCodecTreeNode;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
 import org.opendaylight.mdsal.binding.generator.impl.GeneratedClassLoadingStrategy;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -36,7 +43,7 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
         final BindingToNormalizedNodeCodec codec =
                 new BindingToNormalizedNodeCodec(GeneratedClassLoadingStrategy.getTCCLClassLoadingStrategy(), registry);
 
-        final BindingDOMDataTreeCommitCohortAdapter adapter =
+        final BindingDOMDataTreeCommitCohortAdapter<?> adapter =
                 new BindingDOMDataTreeCommitCohortAdapter<>(codec, cohort);
         assertNotNull(adapter);
 
@@ -45,15 +52,24 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
                 new DOMDataTreeIdentifier(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
         doReturn(InstanceIdentifier.create(DataObject.class)).when(registry).fromYangInstanceIdentifier(any());
         final BindingCodecTree bindingCodecTree = mock(BindingCodecTree.class);
-        final BindingCodecTreeNode bindingCodecTreeNode = mock(BindingCodecTreeNode.class);
+        final BindingCodecTreeNode<?> bindingCodecTreeNode = mock(BindingCodecTreeNode.class);
         doReturn(bindingCodecTreeNode).when(bindingCodecTree).getSubtreeCodec(any(InstanceIdentifier.class));
         doReturn(bindingCodecTree).when(registry).getCodecContext();
         doReturn(domDataTreeIdentifier).when(domDataTreeCandidate).getRootPath();
         doReturn(mock(DataTreeCandidateNode.class)).when(domDataTreeCandidate).getRootNode();
         assertNotNull(LazyDataTreeModification.create(codec, domDataTreeCandidate));
 
-        doReturn(null).when(cohort).canCommit(any(), any());
-        adapter.canCommit(new Object(), domDataTreeCandidate, null);
-        verify(cohort).canCommit(any(), any());
+        final Object txId = new Object();
+
+        doReturn(PostCanCommitStep.NOOP_SUCCESSFUL_FUTURE).when(cohort).canCommit(any(), any());
+        adapter.canCommit(txId, null, Arrays.asList(domDataTreeCandidate, domDataTreeCandidate));
+        ArgumentCaptor<Collection> modifications = ArgumentCaptor.forClass(Collection.class);
+        verify(cohort).canCommit(eq(txId), modifications.capture());
+        assertEquals(2, modifications.getValue().size());
+
+        reset(cohort);
+        doReturn(PostCanCommitStep.NOOP_SUCCESSFUL_FUTURE).when(cohort).canCommit(any(), any());
+        adapter.canCommit(txId, Arrays.asList(domDataTreeCandidate), null);
+        verify(cohort).canCommit(eq(txId), any());
     }
 }

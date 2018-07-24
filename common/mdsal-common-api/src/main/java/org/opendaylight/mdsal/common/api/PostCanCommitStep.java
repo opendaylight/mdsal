@@ -9,9 +9,11 @@ package org.opendaylight.mdsal.common.api;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import javax.annotation.Nonnull;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 /**
  * User implementation of steps following can-commit in three phase protocol.
@@ -42,10 +44,12 @@ public interface PostCanCommitStep extends ThreePhaseCommitStep {
 
     /**
      * Successful future, returning {@link #NOOP} implementation of {@link PostCanCommitStep}s.
-     *
-     **/
+     */
+    @Deprecated
     CheckedFuture<PostCanCommitStep, DataValidationFailedException> NOOP_SUCCESS_FUTURE =
             Futures.immediateCheckedFuture(NOOP);
+
+    FluentFuture<PostCanCommitStep> NOOP_SUCCESSFUL_FUTURE = FluentFutures.immediateFluentFuture(NOOP);
 
     /**
      * Initiates a pre-commit of associated request
@@ -55,7 +59,7 @@ public interface PostCanCommitStep extends ThreePhaseCommitStep {
      *
      * @return Future which is completed once pre-commit phase for this request is finished.
      *
-     **/
+     */
     @Nonnull
     ListenableFuture<? extends PostPreCommitStep> preCommit();
 
