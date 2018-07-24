@@ -8,16 +8,15 @@
 package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.opendaylight.mdsal.dom.api.DOMRpcException;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
@@ -46,7 +45,7 @@ final class RoutedDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
     }
 
     @Override
-    protected CheckedFuture<DOMRpcResult, DOMRpcException> invokeRpc(final NormalizedNode<?, ?> input) {
+    protected FluentFuture<DOMRpcResult> invokeRpc(final NormalizedNode<?, ?> input) {
         final Optional<NormalizedNode<?, ?>> maybeKey = NormalizedNodes.findNode(input, keyId);
 
         // Routing key is present, attempt to deliver as a routed RPC
@@ -82,7 +81,7 @@ final class RoutedDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntr
             return impls.get(0).invokeRpc(globalRpcId, input);
         }
 
-        return Futures.<DOMRpcResult, DOMRpcException>immediateFailedCheckedFuture(
+        return FluentFutures.immediateFailedFluentFuture(
             new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", getSchemaPath()));
     }
 
