@@ -9,7 +9,9 @@
 package org.opendaylight.mdsal.binding.api;
 
 import com.google.common.annotations.Beta;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
+import java.util.Collection;
+import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -70,7 +72,38 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 @Beta
 public interface DataTreeCommitCohort<T extends DataObject> {
 
-    CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(Object txId,
-            DataTreeModification<T> modification);
+    /**
+     * Validates the supplied data tree modifications and associates the cohort-specific steps with data broker
+     * transaction.
+     *
+     * <p>
+     * If {@link DataValidationFailedException} is thrown by implementation, the commit of the supplied data
+     * will be prevented, with the DataBroker transaction providing the thrown exception as the cause of failure.
+     *
+     * <p>
+     * Note the implementations are expected to do validation and processing asynchronous. Implementations SHOULD do
+     * processing fast, and are discouraged from blocking on any external resources. Implementation MUST NOT access
+     * any data transaction related APIs during invocation of the callback. Note that this may be enforced by some
+     * implementations of {@link DataTreeCommitCohortRegistry} and such calls may fail.
+     *
+     * <p>
+     * Implementation MAY opt-out from implementing other steps by returning
+     * {@link PostCanCommitStep#NOOP}. Otherwise implementation MUST return instance of
+     * {@link PostCanCommitStep}, which will be used to invoke
+     * {@link org.opendaylight.mdsal.common.api.PostPreCommitStep#commit()} or
+     * {@link PostCanCommitStep#abort()} based on accepting data by data broker and or other commit cohorts.
+     *
+     * @param txId Transaction identifier. SHOULD be used only for reporting and correlation.
+     *        Implementation MUST NOT use {@code txId} for validation.
+     * @param modifications the {@link DataTreeModification}s to be validated and committed.
+     * @return a FluentFuture which will successfully complete with the user-supplied implementation of
+     *         {@link PostCanCommitStep} if all candidates are valid, or a failed future with a
+     *         {@link DataValidationFailedException} if and only if a provided
+     *         {@link DataTreeModification} instance did not pass validation. Users are encouraged to use
+     *         more specific subclasses of this exception to provide additional information about
+     *         validation failure reason.
+     */
+    FluentFuture<PostCanCommitStep> canCommit(@Nonnull Object txId,
+            @Nonnull Collection<DataTreeModification<T>> modifications);
 
 }

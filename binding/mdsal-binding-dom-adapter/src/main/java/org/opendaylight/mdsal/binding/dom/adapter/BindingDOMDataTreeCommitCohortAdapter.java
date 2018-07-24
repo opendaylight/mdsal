@@ -8,10 +8,11 @@
 
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.api.DataTreeCommitCohort;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
-import org.opendaylight.mdsal.common.api.DataValidationFailedException;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCandidate;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCommitCohort;
@@ -27,9 +28,10 @@ class BindingDOMDataTreeCommitCohortAdapter<T extends DataObject>
     }
 
     @Override
-    public CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(final Object txId,
-            final DOMDataTreeCandidate candidate, final SchemaContext ctx) {
-        DataTreeModification<T> modification = LazyDataTreeModification.create(getCodec(), candidate);
-        return getDelegate().canCommit(txId, modification);
+    public FluentFuture<PostCanCommitStep> canCommit(final Object txId,
+            final SchemaContext ctx, final Collection<DOMDataTreeCandidate> candidates) {
+        final Collection<DataTreeModification<T>> modifications = candidates.stream().map(
+            candidate -> LazyDataTreeModification.<T>create(getCodec(), candidate)).collect(Collectors.toList());
+        return getDelegate().canCommit(txId, modifications);
     }
 }
