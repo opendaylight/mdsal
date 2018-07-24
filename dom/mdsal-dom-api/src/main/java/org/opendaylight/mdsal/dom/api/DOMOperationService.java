@@ -33,7 +33,7 @@ public interface DOMOperationService extends DOMExtensibleService<DOMOperationSe
      * @return A FluentFuture which completes with the result of invocation
      * @throws NullPointerException if any of the arguments is null
      */
-    FluentFuture<DOMOperationResult> invokeRpc(QName type, ContainerNode input);
+    FluentFuture<? extends DOMOperationResult> invokeRpc(QName type, ContainerNode input);
 
     /**
      * Initiate invocation of an Action. This method is guaranteed to not block on any external resources.
@@ -45,5 +45,6 @@ public interface DOMOperationService extends DOMExtensibleService<DOMOperationSe
      * @return A FluentFuture which completes with the result of invocation
      * @throws NullPointerException if any of the arguments is null
      */
-    FluentFuture<DOMOperationResult> invokeAction(SchemaPath type, DOMDataTreeIdentifier path, ContainerNode input);
+    FluentFuture<? extends DOMOperationResult> invokeAction(SchemaPath type, DOMDataTreeIdentifier path,
+        ContainerNode input);
 }
