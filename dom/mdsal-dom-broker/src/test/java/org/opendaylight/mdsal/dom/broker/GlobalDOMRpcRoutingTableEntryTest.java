@@ -43,7 +43,7 @@ public class GlobalDOMRpcRoutingTableEntryTest extends TestUtils {
         rpcImplementation.add(getTestRpcImplementation());
         rpcImplementations.put(yangInstanceIdentifier, rpcImplementation);
 
-        assertTrue(globalDOMRpcRoutingTableEntry.getSchemaPath().equals(SchemaPath.ROOT));
+        assertTrue(globalDOMRpcRoutingTableEntry.getType().equals(SchemaPath.ROOT));
         assertTrue(globalDOMRpcRoutingTableEntry.getImplementations().isEmpty());
         assertFalse(globalDOMRpcRoutingTableEntry.newInstance(rpcImplementations).getImplementations().isEmpty());
         assertTrue(globalDOMRpcRoutingTableEntry.newInstance(rpcImplementations).getImplementations().containsValue(
