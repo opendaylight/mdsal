@@ -73,6 +73,9 @@ public class ClusterSingletonServiceGroupImplTest {
                         GenericEntityOwnershipListener<TestInstanceIdentifier,
                             GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity>>>> singletonServiceGroup;
 
+    private ClusterSingletonServiceRegistration firstReg;
+    private ClusterSingletonServiceRegistration secondReg;
+
     /**
      * Initialization functionality for every Tests in this suite.
      *
@@ -91,6 +94,19 @@ public class ClusterSingletonServiceGroupImplTest {
 
         doReturn(SERVICE_GROUP_IDENT).when(mockClusterSingletonService).getIdentifier();
         doReturn(SERVICE_GROUP_IDENT).when(mockClusterSingletonServiceSecond).getIdentifier();
+
+        firstReg = new AbstractClusterSingletonServiceRegistration(mockClusterSingletonService) {
+            @Override
+            protected void removeRegistration() {
+                // No-op
+            }
+        };
+        secondReg = new AbstractClusterSingletonServiceRegistration(mockClusterSingletonServiceSecond) {
+            @Override
+            protected void removeRegistration() {
+                // No-op
+            }
+        };
 
         singletonServiceGroup = new ClusterSingletonServiceGroupImpl<>(SERVICE_IDENTIFIER, MAIN_ENTITY, CLOSE_ENTITY,
             mockEosService);
@@ -154,7 +170,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void initializationSlaveTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToSlave());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(CLOSE_ENTITY);
@@ -169,7 +185,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void initializationNoMasterTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToSlaveNoMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(CLOSE_ENTITY);
@@ -184,7 +200,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void initializationInJeopardyTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(CLOSE_ENTITY);
@@ -199,7 +215,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void serviceRegistrationClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
     }
 
     /**
@@ -212,8 +228,8 @@ public class ClusterSingletonServiceGroupImplTest {
             throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
-        singletonServiceGroup.registerService(mockClusterSingletonServiceSecond);
+        singletonServiceGroup.registerService(firstReg);
+        singletonServiceGroup.registerService(secondReg);
     }
 
     /**
@@ -226,8 +242,8 @@ public class ClusterSingletonServiceGroupImplTest {
     public void serviceUnregistrationClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
-        assertTrue(singletonServiceGroup.unregisterService(mockClusterSingletonService));
+        singletonServiceGroup.registerService(firstReg);
+        assertTrue(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
 
@@ -242,9 +258,9 @@ public class ClusterSingletonServiceGroupImplTest {
             throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
-        singletonServiceGroup.registerService(mockClusterSingletonServiceSecond);
-        assertFalse(singletonServiceGroup.unregisterService(mockClusterSingletonService));
+        singletonServiceGroup.registerService(firstReg);
+        singletonServiceGroup.registerService(secondReg);
+        assertFalse(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
 
@@ -257,7 +273,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void getSlaveClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToSlave());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
     }
@@ -271,7 +287,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void tryToTakeLeaderClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
@@ -286,7 +302,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void takeMasterClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
@@ -304,7 +320,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void waitToTakeMasterClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
@@ -322,7 +338,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void inJeopardyInWaitPhaseClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
@@ -341,8 +357,8 @@ public class ClusterSingletonServiceGroupImplTest {
             throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
-        singletonServiceGroup.registerService(mockClusterSingletonServiceSecond);
+        singletonServiceGroup.registerService(firstReg);
+        singletonServiceGroup.registerService(secondReg);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
@@ -360,7 +376,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void inJeopardyLeaderClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
@@ -385,7 +401,7 @@ public class ClusterSingletonServiceGroupImplTest {
     public void lostLeaderClusterSingletonServiceGroupTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
@@ -402,7 +418,7 @@ public class ClusterSingletonServiceGroupImplTest {
      */
     @Test(expected = RuntimeException.class)
     public void tryToTakeLeaderForNotInitializedGroupTest() {
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
     }
 
     /**
@@ -414,13 +430,13 @@ public class ClusterSingletonServiceGroupImplTest {
     public void checkClosingRegistrationTest() throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
         singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
         verify(mockClusterSingletonService).instantiateServiceInstance();
-        assertTrue(singletonServiceGroup.unregisterService(mockClusterSingletonService));
+        assertTrue(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
         singletonServiceGroup.ownershipChanged(getEntityToSlaveNoMaster());
         verify(mockClusterSingletonService).closeServiceInstance();
@@ -436,7 +452,7 @@ public class ClusterSingletonServiceGroupImplTest {
             throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
@@ -457,7 +473,7 @@ public class ClusterSingletonServiceGroupImplTest {
             throws CandidateAlreadyRegisteredException {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToSlave());
         verify(mockClusterSingletonService, never()).instantiateServiceInstance();
         verify(mockEosService, never()).registerCandidate(CLOSE_ENTITY);
@@ -470,7 +486,7 @@ public class ClusterSingletonServiceGroupImplTest {
             ExecutionException {
         initializeGroupAndStartService();
 
-        assertTrue(singletonServiceGroup.unregisterService(mockClusterSingletonService));
+        assertTrue(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
         verify(mockEntityCandReg, never()).close();
 
@@ -496,7 +512,7 @@ public class ClusterSingletonServiceGroupImplTest {
 
     private void initializeGroupAndStartService() throws CandidateAlreadyRegisteredException {
         initialize();
-        singletonServiceGroup.registerService(mockClusterSingletonService);
+        singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.ownershipChanged(getEntityToMaster());
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
         singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
