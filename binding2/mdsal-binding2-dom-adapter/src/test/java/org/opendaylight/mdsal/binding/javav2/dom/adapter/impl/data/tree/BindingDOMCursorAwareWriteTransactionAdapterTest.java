@@ -55,10 +55,10 @@ public class BindingDOMCursorAwareWriteTransactionAdapterTest {
         final DataTreeWriteCursor cursor = adapter.createCursor(dti);
         assertNotNull(cursor);
 
-        doReturn(null).when(delegate).submit();
+        doReturn(null).when(delegate).commit();
         final BiConsumer callback = mock(BiConsumer.class);
         adapter.submit(callback);
-        verify(delegate).submit();
+        verify(delegate).commit();
 
         doReturn(true).when(delegate).cancel();
         assertTrue(adapter.cancel());

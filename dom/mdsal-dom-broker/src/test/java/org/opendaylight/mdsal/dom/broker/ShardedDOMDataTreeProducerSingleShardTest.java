@@ -107,7 +107,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
     @Test
     public void closeWithTxSubmitted() throws DOMDataTreeProducerException {
         final DOMDataTreeCursorAwareTransaction tx = producer.createTransaction(false);
-        tx.submit();
+        tx.commit();
         producer.close();
     }
 
@@ -126,7 +126,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
 
     @Test
     public void allocateChildProducerWithTxSubmmited() {
-        producer.createTransaction(false).submit();
+        producer.createTransaction(false).commit();
         final DOMDataTreeProducer childProducer = producer.createProducer(SUBTREES_TEST);
         assertNotNull(childProducer);
     }
@@ -141,7 +141,7 @@ public class ShardedDOMDataTreeProducerSingleShardTest {
 
     @Test
     public void allocateTxWithTxSubmitted() {
-        producer.createTransaction(false).submit();
+        producer.createTransaction(false).commit();
         producer.createTransaction(false);
     }
 

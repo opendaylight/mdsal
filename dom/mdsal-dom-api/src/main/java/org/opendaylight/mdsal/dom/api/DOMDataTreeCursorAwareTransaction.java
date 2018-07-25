@@ -7,9 +7,11 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
@@ -57,7 +59,9 @@ public interface DOMDataTreeCursorAwareTransaction extends DOMDataTreeCursorProv
      * The transaction is marked as submitted and enqueued into the shard back-end for
      * processing.
      *
-     * @return Checked future informing of success/failure
+     * @return a FluentFuture containing the result of the commit information. The Future blocks until the commit
+     *         operation is complete. A successful commit returns nothing. On failure, the Future will fail with a
+     *         {@link TransactionCommitFailedException} or an exception derived from TransactionCommitFailedException.
      */
-    CheckedFuture<Void, TransactionCommitFailedException> submit();
+    FluentFuture<? extends @NonNull CommitInfo> commit();
 }
