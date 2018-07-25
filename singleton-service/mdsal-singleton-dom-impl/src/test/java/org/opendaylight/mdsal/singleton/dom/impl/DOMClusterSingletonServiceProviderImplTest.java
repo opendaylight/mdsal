@@ -10,7 +10,6 @@ package org.opendaylight.mdsal.singleton.dom.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -62,7 +61,7 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEosEntityListReg, never()).close();
         verify(mockEntityCandReg, never()).close();
-        verify(mockDoubleEntityCandReg).close();
+        verify(mockDoubleEntityCandReg, never()).close();
     }
 
     /**
@@ -91,13 +90,12 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         reg.close();
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
+        verify(mockEntityCandReg).close();
+        verify(mockDoubleEntityCandReg).close();
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, atLeastOnce()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
+        assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
     }
 
     /**
@@ -170,14 +168,11 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         reg.close();
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, atLeastOnce()).close();
-        verify(mockEosDoubleEntityListReg, never()).close();
+        verify(mockEntityCandReg).close();
+        verify(mockDoubleEntityCandReg).close();
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
+        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
+        verify(mockEosDoubleEntityListReg, never()).close();
     }
 
     /**
@@ -198,18 +193,14 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
         reg.close();
         reg.close();
+        assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
+        verify(mockEntityCandReg).close();
+        verify(mockDoubleEntityCandReg).close();
         clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, atLeastOnce()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
-        assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
     }
-
 
     /**
      * Verify that closing a group does not prevent next incarnation of it to be registered and the next incarnation
@@ -232,7 +223,7 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg).close();
-        verify(mockDoubleEntityCandReg, never()).close();
+        verify(mockDoubleEntityCandReg).close();
 
         // Instantiate the next incarnation
         reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService2);
@@ -242,7 +233,6 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         // Drive the old incarnation to closure, resetting mocks as needed
         clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
         verify(mockEntityCandReg).close();
-        verify(mockDoubleEntityCandReg).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
 
