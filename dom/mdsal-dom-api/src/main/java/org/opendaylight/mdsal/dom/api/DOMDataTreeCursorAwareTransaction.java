@@ -7,9 +7,11 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yangtools.concepts.Identifiable;
 
@@ -31,11 +33,11 @@ public interface DOMDataTreeCursorAwareTransaction extends DOMDataTreeCursorProv
 
     /**
      * Cancels the transaction.
-     * Transactions can only be cancelled if it was not yet submited.
-     * Invoking cancel() on failed or already canceled will have no effect, and transaction is
+     * A transaction can only be cancelled if it was not yet committed.
+     * Invoking cancel() on a failed or already canceled will have no effect, and transaction is
      * considered cancelled.
-     * Invoking cancel() on finished transaction (future returned by {@link #submit()} already
-     * successfully completed) will always fail (return false).
+     * Invoking cancel() on a finished transaction (future returned by {@link #commit()} already
+     * successfully completed will always fail (return false).
      *
      * @return <tt>false</tt> if the task could not be cancelled, typically because it has already
      *         completed normally; <tt>true</tt> otherwise
@@ -57,7 +59,9 @@ public interface DOMDataTreeCursorAwareTransaction extends DOMDataTreeCursorProv
      * The transaction is marked as submitted and enqueued into the shard back-end for
      * processing.
      *
-     * @return Checked future informing of success/failure
+     * @return a FluentFuture containing the result of the commit information. The Future blocks until the commit
+     *         operation is complete. A successful commit returns nothing. On failure, the Future will fail with a
+     *         {@link TransactionCommitFailedException} or an exception derived from TransactionCommitFailedException.
      */
-    CheckedFuture<Void, TransactionCommitFailedException> submit();
+    FluentFuture<? extends @NonNull CommitInfo> commit();
 }

@@ -75,7 +75,7 @@ public abstract class AbstractDOMDataTreeServiceTestSuite {
             cursor.write(UNORDERED_CONTAINER_IID.getLastPathArgument(), ImmutableContainerNodeBuilder.create().build());
             cursor.close();
 
-            final ListenableFuture<Void> f = tx.submit();
+            final ListenableFuture<?> f = tx.commit();
             assertNotNull(f);
 
             f.get();

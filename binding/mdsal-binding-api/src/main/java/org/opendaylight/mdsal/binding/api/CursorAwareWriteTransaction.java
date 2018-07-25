@@ -8,9 +8,11 @@
 
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -36,14 +38,14 @@ public interface CursorAwareWriteTransaction extends DataTreeCursorProvider {
      * Cancels the transaction.
      *
      * <p>
-     * Transactions can only be cancelled if it was not yet submited.
+     * A transaction can only be cancelled if it has not yet been committed.
      *
      * <p>
      * Invoking cancel() on failed or already canceled will have no effect, and transaction is
      * considered cancelled.
      *
      * <p>
-     * Invoking cancel() on finished transaction (future returned by {@link #submit()} already
+     * Invoking cancel() on finished transaction (future returned by {@link #commit()} already
      * successfully completed) will always fail (return false).
      *
      * @return <tt>false</tt> if the task could not be cancelled, typically because it has already
@@ -53,11 +55,11 @@ public interface CursorAwareWriteTransaction extends DataTreeCursorProvider {
     boolean cancel();
 
     /**
-     * Submits this transaction to be asynchronously applied to update the logical data tree. The
+     * Commits this transaction to be asynchronously applied to update the logical data tree. The
      * returned CheckedFuture conveys the result of applying the data changes.
      *
      * <p>
-     * <b>Note:</b> It is strongly recommended to process the CheckedFuture result in an
+     * <b>Note:</b> It is strongly recommended to process the FluentFuture result in an
      * asynchronous manner rather than using the blocking get() method.
      *
      * <p>
@@ -69,6 +71,10 @@ public interface CursorAwareWriteTransaction extends DataTreeCursorProvider {
      * <p>
      * The transaction is marked as submitted and enqueued into the shard back-end for
      * processing.
+     *
+     * @return a FluentFuture containing the result of the commit information. The Future blocks until the commit
+     *         operation is complete. A successful commit returns nothing. On failure, the Future will fail with a
+     *         {@link TransactionCommitFailedException} or an exception derived from TransactionCommitFailedException.
      */
-    CheckedFuture<Void,TransactionCommitFailedException> submit();
+    FluentFuture<? extends @NonNull CommitInfo> commit();
 }
