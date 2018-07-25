@@ -7,12 +7,13 @@
  */
 package org.opendaylight.mdsal.binding.dom.adapter;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.CursorAwareWriteTransaction;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeWriteCursor;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -41,7 +42,7 @@ public class BindingDOMCursorAwareWriteTransactionAdapter<T extends DOMDataTreeC
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> submit() {
-        return getDelegate().submit();
+    public FluentFuture<? extends @NonNull CommitInfo> commit() {
+        return getDelegate().commit();
     }
 }

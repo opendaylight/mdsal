@@ -8,9 +8,11 @@
 
 package org.opendaylight.mdsal.binding.api;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -69,6 +71,10 @@ public interface CursorAwareWriteTransaction extends DataTreeCursorProvider {
      * <p>
      * The transaction is marked as submitted and enqueued into the shard back-end for
      * processing.
+     *
+     * @return a FluentFuture containing the result of the commit information. The Future blocks until the commit
+     *         operation is complete. A successful commit returns nothing. On failure, the Future will fail with a
+     *         {@link TransactionCommitFailedException} or an exception derived from TransactionCommitFailedException.
      */
-    CheckedFuture<Void,TransactionCommitFailedException> submit();
+    FluentFuture<? extends @NonNull CommitInfo> commit();
 }
