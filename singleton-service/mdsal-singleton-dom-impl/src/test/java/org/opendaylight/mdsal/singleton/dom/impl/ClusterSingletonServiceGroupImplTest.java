@@ -243,7 +243,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        assertTrue(singletonServiceGroup.unregisterService(firstReg));
+        assertNotNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
 
@@ -260,7 +260,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.registerService(secondReg);
-        assertFalse(singletonServiceGroup.unregisterService(firstReg));
+        assertNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
 
@@ -436,9 +436,10 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
         singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
         verify(mockClusterSingletonService).instantiateServiceInstance();
-        assertTrue(singletonServiceGroup.unregisterService(firstReg));
-        verify(mockClusterSingletonService, never()).closeServiceInstance();
-        singletonServiceGroup.ownershipChanged(getEntityToSlaveNoMaster());
+
+        final ListenableFuture<?> future = singletonServiceGroup.unregisterService(firstReg);
+        assertNotNull(future);
+        assertFalse(future.isDone());
         verify(mockClusterSingletonService).closeServiceInstance();
     }
 
@@ -486,18 +487,13 @@ public class ClusterSingletonServiceGroupImplTest {
             ExecutionException {
         initializeGroupAndStartService();
 
-        assertTrue(singletonServiceGroup.unregisterService(firstReg));
-        verify(mockClusterSingletonService, never()).closeServiceInstance();
-        verify(mockEntityCandReg, never()).close();
-
-        final ListenableFuture<?> future = singletonServiceGroup.closeClusterSingletonGroup();
+        final ListenableFuture<?> future = singletonServiceGroup.unregisterService(firstReg);
         assertNotNull(future);
         assertFalse(future.isDone());
-        verify(mockClusterSingletonService, never()).closeServiceInstance();
         verify(mockEntityCandReg).close();
+        verify(mockClusterSingletonService).closeServiceInstance();
 
         singletonServiceGroup.ownershipChanged(getEntityToSlave());
-        verify(mockClusterSingletonService).closeServiceInstance();
         verify(mockCloseEntityCandReg).close();
 
         singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());

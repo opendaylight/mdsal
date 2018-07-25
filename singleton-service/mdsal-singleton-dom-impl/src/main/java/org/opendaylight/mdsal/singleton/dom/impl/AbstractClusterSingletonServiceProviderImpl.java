@@ -150,13 +150,13 @@ public abstract class AbstractClusterSingletonServiceProviderImpl<P extends Path
         final ListenableFuture<?> future;
         synchronized (this) {
             final ClusterSingletonServiceGroup<P, E, C> lookup = verifyNotNull(serviceGroupMap.get(serviceIdentifier));
-            if (!lookup.unregisterService(reg)) {
+            future = lookup.unregisterService(reg);
+            if (future == null) {
                 return;
             }
 
             // Close the group and replace it with a placeholder
             LOG.debug("Closing service group {}", serviceIdentifier);
-            future = lookup.closeClusterSingletonGroup();
             placeHolder = new PlaceholderGroup<>(lookup, future);
 
             final String identifier = reg.getInstance().getIdentifier().getValue();

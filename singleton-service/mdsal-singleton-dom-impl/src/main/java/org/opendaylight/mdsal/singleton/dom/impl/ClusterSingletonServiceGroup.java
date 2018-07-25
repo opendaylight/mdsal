@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.singleton.dom.impl;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.mdsal.eos.common.api.GenericEntity;
 import org.opendaylight.mdsal.eos.common.api.GenericEntityOwnershipChange;
@@ -58,9 +59,9 @@ abstract class ClusterSingletonServiceGroup<P extends Path<P>, E extends Generic
      * without clustering.
      *
      * @param service instance
-     * @return True if this was the last service registered
+     * @return Future which completes when this instance is shutdown if this was the last registration
      */
-    abstract boolean unregisterService(ClusterSingletonServiceRegistration reg);
+    abstract @Nullable ListenableFuture<?> unregisterService(ClusterSingletonServiceRegistration reg);
 
     /**
      * Method implementation has to apply ownershipChange for all registered services.
