@@ -13,6 +13,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.binding.javav2.api.DataTreeCommitCohort;
@@ -67,7 +68,7 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
         assertNotNull(LazyDataTreeModification.create(codec, domDataTreeCandidate));
 
         Mockito.doNothing().when(cohort).canCommit(any(), any(), any());
-        adapter.canCommit(new Object(), domDataTreeCandidate, null);
+        adapter.canCommit(new Object(), null, Arrays.asList(domDataTreeCandidate));
         verify(cohort).canCommit(any(), any(), any());
     }
 }
