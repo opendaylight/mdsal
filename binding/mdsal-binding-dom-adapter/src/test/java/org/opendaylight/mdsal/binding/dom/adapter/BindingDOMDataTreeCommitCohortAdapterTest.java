@@ -13,7 +13,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
@@ -66,10 +65,5 @@ public class BindingDOMDataTreeCommitCohortAdapterTest {
         ArgumentCaptor<Collection> modifications = ArgumentCaptor.forClass(Collection.class);
         verify(cohort).canCommit(eq(txId), modifications.capture());
         assertEquals(2, modifications.getValue().size());
-
-        reset(cohort);
-        doReturn(PostCanCommitStep.NOOP_SUCCESSFUL_FUTURE).when(cohort).canCommit(any(), any());
-        adapter.canCommit(txId, Arrays.asList(domDataTreeCandidate), null);
-        verify(cohort).canCommit(eq(txId), any());
     }
 }
