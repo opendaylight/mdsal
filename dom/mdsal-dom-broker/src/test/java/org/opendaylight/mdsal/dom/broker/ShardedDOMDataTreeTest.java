@@ -168,14 +168,14 @@ public class ShardedDOMDataTreeTest {
         cursor.write(TEST_ID.getRootIdentifier().getLastPathArgument(), crossShardContainer);
 
         try {
-            tx.submit().checkedGet();
+            tx.commit().get();
             fail("There's still an open cursor");
         } catch (final IllegalStateException e) {
             assertTrue(e.getMessage().contains("cursor open"));
         }
 
         cursor.close();
-        tx.submit().get();
+        tx.commit().get();
 
         tx = producer.createTransaction(false);
         cursor = tx.createCursor(TEST_ID);
@@ -183,7 +183,7 @@ public class ShardedDOMDataTreeTest {
 
         cursor.delete(TestModel.INNER_CONTAINER_PATH.getLastPathArgument());
         cursor.close();
-        tx.submit().get();
+        tx.commit().get();
 
         verify(mockedDataTreeListener, timeout(1000).times(3)).onDataTreeChanged(captorForChanges.capture(),
                 captorForSubtrees.capture());
@@ -224,7 +224,7 @@ public class ShardedDOMDataTreeTest {
         cursor.write(TEST_ID.getRootIdentifier().getLastPathArgument(), crossShardContainer);
 
         cursor.close();
-        tx.submit().get();
+        tx.commit().get();
 
         tx = producer.createTransaction(false);
         cursor = tx.createCursor(TEST_ID);
@@ -232,7 +232,7 @@ public class ShardedDOMDataTreeTest {
 
         cursor.delete(TestModel.INNER_CONTAINER_PATH.getLastPathArgument());
         cursor.close();
-        tx.submit().get();
+        tx.commit().get();
 
         verify(mockedDataTreeListener, timeout(5000).times(3)).onDataTreeChanged(captorForChanges.capture(),
                 captorForSubtrees.capture());
@@ -271,9 +271,9 @@ public class ShardedDOMDataTreeTest {
 
         cursor.write(new NodeIdentifier(TestModel.INNER_LIST_QNAME), innerList);
         cursor.close();
-        tx.submit().get();
+        tx.commit().get();
 
-        final ArrayList<ListenableFuture<Void>> futures = new ArrayList<>();
+        final ArrayList<ListenableFuture<?>> futures = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
             final Collection<MapEntryNode> innerListMapEntries = createInnerListMapEntries(1000, "run-" + i);
             for (final MapEntryNode innerListMapEntry : innerListMapEntries) {
@@ -283,7 +283,7 @@ public class ShardedDOMDataTreeTest {
                                 oid1.node(new NodeIdentifier(TestModel.INNER_LIST_QNAME))));
                 cursor1.write(innerListMapEntry.getIdentifier(), innerListMapEntry);
                 cursor1.close();
-                futures.add(tx1.submit());
+                futures.add(tx1.commit());
             }
         }
 
@@ -414,7 +414,7 @@ public class ShardedDOMDataTreeTest {
         cursor.write(TestModel.TEST_PATH.getLastPathArgument(), createCrossShardContainer2());
         cursor.close();
 
-        tx.submit().get();
+        tx.commit().get();
 
         final DOMDataTreeListener listener = mock(DOMDataTreeListener.class);
         doNothing().when(listener).onDataTreeChanged(any(), any());
