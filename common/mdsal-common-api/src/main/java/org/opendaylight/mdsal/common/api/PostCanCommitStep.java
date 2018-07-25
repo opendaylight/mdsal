@@ -8,9 +8,7 @@
 package org.opendaylight.mdsal.common.api;
 
 import com.google.common.annotations.Beta;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import javax.annotation.Nonnull;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
@@ -41,13 +39,6 @@ public interface PostCanCommitStep extends ThreePhaseCommitStep {
             return PostPreCommitStep.NOOP_FUTURE;
         }
     };
-
-    /**
-     * Successful future, returning {@link #NOOP} implementation of {@link PostCanCommitStep}s.
-     */
-    @Deprecated
-    CheckedFuture<PostCanCommitStep, DataValidationFailedException> NOOP_SUCCESS_FUTURE =
-            Futures.immediateCheckedFuture(NOOP);
 
     FluentFuture<PostCanCommitStep> NOOP_SUCCESSFUL_FUTURE = FluentFutures.immediateFluentFuture(NOOP);
 

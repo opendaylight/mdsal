@@ -8,22 +8,13 @@
 package org.opendaylight.mdsal.dom.api;
 
 import com.google.common.annotations.Beta;
-import com.google.common.collect.Iterables;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
-import org.opendaylight.mdsal.common.api.MappingCheckedFuture;
 import org.opendaylight.mdsal.common.api.PostCanCommitStep;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
-import org.slf4j.LoggerFactory;
 
 /**
  * Commit cohort participating in commit of data modification, which can validate data tree
@@ -70,44 +61,6 @@ import org.slf4j.LoggerFactory;
 public interface DOMDataTreeCommitCohort {
 
     /**
-     * DO NOT implement or invoke this method. It is deprecated in favor of
-     * {@link #canCommit(Object, Collection, SchemaContext)} and only exists for backwards compatibility. The
-     * default implementation returns {@link PostCanCommitStep#NOOP_SUCCESS_FUTURE} and is invoked by the
-     * default implementation of {@link #canCommit(Object, Collection, SchemaContext)}.
-     *
-     * @deprecated Implement and invoke {@link #canCommit(Object, Collection, SchemaContext)} instead.
-     */
-    @Deprecated
-    @Nonnull
-    default CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(@Nonnull final Object txId,
-            @Nonnull final DOMDataTreeCandidate candidate, @Nonnull final SchemaContext ctx) {
-        LoggerFactory.getLogger(getClass()).error(
-                "The default implementation of DOMDataTreeCommitCohort#canCommit(Object, DOMDataTreeCandidate, "
-                + "SchemaContext) was invoked on {}", getClass());
-        return PostCanCommitStep.NOOP_SUCCESS_FUTURE;
-    }
-
-    /**
-     * DO NOT implement or invoke this method. It is deprecated in favor of
-     * {@link #canCommit(Object, SchemaContext, Collection)} which returns a {@link FluentFuture} instead of the
-     * deprecated {@link CheckedFuture} which is scheduled for remkoval in a future guava release. The
-     * default implementation calls {@link #canCommit(Object, SchemaContext, Collection)}.
-     *
-     * @deprecated Implement and invoke {@link #canCommit(Object, SchemaContext, Collection)} instead.
-     */
-    @Deprecated
-    @Nonnull
-    default CheckedFuture<PostCanCommitStep, DataValidationFailedException> canCommit(@Nonnull final Object txId,
-            @Nonnull final Collection<DOMDataTreeCandidate> candidates, @Nonnull final SchemaContext ctx) {
-        LoggerFactory.getLogger(getClass()).error(
-                "The default implementation of DOMDataTreeCommitCohort#canCommit(Object, Collection, "
-                + "SchemaContext) was invoked on {}", getClass());
-
-        return MappingCheckedFuture.create(canCommit(txId, ctx, candidates), new DataValidationFailedExceptionMapper(
-                "canCommit", Iterables.getLast(candidates).getRootPath()));
-    }
-
-    /**
      * Validates the supplied data tree modifications and associates the cohort-specific steps with data broker
      * transaction.
      *
@@ -140,23 +93,8 @@ public interface DOMDataTreeCommitCohort {
      *         validation failure reason.
      */
     @Nonnull
-    default FluentFuture<PostCanCommitStep> canCommit(@Nonnull final Object txId,
-            @Nonnull final SchemaContext ctx, @Nonnull final Collection<DOMDataTreeCandidate> candidates) {
-        LoggerFactory.getLogger(getClass()).warn("DOMDataTreeCommitCohort implementation {} should override "
-                + "canCommit(Object, SchemaContext, Collection)", getClass());
-
-        // For backwards compatibility, the default implementation is to invoke the deprecated
-        // canCommit(Object, DOMDataTreeCandidate, SchemaContext) method for each DOMDataTreeCandidate and return the
-        // last PostCanCommitStep.
-        List<ListenableFuture<PostCanCommitStep>> futures = new ArrayList<>();
-        for (DOMDataTreeCandidate candidate : candidates) {
-            futures.add(canCommit(txId, candidate, ctx));
-        }
-
-        final ListenableFuture<PostCanCommitStep> resultFuture = Futures.transform(Futures.allAsList(futures),
-            input -> input.get(input.size() - 1), MoreExecutors.directExecutor());
-        return FluentFuture.from(resultFuture);
-    }
+    FluentFuture<PostCanCommitStep> canCommit(@Nonnull Object txId,
+            @Nonnull SchemaContext ctx, @Nonnull Collection<DOMDataTreeCandidate> candidates);
 
     /**
      * An ExceptionMapper that translates an Exception to a DataValidationFailedException.
