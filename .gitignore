@@ -25,3 +25,7 @@ META-INF
 .fbExcludeFilterFile
 .cache-main
 .cache-tests
+
+# Sphinx documentation
+.tox/
+docs/_build/
