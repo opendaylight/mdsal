@@ -92,11 +92,10 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
+        verify(mockDoubleEntityCandReg).close();
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
         clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, atLeastOnce()).close();
+        verify(mockEntityCandReg).close();
         verify(mockEosDoubleEntityListReg, never()).close();
     }
 
@@ -171,12 +170,7 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, atLeastOnce()).close();
-        verify(mockEosDoubleEntityListReg, never()).close();
+        verify(mockDoubleEntityCandReg).close();
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
     }
 
@@ -200,16 +194,12 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         reg.close();
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, never()).close();
-        assertEquals(TestClusterSingletonServiceState.STARTED, clusterSingletonService.getServiceState());
-        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        verify(mockEntityCandReg, atLeastOnce()).close();
-        verify(mockDoubleEntityCandReg, atLeastOnce()).close();
-        verify(mockEosDoubleEntityListReg, never()).close();
+        verify(mockEntityCandReg).close();
+        verify(mockDoubleEntityCandReg).close();
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
+        clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
+        verify(mockEosDoubleEntityListReg, never()).close();
     }
-
 
     /**
      * Verify that closing a group does not prevent next incarnation of it to be registered and the next incarnation
@@ -232,7 +222,8 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg).close();
-        verify(mockDoubleEntityCandReg, never()).close();
+        verify(mockDoubleEntityCandReg).close();
+        assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
 
         // Instantiate the next incarnation
         reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService2);
@@ -241,10 +232,7 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
 
         // Drive the old incarnation to closure, resetting mocks as needed
         clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
-        verify(mockEntityCandReg).close();
-        verify(mockDoubleEntityCandReg).close();
         verify(mockEosDoubleEntityListReg, never()).close();
-        assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
 
         // Reset mocks for reuse. The next change should see the previous group terminate and the next incarnation
         // to start coming up
