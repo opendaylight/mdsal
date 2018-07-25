@@ -243,7 +243,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        assertTrue(singletonServiceGroup.unregisterService(firstReg));
+        assertNotNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
 
@@ -260,7 +260,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.registerService(secondReg);
-        assertFalse(singletonServiceGroup.unregisterService(firstReg));
+        assertNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
 
@@ -412,12 +412,10 @@ public class ClusterSingletonServiceGroupImplTest {
     }
 
     /**
-     * Test checks validation Error processing for SLAVE-TO-MASTER entity Candidate role change.
-     *     Not initialized provider has to close and remove all singletonServices from Group and
-     *     Group itself remove too.
+     * Check if the group rejects registration when it was not initialized.
      */
-    @Test(expected = RuntimeException.class)
-    public void tryToTakeLeaderForNotInitializedGroupTest() {
+    @Test(expected = IllegalStateException.class)
+    public void registerServiceNotInitializedGroupTest() {
         singletonServiceGroup.registerService(firstReg);
     }
 
@@ -436,7 +434,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
         singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
         verify(mockClusterSingletonService).instantiateServiceInstance();
-        assertTrue(singletonServiceGroup.unregisterService(firstReg));
+        assertNotNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
         singletonServiceGroup.ownershipChanged(getEntityToSlaveNoMaster());
         verify(mockClusterSingletonService).closeServiceInstance();
@@ -486,18 +484,16 @@ public class ClusterSingletonServiceGroupImplTest {
             ExecutionException {
         initializeGroupAndStartService();
 
-        assertTrue(singletonServiceGroup.unregisterService(firstReg));
+        assertNotNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        verify(mockEntityCandReg, never()).close();
+        verify(mockEntityCandReg).close();
 
         final ListenableFuture<?> future = singletonServiceGroup.closeClusterSingletonGroup();
         assertNotNull(future);
         assertFalse(future.isDone());
-        verify(mockClusterSingletonService, never()).closeServiceInstance();
-        verify(mockEntityCandReg).close();
+        verify(mockClusterSingletonService).closeServiceInstance();
 
         singletonServiceGroup.ownershipChanged(getEntityToSlave());
-        verify(mockClusterSingletonService).closeServiceInstance();
         verify(mockCloseEntityCandReg).close();
 
         singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());

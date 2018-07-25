@@ -232,7 +232,7 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         verify(mockEosEntityListReg, never()).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         verify(mockEntityCandReg).close();
-        verify(mockDoubleEntityCandReg, never()).close();
+        verify(mockDoubleEntityCandReg).close();
 
         // Instantiate the next incarnation
         reg = clusterSingletonServiceProvider.registerClusterSingletonService(clusterSingletonService2);
@@ -242,7 +242,6 @@ public class DOMClusterSingletonServiceProviderImplTest extends AbstractDOMClust
         // Drive the old incarnation to closure, resetting mocks as needed
         clusterSingletonServiceProvider.ownershipChanged(getEntityToSlave());
         verify(mockEntityCandReg).close();
-        verify(mockDoubleEntityCandReg).close();
         verify(mockEosDoubleEntityListReg, never()).close();
         assertEquals(TestClusterSingletonServiceState.DESTROYED, clusterSingletonService.getServiceState());
 
