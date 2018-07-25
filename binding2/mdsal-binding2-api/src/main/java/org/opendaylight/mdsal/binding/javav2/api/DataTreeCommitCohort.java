@@ -9,6 +9,7 @@
 package org.opendaylight.mdsal.binding.javav2.api;
 
 import com.google.common.annotations.Beta;
+import java.util.Collection;
 import java.util.function.BiConsumer;
 import org.opendaylight.mdsal.binding.javav2.spec.base.TreeNode;
 import org.opendaylight.mdsal.common.api.DataValidationFailedException;
@@ -67,9 +68,9 @@ public interface DataTreeCommitCohort<T extends TreeNode> {
      * Performs canCommit? message in three-phase commit algorithm.
      *
      * @param txId Transaction identifier
-     * @param modification modification of data tree
+     * @param modifications the {@link DataTreeModification} to validate
      * @param callback result callback
      */
-    void canCommit(Object txId, DataTreeModification<T> modification,
+    void canCommit(Object txId, Collection<DataTreeModification<T>> modifications,
         BiConsumer<DataValidationFailedException, PostCanCommitStep> callback);
 }
