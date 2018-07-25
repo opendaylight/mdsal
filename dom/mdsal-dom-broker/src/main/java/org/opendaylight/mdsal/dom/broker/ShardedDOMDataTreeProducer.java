@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeListener;
@@ -251,7 +252,7 @@ class ShardedDOMDataTreeProducer implements DOMDataTreeProducer {
     private void transactionSuccessful(final ShardedDOMDataTreeWriteTransaction tx) {
         LOG.debug("Transaction {} completed successfully", tx.getIdentifier());
 
-        tx.onTransactionSuccess(null);
+        tx.onTransactionSuccess(CommitInfo.empty());
         transactionCompleted(tx);
     }
 

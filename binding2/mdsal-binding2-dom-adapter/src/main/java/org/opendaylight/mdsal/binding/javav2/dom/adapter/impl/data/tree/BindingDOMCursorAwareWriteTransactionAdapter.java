@@ -56,7 +56,7 @@ public class BindingDOMCursorAwareWriteTransactionAdapter<T extends DOMDataTreeC
 
     @Override
     public <V extends TreeNode> void submit(final BiConsumer<TransactionCommitFailedException, V> callback) {
-        delegate.submit();
+        delegate.commit();
     }
 }
 

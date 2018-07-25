@@ -81,9 +81,9 @@ public class ShardedDOMWriteTransactionAdapter implements DOMDataTreeWriteTransa
         }
         // First we need to close cursors
         cursorMap.values().forEach(DOMDataTreeWriteCursor::close);
-        final FluentFuture<List<Void>> aggregatedSubmit = FluentFuture.from(Futures.allAsList(
-                transactionMap.get(LogicalDatastoreType.CONFIGURATION).submit(),
-                transactionMap.get(LogicalDatastoreType.OPERATIONAL).submit()));
+        final FluentFuture<List<CommitInfo>> aggregatedSubmit = FluentFuture.from(Futures.allAsList(
+                transactionMap.get(LogicalDatastoreType.CONFIGURATION).commit(),
+                transactionMap.get(LogicalDatastoreType.OPERATIONAL).commit()));
 
         // Now we can close producers and mark transaction as finished
         closeProducers();

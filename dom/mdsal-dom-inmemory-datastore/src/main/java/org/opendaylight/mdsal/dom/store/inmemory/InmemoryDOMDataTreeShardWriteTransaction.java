@@ -9,7 +9,6 @@
 package org.opendaylight.mdsal.dom.store.inmemory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
 import org.opendaylight.mdsal.dom.spi.shard.DOMDataTreeShardWriteTransaction;
@@ -143,14 +141,6 @@ class InmemoryDOMDataTreeShardWriteTransaction implements DOMDataTreeShardWriteT
                 path.relativeTo(modification.getPrefix().getRootIdentifier());
         Preconditions.checkArgument(relative.isPresent());
         return relative.get();
-    }
-
-    public CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> read(final YangInstanceIdentifier path) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public CheckedFuture<Boolean, ReadFailedException> exists(final YangInstanceIdentifier path) {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
