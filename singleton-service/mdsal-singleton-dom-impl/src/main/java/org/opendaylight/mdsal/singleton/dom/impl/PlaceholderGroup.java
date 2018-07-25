@@ -60,11 +60,11 @@ final class PlaceholderGroup<P extends Path<P>, E extends GenericEntity<P>,
     }
 
     @Override
-    boolean unregisterService(final ClusterSingletonServiceRegistration reg) {
+    ListenableFuture<?> unregisterService(final ClusterSingletonServiceRegistration reg) {
         verifyNoSuccessor();
         services.remove(reg);
         LOG.debug("{}: removed service {}", this, reg.getInstance());
-        return false;
+        return null;
     }
 
     @Override

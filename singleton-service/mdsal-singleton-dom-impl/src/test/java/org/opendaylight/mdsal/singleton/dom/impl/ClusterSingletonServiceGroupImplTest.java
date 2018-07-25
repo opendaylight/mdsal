@@ -243,7 +243,7 @@ public class ClusterSingletonServiceGroupImplTest {
         singletonServiceGroup.initialize();
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
-        assertTrue(singletonServiceGroup.unregisterService(firstReg));
+        assertNotNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
 
@@ -260,7 +260,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockEosService).registerCandidate(MAIN_ENTITY);
         singletonServiceGroup.registerService(firstReg);
         singletonServiceGroup.registerService(secondReg);
-        assertFalse(singletonServiceGroup.unregisterService(firstReg));
+        assertNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
     }
 
@@ -384,7 +384,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockClusterSingletonService).instantiateServiceInstance();
 
         // Base entity in jeopardy should not matter...
-        singletonServiceGroup.ownershipChanged(getEntityToJeopardy());
+        singletonServiceGroup.ownershipChanged(getEntityToMasterJeopardy());
         verify(mockClusterSingletonService, never()).closeServiceInstance();
 
         // ... application state is actually guarded by cleanup
@@ -416,7 +416,7 @@ public class ClusterSingletonServiceGroupImplTest {
      *     Not initialized provider has to close and remove all singletonServices from Group and
      *     Group itself remove too.
      */
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalStateException.class)
     public void tryToTakeLeaderForNotInitializedGroupTest() {
         singletonServiceGroup.registerService(firstReg);
     }
@@ -436,7 +436,7 @@ public class ClusterSingletonServiceGroupImplTest {
         verify(mockEosService).registerCandidate(CLOSE_ENTITY);
         singletonServiceGroup.ownershipChanged(getDoubleEntityToMaster());
         verify(mockClusterSingletonService).instantiateServiceInstance();
-        assertTrue(singletonServiceGroup.unregisterService(firstReg));
+        assertNotNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
         singletonServiceGroup.ownershipChanged(getEntityToSlaveNoMaster());
         verify(mockClusterSingletonService).closeServiceInstance();
@@ -486,18 +486,16 @@ public class ClusterSingletonServiceGroupImplTest {
             ExecutionException {
         initializeGroupAndStartService();
 
-        assertTrue(singletonServiceGroup.unregisterService(firstReg));
+        assertNotNull(singletonServiceGroup.unregisterService(firstReg));
         verify(mockClusterSingletonService, never()).closeServiceInstance();
-        verify(mockEntityCandReg, never()).close();
+        verify(mockEntityCandReg).close();
 
         final ListenableFuture<?> future = singletonServiceGroup.closeClusterSingletonGroup();
         assertNotNull(future);
         assertFalse(future.isDone());
-        verify(mockClusterSingletonService, never()).closeServiceInstance();
-        verify(mockEntityCandReg).close();
+        verify(mockClusterSingletonService).closeServiceInstance();
 
         singletonServiceGroup.ownershipChanged(getEntityToSlave());
-        verify(mockClusterSingletonService).closeServiceInstance();
         verify(mockCloseEntityCandReg).close();
 
         singletonServiceGroup.ownershipChanged(getDoubleEntityToSlave());
@@ -531,6 +529,11 @@ public class ClusterSingletonServiceGroupImplTest {
     private static GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToSlaveNoMaster() {
         return new GenericEntityOwnershipChange<>(MAIN_ENTITY,
                 EntityOwnershipChangeState.LOCAL_OWNERSHIP_LOST_NO_OWNER);
+    }
+
+    private static GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToMasterJeopardy() {
+        return new GenericEntityOwnershipChange<>(MAIN_ENTITY,
+                EntityOwnershipChangeState.LOCAL_OWNERSHIP_GRANTED, true);
     }
 
     private static GenericEntityOwnershipChange<TestInstanceIdentifier, TestEntity> getEntityToJeopardy() {
