@@ -5,22 +5,36 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.singleton.dom.impl;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verify;
+import static com.google.common.base.Verify.verifyNotNull;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Verify;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.StampedLock;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
@@ -89,7 +103,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         UNOWNED,
     }
 
-    private enum ServiceState {
+    enum ServiceState {
         /**
          * Local services are stopped.
          */
@@ -114,10 +128,13 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     private final E serviceEntity;
     private final E cleanupEntity;
 
-    private final ReentrantLock lock = new ReentrantLock(true);
+    private final StampedLock configLock = new StampedLock();
+    private final Set<ClusterSingletonServiceRegistration> serviceGroup = ConcurrentHashMap.newKeySet();
 
-    @GuardedBy("lock")
-    private final List<ClusterSingletonServiceRegistration> serviceGroup;
+    // We are using a simple semaphore because we explicitly do not want the lock to succeed if we re-enter our code
+    private final Semaphore applyLock = new Semaphore(1, true);
+    @GuardedBy("applyLock")
+    private final Map<ClusterSingletonServiceRegistration, ServiceInfo> services = new HashMap<>();
 
     /*
      * State tracking is quite involved, as we are tracking up to four asynchronous sources of events:
@@ -146,24 +163,24 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * Service (base) entity registration. This entity selects an owner candidate across nodes. Candidates proceed to
      * acquire {@link #cleanupEntity}.
      */
-    @GuardedBy("lock")
+    @GuardedBy("applyLock")
     private GenericEntityOwnershipCandidateRegistration<P, E> serviceEntityReg = null;
     /**
      * Service (base) entity last reported state.
      */
-    @GuardedBy("lock")
+    @GuardedBy("applyLock")
     private EntityState serviceEntityState = EntityState.UNREGISTERED;
 
     /**
      * Cleanup (owner) entity registration. This entity guards access to service state and coordinates shutdown cleanup
      * and startup.
      */
-    @GuardedBy("lock")
+    @GuardedBy("applyLock")
     private GenericEntityOwnershipCandidateRegistration<P, E> cleanupEntityReg;
     /**
      * Cleanup (owner) entity last reported state.
      */
-    @GuardedBy("lock")
+    @GuardedBy("applyLock")
     private EntityState cleanupEntityState = EntityState.UNREGISTERED;
 
     /**
@@ -171,13 +188,13 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * events reported during EOS method invocation -- like immediate acquisition of entity when we register it. This
      * prevents bugs from recursion.
      */
-    @GuardedBy("lock")
+    @GuardedBy("applyLock")
     private List<C> capture = null;
 
     /**
      * State of local services.
      */
-    @GuardedBy("lock")
+    @GuardedBy("applyLock")
     private ServiceState localServicesState = ServiceState.STOPPED;
 
     /**
@@ -191,20 +208,21 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
      * @param services Services list
      */
     ClusterSingletonServiceGroupImpl(final String identifier, final S entityOwnershipService, final E mainEntity,
-            final E closeEntity, final List<ClusterSingletonServiceRegistration> services) {
-        Preconditions.checkArgument(!identifier.isEmpty(), "Identifier may not be empty");
+            final E closeEntity, final Collection<ClusterSingletonServiceRegistration> services) {
+        checkArgument(!identifier.isEmpty(), "Identifier may not be empty");
         this.identifier = identifier;
-        this.entityOwnershipService = Preconditions.checkNotNull(entityOwnershipService);
-        this.serviceEntity = Preconditions.checkNotNull(mainEntity);
-        this.cleanupEntity = Preconditions.checkNotNull(closeEntity);
-        this.serviceGroup = Preconditions.checkNotNull(services);
+        this.entityOwnershipService = requireNonNull(entityOwnershipService);
+        this.serviceEntity = requireNonNull(mainEntity);
+        this.cleanupEntity = requireNonNull(closeEntity);
+        serviceGroup.addAll(services);
+
         LOG.debug("Instantiated new service group for {}", identifier);
     }
 
     @VisibleForTesting
     ClusterSingletonServiceGroupImpl(final String identifier, final E mainEntity,
             final E closeEntity, final S entityOwnershipService) {
-        this(identifier, entityOwnershipService, mainEntity, closeEntity, new ArrayList<>(1));
+        this(identifier, entityOwnershipService, mainEntity, closeEntity, ImmutableList.of());
     }
 
     @Override
@@ -221,7 +239,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             return existing;
         }
 
-        if (!lock.tryLock()) {
+        if (!applyLock.tryAcquire()) {
             // The lock is held, the cleanup will be finished by the owner thread
             LOG.debug("Singleton group {} cleanup postponed", identifier);
             return future;
@@ -230,7 +248,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
         try {
             lockedClose(future);
         } finally {
-            lock.unlock();
+            applyLock.release();
         }
 
         LOG.debug("Service group {} {}", identifier, future.isDone() ? "closed" : "closing");
@@ -243,13 +261,13 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
     @GuardedBy("lock")
     private void startCapture() {
-        Verify.verify(capture == null, "Service group {} is already capturing events {}", identifier, capture);
+        verify(capture == null, "Service group {} is already capturing events {}", identifier, capture);
         capture = new ArrayList<>(0);
         LOG.debug("Service group {} started capturing events", identifier);
     }
 
     private List<C> endCapture() {
-        final List<C> ret = Verify.verifyNotNull(capture, "Service group {} is not currently capturing", identifier);
+        final List<C> ret = verifyNotNull(capture, "Service group {} is not currently capturing", identifier);
         capture = null;
         LOG.debug("Service group {} finished capturing events, {} events to process", identifier, ret.size());
         return ret;
@@ -335,10 +353,10 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
     @Override
     void initialize() throws CandidateAlreadyRegisteredException {
-        lock.lock();
+        verify(applyLock.tryAcquire());
         try {
-            Preconditions.checkState(serviceEntityState == EntityState.UNREGISTERED,
-                    "Singleton group %s was already initilized", identifier);
+            checkState(serviceEntityState == EntityState.UNREGISTERED, "Singleton group %s was already initilized",
+                    identifier);
 
             LOG.debug("Initializing service group {} with services {}", identifier, serviceGroup);
             startCapture();
@@ -346,89 +364,65 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
             serviceEntityState = EntityState.REGISTERED;
             endCapture().forEach(this::lockedOwnershipChanged);
         } finally {
-            lock.unlock();
+            applyLock.release();
         }
     }
 
     private void checkNotClosed() {
-        Preconditions.checkState(closeFuture.get() == null, "Service group %s has already been closed",
-                identifier);
+        checkState(closeFuture.get() == null, "Service group %s has already been closed", identifier);
     }
 
     @Override
     void registerService(final ClusterSingletonServiceRegistration reg) {
         final ClusterSingletonService service = reg.getInstance();
-        Verify.verify(identifier.equals(service.getIdentifier().getValue()));
+        verify(identifier.equals(service.getIdentifier().getValue()));
         checkNotClosed();
 
-        lock.lock();
+        final long stamp = configLock.writeLock();
         try {
-            Preconditions.checkState(serviceEntityState != EntityState.UNREGISTERED,
-                    "Service group %s is not initialized yet", identifier);
-
+            // First put the service
             LOG.debug("Adding service {} to service group {}", service, identifier);
-            serviceGroup.add(reg);
-
-            switch (localServicesState) {
-                case STARTED:
-                    LOG.debug("Service group {} starting late-registered service {}", identifier, service);
-                    service.instantiateServiceInstance();
-                    break;
-                case STOPPED:
-                case STOPPING:
-                    break;
-                default:
-                    throw new IllegalStateException("Unhandled local services state " + localServicesState);
-            }
+            verify(serviceGroup.add(reg));
         } finally {
-            lock.unlock();
-            finishCloseIfNeeded();
+            configLock.unlockWrite(stamp);
         }
+
+        if (!applyLock.tryAcquire()) {
+            LOG.debug("Service group {} delayed register of {}", identifier, reg);
+            return;
+        }
+
+        reconcileState();
     }
 
     @CheckReturnValue
     @Override
     boolean unregisterService(final ClusterSingletonServiceRegistration reg) {
         final ClusterSingletonService service = reg.getInstance();
-        Verify.verify(identifier.equals(service.getIdentifier().getValue()));
+        verify(identifier.equals(service.getIdentifier().getValue()));
         checkNotClosed();
 
-        lock.lock();
+        final long stamp = configLock.writeLock();
         try {
-            // There is a slight problem here, as the type does not match the list type, hence we need to tread
-            // carefully.
-            if (serviceGroup.size() == 1) {
-                Verify.verify(serviceGroup.contains(reg));
-                return true;
-            }
-
-            Verify.verify(serviceGroup.remove(reg));
-            LOG.debug("Service {} was removed from group.", service.getIdentifier().getValue());
-
-            switch (localServicesState) {
-                case STARTED:
-                    LOG.warn("Service group {} stopping unregistered service {}", identifier, service);
-                    service.closeServiceInstance();
-                    break;
-                case STOPPED:
-                case STOPPING:
-                    break;
-                default:
-                    throw new IllegalStateException("Unhandled local services state " + localServicesState);
-            }
-
-            return false;
+            verify(serviceGroup.remove(reg));
         } finally {
-            lock.unlock();
-            finishCloseIfNeeded();
+            configLock.unlockWrite(stamp);
         }
+
+        if (!applyLock.tryAcquire()) {
+            LOG.debug("Service group {} delayed unregister of {}", identifier, reg);
+            return false;
+        }
+
+        reconcileState();
+        return true;
     }
 
     @Override
     void ownershipChanged(final C ownershipChange) {
         LOG.debug("Ownership change {} for ClusterSingletonServiceGroup {}", ownershipChange, identifier);
 
-        lock.lock();
+        applyLock.acquire();
         try {
             if (capture != null) {
                 capture.add(ownershipChange);
@@ -436,7 +430,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
                 lockedOwnershipChanged(ownershipChange);
             }
         } finally {
-            lock.unlock();
+            applyLock.release();
             finishCloseIfNeeded();
         }
     }
@@ -602,11 +596,11 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     private void finishCloseIfNeeded() {
         final SettableFuture<Void> future = closeFuture.get();
         if (future != null) {
-            lock.lock();
+            applyLock.acquire();
             try {
                 lockedClose(future);
             } finally {
-                lock.unlock();
+                applyLock.release();
             }
         }
     }
@@ -709,7 +703,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
 
     void onServicesStopped() {
         LOG.debug("Service group {} finished stopping services", identifier);
-        lock.lock();
+        applyLock.acquire();
         try {
             localServicesState = ServiceState.STOPPED;
 
@@ -759,7 +753,7 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
                     throw new IllegalStateException("Unhandled cleanup entity state" + cleanupEntityState);
             }
         } finally {
-            lock.unlock();
+            applyLock.release();
             finishCloseIfNeeded();
         }
     }
@@ -767,5 +761,114 @@ final class ClusterSingletonServiceGroupImpl<P extends Path<P>, E extends Generi
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this).add("identifier", identifier).toString();
+    }
+
+    // has to be called with applyLock, which will be released prior to returning
+    private void reconcileState() {
+        final Collection<Entry<ListenableFuture<?>, FutureCallback<Object>>> futures = new ArrayList<>();
+
+        while (true) {
+            final long stamp = configLock.tryOptimisticRead();
+            final Set<ClusterSingletonServiceRegistration> localConfig = ImmutableSet.copyOf(serviceGroup);
+            if (!configLock.validate(stamp)) {
+                // The set moved while we were copying it, restart.
+                continue;
+            }
+
+            reconcileState(localConfig, futures);
+            if (configLock.validate(stamp)) {
+                // No change in state, or someone is holding the lock -- bail out
+                break;
+            }
+        }
+
+        applyLock.release();
+        futures.forEach(entry -> Futures.addCallback(entry.getKey(), entry.getValue(), MoreExecutors.directExecutor()));
+    }
+
+    @GuardedBy("applyLock")
+    private void reconcileState(final Set<ClusterSingletonServiceRegistration> localConfig,
+            final Collection<Entry<ListenableFuture<?>, FutureCallback<Object>>> futures) {
+        // We are the sole thread observing entity state, now we need to reconcile all state
+        switch (serviceEntityState) {
+            case OWNED:
+                ensureServicesStarting(localConfig, futures);
+                break;
+            case OWNED_JEOPARDY:
+            case REGISTERED:
+            case UNOWNED:
+            case UNREGISTERED:
+                ensureServicesStopping(futures);
+                break;
+            default:
+                throw new IllegalStateException("Unhandled state " + serviceEntityState);
+        }
+    }
+
+    @GuardedBy("applyLock")
+    private void ensureServicesStarting(final Set<ClusterSingletonServiceRegistration> services,
+            final Collection<Entry<ListenableFuture<?>, FutureCallback<Object>>> futures) {
+
+
+        // TODO Auto-generated method stub
+
+    }
+
+    @GuardedBy("applyLock")
+    private void ensureServicesStopping(final Collection<Entry<ListenableFuture<?>, FutureCallback<Object>>> futures) {
+        final Iterator<Entry<ClusterSingletonServiceRegistration, ServiceInfo>> it = services.entrySet().iterator();
+        while (it.hasNext()) {
+            final Entry<ClusterSingletonServiceRegistration, ServiceInfo> entry = it.next();
+            final ServiceInfo info = entry.getValue();
+
+            switch (info.getState()) {
+                case STARTED:
+                    final ClusterSingletonServiceRegistration reg = entry.getKey();
+                    final ClusterSingletonService service = reg.getInstance();
+
+                    LOG.debug("Service group {} stopping service {}", identifier, service);
+                    final ListenableFuture<?> future;
+                    try {
+                        future = service.closeServiceInstance();
+                    } catch (Exception e) {
+                        LOG.warn("Service group {} service {} failed to stop, attempting to continue", identifier,
+                            service, e);
+                        it.remove();
+                        continue;
+                    }
+
+                    entry.setValue(info.toState(ServiceState.STOPPING, future));
+                    futures.add(new SimpleImmutableEntry<>(future, new FutureCallback<Object>() {
+                        @Override
+                        public void onSuccess(final Object result) {
+                            LOG.debug("Service group {} service {} stopped successfully", identifier, service);
+                            serviceTransitionCompleted();
+                        }
+
+                        @Override
+                        public void onFailure(final Throwable cause) {
+                            LOG.debug("Service group {} service {} stopped with error", identifier, service,
+                                cause);
+                            serviceTransitionCompleted();
+                        }
+                    }));
+                    break;
+                case STOPPED:
+                    it.remove();
+                    LOG.debug("Service group {} removed stopped service {}", identifier, entry.getKey().getInstance());
+                    break;
+                case STOPPING:
+                    // No-op
+                    break;
+                default:
+                    throw new IllegalStateException("Unhandles state " + info.getState());
+            }
+        }
+    }
+
+    private void serviceTransitionCompleted() {
+        // FIXME: try acquire lock, etc, etc.
+
+        // TODO Auto-generated method stub
     }
 }
