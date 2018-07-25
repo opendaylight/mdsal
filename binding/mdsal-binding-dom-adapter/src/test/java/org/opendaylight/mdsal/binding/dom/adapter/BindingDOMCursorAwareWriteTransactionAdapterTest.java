@@ -43,9 +43,9 @@ public class BindingDOMCursorAwareWriteTransactionAdapterTest {
         assertNotNull(adapter.createCursor(DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
                 InstanceIdentifier.create(DataObject.class))));
 
-        doReturn(null).when(delegate).submit();
-        adapter.submit();
-        verify(delegate).submit();
+        doReturn(null).when(delegate).commit();
+        adapter.commit();
+        verify(delegate).commit();
 
         doReturn(true).when(delegate).cancel();
         assertTrue(adapter.cancel());

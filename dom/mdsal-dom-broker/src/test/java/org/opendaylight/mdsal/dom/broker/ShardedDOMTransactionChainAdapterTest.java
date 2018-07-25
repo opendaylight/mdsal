@@ -66,7 +66,7 @@ public class ShardedDOMTransactionChainAdapterTest {
         verify(cursor).delete(any());
 
         doNothing().when(cursor).close();
-        doReturn(Futures.immediateCheckedFuture(null)).when(transaction).submit();
+        doReturn(Futures.immediateCheckedFuture(null)).when(transaction).commit();
         doReturn(true).when(transaction).cancel();
         assertTrue(writeTransaction.cancel());
         transactionChainAdapter.closeWriteTransaction(FluentFutures.immediateNullFluentFuture());

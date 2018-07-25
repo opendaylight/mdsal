@@ -7,8 +7,8 @@
  */
 package org.opendaylight.mdsal.dom.api;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
@@ -20,10 +20,18 @@ public interface DOMDataTreeReadCursor extends DOMDataTreeCursor {
      * Read a particular node from the snapshot.
      *
      * @param child Child identifier
-     * @return Optional result encapsulating the presence and value of the node
+     * @return a FluentFuture containing the result of the read. Once complete:
+     *         <ul>
+     *         <li>If the data at the supplied path exists, the Future returns an Optional object
+     *         containing the data.</li>
+     *         <li>If the data at the supplied path does not exist, the Future returns
+     *         Optional#empty().</li>
+     *         <li>If the read of the data fails, the Future will fail with a
+     *         {@link ReadFailedException} or an exception derived from ReadFailedException.</li>
+     *         </ul>
      * @throws IllegalArgumentException when specified path does not identify a valid child.
      */
-    CheckedFuture<Optional<NormalizedNode<?, ?>>, ReadFailedException> readNode(@Nonnull PathArgument child);
+    FluentFuture<Optional<NormalizedNode<?, ?>>> readNode(@Nonnull PathArgument child);
 
     /**
      * Checks if data is available in the logical data store located at provided path.
@@ -36,13 +44,14 @@ public interface DOMDataTreeReadCursor extends DOMDataTreeCursor {
      * <code>readNode</code>
      *
      * @param child Child identifier
-     * @return a CheckFuture containing the result of the check.
+     * @return a FluentFuture containing the result of the read. Once complete:
      *         <ul>
      *         <li>If the data at the supplied path exists, the Future returns a Boolean whose value
-     *         is true, false otherwise</li> <li>If checking for the data fails, the Future will
+     *         is true, false otherwise</li>
+     *          <li>If checking for the data fails, the Future will
      *         fail with a {@link ReadFailedException} or an exception derived from
      *         ReadFailedException.</li>
      *         </ul>
      */
-    CheckedFuture<Boolean, ReadFailedException> exists(@Nonnull PathArgument child);
+    FluentFuture<Boolean> exists(@Nonnull PathArgument child);
 }

@@ -9,7 +9,7 @@ package org.opendaylight.mdsal.dom.broker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -26,7 +26,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.NotThreadSafe;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteCursor;
@@ -39,8 +40,6 @@ import org.slf4j.LoggerFactory;
 @NotThreadSafe
 final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAwareTransaction {
     private static final Logger LOG = LoggerFactory.getLogger(ShardedDOMDataTreeWriteTransaction.class);
-    private static final TransactionCommitFailedExceptionMapper SUBMIT_FAILED_MAPPER =
-            TransactionCommitFailedExceptionMapper.create("submit");
     private static final AtomicLong COUNTER = new AtomicLong();
 
     private final Map<DOMDataTreeIdentifier, DOMDataTreeShardWriteTransaction> transactions;
@@ -48,9 +47,7 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     private final ProducerLayout layout;
     private final String identifier;
 
-    private final SettableFuture<Void> future = SettableFuture.create();
-    private final CheckedFuture<Void, TransactionCommitFailedException> submitFuture =
-            Futures.makeChecked(future, SUBMIT_FAILED_MAPPER);
+    private final SettableFuture<CommitInfo> future = SettableFuture.create();
 
     @GuardedBy("this")
     private boolean closed =  false;
@@ -122,12 +119,12 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
     }
 
     @Override
-    public synchronized CheckedFuture<Void, TransactionCommitFailedException> submit() {
+    public synchronized FluentFuture<? extends @NonNull CommitInfo> commit() {
         Preconditions.checkState(!closed, "Transaction %s is already closed", identifier);
         Preconditions.checkState(openCursor == null, "Cannot submit transaction while there is a cursor open");
 
         producer.transactionSubmitted(this);
-        return submitFuture;
+        return future;
     }
 
     void doSubmit(final Consumer<ShardedDOMDataTreeWriteTransaction> success,
@@ -165,8 +162,8 @@ final class ShardedDOMDataTreeWriteTransaction implements DOMDataTreeCursorAware
         }, MoreExecutors.directExecutor());
     }
 
-    void onTransactionSuccess(final Void result) {
-        future.set(result);
+    void onTransactionSuccess(final CommitInfo commitInfo) {
+        future.set(commitInfo);
     }
 
     void onTransactionFailure(final Throwable throwable) {
