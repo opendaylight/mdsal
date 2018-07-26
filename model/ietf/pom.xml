@@ -44,6 +44,10 @@
         <!-- RFC7895 YANG Metadata -->
         <module>rfc7952</module>
 
+        <!-- RFC8294 Common YANG Data Types for the Routing Area -->
+        <module>rfc8294</module>
+        <module>rfc8294-ietf-routing-types</module>
+
         <!-- RFC8342 Network Management Datastore Architecture -->
         <module>rfc8342</module>
         <module>rfc8342-ietf-datastores</module>
