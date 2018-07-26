@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilderBase;
@@ -32,8 +33,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 final class RuntimeTypeGenerator extends AbstractTypeGenerator {
-    RuntimeTypeGenerator(final SchemaContext context) {
-        super(context, new RuntimeTypeProvider(context));
+    RuntimeTypeGenerator(final SchemaContext context, final Map<SchemaNode, JavaTypeName> renames) {
+        super(context, new RuntimeTypeProvider(context), renames);
     }
 
     BindingRuntimeTypes toTypeMapping() {
