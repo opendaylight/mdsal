@@ -7,6 +7,7 @@
  */
 package org.opendaylight.mdsal.binding.yang.types;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNode;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findDataSchemaNodeForRelativeXPath;
 import static org.opendaylight.yangtools.yang.model.util.SchemaContextUtil.findParentModule;
@@ -113,19 +114,22 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     private final Map<SchemaPath, Type> referencedTypes = new HashMap<>();
     private final Map<Module, Set<Type>> additionalTypes = new HashMap<>();
+    private final Map<SchemaNode, JavaTypeName> renames;
 
     /**
      * Creates new instance of class <code>TypeProviderImpl</code>.
      *
      * @param schemaContext
      *            contains the schema data red from YANG files
+     * @param renames
      * @throws IllegalArgumentException
      *             if <code>schemaContext</code> equal null.
      */
-    AbstractTypeProvider(final SchemaContext schemaContext) {
+    AbstractTypeProvider(final SchemaContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
         Preconditions.checkArgument(schemaContext != null, "Schema Context cannot be null!");
 
         this.schemaContext = schemaContext;
+        this.renames = requireNonNull(renames);
         resolveTypeDefsFromContext();
     }
 
@@ -1168,9 +1172,14 @@ public abstract class AbstractTypeProvider implements TypeProvider {
      */
     private GeneratedTOBuilder typedefToTransferObject(final String basePackageName,
             final TypeDefinition<?> typedef, final String moduleName) {
-        final GeneratedTOBuilder newType = newGeneratedTOBuilder(JavaTypeName.create(
-            BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typedef.getPath()),
-            BindingMapping.getClassName(typedef.getQName().getLocalName())));
+        JavaTypeName name = renames.get(typedef);
+        if (name == null) {
+            name = JavaTypeName.create(
+                BindingGeneratorUtil.packageNameForGeneratedType(basePackageName, typedef.getPath()),
+                BindingMapping.getClassName(typedef.getQName().getLocalName()));
+        }
+
+        final GeneratedTOBuilder newType = newGeneratedTOBuilder(name);
         newType.setSchemaPath(typedef.getPath());
         newType.setModuleName(moduleName);
         addCodegenInformation(newType, typedef);

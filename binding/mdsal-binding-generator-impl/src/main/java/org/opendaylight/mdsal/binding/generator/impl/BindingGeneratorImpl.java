@@ -10,16 +10,27 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.generator.api.BindingGenerator;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeGenerator;
 import org.opendaylight.mdsal.binding.generator.api.BindingRuntimeTypes;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
+import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
+import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
+import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BindingGeneratorImpl implements BindingGenerator, BindingRuntimeGenerator {
+    private static final Logger LOG = LoggerFactory.getLogger(BindingGeneratorImpl.class);
+
     /**
      * Resolves generated types from <code>context</code> schema nodes only for
      * modules specified in <code>modules</code>
@@ -52,17 +63,58 @@ public class BindingGeneratorImpl implements BindingGenerator, BindingRuntimeGen
     public List<Type> generateTypes(final SchemaContext context, final Set<Module> modules) {
         checkContext(context);
         checkArgument(modules != null, "Set of Modules cannot be NULL.");
-        return new CodegenTypeGenerator(context).toTypes(modules);
+
+        final Map<SchemaNode, JavaTypeName> renames = new IdentityHashMap<>();
+        for (;;) {
+            try {
+                return new CodegenTypeGenerator(context, renames).toTypes(modules);
+            } catch (RenameMappingException e) {
+                rename(renames, e);
+            }
+        }
     }
 
     @Override
     public BindingRuntimeTypes generateTypeMapping(final SchemaContext context) {
         checkContext(context);
-        return new RuntimeTypeGenerator(context).toTypeMapping();
+
+        final Map<SchemaNode, JavaTypeName> renames = new IdentityHashMap<>();
+        for (;;) {
+            try {
+                return new RuntimeTypeGenerator(context, renames).toTypeMapping();
+            } catch (RenameMappingException e) {
+                rename(renames, e);
+            }
+        }
     }
 
     private static void checkContext(final SchemaContext context) {
         checkArgument(context != null, "Schema Context reference cannot be NULL.");
         checkState(context.getModules() != null, "Schema Context does not contain defined modules.");
+    }
+
+    private static void rename(final Map<SchemaNode, JavaTypeName> renames, final RenameMappingException e) {
+        final JavaTypeName name = e.getName();
+        final SchemaNode def = e.getDefinition();
+        final JavaTypeName existing = renames.get(def);
+        if (existing != null) {
+            throw new IllegalStateException("Attempted to relocate " + def + " to " + name + ", already remapped to "
+                    + existing, e);
+        }
+
+        final String suffix;
+        if (def instanceof IdentitySchemaNode) {
+            suffix = "$I";
+        } else if (def instanceof GroupingDefinition) {
+            suffix = "$G";
+        } else if (def instanceof TypeDefinition) {
+            suffix = "$T";
+        } else {
+            throw new IllegalStateException("Unhandled remapping of " + def + " at " + name, e);
+        }
+
+        final JavaTypeName newName = name.createSibling(name.simpleName() + suffix);
+        renames.put(def, newName);
+        LOG.info("Restarting code generation after remapping {} to {}", name, newName);
     }
 }
