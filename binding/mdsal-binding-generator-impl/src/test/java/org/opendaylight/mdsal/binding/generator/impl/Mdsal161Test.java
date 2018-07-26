@@ -25,7 +25,7 @@ public class Mdsal161Test {
      * Test if leaves with inner union type defined in groupings can be used as list keys at the place of instantiation.
      */
     @Test
-    public void mdsal269Test() {
+    public void mdsal161Test() {
         final SchemaContext context = YangParserTestUtils.parseYangResource("/mdsal161.yang");
         final Collection<Type> types = new BindingGeneratorImpl().generateTypes(context);
         assertNotNull(types);
