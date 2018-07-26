@@ -172,6 +172,28 @@
                 <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
+            <!-- RFC8349 -->
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8349</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8349-ietf-routing</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8349-ietf-ipv4-unicast-routing</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+                <artifactId>rfc8349-ietf-ipv6-unicast-routing</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
             <!-- draft-bierman-netconf-restconf-02 -->
             <!-- FIXME: upgrade to RFC8040 -->
             <dependency>
@@ -331,6 +353,13 @@
             <dependency>
                 <groupId>org.opendaylight.mdsal.model</groupId>
                 <artifactId>odl-mdsal-model-rfc8345-non-nmda</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <classifier>features</classifier>
+                <type>xml</type>
+            </dependency>
+            <dependency>
+                <groupId>org.opendaylight.mdsal.model</groupId>
+                <artifactId>odl-mdsal-model-rfc8349</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
                 <classifier>features</classifier>
                 <type>xml</type>
