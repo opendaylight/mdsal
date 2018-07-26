@@ -176,9 +176,16 @@ abstract class AbstractTypeGenerator {
      */
     private final SchemaContext schemaContext;
 
-    AbstractTypeGenerator(final SchemaContext context, final AbstractTypeProvider typeProvider) {
+    /**
+     * Holds renamed elements.
+     */
+    private final Map<SchemaNode, JavaTypeName> renames;
+
+    AbstractTypeGenerator(final SchemaContext context, final AbstractTypeProvider typeProvider,
+            final Map<SchemaNode, JavaTypeName> renames) {
         this.schemaContext = requireNonNull(context);
         this.typeProvider = requireNonNull(typeProvider);
+        this.renames = requireNonNull(renames);
 
         final List<Module> contextModules = ModuleDependencySort.sort(schemaContext.getModules());
         final List<ModuleContext> contexts = new ArrayList<>(contextModules.size());
@@ -252,7 +259,7 @@ abstract class AbstractTypeGenerator {
             if (typedef != null) {
                 final Type type = typeProvider.generatedTypeForExtendedDefinitionType(typedef,  typedef);
                 if (type != null) {
-                    context.addTypedefType(typedef.getPath(), type);
+                    context.addTypedefType(typedef, type);
                     context.addTypeToSchema(type,typedef);
                 }
             }
@@ -614,15 +621,25 @@ abstract class AbstractTypeGenerator {
         if (identity == null) {
             return;
         }
-        final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(JavaTypeName.create(
-            packageNameForGeneratedType(context.modulePackageName(), identity.getPath()),
-            BindingMapping.getClassName(identity.getQName())));
+
+        JavaTypeName name = renames.get(identity);
+        if (name == null) {
+            name = JavaTypeName.create(packageNameForGeneratedType(context.modulePackageName(), identity.getPath()),
+                BindingMapping.getClassName(identity.getQName()));
+        }
+
+        final GeneratedTypeBuilder newType = typeProvider.newGeneratedTypeBuilder(name);
         final Set<IdentitySchemaNode> baseIdentities = identity.getBaseIdentities();
         if (!baseIdentities.isEmpty()) {
             for (IdentitySchemaNode baseIdentity : baseIdentities) {
-                final QName qname = baseIdentity.getQName();
-                final GeneratedTransferObject gto = typeProvider.newGeneratedTOBuilder(JavaTypeName.create(
-                    BindingMapping.getRootPackageName(qname.getModule()), BindingMapping.getClassName(qname))).build();
+                JavaTypeName base = renames.get(baseIdentity);
+                if (base == null) {
+                    final QName qname = baseIdentity.getQName();
+                    base = JavaTypeName.create(BindingMapping.getRootPackageName(qname.getModule()),
+                        BindingMapping.getClassName(qname));
+                }
+
+                final GeneratedTransferObject gto = typeProvider.newGeneratedTOBuilder(base).build();
                 newType.addImplementsType(gto);
             }
         } else {
@@ -637,7 +654,7 @@ abstract class AbstractTypeGenerator {
         qnameConstant(newType, JavaTypeName.create(context.modulePackageName(), BindingMapping.MODULE_INFO_CLASS_NAME),
             identity.getQName().getLocalName());
 
-        context.addIdentityType(identity.getQName(), newType);
+        context.addIdentityType(identity, newType);
     }
 
     private static Constant qnameConstant(final GeneratedTypeBuilderBase<?> toBuilder,
@@ -665,7 +682,7 @@ abstract class AbstractTypeGenerator {
             // node of grouping is resolved to the method.
             final GeneratedTypeBuilder genType = addDefaultInterfaceDefinition(context, grouping);
             annotateDeprecatedIfNecessary(grouping.getStatus(), genType);
-            context.addGroupingType(grouping.getPath(), genType);
+            context.addGroupingType(grouping, genType);
             resolveDataSchemaNodes(context, genType, genType, grouping.getChildNodes());
             groupingsToGenTypes(context, grouping.getGroupings());
             processUsesAugments(grouping, context);
@@ -1677,8 +1694,12 @@ abstract class AbstractTypeGenerator {
      */
     private GeneratedTypeBuilder addDefaultInterfaceDefinition(final String packageName, final SchemaNode schemaNode,
             final Type baseInterface, final ModuleContext context) {
-        final GeneratedTypeBuilder it = addRawInterfaceDefinition(
-            JavaTypeName.create(packageName, BindingMapping.getClassName(schemaNode.getQName())), schemaNode);
+        JavaTypeName name = renames.get(schemaNode);
+        if (name == null) {
+            name = JavaTypeName.create(packageName, BindingMapping.getClassName(schemaNode.getQName()));
+        }
+
+        final GeneratedTypeBuilder it = addRawInterfaceDefinition(name, schemaNode);
 
         it.addImplementsType(baseInterface);
         if (!(schemaNode instanceof GroupingDefinition)) {
