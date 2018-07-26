@@ -66,6 +66,12 @@
         <module>rfc8345-ietf-network-topology</module>
         <module>rfc8345-ietf-network-topology-state</module>
 
+        <!-- RFC8349 Routing Management -->
+        <module>rfc8349</module>
+        <module>rfc8349-ietf-routing</module>
+        <module>rfc8349-ietf-ipv4-unicast-routing</module>
+        <module>rfc8349-ietf-ipv6-unicast-routing</module>
+
         <module>ietf-packet-fields</module>
         <module>ietf-access-control-list</module>
         <module>ietf-lisp-address-types</module>
