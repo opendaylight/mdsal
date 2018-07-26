@@ -14,8 +14,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Streams;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -51,20 +51,25 @@ abstract class AbstractJavaGeneratedType {
             b.put(type.getIdentifier().simpleName(), new NestedJavaGeneratedType(this, type));
         }
         enclosedTypes = b.build();
-        conflictingNames = genType instanceof Enumeration
-                ? ((Enumeration) genType).getValues().stream().map(Pair::getMappedName).collect(toImmutableSet())
-                        : ImmutableSet.of();
-    }
 
-    AbstractJavaGeneratedType(final JavaTypeName name, final GeneratedType genType) {
-        this.name = requireNonNull(name);
-        enclosedTypes = ImmutableMap.of();
+        if (genType instanceof Enumeration) {
+            conflictingNames = ((Enumeration) genType).getValues().stream().map(Pair::getMappedName)
+                    .collect(toImmutableSet());
+        } else {
+            final Set<String> inherited = new HashSet<>();
+            for (Type type : genType.getImplements()) {
+                if (type instanceof GeneratedType) {
+                    for (GeneratedType innerType : ((GeneratedType) type).getEnclosedTypes()) {
+                        inherited.add(innerType.getName());
+                    }
+                    for (GeneratedType innerType : ((GeneratedType) type).getEnumerations()) {
+                        inherited.add(innerType.getName());
+                    }
+                }
+            }
 
-        // This is a workaround for BuilderTemplate, which does not model itself correctly -- it should generate
-        // a GeneratedType for the Builder with a nested type for the implementation, which really should be
-        // a different template which gets generated as an inner type.
-        conflictingNames = Streams.concat(genType.getEnclosedTypes().stream(), genType.getEnumerations().stream())
-        .map(type -> type.getIdentifier().simpleName()).collect(toImmutableSet());
+            conflictingNames = ImmutableSet.copyOf(inherited);
+        }
     }
 
     final JavaTypeName getName() {
