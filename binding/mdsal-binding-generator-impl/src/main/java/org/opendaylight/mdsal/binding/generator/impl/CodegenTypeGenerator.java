@@ -11,8 +11,10 @@ import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.enc
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.YangSourceDefinition;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
@@ -26,8 +28,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 
 final class CodegenTypeGenerator extends AbstractTypeGenerator {
-    CodegenTypeGenerator(final SchemaContext context) {
-        super(context, new CodegenTypeProvider(context));
+    CodegenTypeGenerator(final SchemaContext context, final Map<SchemaNode, JavaTypeName> renames) {
+        super(context, new CodegenTypeProvider(context), renames);
     }
 
     List<Type> toTypes(final Set<Module> modules) {
