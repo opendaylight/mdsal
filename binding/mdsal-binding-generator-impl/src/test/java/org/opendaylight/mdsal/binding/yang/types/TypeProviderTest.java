@@ -137,7 +137,8 @@ public class TypeProviderTest {
         provider.javaTypeForSchemaDefinitionType(testTypedef, null, null);
     }
 
-    private static LeafSchemaNode provideLeafNodeFromTopLevelContainer(final Module module, final String containerName, final String leafNodeName) {
+    private static LeafSchemaNode provideLeafNodeFromTopLevelContainer(final Module module, final String containerName,
+            final String leafNodeName) {
         final QName containerNode = QName.create(module.getQNameModule(), containerName);
         final DataSchemaNode rootNode = module.getDataChildByName(containerNode);
         assertNotNull("Container foo is not present in root of module "+ module.getName(), rootNode);
@@ -151,7 +152,8 @@ public class TypeProviderTest {
         return (LeafSchemaNode) node;
     }
 
-    private static LeafListSchemaNode provideLeafListNodeFromTopLevelContainer(final Module module, final String containerName, final String leafListNodeName) {
+    private static LeafListSchemaNode provideLeafListNodeFromTopLevelContainer(final Module module,
+            final String containerName, final String leafListNodeName) {
         final QName containerNode = QName.create(module.getQNameModule(), containerName);
         final DataSchemaNode rootNode = module.getDataChildByName(containerNode);
         assertNotNull("Container foo is not present in root of module " + module.getName(), rootNode);
@@ -168,7 +170,8 @@ public class TypeProviderTest {
     @Test
     public void javaTypeForSchemaDefinitionExtTypeTest() {
         final TypeProvider provider = new CodegenTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo", "yang-int8-type");
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
+            "yang-int8-type");
 
         final TypeDefinition<?> leafType = leaf.getType();
         final Type result = provider.javaTypeForSchemaDefinitionType(leafType, leaf);
@@ -177,7 +180,8 @@ public class TypeProviderTest {
 
         final GeneratedTransferObject genTO = (GeneratedTransferObject) result;
         assertEquals("base-yang-types", genTO.getModuleName());
-        assertEquals("org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914", genTO.getPackageName());
+        assertEquals("org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914",
+            genTO.getPackageName());
         assertEquals("YangInt8", genTO.getName());
         assertEquals(1, genTO.getProperties().size());
     }
@@ -185,7 +189,8 @@ public class TypeProviderTest {
     @Test
     public void javaTypeForSchemaDefinitionRestrictedExtTypeTest() {
         final TypeProvider provider = new CodegenTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo", "restricted-int8-type");
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "foo",
+            "restricted-int8-type");
 
         final TypeDefinition<?> leafType = leaf.getType();
         final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(leafType);
@@ -195,7 +200,8 @@ public class TypeProviderTest {
         assertTrue(result instanceof GeneratedTransferObject);
 
         final GeneratedTransferObject genTO = (GeneratedTransferObject) result;
-        assertEquals("org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914", genTO.getPackageName());
+        assertEquals("org.opendaylight.yang.gen.v1.urn.opendaylight.org.test.base.yang.types.rev140914",
+            genTO.getPackageName());
         assertEquals("YangInt8Restricted", genTO.getName());
         assertEquals(1, genTO.getProperties().size());
         final Optional<? extends RangeConstraint<?>> rangeConstraints = genTO.getRestrictions().getRangeConstraint();
@@ -211,7 +217,8 @@ public class TypeProviderTest {
         final AbstractTypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
 
         final Module testTypeProvider = resolveModule("test-type-provider");
-        final TypeDefinition<?> emptyPatternString = resolveTypeDefinitionFromModule(testTypeProvider, "empty-pattern-string");
+        final TypeDefinition<?> emptyPatternString = resolveTypeDefinitionFromModule(testTypeProvider,
+            "empty-pattern-string");
 
         assertNotNull(emptyPatternString);
         final Restrictions restrictions = BindingGeneratorUtil.getRestrictions(emptyPatternString);
@@ -427,7 +434,8 @@ public class TypeProviderTest {
     @Test
     public void javaTypeForSchemaDefinitionForExtUnionWithSimpleTypesTest() {
         final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "use-of-unions", "simple-int-types-union");
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "use-of-unions",
+            "simple-int-types-union");
         final TypeDefinition<?> leafType = leaf.getType();
 
         final Type result = provider.javaTypeForSchemaDefinitionType(leafType, leaf);
@@ -440,7 +448,8 @@ public class TypeProviderTest {
     @Test
     public void javaTypeForSchemaDefinitionForExtComplexUnionWithInnerUnionTypesTest() {
         final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "use-of-unions", "complex-union");
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "use-of-unions",
+            "complex-union");
         final TypeDefinition<?> leafType = leaf.getType();
 
         final Type result = provider.javaTypeForSchemaDefinitionType(leafType, leaf);
@@ -453,7 +462,8 @@ public class TypeProviderTest {
     @Test
     public void javaTypeForSchemaDefinitionForExtUnionWithInnerUnionAndSimpleTypeTest() {
         final TypeProvider provider = new RuntimeTypeProvider(this.schemaContext);
-        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "use-of-unions", "complex-string-int-union");
+        final LeafSchemaNode leaf = provideLeafNodeFromTopLevelContainer(this.testTypeProviderModule, "use-of-unions",
+            "complex-string-int-union");
         final TypeDefinition<?> leafType = leaf.getType();
 
         final Type result = provider.javaTypeForSchemaDefinitionType(leafType, leaf);

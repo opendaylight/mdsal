@@ -8,6 +8,7 @@
 package org.opendaylight.mdsal.binding.yang.types;
 
 import com.google.common.annotations.Beta;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeE
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeGeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.RuntimeGeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
@@ -31,8 +33,13 @@ import org.opendaylight.yangtools.yang.model.api.type.PatternConstraint;
  */
 @Beta
 public final class RuntimeTypeProvider extends AbstractTypeProvider {
-    public RuntimeTypeProvider(final SchemaContext schemaContext) {
-        super(schemaContext);
+    public RuntimeTypeProvider(final SchemaContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
+        super(schemaContext, renames);
+    }
+
+    @VisibleForTesting
+    RuntimeTypeProvider(final SchemaContext schemaContext) {
+        this(schemaContext, ImmutableMap.of());
     }
 
     @Override

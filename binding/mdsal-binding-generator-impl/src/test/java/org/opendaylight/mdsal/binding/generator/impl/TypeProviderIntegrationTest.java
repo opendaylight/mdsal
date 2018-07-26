@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.generator.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,7 +41,7 @@ public class TypeProviderIntegrationTest {
 
     @Before
     public void init() {
-        provider = new CodegenTypeProvider(context);
+        provider = new CodegenTypeProvider(context, ImmutableMap.of());
         m = context.findModule("test", Revision.of("2013-10-08")).get();
     }
 

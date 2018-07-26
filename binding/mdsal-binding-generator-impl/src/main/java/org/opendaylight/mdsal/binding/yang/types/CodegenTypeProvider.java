@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.yang.types;
 import static org.opendaylight.mdsal.binding.model.util.BindingGeneratorUtil.encodeAngleBrackets;
 
 import com.google.common.annotations.Beta;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenG
 import org.opendaylight.mdsal.binding.model.util.generated.type.builder.CodegenGeneratedTypeBuilder;
 import org.opendaylight.yangtools.yang.binding.RegexPatterns;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
 import org.opendaylight.yangtools.yang.model.api.type.ModifierKind;
@@ -46,10 +48,16 @@ public class CodegenTypeProvider extends AbstractTypeProvider {
      * Creates new instance of class <code>TypeProviderImpl</code>.
      *
      * @param schemaContext contains the schema data read from YANG files
+     * @param renames
      * @throws IllegalArgumentException if <code>schemaContext</code> is null.
      */
-    public CodegenTypeProvider(final SchemaContext schemaContext) {
-        super(schemaContext);
+    public CodegenTypeProvider(final SchemaContext schemaContext, final Map<SchemaNode, JavaTypeName> renames) {
+        super(schemaContext, renames);
+    }
+
+    @VisibleForTesting
+    CodegenTypeProvider(final SchemaContext schemaContext) {
+        this(schemaContext, ImmutableMap.of());
     }
 
     @Override
