@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.concurrent.NotThreadSafe;
+import org.opendaylight.mdsal.binding.model.api.JavaTypeName;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTOBuilder;
 import org.opendaylight.mdsal.binding.model.api.type.builder.GeneratedTypeBuilder;
@@ -32,13 +33,19 @@ import org.opendaylight.yangtools.yang.model.api.AugmentationSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.CaseSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DataSchemaNode;
 import org.opendaylight.yangtools.yang.model.api.DocumentedNode.WithStatus;
+import org.opendaylight.yangtools.yang.model.api.GroupingDefinition;
+import org.opendaylight.yangtools.yang.model.api.IdentitySchemaNode;
 import org.opendaylight.yangtools.yang.model.api.Module;
 import org.opendaylight.yangtools.yang.model.api.SchemaNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 import org.opendaylight.yangtools.yang.model.api.TypeDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @NotThreadSafe
 public final class ModuleContext {
+    private static final Logger LOG = LoggerFactory.getLogger(ModuleContext.class);
+
     private final BiMap<Type, AugmentationSchemaNode> typeToAugmentation = HashBiMap.create();
     private final Map<SchemaPath, GeneratedTypeBuilder> childNodes = new HashMap<>();
     private final Map<SchemaPath, GeneratedTypeBuilder> groupings = new HashMap<>();
@@ -53,6 +60,9 @@ public final class ModuleContext {
     private final Map<SchemaPath, Type> innerTypes = new HashMap<>();
     private final Map<SchemaPath, Type> typedefs = new HashMap<>();
     private final Module module;
+
+    // Conflict mapping
+    private final Map<JavaTypeName, SchemaNode> nameMapping = new HashMap<>();
 
     private GeneratedTypeBuilder moduleNode;
     private String modulePackageName;
@@ -142,20 +152,33 @@ public final class ModuleContext {
         typeToSchema.put(b,p);
     }
 
-    public void addGroupingType(final SchemaPath p, final GeneratedTypeBuilder b) {
-        groupings.put(p, b);
+    public void addGroupingType(final GroupingDefinition def, final GeneratedTypeBuilder b) {
+        checkNamingConflict(def, b.getIdentifier());
+        groupings.put(def.getPath(), b);
     }
 
-    public void addTypedefType(final SchemaPath p, final Type t) {
-        typedefs.put(p, t);
+    public void addTypedefType(final TypeDefinition<?> def, final Type t) {
+        final JavaTypeName name = t.getIdentifier();
+        final SchemaNode existingDef = nameMapping.putIfAbsent(name, def);
+        if (existingDef != null) {
+            if (!(existingDef instanceof TypeDefinition)) {
+                throw resolveNamingConfict(existingDef, def, name);
+            }
+
+            // This seems to be fine
+            LOG.debug("GeneratedType conflict between {} and {} on {}", def, existingDef, name);
+        }
+
+        typedefs.put(def.getPath(), t);
     }
 
     public void addCaseType(final SchemaPath p, final GeneratedTypeBuilder b) {
         cases.put(p, b);
     }
 
-    public void addIdentityType(final QName name,final GeneratedTypeBuilder b) {
-        identities.put(name, b);
+    public void addIdentityType(final IdentitySchemaNode def, final GeneratedTypeBuilder b) {
+        checkNamingConflict(def, b.getIdentifier());
+        identities.put(def.getQName(), b);
     }
 
     public void addTopLevelNodeType(final GeneratedTypeBuilder b) {
@@ -242,4 +265,38 @@ public final class ModuleContext {
         return innerTypes.get(path);
     }
 
+    private void checkNamingConflict(final SchemaNode def, final JavaTypeName name) {
+        final SchemaNode existingDef = nameMapping.putIfAbsent(name, def);
+        if (existingDef != null) {
+            throw resolveNamingConfict(existingDef, def, name);
+        }
+    }
+
+    private static IllegalStateException resolveNamingConfict(final SchemaNode existing, final SchemaNode incoming,
+            final JavaTypeName name) {
+        if (existing instanceof IdentitySchemaNode) {
+            if (incoming instanceof GroupingDefinition || incoming instanceof TypeDefinition) {
+                return new RenameMappingException(name, existing);
+            }
+        } else if (existing instanceof GroupingDefinition) {
+            if (incoming instanceof IdentitySchemaNode) {
+                return new RenameMappingException(name, incoming);
+            }
+            if (incoming instanceof TypeDefinition) {
+                return new RenameMappingException(name, existing);
+            }
+        } else if (existing instanceof TypeDefinition) {
+            if (incoming instanceof GroupingDefinition || incoming instanceof IdentitySchemaNode) {
+                return new RenameMappingException(name, incoming);
+            }
+        } else {
+            if (incoming instanceof GroupingDefinition || incoming instanceof IdentitySchemaNode
+                    || incoming instanceof TypeDefinition) {
+                return new RenameMappingException(name, incoming);
+            }
+        }
+
+        return new IllegalStateException(String.format("Unhandled GeneratedType conflict between %s and %s on %s",
+            incoming, existing, name));
+    }
 }
