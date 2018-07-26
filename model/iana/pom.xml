@@ -25,5 +25,8 @@
     <modules>
         <module>iana-afn-safi</module>
         <module>iana-if-type-2014-05-08</module>
+
+        <!-- RFC8294 and updates -->
+        <module>iana-routing-types</module>
     </modules>
 </project>
