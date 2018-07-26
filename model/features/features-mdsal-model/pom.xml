@@ -108,6 +108,13 @@
         </dependency>
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>odl-mdsal-model-rfc8349</artifactId>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>odl-mdsal-model-draft-bierman-netconf-restconf-02</artifactId>
             <classifier>features</classifier>
             <type>xml</type>
@@ -142,6 +149,7 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+
         <dependency>
             <groupId>org.opendaylight.mdsal.model</groupId>
             <artifactId>odl-mdsal-model-odl-l2-types</artifactId>
