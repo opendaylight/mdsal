@@ -33,6 +33,7 @@ import org.opendaylight.mdsal.binding.model.api.ParameterizedType;
 import org.opendaylight.mdsal.binding.model.api.Restrictions;
 import org.opendaylight.mdsal.binding.model.api.Type;
 import org.opendaylight.mdsal.binding.model.api.WildcardType;
+import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.model.api.type.LengthConstraint;
@@ -55,6 +56,7 @@ public final class Types {
     public static final ConcreteType VOID = typeForClass(Void.class);
     public static final ConcreteType BYTE_ARRAY = typeForClass(byte[].class);
 
+    private static final ConcreteType BUILDER = typeForClass(Builder.class);
     private static final ConcreteType CLASS = typeForClass(Class.class);
     private static final ConcreteType LIST_TYPE = typeForClass(List.class);
     private static final ConcreteType LISTENABLE_FUTURE = typeForClass(ListenableFuture.class);
@@ -193,6 +195,17 @@ public final class Types {
      */
     public static ParameterizedType listenableFutureTypeFor(final Type valueType) {
         return parameterizedTypeFor(LISTENABLE_FUTURE, valueType);
+    }
+
+    /**
+     * Returns an instance of {@link ParameterizedType} describing the typed
+     * {@link Builder}&lt;V&gt; with concrete type of value.
+     *
+     * @param valueType Value Type
+     * @return Description of type instance of Builder
+     */
+    public static ParameterizedType builderTypeFor(final Type valueType) {
+        return parameterizedTypeFor(BUILDER, valueType);
     }
 
     /**
