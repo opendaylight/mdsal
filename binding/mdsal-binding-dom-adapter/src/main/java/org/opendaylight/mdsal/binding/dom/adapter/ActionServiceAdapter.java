@@ -35,8 +35,8 @@ final class ActionServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMOperationService, Class<? extends Action<?, ?, ?>>, ActionAdapter>
         implements ActionService {
     private static final class ConstrainedAction implements Delegator<Action<?, ?, ?>>,
-            Action<DataObject, RpcInput, RpcOutput> {
-        private final Action<DataObject, RpcInput, RpcOutput> delegate;
+            Action<InstanceIdentifier<?>, RpcInput, RpcOutput> {
+        private final Action<InstanceIdentifier<?>, RpcInput, RpcOutput> delegate;
         private final Set<? extends DataTreeIdentifier<?>> nodes;
 
         ConstrainedAction(final Action<?, ?, ?> delegate, final Set<? extends DataTreeIdentifier<?>> nodes) {
@@ -45,8 +45,7 @@ final class ActionServiceAdapter
         }
 
         @Override
-        public FluentFuture<RpcResult<RpcOutput>> invoke(final InstanceIdentifier<DataObject> path,
-                final RpcInput input) {
+        public FluentFuture<RpcResult<RpcOutput>> invoke(final InstanceIdentifier<?> path, final RpcInput input) {
             checkState(nodes.contains(path), "Cannot service %s", path);
             return delegate.invoke(path, input);
         }
