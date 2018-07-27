@@ -5,21 +5,23 @@ module actions {
 
     container cont {
         action foo {
-            input {
-                leaf xyzzy {
-                    type string;
-                }
-            }
+
+        }
+    }
+
+    list lst {
+        key key;
+        leaf key {
+            type string;
+        }
+        action foo {
+
         }
     }
 
     grouping grp {
         action bar {
-            output {
-                leaf xyzzy {
-                    type string;
-                }
-            }
+
         }
     }
 
@@ -28,6 +30,14 @@ module actions {
     }
 
     container grpcont {
+        uses grp;
+    }
+
+    list grplst {
+        key key;
+        leaf key {
+            type string;
+        }
         uses grp;
     }
 

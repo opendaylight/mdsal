@@ -5,7 +5,17 @@ module actions {
 
     container cont {
         action foo {
-        
+
+        }
+    }
+
+    list lst {
+        key key;
+        leaf key {
+            type string;
+        }
+        action foo {
+
         }
     }
 
@@ -20,6 +30,14 @@ module actions {
     }
 
     container grpcont {
+        uses grp;
+    }
+
+    list grplst {
+        key key;
+        leaf key {
+            type string;
+        }
         uses grp;
     }
 

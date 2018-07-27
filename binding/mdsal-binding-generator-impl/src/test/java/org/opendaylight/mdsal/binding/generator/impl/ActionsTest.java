@@ -23,6 +23,6 @@ public class ActionsTest {
 
         List<Type> generateTypes = new BindingGeneratorImpl().generateTypes(context);
         assertNotNull(generateTypes);
-        assertEquals(13, generateTypes.size());
+        assertEquals(21, generateTypes.size());
     }
 }
