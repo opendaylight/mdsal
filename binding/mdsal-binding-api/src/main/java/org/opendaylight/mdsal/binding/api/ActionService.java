@@ -56,22 +56,23 @@ public interface ActionService extends BindingService {
     <O extends DataObject, T extends Action<?, ?, ?>> T getActionHandle(Class<T> actionInterface,
             Set<DataTreeIdentifier<O>> validNodes);
 
-    default <O extends DataObject, T extends Action<O, ?, ?>> T getActionHandle(final Class<T> actionInterface) {
+    default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>> T getActionHandle(
+            final Class<T> actionInterface) {
         return getActionHandle(actionInterface, ImmutableSet.of());
     }
 
-    default <O extends DataObject, T extends Action<O, ?, ?>> T getActionHandle(final Class<T> actionInterface,
-            final LogicalDatastoreType dataStore, final InstanceIdentifier<O> path) {
+    default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>> T getActionHandle(
+            final Class<T> actionInterface, final LogicalDatastoreType dataStore, final P path) {
         return getActionHandle(actionInterface, ImmutableSet.of(DataTreeIdentifier.create(dataStore, path)));
     }
 
-    default <O extends DataObject, T extends Action<O, ?, ?>> T getActionHandle(final Class<T> actionInterface,
-            final InstanceIdentifier<O> path) {
+    default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>> T getActionHandle(
+            final Class<T> actionInterface, final P path) {
         return getActionHandle(actionInterface, LogicalDatastoreType.OPERATIONAL, path);
     }
 
-    default <O extends DataObject, T extends Action<O, ?, ?>> T getActionHandle(final Class<T> actionInterface,
-            @SuppressWarnings("unchecked") final DataTreeIdentifier<O>... nodes) {
+    default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>> T getActionHandle(
+            final Class<T> actionInterface, @SuppressWarnings("unchecked") final DataTreeIdentifier<O>... nodes) {
         return getActionHandle(actionInterface, ImmutableSet.copyOf(nodes));
     }
 }

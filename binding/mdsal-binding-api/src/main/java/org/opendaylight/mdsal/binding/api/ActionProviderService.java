@@ -15,6 +15,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Registration interface used by {@code action} implementations. Each action is defined in a YANG model,
@@ -40,17 +41,18 @@ public interface ActionProviderService extends BindingService {
      * @throws IllegalArgumentException if any of the {@code validNodes} does not match {@code datastore}
      * @throws UnsupportedOperationException if this service cannot handle requested datastore
      */
-    <O extends DataObject, T extends Action<O, ?, ?>, S extends T> ObjectRegistration<S> registerImplementation(
-            Class<T> actionInterface, S implementation, LogicalDatastoreType datastore,
-            Set<DataTreeIdentifier<O>> validNodes);
+    <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
+        ObjectRegistration<S> registerImplementation(Class<T> actionInterface, S implementation,
+                LogicalDatastoreType datastore, Set<DataTreeIdentifier<O>> validNodes);
 
-    default <O extends DataObject, T extends Action<O, ?, ?>, S extends T> ObjectRegistration<S> registerImplementation(
-            final Class<T> actionInterface, final S implementation, final LogicalDatastoreType datastore) {
+    default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
+        ObjectRegistration<S> registerImplementation(final Class<T> actionInterface, final S implementation,
+                final LogicalDatastoreType datastore) {
         return registerImplementation(actionInterface, implementation, datastore, ImmutableSet.of());
     }
 
-    default <O extends DataObject, T extends Action<O, ?, ?>, S extends T> ObjectRegistration<S> registerImplementation(
-            final Class<T> actionInterface, final S implementation) {
+    default <O extends DataObject, P extends InstanceIdentifier<O>, T extends Action<P, ?, ?>, S extends T>
+        ObjectRegistration<S> registerImplementation(final Class<T> actionInterface, final S implementation) {
         return registerImplementation(actionInterface, implementation, LogicalDatastoreType.OPERATIONAL);
     }
 }
