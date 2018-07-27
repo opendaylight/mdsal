@@ -12,13 +12,13 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * Base class for failures that can occur during operation invocation. This covers transport and protocol-level
- * failures, not implementation-reported errors, which are part of {@link DOMOperationResult}.
+ * failures, not implementation-reported errors, which are part of {@link DOMActionResult}.
  *
  * @author Robert Varga
  */
 @Beta
 @NonNullByDefault
-public abstract class DOMOperationException extends Exception {
+public abstract class DOMActionException extends Exception {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -26,7 +26,7 @@ public abstract class DOMOperationException extends Exception {
      *
      * @param message Exception message
      */
-    protected DOMOperationException(final String message) {
+    protected DOMActionException(final String message) {
         super(message);
     }
 
@@ -36,7 +36,7 @@ public abstract class DOMOperationException extends Exception {
      * @param message Exception message
      * @param cause Chained cause
      */
-    protected DOMOperationException(final String message, final Throwable cause) {
+    protected DOMActionException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

@@ -28,9 +28,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.binding.api.ActionService;
-import org.opendaylight.mdsal.dom.api.DOMOperationResult;
-import org.opendaylight.mdsal.dom.api.DOMOperationService;
-import org.opendaylight.mdsal.dom.spi.SimpleDOMOperationResult;
+import org.opendaylight.mdsal.dom.api.DOMActionResult;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
+import org.opendaylight.mdsal.dom.spi.SimpleDOMActionResult;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.Cont;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.Foo;
 import org.opendaylight.yang.gen.v1.urn.odl.actions.norev.cont.foo.Input;
@@ -56,11 +56,11 @@ public class ActionServiceAdapterTest extends AbstractAdapterTest {
     private static final RpcOutput BINDING_FOO_OUTPUT = new OutputBuilder().build();
 
     @Mock
-    private DOMOperationService delegate;
+    private DOMActionService delegate;
 
     private ActionService service;
 
-    private SettableFuture<DOMOperationResult> domResult;
+    private SettableFuture<DOMActionResult> domResult;
 
     @Override
     @Before
@@ -81,7 +81,7 @@ public class ActionServiceAdapterTest extends AbstractAdapterTest {
             BINDING_FOO_INPUT);
         assertNotNull(future);
         assertFalse(future.isDone());
-        domResult.set(new SimpleDOMOperationResult(DOM_FOO_OUTPUT, ImmutableList.of()));
+        domResult.set(new SimpleDOMActionResult(DOM_FOO_OUTPUT, ImmutableList.of()));
         final RpcResult<Output> bindingResult = Futures.getDone(future);
 
         assertEquals(ImmutableList.of(), bindingResult.getErrors());
