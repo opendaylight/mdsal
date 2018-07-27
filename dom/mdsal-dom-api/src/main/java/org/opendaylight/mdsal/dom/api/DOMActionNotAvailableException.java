@@ -13,18 +13,18 @@ import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * Exception indicating that no implementation of the requested operation is available.
+ * Exception indicating that no implementation of the requested action is available.
  */
 @Beta
 @NonNullByDefault
-public final class DOMOperationNotAvailableException extends DOMOperationException {
+public final class DOMActionNotAvailableException extends DOMActionException {
     private static final long serialVersionUID = 1L;
 
-    public DOMOperationNotAvailableException(final String format, final Object... args) {
+    public DOMActionNotAvailableException(final String format, final Object... args) {
         super(String.format(format, args));
     }
 
-    public DOMOperationNotAvailableException(final Throwable cause, final String format, final Object... args) {
+    public DOMActionNotAvailableException(final Throwable cause, final String format, final Object... args) {
         super(String.format(format, args), requireNonNull(cause));
     }
 }

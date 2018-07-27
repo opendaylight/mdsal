@@ -10,7 +10,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.dom.api.DOMOperationResult;
+import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorSeverity;
@@ -18,7 +18,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
 /**
- * Utility methods for converting {@link RpcResult} to/from {@link DOMOperationResult} and {@link DOMRpcResult}.
+ * Utility methods for converting {@link RpcResult} to/from {@link DOMActionResult} and {@link DOMRpcResult}.
  */
 @NonNullByDefault
 final class RpcResultUtil {

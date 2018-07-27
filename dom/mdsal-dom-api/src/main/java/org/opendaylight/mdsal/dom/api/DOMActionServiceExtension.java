@@ -11,13 +11,13 @@ import com.google.common.annotations.Beta;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * Marker interface for extensions of {@link DOMOperationProviderService}.
+ * Marker interface for extensions of {@link DOMActionService}.
  *
  * @author Robert Varga
  */
 @Beta
 @NonNullByDefault
-public interface DOMOperationProviderServiceExtension
-    extends DOMServiceExtension<DOMOperationProviderService, DOMOperationProviderServiceExtension> {
+public interface DOMActionServiceExtension
+    extends DOMServiceExtension<DOMActionService, DOMActionServiceExtension> {
 
 }
