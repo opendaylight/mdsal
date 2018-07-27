@@ -20,7 +20,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
-import org.opendaylight.mdsal.dom.api.DOMOperationService;
+import org.opendaylight.mdsal.dom.api.DOMActionService;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -32,7 +32,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 @Beta
 @NonNullByDefault
 final class ActionServiceAdapter
-        extends AbstractBindingLoadingAdapter<DOMOperationService, Class<? extends Action<?, ?, ?>>, ActionAdapter>
+        extends AbstractBindingLoadingAdapter<DOMActionService, Class<? extends Action<?, ?, ?>>, ActionAdapter>
         implements ActionService {
     private static final class ConstrainedAction implements Delegator<Action<?, ?, ?>>,
             Action<InstanceIdentifier<?>, RpcInput, RpcOutput> {
@@ -56,7 +56,7 @@ final class ActionServiceAdapter
         }
     }
 
-    ActionServiceAdapter(final BindingToNormalizedNodeCodec codec, final DOMOperationService delegate) {
+    ActionServiceAdapter(final BindingToNormalizedNodeCodec codec, final DOMActionService delegate) {
         super(codec, delegate);
     }
 

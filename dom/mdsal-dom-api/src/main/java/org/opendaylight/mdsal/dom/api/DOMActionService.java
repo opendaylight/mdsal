@@ -10,31 +10,19 @@ package org.opendaylight.mdsal.dom.api;
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 import org.opendaylight.yangtools.yang.data.api.schema.tree.StoreTreeNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 /**
- * A {@link DOMService} which allows clients to invoke Actions and RPCs. The conceptual model of this service is that
- * of a dynamic router, where the set of available Operation services can change dynamically. The service allows users
- * to add a listener to track the process of Actions and RPCs becoming available.
+ * A {@link DOMService} which allows clients to invoke Actions. The conceptual model of this service is that
+ * of a dynamic router, where the set of available Action services can change dynamically.
  *
  * @author Robert Varga
  */
 @Beta
 @NonNullByDefault
-public interface DOMOperationService extends DOMExtensibleService<DOMOperationService, DOMOperationServiceExtension> {
-    /**
-     * Initiate invocation of an RPC. This method is guaranteed to not block on any external resources.
-     *
-     * @param type QName of the RPC to be invoked
-     * @param input Input arguments
-     * @return A FluentFuture which completes with the result of invocation
-     * @throws NullPointerException if any of the arguments is null
-     */
-    FluentFuture<DOMOperationResult> invokeRpc(QName type, ContainerNode input);
-
+public interface DOMActionService extends DOMExtensibleService<DOMActionService, DOMActionServiceExtension> {
     /**
      * Initiate invocation of an Action. This method is guaranteed to not block on any external resources.
      *
@@ -45,5 +33,6 @@ public interface DOMOperationService extends DOMExtensibleService<DOMOperationSe
      * @return A FluentFuture which completes with the result of invocation
      * @throws NullPointerException if any of the arguments is null
      */
-    FluentFuture<DOMOperationResult> invokeAction(SchemaPath type, DOMDataTreeIdentifier path, ContainerNode input);
+    FluentFuture<? extends DOMActionResult> invokeAction(SchemaPath type, DOMDataTreeIdentifier path,
+            ContainerNode input);
 }
