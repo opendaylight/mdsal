@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.opendaylight.mdsal.binding.javav2.generator.context.ModuleContext;
 import org.opendaylight.mdsal.binding.javav2.generator.spi.TypeProvider;
@@ -98,7 +99,7 @@ final class ModuleToGenType {
         final List<TypeDefinition<?>> typeDefinitions = it.allTypedefs();
         Preconditions.checkState(typeDefinitions != null, "Type Definitions for module «module.name» cannot be NULL.");
 
-        typeDefinitions.stream().filter(typedef -> typedef != null).forEach(typedef -> {
+        typeDefinitions.stream().filter(Objects::nonNull).forEach(typedef -> {
             final Type type = ((TypeProviderImpl) typeProvider).generatedTypeForExtendedDefinitionType(typedef,
                     typedef);
             if (type != null) {

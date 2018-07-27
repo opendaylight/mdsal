@@ -81,12 +81,8 @@ public class AbstractMappedRpcInvokerTest {
 
         Crate(@Nonnull final RpcService rpcService, @Nullable final DataObject dataObject) {
             this.rpcService = rpcService;
-            this.dataObject = new ThreadLocal<Optional<DataObject>>() {
-                @Override
-                protected Optional<DataObject> initialValue() {
-                    return dataObject == null ? Optional.empty() : Optional.of(dataObject);
-                }
-            };
+            this.dataObject =
+                ThreadLocal.withInitial(() -> dataObject == null ? Optional.empty() : Optional.of(dataObject));
         }
 
         RpcService getRpcService() {

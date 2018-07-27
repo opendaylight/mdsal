@@ -235,7 +235,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                 b.add(ret);
                 listeners = b.build();
 
-                listenerNotifier.execute(() -> ret.initialTable());
+                listenerNotifier.execute(ret::initialTable);
                 return ret;
             }
         }

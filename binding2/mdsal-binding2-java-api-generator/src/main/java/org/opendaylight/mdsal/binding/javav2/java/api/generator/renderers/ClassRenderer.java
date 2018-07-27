@@ -20,12 +20,9 @@ import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.AbstractRangeGenerator;
 import org.opendaylight.mdsal.binding.javav2.java.api.generator.rangeGenerators.LengthGenerator;
@@ -75,7 +72,7 @@ public class ClassRenderer extends BaseRenderer {
             final String name1 = p2.getName();
             return name.compareTo(name1);
         };
-        Collections.sort(sorted, function);
+        sorted.sort(function);
         allProperties = ImmutableList.copyOf(sorted);
 
         if (restrictions != null && restrictions.getRangeConstraint().isPresent()) {

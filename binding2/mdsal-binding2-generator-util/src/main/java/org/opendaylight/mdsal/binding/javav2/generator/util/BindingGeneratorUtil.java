@@ -421,16 +421,13 @@ public final class BindingGeneratorUtil {
         }
     }
 
-    private static final ThreadLocal<MessageDigest> SHA1_MD = new ThreadLocal<MessageDigest>() {
-        @Override
-        protected MessageDigest initialValue() {
-            try {
-                return MessageDigest.getInstance("SHA");
-            } catch (final NoSuchAlgorithmException e) {
-                throw new IllegalStateException("Failed to get a SHA digest provider", e);
-            }
+    private static final ThreadLocal<MessageDigest> SHA1_MD = ThreadLocal.withInitial(() -> {
+        try {
+            return MessageDigest.getInstance("SHA");
+        } catch (final NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Failed to get a SHA digest provider", e);
         }
-    };
+    });
 
     private static String generateNormalizedPackageName(final String base, final Iterable<QName> path, final int
             size, final BindingNamespaceType namespaceType) {

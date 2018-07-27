@@ -56,24 +56,20 @@ public final class ExpectedObjects {
                 TreeComplexUsesAugmentBuilder treeComplexUsesAugmentBuilder = new TreeComplexUsesAugmentBuilder();
                 final Procedure1<TreeComplexUsesAugmentBuilder> _function_2 = (TreeComplexUsesAugmentBuilder it2) -> {
                     ContainerWithUsesBuilder containerWithUsesBuilder = new ContainerWithUsesBuilder();
-                    final Procedure1<ContainerWithUsesBuilder> _function_3 = (ContainerWithUsesBuilder it3) -> {
-                        it3.setLeafFromGrouping("foo");
-                    };
-                    ContainerWithUses doubleGreaterThan = XtendBuilderExtensions
-                            .<ContainerWithUses, ContainerWithUsesBuilder>operator_doubleGreaterThan(
+                    final Procedure1<ContainerWithUsesBuilder> _function_3 =
+                        (ContainerWithUsesBuilder it3) -> it3.setLeafFromGrouping("foo");
+                    ContainerWithUses doubleGreaterThan = XtendBuilderExtensions.operator_doubleGreaterThan(
                                     containerWithUsesBuilder, _function_3);
                     it2.setContainerWithUses(doubleGreaterThan);
                 };
-                TreeComplexUsesAugment doubleGreaterThan = XtendBuilderExtensions
-                        .<TreeComplexUsesAugment, TreeComplexUsesAugmentBuilder>operator_doubleGreaterThan(
+                TreeComplexUsesAugment doubleGreaterThan = XtendBuilderExtensions.operator_doubleGreaterThan(
                                 treeComplexUsesAugmentBuilder, _function_2);
                 it1.addAugmentation(TreeComplexUsesAugment.class, doubleGreaterThan);
             };
-            TopLevelList doubleGreaterThan = XtendBuilderExtensions
-                    .<TopLevelList, TopLevelListBuilder>operator_doubleGreaterThan(topLevelListBuilder, _function_1);
-            it.setTopLevelList(Collections
-                    .<TopLevelList>unmodifiableList(CollectionLiterals.<TopLevelList>newArrayList(doubleGreaterThan)));
+            TopLevelList doubleGreaterThan =
+                XtendBuilderExtensions.operator_doubleGreaterThan(topLevelListBuilder, _function_1);
+            it.setTopLevelList(Collections.unmodifiableList(CollectionLiterals.newArrayList(doubleGreaterThan)));
         };
-        return XtendBuilderExtensions.<Top, TopBuilder>operator_doubleGreaterThan(topBuilder, _function);
+        return XtendBuilderExtensions.operator_doubleGreaterThan(topBuilder, _function);
     }
 }

@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.opendaylight.mdsal.binding.javav2.generator.util.AbstractBaseType;
@@ -101,9 +102,9 @@ abstract class AbstractGeneratedType extends AbstractBaseType implements Generat
     private static List<GeneratedType> toUnmodifiableEnclosedTypes(final List<GeneratedTypeBuilder> enclosedGenTypeBuilders,
                                                                    final List<GeneratedTOBuilder> enclosedGenTOBuilders) {
         final ArrayList<GeneratedType> enclosedTypesList = new ArrayList<>(enclosedGenTypeBuilders.size() + enclosedGenTOBuilders.size());
-        enclosedTypesList.addAll(enclosedGenTypeBuilders.stream().filter(builder -> builder != null).map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
+        enclosedTypesList.addAll(enclosedGenTypeBuilders.stream().filter(Objects::nonNull).map(GeneratedTypeBuilder::toInstance).collect(Collectors.toList()));
 
-        enclosedTypesList.addAll(enclosedGenTOBuilders.stream().filter(builder -> builder != null).map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
+        enclosedTypesList.addAll(enclosedGenTOBuilders.stream().filter(Objects::nonNull).map(GeneratedTOBuilder::toInstance).collect(Collectors.toList()));
 
         return makeUnmodifiable(enclosedTypesList);
     }

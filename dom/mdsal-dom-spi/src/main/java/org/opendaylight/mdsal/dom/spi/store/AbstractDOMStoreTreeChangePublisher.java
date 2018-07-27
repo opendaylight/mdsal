@@ -39,7 +39,7 @@ public abstract class AbstractDOMStoreTreeChangePublisher
         implements DOMStoreTreeChangePublisher {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDOMStoreTreeChangePublisher.class);
 
-    private static final Supplier<List<DataTreeCandidate>> LIST_SUPPLIER = () -> new ArrayList<>();
+    private static final Supplier<List<DataTreeCandidate>> LIST_SUPPLIER = ArrayList::new;
 
     /**
      * Callback for subclass to notify a specified registration of a list of candidates. This method is guaranteed

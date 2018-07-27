@@ -35,7 +35,6 @@ import org.opendaylight.yangtools.util.LazyCollections;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.opendaylight.yangtools.yang.model.api.Status;
 import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition;
-import org.opendaylight.yangtools.yang.model.api.type.EnumTypeDefinition.EnumPair;
 
 @Beta
 public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuilder {
@@ -109,12 +108,9 @@ public class EnumerationBuilderImpl extends AbstractBaseType implements EnumBuil
 
     @Override
     public void updateEnumPairsFromEnumTypeDef(final EnumTypeDefinition enumTypeDef) {
-        final List<EnumPair> enums = enumTypeDef.getValues();
-        if (enums != null) {
-            enums.stream().filter(enumPair -> enumPair != null).forEach(enumPair -> this.addValue(enumPair.getName(),
-                    enumPair.getValue(), enumPair.getDescription().orElse(null), enumPair.getReference().orElse(null),
-                    enumPair.getStatus()));
-        }
+        enumTypeDef.getValues().stream().filter(Objects::nonNull).forEach(enumPair -> this.addValue(enumPair.getName(),
+                enumPair.getValue(), enumPair.getDescription().orElse(null), enumPair.getReference().orElse(null),
+                enumPair.getStatus()));
     }
 
     private static final class EnumPairImpl implements Enumeration.Pair {
