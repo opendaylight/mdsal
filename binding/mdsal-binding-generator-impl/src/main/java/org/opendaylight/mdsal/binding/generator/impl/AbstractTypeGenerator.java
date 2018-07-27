@@ -285,7 +285,7 @@ abstract class AbstractTypeGenerator {
         if (genType != null) {
             constructGetter(parent, genType, node);
             resolveDataSchemaNodes(context, genType, genType, node.getChildNodes());
-            actionsToGenType(context, genType, node);
+            actionsToGenType(context, genType, node, null);
         }
     }
 
@@ -303,8 +303,8 @@ abstract class AbstractTypeGenerator {
                 genTOBuilder.addImplementsType(identifierMarker);
                 genType.addImplementsType(identifiableMarker);
 
-                actionsToGenType(context, genTOBuilder, node);
             }
+            actionsToGenType(context, genType, node, genTOBuilder);
 
             for (final DataSchemaNode schemaNode : node.getChildNodes()) {
                 if (!schemaNode.isAugmenting()) {
@@ -404,7 +404,7 @@ abstract class AbstractTypeGenerator {
     }
 
     private <T extends DataNodeContainer & ActionNodeContainer> void actionsToGenType(final ModuleContext context,
-            final Type parent, final T parentSchema) {
+            final Type parent, final T parentSchema, final Type keyType) {
         for (final ActionDefinition action : parentSchema.getActions()) {
             final GeneratedType input;
             final GeneratedType output;
@@ -669,7 +669,7 @@ abstract class AbstractTypeGenerator {
             resolveDataSchemaNodes(context, genType, genType, grouping.getChildNodes());
             groupingsToGenTypes(context, grouping.getGroupings());
             processUsesAugments(grouping, context);
-            actionsToGenType(context, genType, grouping);
+            actionsToGenType(context, genType, grouping, null);
         }
     }
 
