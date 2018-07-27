@@ -18,7 +18,7 @@ import java.util.Optional;
 import javax.annotation.concurrent.ThreadSafe;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.mdsal.dom.api.DOMOperationResult;
+import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.yangtools.concepts.Immutable;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -26,20 +26,20 @@ import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
 @Beta
 @NonNullByDefault
 @ThreadSafe
-public final class SimpleDOMOperationResult implements DOMOperationResult, Immutable {
+public final class SimpleDOMActionResult implements DOMActionResult, Immutable {
     private final Collection<RpcError> errors;
     private final @Nullable ContainerNode output;
 
-    private SimpleDOMOperationResult(final Collection<RpcError> errors, final @Nullable ContainerNode output) {
+    private SimpleDOMActionResult(final Collection<RpcError> errors, final @Nullable ContainerNode output) {
         this.errors = ImmutableList.copyOf(errors);
         this.output = output;
     }
 
-    public SimpleDOMOperationResult(final Collection<RpcError> errors) {
+    public SimpleDOMActionResult(final Collection<RpcError> errors) {
         this(errors, null);
     }
 
-    public SimpleDOMOperationResult(final ContainerNode output, final Collection<RpcError> errors) {
+    public SimpleDOMActionResult(final ContainerNode output, final Collection<RpcError> errors) {
         this(errors, requireNonNull(output));
     }
 
