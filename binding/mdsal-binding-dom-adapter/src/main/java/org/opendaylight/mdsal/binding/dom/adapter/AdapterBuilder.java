@@ -12,6 +12,7 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yangtools.concepts.Builder;
 
 public abstract class AdapterBuilder<T,D> implements Builder<T> {
@@ -20,7 +21,7 @@ public abstract class AdapterBuilder<T,D> implements Builder<T> {
 
     public abstract Set<? extends Class<? extends D>> getRequiredDelegates();
 
-    protected abstract T createInstance(ClassToInstanceMap<D> immutableDelegates);
+    protected abstract @NonNull T createInstance(@NonNull ClassToInstanceMap<D> immutableDelegates);
 
     private void checkAllRequiredServices() {
         for (final Class<? extends D> type : getRequiredDelegates()) {
