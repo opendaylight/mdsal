@@ -10,6 +10,8 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
+import org.opendaylight.mdsal.binding.api.ActionProviderService;
+import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
@@ -25,6 +27,8 @@ public abstract class BindingDOMAdapterLoader extends AdapterLoader<BindingServi
             .put(NotificationPublishService.class, BindingDOMNotificationPublishServiceAdapter.BUILDER_FACTORY)
             .put(DataBroker.class, BindingDOMDataBrokerAdapter.BUILDER_FACTORY)
             .put(RpcConsumerRegistry.class, BindingDOMRpcServiceAdapter.BUILDER_FACTORY)
+            .put(ActionService.class, ActionServiceAdapter.BUILDER_FACTORY)
+            .put(ActionProviderService.class, ActionProviderServiceAdapter.BUILDER_FACTORY)
             .build();
 
     private final BindingToNormalizedNodeCodec codec;

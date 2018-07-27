@@ -12,15 +12,19 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.FluentFuture;
 import java.lang.reflect.Proxy;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.ActionService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
 import org.opendaylight.mdsal.dom.api.DOMActionService;
+import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.Delegator;
 import org.opendaylight.yangtools.yang.binding.Action;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -34,6 +38,20 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 final class ActionServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMActionService, Class<? extends Action<?, ?, ?>>, ActionAdapter>
         implements ActionService {
+    private static final class Builder extends BindingDOMAdapterBuilder<ActionService> {
+        @Override
+        protected ActionService createInstance(final @Nullable BindingToNormalizedNodeCodec codec,
+                final ClassToInstanceMap<DOMService> delegates) {
+            final DOMActionService domAction = delegates.getInstance(DOMActionService.class);
+            return new ActionServiceAdapter(requireNonNull(codec), domAction);
+        }
+
+        @Override
+        public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
+            return ImmutableSet.of(DOMActionService.class);
+        }
+    }
+
     private static final class ConstrainedAction implements Delegator<Action<?, ?, ?>>,
             Action<InstanceIdentifier<?>, RpcInput, RpcOutput> {
         private final Action<InstanceIdentifier<?>, RpcInput, RpcOutput> delegate;
@@ -55,6 +73,8 @@ final class ActionServiceAdapter
             return delegate;
         }
     }
+
+    static final Factory<ActionService> BUILDER_FACTORY = Builder::new;
 
     ActionServiceAdapter(final BindingToNormalizedNodeCodec codec, final DOMActionService delegate) {
         super(codec, delegate);

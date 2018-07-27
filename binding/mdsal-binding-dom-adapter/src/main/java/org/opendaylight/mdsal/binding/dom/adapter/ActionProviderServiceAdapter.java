@@ -10,18 +10,22 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.mdsal.binding.api.ActionProviderService;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMAdapterBuilder.Factory;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.dom.api.DOMActionImplementation;
 import org.opendaylight.mdsal.dom.api.DOMActionProviderService;
 import org.opendaylight.mdsal.dom.api.DOMActionResult;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeIdentifier;
+import org.opendaylight.mdsal.dom.api.DOMService;
 import org.opendaylight.yangtools.concepts.AbstractObjectRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 import org.opendaylight.yangtools.yang.binding.Action;
@@ -37,6 +41,22 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 @NonNullByDefault
 final class ActionProviderServiceAdapter extends AbstractBindingAdapter<DOMActionProviderService>
         implements ActionProviderService {
+    private static final class Builder extends BindingDOMAdapterBuilder<ActionProviderService> {
+        @Override
+        protected ActionProviderService createInstance(final @Nullable BindingToNormalizedNodeCodec codec,
+                final ClassToInstanceMap<DOMService> delegates) {
+            final DOMActionProviderService domAction = delegates.getInstance(DOMActionProviderService.class);
+            return new ActionProviderServiceAdapter(requireNonNull(codec), domAction);
+        }
+
+        @Override
+        public Set<? extends Class<? extends DOMService>> getRequiredDelegates() {
+            return ImmutableSet.of(DOMActionProviderService.class);
+        }
+    }
+
+    static final Factory<ActionProviderService> BUILDER_FACTORY = Builder::new;
+
     ActionProviderServiceAdapter(final BindingToNormalizedNodeCodec codec, final DOMActionProviderService delegate) {
         super(codec, delegate);
     }

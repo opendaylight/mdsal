@@ -9,6 +9,7 @@ package org.opendaylight.mdsal.binding.dom.adapter;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.BindingService;
 import org.opendaylight.mdsal.dom.api.DOMService;
 
@@ -18,12 +19,11 @@ abstract class BindingDOMAdapterBuilder<T extends BindingService> extends Adapte
     interface Factory<T extends BindingService> {
 
         BindingDOMAdapterBuilder<T> newBuilder();
-
     }
 
     private BindingToNormalizedNodeCodec codec;
 
-    public void setCodec(final BindingToNormalizedNodeCodec codec) {
+    void setCodec(final BindingToNormalizedNodeCodec codec) {
         this.codec = codec;
     }
 
@@ -33,6 +33,6 @@ abstract class BindingDOMAdapterBuilder<T extends BindingService> extends Adapte
         return createInstance(codec, delegates);
     }
 
-    protected abstract T createInstance(BindingToNormalizedNodeCodec myCodec, ClassToInstanceMap<DOMService> delegates);
-
+    abstract T createInstance(BindingToNormalizedNodeCodec myCodec,
+            @NonNull ClassToInstanceMap<@NonNull DOMService> delegates);
 }
