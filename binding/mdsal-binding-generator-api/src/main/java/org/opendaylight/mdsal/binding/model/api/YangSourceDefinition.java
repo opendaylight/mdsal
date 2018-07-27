@@ -48,9 +48,8 @@ public abstract class YangSourceDefinition {
          * @return defining SchemaNodes, guaranteed to be non-empty
          */
         public List<? extends SchemaNode> getNodes() {
-            return nodes.stream().filter(node -> {
-                return node instanceof EffectiveStatement && ((EffectiveStatement<?, ?>) node).getDeclared() != null;
-            }).collect(Collectors.toList());
+            return nodes.stream().filter(node -> node instanceof EffectiveStatement
+                && ((EffectiveStatement<?, ?>) node).getDeclared() != null).collect(Collectors.toList());
         }
     }
 
@@ -108,9 +107,8 @@ public abstract class YangSourceDefinition {
 
         if (module instanceof ModuleEffectiveStatement) {
             final ModuleEffectiveStatement effective = (ModuleEffectiveStatement) module;
-            final boolean anyDeclared = nodes.stream().anyMatch(node -> {
-                return node instanceof EffectiveStatement && ((EffectiveStatement<?, ?>) node).getDeclared() != null;
-            });
+            final boolean anyDeclared = nodes.stream().anyMatch(node ->
+                node instanceof EffectiveStatement && ((EffectiveStatement<?, ?>) node).getDeclared() != null);
             if (anyDeclared) {
                 return Optional.of(new Multiple(effective, nodes));
             }

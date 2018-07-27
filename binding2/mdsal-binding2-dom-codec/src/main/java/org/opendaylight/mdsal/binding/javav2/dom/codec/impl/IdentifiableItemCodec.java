@@ -15,7 +15,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +90,7 @@ public final class IdentifiableItemCodec implements Codec<NodeIdentifierWithPred
         final List<QName> sortedKeys;
         if (unsortedKeys.size() > 1) {
             final List<QName> tmp = new ArrayList<>(unsortedKeys);
-            Collections.sort(tmp, (q1, q2) -> q1.getLocalName().compareToIgnoreCase(q2.getLocalName()));
+            tmp.sort((q1, q2) -> q1.getLocalName().compareToIgnoreCase(q2.getLocalName()));
             sortedKeys = tmp;
         } else {
             sortedKeys = unsortedKeys;

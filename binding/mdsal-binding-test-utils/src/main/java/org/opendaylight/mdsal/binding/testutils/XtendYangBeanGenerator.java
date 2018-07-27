@@ -10,6 +10,7 @@ package org.opendaylight.mdsal.binding.testutils;
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Iterables;
+import java.util.Comparator;
 import java.util.Optional;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -117,7 +118,7 @@ class XtendYangBeanGenerator extends XtendBeanGenerator {
             StringBuilder sb = new StringBuilder();
             optional.get().entrySet().stream()
                 // We sort the augmentations by Class type, because the Map has unpredictable order:
-                .sorted((e1, e2) -> e1.getKey().getName().compareTo(e2.getKey().getName()))
+                .sorted(Comparator.comparing(e2 -> e2.getKey().getName()))
                 .forEachOrdered(e -> {
                     sb.append("addAugmentation(");
                     sb.append(stringify(e.getKey()));

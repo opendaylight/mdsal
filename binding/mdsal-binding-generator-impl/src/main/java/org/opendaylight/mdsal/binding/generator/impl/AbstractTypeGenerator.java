@@ -930,11 +930,8 @@ abstract class AbstractTypeGenerator {
     private GeneratedTypeBuilder addRawAugmentGenTypeDefinition(final ModuleContext context,
             final String augmentPackageName, final Type targetTypeRef,
             final AugmentationSchemaNode augSchema) {
-        Map<String, GeneratedTypeBuilder> augmentBuilders = genTypeBuilders.get(augmentPackageName);
-        if (augmentBuilders == null) {
-            augmentBuilders = new HashMap<>();
-            genTypeBuilders.put(augmentPackageName, augmentBuilders);
-        }
+        Map<String, GeneratedTypeBuilder> augmentBuilders =
+            genTypeBuilders.computeIfAbsent(augmentPackageName, k -> new HashMap<>());
         final String augIdentifier = getAugmentIdentifier(augSchema.getUnknownSchemaNodes());
 
         String augTypeName;

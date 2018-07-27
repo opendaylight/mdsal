@@ -92,10 +92,9 @@ public final class BindingGeneratorUtil {
     };
 
     private static final Comparator<TypeMemberBuilder<?>> SUID_MEMBER_COMPARATOR =
-        (o1, o2) -> o1.getName().compareTo(o2.getName());
+        Comparator.comparing(TypeMemberBuilder::getName);
 
-    private static final Comparator<Type> SUID_NAME_COMPARATOR =
-        (o1, o2) -> o1.getFullyQualifiedName().compareTo(o2.getFullyQualifiedName());
+    private static final Comparator<Type> SUID_NAME_COMPARATOR = Comparator.comparing(Type::getFullyQualifiedName);
 
     /**
      * Converts <code>parameterName</code> to valid JAVA parameter name.
@@ -395,23 +394,20 @@ public final class BindingGeneratorUtil {
     private static <T> Iterable<T> sortedCollection(final Comparator<? super T> comparator, final Collection<T> input) {
         if (input.size() > 1) {
             final List<T> ret = new ArrayList<>(input);
-            Collections.sort(ret, comparator);
+            ret.sort(comparator);
             return ret;
         } else {
             return input;
         }
     }
 
-    private static final ThreadLocal<MessageDigest> SHA1_MD = new ThreadLocal<MessageDigest>() {
-        @Override
-        protected MessageDigest initialValue() {
-            try {
-                return MessageDigest.getInstance("SHA");
-            } catch (final NoSuchAlgorithmException e) {
-                throw new IllegalStateException("Failed to get a SHA digest provider", e);
-            }
+    private static final ThreadLocal<MessageDigest> SHA1_MD = ThreadLocal.withInitial(() -> {
+        try {
+            return MessageDigest.getInstance("SHA");
+        } catch (final NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Failed to get a SHA digest provider", e);
         }
-    };
+    });
 
     public static long computeDefaultSUID(final GeneratedTypeBuilderBase<?> to) {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();

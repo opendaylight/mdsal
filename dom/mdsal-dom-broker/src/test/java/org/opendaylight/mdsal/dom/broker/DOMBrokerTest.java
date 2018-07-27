@@ -159,18 +159,13 @@ public class DOMBrokerTest {
     @SuppressWarnings("checkstyle:IllegalCatch")
     AtomicReference<Throwable> submitTxAsync(final DOMDataTreeWriteTransaction writeTx) {
         final AtomicReference<Throwable> caughtEx = new AtomicReference<>();
-        new Thread() {
-            @Override
-            public void run() {
-
-                try {
-                    writeTx.commit();
-                } catch (final Throwable e) {
-                    caughtEx.set(e);
-                }
+        new Thread(() -> {
+            try {
+                writeTx.commit();
+            } catch (final Throwable e) {
+                caughtEx.set(e);
             }
-
-        }.start();
+        }).start();
 
         return caughtEx;
     }

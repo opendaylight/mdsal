@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -207,7 +208,7 @@ public final class TypeProviderImpl implements TypeProvider {
             genTypeDefsContextMap.put(module.getName(), dateTypeMap);
         }
 
-        modulesSortedByDependency.stream().filter(module -> module != null).forEach(module -> {
+        modulesSortedByDependency.stream().filter(Objects::nonNull).forEach(module -> {
             ModuleContext context = new ModuleContext();
             final String basePackageName = packageNameWithNamespacePrefix(getRootPackageName(module),
                     BindingNamespaceType.Typedef);

@@ -77,14 +77,6 @@ public abstract class ValueTypeCodec implements Codec<Object, Object> {
         }
     };
 
-    private static final Callable<? extends SchemaUnawareCodec> EMPTY_LOADER = new Callable<SchemaUnawareCodec>() {
-
-        @Override
-        public SchemaUnawareCodec call() {
-            return EMPTY_CODEC;
-        }
-    };
-
     public static SchemaUnawareCodec getCodecFor(final Class<?> typeClz, final TypeDefinition<?> def) {
         if (BindingReflections.isBindingClass(typeClz)) {
             return getCachedSchemaUnawareCodec(typeClz, getCodecLoader(typeClz, def));

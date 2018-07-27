@@ -1353,11 +1353,8 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         final Map<Integer, List<TypeDefinition<?>>> typeDefinitionsDepths = new TreeMap<>();
         for (TypeDefinition<?> unsortedTypeDefinition : unsortedTypeDefinitions) {
             final Integer depth = getTypeDefinitionDepth(unsortedTypeDefinition);
-            List<TypeDefinition<?>> typeDefinitionsConcreteDepth = typeDefinitionsDepths.get(depth);
-            if (typeDefinitionsConcreteDepth == null) {
-                typeDefinitionsConcreteDepth = new ArrayList<>();
-                typeDefinitionsDepths.put(depth, typeDefinitionsConcreteDepth);
-            }
+            List<TypeDefinition<?>> typeDefinitionsConcreteDepth =
+                typeDefinitionsDepths.computeIfAbsent(depth, k -> new ArrayList<>());
             typeDefinitionsConcreteDepth.add(unsortedTypeDefinition);
         }
 
@@ -1582,11 +1579,11 @@ public abstract class AbstractTypeProvider implements TypeProvider {
         return sb.toString();
     }
 
-    private static final Comparator<Bit> BIT_NAME_COMPARATOR = (o1, o2) -> o1.getName().compareTo(o2.getName());
+    private static final Comparator<Bit> BIT_NAME_COMPARATOR = Comparator.comparing(Bit::getName);
 
     private static String bitsToDef(final BitsTypeDefinition type, final String className, final String defaultValue, final boolean isExt) {
         final List<Bit> bits = new ArrayList<>(type.getBits());
-        Collections.sort(bits, BIT_NAME_COMPARATOR);
+        bits.sort(BIT_NAME_COMPARATOR);
         final StringBuilder sb = new StringBuilder();
         if (!isExt) {
             sb.append("new ");
@@ -1661,7 +1658,7 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 }
                 if (module == null) {
                     final List<Module> modulesList = new ArrayList<>(modules);
-                    Collections.sort(modulesList, (o1, o2) -> Revision.compare(o1.getRevision(), o2.getRevision()));
+                    modulesList.sort((o1, o2) -> Revision.compare(o1.getRevision(), o2.getRevision()));
                     module = modulesList.get(0);
                 }
             } else {
