@@ -66,6 +66,11 @@
         <module>rfc8345-ietf-network-topology</module>
         <module>rfc8345-ietf-network-topology-state</module>
 
+        <!-- RFC8348 Hardware Management -->
+        <module>rfc8348</module>
+        <module>rfc8348-ietf-hardware</module>
+        <module>rfc8348-ietf-hardware-state</module>
+
         <!-- RFC8349 Routing Management -->
         <module>rfc8349</module>
         <module>rfc8349-ietf-routing</module>
