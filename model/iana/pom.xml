@@ -28,5 +28,8 @@
 
         <!-- RFC8294 and updates -->
         <module>iana-routing-types</module>
+
+        <!-- RFC8348 and updates -->
+        <module>iana-hardware</module>
     </modules>
 </project>
