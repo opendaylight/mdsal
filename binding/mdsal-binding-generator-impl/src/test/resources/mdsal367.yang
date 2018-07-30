@@ -1,0 +1,58 @@
+module mdsal367.yang {
+    namespace "mdsal367";
+    prefix "mdsal367";
+
+    typedef bitstype {
+        type bits {
+            bit foo;
+        }
+    }
+    typedef uniontype {
+        type enumeration {
+            enum foo;
+        }
+    }
+
+    container foo {
+        leaf bit-def-leaf {
+            type bitstype;
+        }
+        leaf union-def-leaf {
+            type uniontype;
+        }
+        leaf bit-leaf {
+            type bits {
+                bit foo;
+            }
+        }
+        leaf union-leaf {
+            type enumeration {
+                enum foo;
+            }
+        }
+    }
+
+    container bar {
+        leaf bit-def-ref {
+            type leafref {
+                path "/foo/bit-def-leaf";
+            }
+        }
+        leaf union-def-ref {
+            type leafref {
+                path "/foo/union-def-leaf";
+            }
+        }
+        leaf bit-ref {
+            type leafref {
+                path "/foo/bit-leaf";
+            }
+        }
+        leaf union-ref {
+            type leafref {
+                path "/foo/union-leaf";
+            }
+        }
+    }
+}
+
