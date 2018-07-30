@@ -1,0 +1,131 @@
+module mdsal-367.yang {
+    namespace "mdsal-367";
+    prefix "mdsal367";
+
+    identity someid;
+
+    typedef bitstype {
+        type bits {
+            bit foo;
+        }
+    }
+    typedef decimaltype {
+        type decimal64 {
+            fraction-digits 5;
+        }
+    }
+    typedef identityreftype {
+        type identityref {
+            base someid;
+        }
+    }
+    typedef stringtype {
+        type string {
+            length 5;
+        }
+    }
+    typedef uniontype {
+        type enumeration {
+            enum foo;
+        }
+    }
+
+    container foo {
+        leaf bit-def-leaf {
+            type bitstype;
+        }
+        leaf decimal-def-leaf {
+            type decimaltype;
+        }
+        leaf identityref-def-leaf {
+            type identityreftype;
+        }
+        leaf string-def-leaf {
+            type stringtype;
+        }
+        leaf union-def-leaf {
+            type uniontype;
+        }
+
+        leaf bit-leaf {
+            type bits {
+                bit foo;
+            }
+        }
+        leaf decimal-leaf {
+            type decimal64 {
+                fraction-digits 5;
+            }
+        }
+        leaf identityref-leaf {
+            type identityref {
+                base someid;
+            }
+        }
+        leaf string-leaf {
+            type string {
+                length 5;
+            }
+        }
+        leaf union-leaf {
+            type enumeration {
+                enum foo;
+            }
+        }
+    }
+
+    container bar {
+        leaf bit-def-ref {
+            type leafref {
+                path "/foo/bit-def-leaf";
+            }
+        }
+        leaf decimal-def-ref {
+            type leafref {
+                path "/foo/decimal-def-leaf";
+            }
+        }
+        leaf identityref-def-ref {
+            type leafref {
+                path "/foo/identityref-def-leaf";
+            }
+        }
+        leaf string-def-ref {
+            type leafref {
+                path "/foo/string-def-leaf";
+            }
+        }
+        leaf union-def-ref {
+            type leafref {
+                path "/foo/union-def-leaf";
+            }
+        }
+
+//        leaf bit-ref {
+//            type leafref {
+//                path "/foo/bit-leaf";
+//            }
+//        }
+        leaf decimal-ref {
+            type leafref {
+                path "/foo/decimal-leaf";
+            }
+        }
+        leaf identityref-ref {
+            type leafref {
+                path "/foo/identityref-leaf";
+            }
+        }
+        leaf string-ref {
+            type leafref {
+                path "/foo/string-leaf";
+            }
+        }
+//        leaf union-ref {
+//            type leafref {
+//                path "/foo/union-leaf";
+//            }
+//        }
+    }
+}
+
