@@ -12,7 +12,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.FluentFuture;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,24 +19,27 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.opendaylight.mdsal.dom.api.DOMRpcAvailabilityListener;
+import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 abstract class AbstractDOMRpcRoutingTableEntry {
     private final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> implementations;
-    private final SchemaPath schemaPath;
+    private final DOMRpcIdentifier rpcId;
 
-    AbstractDOMRpcRoutingTableEntry(final SchemaPath schemaPath, final Map<YangInstanceIdentifier,
+    AbstractDOMRpcRoutingTableEntry(final DOMRpcIdentifier rpcId, final Map<YangInstanceIdentifier,
             List<DOMRpcImplementation>> implementations) {
-        this.schemaPath = Preconditions.checkNotNull(schemaPath);
+        this.rpcId = Preconditions.checkNotNull(rpcId);
         this.implementations = Preconditions.checkNotNull(implementations);
     }
 
     final SchemaPath getSchemaPath() {
-        return schemaPath;
+        return rpcId.getType();
+    }
+
+    final DOMRpcIdentifier getRpcId() {
+        return rpcId;
     }
 
     final List<DOMRpcImplementation> getImplementations(final YangInstanceIdentifier context) {
@@ -115,8 +117,6 @@ abstract class AbstractDOMRpcRoutingTableEntry {
         final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> v = vb.build();
         return v.isEmpty() ? null : newInstance(v);
     }
-
-    protected abstract FluentFuture<DOMRpcResult> invokeRpc(NormalizedNode<?, ?> input);
 
     protected abstract AbstractDOMRpcRoutingTableEntry newInstance(
             Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls);

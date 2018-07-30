@@ -24,8 +24,10 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,9 +49,12 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
+import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.opendaylight.yangtools.yang.model.api.SchemaContextListener;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class DOMRpcRouter extends AbstractRegistration implements SchemaContextListener {
     private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder().setNameFormat(
@@ -222,7 +227,7 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                     new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", type));
             }
 
-            return entry.invokeRpc(input);
+            return RpcInvocation.invoke(entry, input);
         }
 
         @Override
@@ -266,6 +271,77 @@ public final class DOMRpcRouter extends AbstractRegistration implements SchemaCo
                     removeRpcImplementation(getInstance(), rpcs);
                 }
             };
+        }
+    }
+
+    static final class RpcInvocation {
+        private static final Logger LOG = LoggerFactory.getLogger(RpcInvocation.class);
+
+        static FluentFuture<DOMRpcResult> invoke(final AbstractDOMRpcRoutingTableEntry entry,
+            final NormalizedNode<?, ?> input) {
+            if (entry instanceof UnknownDOMRpcRoutingTableEntry) {
+                return FluentFutures.immediateFailedFluentFuture(
+                    new DOMRpcImplementationNotAvailableException("SchemaPath %s is not resolved to an RPC",
+                        entry.getSchemaPath()));
+            } else if (entry instanceof RoutedDOMRpcRoutingTableEntry) {
+                return invokeRoutedRpc((RoutedDOMRpcRoutingTableEntry) entry, input);
+            } else if (entry instanceof GlobalDOMRpcRoutingTableEntry) {
+                return invokeGlobalRpc((GlobalDOMRpcRoutingTableEntry) entry, input);
+            }
+
+            return FluentFutures.immediateFailedFluentFuture(
+                new DOMRpcImplementationNotAvailableException("Unsupported RPC entry."));
+        }
+
+        private static FluentFuture<DOMRpcResult> invokeRoutedRpc(final RoutedDOMRpcRoutingTableEntry entry,
+            final NormalizedNode<?, ?> input) {
+            final Optional<NormalizedNode<?, ?>> maybeKey = NormalizedNodes.findNode(input,
+                entry.getRpcId().getContextReference());
+
+            // Routing key is present, attempt to deliver as a routed RPC
+            if (maybeKey.isPresent()) {
+                final NormalizedNode<?, ?> key = maybeKey.get();
+                final Object value = key.getValue();
+                if (value instanceof YangInstanceIdentifier) {
+                    final YangInstanceIdentifier iid = (YangInstanceIdentifier) value;
+
+                    // Find a DOMRpcImplementation for a specific iid
+                    final List<DOMRpcImplementation> specificImpls = entry.getImplementations(iid);
+                    if (specificImpls != null) {
+                        return specificImpls.get(0)
+                            .invokeRpc(DOMRpcIdentifier.create(entry.getSchemaPath(), iid), input);
+                    }
+
+                    LOG.debug("No implementation for context {} found will now look for wildcard id", iid);
+
+                    // Find a DOMRpcImplementation for a wild card. Usually remote-rpc-connector would register an
+                    // implementation this way
+                    final List<DOMRpcImplementation> mayBeRemoteImpls =
+                        entry.getImplementations(YangInstanceIdentifier.EMPTY);
+
+                    if (mayBeRemoteImpls != null) {
+                        return mayBeRemoteImpls.get(0)
+                            .invokeRpc(DOMRpcIdentifier.create(entry.getSchemaPath(), iid), input);
+                    }
+
+                } else {
+                    LOG.warn("Ignoring wrong context value {}", value);
+                }
+            }
+
+            final List<DOMRpcImplementation> impls = entry.getImplementations(null);
+            if (impls != null) {
+                return impls.get(0).invokeRpc(entry.getRpcId(), input);
+            }
+
+            return FluentFutures.immediateFailedFluentFuture(
+                new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available",
+                    entry.getSchemaPath()));
+        }
+
+        private static FluentFuture<DOMRpcResult> invokeGlobalRpc(final GlobalDOMRpcRoutingTableEntry entry,
+                final NormalizedNode<?, ?> input) {
+            return entry.getImplementations(YangInstanceIdentifier.EMPTY).get(0).invokeRpc(entry.getRpcId(), input);
         }
     }
 }
