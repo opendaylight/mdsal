@@ -1,0 +1,63 @@
+module mdsal-367.yang {
+    namespace "mdsal-367";
+    prefix "mdsal367";
+
+    identity someid;
+
+    container foo {
+        leaf bit-leaf {
+            type bits {
+                bit foo;
+            }
+        }
+        leaf decimal-leaf {
+            type decimal64 {
+                fraction-digits 5;
+            }
+        }
+        leaf identityref-leaf {
+            type identityref {
+                base someid;
+            }
+        }
+        leaf string-leaf {
+            type string {
+                length 5;
+            }
+        }
+        leaf union-leaf {
+            type enumeration {
+                enum foo;
+            }
+        }
+    }
+
+    container bar {
+//        leaf bit-ref {
+//            type leafref {
+//                path "/foo/bit-leaf";
+//            }
+//        }
+        leaf decimal-ref {
+            type leafref {
+                path "/foo/decimal-leaf";
+            }
+        }
+        leaf identityref-ref {
+            type leafref {
+                path "/foo/identityref-leaf";
+            }
+        }
+        leaf string-ref {
+            type leafref {
+                path "/foo/string-leaf";
+            }
+        }
+//        leaf union-ref {
+//            type leafref {
+//                path "/foo/union-leaf";
+//            }
+//        }
+    }
+}
+
