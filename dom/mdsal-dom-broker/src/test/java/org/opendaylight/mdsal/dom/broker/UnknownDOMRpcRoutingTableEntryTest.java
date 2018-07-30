@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
+import org.opendaylight.mdsal.dom.broker.DOMRpcRouter.RpcInvocation;
 import org.opendaylight.mdsal.dom.broker.util.TestModel;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.model.api.SchemaPath;
@@ -37,7 +38,7 @@ public class UnknownDOMRpcRoutingTableEntryTest extends TestUtils {
 
         assertNotNull(test);
         assertNotNull(test.newInstance(emptyImpls));
-        assertNotNull(test.invokeRpc(TEST_CONTAINER));
+        assertNotNull(RpcInvocation.invoke(test, TEST_CONTAINER));
         assertNotNull(test.getImplementations());
         assertEquals(test.getImplementations(YangInstanceIdentifier.EMPTY), TEST_LIST);
         assertTrue(test.containsContext(YangInstanceIdentifier.EMPTY));

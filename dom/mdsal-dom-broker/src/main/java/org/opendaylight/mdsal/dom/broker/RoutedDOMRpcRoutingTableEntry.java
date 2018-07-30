@@ -7,87 +7,28 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.FluentFuture;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.opendaylight.mdsal.dom.api.DOMRpcIdentifier;
 import org.opendaylight.mdsal.dom.api.DOMRpcImplementation;
-import org.opendaylight.mdsal.dom.api.DOMRpcImplementationNotAvailableException;
-import org.opendaylight.mdsal.dom.api.DOMRpcResult;
-import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
-import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNodes;
 import org.opendaylight.yangtools.yang.model.api.RpcDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 final class RoutedDOMRpcRoutingTableEntry extends AbstractDOMRpcRoutingTableEntry {
-    private static final Logger LOG = LoggerFactory.getLogger(RoutedDOMRpcRoutingTableEntry.class);
-    private final DOMRpcIdentifier globalRpcId;
-    private final YangInstanceIdentifier keyId;
 
-    private RoutedDOMRpcRoutingTableEntry(final DOMRpcIdentifier globalRpcId,
-            final YangInstanceIdentifier keyId,
+    private RoutedDOMRpcRoutingTableEntry(final DOMRpcIdentifier routedRpcId,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
-        super(globalRpcId.getType(), impls);
-        this.keyId = Preconditions.checkNotNull(keyId);
-        this.globalRpcId = Preconditions.checkNotNull(globalRpcId);
+        super(routedRpcId, impls);
     }
 
     RoutedDOMRpcRoutingTableEntry(final RpcDefinition def, final YangInstanceIdentifier keyId,
             final Map<YangInstanceIdentifier, List<DOMRpcImplementation>> impls) {
-        super(def.getPath(), impls);
-        this.keyId = Preconditions.checkNotNull(keyId);
-        this.globalRpcId = DOMRpcIdentifier.create(def.getPath());
-    }
-
-    @Override
-    protected FluentFuture<DOMRpcResult> invokeRpc(final NormalizedNode<?, ?> input) {
-        final Optional<NormalizedNode<?, ?>> maybeKey = NormalizedNodes.findNode(input, keyId);
-
-        // Routing key is present, attempt to deliver as a routed RPC
-        if (maybeKey.isPresent()) {
-            final NormalizedNode<?, ?> key = maybeKey.get();
-            final Object value = key.getValue();
-            if (value instanceof YangInstanceIdentifier) {
-                final YangInstanceIdentifier iid = (YangInstanceIdentifier) value;
-
-                // Find a DOMRpcImplementation for a specific iid
-                final List<DOMRpcImplementation> specificImpls = getImplementations(iid);
-                if (specificImpls != null) {
-                    return specificImpls.get(0).invokeRpc(DOMRpcIdentifier.create(getSchemaPath(), iid), input);
-                }
-
-                LOG.debug("No implementation for context {} found will now look for wildcard id", iid);
-
-                // Find a DOMRpcImplementation for a wild card. Usually remote-rpc-connector would register an
-                // implementation this way
-                final List<DOMRpcImplementation> mayBeRemoteImpls = getImplementations(YangInstanceIdentifier.EMPTY);
-
-                if (mayBeRemoteImpls != null) {
-                    return mayBeRemoteImpls.get(0).invokeRpc(DOMRpcIdentifier.create(getSchemaPath(), iid), input);
-                }
-
-            } else {
-                LOG.warn("Ignoring wrong context value {}", value);
-            }
-        }
-
-        final List<DOMRpcImplementation> impls = getImplementations(null);
-        if (impls != null) {
-            return impls.get(0).invokeRpc(globalRpcId, input);
-        }
-
-        return FluentFutures.immediateFailedFluentFuture(
-            new DOMRpcImplementationNotAvailableException("No implementation of RPC %s available", getSchemaPath()));
+        super(DOMRpcIdentifier.create(def.getPath(), keyId), impls);
     }
 
     @Override
     protected RoutedDOMRpcRoutingTableEntry newInstance(final Map<YangInstanceIdentifier,
             List<DOMRpcImplementation>> impls) {
-        return new RoutedDOMRpcRoutingTableEntry(globalRpcId, keyId, impls);
+        return new RoutedDOMRpcRoutingTableEntry(getRpcId(), impls);
     }
 }
