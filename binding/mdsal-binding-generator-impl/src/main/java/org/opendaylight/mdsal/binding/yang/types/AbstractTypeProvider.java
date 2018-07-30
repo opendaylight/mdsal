@@ -553,11 +553,13 @@ public abstract class AbstractTypeProvider implements TypeProvider {
                 Preconditions.checkArgument(dataNode != null, "Failed to find leafref target: %s in module %s (%s)",
                         strXPath, this.getParentModule(parentNode).getName(), parentNode.getQName().getModule());
 
+                // FIXME: this block seems to be some weird magic hack. Analyze and refactor it.
                 if (leafContainsEnumDefinition(dataNode)) {
                     returnType = referencedTypes.get(dataNode.getPath());
                 } else if (leafListContainsEnumDefinition(dataNode)) {
                     returnType = Types.listTypeFor(referencedTypes.get(dataNode.getPath()));
-                } else {
+                }
+                if (returnType == null) {
                     returnType = resolveTypeFromDataSchemaNode(dataNode);
                 }
             } else {
