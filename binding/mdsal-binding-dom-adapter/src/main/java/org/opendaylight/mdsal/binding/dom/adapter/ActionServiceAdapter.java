@@ -35,7 +35,8 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 
 @Beta
 @NonNullByDefault
-final class ActionServiceAdapter
+// FIXME: make this class non-public once the controller user is gone
+public final class ActionServiceAdapter
         extends AbstractBindingLoadingAdapter<DOMActionService, Class<? extends Action<?, ?, ?>>, ActionAdapter>
         implements ActionService {
     private static final class Builder extends BindingDOMAdapterBuilder<ActionService> {
@@ -78,6 +79,12 @@ final class ActionServiceAdapter
 
     ActionServiceAdapter(final BindingToNormalizedNodeCodec codec, final DOMActionService delegate) {
         super(codec, delegate);
+    }
+
+    @Deprecated
+    public static ActionServiceAdapter create(final BindingToNormalizedNodeCodec codec,
+            final DOMActionService delegate) {
+        return new ActionServiceAdapter(codec, delegate);
     }
 
     @Override

@@ -39,7 +39,8 @@ import org.opendaylight.yangtools.yang.model.api.SchemaPath;
 
 @Beta
 @NonNullByDefault
-final class ActionProviderServiceAdapter extends AbstractBindingAdapter<DOMActionProviderService>
+// FIXME: make this class non-public once the controller user is gone
+public final class ActionProviderServiceAdapter extends AbstractBindingAdapter<DOMActionProviderService>
         implements ActionProviderService {
     private static final class Builder extends BindingDOMAdapterBuilder<ActionProviderService> {
         @Override
@@ -59,6 +60,12 @@ final class ActionProviderServiceAdapter extends AbstractBindingAdapter<DOMActio
 
     ActionProviderServiceAdapter(final BindingToNormalizedNodeCodec codec, final DOMActionProviderService delegate) {
         super(codec, delegate);
+    }
+
+    @Deprecated
+    public static ActionProviderServiceAdapter create(final BindingToNormalizedNodeCodec codec,
+            final DOMActionProviderService delegate) {
+        return new ActionProviderServiceAdapter(codec, delegate);
     }
 
     @Override
