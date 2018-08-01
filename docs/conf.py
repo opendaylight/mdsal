@@ -12,3 +12,4 @@
 
 from docs_conf.conf import *
 
+extensions.append('sphinxcontrib.plantuml')

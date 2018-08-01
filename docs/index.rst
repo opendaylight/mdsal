@@ -115,3 +115,9 @@ of API-centric integration.
   * Transactional **modification** to conceptual **data tree** - write
     transactions with isolation from other running transactions.
   * **Transaction chaining**
+
+
+  .. toctree::
+     :maxdepth: 1
+
+     architecture
