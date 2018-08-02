@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "102f3ea8_cd1ac11c",
+        "filename": "docs/architecture.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 2759
+      },
+      "writtenOn": "2018-08-02T14:42:33Z",
+      "side": 1,
+      "message": "This formatting doesn\u0027t seem to work right. It comes out as all of the text in a single line with no spacing. I suspect the syntax is not the same as it was with AsciiDoc",
+      "revId": "00372b8eb3a618cba8277655fc66be276784f7e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
