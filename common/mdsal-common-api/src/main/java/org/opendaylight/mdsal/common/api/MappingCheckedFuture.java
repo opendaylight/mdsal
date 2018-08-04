@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.mdsal.common.api;
 
 import static java.util.Objects.requireNonNull;
@@ -33,7 +32,9 @@ import javax.annotation.Nonnull;
  *
  * @param <V> The result type returned by this Future's get method
  * @param <X> The checked exception type
+ * @deprecated Use {@code org.opendaylight.controller.md.sal.common.api.MappingCheckedFuture} instead.
  */
+@Deprecated
 public final class MappingCheckedFuture<V, X extends Exception> extends AbstractCheckedFuture<V, X> {
 
     private final Function<Exception, X> mapper;
