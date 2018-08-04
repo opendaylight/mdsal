@@ -46,7 +46,8 @@ abstract class OperationMethodInvoker {
         try {
             return (Future<RpcResult<?>>) handle.invokeExact(args);
         } catch (final Throwable e) {
-            throw Throwables.propagate(e);
+            Throwables.throwIfUnchecked(e);
+            throw new RuntimeException(e);
         }
     }
 }

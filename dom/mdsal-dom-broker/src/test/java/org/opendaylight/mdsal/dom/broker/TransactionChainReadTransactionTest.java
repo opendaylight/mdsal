@@ -17,7 +17,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
 import org.junit.Test;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -45,13 +44,13 @@ public class TransactionChainReadTransactionTest {
         verify(readTransaction).close();
         verify(chainAdapter).closeReadTransaction();
 
-        doReturn(Futures.immediateCheckedFuture(null)).when(readTransaction).read(any(), any());
+        doReturn(FluentFutures.immediateNullFluentFuture()).when(readTransaction).read(any(), any());
         assertNotNull(transactionChainReadTransaction.exists(
                 LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY));
         transactionChainReadTransaction.read(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
         verify(readTransaction, atLeastOnce()).read(LogicalDatastoreType.OPERATIONAL, YangInstanceIdentifier.EMPTY);
 
-        doReturn(Futures.immediateFailedCheckedFuture(
+        doReturn(FluentFutures.immediateFailedFluentFuture(
                 new NullPointerException())).when(readTransaction).read(any(), any());
         doNothing().when(chainAdapter).transactionFailed(any(), any());
         assertNotNull(transactionChainReadTransaction.read(

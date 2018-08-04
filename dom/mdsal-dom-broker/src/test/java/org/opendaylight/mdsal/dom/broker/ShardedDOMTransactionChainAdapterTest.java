@@ -17,8 +17,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import com.google.common.util.concurrent.Futures;
 import org.junit.Test;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.TransactionChainListener;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeCursorAwareTransaction;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeProducer;
@@ -66,13 +66,12 @@ public class ShardedDOMTransactionChainAdapterTest {
         verify(cursor).delete(any());
 
         doNothing().when(cursor).close();
-        doReturn(Futures.immediateCheckedFuture(null)).when(transaction).commit();
+        doReturn(CommitInfo.emptyFluentFuture()).when(transaction).commit();
         doReturn(true).when(transaction).cancel();
         assertTrue(writeTransaction.cancel());
         transactionChainAdapter.closeWriteTransaction(FluentFutures.immediateNullFluentFuture());
 
-        transactionChainAdapter =
-                new ShardedDOMTransactionChainAdapter(identifier, dataTreeService, chainListener);
+        transactionChainAdapter = new ShardedDOMTransactionChainAdapter(identifier, dataTreeService, chainListener);
         writeTransaction = transactionChainAdapter.newWriteOnlyTransaction();
         writeTransaction.put(OPERATIONAL, TestModel.TEST_PATH, ImmutableNodes.containerNode(TestModel.TEST_QNAME));
         assertNotNull(writeTransaction.commit());

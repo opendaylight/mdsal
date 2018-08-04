@@ -39,7 +39,8 @@ final class DirectGetterRouteContextExtractor extends ContextReferenceExtractor 
         try {
             return (InstanceIdentifier<? extends TreeNode>) handle.invokeExact(obj);
         } catch (final Throwable e) {
-            throw Throwables.propagate(e);
+            Throwables.throwIfUnchecked(e);
+            throw new RuntimeException(e);
         }
     }
 }

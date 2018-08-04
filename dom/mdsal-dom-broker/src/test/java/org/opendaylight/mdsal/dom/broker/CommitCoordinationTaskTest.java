@@ -7,7 +7,6 @@
  */
 package org.opendaylight.mdsal.dom.broker;
 
-import static com.google.common.util.concurrent.Futures.immediateFailedCheckedFuture;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -18,6 +17,7 @@ import org.junit.Test;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.mdsal.dom.api.DOMDataTreeWriteTransaction;
 import org.opendaylight.mdsal.dom.spi.store.DOMStoreThreePhaseCommitCohort;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 
 public class CommitCoordinationTaskTest {
 
@@ -33,36 +33,36 @@ public class CommitCoordinationTaskTest {
 
     @Test(expected = TransactionCommitFailedException.class)
     public void canCommitBlockingWithFail() throws Exception {
-        doReturn(Futures.immediateCheckedFuture(null)).when(cohort).abort();
+        doReturn(FluentFutures.immediateNullFluentFuture()).when(cohort).abort();
 
-        doReturn(Futures.immediateCheckedFuture(Boolean.FALSE)).when(cohort).canCommit();
+        doReturn(FluentFutures.immediateFalseFluentFuture()).when(cohort).canCommit();
         task.call();
     }
 
     @Test(expected = TransactionCommitFailedException.class)
     public void canCommitBlockingWithFailException() throws Exception {
-        doReturn(Futures.immediateCheckedFuture(null)).when(cohort).abort();
+        doReturn(FluentFutures.immediateNullFluentFuture()).when(cohort).abort();
 
-        doReturn(immediateFailedCheckedFuture(new InterruptedException())).when(cohort).canCommit();
+        doReturn(Futures.immediateFailedFuture(new InterruptedException())).when(cohort).canCommit();
         task.call();
     }
 
     @Test(expected = TransactionCommitFailedException.class)
     public void preCommitBlockingWithFail() throws Exception {
-        doReturn(Futures.immediateCheckedFuture(Boolean.TRUE)).when(cohort).canCommit();
-        doReturn(Futures.immediateCheckedFuture(null)).when(cohort).abort();
+        doReturn(FluentFutures.immediateTrueFluentFuture()).when(cohort).canCommit();
+        doReturn(FluentFutures.immediateNullFluentFuture()).when(cohort).abort();
 
-        doReturn(immediateFailedCheckedFuture(new InterruptedException())).when(cohort).preCommit();
+        doReturn(Futures.immediateFailedFuture(new InterruptedException())).when(cohort).preCommit();
         task.call();
     }
 
     @Test(expected = TransactionCommitFailedException.class)
     public void commitBlockingWithFail() throws Exception {
-        doReturn(Futures.immediateCheckedFuture(Boolean.TRUE)).when(cohort).canCommit();
-        doReturn(Futures.immediateCheckedFuture(null)).when(cohort).preCommit();
-        doReturn(Futures.immediateCheckedFuture(null)).when(cohort).abort();
+        doReturn(FluentFutures.immediateTrueFluentFuture()).when(cohort).canCommit();
+        doReturn(FluentFutures.immediateNullFluentFuture()).when(cohort).preCommit();
+        doReturn(FluentFutures.immediateNullFluentFuture()).when(cohort).abort();
 
-        doReturn(immediateFailedCheckedFuture(new InterruptedException())).when(cohort).commit();
+        doReturn(Futures.immediateFailedFuture(new InterruptedException())).when(cohort).commit();
         task.call();
     }
 }
