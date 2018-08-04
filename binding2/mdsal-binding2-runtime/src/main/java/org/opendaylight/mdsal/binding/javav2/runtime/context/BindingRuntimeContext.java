@@ -24,7 +24,6 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -429,7 +428,7 @@ public class BindingRuntimeContext implements Immutable {
         }
     }
 
-    private boolean isLocalAugment(final AugmentationTarget container, final AugmentationSchemaNode augment) {
+    private static boolean isLocalAugment(final AugmentationTarget container, final AugmentationSchemaNode augment) {
         Preconditions.checkState(container instanceof SchemaNode);
         final QName root = ((SchemaNode) container).getPath().getPathFromRoot().iterator().next();
         // findFirst makes no sense but just pick up one child to judge whether the target node is

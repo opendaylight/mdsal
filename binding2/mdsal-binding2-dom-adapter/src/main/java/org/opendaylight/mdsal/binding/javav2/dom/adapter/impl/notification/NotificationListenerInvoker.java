@@ -120,7 +120,8 @@ public final class NotificationListenerInvoker {
         try {
             invoker.invokeExact(impl, input);
         } catch (final Throwable e) {
-            throw Throwables.propagate(e);
+            Throwables.throwIfUnchecked(e);
+            throw new RuntimeException(e);
         }
     }
 }

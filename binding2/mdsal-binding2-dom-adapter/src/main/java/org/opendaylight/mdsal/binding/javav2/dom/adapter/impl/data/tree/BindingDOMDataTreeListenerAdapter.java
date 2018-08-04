@@ -85,7 +85,7 @@ public class BindingDOMDataTreeListenerAdapter implements DOMDataTreeListener {
         delegate.onDataTreeFailed(bindingCauses);
     }
 
-    private DataTreeListeningException mapException(final DOMDataTreeListeningException cause) {
+    private static DataTreeListeningException mapException(final DOMDataTreeListeningException cause) {
         // FIXME: Extend logic
         return new DataTreeListeningException(cause.getMessage(), cause);
     }
