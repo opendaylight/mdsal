@@ -11,8 +11,8 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.net.InetAddresses;
@@ -160,7 +160,9 @@ public class AbstractIetfInetUtilTest {
     public void inet4AddressForWithExceptionTest() throws Exception {
         final IpClass ipClass = mock(IpClass.class);
         doReturn("testClass").when(ipClass).toString();
-        doThrow(UnknownHostException.class).when(ipClass).getValue();
+        doAnswer(inv -> {
+            throw new UnknownHostException();
+        }).when(ipClass).getValue();
         UTIL.inet4AddressFor(ipClass);
     }
 
@@ -168,7 +170,9 @@ public class AbstractIetfInetUtilTest {
     public void inet6AddressForWithExceptionTest() throws Exception {
         final IpClass ipClass = mock(IpClass.class);
         doReturn("testClass").when(ipClass).toString();
-        doThrow(UnknownHostException.class).when(ipClass).getValue();
+        doAnswer(inv -> {
+            throw new UnknownHostException();
+        }).when(ipClass).getValue();
         UTIL.inet6AddressFor(ipClass);
     }
 }

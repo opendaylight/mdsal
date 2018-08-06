@@ -9,9 +9,10 @@ package org.opendaylight.mdsal.dom.spi.store;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -98,19 +99,25 @@ public class SnapshotBackedWriteTransactionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void writeWithException() throws Exception {
-        doThrow(TestException.class).when(DATA_TREE_MODIFICATION).write(any(), any());
+        doAnswer(inv -> {
+            throw new TestException();
+        }).when(DATA_TREE_MODIFICATION).write(any(), any());
         snapshotBackedWriteTransaction.write(YangInstanceIdentifier.EMPTY, NORMALIZED_NODE);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void mergeWithException() throws Exception {
-        doThrow(TestException.class).when(DATA_TREE_MODIFICATION).merge(any(), any());
+        doAnswer(inv -> {
+            throw new TestException();
+        }).when(DATA_TREE_MODIFICATION).merge(any(), any());
         snapshotBackedWriteTransaction.merge(YangInstanceIdentifier.EMPTY, NORMALIZED_NODE);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void deleteWithException() throws Exception {
-        doThrow(TestException.class).when(DATA_TREE_MODIFICATION).delete(any());
+        doAnswer(inv -> {
+            throw new TestException();
+        }).when(DATA_TREE_MODIFICATION).delete(any());
         snapshotBackedWriteTransaction.delete(YangInstanceIdentifier.EMPTY);
     }
 
